@@ -14,11 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Security.BindableObject
@@ -26,8 +28,15 @@ namespace Remotion.ObjectBinding.Security.BindableObject
   /// <summary>
   /// Checks if the current <see cref="ISecurityPrincipal"/> can access the property's getter.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
+  [ImplementationFor (typeof (IBindablePropertyReadAccessStrategy),
+      Lifetime = LifetimeKind.Singleton,
+      RegistrationType = RegistrationType.Multiple,
+      Position = Position)]
   public class SecurityBasedBindablePropertyReadAccessStrategy : IBindablePropertyReadAccessStrategy
   {
+    public const int Position = 117;
+
     private static readonly NullMethodInformation s_nullMethodInformation = new NullMethodInformation();
 
     private readonly SecurityClient _securityClient;
@@ -39,7 +48,7 @@ namespace Remotion.ObjectBinding.Security.BindableObject
 
     public bool CanRead (BindableObjectClass bindableClass, PropertyBase bindableProperty, IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("bindableClass", bindableClass);
+      ArgumentUtility.DebugCheckNotNull ("bindableClass", bindableClass);
       ArgumentUtility.CheckNotNull ("bindableProperty", bindableProperty);
       // businessObject can be null
 

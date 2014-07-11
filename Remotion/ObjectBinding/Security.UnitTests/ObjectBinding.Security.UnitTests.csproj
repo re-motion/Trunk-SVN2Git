@@ -58,6 +58,8 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="BindableObject\IBindablePropertReadAccessStrategyTest.cs" />
+    <Compile Include="BindableObject\IBindablePropertyWriteAccessStrategyTest.cs" />
     <Compile Include="BindableObject\SecurityBasedBindablePropertyReadAccessStrategyTest.cs" />
     <Compile Include="BindableObject\SecurityBasedBindablePropertyWriteAccessStrategyTest.cs" />
     <Compile Include="BindableObject\StubPropertyBase.cs" />

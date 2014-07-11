@@ -14,15 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.Security.BindableObject;
 using Remotion.ServiceLocation;
 
-namespace Remotion.ObjectBinding.UnitTests.BindableObject
+namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 {
   [TestFixture]
-  public class IPropertyWriteAccessStrategyTest
+  public class IBindablePropertyWriteAccessStrategyTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -38,7 +41,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       var strategy = _serviceLocator.GetInstance<IBindablePropertyWriteAccessStrategy>();
 
       Assert.That (strategy, Is.TypeOf (typeof (CompundBindablePropertyWriteAccessStrategy)));
-      Assert.That (((CompundBindablePropertyWriteAccessStrategy) strategy).BindablePropertyWriteAccessStrategies, Is.Empty);
+      var compoundStrategies = ((CompundBindablePropertyWriteAccessStrategy) strategy).BindablePropertyWriteAccessStrategies;
+      Assert.That (compoundStrategies.Select (s => s.GetType()), Has.Member (typeof (SecurityBasedBindablePropertyWriteAccessStrategy)));
     }
 
     [Test]

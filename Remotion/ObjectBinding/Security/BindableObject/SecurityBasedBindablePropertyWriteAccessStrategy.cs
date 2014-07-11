@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Security.BindableObject
@@ -27,8 +28,15 @@ namespace Remotion.ObjectBinding.Security.BindableObject
   /// <summary>
   /// Checks if the current <see cref="ISecurityPrincipal"/> can access the property's setter.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
+  [ImplementationFor (typeof (IBindablePropertyWriteAccessStrategy),
+      Lifetime = LifetimeKind.Singleton,
+      RegistrationType = RegistrationType.Multiple,
+      Position = Position)]
   public class SecurityBasedBindablePropertyWriteAccessStrategy : IBindablePropertyWriteAccessStrategy
   {
+    public const int Position = 117;
+
     private static readonly NullMethodInformation s_nullMethodInformation = new NullMethodInformation();
 
     private readonly SecurityClient _securityClient;
@@ -40,7 +48,7 @@ namespace Remotion.ObjectBinding.Security.BindableObject
 
     public bool CanWrite (BindableObjectClass bindableClass, PropertyBase bindableProperty, IBusinessObject businessObject)
     {
-      ArgumentUtility.CheckNotNull ("bindableClass", bindableClass);
+      ArgumentUtility.DebugCheckNotNull ("bindableClass", bindableClass);
       ArgumentUtility.CheckNotNull ("bindableProperty", bindableProperty);
       // businessObject can be null
 
