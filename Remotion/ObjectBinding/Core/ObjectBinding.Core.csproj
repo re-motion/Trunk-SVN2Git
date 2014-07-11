@@ -171,6 +171,8 @@
     <Compile Include="BindableObject\BindableObjectWithIdentityMixin.cs" />
     <Compile Include="BindableObject\BindableObjectServiceFactory.cs" />
     <Compile Include="BindableObject\CompositeEnumerationValueFilter.cs" />
+    <Compile Include="BindableObject\CompundPropertyReadAccessStrategy.cs" />
+    <Compile Include="BindableObject\CompundPropertyWriteAccessStrategy.cs" />
     <Compile Include="BindableObject\ConstantEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityProviderAttribute.cs" />
     <Compile Include="BindableObject\BindableObjectMetadataFactory.cs" />
@@ -187,6 +189,8 @@
     <Compile Include="BindableObject\IDeleteObjectService.cs" />
     <Compile Include="BindableObject\InterfaceImplementationMethodInformation.cs" />
     <Compile Include="BindableObject\InterfaceImplementationPropertyInformation.cs" />
+    <Compile Include="BindableObject\IPropertyReadAccessStrategy.cs" />
+    <Compile Include="BindableObject\IPropertyWriteAccessStrategy.cs" />
     <Compile Include="BindableObject\MixinIntroducedMethodInformation.cs" />
     <Compile Include="BindableObject\MixinIntroducedPropertyInformation.cs" />
     <Compile Include="BindableObject\NullEnumerationValueFilter.cs" />
