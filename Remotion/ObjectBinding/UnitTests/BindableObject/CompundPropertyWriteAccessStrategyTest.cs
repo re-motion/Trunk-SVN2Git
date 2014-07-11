@@ -19,6 +19,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
+using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -33,6 +34,9 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     private IBindablePropertyWriteAccessStrategy _innerStrategy2;
     private IBindablePropertyWriteAccessStrategy _innerStrategy3;
     private BindableObjectProvider _businessObjectProvider;
+    private BindableObjectClass _bindableClass;
+    private PropertyBase _property;
+    private IBusinessObject _businessObject;
 
     public override void SetUp ()
     {
@@ -46,6 +50,9 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _strategy = new CompundBindablePropertyWriteAccessStrategy (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 });
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
+      _bindableClass = new BindableObjectClass (typeof (ClassWithAllDataTypes), _businessObjectProvider, new PropertyBase[0]);
+      _property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
+      _businessObject = MockRepository.GenerateStub<IBusinessObject>();
     }
 
     [Test]
@@ -57,30 +64,43 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void CanWrite_WithoutStrategies_ReturnsTrue ()
     {
-      var property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
-      var businessObject = MockRepository.GenerateStub<IBusinessObject>();
 
       var strategy = new CompundBindablePropertyWriteAccessStrategy (Enumerable.Empty<IBindablePropertyWriteAccessStrategy>());
-      var result = strategy.CanWrite (property, businessObject);
+      var result = strategy.CanWrite (_bindableClass, _property, _businessObject);
 
       Assert.That (result, Is.True);
     }
 
     [Test]
-    public void CanWrite_WithAllStrategiesReturingTrue_ReturnsTrue ()
+    public void CanRead_WithNullBusinessObject_ReturnsValue ()
     {
-      var property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
-      var businessObject = MockRepository.GenerateStub<IBusinessObject>();
-
       using (_mockRepository.Ordered())
       {
-        _innerStrategy1.Expect (mock => mock.CanWrite (property, businessObject)).Return (true);
-        _innerStrategy2.Expect (mock => mock.CanWrite (property, businessObject)).Return (true);
-        _innerStrategy3.Expect (mock => mock.CanWrite (property, businessObject)).Return (true);
+        _innerStrategy1.Expect (mock => mock.CanWrite (_bindableClass, _property, null)).Return (true);
+        _innerStrategy2.Expect (mock => mock.CanWrite (_bindableClass, _property, null)).Return (true);
+        _innerStrategy3.Expect (mock => mock.CanWrite (_bindableClass, _property, null)).Return (true);
       }
       _mockRepository.ReplayAll();
 
-      var result = _strategy.CanWrite (property, businessObject);
+      var result = _strategy.CanWrite (_bindableClass, _property, null);
+
+      Assert.That (result, Is.True);
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void CanWrite_WithAllStrategiesReturingTrue_ReturnsTrue ()
+    {
+      using (_mockRepository.Ordered())
+      {
+        _innerStrategy1.Expect (mock => mock.CanWrite (_bindableClass, _property, _businessObject)).Return (true);
+        _innerStrategy2.Expect (mock => mock.CanWrite (_bindableClass, _property, _businessObject)).Return (true);
+        _innerStrategy3.Expect (mock => mock.CanWrite (_bindableClass, _property, _businessObject)).Return (true);
+      }
+      _mockRepository.ReplayAll();
+
+      var result = _strategy.CanWrite (_bindableClass, _property, _businessObject);
 
       Assert.That (result, Is.True);
 
@@ -90,18 +110,15 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void CanWrite_WithOneStrategyReturingFalse_ReturnsFalse_AndAbortsChecks ()
     {
-      var property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
-      var businessObject = MockRepository.GenerateStub<IBusinessObject>();
-
       using (_mockRepository.Ordered())
       {
-        _innerStrategy1.Expect (mock => mock.CanWrite (property, businessObject)).Return (true);
-        _innerStrategy2.Expect (mock => mock.CanWrite (property, businessObject)).Return (false);
-        _innerStrategy3.Expect (mock => mock.CanWrite (property, businessObject)).Repeat.Never();
+        _innerStrategy1.Expect (mock => mock.CanWrite (_bindableClass, _property, _businessObject)).Return (true);
+        _innerStrategy2.Expect (mock => mock.CanWrite (_bindableClass, _property, _businessObject)).Return (false);
+        _innerStrategy3.Expect (mock => mock.CanWrite (_bindableClass, _property, _businessObject)).Repeat.Never();
       }
       _mockRepository.ReplayAll();
 
-      var result = _strategy.CanWrite (property, businessObject);
+      var result = _strategy.CanWrite (_bindableClass, _property, _businessObject);
 
       Assert.That (result, Is.False);
 

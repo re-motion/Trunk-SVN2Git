@@ -27,11 +27,12 @@ namespace Remotion.ObjectBinding.BindableObject
   public interface IBindablePropertyWriteAccessStrategy
   {
     /// <summary>
-    /// Evaluated if setting the <paramref name="propertyBase"/> is supported for the <paramref name="businessObject"/>.
+    /// Evaluated if setting the <paramref name="bindableProperty"/> is supported for the <paramref name="businessObject"/>.
     /// </summary>
-    /// <param name="propertyBase">The <see cref="PropertyBase"/> for which the check will be performed. Must not be <see langword="null" />.</param>
-    /// <param name="businessObject">The <see cref="IBusinessObject"/> for which the check will be performed. Must not be <see langword="null" />.</param>
-    /// <returns><see langword="true" /> if the <paramref name="propertyBase"/> can be set.</returns>
-    bool CanWrite ([NotNull]PropertyBase propertyBase, [NotNull]IBusinessObject businessObject);
+    /// <param name="bindableClass">The <see cref="BindableObjectClass"/> for which the check will be performed. Must not be <see langword="null" />.</param>
+    /// <param name="bindableProperty">The <see cref="PropertyBase"/> for which the check will be performed. Must not be <see langword="null" />.</param>
+    /// <param name="businessObject">The <see cref="IBusinessObject"/> for which the check will be performed. May be <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the <paramref name="bindableProperty"/> can be set.</returns>
+    bool CanWrite ([NotNull] BindableObjectClass bindableClass, [NotNull] PropertyBase bindableProperty, [CanBeNull] IBusinessObject businessObject);
   }
 }

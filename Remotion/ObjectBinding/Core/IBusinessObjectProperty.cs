@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using JetBrains.Annotations;
 
 namespace Remotion.ObjectBinding
 {
@@ -71,13 +72,13 @@ namespace Remotion.ObjectBinding
     /// <param name="obj"> The object to evaluate this property for, or <see langword="null"/>. </param>
     /// <returns> <see langword="true"/> if the user can access this property. </returns>
     /// <remarks> The result may depend on the class, the user's authorization and/or the instance value. </remarks>
-    bool IsAccessible (IBusinessObjectClass objectClass, IBusinessObject obj);
+    bool IsAccessible ([NotNull] IBusinessObjectClass objectClass, [CanBeNull] IBusinessObject obj);
 
     /// <summary> Indicates whether this property can be modified by the user. </summary>
     /// <param name="obj"> The object to evaluate this property for, or <see langword="null"/>. </param>
     /// <returns> <see langword="true"/> if the user can set this property. </returns>
     /// <remarks> The result may depend on the user's authorization and/or the object. </remarks>
-    bool IsReadOnly (IBusinessObject obj);
+    bool IsReadOnly ([CanBeNull] IBusinessObject obj);
 
     /// <summary>Gets the <see cref="IBusinessObjectClass"/> that was used to retrieve this property.</summary>
     /// <value>An instance of the <see cref="IBusinessObjectClass"/> type.</value>
