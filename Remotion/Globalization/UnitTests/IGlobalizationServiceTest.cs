@@ -37,20 +37,20 @@ namespace Remotion.Globalization.UnitTests
     [Test]
     public void GetInstance_Once ()
     {
-      var factory = _serviceLocator.GetInstance<IGlobalizationService> ();
+      var service = _serviceLocator.GetInstance<IGlobalizationService> ();
 
-      Assert.That (factory, Is.TypeOf (typeof (CompoundGlobalizationService)));
-      var compoundGlobalizationServices = ((CompoundGlobalizationService) factory).GlobalizationServices.ToArray();
+      Assert.That (service, Is.TypeOf (typeof (CompoundGlobalizationService)));
+      var compoundGlobalizationServices = ((CompoundGlobalizationService) service).GlobalizationServices.ToArray();
       Assert.That (compoundGlobalizationServices[0], Is.TypeOf<GlobalizationService>());
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IGlobalizationService>();
-      var factory2 = _serviceLocator.GetInstance<IGlobalizationService>();
+      var service1 = _serviceLocator.GetInstance<IGlobalizationService>();
+      var service2 = _serviceLocator.GetInstance<IGlobalizationService>();
 
-      Assert.That (factory1, Is.SameAs (factory2));
+      Assert.That (service1, Is.SameAs (service2));
     }
   }
 }
