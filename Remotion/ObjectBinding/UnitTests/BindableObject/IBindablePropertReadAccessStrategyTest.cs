@@ -22,7 +22,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
 {
   [TestFixture]
-  public class IPropertReadAccessStrategyTest
+  public class IBindablePropertReadAccessStrategyTest
   {
     private DefaultServiceLocator _serviceLocator;
 
@@ -35,17 +35,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetInstance_Once ()
     {
-      var strategy = _serviceLocator.GetInstance<IPropertyReadAccessStrategy>();
+      var strategy = _serviceLocator.GetInstance<IBindablePropertyReadAccessStrategy>();
 
-      Assert.That (strategy, Is.TypeOf (typeof (CompundPropertyReadAccessStrategy)));
-      Assert.That (((CompundPropertyReadAccessStrategy) strategy).PropertyReadAccessStrategies, Is.Empty);
+      Assert.That (strategy, Is.TypeOf (typeof (CompundBindablePropertyReadAccessStrategy)));
+      Assert.That (((CompundBindablePropertyReadAccessStrategy) strategy).BindablePropertyReadAccessStrategies, Is.Empty);
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var strategy1 = _serviceLocator.GetInstance<IPropertyReadAccessStrategy>();
-      var strategy2 = _serviceLocator.GetInstance<IPropertyReadAccessStrategy>();
+      var strategy1 = _serviceLocator.GetInstance<IBindablePropertyReadAccessStrategy>();
+      var strategy2 = _serviceLocator.GetInstance<IBindablePropertyReadAccessStrategy>();
 
       Assert.That (strategy1, Is.SameAs (strategy2));
     }

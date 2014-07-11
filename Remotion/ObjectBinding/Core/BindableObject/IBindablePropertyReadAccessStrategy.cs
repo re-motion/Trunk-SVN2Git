@@ -24,14 +24,14 @@ namespace Remotion.ObjectBinding.BindableObject
   /// Defines an interface to check whether the value of a <see cref="PropertyBase"/> can be written to.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public interface IPropertyWriteAccessStrategy
+  public interface IBindablePropertyReadAccessStrategy
   {
     /// <summary>
-    /// Evaluated if setting the <paramref name="propertyBase"/> is supported for the <paramref name="businessObject"/>.
+    /// Evaluated if getting the <paramref name="propertyBase"/> is supported for the <paramref name="businessObject"/>.
     /// </summary>
     /// <param name="propertyBase">The <see cref="PropertyBase"/> for which the check will be performed. Must not be <see langword="null" />.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> for which the check will be performed. Must not be <see langword="null" />.</param>
-    /// <returns><see langword="true" /> if the <paramref name="propertyBase"/> can be set.</returns>
-    bool CanWrite ([NotNull]PropertyBase propertyBase, [NotNull]IBusinessObject businessObject);
+    /// <returns><see langword="true" /> if the <paramref name="propertyBase"/> can be gotten.</returns>
+    bool CanRead ([NotNull]PropertyBase propertyBase, [NotNull]IBusinessObject businessObject);
   }
 }

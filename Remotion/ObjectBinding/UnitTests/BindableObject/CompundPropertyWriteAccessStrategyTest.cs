@@ -28,10 +28,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
   public class CompundPropertyWriteAccessStrategyTest : TestBase
   {
     private MockRepository _mockRepository;
-    private CompundPropertyWriteAccessStrategy _strategy;
-    private IPropertyWriteAccessStrategy _innerStrategy1;
-    private IPropertyWriteAccessStrategy _innerStrategy2;
-    private IPropertyWriteAccessStrategy _innerStrategy3;
+    private CompundBindablePropertyWriteAccessStrategy _strategy;
+    private IBindablePropertyWriteAccessStrategy _innerStrategy1;
+    private IBindablePropertyWriteAccessStrategy _innerStrategy2;
+    private IBindablePropertyWriteAccessStrategy _innerStrategy3;
     private BindableObjectProvider _businessObjectProvider;
 
     public override void SetUp ()
@@ -39,11 +39,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       base.SetUp();
       _mockRepository = new MockRepository();
 
-      _innerStrategy1 = _mockRepository.StrictMock<IPropertyWriteAccessStrategy>();
-      _innerStrategy2 = _mockRepository.StrictMock<IPropertyWriteAccessStrategy>();
-      _innerStrategy3 = _mockRepository.StrictMock<IPropertyWriteAccessStrategy>();
+      _innerStrategy1 = _mockRepository.StrictMock<IBindablePropertyWriteAccessStrategy>();
+      _innerStrategy2 = _mockRepository.StrictMock<IBindablePropertyWriteAccessStrategy>();
+      _innerStrategy3 = _mockRepository.StrictMock<IBindablePropertyWriteAccessStrategy>();
 
-      _strategy = new CompundPropertyWriteAccessStrategy (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 });
+      _strategy = new CompundBindablePropertyWriteAccessStrategy (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 });
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
     }
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void Initialization ()
     {
-      Assert.That (_strategy.PropertyWriteAccessStrategies, Is.EqualTo (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 }));
+      Assert.That (_strategy.BindablePropertyWriteAccessStrategies, Is.EqualTo (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 }));
     }
 
     [Test]
@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       var property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
       var businessObject = MockRepository.GenerateStub<IBusinessObject>();
 
-      var strategy = new CompundPropertyWriteAccessStrategy (Enumerable.Empty<IPropertyWriteAccessStrategy>());
+      var strategy = new CompundBindablePropertyWriteAccessStrategy (Enumerable.Empty<IBindablePropertyWriteAccessStrategy>());
       var result = strategy.CanWrite (property, businessObject);
 
       Assert.That (result, Is.True);

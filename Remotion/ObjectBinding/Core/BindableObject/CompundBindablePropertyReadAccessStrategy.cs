@@ -25,24 +25,24 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// Combines one or more <see cref="IPropertyReadAccessStrategy"/>-instances and delegates checking if the property can be read from.
+  /// Combines one or more <see cref="IBindablePropertyReadAccessStrategy"/>-instances and delegates checking if the property can be read from.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  [ImplementationFor (typeof (IPropertyReadAccessStrategy), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
-  public sealed class CompundPropertyReadAccessStrategy : IPropertyReadAccessStrategy
+  [ImplementationFor (typeof (IBindablePropertyReadAccessStrategy), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
+  public sealed class CompundBindablePropertyReadAccessStrategy : IBindablePropertyReadAccessStrategy
   {
-    private readonly IReadOnlyList<IPropertyReadAccessStrategy> _propertyReadAccessStrategies;
+    private readonly IReadOnlyList<IBindablePropertyReadAccessStrategy> _bindablePropertyReadAccessStrategies;
 
-    public CompundPropertyReadAccessStrategy (IEnumerable<IPropertyReadAccessStrategy> propertyReadAccessStrategies)
+    public CompundBindablePropertyReadAccessStrategy (IEnumerable<IBindablePropertyReadAccessStrategy> bindablePropertyReadAccessStrategies)
     {
-      ArgumentUtility.CheckNotNull ("propertyReadAccessStrategies", propertyReadAccessStrategies);
+      ArgumentUtility.CheckNotNull ("bindablePropertyReadAccessStrategies", bindablePropertyReadAccessStrategies);
 
-      _propertyReadAccessStrategies = propertyReadAccessStrategies.ToList().AsReadOnly();
+      _bindablePropertyReadAccessStrategies = bindablePropertyReadAccessStrategies.ToList().AsReadOnly();
     }
 
-    public IReadOnlyList<IPropertyReadAccessStrategy> PropertyReadAccessStrategies
+    public IReadOnlyList<IBindablePropertyReadAccessStrategy> BindablePropertyReadAccessStrategies
     {
-      get { return _propertyReadAccessStrategies; }
+      get { return _bindablePropertyReadAccessStrategies; }
     }
 
 
@@ -55,11 +55,11 @@ namespace Remotion.ObjectBinding.BindableObject
       // return _strategies.All (s => s.CanRead (propertyBase, businessObject));
       // ReSharper disable LoopCanBeConvertedToQuery
       // ReSharper disable ForCanBeConvertedToForeach
-      //for (int i = 0; i < _strategies.Count; i++)
-      //{
-      //  if (!_strategies[i].CanRead (propertyBase, businessObject))
-      //    return false;
-      //}
+      for (int i = 0; i < _bindablePropertyReadAccessStrategies.Count; i++)
+      {
+        if (!_bindablePropertyReadAccessStrategies[i].CanRead (propertyBase, businessObject))
+          return false;
+      }
       return true;
       // ReSharper restore ForCanBeConvertedToForeach
       // ReSharper restore LoopCanBeConvertedToQuery

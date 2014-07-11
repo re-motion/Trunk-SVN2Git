@@ -35,17 +35,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetInstance_Once ()
     {
-      var strategy = _serviceLocator.GetInstance<IPropertyWriteAccessStrategy>();
+      var strategy = _serviceLocator.GetInstance<IBindablePropertyWriteAccessStrategy>();
 
-      Assert.That (strategy, Is.TypeOf (typeof (CompundPropertyWriteAccessStrategy)));
-      Assert.That (((CompundPropertyWriteAccessStrategy) strategy).PropertyWriteAccessStrategies, Is.Empty);
+      Assert.That (strategy, Is.TypeOf (typeof (CompundBindablePropertyWriteAccessStrategy)));
+      Assert.That (((CompundBindablePropertyWriteAccessStrategy) strategy).BindablePropertyWriteAccessStrategies, Is.Empty);
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var strategy1 = _serviceLocator.GetInstance<IPropertyWriteAccessStrategy>();
-      var strategy2 = _serviceLocator.GetInstance<IPropertyWriteAccessStrategy>();
+      var strategy1 = _serviceLocator.GetInstance<IBindablePropertyWriteAccessStrategy>();
+      var strategy2 = _serviceLocator.GetInstance<IBindablePropertyWriteAccessStrategy>();
 
       Assert.That (strategy1, Is.SameAs (strategy2));
     }

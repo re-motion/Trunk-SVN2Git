@@ -24,24 +24,24 @@ using Remotion.Utilities;
 namespace Remotion.ObjectBinding.BindableObject
 {
   /// <summary>
-  /// Combines one or more <see cref="IPropertyWriteAccessStrategy"/>-instances and delegates checking if the property can be written to.
+  /// Combines one or more <see cref="IBindablePropertyWriteAccessStrategy"/>-instances and delegates checking if the property can be written to.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  [ImplementationFor (typeof (IPropertyWriteAccessStrategy), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
-  public sealed class CompundPropertyWriteAccessStrategy : IPropertyWriteAccessStrategy
+  [ImplementationFor (typeof (IBindablePropertyWriteAccessStrategy), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
+  public sealed class CompundBindablePropertyWriteAccessStrategy : IBindablePropertyWriteAccessStrategy
   {
-    private readonly IReadOnlyList<IPropertyWriteAccessStrategy> _propertyWriteAccessStrategies;
+    private readonly IReadOnlyList<IBindablePropertyWriteAccessStrategy> _bindablePropertyWriteAccessStrategies;
 
-    public CompundPropertyWriteAccessStrategy (IEnumerable<IPropertyWriteAccessStrategy> propertyWriteAccessStrategies)
+    public CompundBindablePropertyWriteAccessStrategy (IEnumerable<IBindablePropertyWriteAccessStrategy> bindablePropertyWriteAccessStrategies)
     {
-      ArgumentUtility.CheckNotNull ("propertyWriteAccessStrategies", propertyWriteAccessStrategies);
+      ArgumentUtility.CheckNotNull ("bindablePropertyWriteAccessStrategies", bindablePropertyWriteAccessStrategies);
 
-      _propertyWriteAccessStrategies = propertyWriteAccessStrategies.ToList().AsReadOnly();
+      _bindablePropertyWriteAccessStrategies = bindablePropertyWriteAccessStrategies.ToList().AsReadOnly();
     }
 
-    public IReadOnlyList<IPropertyWriteAccessStrategy> PropertyWriteAccessStrategies
+    public IReadOnlyList<IBindablePropertyWriteAccessStrategy> BindablePropertyWriteAccessStrategies
     {
-      get { return _propertyWriteAccessStrategies; }
+      get { return _bindablePropertyWriteAccessStrategies; }
     }
 
     public bool CanWrite (PropertyBase propertyBase, IBusinessObject businessObject)
@@ -53,9 +53,9 @@ namespace Remotion.ObjectBinding.BindableObject
       // return _strategies.All (s => s.CanRead (propertyBase, businessObject));
       // ReSharper disable LoopCanBeConvertedToQuery
       // ReSharper disable ForCanBeConvertedToForeach
-      for (int i = 0; i < _propertyWriteAccessStrategies.Count; i++)
+      for (int i = 0; i < _bindablePropertyWriteAccessStrategies.Count; i++)
       {
-        if (!_propertyWriteAccessStrategies[i].CanWrite (propertyBase, businessObject))
+        if (!_bindablePropertyWriteAccessStrategies[i].CanWrite (propertyBase, businessObject))
           return false;
       }
       return true;

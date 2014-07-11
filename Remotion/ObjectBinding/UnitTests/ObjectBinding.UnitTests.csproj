@@ -81,7 +81,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="BindableObject\BindableObjectGlobalizationServiceTest.cs" />
-    <Compile Include="BindableObject\CompundPropertyReadAccessStrategyTest.cs" />
+    <Compile Include="BindableObject\CompundBindablePropertyReadAccessStrategyTest.cs" />
     <Compile Include="BindableObject\CompundPropertyWriteAccessStrategyTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\AttributesBasedGlobalizationIntegrationTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\ResourcesBasedGlobalizationIntegrationTest.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="BindableObject\IntergrationTests\MixedProperties\TestDomain\MixinClass.cs" />
     <Compile Include="BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPrivatelyIntroducedMembers.cs" />
     <Compile Include="BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPubliclyIntroducedMembers.cs" />
-    <Compile Include="BindableObject\IPropertReadAccessStrategyTest.cs" />
+    <Compile Include="BindableObject\IBindablePropertReadAccessStrategyTest.cs" />
     <Compile Include="BindableObject\IPropertyWriteAccessStrategyTest.cs" />
     <Compile Include="BindableObject\SetUpFixture.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
