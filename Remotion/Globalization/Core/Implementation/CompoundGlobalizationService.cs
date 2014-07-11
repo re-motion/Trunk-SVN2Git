@@ -32,7 +32,7 @@ namespace Remotion.Globalization.Implementation
   [ImplementationFor (typeof (IGlobalizationService), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
   public sealed class CompoundGlobalizationService : IGlobalizationService
   {
-    private readonly IReadOnlyCollection<IGlobalizationService> _globalizationServices;
+    private readonly IReadOnlyList<IGlobalizationService> _globalizationServices;
 
     /// <summary>
     ///   Combines several <see cref="IGlobalizationService"/>-instances to a single <see cref="CompoundGlobalizationService"/>.
@@ -42,10 +42,10 @@ namespace Remotion.Globalization.Implementation
     {
       ArgumentUtility.CheckNotNull ("globalizationServices", globalizationServices);
 
-      _globalizationServices = globalizationServices.Reverse().ToArray();
+      _globalizationServices = globalizationServices.Reverse().ToList().AsReadOnly();
     }
 
-    public IEnumerable<IGlobalizationService> GlobalizationServices
+    public IReadOnlyList<IGlobalizationService> GlobalizationServices
     {
       get { return _globalizationServices; }
     }
