@@ -35,6 +35,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly ClassDefinition _classDefinition;
     private readonly DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> _cachedAccessorData;
     private readonly LockingCacheDecorator<IPropertyInformation, PropertyAccessorData> _cachedAccessorDataByMember;
+    private readonly Func<IPropertyInformation, PropertyAccessorData> _resolvePropertyAccessorDataWithoutCacheFunc;
 
     public PropertyAccessorDataCache (ClassDefinition classDefinition)
     {
@@ -43,6 +44,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       _classDefinition = classDefinition;
       _cachedAccessorData = new DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> (BuildAccessorDataDictionary);
       _cachedAccessorDataByMember = CacheFactory.CreateWithLocking<IPropertyInformation, PropertyAccessorData>();
+      _resolvePropertyAccessorDataWithoutCacheFunc = ResolvePropertyAccessorDataWithoutCache;
     }
 
     public PropertyAccessorData GetPropertyAccessorData (string propertyIdentifier)
@@ -85,9 +87,12 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      return _cachedAccessorDataByMember.GetOrCreateValue (
-          propertyInformation,
-          pi => ReflectionBasedPropertyResolver.ResolveDefinition (pi, _classDefinition, GetPropertyAccessorData));
+      return _cachedAccessorDataByMember.GetOrCreateValue (propertyInformation, _resolvePropertyAccessorDataWithoutCacheFunc);
+    }
+
+    private PropertyAccessorData ResolvePropertyAccessorDataWithoutCache (IPropertyInformation propertyInformation)
+    {
+      return ReflectionBasedPropertyResolver.ResolveDefinition (propertyInformation, _classDefinition, GetPropertyAccessorData);
     }
 
     public PropertyAccessorData GetMandatoryPropertyAccessorData (string propertyName)
