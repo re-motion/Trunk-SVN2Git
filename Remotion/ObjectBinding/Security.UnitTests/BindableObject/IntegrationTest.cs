@@ -47,7 +47,6 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       _principalProviderStub.Stub (stub => stub.GetPrincipal ()).Return (_securityPrincipalStub);
 
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IObjectSecurityAdapter> (() => new ObjectSecurityAdapter());
       serviceLocator.RegisterSingle (() => _securityProviderStub);
       serviceLocator.RegisterSingle (() => _principalProviderStub);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);

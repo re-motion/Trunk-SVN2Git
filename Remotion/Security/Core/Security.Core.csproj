@@ -95,7 +95,7 @@
     <Compile Include="EnumWrapper.cs" />
     <Compile Include="IAccessTypeFilter.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
-    <Compile Include="IObjectSecurityAdapter.cs" />
+    <Compile Include="Obsolete\IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
     <Compile Include="IPrincipalProvider.cs" />
     <Compile Include="ISecurableObject.cs" />
@@ -159,7 +159,7 @@
     <Compile Include="SecurityConfigurationException.cs" />
     <Compile Include="SecurityContext.cs" />
     <Compile Include="SecurityException.cs" />
-    <Compile Include="ObjectSecurityAdapter.cs" />
+    <Compile Include="Obsolete\ObjectSecurityAdapter.cs" />
     <Compile Include="SecurityFreeSection.cs" />
     <Compile Include="SecurityPrincipal.cs" />
     <Compile Include="SecurityPrincipalRole.cs" />

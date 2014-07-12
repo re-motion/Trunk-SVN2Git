@@ -86,7 +86,6 @@
     <Compile Include="Core\Configuration\SecurityConfigurationTest.cs" />
     <Compile Include="Core\EnumWrapperTest.cs" />
     <Compile Include="Core\IFunctionalSecurityStrategyTest.cs" />
-    <Compile Include="Core\IObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\IPrincipalProviderTest.cs" />
     <Compile Include="Core\ISecurityProviderTest.cs" />
     <Compile Include="Core\Metadata\IMemberResolverTest.cs" />
@@ -207,7 +206,6 @@
     <Compile Include="Core\SecurityClientTests\HasPropertyReadAccessTest_WithPropertyName.cs" />
     <Compile Include="Core\SecurityClientTests\SecurityClientTestHelper.cs" />
     <Compile Include="Core\SecurityContextTest.cs" />
-    <Compile Include="Core\ObjectSecurityAdapterTest.cs" />
     <Compile Include="Core\SecurityFreeSectionTest.cs" />
     <Compile Include="Core\ThreadPrincipalProviderTest.cs" />
     <Compile Include="Core\XmlAsserter\NodeStackToXPathConverter.cs" />

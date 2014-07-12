@@ -27,18 +27,13 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
-using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.Data.SqlClient;
-using Remotion.Security;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
 {
   [SetUpFixture]
   public class SetUpFixture
   {
-    private ServiceLocatorScope _serviceLocatorScope;
-
     public static string TestDomainConnectionString
     {
       get
@@ -57,10 +52,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple <IObjectSecurityAdapter>();
-      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
-
       try
       {
         var providers = new ProviderCollection<StorageProviderDefinition>();
@@ -94,7 +85,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     [TearDown]
     public virtual void TearDown ()
     {
-      _serviceLocatorScope.Dispose();
       SqlConnection.ClearAllPools();
     }
   }

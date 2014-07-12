@@ -125,7 +125,6 @@
     <Compile Include="BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPubliclyIntroducedMembers.cs" />
     <Compile Include="BindableObject\IBindablePropertReadAccessStrategyTest.cs" />
     <Compile Include="BindableObject\IBindablePropertyWriteAccessStrategyTest.cs" />
-    <Compile Include="BindableObject\SetUpFixture.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\BusinessObjectPropertyPathTestHelper.cs" />

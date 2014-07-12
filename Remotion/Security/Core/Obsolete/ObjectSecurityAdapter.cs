@@ -14,42 +14,35 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
-using Remotion.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Security
 {
-  [ImplementationFor (typeof (IObjectSecurityAdapter), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
-  public class ObjectSecurityAdapter : IObjectSecurityAdapter
+  [Obsolete (
+      "The ObjectSecurityAdapter extension point is no longer supported. "
+      + "Use implementations of the Remotion.ObjectBinding.BindableObject.IBindablePropertyReadAccessStrategy and Remotion.ObjectBinding.BindableObject.IBindablePropertyWriteAccessStrategy instead. (Version 1.15.20.0)",
+      true)]
+  public abstract class ObjectSecurityAdapter : IObjectSecurityAdapter
   {
-    private static readonly NullMethodInformation s_nullMethodInformation = new NullMethodInformation();
-
-    public ObjectSecurityAdapter ()
+    private ObjectSecurityAdapter ()
     {
     }
 
     public bool HasAccessOnGetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
     {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-
-      if (SecurityFreeSection.IsActive)
-        return true;
-
-      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyReadAccess (securableObject, propertyInformation.GetGetMethod (true) ?? s_nullMethodInformation);
+      throw new NotImplementedException (
+          "The ObjectSecurityAdapter extension point is no longer supported. "
+          + "Use implementations of the IBindablePropertyReadAccessStrategy and IBindablePropertyWriteAccessStrategy instead. (Version 1.15.20.0)");
     }
 
     public bool HasAccessOnSetAccessor (ISecurableObject securableObject, IPropertyInformation propertyInformation)
     {
-      ArgumentUtility.CheckNotNull ("securableObject", securableObject);
-
-      if (SecurityFreeSection.IsActive)
-        return true;
-
-      SecurityClient securityClient = SecurityClient.CreateSecurityClientFromConfiguration ();
-      return securityClient.HasPropertyWriteAccess (securableObject, propertyInformation.GetSetMethod (true) ?? s_nullMethodInformation);
+      throw new NotImplementedException (
+          "The ObjectSecurityAdapter extension point is no longer supported. "
+          + "Use implementations of the IBindablePropertyReadAccessStrategy and IBindablePropertyWriteAccessStrategy instead. (Version 1.15.20.0)");
     }
   }
 }

@@ -52,7 +52,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _clientTransaction.EnterNonDiscardingScope();
 
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IObjectSecurityAdapter> (() => new ObjectSecurityAdapter());
       serviceLocator.RegisterSingle (() => _securityProviderStub);
       serviceLocator.RegisterSingle (() => _principalProviderStub);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);

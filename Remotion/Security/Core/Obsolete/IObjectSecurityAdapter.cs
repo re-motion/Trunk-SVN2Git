@@ -17,8 +17,8 @@
 using System;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Security
 {
   /// <summary>Defines an adapter between the security layer and the business object implementation.</summary>
@@ -30,6 +30,10 @@ namespace Remotion.Security
   /// <see cref="IObjectSecurityStrategy"/> retrieved from the <see cref="ISecurableObject"/>.
   /// </note>
   /// </remarks>
+  [Obsolete (
+      "The ObjectSecurityAdapter extension point is no longer supported. "
+      + "Use implementations of the Remotion.ObjectBinding.BindableObject.IBindablePropertyReadAccessStrategy and Remotion.ObjectBinding.BindableObject.IBindablePropertyWriteAccessStrategy instead. (Version 1.15.20.0)",
+      true)]
   public interface IObjectSecurityAdapter
   {
     /// <summary>Determines whether read access to a property of <paramref name="securableObject"/> is granted.</summary>
