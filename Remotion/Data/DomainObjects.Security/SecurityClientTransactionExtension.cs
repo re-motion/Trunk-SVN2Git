@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -31,7 +32,9 @@ namespace Remotion.Data.DomainObjects.Security
   [Serializable]
   public class SecurityClientTransactionExtension : ClientTransactionExtensionBase
   {
-    private static readonly AccessType s_findAccessType = AccessType.Get (GeneralAccessTypes.Find);
+    private static readonly IReadOnlyList<AccessType> s_findAccessType = ImmutableSingleton.Create(AccessType.Get (GeneralAccessTypes.Find));
+    private static readonly IReadOnlyList<AccessType> s_deleteAccessType = ImmutableSingleton.Create(AccessType.Get (GeneralAccessTypes.Delete));
+    private static readonly NullMethodInformation s_nullMethodInformation = new NullMethodInformation();
 
     public static string DefaultKey
     {
@@ -42,7 +45,6 @@ namespace Remotion.Data.DomainObjects.Security
     [NonSerialized]
     private SecurityClient _securityClient;
 
-    private static readonly AccessType s_deleteAccessType = AccessType.Get (GeneralAccessTypes.Delete);
 
     public SecurityClientTransactionExtension ()
         : this (DefaultKey)
@@ -201,7 +203,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        var methodInformation = propertyInfo.GetGetMethod (true) ?? new NullMethodInformation();
+        var methodInformation = propertyInfo.GetGetMethod (true) ?? s_nullMethodInformation;
         using (EnterScopeOnDemand (clientTransaction))
         {
           securityClient.CheckPropertyReadAccess (securableObject, methodInformation);
@@ -260,7 +262,7 @@ namespace Remotion.Data.DomainObjects.Security
       try
       {
         _isActive = true;
-        var methodInformation = propertyInfo.GetSetMethod (true) ?? new NullMethodInformation ();
+        var methodInformation = propertyInfo.GetSetMethod (true) ?? s_nullMethodInformation;
         using (EnterScopeOnDemand (clientTransaction))
         {
           securityClient.CheckPropertyWriteAccess (securableObject, methodInformation);
