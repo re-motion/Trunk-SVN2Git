@@ -21,6 +21,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
@@ -30,6 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
   {
     private BindableObjectProvider _bindableObjectProvider;
     private MockRepository _mockRepository;
+    private BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
     public override void SetUp ()
     {
@@ -37,13 +39,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       _bindableObjectProvider = new BindableObjectProvider();
       _mockRepository = new MockRepository();
+      _bindableObjectGlobalizationService = SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>();
     }
 
     [Test]
     public void Initialize ()
     {
       var bindableObjectClass = new BindableObjectClassWithIdentity (
-          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider, new PropertyBase[0]);
+          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)),
+          _bindableObjectProvider,
+          _bindableObjectGlobalizationService,
+          new PropertyBase[0]);
 
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithIdentity)));
       Assert.That (
@@ -57,7 +63,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void GetObject_WithDefaultService ()
     {
       var bindableObjectClass = new BindableObjectClassWithIdentity (
-          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider, new PropertyBase[0]);
+          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)),
+          _bindableObjectProvider,
+          _bindableObjectGlobalizationService,
+          new PropertyBase[0]);
       var mockService = _mockRepository.StrictMock<IGetObjectService>();
       var expected = _mockRepository.Stub<IBusinessObjectWithIdentity>();
 
@@ -75,7 +84,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void GetObject_WithCustomService ()
     {
       var bindableObjectClass = new BindableObjectClassWithIdentity (
-          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentityAndGetObjectServiceAttribute)), _bindableObjectProvider, new PropertyBase[0]);
+          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentityAndGetObjectServiceAttribute)),
+          _bindableObjectProvider,
+          _bindableObjectGlobalizationService,
+          new PropertyBase[0]);
       var mockService = _mockRepository.StrictMock<ICustomGetObjectService>();
       var expected = _mockRepository.Stub<IBusinessObjectWithIdentity>();
 
@@ -98,7 +110,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void GetObject_WithoutService ()
     {
       var bindableObjectClass = new BindableObjectClassWithIdentity (
-          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)), _bindableObjectProvider, new PropertyBase[0]);
+          MixinTypeUtility.GetConcreteMixedType (typeof (ClassWithIdentity)),
+          _bindableObjectProvider,
+          _bindableObjectGlobalizationService,
+          new PropertyBase[0]);
 
       bindableObjectClass.GetObject ("TheUniqueIdentifier");
     }

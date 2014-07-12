@@ -36,14 +36,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    public void GetService_FromIBindableObjectGlobalizationService ()
-    {
-      Assert.That (
-          _serviceFactory.CreateService (_provider, typeof (BindableObjectGlobalizationService)),
-          Is.InstanceOf (typeof (BindableObjectGlobalizationService)));
-    }
-
-    [Test]
     public void GetService_FromIBusinessObjectStringFormatterService ()
     {
       Assert.That (

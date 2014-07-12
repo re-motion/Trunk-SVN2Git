@@ -14,32 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using Remotion.Security;
+using NUnit.Framework;
+using Remotion.ObjectBinding.BindableObject;
 
-namespace Remotion.ObjectBinding.Security.UnitTests.TestDomain
+namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 {
-  public class SecurableClassWithReferenceType<T> : ClassWithReferenceType<T>, ISecurableObject
-      where T : class
+  public class TestBase
   {
-    private readonly IObjectSecurityStrategy _objectSecurityStrategy;
-
-    public SecurableClassWithReferenceType (IObjectSecurityStrategy objectSecurityStrategy)
+    [SetUp]
+    public virtual void SetUp ()
     {
-      _objectSecurityStrategy = objectSecurityStrategy;
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
     }
 
-    public IObjectSecurityStrategy GetSecurityStrategy ()
+    [TearDown]
+    public virtual void TearDown ()
     {
-      return _objectSecurityStrategy;
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), null);
+      BusinessObjectProvider.SetProvider (typeof (BindableObjectWithIdentityProviderAttribute), null);
     }
-
-    public Type GetSecurableType ()
-    {
-      return typeof (SecurableClassWithReferenceType<T>);
-    }
-
-    public T CustomPermissisons { [DemandPermission (TestAccessTypes.TestRead)] get; [DemandPermission (TestAccessTypes.TestEdit)] set; }
   }
 }

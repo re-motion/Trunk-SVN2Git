@@ -28,16 +28,17 @@ using Remotion.Security;
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class RelationReadingTest
+  public class RelationReadingTest : TestBase
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
     private PropertyInfo _propertyInfo;
     private IMethodInformation _getMethodInformation;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
       _propertyInfo = typeof (SecurableObject).GetProperty ("Parent");
@@ -46,10 +47,11 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper.SetupSecurityIoCConfiguration ();
     }
 
-    [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
       _testHelper.TearDownSecurityIoCConfiguration ();
+
+      base.TearDown();
     }
 
     [Test]

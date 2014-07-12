@@ -34,39 +34,23 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
   public class ExtensibleEnumerationPropertyTest: TestBase
   {
     private BindableObjectProvider _businessObjectProvider;
-    private ExtensibleEnumerationProperty _propertyWithResources;
-    private ExtensibleEnumerationProperty _propertyWithFilteredType;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
-
-      _propertyWithResources = CreateProperty (typeof (ExtensibleEnumWithResources));
-      _propertyWithFilteredType = CreateProperty (typeof (ExtensibleEnumWithFilter));
     }
 
     [Test]
     public void CreateEnumerationValueInfo_ValueAndIdentifier ()
     {
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1().GetValueInfo();
-      
-      var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.CreateEnumerationValueInfo (extensibleEnumInfo, null);
 
       Assert.That (info.Value, Is.SameAs (extensibleEnumInfo.Value));
       Assert.That (info.Identifier, Is.EqualTo (extensibleEnumInfo.Value.ID));
-    }
-
-    [Test]
-    public void CreateEnumerationValueInfo_DisplayName_WithoutGlobalizationService ()
-    {
-      var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
-
-      Assert.That (_businessObjectProvider.GetService (typeof (BindableObjectGlobalizationService)), Is.Null);
-      var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
-
-      Assert.That (info.DisplayName, Is.EqualTo (extensibleEnumInfo.Value.ToString ()));
     }
 
     [Test]
@@ -75,20 +59,19 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
       var mockExtensibleEnumerationGlobalizationService = MockRepository.GenerateMock<IExtensibleEnumGlobalizationService> ();
 
-      _businessObjectProvider.AddService (
-          typeof (BindableObjectGlobalizationService),
+      var property = CreateProperty (
+          typeof (ExtensibleEnumWithResources),
           new BindableObjectGlobalizationService (
               MockRepository.GenerateStub<IGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
               mockExtensibleEnumerationGlobalizationService));
-
       mockExtensibleEnumerationGlobalizationService
           .Expect (mock => mock.TryGetExtensibleEnumValueDisplayName (Arg.Is(extensibleEnumInfo.Value), out Arg<string>.Out("DisplayName 1").Dummy))
           .Return (true);
       mockExtensibleEnumerationGlobalizationService.Replay ();
 
-      var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
+      var info = property.CreateEnumerationValueInfo (extensibleEnumInfo, null);
 
       mockExtensibleEnumerationGlobalizationService.VerifyAllExpectations ();
       Assert.That (info.DisplayName, Is.EqualTo ("DisplayName 1"));
@@ -98,7 +81,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void CreateEnumerationValueInfo_IsEnabled_True ()
     {
       var extensibleEnumInfo = ExtensibleEnumWithResources.Values.Value1 ().GetValueInfo ();
-      var info = _propertyWithResources.CreateEnumerationValueInfo (extensibleEnumInfo, null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.CreateEnumerationValueInfo (extensibleEnumInfo, null);
 
       Assert.That (info.IsEnabled, Is.True);
     }
@@ -136,10 +120,12 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void IsEnabled_IntegrationTest ()
     {
-      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value1 ()),  Is.False);
-      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value2 ()), Is.True);
-      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value3 ()), Is.False);
-      Assert.That (IsEnabled (_propertyWithFilteredType, ExtensibleEnumWithFilter.Values.Value4 ()), Is.True);
+      var property = CreateProperty (typeof (ExtensibleEnumWithFilter));
+
+      Assert.That (IsEnabled (property, ExtensibleEnumWithFilter.Values.Value1 ()),  Is.False);
+      Assert.That (IsEnabled (property, ExtensibleEnumWithFilter.Values.Value2 ()), Is.True);
+      Assert.That (IsEnabled (property, ExtensibleEnumWithFilter.Values.Value3 ()), Is.False);
+      Assert.That (IsEnabled (property, ExtensibleEnumWithFilter.Values.Value4 ()), Is.True);
 
       var propertyInfoStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInfoStub.Stub (stub => stub.PropertyType).Return (typeof (ExtensibleEnumWithResources));
@@ -156,7 +142,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetAllValues ()
     {
-      var valueInfos = _propertyWithResources.GetAllValues (null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var valueInfos = property.GetAllValues (null);
 
       Assert.That (valueInfos.Length, Is.EqualTo(3));
 
@@ -168,7 +155,9 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetEnabledValues ()
     {
-      var valueInfos = _propertyWithFilteredType.GetEnabledValues (null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithFilter));
+
+      var valueInfos = property.GetEnabledValues (null);
 
       Assert.That (valueInfos.Length, Is.EqualTo (2));
 
@@ -179,15 +168,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetValueInfoByIdentifier ()
     {
-      var info = _propertyWithResources.GetValueInfoByIdentifier (ExtensibleEnumWithResources.Values.Value1().ID, null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.GetValueInfoByIdentifier (ExtensibleEnumWithResources.Values.Value1().ID, null);
       Assert.That (info.Value, Is.EqualTo (ExtensibleEnumWithResources.Values.Value1()));
     }
 
     [Test]
     public void GetValueInfoByIdentifier_NullOrEmpty ()
     {
-      Assert.That (_propertyWithResources.GetValueInfoByIdentifier ("", null), Is.Null);
-      Assert.That (_propertyWithResources.GetValueInfoByIdentifier (null, null), Is.Null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      Assert.That (property.GetValueInfoByIdentifier ("", null), Is.Null);
+      Assert.That (property.GetValueInfoByIdentifier (null, null), Is.Null);
     }
 
     [Test]
@@ -196,44 +187,54 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
         + "'Remotion.ObjectBinding.UnitTests.TestDomain.ExtensibleEnumWithResources'.\r\nParameter name: identifier")]
     public void GetValueInfoByIdentifier_InvalidID ()
     {
-      _propertyWithResources.GetValueInfoByIdentifier ("?", null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      property.GetValueInfoByIdentifier ("?", null);
     }
 
     [Test]
     public void GetValueInfoByValue ()
     {
-      var info = _propertyWithResources.GetValueInfoByValue (ExtensibleEnumWithResources.Values.Value1 (), null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.GetValueInfoByValue (ExtensibleEnumWithResources.Values.Value1 (), null);
       Assert.That (info.Value, Is.EqualTo (ExtensibleEnumWithResources.Values.Value1()));
     }
 
     [Test]
     public void GetValueInfoByValue_Null ()
     {
-      var info = _propertyWithResources.GetValueInfoByValue (null, null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.GetValueInfoByValue (null, null);
       Assert.That (info, Is.Null);
     }
 
     [Test]
     public void GetValueInfoByValue_UndefinedValue ()
     {
-      var info = _propertyWithResources.GetValueInfoByValue (new ExtensibleEnumWithResources (MethodBase.GetCurrentMethod()), null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.GetValueInfoByValue (new ExtensibleEnumWithResources (MethodBase.GetCurrentMethod()), null);
       Assert.That (info, Is.Null);
     }
 
     [Test]
     public void GetValueInfoByValue_InvalidType ()
     {
-      var info = _propertyWithResources.GetValueInfoByValue ("?", null);
+      var property = CreateProperty (typeof (ExtensibleEnumWithResources));
+      var info = property.GetValueInfoByValue ("?", null);
       Assert.That (info, Is.Null);
     }
 
-    private ExtensibleEnumerationProperty CreateProperty (Type propertyType)
+    private ExtensibleEnumerationProperty CreateProperty (
+        Type propertyType,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService = null)
     {
-      var propertyStub = MockRepository.GenerateStub<IPropertyInformation> ();
+      var propertyStub = MockRepository.GenerateStub<IPropertyInformation>();
       propertyStub.Stub (stub => stub.PropertyType).Return (propertyType);
-      propertyStub.Stub (stub => stub.GetIndexParameters ()).Return (new ParameterInfo[0]);
-      
-      var parameters = GetPropertyParameters (propertyStub, _businessObjectProvider);
+      propertyStub.Stub (stub => stub.GetIndexParameters()).Return (new ParameterInfo[0]);
+
+      var parameters = GetPropertyParameters (
+          propertyStub,
+          _businessObjectProvider,
+          bindableObjectGlobalizationService: bindableObjectGlobalizationService);
       return new ExtensibleEnumerationProperty (parameters);
     }
 

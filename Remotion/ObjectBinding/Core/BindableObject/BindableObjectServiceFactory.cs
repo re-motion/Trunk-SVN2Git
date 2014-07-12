@@ -58,9 +58,6 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("serviceType", serviceType, typeof (IBusinessObjectService));
 
-      if (serviceType == typeof (BindableObjectGlobalizationService))
-        return SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>();
-    
       if (serviceType == typeof (IBusinessObjectStringFormatterService))
         return new BusinessObjectStringFormatterService();
 

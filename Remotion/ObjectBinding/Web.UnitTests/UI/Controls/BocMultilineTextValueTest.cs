@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
   {
     private BocMultilineTextValueMock _bocMultilineTextValue;
     private TypeWithString _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectStringProperty _propertyStringArray;
 
     public BocMultilineTextValueTest ()
@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _propertyStringArray =
           (IBusinessObjectStringProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("StringArray");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
     }
 

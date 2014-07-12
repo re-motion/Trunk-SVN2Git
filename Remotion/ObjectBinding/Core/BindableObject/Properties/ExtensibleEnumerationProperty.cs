@@ -93,10 +93,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private string GetDisplayName (IExtensibleEnumInfo extensibleEnumInfo)
     {
-      var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService> ();
-      if (globalizationService == null)
-        return extensibleEnumInfo.Value.ToString ();
-      return globalizationService.GetExtensibleEnumerationValueDisplayName (extensibleEnumInfo.Value);
+      return BindableObjectGlobalizationService.GetExtensibleEnumerationValueDisplayName (extensibleEnumInfo.Value);
     }
 
     private bool IsEnabled (IExtensibleEnum value, IBusinessObject businessObject)

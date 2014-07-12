@@ -22,10 +22,12 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+using Remotion.ObjectBinding.Security;
 
 [assembly: AssemblyTitle("Performance Tests for Remotion DomainObjects Library")]
 [assembly: AssemblyDescription("Performance Tests for Remotion DomainObjects Library")]
 [assembly: AssemblyCulture("")]		
 [assembly: CLSCompliant(true)]
 
+[assembly: EnsureSecuritySupportForObjectBinding]
 

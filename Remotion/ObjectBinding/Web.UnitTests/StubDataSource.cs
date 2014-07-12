@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,18 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Reflection;
+using Remotion.Utilities;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-using Remotion.ObjectBinding.Security;
+namespace Remotion.ObjectBinding.Web.UnitTests
+{
+  public class StubDataSource : BusinessObjectDataSource
+  {
+    private readonly IBusinessObjectClass _businessObjectClass;
 
-[assembly: AssemblyTitle("Unit Tests for Remotion DomainObjects Security Library")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
+    public StubDataSource (IBusinessObjectClass businessObjectClass)
+    {
+      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
 
-[assembly: EnsureSecuritySupportForObjectBinding]
+      _businessObjectClass = businessObjectClass;
+    }
+
+    public override IBusinessObject BusinessObject { get; set; }
+
+    public override IBusinessObjectClass BusinessObjectClass
+    {
+      get { return _businessObjectClass; }
+    }
+
+    public override DataSourceMode Mode { get; set; }
+  }
+}

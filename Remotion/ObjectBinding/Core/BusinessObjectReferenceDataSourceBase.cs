@@ -266,9 +266,14 @@ namespace Remotion.ObjectBinding
     {
       get
       {
-        Assertion.IsNotNull (ReferenceProperty);
-        Assertion.IsNotNull (ReferencedDataSource);
-        return ReferenceProperty.IsReadOnly (ReferencedDataSource.BusinessObject);
+        var objectDataSource = ReferencedDataSource;
+        var referenceProperty = ReferenceProperty;
+        var reflectedClass = referenceProperty.ReflectedClass;
+        Assertion.IsNotNull (objectDataSource, "ReferencedDataSource is null.");
+        Assertion.IsNotNull (referenceProperty, "ReferenceProperty is null.");
+        Assertion.IsNotNull (reflectedClass, "ReferenceProperty.ReflectedClass is null.");
+
+        return referenceProperty.IsReadOnly (objectDataSource.BusinessObjectClass ?? reflectedClass, objectDataSource.BusinessObject);
       }
     }
 

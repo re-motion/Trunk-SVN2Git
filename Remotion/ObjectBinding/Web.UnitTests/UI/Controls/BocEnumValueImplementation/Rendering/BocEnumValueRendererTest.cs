@@ -31,7 +31,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Remotion.Reflection;
-using Remotion.Security;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI;
 using Rhino.Mocks;
 
@@ -66,7 +66,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
                   true,
                   false,
                   new BindableObjectDefaultValueStrategy(),
-                  (IObjectSecurityAdapter) null));
+                  MockRepository.GenerateStub<IBindablePropertyReadAccessStrategy>(),
+                  MockRepository.GenerateStub<IBindablePropertyWriteAccessStrategy>(),
+                  SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>()));
 
       _enumValue.Property = property;
       _enumValue.Stub (stub => stub.ClientID).Return (c_clientID);

@@ -197,6 +197,7 @@
     <Compile Include="BindableObject\Properties\EnumValueFilterProvider.cs" />
     <Compile Include="BindableObject\Properties\ExtensibleEnumerationProperty.cs" />
     <Compile Include="BusinessObjectExtensions.cs" />
+    <Compile Include="BusinessObjectPropertyExtensions.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBase.cs" />
     <Compile Include="BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorBase.cs" />
     <Compile Include="BusinessObjectPropertyPaths\Enumerators\DynamicBusinessObjectPropertyPathPropertyEnumerator.cs" />

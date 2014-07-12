@@ -32,19 +32,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
   [TestFixture]
   public class GetDisplayName : TestBase
   {
-    private MockRepository _mockRepository;
-    private IObjectSecurityAdapter _mockObjectSecurityAdapter;
+    private IBindablePropertyReadAccessStrategy _bindablePropertyReadAccessStrategyMock;
     private ServiceLocatorScope _serviceLocatorScope;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _mockRepository = new MockRepository();
-      _mockObjectSecurityAdapter = _mockRepository.StrictMock<IObjectSecurityAdapter>();
+      _bindablePropertyReadAccessStrategyMock = MockRepository.GenerateStrictMock<IBindablePropertyReadAccessStrategy>();
 
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IObjectSecurityAdapter>(() => _mockObjectSecurityAdapter);
+      serviceLocator.RegisterSingle (() => _bindablePropertyReadAccessStrategyMock);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
@@ -77,46 +75,47 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
     [Test]
     public void DisplayNameSafe_WithOverriddenDisplayNameAndAccessGranted ()
     {
-      var stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
-      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithOverriddenDisplayName>(ParamList.Create (stubSecurityStrategy));
+      var securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithOverriddenDisplayName> (
+          ParamList.Create (MockRepository.GenerateStub<IObjectSecurityStrategy>()));
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
-      var displayNamePropertyInformation = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName")).PropertyInfo;
-      Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, displayNamePropertyInformation)).Return (true);
-      _mockRepository.ReplayAll();
+      var displayNameProperty = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
+      _bindablePropertyReadAccessStrategyMock
+          .Expect (_ => _.CanRead (bindableObjectMixin.BusinessObjectClass, displayNameProperty, securableObject))
+          .Return (true);
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
 
-      _mockRepository.VerifyAll();
+      _bindablePropertyReadAccessStrategyMock.VerifyAllExpectations();
       Assert.That (actual, Is.EqualTo ("TheDisplayName"));
     }
 
     [Test]
     public void DisplayNameSafe_WithOverriddenDisplayNameAndWithAccessDenied ()
     {
-      var stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy>();
-      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithOverriddenDisplayName>(ParamList.Create (stubSecurityStrategy));
+      var securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithOverriddenDisplayName> (
+          ParamList.Create (MockRepository.GenerateStub<IObjectSecurityStrategy>()));
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
-      var displayNamePropertyInformation = ((PropertyBase) bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName")).PropertyInfo;
-      Expect.Call (_mockObjectSecurityAdapter.HasAccessOnGetAccessor (securableObject, displayNamePropertyInformation)).Return (false);
-      _mockRepository.ReplayAll();
+      var displayNameProperty = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
+      _bindablePropertyReadAccessStrategyMock
+          .Expect (_ => _.CanRead (bindableObjectMixin.BusinessObjectClass, displayNameProperty, securableObject))
+          .Return (false);
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
 
-      _mockRepository.VerifyAll();
+      _bindablePropertyReadAccessStrategyMock.VerifyAllExpectations();
       Assert.That (actual, Is.EqualTo ("×"));
     }
 
     [Test]
     public void DisplayNameSafe_WithoutOverriddenDisplayName ()
     {
-      IObjectSecurityStrategy stubSecurityStrategy = _mockRepository.Stub<IObjectSecurityStrategy> ();
-      ISecurableObject securableObject = ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>> (ParamList.Create (stubSecurityStrategy));
-      BindableObjectMixin bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
-      _mockRepository.ReplayAll ();
+      var securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>> (
+          ParamList.Create (MockRepository.GenerateStub<IObjectSecurityStrategy>()));
+      var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
 
-      _mockRepository.VerifyAll ();
+      _bindablePropertyReadAccessStrategyMock.VerifyAllExpectations ();
       Assert.That (
           actual,
          Is.StringStarting("Remotion.ObjectBinding.UnitTests.TestDomain.SecurableClassWithReferenceType"));

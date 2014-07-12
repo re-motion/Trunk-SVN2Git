@@ -222,7 +222,6 @@
     <Compile Include="BindableObject\ReflectionBasedPropertyFinderTestDomain\TestType.cs" />
     <Compile Include="BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeHidingProperties.cs" />
     <Compile Include="BindableObject\ReflectionBasedPropertyFinderTestDomain\TestTypeWithInterfaces.cs" />
-    <Compile Include="BindableObject\SecurityIntegrationTest.cs" />
     <Compile Include="BindableObject\StubEnumerationValueFilter.cs" />
     <Compile Include="BusinessObjectExtensionMethodsTest.cs" />
     <Compile Include="BusinessObjectReferenceDataSourceBaseTests\BusinessObject.cs" />
@@ -308,7 +307,6 @@
     <Compile Include="BindableObject\EnumerationTestBase.cs" />
     <Compile Include="BindableObject\ReflectionBasedPropertyFinderTest.cs" />
     <Compile Include="TestDomain\ClassWithIdentityAndGetObjectServiceAttribute.cs" />
-    <Compile Include="BindableObject\PropertyBaseTests\SecurityTest.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\SearchAvailableObjects.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\GetReferenceClass.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\SupportsSearchAvailableObjects.cs" />
@@ -388,7 +386,7 @@
     </Compile>
     <Compile Include="ListInfoTest.cs" />
     <Compile Include="BindableObject\PropertyReflectorTests\Common.cs" />
-    <Compile Include="BindableObject\PropertyBaseTests\Common.cs" />
+    <Compile Include="BindableObject\PropertyBaseTest.cs" />
     <Compile Include="BindableObject\StubPropertyBase.cs" />
     <Compile Include="BindableObject\TestBase.cs" />
     <Compile Include="BindableObject\ClassReflectorTest.cs" />

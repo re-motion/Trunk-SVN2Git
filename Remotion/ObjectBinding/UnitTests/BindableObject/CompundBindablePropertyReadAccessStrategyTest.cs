@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
@@ -50,7 +51,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _strategy = new CompundBindablePropertyReadAccessStrategy (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 });
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
-      _bindableClass = new BindableObjectClass (typeof (ClassWithAllDataTypes), _businessObjectProvider, new PropertyBase[0]);
+      _bindableClass = new BindableObjectClass (
+          typeof (ClassWithAllDataTypes),
+          _businessObjectProvider,
+          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(),
+          new PropertyBase[0]);
       _property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
       _businessObject = MockRepository.GenerateStub<IBusinessObject>();
     }

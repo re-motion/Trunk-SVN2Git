@@ -34,7 +34,9 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectReferenceDataSourceBase
     {
       _referencedDataSourceStub = MockRepository.GenerateStub<IBusinessObjectDataSource>();
       _referencedDataSourceStub.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
+      _referencedDataSourceStub.Stub (_ => _.BusinessObjectClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty> ();
+      _referencePropertyStub.Stub (_ => _.ReflectedClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
     }
 
     [Test]

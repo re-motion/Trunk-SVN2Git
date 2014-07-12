@@ -25,7 +25,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.DomainObjects.Security.UnitTests
 {
   [TestFixture]
-  public class DomainObjectSecurityStrategyDecoratorTest
+  public class DomainObjectSecurityStrategyDecoratorTest : TestBase
   {
     private MockRepository _mocks;
     private IObjectSecurityStrategy _mockObjectSecurityStrategy;
@@ -34,9 +34,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     private ISecurityPrincipal _stubUser;
     private AccessType[] _accessTypeResult;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _mocks = new MockRepository();
       _mockObjectSecurityStrategy = _mocks.StrictMock<IObjectSecurityStrategy>();
       _stubSecurityProvider = _mocks.StrictMock<ISecurityProvider>();

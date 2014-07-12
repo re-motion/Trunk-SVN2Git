@@ -29,7 +29,7 @@ using Remotion.Security;
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class PropertyValueReadingTest
+  public class PropertyValueReadingTest : TestBase
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
@@ -38,9 +38,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     private IMethodInformation _getMethodInformation;
     private PropertyDefinition _stringPropertyDefinition;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
 
@@ -51,10 +52,11 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper.SetupSecurityIoCConfiguration ();
     }
 
-    [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
       _testHelper.TearDownSecurityIoCConfiguration ();
+
+      base.TearDown();
     }
 
     [Test]

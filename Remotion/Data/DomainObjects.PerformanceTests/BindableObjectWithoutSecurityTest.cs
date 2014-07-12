@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ObjectBinding;
 using Remotion.Development.UnitTesting;
-using Remotion.Security;
+using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security.Configuration;
 using Remotion.ServiceLocation;
 
@@ -32,18 +35,25 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [SetUp]
     public void SetUp ()
     {
+      var bindablePropertyReadAccessStrategy = new CompundBindablePropertyReadAccessStrategy (Enumerable.Empty<IBindablePropertyReadAccessStrategy>());
+      var bindablePropertyWriteAccessStrategy = new CompundBindablePropertyWriteAccessStrategy (Enumerable.Empty<IBindablePropertyWriteAccessStrategy>());
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterMultiple<IObjectSecurityAdapter>();
+      serviceLocator.RegisterSingle<IBindablePropertyReadAccessStrategy> (() => bindablePropertyReadAccessStrategy);
+      serviceLocator.RegisterSingle<IBindablePropertyWriteAccessStrategy> (() => bindablePropertyWriteAccessStrategy);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
 
       _disableAccessChecksBackup = SecurityConfiguration.Current.DisableAccessChecks;
       SecurityConfiguration.Current.DisableAccessChecks = true;
       ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
     }
 
     [TearDown]
     public void TearDown ()
     {
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
+
       ClientTransactionScope.ResetActiveScope ();
       SecurityConfiguration.Current.DisableAccessChecks = _disableAccessChecksBackup;
       _serviceLocatorScope.Dispose();
@@ -53,7 +63,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_Property_IsAccessible ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithoutSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.22탎 (was ~0.08 탎) (release build), ~0.66 탎 (debug build)");
+          "Expected average duration of BindableObjectWithoutSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.05탎 (release build), ~0.66 탎 (debug build)");
 
       base.BusinessObject_Property_IsAccessible ();
 

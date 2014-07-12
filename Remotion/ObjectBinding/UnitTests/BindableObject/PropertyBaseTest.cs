@@ -29,10 +29,10 @@ using Remotion.Reflection;
 using Remotion.TypePipe;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
+namespace Remotion.ObjectBinding.UnitTests.BindableObject
 {
   [TestFixture]
-  public class Common : TestBase
+  public class PropertyBaseTest : TestBase
   {
     private BindableObjectProvider _bindableObjectProvider;
     private MockRepository _mockRepository;
@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
       Assert.That (propertyBase.PropertyInfo, Is.SameAs (propertyInfo));
       Assert.That (propertyBase.PropertyType, Is.SameAs (propertyInfo.PropertyType));
       Assert.That (propertyBase.IsRequired, Is.True);
-      Assert.That (propertyBase.IsReadOnly (null), Is.True);
+      Assert.That (propertyBase.IsReadOnly (_bindableObjectClass, null), Is.True);
       Assert.That (propertyBase.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
       Assert.That (((IBusinessObjectProperty) propertyBase).BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
     }
@@ -312,14 +312,12 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
               concreteType: typeof (string),
               listInfo: null,
               isRequired: false,
-              isReadOnly: false));
-      _bindableObjectProvider.AddService (
-          typeof (BindableObjectGlobalizationService),
-          new BindableObjectGlobalizationService (
-              MockRepository.GenerateStub<IGlobalizationService>(),
-              MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
-              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
-              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
+              isReadOnly: false,
+              bindableObjectGlobalizationService: new BindableObjectGlobalizationService (
+                  MockRepository.GenerateStub<IGlobalizationService>(),
+                  MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
+                  MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+                  MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>())));
 
       Dev.Null = property.DisplayName;
     }
@@ -327,6 +325,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
     [Test]
     public void GetDisplayName_WithGlobalizationSerivce ()
     {
+      var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService>();
       IPropertyInformation propertyInfo = GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String");
       PropertyBase property = new StubPropertyBase (
           CreateParameters (
@@ -335,17 +334,13 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
               concreteType: typeof (string),
               listInfo: null,
               isRequired: false,
-              isReadOnly: false));
+              isReadOnly: false,
+              bindableObjectGlobalizationService: new BindableObjectGlobalizationService (
+                  MockRepository.GenerateStub<IGlobalizationService>(),
+                  mockMemberInformationGlobalizationService,
+                  MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
+                  MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>())));
       property.SetReflectedClass (_bindableObjectClass);
-
-      var mockMemberInformationGlobalizationService = _mockRepository.StrictMock<IMemberInformationGlobalizationService>();
-      _bindableObjectProvider.AddService (
-          typeof (BindableObjectGlobalizationService),
-          new BindableObjectGlobalizationService (
-              MockRepository.GenerateStub<IGlobalizationService>(),
-              mockMemberInformationGlobalizationService,
-              MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
-              MockRepository.GenerateStub<IExtensibleEnumGlobalizationService>()));
 
       Expect.Call (
           mockMemberInformationGlobalizationService.TryGetPropertyDisplayName (
@@ -359,21 +354,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
 
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.EqualTo ("MockString"));
-    }
-
-    [Test]
-    public void GetDisplayName_WithoutGlobalizationSerivce ()
-    {
-      PropertyBase property = new StubPropertyBase (
-          CreateParameters (
-              propertyInfo: GetPropertyInfo (typeof (SimpleBusinessObjectClass), "String"),
-              underlyingType: typeof (string),
-              concreteType: typeof (string),
-              listInfo: null,
-              isRequired: false,
-              isReadOnly: false));
-
-      Assert.That (property.DisplayName, Is.EqualTo ("String"));
     }
 
     [Test]
@@ -468,7 +448,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
         Type concreteType = null,
         IListInfo listInfo = null,
         bool isRequired = false,
-        bool isReadOnly = false)
+        bool isReadOnly = false,
+        IBindablePropertyReadAccessStrategy bindablePropertyReadAccessStrategy = null,
+        IBindablePropertyWriteAccessStrategy bindablePropertyWriteAccessStrategy = null,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService = null)
     {
       return base.CreateParameters (
           businessObjectProvider ?? _bindableObjectProvider,
@@ -477,7 +460,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyBaseTests
           concreteType,
           listInfo,
           isRequired,
-          isReadOnly);
+          isReadOnly,
+          bindablePropertyReadAccessStrategy,
+          bindablePropertyWriteAccessStrategy,
+          bindableObjectGlobalizationService);
     }
 
   }

@@ -28,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.DomainObjects.Security.UnitTests
 {
   [TestFixture]
-  public class SecurityClientTransactionExtensionIntegrationTest
+  public class SecurityClientTransactionExtensionIntegrationTest : TestBase
   {
     private ISecurityProvider _securityProviderStub;
     private IPrincipalProvider _principalProviderStub;
@@ -41,9 +41,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     private ClientTransaction _clientTransaction;
     private ServiceLocatorScope _serviceLocatorScope;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider>();
       _securityPrincipalStub = MockRepository.GenerateStub<ISecurityPrincipal>();
@@ -68,12 +69,12 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _clientTransaction.EnterNonDiscardingScope();
     }
 
-    [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
       ClientTransactionScope.ResetActiveScope();
-
       _serviceLocatorScope.Dispose();
+
+      base.TearDown();
     }
 
     [Test]

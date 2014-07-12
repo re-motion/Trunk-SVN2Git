@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -36,13 +37,19 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     private IBusinessObjectClass _businessObjectClass;
 
     private MockRepository _mockRepository;
+    private BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ();
-      ClassReflector classReflector = new ClassReflector (typeof (ClassWithValueType<bool>), _businessObjectProvider, BindableObjectMetadataFactory.Create ());
+      _bindableObjectGlobalizationService = SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>();
+      ClassReflector classReflector = new ClassReflector (
+          typeof (ClassWithValueType<bool>),
+          _businessObjectProvider,
+          BindableObjectMetadataFactory.Create(),
+          _bindableObjectGlobalizationService);
       _businessObjectClass = classReflector.GetMetadata();
 
       _mockRepository = new MockRepository();
@@ -99,11 +106,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetDisplayName_WithGlobalizationSerivce ()
     {
-      IBusinessObjectBooleanProperty property = CreateProperty ("Scalar");
       var mockglobalizationService = _mockRepository.StrictMock<IGlobalizationService>();
-      _businessObjectProvider.AddService (
-          typeof (BindableObjectGlobalizationService),
-          new BindableObjectGlobalizationService (
+      IBusinessObjectBooleanProperty property = CreateProperty (
+          "Scalar",
+          bindableObjectGlobalizationService: new BindableObjectGlobalizationService (
               mockglobalizationService,
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               MockRepository.GenerateStub<IEnumerationGlobalizationService>(),
@@ -129,18 +135,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.EqualTo ("MockTrue"));
     }
-
-    [Test]
-    public void GetDisplayName_WithoutGlobalizationSerivce ()
-    {
-      IBusinessObjectBooleanProperty property = CreateProperty (
-          "Scalar",
-          new BindableObjectProvider (BindableObjectMetadataFactory.Create(), MockRepository.GenerateStub<IBusinessObjectServiceFactory>()));
-
-      Assert.That (property.GetDisplayName (true), Is.EqualTo ("True"));
-      Assert.That (property.GetDisplayName (false), Is.EqualTo ("False"));
-    }
-
 
     [Test]
     public void IBusinessObjectEnumerationProperty_GetAllValues ()
@@ -232,15 +226,16 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       Assert.That (property.GetValueInfoByIdentifier (string.Empty, null), Is.Null);
     }
 
-
-    private BooleanProperty CreateProperty (string propertyName)
+    private BooleanProperty CreateProperty (
+        string propertyName,
+        BindableObjectProvider provider = null,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService = null)
     {
-      return CreateProperty (propertyName, _businessObjectProvider);
-    }
-
-    private BooleanProperty CreateProperty (string propertyName, BindableObjectProvider provider)
-    {
-      return new BooleanProperty (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithValueType<bool>), propertyName), provider));
+      return new BooleanProperty (
+          GetPropertyParameters (
+              GetPropertyInfo (typeof (ClassWithValueType<bool>), propertyName),
+              provider ?? _businessObjectProvider,
+              bindableObjectGlobalizationService: bindableObjectGlobalizationService));
     }
 
     private void CheckEnumerationValueInfos (BooleanEnumerationValueInfo[] expected, IEnumerationValueInfo[] actual)

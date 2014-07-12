@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueTests
   {
     private BocTextValueMock _bocTextValue;
     private TypeWithString _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectStringProperty _propertyStringValue;
 
     [SetUp]
@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueTests
       _propertyStringValue =
           (IBusinessObjectStringProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("StringValue");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
     }
 

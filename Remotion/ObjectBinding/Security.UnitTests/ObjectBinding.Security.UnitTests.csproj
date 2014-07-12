@@ -62,10 +62,17 @@
     <Compile Include="BindableObject\IBindablePropertyWriteAccessStrategyTest.cs" />
     <Compile Include="BindableObject\SecurityBasedBindablePropertyReadAccessStrategyTest.cs" />
     <Compile Include="BindableObject\SecurityBasedBindablePropertyWriteAccessStrategyTest.cs" />
+    <Compile Include="BindableObject\IntegrationTest.cs" />
     <Compile Include="BindableObject\StubPropertyBase.cs" />
+    <Compile Include="BindableObject\TestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDomain\ClassWithReferenceType.cs" />
+    <Compile Include="TestDomain\TestAccessTypes.cs" />
+    <Compile Include="TestDomain\DerivedSecurableClassWithProperties.cs" />
     <Compile Include="TestDomain\IInterfaceWithReferenceType.cs" />
+    <Compile Include="TestDomain\IMixinSecurableClass.cs" />
+    <Compile Include="TestDomain\MixinSecurableClassWithProperties.cs" />
+    <Compile Include="TestDomain\SecurableClassWithProperties.cs" />
     <Compile Include="TestDomain\SecurableClassWithReferenceType.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +84,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>
+      <Name>TypePipe.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
@@ -84,6 +95,10 @@
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
+      <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
+      <Name>Mixins.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{fbe0cbdd-82ff-4173-8536-47d3b5bc2e98}</Project>

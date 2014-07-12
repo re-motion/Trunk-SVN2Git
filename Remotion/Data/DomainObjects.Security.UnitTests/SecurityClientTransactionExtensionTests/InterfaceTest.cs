@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class InterfaceTest
+  public class InterfaceTest : TestBase
   {
     [Test]
     public void Key ()

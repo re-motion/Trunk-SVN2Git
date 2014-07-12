@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
 
@@ -32,8 +33,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
   {
     private BindableObjectProvider _businessObjectProvider;
     private Type _type;
-    private IClassReflector _classReflector;
     private BindableObjectMetadataFactory _metadataFactory;
+    private BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
     public override void SetUp ()
     {
@@ -42,22 +43,24 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _type = typeof (DerivedBusinessObjectClass);
       _businessObjectProvider = new BindableObjectProvider();
       _metadataFactory = BindableObjectMetadataFactory.Create ();
-      _classReflector = new ClassReflector (_type, _businessObjectProvider, _metadataFactory);
+      _bindableObjectGlobalizationService = SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>();
     }
 
     [Test]
     public void Initialize ()
     {
-      Assert.That (_classReflector.TargetType, Is.SameAs (_type));
-      Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.Not.SameAs (_type));
-      Assert.That (((ClassReflector) _classReflector).ConcreteType, Is.SameAs (MixinTypeUtility.GetConcreteMixedType (_type)));
-      Assert.That (_classReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
+      IClassReflector classReflector = new ClassReflector (_type, _businessObjectProvider, _metadataFactory, _bindableObjectGlobalizationService);
+      Assert.That (classReflector.TargetType, Is.SameAs (_type));
+      Assert.That (((ClassReflector) classReflector).ConcreteType, Is.Not.SameAs (_type));
+      Assert.That (((ClassReflector) classReflector).ConcreteType, Is.SameAs (MixinTypeUtility.GetConcreteMixedType (_type)));
+      Assert.That (classReflector.BusinessObjectProvider, Is.SameAs (_businessObjectProvider));
     }
 
     [Test]
     public void GetMetadata ()
     {
-      BindableObjectClass bindableObjectClass = _classReflector.GetMetadata();
+      var classReflector = new ClassReflector (_type, _businessObjectProvider, _metadataFactory, _bindableObjectGlobalizationService);
+      BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClass)));
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (_type));
@@ -72,7 +75,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetMetadata_ForBindableObjectWithIdentity ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithIdentity), _businessObjectProvider, _metadataFactory);
+      var classReflector = new ClassReflector (
+          typeof (ClassWithIdentity),
+          _businessObjectProvider,
+          _metadataFactory,
+          _bindableObjectGlobalizationService);
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
       Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClassWithIdentity)));
@@ -83,7 +90,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [Test]
     public void GetMetadata_ForBindableObjectWithManualIdentity ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithManualIdentity), _businessObjectProvider, _metadataFactory);
+      var classReflector = new ClassReflector (
+          typeof (ClassWithManualIdentity),
+          _businessObjectProvider,
+          _metadataFactory,
+          _bindableObjectGlobalizationService);
       var bindableObjectClass = classReflector.GetMetadata ();
 
       Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClassWithIdentity)));
@@ -104,7 +115,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       var propertyFinderMock = mockRepository.StrictMock<IPropertyFinder> ();
 
-      var otherClassReflector = new ClassReflector (_type, _businessObjectProvider, factoryMock);
+      var otherClassReflector = new ClassReflector (
+          _type,
+          _businessObjectProvider,
+          factoryMock,
+          _bindableObjectGlobalizationService);
 
       Type concreteType = MixinTypeUtility.GetConcreteMixedType (_type);
 
@@ -131,14 +146,22 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
         + "'MixedProperty', this is currently not supported.", MatchType = MessageMatch.Regex)]
     public void GetMetadata_ForMixedPropertyWithSameName ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithMixedPropertyOfSameName), _businessObjectProvider, _metadataFactory);
+      var classReflector = new ClassReflector (
+          typeof (ClassWithMixedPropertyOfSameName),
+          _businessObjectProvider,
+          _metadataFactory,
+          _bindableObjectGlobalizationService);
       classReflector.GetMetadata ();
     }
 
     [Test]
     public void ClassReflector_CreatesBaseClass_CompatibleWithDerivedInstances ()
     {
-      var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+      var classReflector = new ClassReflector (
+          typeof (BaseBusinessObjectClass),
+          _businessObjectProvider,
+          _metadataFactory,
+          _bindableObjectGlobalizationService);
       var bindableObjectClass = classReflector.GetMetadata ();
       var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
@@ -156,7 +179,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
           .ForClass<BaseBusinessObjectClass> ().AddMixin<BindableObjectMixin> ()
           .EnterScope ())
       {
-        var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+        var classReflector = new ClassReflector (
+            typeof (BaseBusinessObjectClass),
+            _businessObjectProvider,
+            _metadataFactory,
+            _bindableObjectGlobalizationService);
         var bindableObjectClass = classReflector.GetMetadata();
         var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
@@ -177,7 +204,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
           .ForClass<BaseBusinessObjectClass> ().AddMixin<BindableObjectMixin> ()
           .EnterScope ())
       {
-        var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+        var classReflector = new ClassReflector (
+            typeof (BaseBusinessObjectClass),
+            _businessObjectProvider,
+            _metadataFactory,
+            _bindableObjectGlobalizationService);
         var bindableObjectClass = classReflector.GetMetadata ();
         var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 
@@ -191,7 +222,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    [Ignore ("TODO: COMMONS-936")]
+    [Ignore ("TODO: RM-936")]
     public void ClassReflector_CreatesBaseClass_CompatibleWithDerivedInstances_WithMixins_WithOverriddenProperty ()
     {
       using (MixinConfiguration.BuildNew ()
@@ -199,7 +230,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
           .ForClass<BaseBusinessObjectClass> ().AddMixin<BindableObjectMixin> ()
           .EnterScope ())
       {
-        var classReflector = new ClassReflector (typeof (BaseBusinessObjectClass), _businessObjectProvider, _metadataFactory);
+        var classReflector = new ClassReflector (
+            typeof (BaseBusinessObjectClass),
+            _businessObjectProvider,
+            _metadataFactory,
+            _bindableObjectGlobalizationService);
         var bindableObjectClass = classReflector.GetMetadata ();
         var derivedBusinessObject = ObjectFactory.Create<DerivedBusinessObjectClass> (ParamList.Empty);
 

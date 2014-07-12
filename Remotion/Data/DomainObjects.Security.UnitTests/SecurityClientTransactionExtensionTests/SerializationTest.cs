@@ -22,7 +22,7 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class SerializationTest
+  public class SerializationTest : TestBase
   {
     [Test]
     public void Serialization ()

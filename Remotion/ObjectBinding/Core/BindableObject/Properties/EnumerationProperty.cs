@@ -136,10 +136,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
 
     private string GetDisplayName (Enum value)
     {
-      var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService> ();
-      if (globalizationService == null)
-        return value.ToString ();
-      return globalizationService.GetEnumerationValueDisplayName (value);
+      return BindableObjectGlobalizationService.GetEnumerationValueDisplayName (value);
     }
 
     private bool IsEnabled (Enum value, IBusinessObject businessObject)

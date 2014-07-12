@@ -30,9 +30,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Inte
     {
       var obj = ObjectFactory.Create<ClassWithInterface>();
       var businessObject = (IBusinessObject) obj;
+      var businessObjectClass = businessObject.BusinessObjectClass;
 
-      var property = businessObject.BusinessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetter");
-      Assert.That (property.IsReadOnly (businessObject), Is.True);
+      var property = businessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetter");
+      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.True);
     }
 
     [Test]
@@ -50,9 +51,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Inte
     {
       var obj = ObjectFactory.Create<ClassWithInterface>();
       var businessObject = (IBusinessObject) obj;
+      var businessObjectClass = businessObject.BusinessObjectClass;
 
       var property = businessObject.BusinessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetterAndSetter");
-      Assert.That (property.IsReadOnly (businessObject), Is.False);
+      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.False);
     }
 
     [Test]
@@ -70,9 +72,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Inte
     {
       var obj = ObjectFactory.Create<ClassWithInterface>();
       var businessObject = (IBusinessObject) obj;
+      var businessObjectClass = businessObject.BusinessObjectClass;
 
-      var property = businessObject.BusinessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetterAndImplementationOnlySetter");
-      Assert.That (property.IsReadOnly (businessObject), Is.False);
+      var property = businessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetterAndImplementationOnlySetter");
+      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.False);
     }
 
     [Test]
@@ -90,9 +93,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Inte
     {
       var obj = ObjectFactory.Create<ClassWithInterface>();
       var businessObject = (IBusinessObject) obj;
+      var businessObjectClass = businessObject.BusinessObjectClass;
 
-      var property = businessObject.BusinessObjectClass.GetPropertyDefinition ("ExplicitPropertyWithGetter");
-      Assert.That (property.IsReadOnly (businessObject), Is.True);
+      var property = businessObjectClass.GetPropertyDefinition ("ExplicitPropertyWithGetter");
+      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.True);
     }
 
     [Test]
@@ -110,9 +114,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Inte
     {
       var obj = ObjectFactory.Create<ClassWithInterface>();
       var businessObject = (IBusinessObject) obj;
+      var businessObjectClass = businessObject.BusinessObjectClass;
 
-      var property = businessObject.BusinessObjectClass.GetPropertyDefinition ("ExplicitPropertyWithGetterAndSetter");
-      Assert.That (property.IsReadOnly (businessObject), Is.False);
+      var property = businessObjectClass.GetPropertyDefinition ("ExplicitPropertyWithGetterAndSetter");
+      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.False);
     }
 
     [Test]

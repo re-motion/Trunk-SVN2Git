@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 
     private BocReferenceValueMock _bocReferenceValue;
     private TypeWithReference _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectReferenceProperty _propertyReferenceValue;
 
     public BocReferenceValueTest ()
@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _propertyReferenceValue =
           (IBusinessObjectReferenceProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
 
       ((IBusinessObject) _businessObject).BusinessObjectClass.BusinessObjectProvider.AddService<IGetObjectService>

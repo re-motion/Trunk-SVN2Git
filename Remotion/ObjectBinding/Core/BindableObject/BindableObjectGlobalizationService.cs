@@ -16,8 +16,8 @@
 // 
 
 using System;
+using System.Threading;
 using Remotion.ExtensibleEnums;
-using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Globalization.ExtensibleEnums;
 using Remotion.Reflection;
@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// <see cref="IBusinessObjectServiceFactory"/>.
   /// </remarks>
   [ImplementationFor (typeof (BindableObjectGlobalizationService), Lifetime = LifetimeKind.Singleton)]
-  public sealed class BindableObjectGlobalizationService : IBusinessObjectService
+  public sealed class BindableObjectGlobalizationService
   {
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Globalization.BindableObjectGlobalizationService")]
@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
     private readonly IMemberInformationGlobalizationService _memberInformationGlobalizationService;
-    private readonly DoubleCheckedLockingContainer<IResourceManager> _resourceManager;
+    private readonly Lazy<IResourceManager> _resourceManager;
     private readonly IEnumerationGlobalizationService _enumerationGlobalizationService;
     private readonly IExtensibleEnumGlobalizationService _extensibleEnumGlobalizationService;
 
@@ -61,8 +61,9 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("enumerationGlobalizationService", enumerationGlobalizationService);
       ArgumentUtility.CheckNotNull ("extensibleEnumGlobalizationService", extensibleEnumGlobalizationService);
 
-      _resourceManager =
-          new DoubleCheckedLockingContainer<IResourceManager> (() => globalizationServices.GetResourceManager (typeof (ResourceIdentifier)));
+      _resourceManager = new Lazy<IResourceManager> (
+          () => globalizationServices.GetResourceManager (typeof (ResourceIdentifier)),
+          LazyThreadSafetyMode.ExecutionAndPublication);
       _memberInformationGlobalizationService = memberInformationGlobalizationService;
       _enumerationGlobalizationService = enumerationGlobalizationService;
       _extensibleEnumGlobalizationService = extensibleEnumGlobalizationService;

@@ -20,26 +20,29 @@ using Remotion.Security;
 
 namespace Remotion.ObjectBinding.Security.UnitTests.TestDomain
 {
-  public class SecurableClassWithReferenceType<T> : ClassWithReferenceType<T>, ISecurableObject
-      where T : class
+  [BindableObject]
+  public class MixinSecurableClassWithProperties : IMixinSecurableClass
   {
-    private readonly IObjectSecurityStrategy _objectSecurityStrategy;
+    private string _mixedProperty;
 
-    public SecurableClassWithReferenceType (IObjectSecurityStrategy objectSecurityStrategy)
+    public string MixedPropertyWithDefaultPermission
     {
-      _objectSecurityStrategy = objectSecurityStrategy;
+      get { return _mixedProperty; }
+      set { _mixedProperty = value; }
     }
 
-    public IObjectSecurityStrategy GetSecurityStrategy ()
+    public string MixedPropertyWithReadPermission
     {
-      return _objectSecurityStrategy;
+      [DemandPermission (TestAccessTypes.First)]
+      get { return _mixedProperty; }
+      set { _mixedProperty = value; }
     }
 
-    public Type GetSecurableType ()
+    public string MixedPropertyWithWritePermission
     {
-      return typeof (SecurableClassWithReferenceType<T>);
+      get { return _mixedProperty; }
+      [DemandPermission (TestAccessTypes.First)]
+      set { _mixedProperty = value; }
     }
-
-    public T CustomPermissisons { [DemandPermission (TestAccessTypes.TestRead)] get; [DemandPermission (TestAccessTypes.TestEdit)] set; }
   }
 }

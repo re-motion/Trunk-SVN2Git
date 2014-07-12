@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurati
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using ClassReflector = Remotion.ObjectBinding.BindableObject.ClassReflector;
 using ParamList = Remotion.TypePipe.ParamList;
@@ -36,8 +37,18 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return ObjectFactory.Create<BindableDomainObjectMetadataFactory> (true, ParamList.Empty);
     }
 
+    private readonly BindableObjectGlobalizationService _bindableObjectGlobalizationService;
+
     protected BindableDomainObjectMetadataFactory ()
+      : this (SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>())
     {
+    }
+
+    public BindableDomainObjectMetadataFactory (BindableObjectGlobalizationService bindableObjectGlobalizationService)
+    {
+      ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
+
+      _bindableObjectGlobalizationService = bindableObjectGlobalizationService;
     }
 
     public virtual IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
@@ -45,7 +56,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      return new ClassReflector (targetType, businessObjectProvider, this);
+      return new ClassReflector (targetType, businessObjectProvider, this, _bindableObjectGlobalizationService);
     }
 
     public virtual IPropertyFinder CreatePropertyFinder (Type concreteType)

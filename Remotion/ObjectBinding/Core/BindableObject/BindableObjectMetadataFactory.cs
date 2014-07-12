@@ -17,6 +17,7 @@
 using System;
 using Remotion.Mixins;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
 
@@ -33,8 +34,18 @@ namespace Remotion.ObjectBinding.BindableObject
       return ObjectFactory.Create<BindableObjectMetadataFactory> (true, ParamList.Empty);
     }
 
+    private readonly BindableObjectGlobalizationService _bindableObjectGlobalizationService;
+
     protected BindableObjectMetadataFactory ()
+        : this (SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>())
     {
+    }
+
+    public BindableObjectMetadataFactory (BindableObjectGlobalizationService bindableObjectGlobalizationService)
+    {
+      ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
+
+      _bindableObjectGlobalizationService = bindableObjectGlobalizationService;
     }
 
     public virtual IClassReflector CreateClassReflector (Type targetType, BindableObjectProvider businessObjectProvider)
@@ -42,7 +53,7 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
 
-      return new ClassReflector (targetType, businessObjectProvider, this);
+      return new ClassReflector (targetType, businessObjectProvider, this, _bindableObjectGlobalizationService);
     }
 
     public virtual IPropertyFinder CreatePropertyFinder (Type concreteType)

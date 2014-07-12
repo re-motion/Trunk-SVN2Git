@@ -32,17 +32,24 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly Type _concreteType;
     private readonly BindableObjectProvider _businessObjectProvider;
     private readonly IMetadataFactory _metadataFactory;
+    private readonly BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
-    public ClassReflector (Type targetType, BindableObjectProvider businessObjectProvider, IMetadataFactory metadataFactory)
+    public ClassReflector (
+        Type targetType,
+        BindableObjectProvider businessObjectProvider,
+        IMetadataFactory metadataFactory,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService)
     {
       ArgumentUtility.CheckNotNull ("targetType", targetType);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       ArgumentUtility.CheckNotNull ("metadataFactory", metadataFactory);
+      ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
 
       _targetType = targetType;
       _concreteType = MixinTypeUtility.GetConcreteMixedType (_targetType);
       _businessObjectProvider = businessObjectProvider;
       _metadataFactory = metadataFactory;
+      _bindableObjectGlobalizationService = bindableObjectGlobalizationService;
     }
 
     public Type TargetType
@@ -67,9 +74,9 @@ namespace Remotion.ObjectBinding.BindableObject
     public virtual BindableObjectClass GetMetadata ()
     {
       if (typeof (IBusinessObjectWithIdentity).IsAssignableFrom (_concreteType))
-        return new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider, GetProperties ());
+        return new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider, _bindableObjectGlobalizationService, GetProperties ());
       else
-        return new BindableObjectClass (_concreteType, _businessObjectProvider, GetProperties ());
+        return new BindableObjectClass (_concreteType, _businessObjectProvider, _bindableObjectGlobalizationService, GetProperties ());
     }
 
     protected IEnumerable<PropertyBase> GetProperties ()

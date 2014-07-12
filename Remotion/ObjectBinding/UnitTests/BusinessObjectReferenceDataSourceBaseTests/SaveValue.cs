@@ -35,12 +35,17 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectReferenceDataSourceBase
     {
       _referencedDataSourceStub = MockRepository.GenerateStub<IBusinessObjectDataSource>();
       _referencedDataSourceStub.BusinessObject = MockRepository.GenerateStub<IBusinessObject>();
+      _referencedDataSourceStub.Stub (_ => _.BusinessObjectClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _referencedDataSourceStub.Mode = DataSourceMode.Edit;
       _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty>();
+      _referencePropertyStub.Stub (_ => _.ReflectedClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _referencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _readOnlyReferencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty>();
+      _readOnlyReferencePropertyStub.Stub (_ => _.ReflectedClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _readOnlyReferencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
-      _readOnlyReferencePropertyStub.Stub (stub => stub.IsReadOnly (Arg<IBusinessObject>.Is.Anything)).Return (true);
+      _readOnlyReferencePropertyStub
+          .Stub (stub => stub.IsReadOnly (Arg<IBusinessObjectClass>.Is.Anything, Arg<IBusinessObject>.Is.Anything))
+          .Return (true);
     }
 
     [Test]

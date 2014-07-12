@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
   {
     private BocListMock _bocList;
     private TypeWithReference _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectReferenceProperty _propertyReferenceList;
 
     public BocListTest ()
@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _propertyReferenceList =
           (IBusinessObjectReferenceProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceList");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass) { Mode = DataSourceMode.Edit };
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
     }
 

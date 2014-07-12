@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -26,8 +27,20 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     private readonly Type _getObjectServiceType;
 
-    public BindableObjectClassWithIdentity (Type concreteType, BindableObjectProvider businessObjectProvider, IEnumerable<PropertyBase> properties)
-        : base (concreteType, businessObjectProvider, properties)
+    protected BindableObjectClassWithIdentity (
+        Type concreteType,
+        BindableObjectProvider businessObjectProvider,
+        IEnumerable<PropertyBase> properties)
+        : this (concreteType, businessObjectProvider, SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(), properties)
+    {
+    }
+
+    public BindableObjectClassWithIdentity (
+        Type concreteType,
+        BindableObjectProvider businessObjectProvider,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService,
+        IEnumerable<PropertyBase> properties)
+        : base (concreteType, businessObjectProvider, bindableObjectGlobalizationService, properties)
     {
       _getObjectServiceType = GetGetObjectServiceType();
     }

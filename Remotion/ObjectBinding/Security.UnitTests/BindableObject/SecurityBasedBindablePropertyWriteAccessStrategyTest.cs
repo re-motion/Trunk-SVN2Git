@@ -34,7 +34,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 {
   [TestFixture]
-  public class SecurityBasedBindablePropertyWriteAccessStrategyTest
+  public class SecurityBasedBindablePropertyWriteAccessStrategyTest : TestBase
   {
     private BindableObjectClass _bindableClass;
     private SecurableClassWithReferenceType<string> _securableObject;
@@ -44,12 +44,14 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     private IObjectSecurityStrategy _objectSecurityStrategyMock;
     private SecurityBasedBindablePropertyWriteAccessStrategy _strategy;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _bindableClass = new BindableObjectClass (
           typeof (ClassWithReferenceType<string>),
           CreateBindableObjectProviderWithStubBusinessObjectServiceFactory(),
+          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(),
           new PropertyBase[0]);
 
       _objectSecurityStrategyMock = MockRepository.GenerateStrictMock<IObjectSecurityStrategy>();
@@ -70,10 +72,11 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       _strategy = new SecurityBasedBindablePropertyWriteAccessStrategy();
     }
 
-    [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
       _serviceLocatorScope.Dispose();
+
+      base.TearDown();
     }
 
     [Test]
@@ -100,7 +103,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     public void CanWrite_WithSecurableObject_EvaluatesObjectSecurityStratey_ReturnsResult ()
     {
       var expectedResult = BooleanObjectMother.GetRandomBoolean();
-      ExpectHasAccessOnObjectSecurityStrategy (expectedResult, CustomAccessTypes.CustomEdit);
+      ExpectHasAccessOnObjectSecurityStrategy (expectedResult, TestAccessTypes.TestEdit);
 
       var bindableProperty = CreateBindableProperty (() => ((SecurableClassWithReferenceType<string>) null).CustomPermissisons);
 
@@ -141,7 +144,9 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           false,
           false,
           MockRepository.GenerateStub<IDefaultValueStrategy>(),
-          MockRepository.GenerateStub<IObjectSecurityAdapter>());
+          MockRepository.GenerateStub<IBindablePropertyReadAccessStrategy>(),
+          MockRepository.GenerateStub<IBindablePropertyWriteAccessStrategy>(),
+          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>());
     }
 
     private void ExpectHasAccessOnObjectSecurityStrategy (bool expectedResult, Enum accessType)

@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Security.BindableObject
       Lifetime = LifetimeKind.Singleton,
       RegistrationType = RegistrationType.Multiple,
       Position = Position)]
-  public class SecurityBasedBindablePropertyWriteAccessStrategy : IBindablePropertyWriteAccessStrategy
+  public sealed class SecurityBasedBindablePropertyWriteAccessStrategy : IBindablePropertyWriteAccessStrategy
   {
     public const int Position = 117;
 

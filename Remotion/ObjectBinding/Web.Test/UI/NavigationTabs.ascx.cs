@@ -22,7 +22,6 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Reflection;
-using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.Web;
 using Remotion.Web.Configuration;
@@ -61,14 +60,16 @@ namespace OBWTest.UI
       EnumerationProperty property = new EnumerationProperty (
           new PropertyBase.Parameters (
               (BindableObjectProvider) BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>(),
-              PropertyInfoAdapter.Create(propertyInfo),
+              PropertyInfoAdapter.Create (propertyInfo),
               propertyInfo.PropertyType,
               propertyInfo.PropertyType,
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy (), 
-              (IObjectSecurityAdapter) null));
+              new BindableObjectDefaultValueStrategy(),
+              SafeServiceLocator.Current.GetInstance<IBindablePropertyReadAccessStrategy>(),
+              SafeServiceLocator.Current.GetInstance<IBindablePropertyWriteAccessStrategy>(),
+              SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>()));
 
       WaiConformanceLevelField.Property = property;
       WaiConformanceLevelField.LoadUnboundValue (ConformanceLevel, IsPostBack);

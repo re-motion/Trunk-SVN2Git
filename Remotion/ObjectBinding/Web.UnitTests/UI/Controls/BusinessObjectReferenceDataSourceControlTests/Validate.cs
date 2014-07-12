@@ -39,6 +39,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectReferen
       _referencedDataSourceStub.Mode = DataSourceMode.Edit;
       _referencePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty> ();
       _referencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass> ());
+      _referencePropertyStub.Stub (stub => stub.ReflectedClass).Return (MockRepository.GenerateStub<IBusinessObjectClass> ());
 
       _dataSourceControl = new BusinessObjectReferenceDataSourceControl ();
       _dataSourceControl.DataSource = _referencedDataSourceStub;

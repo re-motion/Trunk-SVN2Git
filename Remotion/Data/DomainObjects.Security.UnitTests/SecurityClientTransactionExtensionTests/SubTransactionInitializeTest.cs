@@ -21,14 +21,15 @@ using NUnit.Framework;
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class SubTransactionInitializeTest
+  public class SubTransactionInitializeTest : TestBase
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
     }

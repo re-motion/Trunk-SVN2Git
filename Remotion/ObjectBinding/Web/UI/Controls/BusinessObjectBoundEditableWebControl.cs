@@ -387,9 +387,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get
       {
-        Assertion.IsNotNull (Property);
-        Assertion.IsNotNull (DataSource);
-        return Property.IsReadOnly (DataSource.BusinessObject);
+        var dataSource = DataSource;
+        var property = Property;
+        var reflectedClass = property.ReflectedClass;
+        Assertion.IsNotNull (dataSource, "DataSource is null.");
+        Assertion.IsNotNull (property, "Property is null.");
+        Assertion.IsNotNull (reflectedClass, "Property.ReflectedClass is null.");
+
+        return property.IsReadOnly (dataSource.BusinessObjectClass ?? reflectedClass, dataSource.BusinessObject);
       }
     }
   }

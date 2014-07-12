@@ -24,7 +24,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
-using Remotion.Security;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
@@ -92,11 +92,26 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       return (Type) PrivateInvoke.InvokeNonPublicMethod (reflector, typeof (PropertyReflector), "GetUnderlyingType");
     }
 
-    protected PropertyBase.Parameters GetPropertyParameters (IPropertyInformation property, BindableObjectProvider provider)
+    protected PropertyBase.Parameters GetPropertyParameters (
+        IPropertyInformation property,
+        BindableObjectProvider provider,
+        IBindablePropertyReadAccessStrategy bindablePropertyReadAccessStrategy = null,
+        IBindablePropertyWriteAccessStrategy bindablePropertyWriteAccessStrategy = null,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService = null)
     {
-      PropertyReflector reflector = PropertyReflector.Create (property, provider);
+      var reflector = new PropertyReflector (
+          property,
+          provider,
+          MockRepository.GenerateStub<IDefaultValueStrategy>(),
+          bindablePropertyReadAccessStrategy ?? SafeServiceLocator.Current.GetInstance<IBindablePropertyReadAccessStrategy>(),
+          bindablePropertyWriteAccessStrategy ?? SafeServiceLocator.Current.GetInstance<IBindablePropertyWriteAccessStrategy>(),
+          bindableObjectGlobalizationService ?? SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>());
+
       return (PropertyBase.Parameters) PrivateInvoke.InvokeNonPublicMethod (
-                                           reflector, typeof (PropertyReflector), "CreateParameters", GetUnderlyingType (reflector));
+          reflector,
+          typeof (PropertyReflector),
+          "CreateParameters",
+          GetUnderlyingType (reflector));
     }
 
     protected BindableObjectProvider CreateBindableObjectProviderWithStubBusinessObjectServiceFactory ()
@@ -111,7 +126,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
         Type concreteType,
         IListInfo listInfo,
         bool isRequired,
-        bool isReadOnly)
+        bool isReadOnly,
+        IBindablePropertyReadAccessStrategy bindablePropertyReadAccessStrategy = null,
+        IBindablePropertyWriteAccessStrategy bindablePropertyWriteAccessStrategy = null,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService = null)
     {
       return new PropertyBase.Parameters (
           businessObjectProvider,
@@ -122,7 +140,9 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
           isRequired,
           isReadOnly,
           new BindableObjectDefaultValueStrategy(),
-          (IObjectSecurityAdapter) null);
+          bindablePropertyReadAccessStrategy ?? SafeServiceLocator.Current.GetInstance<IBindablePropertyReadAccessStrategy>(),
+          bindablePropertyWriteAccessStrategy ?? SafeServiceLocator.Current.GetInstance<IBindablePropertyWriteAccessStrategy>(),
+          bindableObjectGlobalizationService ?? SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>());
     }
   }
 }

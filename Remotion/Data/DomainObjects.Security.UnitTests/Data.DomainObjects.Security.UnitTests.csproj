@@ -77,6 +77,7 @@
     <Compile Include="SetupFixture.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TestBase.cs" />
     <Compile Include="TestDomain\BindableSecurableObject.cs" />
     <Compile Include="TestDomain\BindableSecurableObjectMixin.cs" />
     <Compile Include="TestDomain\DerivedBindableSecurableObject.cs" />
@@ -133,6 +134,10 @@
     <ProjectReference Include="..\..\ObjectBinding\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Security\ObjectBinding.Security.csproj">
+      <Project>{89F98C4B-11E3-43EC-8776-B552574F9A9F}</Project>
+      <Name>ObjectBinding.Security</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>

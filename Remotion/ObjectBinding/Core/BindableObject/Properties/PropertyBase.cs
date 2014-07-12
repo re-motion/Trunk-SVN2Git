@@ -20,7 +20,6 @@ using System.Collections;
 using JetBrains.Annotations;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
-using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -29,32 +28,58 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
   {
     public sealed class Parameters
     {
+      [NotNull]
       public readonly BindableObjectProvider BusinessObjectProvider;
+
+      [NotNull]
       public readonly IPropertyInformation PropertyInfo;
+
+      [NotNull]
       public readonly Type UnderlyingType;
+
+      [NotNull]
       public readonly Type ConcreteType;
+
+      [CanBeNull]
       public readonly IListInfo ListInfo;
+
       public readonly bool IsRequired;
+
       public readonly bool IsReadOnly;
+
+      [NotNull]
       public readonly IDefaultValueStrategy DefaultValueStrategy;
-      public readonly IObjectSecurityAdapter ObjectSecurityAdapter;
+
+      [NotNull]
+      public readonly IBindablePropertyReadAccessStrategy BindablePropertyReadAccessStrategy;
+
+      [NotNull]
+      public readonly IBindablePropertyWriteAccessStrategy BindablePropertyWriteAccessStrategy;
+
+      [NotNull]
+      public readonly BindableObjectGlobalizationService BindableObjectGlobalizationService;
 
       public Parameters (
-          BindableObjectProvider businessObjectProvider,
-          IPropertyInformation propertyInfo,
-          Type underlyingType,
-          Type concreteType,
-          IListInfo listInfo,
+          [NotNull] BindableObjectProvider businessObjectProvider,
+          [NotNull] IPropertyInformation propertyInfo,
+          [NotNull] Type underlyingType,
+          [NotNull] Type concreteType,
+          [CanBeNull] IListInfo listInfo,
           bool isRequired,
           bool isReadOnly,
-          IDefaultValueStrategy defaultValueStrategy,
-          [CanBeNull]IObjectSecurityAdapter objectSecurityAdapter)
+          [NotNull] IDefaultValueStrategy defaultValueStrategy,
+          [NotNull] IBindablePropertyReadAccessStrategy bindablePropertyReadAccessStrategy,
+          [NotNull] IBindablePropertyWriteAccessStrategy bindablePropertyWriteAccessStrategy,
+          [NotNull] BindableObjectGlobalizationService bindableObjectGlobalizationService)
       {
         ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
         ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
         ArgumentUtility.CheckNotNull ("underlyingType", underlyingType);
         ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, underlyingType);
         ArgumentUtility.CheckNotNull ("defaultValueStrategy", defaultValueStrategy);
+        ArgumentUtility.CheckNotNull ("bindablePropertyReadAccessStrategy", bindablePropertyReadAccessStrategy);
+        ArgumentUtility.CheckNotNull ("bindablePropertyWriteAccessStrategy", bindablePropertyWriteAccessStrategy);
+        ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
 
         BusinessObjectProvider = businessObjectProvider;
         PropertyInfo = propertyInfo;
@@ -64,7 +89,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         IsRequired = isRequired;
         IsReadOnly = isReadOnly;
         DefaultValueStrategy = defaultValueStrategy;
-        ObjectSecurityAdapter = objectSecurityAdapter;
+        BindablePropertyReadAccessStrategy = bindablePropertyReadAccessStrategy;
+        BindablePropertyWriteAccessStrategy = bindablePropertyWriteAccessStrategy;
+        BindableObjectGlobalizationService = bindableObjectGlobalizationService;
       }
     }
 
@@ -79,7 +106,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     private readonly IDefaultValueStrategy _defaultValueStrategy;
     private readonly Func<object, object> _valueGetter;
     private readonly Action<object, object> _valueSetter;
-    private readonly IObjectSecurityAdapter _objectSecurityAdapter;
+    private readonly IBindablePropertyReadAccessStrategy _bindablePropertyReadAccessStrategy;
+    private readonly IBindablePropertyWriteAccessStrategy _bindablePropertyWriteAccessStrategy;
+    private readonly BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
     protected PropertyBase (Parameters parameters)
     {
@@ -95,7 +124,9 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _isRequired = parameters.IsRequired;
       _isReadOnly = parameters.IsReadOnly;
       _defaultValueStrategy = parameters.DefaultValueStrategy;
-      _objectSecurityAdapter = parameters.ObjectSecurityAdapter;
+      _bindablePropertyReadAccessStrategy = parameters.BindablePropertyReadAccessStrategy;
+      _bindablePropertyWriteAccessStrategy = parameters.BindablePropertyWriteAccessStrategy;
+      _bindableObjectGlobalizationService = parameters.BindableObjectGlobalizationService;
       _isNullable = GetNullability();
       _valueGetter = Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (mi => mi.GetFastInvoker<Func<object, object>>()).ValueOrDefault();
       _valueSetter = Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (mi => mi.GetFastInvoker<Action<object, object>>()).ValueOrDefault();
@@ -157,17 +188,13 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService>();
-        if (globalizationService == null)
-          return Identifier;
-
         if (_reflectedClass == null)
         {
           throw new InvalidOperationException (
               string.Format ("The reflected class for the property '{0}.{1}' is not set.", _propertyInfo.DeclaringType.Name, _propertyInfo.Name));
         }
 
-        return globalizationService.GetPropertyDisplayName (_propertyInfo, TypeAdapter.Create(_reflectedClass.TargetType));
+        return _bindableObjectGlobalizationService.GetPropertyDisplayName (_propertyInfo, TypeAdapter.Create(_reflectedClass.TargetType));
       }
     }
 
@@ -186,14 +213,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks> The result may depend on the class, the user's authorization and/or the instance value. </remarks>
     public bool IsAccessible (IBusinessObjectClass objectClass, IBusinessObject obj)
     {
-      ISecurableObject securableObject = obj as ISecurableObject;
-      if (securableObject == null)
-        return true;
+      var bindableClass = ArgumentUtility.CheckNotNullAndType<BindableObjectClass> ("objectClass", objectClass);
+      // obj can be null
 
-      if (_objectSecurityAdapter == null)
-        return true;
-
-      return _objectSecurityAdapter.HasAccessOnGetAccessor (securableObject, _propertyInfo);
+      return _bindablePropertyReadAccessStrategy.CanRead (bindableClass, this, obj);
     }
 
     public object GetValue (IBusinessObject obj)
@@ -224,22 +247,19 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary> Indicates whether this property can be modified by the user. </summary>
+    /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> of the <paramref name="obj"/>. </param>
     /// <param name="obj"> The object to evaluate this property for, or <see langword="null"/>. </param>
     /// <returns> <see langword="true"/> if the user can set this property. </returns>
     /// <remarks> The result may depend on the user's authorization and/or the object. </remarks>
-    public bool IsReadOnly (IBusinessObject obj)
+    public bool IsReadOnly (IBusinessObjectClass objectClass, IBusinessObject obj)
     {
+      var bindableClass = ArgumentUtility.CheckNotNullAndType<BindableObjectClass> ("objectClass", objectClass);
+      // obj can be null
+
       if (_isReadOnly)
         return true;
 
-      ISecurableObject securableObject = obj as ISecurableObject;
-      if (securableObject == null)
-        return false;
-
-      if (_objectSecurityAdapter == null)
-        return false;
-
-      return !_objectSecurityAdapter.HasAccessOnSetAccessor (securableObject, _propertyInfo);
+      return !_bindablePropertyWriteAccessStrategy.CanWrite (bindableClass, this, obj);
     }
 
     /// <summary> Gets the <see cref="BindableObjectProvider"/> for this property. </summary>
@@ -329,6 +349,11 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     protected bool IsNullable
     {
       get { return _isNullable; }
+    }
+
+    protected BindableObjectGlobalizationService BindableObjectGlobalizationService
+    {
+      get { return _bindableObjectGlobalizationService; }
     }
 
     private bool GetNullability ()

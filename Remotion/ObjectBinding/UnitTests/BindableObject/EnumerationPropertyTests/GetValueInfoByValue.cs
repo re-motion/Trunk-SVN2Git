@@ -107,11 +107,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.EnumerationPropertyTes
     [Test]
     public void GetDisplayNameFromGlobalizationSerivce ()
     {
-      IBusinessObjectEnumerationProperty property = CreateProperty (typeof (ClassWithValueType<TestEnum>), "Scalar");
       var mockEnumerationGlobalizationService = _mockRepository.StrictMock<IEnumerationGlobalizationService>();
-      _businessObjectProvider.AddService (
-          typeof (BindableObjectGlobalizationService),
-          new BindableObjectGlobalizationService (
+      IBusinessObjectEnumerationProperty property = CreateProperty (
+          typeof (ClassWithValueType<TestEnum>),
+          "Scalar",
+          bindableObjectGlobalizationService: new BindableObjectGlobalizationService (
               MockRepository.GenerateStub<IGlobalizationService>(),
               MockRepository.GenerateStub<IMemberInformationGlobalizationService>(),
               mockEnumerationGlobalizationService,
@@ -128,10 +128,16 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.EnumerationPropertyTes
       CheckEnumerationValueInfo (new EnumerationValueInfo (TestEnum.Value1, "Value1", "MockValue1", true), actual);
     }
 
-    private EnumerationProperty CreateProperty (Type type, string propertyName)
+    private EnumerationProperty CreateProperty (
+        Type type,
+        string propertyName,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService = null)
     {
       return new EnumerationProperty (
-          GetPropertyParameters (GetPropertyInfo (type, propertyName), _businessObjectProvider));
+          GetPropertyParameters (
+              GetPropertyInfo (type, propertyName),
+              _businessObjectProvider,
+              bindableObjectGlobalizationService: bindableObjectGlobalizationService));
     }
   }
 }

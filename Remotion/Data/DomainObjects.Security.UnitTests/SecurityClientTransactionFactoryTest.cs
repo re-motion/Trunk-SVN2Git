@@ -21,18 +21,18 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests;
 using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Security.Configuration;
-using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Security.UnitTests
 {
   [TestFixture]
-  public class SecurityClientTransactionFactoryTest
+  public class SecurityClientTransactionFactoryTest : TestBase
   {
     private TestHelper _testHelper;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _testHelper = new TestHelper ();
     }
 

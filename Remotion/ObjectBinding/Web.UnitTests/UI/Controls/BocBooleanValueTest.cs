@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
   {
     private BocBooleanValueMock _bocBooleanValue;
     private TypeWithBoolean _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectBooleanProperty _propertyBooleanValue;
     private IBusinessObjectBooleanProperty _propertyNullableBooleanValue;
 
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _propertyNullableBooleanValue =
           (IBusinessObjectBooleanProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("NullableBooleanValue");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
     }
 

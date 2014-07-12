@@ -24,24 +24,26 @@ using Remotion.Security;
 namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransactionExtensionTests
 {
   [TestFixture]
-  public class NewObjectCreatingTest
+  public class NewObjectCreatingTest : TestBase
   {
     private TestHelper _testHelper;
     private IClientTransactionExtension _extension;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _testHelper = new TestHelper ();
       _extension = new SecurityClientTransactionExtension ();
 
       _testHelper.SetupSecurityIoCConfiguration ();
     }
 
-    [TearDown]
-    public void TearDown ()
+    public override void TearDown ()
     {
       _testHelper.TearDownSecurityIoCConfiguration ();
+
+      base.TearDown();
     }
 
     [Test]

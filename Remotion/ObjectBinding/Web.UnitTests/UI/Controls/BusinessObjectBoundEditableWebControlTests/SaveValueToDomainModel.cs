@@ -26,6 +26,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEd
   public class SaveValueToDomainModel
   {
     private TestableBusinessObjectBoundEditableWebControl _control;
+    private IBusinessObjectClass _businessObjectClassStub;
     private IBusinessObjectProperty _propertyStub;
     private IBusinessObjectProperty _readOnlyPropertyStub;
     private IBusinessObjectDataSource _dataSourceStub;
@@ -35,12 +36,16 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEd
     public void SetUp ()
     {
       _businessObjectStub = MockRepository.GenerateStub<IBusinessObject>();
+      _businessObjectClassStub = MockRepository.GenerateStub<IBusinessObjectClass>();
       _dataSourceStub = MockRepository.GenerateStub<IBusinessObjectDataSource>();
       _dataSourceStub.BusinessObject = _businessObjectStub;
       _dataSourceStub.Mode = DataSourceMode.Edit;
+      _dataSourceStub.Stub (_ => _.BusinessObjectClass).Return (_businessObjectClassStub);
       _propertyStub = MockRepository.GenerateStub<IBusinessObjectProperty>();
+      _propertyStub.Stub (_ => _.ReflectedClass).Return (_businessObjectClassStub);
       _readOnlyPropertyStub = MockRepository.GenerateStub<IBusinessObjectProperty>();
-      _readOnlyPropertyStub.Stub (stub => stub.IsReadOnly (Arg<IBusinessObject>.Is.Anything)).Return (true);
+      _readOnlyPropertyStub.Stub (_ => _.ReflectedClass).Return (_businessObjectClassStub);
+      _readOnlyPropertyStub.Stub (stub => stub.IsReadOnly (Arg<IBusinessObjectClass>.Is.Anything, Arg<IBusinessObject>.Is.Anything)).Return (true);
       _control = new TestableBusinessObjectBoundEditableWebControl();
     }
 

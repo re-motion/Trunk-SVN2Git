@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests.TestDomain;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.Security;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests
@@ -59,8 +60,10 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests
               null,
               false,
               false,
-              new BindableObjectDefaultValueStrategy (),
-              (IObjectSecurityAdapter) null));
+              new BindableObjectDefaultValueStrategy(),
+              MockRepository.GenerateStub<IBindablePropertyReadAccessStrategy>(),
+              MockRepository.GenerateStub<IBindablePropertyWriteAccessStrategy>(),
+              SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>()));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithIdentity))));
       Assert.That (
@@ -85,7 +88,9 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests
               false,
               false,
               new BindableObjectDefaultValueStrategy (),
-              (IObjectSecurityAdapter) null));
+              MockRepository.GenerateStub<IBindablePropertyReadAccessStrategy>(),
+              MockRepository.GenerateStub<IBindablePropertyWriteAccessStrategy>(),
+              SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>()));
 
       Assert.That (property.ReferenceClass, Is.SameAs (BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassDerivedFromBindableObjectBase))));
       Assert.That (

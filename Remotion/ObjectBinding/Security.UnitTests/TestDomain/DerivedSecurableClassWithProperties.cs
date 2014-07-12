@@ -20,26 +20,25 @@ using Remotion.Security;
 
 namespace Remotion.ObjectBinding.Security.UnitTests.TestDomain
 {
-  public class SecurableClassWithReferenceType<T> : ClassWithReferenceType<T>, ISecurableObject
-      where T : class
+  public class DerivedSecurableClassWithProperties : SecurableClassWithProperties
   {
-    private readonly IObjectSecurityStrategy _objectSecurityStrategy;
+    private string _accessibleProperty = string.Empty;
 
-    public SecurableClassWithReferenceType (IObjectSecurityStrategy objectSecurityStrategy)
+    public DerivedSecurableClassWithProperties (IObjectSecurityStrategy securityStrategy)
+        : base (securityStrategy)
     {
-      _objectSecurityStrategy = objectSecurityStrategy;
     }
 
-    public IObjectSecurityStrategy GetSecurityStrategy ()
+    public override string PropertyToOverrideWithReadPermission
     {
-      return _objectSecurityStrategy;
+      get { return _accessibleProperty; }
+      set { _accessibleProperty = value; }
     }
 
-    public Type GetSecurableType ()
+    public override string PropertyToOverrideWithWritePermission
     {
-      return typeof (SecurableClassWithReferenceType<T>);
+      get { return _accessibleProperty; }
+      set { _accessibleProperty = value; }
     }
-
-    public T CustomPermissisons { [DemandPermission (TestAccessTypes.TestRead)] get; [DemandPermission (TestAccessTypes.TestEdit)] set; }
   }
 }

@@ -21,6 +21,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
@@ -125,7 +126,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       BindableObjectProvider.SetProvider (typeof (BindableObjectProviderAttribute), provider);
       Type targetType = typeof (SimpleBusinessObjectClass);
       Type concreteType = MixinTypeUtility.GetConcreteMixedType (targetType);
-      var expectedBindableObjectClass = new BindableObjectClass (concreteType, provider, new PropertyBase[0]);
+      var expectedBindableObjectClass = new BindableObjectClass (
+          concreteType,
+          provider,
+          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(),
+          new PropertyBase[0]);
 
       Expect.Call (metadataFactoryMock.CreateClassReflector (targetType, provider)).Return (classReflectorMock);
       Expect.Call (classReflectorMock.GetMetadata()).Return (expectedBindableObjectClass);

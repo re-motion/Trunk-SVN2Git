@@ -16,30 +16,13 @@
 // 
 
 using System;
-using Remotion.Security;
 
 namespace Remotion.ObjectBinding.Security.UnitTests.TestDomain
 {
-  public class SecurableClassWithReferenceType<T> : ClassWithReferenceType<T>, ISecurableObject
-      where T : class
+  public interface IMixinSecurableClass
   {
-    private readonly IObjectSecurityStrategy _objectSecurityStrategy;
-
-    public SecurableClassWithReferenceType (IObjectSecurityStrategy objectSecurityStrategy)
-    {
-      _objectSecurityStrategy = objectSecurityStrategy;
-    }
-
-    public IObjectSecurityStrategy GetSecurityStrategy ()
-    {
-      return _objectSecurityStrategy;
-    }
-
-    public Type GetSecurableType ()
-    {
-      return typeof (SecurableClassWithReferenceType<T>);
-    }
-
-    public T CustomPermissisons { [DemandPermission (TestAccessTypes.TestRead)] get; [DemandPermission (TestAccessTypes.TestEdit)] set; }
+    string MixedPropertyWithDefaultPermission { get; set; }
+    string MixedPropertyWithReadPermission { get; set; }
+    string MixedPropertyWithWritePermission { get; set; }
   }
 }

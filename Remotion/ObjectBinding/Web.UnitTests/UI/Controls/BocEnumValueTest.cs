@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
   {
     private BocEnumValueMock _bocEnumValue;
     private TypeWithEnum _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectEnumerationProperty _propertyEnumValue;
 
     public BocEnumValueTest ()
@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _propertyEnumValue =
           (IBusinessObjectEnumerationProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("EnumValue");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
     }
 

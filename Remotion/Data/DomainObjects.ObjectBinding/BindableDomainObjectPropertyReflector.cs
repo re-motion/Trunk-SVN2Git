@@ -21,6 +21,7 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using ParamList = Remotion.TypePipe.ParamList;
 using PropertyReflector = Remotion.ObjectBinding.BindableObject.PropertyReflector;
@@ -33,7 +34,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </summary>
   public class BindableDomainObjectPropertyReflector : PropertyReflector
   {
-    public static BindableDomainObjectPropertyReflector Create (IPropertyInformation propertyInfo,
+    public static BindableDomainObjectPropertyReflector Create (
+        IPropertyInformation propertyInfo,
         BindableObjectProvider businessObjectProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDefaultValueStrategy defaultValueStrategy)
@@ -43,41 +45,55 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
           ParamList.Create (propertyInfo, businessObjectProvider, domainModelConstraintProvider, defaultValueStrategy));
     }
 
-    private readonly IPropertyInformation _propertyInfo;
-    private readonly IDefaultValueStrategy _defaultValueStrategy;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
 
-    protected BindableDomainObjectPropertyReflector (IPropertyInformation propertyInfo,
+    protected BindableDomainObjectPropertyReflector (
+        IPropertyInformation propertyInfo,
         BindableObjectProvider businessObjectProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDefaultValueStrategy defaultValueStrategy)
-        : base (propertyInfo, businessObjectProvider)
+        : this (propertyInfo,
+            businessObjectProvider,
+            domainModelConstraintProvider,
+            defaultValueStrategy,
+            SafeServiceLocator.Current.GetInstance<IBindablePropertyReadAccessStrategy>(),
+            SafeServiceLocator.Current.GetInstance<IBindablePropertyWriteAccessStrategy>(),
+            SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>())
     {
-      ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
+    }
+
+    public BindableDomainObjectPropertyReflector (
+        IPropertyInformation propertyInfo,
+        BindableObjectProvider businessObjectProvider,
+        IDomainModelConstraintProvider domainModelConstraintProvider,
+        IDefaultValueStrategy defaultValueStrategy,
+        IBindablePropertyReadAccessStrategy bindablePropertyReadAccessStrategy,
+        IBindablePropertyWriteAccessStrategy bindablePropertyWriteAccessStrategy,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService)
+        : base (
+            propertyInfo,
+            businessObjectProvider,
+            defaultValueStrategy,
+            bindablePropertyReadAccessStrategy,
+            bindablePropertyWriteAccessStrategy,
+            bindableObjectGlobalizationService)
+    {
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
-      ArgumentUtility.CheckNotNull ("defaultValueStrategy", defaultValueStrategy);
 
-      _propertyInfo = propertyInfo;
       _domainModelConstraintProvider = domainModelConstraintProvider;
-      _defaultValueStrategy = defaultValueStrategy;
     }
 
     protected override bool GetIsRequired ()
     {
       if (base.GetIsRequired())
         return true;
-      return !_domainModelConstraintProvider.IsNullable (_propertyInfo);
+      return !_domainModelConstraintProvider.IsNullable (PropertyInfo);
     }
 
     protected override int? GetMaxLength ()
     {
-      return base.GetMaxLength() ?? _domainModelConstraintProvider.GetMaxLength (_propertyInfo);
-    }
-
-    protected override IDefaultValueStrategy GetDefaultValueStrategy ()
-    {
-      return _defaultValueStrategy;
+      return base.GetMaxLength() ?? _domainModelConstraintProvider.GetMaxLength (PropertyInfo);
     }
   }
 }

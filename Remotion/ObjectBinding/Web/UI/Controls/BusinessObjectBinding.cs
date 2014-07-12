@@ -389,7 +389,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IBusinessObjectProperty property = Property;
         if (dataSource == null || property == null)
           return true;
-        return property.IsAccessible (dataSource.BusinessObjectClass, dataSource.BusinessObject);
+
+        var reflectedClass = _property.ReflectedClass;
+        Assertion.IsNotNull (reflectedClass, "Property.ReflectedClass is null.");
+
+        return property.IsAccessible (dataSource.BusinessObjectClass ?? reflectedClass, dataSource.BusinessObject);
       }
     }
   }

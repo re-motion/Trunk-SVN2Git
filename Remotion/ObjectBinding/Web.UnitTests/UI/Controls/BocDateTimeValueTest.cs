@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
   {
     private BocDateTimeValueMock _bocDateTimeValue;
     private TypeWithDateTime _businessObject;
-    private BusinessObjectReferenceDataSource _dataSource;
+    private IBusinessObjectDataSource _dataSource;
     private IBusinessObjectDateTimeProperty _propertyDateTimeValue;
     private IBusinessObjectDateTimeProperty _propertyNullableDateTimeValue;
 
@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _propertyDateTimeValue = (IBusinessObjectDateTimeProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("DateTimeValue");
       _propertyNullableDateTimeValue = (IBusinessObjectDateTimeProperty) ((IBusinessObject) _businessObject).BusinessObjectClass.GetPropertyDefinition ("NullableDateTimeValue");
 
-      _dataSource = new BusinessObjectReferenceDataSource();
+      _dataSource = new StubDataSource (((IBusinessObject) _businessObject).BusinessObjectClass);
       _dataSource.BusinessObject = (IBusinessObject) _businessObject;
     }
 

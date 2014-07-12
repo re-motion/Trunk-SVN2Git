@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject
@@ -34,12 +35,26 @@ namespace Remotion.ObjectBinding.BindableObject
     private readonly BindableObjectProvider _businessObjectProvider;
     private readonly PropertyCollection _properties;
     private readonly BusinessObjectProviderAttribute _businessObjectProviderAttribute;
+    private readonly BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
-    public BindableObjectClass (Type concreteType, BindableObjectProvider businessObjectProvider, IEnumerable<PropertyBase> properties)
+    protected BindableObjectClass (
+        Type concreteType,
+        BindableObjectProvider businessObjectProvider,
+        IEnumerable<PropertyBase> properties)
+        : this (concreteType, businessObjectProvider, SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(), properties)
+    {
+    }
+
+    public BindableObjectClass (
+        Type concreteType,
+        BindableObjectProvider businessObjectProvider,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService,
+        IEnumerable<PropertyBase> properties)
     {
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
+      ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
       ArgumentUtility.CheckNotNull ("properties", properties);
 
       _targetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
@@ -47,6 +62,7 @@ namespace Remotion.ObjectBinding.BindableObject
       _businessObjectProvider = businessObjectProvider;
       _businessObjectProviderAttribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
       _properties = new PropertyCollection (properties);
+      _bindableObjectGlobalizationService = bindableObjectGlobalizationService;
 
       foreach (PropertyBase property in _properties.ToArray())
         property.SetReflectedClass (this);
@@ -57,12 +73,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <remarks> The result of this method may depend on the current culture. </remarks>
     public string GetDisplayName ()
     {
-      var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService> ();
-      if (globalizationService == null)
-        return Identifier;
-
       var type = TypeAdapter.Create (_targetType);
-      return globalizationService.GetTypeDisplayName (type, type);
+      return _bindableObjectGlobalizationService.GetTypeDisplayName (type, type);
     }
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
@@ -157,6 +169,11 @@ namespace Remotion.ObjectBinding.BindableObject
     public BusinessObjectProviderAttribute BusinessObjectProviderAttribute
     {
       get { return _businessObjectProviderAttribute; }
+    }
+
+    protected BindableObjectGlobalizationService BindableObjectGlobalizationService
+    {
+      get { return _bindableObjectGlobalizationService; }
     }
 
     /// <summary>

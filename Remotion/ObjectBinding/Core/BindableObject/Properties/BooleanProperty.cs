@@ -35,10 +35,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <remarks> The value of this property may depend on the current culture. </remarks>
     public string GetDisplayName (bool value)
     {
-      var globalizationService = BusinessObjectProvider.GetService<BindableObjectGlobalizationService> ();
-      if (globalizationService == null)
-        return value.ToString ();
-      return globalizationService.GetBooleanValueDisplayName (value);
+      return BindableObjectGlobalizationService.GetBooleanValueDisplayName (value);
     }
 
     /// <summary> Returns the default value to be assumed if the boolean property returns <see langword="null"/>. </summary>

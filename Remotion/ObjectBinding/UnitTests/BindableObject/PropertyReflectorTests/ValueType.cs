@@ -21,6 +21,7 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
 {
@@ -28,12 +29,18 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
   public class ValueType : TestBase
   {
     private BindableObjectProvider _businessObjectProvider;
+    private BindableObjectClass _bindableObjectClass;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _businessObjectProvider = new BindableObjectProvider();
+      _bindableObjectClass = new BindableObjectClass (
+          typeof (ClassWithReferenceType<SimpleReferenceType>),
+          _businessObjectProvider,
+          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(),
+          new PropertyBase[0]);
     }
 
     [Test]
@@ -52,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
     }
 
     [Test]
@@ -71,14 +78,14 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType?)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
     }
 
     [Test]
     public void GetMetadata_WithUndefinedEnum ()
     {
       IPropertyInformation IPropertyInformation = GetPropertyInfo (typeof (ClassWithUndefinedEnumValue), "Scalar");
-      PropertyReflector propertyReflector = PropertyReflector.Create(IPropertyInformation, _businessObjectProvider);
+      PropertyReflector propertyReflector = PropertyReflector.Create (IPropertyInformation, _businessObjectProvider);
 
       Assert.That (GetUnderlyingType (propertyReflector), Is.SameAs (typeof (EnumWithUndefinedValue)));
 
@@ -90,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (EnumWithUndefinedValue)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
     }
 
     [Test]
@@ -109,7 +116,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.True);
     }
 
     [Test]
@@ -128,7 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.True);
     }
 
     [Test]
@@ -147,7 +154,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.True);
     }
 
     [Test]
@@ -168,7 +175,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.ListInfo, Is.Not.Null);
       Assert.That (businessObjectProperty.ListInfo.ItemType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
     }
 
     [Test]
@@ -189,7 +196,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.ListInfo, Is.Not.Null);
       Assert.That (businessObjectProperty.ListInfo.ItemType, Is.SameAs (typeof (SimpleValueType?)));
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
     }
   }
 }

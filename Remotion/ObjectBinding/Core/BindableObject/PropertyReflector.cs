@@ -19,11 +19,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.ExtensibleEnums;
-using Remotion.FunctionalProgramming;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
-using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Remotion.Utilities;
@@ -39,23 +37,50 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     public static PropertyReflector Create (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
     {
-      return ObjectFactory.Create<PropertyReflector> (true, ParamList.Create (propertyInfo, businessObjectProvider));
+      return ObjectFactory.Create<PropertyReflector> (true,ParamList.Create (propertyInfo,businessObjectProvider));
     }
 
     private readonly IPropertyInformation _propertyInfo;
     private readonly BindableObjectProvider _businessObjectProvider;
-    private readonly IObjectSecurityAdapter _objectSecurityAdapter;
+    private readonly IDefaultValueStrategy _defaultValueStrategy;
+    private readonly IBindablePropertyReadAccessStrategy _bindablePropertyReadAccessStrategy;
+    private readonly IBindablePropertyWriteAccessStrategy _bindablePropertyWriteAccessStrategy;
+    private readonly BindableObjectGlobalizationService _bindableObjectGlobalizationService;
 
-    protected PropertyReflector (IPropertyInformation propertyInfo, BindableObjectProvider businessObjectProvider)
+    protected PropertyReflector (
+        IPropertyInformation propertyInfo,
+        BindableObjectProvider businessObjectProvider)
+        : this (
+            propertyInfo,
+            businessObjectProvider,
+            new BindableObjectDefaultValueStrategy(),
+            SafeServiceLocator.Current.GetInstance<IBindablePropertyReadAccessStrategy>(),
+            SafeServiceLocator.Current.GetInstance<IBindablePropertyWriteAccessStrategy>(),
+            SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>())
+    {
+    }
+
+    public PropertyReflector (
+        IPropertyInformation propertyInfo,
+        BindableObjectProvider businessObjectProvider,
+        IDefaultValueStrategy defaultValueStrategy,
+        IBindablePropertyReadAccessStrategy bindablePropertyReadAccessStrategy,
+        IBindablePropertyWriteAccessStrategy bindablePropertyWriteAccessStrategy,
+        BindableObjectGlobalizationService bindableObjectGlobalizationService)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
+      ArgumentUtility.CheckNotNull ("defaultValueStrategy", defaultValueStrategy);
+      ArgumentUtility.CheckNotNull ("bindablePropertyReadAccessStrategy", bindablePropertyReadAccessStrategy);
+      ArgumentUtility.CheckNotNull ("bindablePropertyWriteAccessStrategy", bindablePropertyWriteAccessStrategy);
+      ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
 
       _propertyInfo = propertyInfo;
       _businessObjectProvider = businessObjectProvider;
-      _objectSecurityAdapter = SafeServiceLocator.Current.GetAllInstances<IObjectSecurityAdapter>()
-          .SingleOrDefault (() => new InvalidOperationException ("Only a single IObjectSecurityAdapter can be registered."));
-
+      _bindablePropertyReadAccessStrategy = bindablePropertyReadAccessStrategy;
+      _bindablePropertyWriteAccessStrategy = bindablePropertyWriteAccessStrategy;
+      _bindableObjectGlobalizationService = bindableObjectGlobalizationService;
+      _defaultValueStrategy = defaultValueStrategy;
     }
 
     public IPropertyInformation PropertyInfo
@@ -190,9 +215,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return typeof (IList).IsAssignableFrom (_propertyInfo.PropertyType);
     }
 
-    protected virtual IDefaultValueStrategy GetDefaultValueStrategy ()
+    protected IDefaultValueStrategy GetDefaultValueStrategy ()
     {
-      return new BindableObjectDefaultValueStrategy ();
+      return _defaultValueStrategy;
     }
 
     private PropertyBase.Parameters CreateParameters (Type underlyingType)
@@ -206,7 +231,9 @@ namespace Remotion.ObjectBinding.BindableObject
           GetIsRequired(),
           GetIsReadOnly(),
           GetDefaultValueStrategy(),
-          _objectSecurityAdapter);
+          _bindablePropertyReadAccessStrategy,
+          _bindablePropertyWriteAccessStrategy,
+          _bindableObjectGlobalizationService);
     }
 
     private Type GetItemTypeFromAttribute ()
