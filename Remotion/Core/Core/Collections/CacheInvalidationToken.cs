@@ -118,7 +118,7 @@ namespace Remotion.Collections
 
     private long GetCurrentRevisionValueVolatile ()
     {
-      return Volatile.Read (ref _currentRevisionValue);
+      return Interlocked.Read (ref _currentRevisionValue);
     }
   }
 }
