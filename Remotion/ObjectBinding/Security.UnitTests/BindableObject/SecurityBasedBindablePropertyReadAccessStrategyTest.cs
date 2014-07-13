@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     {
       var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
 
-      var result = _strategy.CanRead (_bindableClass, bindableProperty, null);
+      var result = _strategy.CanRead (null, bindableProperty);
 
       Assert.That (result, Is.True);
     }
@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     {
       var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
 
-      var result = _strategy.CanRead (_bindableClass, bindableProperty, new ClassWithReferenceType<string>());
+      var result = _strategy.CanRead (new ClassWithReferenceType<string>(), bindableProperty);
 
       Assert.That (result, Is.True);
     }
@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 
       var bindableProperty = CreateBindableProperty (() => ((SecurableClassWithReferenceType<string>) null).CustomPermissisons);
 
-      var actualResult = _strategy.CanRead (_bindableClass, bindableProperty, _securableObject);
+      var actualResult = _strategy.CanRead (_securableObject, bindableProperty);
 
       Assert.That (actualResult, Is.EqualTo (expectedResult));
       _objectSecurityStrategyMock.VerifyAllExpectations();
@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var bindableProperty = new StubPropertyBase (
           GetPropertyParameters (PropertyInfoAdapter.Create (typeof (ClassWithReferenceType<string>).GetProperty ("PropertyWithNoGetter"))));
 
-      var actualResult = _strategy.CanRead (_bindableClass, bindableProperty, _securableObject);
+      var actualResult = _strategy.CanRead (_securableObject, bindableProperty);
 
       Assert.That (actualResult, Is.EqualTo (expectedResult));
       _objectSecurityStrategyMock.VerifyAllExpectations();

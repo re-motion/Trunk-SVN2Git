@@ -29,11 +29,10 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <summary>
     /// Evaluates if getting the <paramref name="bindableProperty"/> is supported for the <paramref name="businessObject"/>.
     /// </summary>
-    /// <param name="bindableClass">The <see cref="BindableObjectClass"/> for which the check will be performed. Must not be <see langword="null" />.</param>
+    /// <param name="businessObject">The <see cref="IBusinessObject"/> for which the check will be performed or <see langword="null" />.</param>
     /// <param name="bindableProperty">The <see cref="PropertyBase"/> for which the check will be performed. Must not be <see langword="null" />.</param>
-    /// <param name="businessObject">The <see cref="IBusinessObject"/> for which the check will be performed. May be <see langword="null" />.</param>
     /// <returns><see langword="true" /> if the <paramref name="bindableProperty"/> can be gotten.</returns>
     /// <remarks>If getting the property is not supported, the property is hidden in the UI.</remarks>
-    bool CanRead ([NotNull] BindableObjectClass bindableClass, [NotNull] PropertyBase bindableProperty, [CanBeNull] IBusinessObject businessObject);
+    bool CanRead ([CanBeNull] IBusinessObject businessObject, [NotNull] PropertyBase bindableProperty);
   }
 }

@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding.BindableObject
         if (displayNameProperty == null)
           return DisplayName;
 
-        if (displayNameProperty.IsAccessible (BusinessObjectClass, (IBusinessObject) Target))
+        if (displayNameProperty.IsAccessible ((IBusinessObject) Target))
           return DisplayName;
 
         return BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();

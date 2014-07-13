@@ -58,7 +58,7 @@ namespace Remotion.ObjectBinding
       {
         IBusinessObjectClass businessObjectClass = BusinessObjectClass;
         IBusinessObjectProperty displayNameProperty = businessObjectClass.GetPropertyDefinition ("DisplayName");
-        if (displayNameProperty.IsAccessible (businessObjectClass, this))
+        if (displayNameProperty.IsAccessible (this))
           return DisplayName;
 
         return businessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();

@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       var displayNameProperty = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
       _bindablePropertyReadAccessStrategyMock
-          .Expect (_ => _.CanRead (bindableObjectMixin.BusinessObjectClass, displayNameProperty, securableObject))
+          .Expect (_ => _.CanRead (securableObject, displayNameProperty))
           .Return (true);
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       var displayNameProperty = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
       _bindablePropertyReadAccessStrategyMock
-          .Expect (_ => _.CanRead (bindableObjectMixin.BusinessObjectClass, displayNameProperty, securableObject))
+          .Expect (_ => _.CanRead (securableObject, displayNameProperty))
           .Return (false);
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;

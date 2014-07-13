@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyWithDefaultPermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -102,7 +102,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyWithDefaultPermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyWithReadPermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyWithReadPermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.False);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.False);
     }
 
     [Test]
@@ -169,7 +169,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyWithWritePermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyWithWritePermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -215,7 +215,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("MixedPropertyWithDefaultPermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -238,7 +238,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("MixedPropertyWithDefaultPermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -261,7 +261,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("MixedPropertyWithReadPermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -282,7 +282,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("MixedPropertyWithReadPermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.False);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.False);
     }
 
     [Test]
@@ -305,7 +305,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("MixedPropertyWithWritePermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -328,7 +328,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("MixedPropertyWithWritePermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.True);
     }
 
     //derived
@@ -353,7 +353,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyToOverrideWithWritePermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -376,7 +376,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyToOverrideWithWritePermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -399,7 +399,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyToOverrideWithReadPermission");
 
-      Assert.That (property.IsReadOnly (businessObjectClass, bindableSecurableObject), Is.True);
+      Assert.That (property.IsReadOnly (bindableSecurableObject), Is.True);
     }
 
     [Test]
@@ -420,7 +420,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       var businessObjectClass = bindableSecurableObject.BusinessObjectClass;
       var property = businessObjectClass.GetPropertyDefinition ("PropertyToOverrideWithReadPermission");
 
-      Assert.That (property.IsAccessible (businessObjectClass, bindableSecurableObject), Is.False);
+      Assert.That (property.IsAccessible (bindableSecurableObject), Is.False);
     }
 
     private IBusinessObject CreateSecurableClassWithProperties (ISecurityContextFactory securityContextFactoryStub)

@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     {
       var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
 
-      var result = _strategy.CanWrite (_bindableClass, bindableProperty, null);
+      var result = _strategy.CanWrite (null, bindableProperty);
 
       Assert.That (result, Is.True);
     }
@@ -94,7 +94,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     {
       var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
 
-      var result = _strategy.CanWrite (_bindableClass, bindableProperty, new ClassWithReferenceType<string>());
+      var result = _strategy.CanWrite (new ClassWithReferenceType<string>(), bindableProperty);
 
       Assert.That (result, Is.True);
     }
@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 
       var bindableProperty = CreateBindableProperty (() => ((SecurableClassWithReferenceType<string>) null).CustomPermissisons);
 
-      var actualResult = _strategy.CanWrite (_bindableClass, bindableProperty, _securableObject);
+      var actualResult = _strategy.CanWrite (_securableObject, bindableProperty);
 
       Assert.That (actualResult, Is.EqualTo (expectedResult));
       _objectSecurityStrategyMock.VerifyAllExpectations();
@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 
       var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).PropertyWithNoSetter));
 
-      var actualResult = _strategy.CanWrite (_bindableClass, bindableProperty, _securableObject);
+      var actualResult = _strategy.CanWrite (_securableObject, bindableProperty);
 
       Assert.That (actualResult, Is.EqualTo (expectedResult));
       _objectSecurityStrategyMock.VerifyAllExpectations();

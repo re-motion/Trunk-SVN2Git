@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
     }
 
     [Test]
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType?)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
     }
 
     [Test]
@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (EnumWithUndefinedValue)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.True);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
     }
 
     [Test]
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.True);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
     }
 
     [Test]
@@ -154,7 +154,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.PropertyType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.True);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.True);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
     }
 
     [Test]
@@ -175,7 +175,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.ListInfo, Is.Not.Null);
       Assert.That (businessObjectProperty.ListInfo.ItemType, Is.SameAs (typeof (SimpleValueType)));
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
     }
 
     [Test]
@@ -196,7 +196,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.ListInfo, Is.Not.Null);
       Assert.That (businessObjectProperty.ListInfo.ItemType, Is.SameAs (typeof (SimpleValueType?)));
       Assert.That (businessObjectProperty.IsRequired, Is.False);
-      Assert.That (businessObjectProperty.IsReadOnly (_bindableObjectClass, null), Is.False);
+      Assert.That (businessObjectProperty.IsReadOnly (null), Is.False);
     }
   }
 }

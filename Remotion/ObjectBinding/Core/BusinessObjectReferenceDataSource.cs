@@ -181,10 +181,7 @@ namespace Remotion.ObjectBinding
         if (_dataSource == null || _property == null)
           return true;
 
-        var reflectedClass = _property.ReflectedClass;
-        Assertion.IsNotNull (reflectedClass, "ReferenceProperty.ReflectedClass is null.");
-
-        return _property.IsAccessible (_dataSource.BusinessObjectClass ?? reflectedClass, _dataSource.BusinessObject);
+        return _property.IsAccessible (_dataSource.BusinessObject);
       }
     }
 

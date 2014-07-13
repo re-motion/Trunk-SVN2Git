@@ -163,7 +163,7 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.Results
 
     private void ExpectOnceOnPropertyIsAccessible (bool returnValue)
     {
-      _propertyMock.Expect (_ => _.IsAccessible (_businessObjectClassWithIdentityStub, _businessObjectWithIdentityMock))
+      _propertyMock.Expect (_ => _.IsAccessible (_businessObjectWithIdentityMock))
                    .Return (returnValue);
     }
 

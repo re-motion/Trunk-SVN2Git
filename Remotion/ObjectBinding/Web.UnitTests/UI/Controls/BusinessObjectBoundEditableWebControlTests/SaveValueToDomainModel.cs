@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEd
       _propertyStub.Stub (_ => _.ReflectedClass).Return (_businessObjectClassStub);
       _readOnlyPropertyStub = MockRepository.GenerateStub<IBusinessObjectProperty>();
       _readOnlyPropertyStub.Stub (_ => _.ReflectedClass).Return (_businessObjectClassStub);
-      _readOnlyPropertyStub.Stub (stub => stub.IsReadOnly (Arg<IBusinessObjectClass>.Is.Anything, Arg<IBusinessObject>.Is.Anything)).Return (true);
+      _readOnlyPropertyStub.Stub (stub => stub.IsReadOnly (Arg<IBusinessObject>.Is.Anything)).Return (true);
       _control = new TestableBusinessObjectBoundEditableWebControl();
     }
 

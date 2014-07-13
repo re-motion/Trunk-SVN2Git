@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void CanRead_WithoutStrategies_ReturnsTrue ()
     {
       var strategy = new CompundBindablePropertyReadAccessStrategy (Enumerable.Empty<IBindablePropertyReadAccessStrategy>());
-      var result = strategy.CanRead (_bindableClass, _property, _businessObject);
+      var result = strategy.CanRead (_businessObject, _property);
 
       Assert.That (result, Is.True);
     }
@@ -80,13 +80,13 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     {
       using (_mockRepository.Ordered())
       {
-        _innerStrategy1.Expect (mock => mock.CanRead (_bindableClass, _property, null)).Return (true);
-        _innerStrategy2.Expect (mock => mock.CanRead (_bindableClass, _property, null)).Return (true);
-        _innerStrategy3.Expect (mock => mock.CanRead (_bindableClass, _property, null)).Return (true);
+        _innerStrategy1.Expect (mock => mock.CanRead (null, _property)).Return (true);
+        _innerStrategy2.Expect (mock => mock.CanRead (null, _property)).Return (true);
+        _innerStrategy3.Expect (mock => mock.CanRead (null, _property)).Return (true);
       }
       _mockRepository.ReplayAll();
 
-      var result = _strategy.CanRead (_bindableClass, _property, null);
+      var result = _strategy.CanRead (null, _property);
 
       Assert.That (result, Is.True);
 
@@ -98,13 +98,13 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     {
       using (_mockRepository.Ordered())
       {
-        _innerStrategy1.Expect (mock => mock.CanRead (_bindableClass, _property, _businessObject)).Return (true);
-        _innerStrategy2.Expect (mock => mock.CanRead (_bindableClass, _property, _businessObject)).Return (true);
-        _innerStrategy3.Expect (mock => mock.CanRead (_bindableClass, _property, _businessObject)).Return (true);
+        _innerStrategy1.Expect (mock => mock.CanRead (_businessObject, _property)).Return (true);
+        _innerStrategy2.Expect (mock => mock.CanRead (_businessObject, _property)).Return (true);
+        _innerStrategy3.Expect (mock => mock.CanRead (_businessObject, _property)).Return (true);
       }
       _mockRepository.ReplayAll();
 
-      var result = _strategy.CanRead (_bindableClass, _property, _businessObject);
+      var result = _strategy.CanRead (_businessObject, _property);
 
       Assert.That (result, Is.True);
 
@@ -116,13 +116,13 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     {
       using (_mockRepository.Ordered())
       {
-        _innerStrategy1.Expect (mock => mock.CanRead (_bindableClass, _property, _businessObject)).Return (true);
-        _innerStrategy2.Expect (mock => mock.CanRead (_bindableClass, _property, _businessObject)).Return (false);
-        _innerStrategy3.Expect (mock => mock.CanRead (_bindableClass, _property, _businessObject)).Repeat.Never();
+        _innerStrategy1.Expect (mock => mock.CanRead (_businessObject, _property)).Return (true);
+        _innerStrategy2.Expect (mock => mock.CanRead (_businessObject, _property)).Return (false);
+        _innerStrategy3.Expect (mock => mock.CanRead (_businessObject, _property)).Repeat.Never();
       }
       _mockRepository.ReplayAll();
 
-      var result = _strategy.CanRead (_bindableClass, _property, _businessObject);
+      var result = _strategy.CanRead (_businessObject, _property);
 
       Assert.That (result, Is.False);
 

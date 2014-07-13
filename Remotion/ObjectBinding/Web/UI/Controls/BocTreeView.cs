@@ -407,7 +407,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (referenceProperty != null
               && referenceProperty.IsList
               && referenceProperty.ReferenceClass is IBusinessObjectClassWithIdentity
-              && referenceProperty.IsAccessible (parentBusinessObject.BusinessObjectClass, parentBusinessObject))
+              && referenceProperty.IsAccessible (parentBusinessObject))
           {
             referenceListPropertyInfos.Add (new BusinessObjectPropertyTreeNodeInfo (referenceProperty));
           }

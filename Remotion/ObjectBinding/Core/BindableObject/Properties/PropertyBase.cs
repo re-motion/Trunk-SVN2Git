@@ -207,16 +207,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary> Indicates whether this property can be accessed by the user. </summary>
-    /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> of the <paramref name="obj"/>. </param>
     /// <param name="obj"> The object to evaluate this property for, or <see langword="null"/>. </param>
     /// <returns> <see langword="true"/> if the user can access this property. </returns>
     /// <remarks> The result may depend on the class, the user's authorization and/or the instance value. </remarks>
-    public bool IsAccessible (IBusinessObjectClass objectClass, IBusinessObject obj)
+    public bool IsAccessible (IBusinessObject obj)
     {
-      var bindableClass = ArgumentUtility.CheckNotNullAndType<BindableObjectClass> ("objectClass", objectClass);
       // obj can be null
 
-      return _bindablePropertyReadAccessStrategy.CanRead (bindableClass, this, obj);
+      return _bindablePropertyReadAccessStrategy.CanRead (obj, this);
     }
 
     public object GetValue (IBusinessObject obj)
@@ -247,19 +245,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     }
 
     /// <summary> Indicates whether this property can be modified by the user. </summary>
-    /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> of the <paramref name="obj"/>. </param>
     /// <param name="obj"> The object to evaluate this property for, or <see langword="null"/>. </param>
     /// <returns> <see langword="true"/> if the user can set this property. </returns>
     /// <remarks> The result may depend on the user's authorization and/or the object. </remarks>
-    public bool IsReadOnly (IBusinessObjectClass objectClass, IBusinessObject obj)
+    public bool IsReadOnly (IBusinessObject obj)
     {
-      var bindableClass = ArgumentUtility.CheckNotNullAndType<BindableObjectClass> ("objectClass", objectClass);
       // obj can be null
 
       if (_isReadOnly)
         return true;
 
-      return !_bindablePropertyWriteAccessStrategy.CanWrite (bindableClass, this, obj);
+      return !_bindablePropertyWriteAccessStrategy.CanWrite (obj, this);
     }
 
     /// <summary> Gets the <see cref="BindableObjectProvider"/> for this property. </summary>

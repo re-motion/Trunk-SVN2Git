@@ -46,11 +46,10 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
 
-    public bool CanRead (BindableObjectClass bindableClass, PropertyBase bindableProperty, IBusinessObject businessObject)
+    public bool CanRead (IBusinessObject businessObject, PropertyBase bindableProperty)
     {
-      ArgumentUtility.DebugCheckNotNull ("bindableClass", bindableClass);
-      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
       // businessObject can be null
+      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
 
       // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
       // return _strategies.All (s => s.CanRead (propertyBase, businessObject));
@@ -58,7 +57,7 @@ namespace Remotion.ObjectBinding.BindableObject
       // ReSharper disable ForCanBeConvertedToForeach
       for (int i = 0; i < _bindablePropertyReadAccessStrategies.Count; i++)
       {
-        if (!_bindablePropertyReadAccessStrategies[i].CanRead (bindableClass, bindableProperty, businessObject))
+        if (!_bindablePropertyReadAccessStrategies[i].CanRead (businessObject, bindableProperty))
           return false;
       }
       return true;

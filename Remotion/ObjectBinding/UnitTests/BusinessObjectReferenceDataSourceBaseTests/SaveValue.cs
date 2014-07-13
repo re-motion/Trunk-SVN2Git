@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectReferenceDataSourceBase
       _readOnlyReferencePropertyStub.Stub (_ => _.ReflectedClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _readOnlyReferencePropertyStub.Stub (stub => stub.ReferenceClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
       _readOnlyReferencePropertyStub
-          .Stub (stub => stub.IsReadOnly (Arg<IBusinessObjectClass>.Is.Anything, Arg<IBusinessObject>.Is.Anything))
+          .Stub (stub => stub.IsReadOnly (Arg<IBusinessObject>.Is.Anything))
           .Return (true);
     }
 

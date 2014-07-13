@@ -46,11 +46,10 @@ namespace Remotion.ObjectBinding.Security.BindableObject
       _securityClient = SecurityClient.CreateSecurityClientFromConfiguration();
     }
 
-    public bool CanWrite (BindableObjectClass bindableClass, PropertyBase bindableProperty, IBusinessObject businessObject)
+    public bool CanWrite (IBusinessObject businessObject, PropertyBase bindableProperty)
     {
-      ArgumentUtility.DebugCheckNotNull ("bindableClass", bindableClass);
-      ArgumentUtility.CheckNotNull ("bindableProperty", bindableProperty);
       // businessObject can be null
+      ArgumentUtility.CheckNotNull ("bindableProperty", bindableProperty);
 
       var securableObject = businessObject as ISecurableObject;
       if (securableObject == null)

@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
         if (!propertyEnumerator.HasNext)
           return new EvaluatedBusinessObjectPropertyPathResult (currentObject, currentProperty);
 
-        if (!currentProperty.IsAccessible (currentObject.BusinessObjectClass, currentObject))
+        if (!currentProperty.IsAccessible (currentObject))
         {
           HandlePropertyAccessDenied (unreachableValueBehavior, propertyIndex);
           return new NotAccessibleBusinessObjectPropertyPathResult (currentObject.BusinessObjectClass.BusinessObjectProvider);

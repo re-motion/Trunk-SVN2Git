@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       Assert.That (propertyBase.PropertyInfo, Is.SameAs (propertyInfo));
       Assert.That (propertyBase.PropertyType, Is.SameAs (propertyInfo.PropertyType));
       Assert.That (propertyBase.IsRequired, Is.True);
-      Assert.That (propertyBase.IsReadOnly (_bindableObjectClass, null), Is.True);
+      Assert.That (propertyBase.IsReadOnly (null), Is.True);
       Assert.That (propertyBase.BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
       Assert.That (((IBusinessObjectProperty) propertyBase).BusinessObjectProvider, Is.SameAs (_bindableObjectProvider));
     }

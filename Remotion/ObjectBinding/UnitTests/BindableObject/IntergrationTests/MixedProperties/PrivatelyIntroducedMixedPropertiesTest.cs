@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Mixe
       var businessObjectClass = businessObject.BusinessObjectClass;
 
       var property = businessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetter");
-      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.True);
+      Assert.That (property.IsReadOnly (businessObject), Is.True);
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Mixe
       var businessObjectClass = businessObject.BusinessObjectClass;
 
       var property = businessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetterAndSetter");
-      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.False);
+      Assert.That (property.IsReadOnly (businessObject), Is.False);
     }
 
     [Test]
@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Mixe
       var businessObject = (IBusinessObject) ObjectFactory.Create<TargetClassWithPrivatelyIntroducedMembers>();
 
       var property = businessObject.BusinessObjectClass.GetPropertyDefinition ("ImplicitPropertyWithGetterAndImplementationOnlySetter");
-      Assert.That (property.IsReadOnly (businessObject.BusinessObjectClass, businessObject), Is.True);
+      Assert.That (property.IsReadOnly (businessObject), Is.True);
     }
 
     [Test]
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Mixe
       var businessObjectClass = businessObject.BusinessObjectClass;
 
       var property = businessObjectClass.GetPropertyDefinition ("ExplicitPropertyWithGetter");
-      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.True);
+      Assert.That (property.IsReadOnly (businessObject), Is.True);
     }
 
     [Test]
@@ -111,7 +111,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.IntergrationTests.Mixe
       var businessObjectClass = businessObject.BusinessObjectClass;
 
       var property = businessObjectClass.GetPropertyDefinition ("ExplicitPropertyWithGetterAndSetter");
-      Assert.That (property.IsReadOnly (businessObjectClass, businessObject), Is.False);
+      Assert.That (property.IsReadOnly (businessObject), Is.False);
     }
 
     [Test]

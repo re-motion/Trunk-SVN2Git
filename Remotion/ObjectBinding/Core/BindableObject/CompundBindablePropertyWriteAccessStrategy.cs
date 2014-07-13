@@ -44,11 +44,10 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return _bindablePropertyWriteAccessStrategies; }
     }
 
-    public bool CanWrite (BindableObjectClass bindableClass, PropertyBase bindableProperty, IBusinessObject businessObject)
+    public bool CanWrite (IBusinessObject businessObject, PropertyBase bindableProperty)
     {
-      ArgumentUtility.DebugCheckNotNull ("bindableClass", bindableClass);
-      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
       // businessObject can be null
+      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
 
       // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
       // return _strategies.All (s => s.CanRead (propertyBase, businessObject));
@@ -56,7 +55,7 @@ namespace Remotion.ObjectBinding.BindableObject
       // ReSharper disable ForCanBeConvertedToForeach
       for (int i = 0; i < _bindablePropertyWriteAccessStrategies.Count; i++)
       {
-        if (!_bindablePropertyWriteAccessStrategies[i].CanWrite (bindableClass, bindableProperty, businessObject))
+        if (!_bindablePropertyWriteAccessStrategies[i].CanWrite (businessObject, bindableProperty))
           return false;
       }
       return true;

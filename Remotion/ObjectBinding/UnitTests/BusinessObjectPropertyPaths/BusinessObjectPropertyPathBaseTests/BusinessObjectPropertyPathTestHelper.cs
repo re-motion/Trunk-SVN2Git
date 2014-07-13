@@ -157,7 +157,7 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessO
         IBusinessObjectProperty property, 
         bool returnValue)
     {
-      Expect.Call (property.IsAccessible (businessObjectClass, businessObject)).Return (returnValue);
+      Expect.Call (property.IsAccessible (businessObject)).Return (returnValue);
     }
   }
 }

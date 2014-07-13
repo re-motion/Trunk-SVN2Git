@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       bool value = true;
 
       foreach (var propertyDefinition in obj.BusinessObjectClass.GetPropertyDefinitions())
-        Assert.That (propertyDefinition.IsAccessible (obj.BusinessObjectClass, obj));
+        Assert.That (propertyDefinition.IsAccessible (obj));
 
       var gcCounter = new GCCounter();
       gcCounter.BeginCount();
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        value ^= property.IsAccessible (obj.BusinessObjectClass, obj);
+        value ^= property.IsAccessible (obj);
       stopwatch.Stop();
       gcCounter.EndCount();
 
