@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Create_CacheInvalidationTokenOverload ()
     {
-      var cacheInvalidationToken = new CacheInvalidationToken();
+      var cacheInvalidationToken = CacheInvalidationToken.Create();
       var result = CacheFactory.Create<string, int> (cacheInvalidationToken);
 
       Assert.That (result, Is.TypeOf (typeof (InvalidationTokenBasedCacheDecorator<string, int>)));
@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Create_CacheInvalidationTokenOverload_IEqualityComparerOverload ()
     {
-      var cacheInvalidationToken = new CacheInvalidationToken();
+      var cacheInvalidationToken = CacheInvalidationToken.Create();
       var result = CacheFactory.Create<string, int> (cacheInvalidationToken, _comparer);
 
       Assert.That (result, Is.TypeOf (typeof (InvalidationTokenBasedCacheDecorator<string, int>)));
@@ -93,7 +93,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLocking_CacheInvalidationTokenOverload ()
     {
-      var cacheInvalidationToken = new CacheInvalidationToken();
+      var cacheInvalidationToken = CacheInvalidationToken.CreatWithLocking();
       var result = CacheFactory.CreateWithLocking<string, int> (cacheInvalidationToken);
 
       Assert.That (result, Is.TypeOf (typeof (LockingCacheDecorator<string, int>)));
@@ -119,7 +119,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLocking_CacheInvalidationTokenOverload_IEqualityComparerOverload ()
     {
-      var cacheInvalidationToken = new CacheInvalidationToken();
+      var cacheInvalidationToken = CacheInvalidationToken.CreatWithLocking();
       var result = CacheFactory.CreateWithLocking<string, int> (cacheInvalidationToken, _comparer);
 
       Assert.That (result, Is.TypeOf (typeof (LockingCacheDecorator<string, int>)));
@@ -151,7 +151,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLazyLocking_CacheInvalidationTokenOverload ()
     {
-      var cacheInvalidationToken = new CacheInvalidationToken();
+      var cacheInvalidationToken = CacheInvalidationToken.CreatWithLocking();
       var result = CacheFactory.CreateWithLazyLocking<string, object> (cacheInvalidationToken);
 
       Assert.That (result, Is.TypeOf (typeof (LazyLockingCachingAdapter<string, object>)));
@@ -200,7 +200,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void CreateWithLazyLocking_CacheInvalidationTokenOverload_IEqualityComparerOverload ()
     {
-      var cacheInvalidationToken = new CacheInvalidationToken();
+      var cacheInvalidationToken = CacheInvalidationToken.CreatWithLocking();
       var result = CacheFactory.CreateWithLazyLocking<string, object> (cacheInvalidationToken, _comparer);
 
       Assert.That (result, Is.TypeOf (typeof (LazyLockingCachingAdapter<string, object>)));

@@ -23,7 +23,7 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.UnitTests.Collections
 {
   [TestFixture]
-  public class CacheInvalidationTokenTest
+  public class LockingCacheInvalidationTokenTest
   {
 #if DEBUG
     [Ignore ("Skipped if DEBUG build")]
@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void GetCurrent_FromSameCacheInvalidationToken_ReturnsSameRevisionTwice ()
     {
-      var token = CacheInvalidationToken.Create();
+      var token = CacheInvalidationToken.CreatWithLocking();
 
       Assert.That (token.GetCurrent(), Is.EqualTo (token.GetCurrent()));
     }
@@ -39,8 +39,8 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void GetCurrent_FromDifferentCacheInvalidationTokens_ReturnsDifferentRevisions ()
     {
-      var token1 = CacheInvalidationToken.Create();
-      var token2 = CacheInvalidationToken.Create();
+      var token1 = CacheInvalidationToken.CreatWithLocking();
+      var token2 = CacheInvalidationToken.CreatWithLocking();
 
       if (token1.GetHashCode() == token2.GetHashCode())
       {
@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void IsCurrent_WithCurrentRevision_ReturnsTrue ()
     {
-      var token = CacheInvalidationToken.Create();
+      var token = CacheInvalidationToken.CreatWithLocking();
 
       var revision = token.GetCurrent();
 
@@ -65,7 +65,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void IsCurrent_WithInvalidatedRevision_ReturnsFalse ()
     {
-      var token = CacheInvalidationToken.Create();
+      var token = CacheInvalidationToken.CreatWithLocking();
 
       var revision = token.GetCurrent();
       token.Invalidate();
@@ -79,8 +79,8 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void IsCurrent_WithRevisionFromDifferentToken_ThrowsArgumentException ()
     {
-      var token1 = CacheInvalidationToken.Create();
-      var token2 = CacheInvalidationToken.Create();
+      var token1 = CacheInvalidationToken.CreatWithLocking();
+      var token2 = CacheInvalidationToken.CreatWithLocking();
 
       Assert.That (
           () => token2.IsCurrent (token1.GetCurrent()),
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void IsCurrent_WithRevisionFromDefaultConstructor_ThrowsArgumentException ()
     {
-      var token = CacheInvalidationToken.Create();
+      var token = CacheInvalidationToken.CreatWithLocking();
 
       Assert.That (
           () => token.IsCurrent (new CacheInvalidationToken.Revision()),
@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Serialization ()
     {
-      var token = CacheInvalidationToken.Create();
+      var token = CacheInvalidationToken.CreatWithLocking();
       var revision = token.GetCurrent();
 
       var deserializedObjects = Serializer.SerializeAndDeserialize (new object[] { token, revision });

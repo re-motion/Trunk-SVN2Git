@@ -257,6 +257,7 @@
     </Compile>
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CacheFactoryTest.cs" />
+    <Compile Include="Collections\LockingCacheInvalidationTokenTest.cs" />
     <Compile Include="Collections\CacheInvalidationTokenTest.cs" />
     <Compile Include="Collections\CollectionExtensionsTest.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />

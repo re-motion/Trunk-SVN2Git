@@ -93,7 +93,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
     protected virtual IObjectSecurityStrategy CreateSecurityStrategy ()
     {
       return new DomainObjectSecurityStrategyDecorator (
-          new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+          new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()),
           this,
           RequiredSecurityForStates.None);
     }

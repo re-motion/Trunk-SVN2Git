@@ -29,7 +29,7 @@ namespace Remotion.UnitTests.Collections
     public void GetOrCreateValue_WithValueInCache_ReturnsValue ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
       cache.Add (key, "Value");
 
@@ -42,7 +42,7 @@ namespace Remotion.UnitTests.Collections
     public void GetOrCreateValue_WithValueNotInCache_CreatedValue_ReturnsValue ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
 
       var value = decorator.GetOrCreateValue (key, o => "Value");
@@ -58,7 +58,7 @@ namespace Remotion.UnitTests.Collections
     public void GetOrCreateValue_AfterTokenWasInvalidated_CreatesNewValue_ReturnsValue ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
       cache.Add (key, "Value1");
 
@@ -77,7 +77,7 @@ namespace Remotion.UnitTests.Collections
     public void GetOrCreateValue_AfterTokenWasInvalidated_RefreshesRevision_ReturnsValue ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
       cache.Add (key, "Value1");
 
@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue_WithValueInCache_ReturnsTrueAndSetsOutValue ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
       cache.Add (key, "Value");
 
@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue_WithValueNotInCache_ReturnsFalse ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
 
       string value;
@@ -123,7 +123,7 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue_AfterTokenWasInvalidated_ReturnsFalse ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
       cache.Add (key, "Value");
 
@@ -144,7 +144,7 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue_AfterTokenWasInvalidated_RefreshesRevision_ReturnsFalse ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
 
       decorator.CacheInvalidationToken.Invalidate();
@@ -166,7 +166,7 @@ namespace Remotion.UnitTests.Collections
     public void Clear_ClearsInnerCache ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
       var key = new object();
       cache.Add (key, "Value");
 
@@ -181,7 +181,7 @@ namespace Remotion.UnitTests.Collections
     public void Clear_DoesNotInvalidateToken ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
 
       var revision = decorator.CacheInvalidationToken.GetCurrent();
 
@@ -194,7 +194,7 @@ namespace Remotion.UnitTests.Collections
     public void Clear_RefreshesRevision ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
 
       decorator.CacheInvalidationToken.Invalidate();
       ((ICache<object, string>) decorator).Clear();
@@ -212,7 +212,7 @@ namespace Remotion.UnitTests.Collections
     public void IsNull_WithNonNullCache_ReturnsFalse ()
     {
       var cache = new Cache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
 
       Assert.That (((ICache<object, string>) decorator).IsNull, Is.False);
     }
@@ -221,7 +221,7 @@ namespace Remotion.UnitTests.Collections
     public void IsNull_WithNullCache_ReturnsTrue ()
     {
       var cache = new NullCache<object, string>();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
 
       Assert.That (((ICache<object, string>) decorator).IsNull, Is.True);
     }
@@ -230,7 +230,7 @@ namespace Remotion.UnitTests.Collections
     public void Serializable ()
     {
       var cache = new Cache<object, string>();
-      var invalidationTokenBasedCacheDecorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, new CacheInvalidationToken());
+      var invalidationTokenBasedCacheDecorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, CacheInvalidationToken.Create());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (invalidationTokenBasedCacheDecorator);
 

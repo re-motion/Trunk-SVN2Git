@@ -49,7 +49,7 @@ namespace Remotion.Security.UnitTests.Core.ObjectSecurityStrategyTests
       _securityContextFactoryStub = MockRepository.GenerateStub<ISecurityContextFactory>();
       _securityContextFactoryStub.Stub (_ => _.CreateSecurityContext()).Return (_context);
 
-      _cacheInvalidationToken = new CacheInvalidationToken();
+      _cacheInvalidationToken = CacheInvalidationToken.Create();
       _strategy = new ObjectSecurityStrategy (_securityContextFactoryStub, _accessTypeFilterMock, _cacheInvalidationToken);
     }
 

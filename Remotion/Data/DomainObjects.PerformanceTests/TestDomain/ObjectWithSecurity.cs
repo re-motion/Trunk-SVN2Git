@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
         _domainObjectSecurityStrategy =
             new ThreadLocalReEntrancyGuaredObjectSecurityDecorator (
                 new DomainObjectSecurityStrategyDecorator (
-                    new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+                    new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()),
                     this,
                     RequiredSecurityForStates.NewAndDeleted));
       }

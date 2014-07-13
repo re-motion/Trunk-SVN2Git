@@ -45,7 +45,7 @@ namespace Remotion.Security.UnitTests.Core.ObjectSecurityStrategyTests
       _context = SecurityContext.Create (typeof (SecurableObject), "owner", "group", "tenant", new Dictionary<string, Enum>(), new Enum[0]);
       _securityContextFactoryStub.Stub (_ => _.CreateSecurityContext()).Return (_context);
 
-      _cacheInvalidationToken = new CacheInvalidationToken();
+      _cacheInvalidationToken = CacheInvalidationToken.Create();
       _strategy = new ObjectSecurityStrategy (_securityContextFactoryStub, NullAccessTypeFilter.Instance, _cacheInvalidationToken);
     }
 

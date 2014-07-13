@@ -63,7 +63,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Delete) });
 
       ISecurableObject securableObject = new SecurableObject (
-          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
+          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()));
       var methodInfo = typeof (SecurableObject).GetMethod ("Delete", new Type[0]);
 
       var hasMethodAccess = _securityClient.HasMethodAccess (securableObject, methodInfo);
@@ -83,7 +83,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Create) });
 
       ISecurableObject securableObject = new DerivedSecurableObject (
-          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
+          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()));
       var methodInfo = typeof (DerivedSecurableObject).GetMethod ("Make");
 
       var hasMethodAccess = _securityClient.HasMethodAccess (securableObject, methodInfo);
@@ -153,7 +153,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       ISecurableObject securableObject = new SecurableObject (
-          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
+          new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()));
 
       var hasMethodAccess = _securityClient.HasPropertyReadAccess (securableObject, "IsVisible");
 

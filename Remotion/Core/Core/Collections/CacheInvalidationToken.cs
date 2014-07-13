@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Threading;
 
 namespace Remotion.Collections
 {
@@ -28,9 +27,10 @@ namespace Remotion.Collections
   /// If the <see cref="CacheInvalidationToken.Revision"/> is part of a serialized instance, the associated <see cref="CacheInvalidationToken"/> must also be serialized.
   /// </note>
   /// </remarks>
+  /// <seealso cref="LockingCacheInvalidationToken"/>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public sealed class CacheInvalidationToken
+  public abstract class CacheInvalidationToken
   {
     /// <summary>Represents a cache revision for the <see cref="CacheInvalidationToken"/> from which it was created.</summary>
     /// <threadsafety static="true" instance="true" />
@@ -79,18 +79,30 @@ namespace Remotion.Collections
 #endif
     }
 
-    private long _currentRevisionValue;
-
-    public CacheInvalidationToken ()
+    /// <summary>
+    /// Creates a non-threadsafe version of the <see cref="CacheInvalidationToken"/> class.
+    /// </summary>
+    public static CacheInvalidationToken Create ()
     {
-      // Use the instance's hash-code as revision seed value to allow for a reasonably different number space. 
-      // The hash-code is often different between reference types and therefor adds a bit of randomness to the revisions.
-      _currentRevisionValue = Math.Abs (GetHashCode()) * -1;
+      return new CacheInvalidationTokenImplementation();
+    }
+
+    /// <summary>
+    /// Creates a threadsafe version of the <see cref="CacheInvalidationToken"/> class.
+    /// </summary>
+    public static LockingCacheInvalidationToken CreatWithLocking ()
+    {
+      return new LockingCacheInvalidationToken();
+    }
+
+    // Prevent creating derived types outside of what's predefined.
+    internal CacheInvalidationToken ()
+    {
     }
 
     public Revision GetCurrent ()
     {
-      return new Revision (GetCurrentRevisionValueVolatile(), this);
+      return new Revision (GetCurrentRevisionValue(), this);
     }
 
     public bool IsCurrent (Revision revision)
@@ -108,17 +120,11 @@ namespace Remotion.Collections
         throw new ArgumentException ("The Revision used for the comparision was not created by the current CacheInvalidationToken.", "revision");
 #endif
 
-      return GetCurrentRevisionValueVolatile() == revision.Value;
+      return GetCurrentRevisionValue() == revision.Value;
     }
 
-    public void Invalidate ()
-    {
-      Interlocked.Increment (ref _currentRevisionValue);
-    }
+    public abstract void Invalidate ();
 
-    private long GetCurrentRevisionValueVolatile ()
-    {
-      return Interlocked.Read (ref _currentRevisionValue);
-    }
+    protected abstract long GetCurrentRevisionValue ();
   }
 }

@@ -287,7 +287,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
       return new DomainObjectSecurityStrategyDecorator (
-          new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken()),
+          new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()),
           this,
           RequiredSecurityForStates.NewAndDeleted);
     }

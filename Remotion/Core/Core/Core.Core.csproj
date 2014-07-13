@@ -225,6 +225,7 @@
     </Compile>
     <Compile Include="Collections\CacheFactory.cs" />
     <Compile Include="Collections\CacheInvalidationToken.cs" />
+    <Compile Include="Collections\CacheInvalidationTokenImplementation.cs" />
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
     <Compile Include="Collections\ExpiringDataStore.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Collections\LazyLockingCachingAdapter.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
+    <Compile Include="Collections\LockingCacheInvalidationToken.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
     <Compile Include="Configuration\ServiceLocation\IServiceLocationConfiguration.cs" />
     <Compile Include="Configuration\ServiceLocation\ServiceLocationConfiguration.cs" />

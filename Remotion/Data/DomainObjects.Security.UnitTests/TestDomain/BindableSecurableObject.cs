@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.TestDomain
     protected override void OnLoaded (LoadMode loadMode)
     {
       base.OnLoaded (loadMode);
-      _securityStrategy = new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, new CacheInvalidationToken());
+      _securityStrategy = new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create());
     }
 
     public IObjectSecurityStrategy GetSecurityStrategy ()

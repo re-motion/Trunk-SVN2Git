@@ -614,7 +614,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       return (IBusinessObject)
           BindableSecurableObject.NewObject (
               _clientTransaction,
-              new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
+              new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()));
     }
 
     private IBusinessObject CreateDerivedBindableSecurableObject (ISecurityContextFactory securityContextFactoryStub)
@@ -622,7 +622,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       return (IBusinessObject)
           DerivedBindableSecurableObject.NewObject (
               _clientTransaction,
-              new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, new CacheInvalidationToken()));
+              new ObjectSecurityStrategy (securityContextFactoryStub, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create()));
     }
   }
 }
