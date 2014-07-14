@@ -23,6 +23,8 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+using Remotion.ObjectBinding.Security;
+
 [assembly: AssemblyTitle("")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
@@ -45,4 +47,5 @@ using System.Reflection;
 
 [assembly: AssemblyVersion("1.0.*")]
 
+[assembly: EnsureSecuritySupportForObjectBinding]
 

@@ -144,6 +144,10 @@
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Security\ObjectBinding.Security.csproj">
+      <Project>{89F98C4B-11E3-43EC-8776-B552574F9A9F}</Project>
+      <Name>ObjectBinding.Security</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ObjectBinding\Web\ObjectBinding.Web.csproj">
       <Name>ObjectBinding.Web</Name>
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
