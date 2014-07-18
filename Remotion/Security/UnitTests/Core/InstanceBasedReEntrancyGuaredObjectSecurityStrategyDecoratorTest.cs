@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Remotion.Security.UnitTests.Core
 {
   [TestFixture]
-  public class InstanceBasedReEntrancyGuaredObjectSecurityDecoratorTest
+  public class InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecoratorTest
   {
     private ISecurityProvider _securityProviderStub;
     private ISecurityPrincipal _principalStub;
@@ -41,7 +41,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccess_DelegatesToDecoratedStrategy_ReturnsResult ()
     {
       var objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityDecorator (objectSecurityStrategyStub);
+      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
       var accessTypes = new[] { AccessType.Get (GeneralAccessTypes.Find) };
 
       bool expectedResult = BooleanObjectMother.GetRandomBoolean();
@@ -61,7 +61,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccess_WithReEntrancyOnSameGuard_ThrowsInvalidOperationException ()
     {
       var objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityDecorator (objectSecurityStrategyStub);
+      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
       var accessTypesOnFirstCall = new[] { AccessType.Get (GeneralAccessTypes.Find) };
 
       bool isExceptionThrownBySecondHasAccess = false;
@@ -81,7 +81,7 @@ namespace Remotion.Security.UnitTests.Core
           () => guard.HasAccess (_securityProviderStub, _principalStub, accessTypesOnFirstCall),
           Throws.InvalidOperationException
               .With.Message.StartsWith (
-                  "Multiple reentrancies on InstanceBasedReEntrancyGuaredObjectSecurityDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion."));
+                  "Multiple reentrancies on InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion."));
 
       Assert.That (isExceptionThrownBySecondHasAccess, Is.True);
     }
@@ -90,7 +90,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccess_WithReEntrancyOnDifferentGuard_ReturnsResult ()
     {
       var firstObjectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var firstGuard = new InstanceBasedReEntrancyGuaredObjectSecurityDecorator (firstObjectSecurityStrategyStub);
+      var firstGuard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (firstObjectSecurityStrategyStub);
       var accessTypesOnFirstCall = new[] { AccessType.Get (GeneralAccessTypes.Find) };
       bool expectedResultOnFirstCall = BooleanObjectMother.GetRandomBoolean();
 
@@ -102,7 +102,7 @@ namespace Remotion.Security.UnitTests.Core
               mi =>
               {
                 var secondObjectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-                var secondGuard = new InstanceBasedReEntrancyGuaredObjectSecurityDecorator (secondObjectSecurityStrategyStub);
+                var secondGuard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (secondObjectSecurityStrategyStub);
                 var accessTypesOnSecondCall = new[] { AccessType.Get (GeneralAccessTypes.Read) };
                 bool expectedResultOnSecondCall = BooleanObjectMother.GetRandomBoolean();
 
@@ -128,7 +128,7 @@ namespace Remotion.Security.UnitTests.Core
     public void HasAccess_WithExceptionDuringDecoratedCall_ResetsReentrancyForSubsequentCalls ()
     {
       var objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityDecorator (objectSecurityStrategyStub);
+      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
 
       var accessTypesOnFirstCall = new[] { AccessType.Get (GeneralAccessTypes.Find) };
       var exception = new Exception();

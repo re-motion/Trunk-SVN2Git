@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Security
 {
   /// <summary>
-  /// The <see cref="InstanceBasedReEntrancyGuaredObjectSecurityDecorator"/> can be used to guard against nested security checks on the same instnace.
+  /// The <see cref="ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator"/> can be used to guard against nested security checks on the same thread.
   /// </summary>
   /// <remarks>
   /// This guard is intended to discover missing dependencies on <see cref="SecurityFreeSection"/>.<see cref="SecurityFreeSection.IsActive"/> when
@@ -29,13 +29,14 @@ namespace Remotion.Security
   /// </remarks>
   /// <threadsafety static="true" instance="false" />
   [Serializable]
-  public class InstanceBasedReEntrancyGuaredObjectSecurityDecorator : IObjectSecurityStrategy
+  public class ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator : IObjectSecurityStrategy
   {
-    private bool _isEvaluatingAccess;
+    [ThreadStatic]
+    private static bool s_isEvaluatingAccess;
 
     private readonly IObjectSecurityStrategy _objectSecurityStrategy;
 
-    public InstanceBasedReEntrancyGuaredObjectSecurityDecorator (IObjectSecurityStrategy objectSecurityStrategy)
+    public ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator (IObjectSecurityStrategy objectSecurityStrategy)
     {
       ArgumentUtility.CheckNotNull ("objectSecurityStrategy", objectSecurityStrategy);
       
@@ -51,21 +52,21 @@ namespace Remotion.Security
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
       ArgumentUtility.DebugCheckNotNullOrEmpty ("requiredAccessTypes", requiredAccessTypes);
 
-      if (_isEvaluatingAccess)
+      if (s_isEvaluatingAccess)
       {
         throw new InvalidOperationException (
-            "Multiple reentrancies on InstanceBasedReEntrancyGuaredObjectSecurityDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
+            "Multiple reentrancies on ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
             + "Use SecurityFreeSection.IsActive to guard the computation of the SecurityContext returned by ISecurityContextFactory.CreateSecurityContext().");
       }
 
       try
       {
-        _isEvaluatingAccess = true;
+        s_isEvaluatingAccess = true;
         return _objectSecurityStrategy.HasAccess (securityProvider, principal, requiredAccessTypes);
       }
       finally
       {
-        _isEvaluatingAccess = false;
+        s_isEvaluatingAccess = false;
       }
     }
   }
