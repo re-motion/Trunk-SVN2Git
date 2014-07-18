@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImpleme
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", List.GetSelectAllControlName());
       Html.AssertNoAttribute (input, "value");
-      Html.AssertAttribute (input, "alt", "Select all rows.");
+      Html.AssertAttribute (input, "alt", "Select all rows");
     }
 
     [Test]
@@ -79,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImpleme
       Html.AssertAttribute (input, "id", "SelectRowControl_UnqiueID_0");
       Html.AssertAttribute (input, "name", "SelectRowControl$UnqiueID");
       Html.AssertAttribute (input, "value", "row1");
-      Html.AssertAttribute (input, "alt", "Select this row.");
+      Html.AssertAttribute (input, "alt", "Select this row");
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImpleme
       Html.AssertAttribute (input, "id", "SelectRowControl_UnqiueID_0");
       Html.AssertAttribute (input, "name", "SelectRowControl$UnqiueID");
       Html.AssertAttribute (input, "value", "row1");
-      Html.AssertAttribute (input, "alt", "Select this row.");
+      Html.AssertAttribute (input, "alt", "Select this row");
     }
   }
 }

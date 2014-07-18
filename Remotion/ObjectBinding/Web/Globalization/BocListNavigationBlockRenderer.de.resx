@@ -112,22 +112,22 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToFirstAlternateText" xml:space="preserve">
-    <value>Zur ersten Seite gehen.</value>
+    <value>Ersten Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToLastAlternateText" xml:space="preserve">
-    <value>Zur letzten Seite gehen.</value>
+    <value>Letzten Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToNextAlternateText" xml:space="preserve">
-    <value>Zur nächsten Seite gehen</value>
+    <value>Nächsten Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToPreviousAlternateText" xml:space="preserve">
-    <value>Zur vorherigen Seite gehen.</value>
+    <value>Vorherigen Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.PageLabelText" xml:space="preserve">
     <value>Seite</value>

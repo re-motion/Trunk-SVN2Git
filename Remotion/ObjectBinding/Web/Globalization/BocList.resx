@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.OptionsTitle" xml:space="preserve">
     <value>Options</value>
@@ -154,10 +154,10 @@
     <value>Discard Changes to Row</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SelectRowAlternateText" xml:space="preserve">
-    <value>Select this row.</value>
+    <value>Select this row</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SelectAllRowsAlternateText" xml:space="preserve">
-    <value>Select all rows.</value>
+    <value>Select all rows</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.IndexColumnTitle" xml:space="preserve">
     <value>No.</value>
