@@ -16,7 +16,7 @@
 // 
 
 using System;
-using Remotion.Security;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
       {
         return _resultObject.GetProperty (_resultProperty);
       }
-      catch (PermissionDeniedException)
+      catch (BusinessObjectPropertyAccessException)
       {
         return null;
       }
@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
       {
         return _resultObject.GetPropertyString (_resultProperty, format);
       }
-      catch (PermissionDeniedException)
+      catch (BusinessObjectPropertyAccessException)
       {
         return _resultObject.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
       }

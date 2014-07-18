@@ -34,5 +34,28 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <returns><see langword="true" /> if the <paramref name="bindableProperty"/> can be set.</returns>
     /// <remarks>If setting the property is not supported, the property is displayed as read-only in the UI.</remarks>
     bool CanWrite ([CanBeNull] IBusinessObject businessObject, [NotNull] PropertyBase bindableProperty);
-  }
+
+    /// <summary>
+    /// Checks if the <paramref name="exception"/> that has occured while accessing the <paramref name="bindableProperty"/> 
+    /// indicates an expected error condition that can be handled by the infrastructure.
+    /// </summary>
+    /// <param name="businessObject">The <see cref="IBusinessObject"/> for which the property was accessed. Must not be <see langword="null" />.</param>
+    /// <param name="bindableProperty">The <see cref="PropertyBase"/> that was accessed. Must not be <see langword="null" />.</param>
+    /// <param name="exception">
+    ///   The <see cref="Exception"/> that has occurred while accessing the <paramref name="bindableProperty"/>. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="propertyAccessException">
+    ///   The resulting <see cref="BusinessObjectPropertyAccessException"/> that should be re-thrown if the <see cref="IsPropertyAccessException"/> method
+    ///   returns <see langword="true" />. This new exception may contain additional information about the property access error.
+    /// </param>
+    /// <returns>
+    ///   <see langword="true" /> if the <paramref name="exception"/> represents an expected domain constraint during property access, 
+    ///   <see langword="false" /> if the original <paramref name="exception"/> should be re-thrown.
+    /// </returns>
+    [ContractAnnotation ("=>true, propertyAccessException:notnull; =>false, propertyAccessException:null")]
+    bool IsPropertyAccessException (
+        [NotNull] IBusinessObject businessObject,
+        [NotNull] PropertyBase bindableProperty,
+        [NotNull] Exception exception,
+        [CanBeNull] out BusinessObjectPropertyAccessException propertyAccessException);  }
 }

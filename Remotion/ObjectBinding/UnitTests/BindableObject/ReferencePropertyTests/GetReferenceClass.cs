@@ -23,7 +23,6 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests.TestDomain;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
-using Remotion.Security;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 

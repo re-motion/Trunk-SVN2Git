@@ -17,9 +17,9 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
-using Remotion.Security;
 
 namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {
@@ -136,12 +136,12 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessO
     }
 
     [Test]
-    public void GetResult_WithPermissionDeniedException_ReturnsNull ()
+    public void GetResult_WithBusinessObjectPropertyAccessException_ReturnsNull ()
     {
       using (_testHelper.Ordered())
       {
         ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectThrowPermissionDeniedExceptionOnBusinessObjectGetProperty();
+        ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectGetProperty();
       }
       _testHelper.ReplayAll();
 
@@ -155,12 +155,12 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessO
     }
 
     [Test]
-    public void GetResult_WithPermissionDeniedException_ThrowsInvalidOperationException ()
+    public void GetResult_WithBusinessObjectPropertyAccessException_ThrowsInvalidOperationException ()
     {
       using (_testHelper.Ordered())
       {
         ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectThrowPermissionDeniedExceptionOnBusinessObjectGetProperty();
+        ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectGetProperty();
       }
       _testHelper.ReplayAll();
 
@@ -193,9 +193,12 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.BusinessO
       _testHelper.ExpectOnceOnGetProperty (_testHelper.BusinessObject, _testHelper.ReferenceProperty, businessObejctWithIdentity);
     }
 
-    private void ExpectThrowPermissionDeniedExceptionOnBusinessObjectGetProperty ()
+    private void ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectGetProperty ()
     {
-      _testHelper.ExpectThrowOnGetProperty (_testHelper.BusinessObject, _testHelper.ReferenceProperty, new PermissionDeniedException());
+      _testHelper.ExpectThrowOnGetProperty (
+          _testHelper.BusinessObject,
+          _testHelper.ReferenceProperty,
+          new BusinessObjectPropertyAccessException ("The Message", null));
     }
   }
 }

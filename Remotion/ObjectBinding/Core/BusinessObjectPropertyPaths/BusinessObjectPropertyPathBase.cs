@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
-using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
@@ -71,7 +70,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
         {
           currentObject = GetPropertyValue (currentObject, (IBusinessObjectReferenceProperty) currentProperty, listValueBehavior, propertyIndex);
         }
-        catch (PermissionDeniedException)
+        catch (BusinessObjectPropertyAccessException)
         {
           HandlePropertyAccessDenied (unreachableValueBehavior, propertyIndex);
           return new NotAccessibleBusinessObjectPropertyPathResult (currentObject.BusinessObjectClass.BusinessObjectProvider);

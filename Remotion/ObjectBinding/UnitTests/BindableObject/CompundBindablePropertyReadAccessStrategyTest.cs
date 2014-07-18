@@ -35,7 +35,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     private IBindablePropertyReadAccessStrategy _innerStrategy2;
     private IBindablePropertyReadAccessStrategy _innerStrategy3;
     private BindableObjectProvider _businessObjectProvider;
-    private BindableObjectClass _bindableClass;
     private PropertyBase _property;
     private IBusinessObject _businessObject;
 
@@ -51,11 +50,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       _strategy = new CompundBindablePropertyReadAccessStrategy (new[] { _innerStrategy1, _innerStrategy2, _innerStrategy3 });
 
       _businessObjectProvider = CreateBindableObjectProviderWithStubBusinessObjectServiceFactory();
-      _bindableClass = new BindableObjectClass (
-          typeof (ClassWithAllDataTypes),
-          _businessObjectProvider,
-          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(),
-          new PropertyBase[0]);
       _property = new StubPropertyBase (GetPropertyParameters (GetPropertyInfo (typeof (ClassWithAllDataTypes), "Byte"), _businessObjectProvider));
       _businessObject = MockRepository.GenerateStub<IBusinessObject>();
     }
@@ -125,6 +119,90 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       var result = _strategy.CanRead (_businessObject, _property);
 
       Assert.That (result, Is.False);
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void IsPropertyAccessException_WithAllStrategiesReturningFalse_ReturnsFalse ()
+    {
+      var exception = new Exception();
+      using (_mockRepository.Ordered())
+      {
+        _innerStrategy1
+            .Expect (
+                mock => mock.IsPropertyAccessException (
+                    Arg.Is (_businessObject),
+                    Arg.Is (_property),
+                    Arg.Is (exception),
+                    out Arg<BusinessObjectPropertyAccessException>.Out (null).Dummy))
+            .Return (false);
+        _innerStrategy2
+            .Expect (
+                mock => mock.IsPropertyAccessException (
+                    Arg.Is (_businessObject),
+                    Arg.Is (_property),
+                    Arg.Is (exception),
+                    out Arg<BusinessObjectPropertyAccessException>.Out (new BusinessObjectPropertyAccessException ("Unexpected", null)).Dummy))
+            .Return (false);
+        _innerStrategy3
+            .Expect (
+                mock => mock.IsPropertyAccessException (
+                    Arg.Is (_businessObject),
+                    Arg.Is (_property),
+                    Arg.Is (exception),
+                    out Arg<BusinessObjectPropertyAccessException>.Out (null).Dummy))
+            .Return (false);
+      }
+      _mockRepository.ReplayAll();
+
+      BusinessObjectPropertyAccessException actualException;
+      var result = _strategy.IsPropertyAccessException (_businessObject, _property, exception, out actualException);
+
+      Assert.That (result, Is.False);
+      Assert.That (actualException, Is.Null);
+
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void IsPropertyAccessException_WithOneStrategyReturningTrue_ReturnsTrue_SetsResultValue_AndAbortsChecks ()
+    {
+      var exception = new Exception();
+      var expectedException = new BusinessObjectPropertyAccessException ("The Message", null);
+      using (_mockRepository.Ordered())
+      {
+        _innerStrategy1
+            .Expect (
+                mock => mock.IsPropertyAccessException (
+                    Arg.Is (_businessObject),
+                    Arg.Is (_property),
+                    Arg.Is (exception),
+                    out Arg<BusinessObjectPropertyAccessException>.Out (null).Dummy))
+            .Return (false);
+        _innerStrategy2
+            .Expect (
+                mock => mock.IsPropertyAccessException (
+                    Arg.Is (_businessObject),
+                    Arg.Is (_property),
+                    Arg.Is (exception),
+                    out Arg<BusinessObjectPropertyAccessException>.Out (expectedException).Dummy))
+            .Return (true);
+        _innerStrategy3.Expect (
+            mock => mock.IsPropertyAccessException (
+                Arg.Is (_businessObject),
+                Arg.Is (_property),
+                Arg.Is (exception),
+                out Arg<BusinessObjectPropertyAccessException>.Out (null).Dummy))
+            .Repeat.Never();
+      }
+      _mockRepository.ReplayAll();
+
+      BusinessObjectPropertyAccessException actualException;
+      var result = _strategy.IsPropertyAccessException (_businessObject, _property, exception, out actualException);
+
+      Assert.That (result, Is.True);
+      Assert.That (actualException, Is.SameAs (expectedException));
 
       _mockRepository.VerifyAll();
     }

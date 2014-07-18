@@ -33,6 +33,9 @@ namespace Remotion.ObjectBinding
     /// Must not be <see langword="null" /> or empty.
     /// </param>
     /// <returns> The property value for the <paramref name="propertyIdentifier"/> parameter. </returns>
+    /// <exception cref="BusinessObjectPropertyAccessException">
+    ///   Thrown if the property's value could not be read.
+    /// </exception>
     /// <exception cref="InvalidOperationException"> 
     ///   The <see cref="IBusinessObjectProperty"/> identified through the <paramref name="propertyIdentifier"/> is not part of this 
     ///   <paramref name="businessObject"/>'s <see cref="IBusinessObject.BusinessObjectClass"/>.
@@ -58,6 +61,9 @@ namespace Remotion.ObjectBinding
     ///   The new value for the <see cref="IBusinessObjectProperty"/> identified by the 
     ///   <paramref name="propertyIdentifier"/> parameter. 
     /// </param>
+    /// <exception cref="BusinessObjectPropertyAccessException">
+    ///   Thrown if the property's value could not be read.
+    /// </exception>
     /// <exception cref="InvalidOperationException"> 
     ///   The <see cref="IBusinessObjectProperty"/> identified through the <paramref name="propertyIdentifier"/> is not part of this 
     ///   <paramref name="businessObject"/>'s <see cref="IBusinessObject.BusinessObjectClass"/>.
@@ -84,6 +90,9 @@ namespace Remotion.ObjectBinding
     ///   The string representation of the property value for the <see cref="IBusinessObjectProperty"/> identified by the 
     ///   <paramref name="propertyIdentifier"/> parameter. 
     /// </returns>
+    /// <exception cref="BusinessObjectPropertyAccessException">
+    ///   Thrown if the property's value could not be read.
+    /// </exception>
     /// <exception cref="InvalidOperationException"> 
     ///   The <see cref="IBusinessObjectProperty"/> identified through the <paramref name="propertyIdentifier"/> is not part of this 
     ///   <paramref name="businessObject"/>'s <see cref="IBusinessObject.BusinessObjectClass"/>.

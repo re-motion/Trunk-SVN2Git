@@ -69,7 +69,6 @@
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.5</RequiredTargetFramework>
     </Reference>
@@ -82,7 +81,7 @@
     </Compile>
     <Compile Include="BindableObject\BindableObjectGlobalizationServiceTest.cs" />
     <Compile Include="BindableObject\CompundBindablePropertyReadAccessStrategyTest.cs" />
-    <Compile Include="BindableObject\CompundPropertyWriteAccessStrategyTest.cs" />
+    <Compile Include="BindableObject\CompundBindablePropertyWriteAccessStrategyTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\AttributesBasedGlobalizationIntegrationTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\ResourcesBasedGlobalizationIntegrationTest.cs" />
     <Compile Include="BindableObject\IntergrationTests\Globalization\Resources\MixinOfMixinAddingResources.Designer.cs">
@@ -125,6 +124,7 @@
     <Compile Include="BindableObject\IntergrationTests\MixedProperties\TestDomain\TargetClassWithPubliclyIntroducedMembers.cs" />
     <Compile Include="BindableObject\IBindablePropertReadAccessStrategyTest.cs" />
     <Compile Include="BindableObject\IBindablePropertyWriteAccessStrategyTest.cs" />
+    <Compile Include="BusinessObjectPropertyAccessExceptionTest.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\BusinessObjectPropertyPathTestHelper.cs" />
@@ -254,7 +254,6 @@
     <Compile Include="BindableObject\ReferencePropertyTests\TestDomain\ClassWithReferenceToClassDerivedFromBindableObjectBase.cs" />
     <Compile Include="TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
     <Compile Include="TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingMixinMethod.cs" />
-    <Compile Include="TestDomain\DerivedSecurableClassWithProperties.cs" />
     <Compile Include="TestDomain\ExtensibleEnumWithFilterExtensions2.cs" />
     <Compile Include="TestDomain\ExtensibleEnumWithFilter.cs" />
     <Compile Include="TestDomain\ExtensibleEnumWithFilterExtensions.cs" />
@@ -269,12 +268,9 @@
     <Compile Include="TestDomain\IMixinSecurableClass.cs" />
     <Compile Include="TestDomain\PropertyFinderMixinAddingPropertyBase.cs" />
     <Compile Include="TestDomain\MixinOverridingProperty.cs" />
-    <Compile Include="TestDomain\MixinSecurableClassWithProperties.cs" />
     <Compile Include="TestDomain\SampleAttribute.cs" />
-    <Compile Include="TestDomain\SecurableClassWithProperties.cs" />
     <Compile Include="TestDomain\SimpleReferenceTypeProperty.cs" />
     <Compile Include="TestDomain\SimpleReferenceTypePropertyReflectorMixin.cs" />
-    <Compile Include="TestDomain\TestAccessTypes.cs" />
     <Compile Include="TestDomain\TestFlags.cs" />
     <Compile Include="TestDomain\EnumerationValueFilter.cs" />
     <Compile Include="TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />
@@ -329,7 +325,6 @@
     <Compile Include="TestDomain\IInterfaceWithReferenceType.cs" />
     <Compile Include="TestDomain\ManualBusinessObject.cs" />
     <Compile Include="TestDomain\MixinAddingProperty.cs" />
-    <Compile Include="TestDomain\SecurableClassWithOverriddenDisplayName.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\TestDomain\ISearchServiceOnProperty.cs" />
     <Compile Include="TestDomain\EnumWithUndefinedValueFromOtherType.cs" />
     <Compile Include="BindableObject\PropertyReflectorTests\ListProperties.cs" />
@@ -343,7 +338,6 @@
     <Compile Include="TestDomain\EnumWithUndefinedValue.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\TestDomain\ISearchServiceOnType.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\TestDomain\ClassFromOtherBusinessObjectImplementation.cs" />
-    <Compile Include="TestDomain\SecurableClassWithReferenceType.cs" />
     <Compile Include="TestDomain\StubBusinessObjectClassService.cs" />
     <Compile Include="TestDomain\StubBusinessObjectService.cs" />
     <Compile Include="TestDomain\TestEnum.cs" />
@@ -429,10 +423,6 @@
     <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
-      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>

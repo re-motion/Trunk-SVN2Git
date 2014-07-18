@@ -36,7 +36,6 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
   [TestFixture]
   public class SecurityBasedBindablePropertyWriteAccessStrategyTest : TestBase
   {
-    private BindableObjectClass _bindableClass;
     private SecurableClassWithReferenceType<string> _securableObject;
     private ServiceLocatorScope _serviceLocatorScope;
     private ISecurityProvider _securityProviderStub;
@@ -47,12 +46,6 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
     public override void SetUp ()
     {
       base.SetUp();
-
-      _bindableClass = new BindableObjectClass (
-          typeof (ClassWithReferenceType<string>),
-          CreateBindableObjectProviderWithStubBusinessObjectServiceFactory(),
-          SafeServiceLocator.Current.GetInstance<BindableObjectGlobalizationService>(),
-          new PropertyBase[0]);
 
       _objectSecurityStrategyMock = MockRepository.GenerateStrictMock<IObjectSecurityStrategy>();
 
@@ -125,6 +118,80 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
 
       Assert.That (actualResult, Is.EqualTo (expectedResult));
       _objectSecurityStrategyMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void IsPropertyAccessException_WithPermissionDeniedException_WithIBusinessObject_ReturnsTrue ()
+    {
+      var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
+
+      var businessObjectClassStub = MockRepository.GenerateStub<IBusinessObjectClass>();
+      businessObjectClassStub.Stub (_ => _.Identifier).Return ("TheClass");
+
+      var businessObjectStub = MockRepository.GenerateStub<IBusinessObject>();
+      businessObjectStub.Stub (_ => _.BusinessObjectClass).Return (businessObjectClassStub);
+
+      var permissionDeniedException = new PermissionDeniedException ("The Exception");
+      BusinessObjectPropertyAccessException actualException;
+      var actualResult = _strategy.IsPropertyAccessException (
+          businessObjectStub,
+          bindableProperty,
+          permissionDeniedException,
+          out actualException);
+
+      Assert.That (actualResult, Is.True);
+
+      Assert.That (actualException, Is.Not.Null);
+      Assert.That (
+          actualException.Message,
+          Is.EqualTo (
+              "A PermissionDeniedException occured while getting the value of property 'Scalar' for business object type 'TheClass'."));
+      Assert.That (actualException.InnerException, Is.SameAs (permissionDeniedException));
+    }
+
+    [Test]
+    public void IsPropertyAccessException_WithPermissionDeniedException_WithIBusinessObjectWithIdentity_ReturnsTrue ()
+    {
+      var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
+
+      var businessObjectStub = MockRepository.GenerateStub<IBusinessObjectWithIdentity>();
+      businessObjectStub.Stub (_ => _.UniqueIdentifier).Return ("TheIdentifier");
+
+      var permissionDeniedException = new PermissionDeniedException ("The Exception");
+      BusinessObjectPropertyAccessException actualException;
+      var actualResult = _strategy.IsPropertyAccessException (
+          businessObjectStub,
+          bindableProperty,
+          permissionDeniedException,
+          out actualException);
+
+      Assert.That (actualResult, Is.True);
+
+      Assert.That (actualException, Is.Not.Null);
+      Assert.That (
+          actualException.Message,
+          Is.EqualTo (
+              "A PermissionDeniedException occured while getting the value of property 'Scalar' for business object with ID 'TheIdentifier'."));
+      Assert.That (actualException.InnerException, Is.SameAs (permissionDeniedException));
+    }
+
+    [Test]
+    public void IsPropertyAccessException_WithOtherException_ReturnsFalse ()
+    {
+      var bindableProperty = CreateBindableProperty ((() => ((ClassWithReferenceType<string>) null).Scalar));
+
+      var businessObjectStub = MockRepository.GenerateStub<IBusinessObject>();
+
+      var permissionDeniedException = new Exception ("The Exception");
+      BusinessObjectPropertyAccessException actualException;
+      var actualResult = _strategy.IsPropertyAccessException (
+          businessObjectStub,
+          bindableProperty,
+          permissionDeniedException,
+          out actualException);
+
+      Assert.That (actualResult, Is.False);
+      Assert.That (actualException, Is.Null);
     }
 
     private PropertyBase CreateBindableProperty<TPropertyType> (Expression<Func<TPropertyType>> propertyExpression)

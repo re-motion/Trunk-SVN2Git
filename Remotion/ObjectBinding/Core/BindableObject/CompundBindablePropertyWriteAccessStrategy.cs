@@ -51,16 +51,36 @@ namespace Remotion.ObjectBinding.BindableObject
 
       // This section is performance critical. No closure should be created, therefor converting this code to Linq is not possible.
       // return _strategies.All (s => s.CanRead (propertyBase, businessObject));
-      // ReSharper disable LoopCanBeConvertedToQuery
-      // ReSharper disable ForCanBeConvertedToForeach
+      // ReSharper disable once LoopCanBeConvertedToQuery
+      // ReSharper disable once ForCanBeConvertedToForeach
       for (int i = 0; i < _bindablePropertyWriteAccessStrategies.Count; i++)
       {
         if (!_bindablePropertyWriteAccessStrategies[i].CanWrite (businessObject, bindableProperty))
           return false;
       }
       return true;
-      // ReSharper restore ForCanBeConvertedToForeach
-      // ReSharper restore LoopCanBeConvertedToQuery
+    }
+
+    public bool IsPropertyAccessException (
+        IBusinessObject businessObject,
+        PropertyBase bindableProperty,
+        Exception exception,
+        out BusinessObjectPropertyAccessException propertyAccessException)
+    {
+      ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
+      ArgumentUtility.DebugCheckNotNull ("exception", exception);
+
+      // This section does represent an inherrent hot-path but the for-loop is chosen for symmetry with the CanRead()-method.
+      // ReSharper disable once ForCanBeConvertedToForeach
+      for (int i = 0; i < _bindablePropertyWriteAccessStrategies.Count; i++)
+      {
+        var bindablePropertyReadAccessStrategy = _bindablePropertyWriteAccessStrategies[i];
+        if (bindablePropertyReadAccessStrategy.IsPropertyAccessException (businessObject, bindableProperty, exception, out propertyAccessException))
+          return true;
+      }
+      propertyAccessException = null;
+      return false;
     }
   }
 }

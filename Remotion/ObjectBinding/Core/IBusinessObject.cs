@@ -39,6 +39,9 @@ namespace Remotion.ObjectBinding
     /// <summary> Gets the value accessed through the specified <see cref="IBusinessObjectProperty"/>. </summary>
     /// <param name="property"> The <see cref="IBusinessObjectProperty"/> used to access the value. </param>
     /// <returns> The property value for the <paramref name="property"/> parameter. </returns>
+    /// <exception cref="BusinessObjectPropertyAccessException">
+    ///   Thrown if the <paramref name="property"/>'s value could not be read.
+    /// </exception>
     /// <exception cref="Exception">
     ///   Thrown if the <paramref name="property"/> is not part of this business object's class. 
     /// </exception>
@@ -50,6 +53,9 @@ namespace Remotion.ObjectBinding
     ///   The <see cref="IBusinessObjectProperty"/> used to access the value. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="value"> The new value for the <paramref name="property"/> parameter. </param>
+    /// <exception cref="BusinessObjectPropertyAccessException">
+    ///   Thrown if the <paramref name="property"/>'s value could not be written.
+    /// </exception>
     /// <exception cref="Exception"> 
     ///   Thrown if the <paramref name="property"/> is not part of this business object's class. 
     /// </exception>
@@ -64,6 +70,9 @@ namespace Remotion.ObjectBinding
     /// </param>
     /// <param name="format"> The format string applied by the <b>ToString</b> method. </param>
     /// <returns> The string representation of the property value for the <paramref name="property"/> parameter.  </returns>
+    /// <exception cref="BusinessObjectPropertyAccessException">
+    ///   Thrown if the <paramref name="property"/>'s value could not be read.
+    /// </exception>
     /// <exception cref="Exception"> 
     ///   Thrown if the <paramref name="property"/> is not part of this business object's class. 
     /// </exception>

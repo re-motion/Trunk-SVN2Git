@@ -143,10 +143,6 @@
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
       <Name>Mixins.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
-      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
-      <Name>Security.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
@@ -170,6 +166,7 @@
     <Compile Include="BindableObject\BindableObjectWithIdentityBaseImplementation.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityMixin.cs" />
     <Compile Include="BindableObject\BindableObjectServiceFactory.cs" />
+    <Compile Include="BusinessObjectPropertyAccessException.cs" />
     <Compile Include="BindableObject\CompositeEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\CompundBindablePropertyReadAccessStrategy.cs" />
     <Compile Include="BindableObject\CompundBindablePropertyWriteAccessStrategy.cs" />

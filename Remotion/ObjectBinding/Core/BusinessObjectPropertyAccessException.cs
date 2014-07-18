@@ -16,28 +16,21 @@
 // 
 
 using System;
-using Remotion.Security;
+using System.Runtime.Serialization;
 
-namespace Remotion.ObjectBinding.UnitTests.TestDomain
+namespace Remotion.ObjectBinding
 {
-  public class SecurableClassWithReferenceType<T> : ClassWithReferenceType<T>, ISecurableObject
-      where T: class
+  [Serializable]
+  public class BusinessObjectPropertyAccessException : Exception
   {
-    private readonly IObjectSecurityStrategy _objectSecurityStrategy;
-
-    public SecurableClassWithReferenceType (IObjectSecurityStrategy objectSecurityStrategy)
+    public BusinessObjectPropertyAccessException (string message, Exception innerException)
+        : base (message, innerException)
     {
-      _objectSecurityStrategy = objectSecurityStrategy;
     }
 
-    public IObjectSecurityStrategy GetSecurityStrategy ()
+    protected BusinessObjectPropertyAccessException (SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
-      return _objectSecurityStrategy;
-    }
-
-    public Type GetSecurableType ()
-    {
-      return typeof (SecurableClassWithReferenceType<T>);
     }
   }
 }

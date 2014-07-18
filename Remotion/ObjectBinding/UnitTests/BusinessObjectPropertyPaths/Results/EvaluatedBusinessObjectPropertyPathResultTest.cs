@@ -17,8 +17,8 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
-using Remotion.Security;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.Results
@@ -84,12 +84,12 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.Results
     }
 
     [Test]
-    public void GetValue_WithPermissionDeniedException ()
+    public void GetValue_WithBusinessObjectPropertyAccessException ()
     {
       using (_mockRepository.Ordered())
       {
         ExpectOnceOnPropertyIsAccessible (true);
-        ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetProperty();
+        ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectWithIdentityGetProperty();
       }
       _mockRepository.ReplayAll();
 
@@ -128,12 +128,12 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.Results
     }
 
     [Test]
-    public void GetString_WithPermissionDeniedException ()
+    public void GetString_WithBusinessObjectPropertyAccessException ()
     {
       using (_mockRepository.Ordered())
       {
         ExpectOnceOnPropertyIsAccessible (true);
-        ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetPropertyString ("format");
+        ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectWithIdentityGetPropertyString ("format");
       }
       _mockRepository.ReplayAll();
 
@@ -173,10 +173,10 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.Results
                                      .Return (returnValue);
     }
 
-    private void ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetProperty ()
+    private void ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectWithIdentityGetProperty ()
     {
       _businessObjectWithIdentityMock.Expect (_ => _.GetProperty (_propertyMock))
-                                     .Throw (new PermissionDeniedException());
+                                     .Throw (new BusinessObjectPropertyAccessException("The Message", null));
     }
 
     private void ExpectOnceOnBusinessObjectWithIdentityGetPropertyString (string returnValue, string format)
@@ -185,10 +185,10 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectPropertyPaths.Results
                                      .Return (returnValue);
     }
 
-    private void ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetPropertyString (string format)
+    private void ExpectThrowBusinessObjectPropertyAccessExceptionOnBusinessObjectWithIdentityGetPropertyString (string format)
     {
       _businessObjectWithIdentityMock.Expect (_ => _.GetPropertyString (_propertyMock, format))
-                                     .Throw (new PermissionDeniedException());
+                                     .Throw (new BusinessObjectPropertyAccessException("The Message", null));
     }
   }
 }

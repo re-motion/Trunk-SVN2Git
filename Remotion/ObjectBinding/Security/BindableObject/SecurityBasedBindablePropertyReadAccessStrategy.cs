@@ -58,5 +58,37 @@ namespace Remotion.ObjectBinding.Security.BindableObject
       var getter = bindableProperty.PropertyInfo.GetGetMethod (true) ?? s_nullMethodInformation;
       return _securityClient.HasPropertyReadAccess (securableObject, getter);
     }
+
+    public bool IsPropertyAccessException (
+        IBusinessObject businessObject,
+        PropertyBase bindableProperty,
+        Exception exception,
+        out BusinessObjectPropertyAccessException propertyAccessException)
+    {
+      ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
+      ArgumentUtility.DebugCheckNotNull ("exception", exception);
+
+      if (exception is PermissionDeniedException)
+      {
+        ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+        ArgumentUtility.CheckNotNull ("bindableProperty", bindableProperty);
+
+        var classOrInstance = businessObject is IBusinessObjectWithIdentity
+            ? string.Format ("for business object with ID '{0}'", ((IBusinessObjectWithIdentity) businessObject).UniqueIdentifier)
+            : string.Format ("for business object type '{0}'", businessObject.BusinessObjectClass.Identifier);
+
+        var message = string.Format (
+            "A PermissionDeniedException occured while getting the value of property '{0}' {1}.",
+            bindableProperty.Identifier,
+            classOrInstance);
+
+        propertyAccessException = new BusinessObjectPropertyAccessException (message, exception);
+        return true;
+      }
+
+      propertyAccessException = null;
+      return false;
+    }
   }
 }

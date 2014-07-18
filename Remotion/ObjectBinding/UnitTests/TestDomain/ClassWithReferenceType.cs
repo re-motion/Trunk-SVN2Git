@@ -25,6 +25,7 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
   {
     private T _explicitInterfaceScalar;
     private readonly T _readOnlyScalar = default (T);
+    private Exception _exception;
 
     protected string NonPublicProperty { get; set; }
 
@@ -88,5 +89,25 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
     public T PropertyWithNoGetter { set { _explicitInterfaceScalar = value; } }
 
     private T PrivateProperty { get; set; }
+
+    public void PrepareException (Exception exception)
+    {
+      _exception = exception;
+    }
+
+    public T ThrowingProperty
+    {
+      get
+      {
+        if (_exception != null)
+          throw _exception;
+        return default (T);
+      }
+      set
+      {
+        if (_exception != null)
+          throw _exception;
+      }
+    }
   }
 }

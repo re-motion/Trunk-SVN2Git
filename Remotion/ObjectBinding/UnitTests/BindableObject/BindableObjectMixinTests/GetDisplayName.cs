@@ -22,7 +22,6 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
-using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
@@ -75,8 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
     [Test]
     public void DisplayNameSafe_WithOverriddenDisplayNameAndAccessGranted ()
     {
-      var securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithOverriddenDisplayName> (
-          ParamList.Create (MockRepository.GenerateStub<IObjectSecurityStrategy>()));
+      var securableObject = (IBusinessObject) ObjectFactory.Create<ClassWithOverriddenDisplayName>();
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       var displayNameProperty = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
       _bindablePropertyReadAccessStrategyMock
@@ -92,8 +90,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
     [Test]
     public void DisplayNameSafe_WithOverriddenDisplayNameAndWithAccessDenied ()
     {
-      var securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithOverriddenDisplayName> (
-          ParamList.Create (MockRepository.GenerateStub<IObjectSecurityStrategy>()));
+      var securableObject = (IBusinessObject) ObjectFactory.Create<ClassWithOverriddenDisplayName>();
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
       var displayNameProperty = ((PropertyBase)bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
       _bindablePropertyReadAccessStrategyMock
@@ -109,8 +106,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
     [Test]
     public void DisplayNameSafe_WithoutOverriddenDisplayName ()
     {
-      var securableObject = (IBusinessObject) ObjectFactory.Create<SecurableClassWithReferenceType<SimpleReferenceType>> (
-          ParamList.Create (MockRepository.GenerateStub<IObjectSecurityStrategy>()));
+      var securableObject = (IBusinessObject) ObjectFactory.Create<ClassWithReferenceType<SimpleReferenceType>>();
       var bindableObjectMixin = Mixin.Get<BindableObjectMixin> (securableObject);
 
       string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
@@ -118,7 +114,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
       _bindablePropertyReadAccessStrategyMock.VerifyAllExpectations ();
       Assert.That (
           actual,
-         Is.StringStarting("Remotion.ObjectBinding.UnitTests.TestDomain.SecurableClassWithReferenceType"));
+         Is.StringStarting("Remotion.ObjectBinding.UnitTests.TestDomain.ClassWithReferenceType"));
     }
   }
 }

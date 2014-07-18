@@ -224,7 +224,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (_valueGetter == null)
         throw new InvalidOperationException ("Property has no getter.");
 
-      return _valueGetter (obj);
+      try
+      {
+        return _valueGetter (obj);
+      }
+      catch (Exception ex)
+      {
+        BusinessObjectPropertyAccessException propertyAccessException;
+        if (_bindablePropertyReadAccessStrategy.IsPropertyAccessException (obj, this, ex, out propertyAccessException))
+          throw propertyAccessException;
+        throw;
+      }
     }
 
     public void SetValue (IBusinessObject obj, object value)
@@ -234,7 +244,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       if (_valueSetter == null)
         throw new InvalidOperationException ("Property has no setter.");
 
-      _valueSetter (obj, value);
+      try
+      {
+        _valueSetter (obj, value);
+      }
+      catch (Exception ex)
+      {
+        BusinessObjectPropertyAccessException propertyAccessException;
+        if (_bindablePropertyWriteAccessStrategy.IsPropertyAccessException (obj, this, ex, out propertyAccessException))
+          throw propertyAccessException;
+        throw;
+      }
     }
 
     public bool IsDefaultValue (IBusinessObject obj)
