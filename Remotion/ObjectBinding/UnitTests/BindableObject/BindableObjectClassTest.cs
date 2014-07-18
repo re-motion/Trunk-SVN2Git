@@ -223,6 +223,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
                                        type,
                                        "Remotion.ObjectBinding.UnitTests.TestDomain.IInterfaceWithReferenceType<T>.ExplicitInterfaceReadOnlyScalar"),
                                   CreateProperty (type, "PropertyWithNoSetter"),
+                                  CreateProperty (type, "ThrowingProperty"),
                                };
 
       var classReflector = new ClassReflector (
