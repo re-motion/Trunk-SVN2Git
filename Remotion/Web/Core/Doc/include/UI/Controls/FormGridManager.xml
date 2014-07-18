@@ -561,15 +561,15 @@ Example for a row with labels and the controls in adjecent row.
       The URl of the specified icon.
     </returns>
   </GetImageUrl>
-  <GetRequiredMarker>
+  <CreateRequiredMarker1>
     <remarks>
       Override this method to change how the marker of for controls with mandatory input is constructed.
     </remarks>
     <returns> 
       The new marker.
     </returns>
-  </GetRequiredMarker>
-  <GetHelpProvider>
+  </CreateRequiredMarker1>
+  <CreateHelpProvider1>
     <remarks>
       Override this method to change how the help provider is constructed.
     </remarks>
@@ -579,8 +579,8 @@ Example for a row with labels and the controls in adjecent row.
     <returns> 
       The new help provider. 
     </returns>
-  </GetHelpProvider>
-  <GetValidationMarker>
+  </CreateHelpProvider1>
+  <CreateValidationMarker>
     <remarks>
       Override this method to change how the marker of for controls with a validation error is constructed.
     </remarks>
@@ -590,8 +590,8 @@ Example for a row with labels and the controls in adjecent row.
     <returns> 
       The new marker.
     </returns>
-  </GetValidationMarker>
-  <GetBlankMarker>
+  </CreateValidationMarker>
+  <CreateBlankMarker>
     <remarks>
       Override this method if you cahnge the format of the markers and require the space to be of 
       the same format.
@@ -599,7 +599,7 @@ Example for a row with labels and the controls in adjecent row.
     <returns> 
       a blank image.
     </returns>
-  </GetBlankMarker>
+  </CreateBlankMarker>
   <CheckFormGridRowType>
     <param name="argumentName">
       The display name of <paramref name="formGridRow"/>

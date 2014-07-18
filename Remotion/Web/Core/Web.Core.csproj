@@ -796,7 +796,9 @@
     <Content Include="Doc\include\Remotion.Web.NamespaceDoc.xml" />
     <Content Include="Doc\include\ResourceDispatcher.xml" />
     <Content Include="Doc\include\UI\Controls\DropDownMenu.xml" />
-    <Content Include="Doc\include\UI\Controls\FormGridManager.xml" />
+    <Content Include="Doc\include\UI\Controls\FormGridManager.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Doc\include\UI\Controls\TabbedMultiView.xml" />
     <Content Include="Doc\include\UI\Controls\ValidationStateViewer.xml" />
     <Content Include="Doc\include\UI\Controls\WebButton.xml" />

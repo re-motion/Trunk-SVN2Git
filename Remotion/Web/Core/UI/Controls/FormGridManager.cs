@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -471,10 +472,10 @@ namespace Remotion.Web.UI.Controls
       private ValidationError[] _validationErrors;
 
       /// <summary> The validation marker for this <c>FormGridRow</c>. </summary>
-      private Image _validationMarker;
+      private Control _validationMarker;
 
       /// <summary>The required marker for this <c>FormGridRow</c>. </summary>
-      private Image _requiredMarker;
+      private Control _requiredMarker;
 
       /// <summary> The help provider for this <c>FormGridRow</c>. </summary>
       private Control _helpProvider;
@@ -773,7 +774,7 @@ namespace Remotion.Web.UI.Controls
 
       /// <summary> The validation marker for this <c>FormGridRow</c>. </summary>
       /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/FormGridRow/whether/*' />
-      public Image ValidationMarker
+      public Control ValidationMarker
       {
         get { return _validationMarker; }
         set { _validationMarker = value; }
@@ -781,7 +782,7 @@ namespace Remotion.Web.UI.Controls
 
       /// <summary> The required marker for this <c>FormGridRow</c>. </summary>
       /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/FormGridRow/RequiredMarker/*' />
-      public Image RequiredMarker
+      public Control RequiredMarker
       {
         get { return _requiredMarker; }
         set { _requiredMarker = value; }
@@ -1697,7 +1698,23 @@ namespace Remotion.Web.UI.Controls
       bool hasValidationErrors = validationErrorList.Count > 0;
 
       if (hasValidationErrors)
-        dataRow.ValidationMarker = GetValidationMarker (string.Empty);
+      {
+        var toolTip = new StringBuilder(validationErrorList.Count * 50);
+        for (int i = 0; i < validationErrorList.Count; i++)
+        {
+          ValidationError validationError = (ValidationError) validationErrorList[i];
+          //  Get validation message
+          string validationMessage = validationError.ValidationMessage;
+          //  Get tool tip, tool tip is validation message
+          if (!string.IsNullOrEmpty (validationMessage))
+          {
+            if (toolTip.Length > 0)
+              toolTip.AppendLine();
+            toolTip.Append (validationMessage);
+          }
+        }
+        dataRow.ValidationMarker = CreateValidationMarker (toolTip.ToString());
+      }
 
       dataRow.ValidationErrors = (ValidationError[])validationErrorList.ToArray (typeof (ValidationError));
     }
@@ -2288,21 +2305,6 @@ namespace Remotion.Web.UI.Controls
 
       if (ShowValidationMarkers && dataRow.ValidationMarker != null)
       {
-        string toolTip = string.Empty;
-        for (int i = 0; i < dataRow.ValidationErrors.Length; i++)
-        {
-          ValidationError validationError = (ValidationError) dataRow.ValidationErrors[i];
-          //  Get validation message
-          string validationMessage = validationError.ValidationMessage;
-          //  Get tool tip, tool tip is validation message
-          if (validationMessage != null && validationMessage.Length > 0)
-          {
-            if (toolTip.Length > 0)
-              toolTip += Environment.NewLine;
-            toolTip += validationMessage;
-          }
-        }
-        dataRow.ValidationMarker.ToolTip = toolTip;
         dataRow.MarkersCell.Controls.Add(dataRow.ValidationMarker);
       }
       else if (ShowRequiredMarkers && dataRow.RequiredMarker != null)
@@ -2311,7 +2313,7 @@ namespace Remotion.Web.UI.Controls
       }
       else if (ShowValidationMarkers || ShowRequiredMarkers)
       {
-        dataRow.MarkersCell.Controls.Add(GetBlankMarker());
+        dataRow.MarkersCell.Controls.Add(CreateBlankMarker());
       }
 
       //  HelpProvider takes right-hand side in column
@@ -2327,7 +2329,7 @@ namespace Remotion.Web.UI.Controls
           dataRow.MarkersCell.Controls.Add (namingContainer);
         }
         else
-          dataRow.MarkersCell.Controls.Add(GetBlankMarker());
+          dataRow.MarkersCell.Controls.Add(CreateBlankMarker());
       }
     }
 
@@ -2398,7 +2400,7 @@ namespace Remotion.Web.UI.Controls
         //  SmartLabel knows how the get the contents from ISmartControl
         if (control is ISmartControl)
         {
-          SmartLabel smartLabel = new SmartLabel();
+          SmartLabel smartLabel = CreateSmartLabel();
           smartLabel.ForControl = control.ID;
           label = smartLabel;
         }
@@ -2414,7 +2416,7 @@ namespace Remotion.Web.UI.Controls
           //    || control is HtmlTextArea
           //    || control is HtmlTable)
         {
-          Label primitiveLabel = new Label();
+          Label primitiveLabel = CreateWebLabel();
           if (! (control is DropDownList))// || control is HtmlSelect))
             primitiveLabel.AssociatedControlID = control.ID;
           label = primitiveLabel;
@@ -2447,6 +2449,22 @@ namespace Remotion.Web.UI.Controls
 
         dataRow.LabelsCell.Controls.Add(label);
       }
+    }
+
+    /// <summary>
+    ///   Creates the <see cref="SmartLabel"/> used by <see cref="CreateLabels"/> to populate the <see cref="FormGridRow.LabelsCell"/>.
+    /// </summary>
+    protected virtual SmartLabel CreateSmartLabel ()
+    {
+      return new SmartLabel();
+    }
+
+    /// <summary>
+    ///   Creates the <see cref="Label"/> used by <see cref="CreateLabels"/> to populate the <see cref="FormGridRow.LabelsCell"/>.
+    /// </summary>
+    protected virtual Label CreateWebLabel ()
+    {
+      return new Label ();
     }
 
     /// <summary>
@@ -2529,7 +2547,7 @@ namespace Remotion.Web.UI.Controls
 
         if (smartControl.IsRequired)
         {
-          dataRow.RequiredMarker = GetRequiredMarker();
+          dataRow.RequiredMarker = CreateRequiredMarker();
 
           //  We have a marker, rest would be redundant
           return;
@@ -2548,7 +2566,7 @@ namespace Remotion.Web.UI.Controls
 
         if (smartControl.IsRequired)
         {
-          dataRow.RequiredMarker = GetRequiredMarker();
+          dataRow.RequiredMarker = CreateRequiredMarker();
 
           //  We have a marker, rest would be redundant
           return;
@@ -2561,7 +2579,7 @@ namespace Remotion.Web.UI.Controls
     ///   and creates a help provider.
     /// </summary>
     /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateHelpProvider/*' />
-    protected virtual void CreateHelpProvider (FormGridRow dataRow)
+    protected void CreateHelpProvider (FormGridRow dataRow)
     {
       ArgumentUtility.CheckNotNull ("dataRow", dataRow);
       CheckFormGridRowType ("dataRow", dataRow, FormGridRowType.DataRow);
@@ -2588,7 +2606,7 @@ namespace Remotion.Web.UI.Controls
         if (helpInfo != null)
         {
           //  We have a help provider, first come, only one served
-          return GetHelpProvider (helpInfo);
+          return CreateHelpProvider (helpInfo);
         }
       }
 
@@ -2897,8 +2915,8 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Builds the input required marker. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetRequiredMarker/*' />
-    protected virtual Image GetRequiredMarker()
+    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateRequiredMarker1/*' />
+    protected virtual Control CreateRequiredMarker ()
     {
       Image requiredIcon = new Image();
       requiredIcon.ImageUrl = GetImageUrl (FormGridImage.RequiredField);
@@ -2912,8 +2930,8 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Builds the help provider. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetHelpProvider/*' />
-    protected virtual Control GetHelpProvider (HelpInfo helpInfo)
+    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateHelpProvider1/*' />
+    protected virtual Control CreateHelpProvider (HelpInfo helpInfo)
     {
       ArgumentUtility.CheckNotNull ("helpInfo", helpInfo);
 
@@ -2937,8 +2955,8 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Builds a new marker for validation errors. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetValidationMarker/*' />
-    protected Image GetValidationMarker (string toolTip)
+    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateValidationMarker/*' />
+    protected virtual Control CreateValidationMarker (string toolTip)
     {
       Image validationErrorIcon = new Image();
       validationErrorIcon.ImageUrl = GetImageUrl (FormGridImage.ValidationError);
@@ -2954,8 +2972,8 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary> Returns a spacer to be used instead of a marker. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/GetBlankMarker/*' />
-    protected Control GetBlankMarker()
+    /// <include file='..\..\doc\include\UI\Controls\FormGridManager.xml' path='FormGridManager/CreateBlankMarker/*' />
+    protected virtual Control CreateBlankMarker()
     {
       Image spacer = new Image();
       spacer.ImageUrl = IconInfo.CreateSpacer (ResourceUrlFactory).Url;
