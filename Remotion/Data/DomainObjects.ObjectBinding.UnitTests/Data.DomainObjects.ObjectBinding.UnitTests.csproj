@@ -72,6 +72,8 @@
     <Compile Include="BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
     <Compile Include="BindableDomainObjectMixinTests\PropertyIntegrationTest.cs" />
     <Compile Include="BindableDomainObjectMixinTests\SearchTest.cs" />
+    <Compile Include="BindableDomainObjectPropertyWriteAccessStrategyTest.cs" />
+    <Compile Include="BindableDomainObjectPropertyReadAccessStrategyTest.cs" />
     <Compile Include="BindableDomainObjectProviderAttributeTest.cs" />
     <Compile Include="BindableDomainObjectProviderTest.cs" />
     <Compile Include="BindableDomainObjectQuerySearchServiceTest.cs" />
@@ -79,6 +81,8 @@
     <Compile Include="BindableDomainObjectServiceFactoryMixinTest.cs" />
     <Compile Include="BindableDomainObjectTest.cs" />
     <Compile Include="BindableDomainObjectWithMixedPersistentPropertiesTest.cs" />
+    <Compile Include="IBindablePropertReadAccessStrategyTest.cs" />
+    <Compile Include="IBindablePropertyWriteAccessStrategyTest.cs" />
     <Compile Include="SimpleDomainObjectTest.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ComponentFactoryWithSpecificPersistenceStrategy.cs" />

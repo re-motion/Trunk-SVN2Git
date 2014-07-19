@@ -70,7 +70,9 @@
     <Compile Include="BindableDomainObjectMetadataFactory.cs" />
     <Compile Include="BindableDomainObjectMixin.cs" />
     <Compile Include="BindableDomainObjectPropertyFinder.cs" />
+    <Compile Include="BindableDomainObjectPropertyReadAccessStrategy.cs" />
     <Compile Include="BindableDomainObjectPropertyReflector.cs" />
+    <Compile Include="BindableDomainObjectPropertyWriteAccessStrategy.cs" />
     <Compile Include="BindableDomainObjectProvider.cs" />
     <Compile Include="BindableDomainObjectProviderAttribute.cs" />
     <Compile Include="BindableDomainObjectQuerySearchService.cs" />
