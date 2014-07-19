@@ -70,7 +70,10 @@ namespace Remotion.ObjectBinding
     ///   </item>
     ///   <item>
     ///     <term>The <paramref name="property"/> parameter implements the <see cref="IBusinessObjectReferenceProperty"/> interface.</term>
-    ///     <description> The value's <see cref="IBusinessObject.DisplayNameSafe"/> is returned.  </description>
+    ///     <description> 
+    ///       The value's <see cref="IBusinessObject.DisplayName"/> is returned if the object implements <see cref="IBusinessObjectWithIdentity"/>, 
+    ///       otherwise, <see cref="object.ToString()"/> is used.
+    ///     </description>
     ///   </item>
     ///   <item>
     ///     <term>The <paramref name="property"/> parameter implements the <see cref="IBusinessObjectStringProperty"/> interface.</term>
@@ -228,7 +231,7 @@ namespace Remotion.ObjectBinding
       if (value == null)
         return string.Empty;
       if (value is IBusinessObjectWithIdentity)
-        return ((IBusinessObjectWithIdentity) value).GetAccessibleDisplayName();
+        return ((IBusinessObjectWithIdentity) value).DisplayName;
       return value.ToString();
     }
 

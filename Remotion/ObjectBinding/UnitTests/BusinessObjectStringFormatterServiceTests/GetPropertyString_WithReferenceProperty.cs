@@ -53,12 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.BusinessObjectStringFormatterServiceT
     public void Scalar_WithBusinessObjectWithIdentityValue ()
     {
       var valueStub = MockRepository.GenerateStub<IBusinessObjectWithIdentity> ();
-      var valueDisplayNamePropertyStub = MockRepository.GenerateStub<IBusinessObjectReferenceProperty> ();
-      valueDisplayNamePropertyStub.Stub (_ => _.IsAccessible (valueStub)).Return (true);
-      var valueClassStub = MockRepository.GenerateStub<IBusinessObjectClassWithIdentity>();
-      valueClassStub.Stub (_ => _.GetPropertyDefinition ("DisplayName")).Return (valueDisplayNamePropertyStub);
-      valueStub.Stub (_ => _.BusinessObjectClass).Return (valueClassStub);
-      valueStub.Stub (_=>_.GetProperty (valueDisplayNamePropertyStub)).Return ("ExpectedStringValue");
+      valueStub.Stub (_ => _.DisplayName).Return ("ExpectedStringValue");
       _businessObjectStub.Stub (_=>_.GetProperty (_propertyStub)).Return (valueStub);
 
       string actual = _stringFormatterService.GetPropertyString (_businessObjectStub, _propertyStub, null);
