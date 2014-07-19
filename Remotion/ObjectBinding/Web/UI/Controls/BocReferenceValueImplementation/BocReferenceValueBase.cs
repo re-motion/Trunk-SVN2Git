@@ -975,7 +975,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     protected virtual string GetDisplayName (IBusinessObjectWithIdentity businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-      return businessObject.DisplayNameSafe;
+      return businessObject.GetAccessibleDisplayName();
     }
 
     private bool IsNullValue (string newValue)

@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.Services
       ArgumentUtility.CheckNotNull ("obj", obj);
 
       _uniqueIdentifier = obj.UniqueIdentifier;
-      _displayName = obj.DisplayNameSafe;
+      _displayName = obj.GetAccessibleDisplayName();
     }
 
     public string UniqueIdentifier

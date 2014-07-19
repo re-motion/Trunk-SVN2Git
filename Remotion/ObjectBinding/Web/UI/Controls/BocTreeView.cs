@@ -364,7 +364,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string GetText (IBusinessObjectWithIdentity businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-      return businessObject.DisplayNameSafe;
+      return businessObject.GetAccessibleDisplayName();
     }
 
     protected virtual string GetToolTip (IBusinessObjectWithIdentity businessObject)

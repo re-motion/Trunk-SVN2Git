@@ -157,14 +157,16 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
     foreach (string key in Style.Keys)
       _dropDownMenu.Style[key] = Style[key];
 
-    if (Value != null)
+    var businessObject = Value;
+    if (businessObject != null)
     {
       _dropDownMenu.GetSelectionCount = "function() { return 1; }";
-      _dropDownMenu.TitleText = HttpUtility.HtmlEncode (Value.DisplayNameSafe);
+      var titleText = GetTitleText (businessObject);
+      _dropDownMenu.TitleText = HttpUtility.HtmlEncode (titleText);
 
      if (_enableIcon)
      {
-       _dropDownMenu.TitleIcon = BusinessObjectBoundWebControl.GetIcon (Value, Value.BusinessObjectClass.BusinessObjectProvider);
+       _dropDownMenu.TitleIcon = BusinessObjectBoundWebControl.GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
       }
     }
     else
@@ -174,6 +176,16 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
 
     if (IsDesignMode)
       _dropDownMenu.TitleText = "##";
+  }
+
+  protected virtual string GetTitleText (IBusinessObject businessObject)
+  {
+    ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+    
+    if (businessObject is IBusinessObjectWithIdentity)
+      return ((IBusinessObjectWithIdentity) businessObject).GetAccessibleDisplayName();
+    else
+      return businessObject.ToString();
   }
 
   protected override void Render (HtmlTextWriter writer)
