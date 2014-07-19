@@ -41,9 +41,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
       ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
 
-      ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
-      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
-
       var domainObject = businessObject as DomainObject;
       if (domainObject == null)
         return true;
@@ -70,10 +67,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
         Exception exception,
         out BusinessObjectPropertyAccessException propertyAccessException)
     {
-      ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
-      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
-      ArgumentUtility.DebugCheckNotNull ("exception", exception);
-
       ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
       ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
       ArgumentUtility.DebugCheckNotNull ("exception", exception);
