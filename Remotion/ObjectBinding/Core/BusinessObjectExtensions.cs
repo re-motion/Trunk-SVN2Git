@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
@@ -107,6 +108,48 @@ namespace Remotion.ObjectBinding
       return businessObject.GetPropertyString (propertyDefinition, null);
     }
 
+    /// <summary>
+    /// Gets the <see cref="IBusinessObjectWithIdentity.DisplayName"/> property of <paramref name="businessObject"/> 
+    /// after checking that the property's value can be read.
+    /// </summary>
+    /// <remarks>
+    /// Getting the <see cref="IBusinessObjectWithIdentity.DisplayName"/> can still fail with an exception if the exception is not part of the 
+    /// property access contract, i.e. the exception is not of type <see cref="BusinessObjectPropertyAccessException"/>.
+    /// </remarks>
+    public static string GetAccessibleDisplayName (this IBusinessObjectWithIdentity businessObject)
+    {
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+
+      var businessObjectClass = businessObject.BusinessObjectClass;
+      Assertion.IsNotNull (businessObjectClass, "The business object's BusinessObjectClass-property evaluated and returned null.");
+
+      var displayNameProperty = businessObjectClass.GetPropertyDefinition ("DisplayName");
+      if (displayNameProperty == null)
+      {
+        // No property-is-accessible checks can be performed.
+        // This code path would only be exercised if the DisplayName property is not included in the bound properties.
+        return businessObject.DisplayName;
+      }
+
+      if (displayNameProperty.IsAccessible (businessObject))
+      {
+        try
+        {
+          return (string) businessObject.GetProperty (displayNameProperty);
+        }
+        catch (BusinessObjectPropertyAccessException)
+        {
+          // Fallback to not-accessible-property behavior
+        }
+      }
+
+      var businessObjectProvider = displayNameProperty.BusinessObjectProvider;
+      Assertion.IsNotNull (businessObjectProvider, "IBusinessObjectProperty.BusinessObjectProvider cannot be null.");
+
+      return businessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
+    }
+
+    [NotNull]
     private static IBusinessObjectProperty GetPropertyDefinition (IBusinessObject businessObject, string propertyIdentifier)
     {
       var businessObjectClass = businessObject.BusinessObjectClass;
@@ -116,7 +159,10 @@ namespace Remotion.ObjectBinding
       if (propertyDefinition == null)
       {
         throw new InvalidOperationException (
-            string.Format ("The business object's class ('{0}') does not contain a property named '{1}'.", businessObjectClass.Identifier, propertyIdentifier));
+            string.Format (
+                "The business object's class ('{0}') does not contain a property named '{1}'.",
+                businessObjectClass.Identifier,
+                propertyIdentifier));
       }
 
       return propertyDefinition;
