@@ -854,8 +854,7 @@ public class ClientTransaction
 
   /// <summary>
   /// Gets an object that is already loaded (even if its marked <see cref="StateType.Invalid"/>) or attempts to load them from the data source. 
-  /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>, and the method will
-  /// return a <see langword="null" /> reference in its place.
+  /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>.
   /// </summary>
   /// <param name="objectID">The ID of the object to be retrieved.</param>
   /// <returns>

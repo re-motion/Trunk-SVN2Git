@@ -17,11 +17,11 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.ObjectBinding.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
 {
   [TestFixture]
   public class BindableDomainObjectSearchAllServiceTest : TestBase
@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "This service only supports queries for bindable DomainObject types, the " 
-        + "given type 'Remotion.Data.DomainObjects.ObjectBinding.UnitTests.TestDomain.NonBindableDomainObject' is not a bindable type. "
+        + "given type 'Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.NonBindableDomainObject' is not a bindable type. "
         + "Derive from BindableDomainObject or apply the BindableDomainObjectAttribute.\r\nParameter name: type")]
     public void GetAllObjects_ThrowsOnNonBindableObjects ()
     {
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The property 'ReferencePropertyNotInMapping' on type "
-        + "'Remotion.Data.DomainObjects.ObjectBinding.UnitTests.TestDomain.BindableDomainObjectWithProperties, Remotion.Data.DomainObjects.ObjectBinding.UnitTests' is not "
+        + "'Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.BindableDomainObjectWithProperties, Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests' is not "
         + "supported by the BindableDomainObjectSearchAllService: The service only supports relation properties (ie. references to other DomainObject "
         + "instances).\r\nParameter name: property")]
     public void Search_ThrowsOnUnsupportedProperty ()

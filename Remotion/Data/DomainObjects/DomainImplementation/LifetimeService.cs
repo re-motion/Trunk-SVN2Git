@@ -97,8 +97,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
 
     /// <summary>
     /// Gets a <see cref="DomainObject"/> that already exists or attempts to load it from the data source. 
-    /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <paramref name="clientTransaction"/>, and the method will
-    /// return a <see langword="null" /> reference in its place.
+    /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <paramref name="clientTransaction"/>.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/>.</param>
     /// <param name="objectID">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>

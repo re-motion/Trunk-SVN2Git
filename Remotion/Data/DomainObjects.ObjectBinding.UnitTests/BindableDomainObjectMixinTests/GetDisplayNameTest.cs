@@ -22,8 +22,6 @@ using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
-using Remotion.ObjectBinding.BindableObject.Properties;
-using Remotion.Security;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 

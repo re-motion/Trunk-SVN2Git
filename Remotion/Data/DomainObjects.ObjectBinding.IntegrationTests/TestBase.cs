@@ -19,18 +19,17 @@ using System;
 using System.Transactions;
 using NUnit.Framework;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
 {
   public abstract class TestBase
   {
     private ClientTransaction _testableClientTransaction;
+
     private TransactionScope _transactionScope;
 
     [SetUp]
     public virtual void SetUp ()
     {
-      //base.SetUp();
-
       ReInitializeTransaction();
       _transactionScope = new TransactionScope();
     }

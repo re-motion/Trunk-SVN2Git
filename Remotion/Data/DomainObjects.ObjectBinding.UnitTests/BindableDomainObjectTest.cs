@@ -16,11 +16,14 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.ObjectBinding.UnitTests.TestDomain;
+using Remotion.Development.Data.UnitTesting.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -107,14 +110,20 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     [Test]
     public void Loading ()
     {
-      var newInstance = SampleBindableDomainObject.NewObject ();
-      ClientTransaction.Current.Commit ();
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      var newInstanceID = new ObjectID (typeof (SampleBindableDomainObject), Guid.NewGuid());
+      try
       {
-        var instance = newInstance.ID.GetObject<SampleBindableDomainObject> ();
-        var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
-        Assert.That (implementation, Is.Not.Null);
-        Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
+        StubStorageProvider.LoadDataContainerResult = DataContainer.CreateNew (newInstanceID);
+        {
+          var instance = newInstanceID.GetObject<SampleBindableDomainObject>();
+          var implementation = (BindableDomainObjectImplementation) PrivateInvoke.GetNonPublicField (instance, "_implementation");
+          Assert.That (implementation, Is.Not.Null);
+          Assert.That (implementation.BusinessObjectClass, Is.Not.Null);
+        }
+      }
+      finally
+      {
+        StubStorageProvider.LoadDataContainerResult = null;
       }
     }
 

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
@@ -31,10 +30,14 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
       var objectID = ObjectID.Parse (uniqueIdentifier);
-      return LifetimeService.TryGetObjects<DomainObject> (ClientTransaction.Current, objectID)
-          .Where (o => o!= null && o.State != StateType.Deleted && o.State != StateType.Invalid)
-          .Cast<IBusinessObjectWithIdentity>()
-          .SingleOrDefault();
+      var domainObjectOrNull = LifetimeService.TryGetObject (ClientTransaction.Current, objectID);
+      if (domainObjectOrNull == null)
+        return null;
+      if (domainObjectOrNull.State == StateType.Invalid)
+        return null;
+      if (domainObjectOrNull.State == StateType.Deleted)
+        return null;
+      return (IBusinessObjectWithIdentity) domainObjectOrNull;
     }
   }
 }

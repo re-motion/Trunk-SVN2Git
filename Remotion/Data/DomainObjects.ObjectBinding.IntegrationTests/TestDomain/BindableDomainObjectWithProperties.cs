@@ -16,18 +16,27 @@
 // 
 
 using System;
-using Remotion.Mixins;
+using Remotion.ObjectBinding;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
 {
-  [Uses (typeof (MixinAddingPropertyBase))]
-  [DBTable ("BaseClassWithMixinWithInterface")]
-  [BindableDomainObject]
-  public class BaseClassWithMixinWithInterface : DomainObject
+  [Instantiable]
+  [DBTable]
+  public abstract class BindableDomainObjectWithProperties : BindableDomainObject
   {
-    public static BaseClassWithMixinWithInterface NewObject ()
+    public static BindableDomainObjectWithProperties NewObject ()
     {
-      return NewObject<BaseClassWithMixinWithInterface> ();
+      return NewObject<BindableDomainObjectWithProperties>();
     }
+
+    [Mandatory]
+    public abstract OppositeAnonymousBindableDomainObject RequiredRelatedObjectProperty { get; set; }
+
+    [Mandatory]
+    [DBBidirectionalRelation ("OppositeRequiredRelatedObject")]
+    public abstract ObjectList<OppositeBidirectionalBindableDomainObject> RequiredBidirectionalRelatedObjectsProperty { get; set; }
+
+    [StorageClassNone]
+    public IBusinessObject ReferencePropertyNotInMapping { get; set; }
   }
 }

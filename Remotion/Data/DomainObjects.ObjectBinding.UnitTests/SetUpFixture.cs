@@ -16,63 +16,32 @@
 // 
 
 using System;
-using System.Data.SqlClient;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.ObjectBinding.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
-using Remotion.Development.UnitTesting.Data.SqlClient;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
 {
   [SetUpFixture]
   public class SetUpFixture
   {
-    public static string TestDomainConnectionString
-    {
-      get
-      {
-        return string.Format (
-            "Integrated Security=SSPI;Initial Catalog=RemotionDataDomainObjectsObjectBindingTestDomain;Data Source={0}",
-            DatabaseConfiguration.DataSource);
-      }
-    }
-
-    public static string MasterConnectionString
-    {
-      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=master;Data Source={0}", DatabaseConfiguration.DataSource); }
-    }
-
     [SetUp]
     public void SetUp ()
     {
       try
       {
         var providers = new ProviderCollection<StorageProviderDefinition>();
-        providers.Add (new RdbmsProviderDefinition ("TheStorageProvider", new SqlStorageObjectFactory(), TestDomainConnectionString));
-        var storageConfiguration = new StorageConfiguration (providers, providers["TheStorageProvider"]);
-
+        providers.Add (new RdbmsProviderDefinition (StubStorageProvider.StorageProviderID, new StubStorageFactory(), "NonExistingRdbms"));
+        var storageConfiguration = new StorageConfiguration (providers, providers[StubStorageProvider.StorageProviderID]);
         DomainObjectsConfiguration.SetCurrent (new FakeDomainObjectsConfiguration (storage: storageConfiguration));
 
-        SqlConnection.ClearAllPools();
-
-        var scriptGenerator = new ScriptGenerator (
-            pd => pd.Factory.CreateSchemaScriptBuilder (pd),
-            new RdbmsStorageEntityDefinitionProvider(),
-            new ScriptToStringConverter());
-        var scripts = scriptGenerator.GetScripts (MappingConfiguration.Current.GetTypeDefinitions()).Single();
-
-        var masterAgent = new DatabaseAgent (MasterConnectionString);
-        masterAgent.ExecuteBatchFile ("Database\\CreateDB.sql", false, DatabaseConfiguration.GetReplacementDictionary());
-
-        var databaseAgent = new DatabaseAgent (TestDomainConnectionString);
-        databaseAgent.ExecuteBatchString (scripts.SetUpScript, true);
+        Dev.Null = MappingConfiguration.Current;
       }
       catch (Exception e)
       {
@@ -80,12 +49,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
         Console.WriteLine();
         throw;
       }
-    }
-
-    [TearDown]
-    public virtual void TearDown ()
-    {
-      SqlConnection.ClearAllPools();
     }
   }
 }

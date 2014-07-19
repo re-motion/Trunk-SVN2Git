@@ -16,23 +16,11 @@
 // 
 
 using System;
-using NUnit.Framework;
-using Remotion.Data.DomainObjects.ObjectBinding.UnitTests.IntegrationTests.TestDomain;
-using Remotion.ObjectBinding;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.IntegrationTests
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
 {
-  [TestFixture]
-  public class GetDefaultValueIntegrationTest : TestBase
+  [DBTable]
+  public class NonBindableDomainObject : DomainObject
   {
-    [Test]
-    public void IsDefaultValue_DerivedClassWithMixinWithDuplicateInterface ()
-    {
-      var instance = (IBusinessObject) DerivedClassWithMixinWithDuplicateInterface.NewObject();
-      Assert.That (instance.GetProperty ("Property"), Is.Null); // default value => 0 becomes null
-
-      ((IMixinAddingProperty) instance).Property = 17;
-      Assert.That (instance.GetProperty ("Property"), Is.EqualTo (17)); // non-default value => 17
-    }
   }
 }

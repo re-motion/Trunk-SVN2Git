@@ -16,16 +16,15 @@
 // 
 
 using System;
-using Remotion.Mixins;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
 {
-  [Uses (typeof (MixinAddingProperty))]
-  public class DerivedClassWithMixinWithDuplicateInterface : BaseClassWithMixinWithInterface
+  public class MixinAddingPropertyBase : DomainObjectMixin<DomainObject>, IMixinAddingProperty
   {
-    public new static DerivedClassWithMixinWithDuplicateInterface NewObject ()
+    public virtual int Property
     {
-      return NewObject<DerivedClassWithMixinWithDuplicateInterface> ();
+      get { return Properties[typeof (MixinAddingPropertyBase), "Property"].GetValue<int>(); }
+      set { Properties[typeof (MixinAddingPropertyBase), "Property"].SetValue (value); }
     }
   }
 }

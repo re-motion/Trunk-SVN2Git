@@ -14,12 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.TestDomain
 {
-  public class MixinAddingProperty : MixinAddingPropertyBase
+  public class StubSquenceQuery<T> : Query, IExecutableQuery<IEnumerable<T>>
   {
+    public StubSquenceQuery (QueryDefinition definition)
+        : base(definition, new QueryParameterCollection())
+    {
+    }
+
+    public IEnumerable<T> Execute (IQueryManager queryManager)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

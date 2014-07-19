@@ -137,6 +137,9 @@
       <IsDatabaseTest>True</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.ObjectBinding.UnitTests\Data.DomainObjects.ObjectBinding.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.ObjectBinding.IntegrationTests\Data.DomainObjects.ObjectBinding.IntegrationTests.csproj">
       <IsDatabaseTest>True</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Data\DomainObjects.RdbmsTools.UnitTests\Data.DomainObjects.RdbmsTools.UnitTests.csproj">

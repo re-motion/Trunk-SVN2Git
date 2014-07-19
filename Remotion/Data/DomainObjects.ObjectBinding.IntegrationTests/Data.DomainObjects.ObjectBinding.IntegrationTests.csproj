@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBEAC696-BF2A-4839-9587-44DDF80E8C6A}</ProjectGuid>
+    <ProjectGuid>{408B081B-710E-4C50-8DF0-B8F78E67A498}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Data.DomainObjects.ObjectBinding.UnitTests</RootNamespace>
-    <AssemblyName>Remotion.Data.DomainObjects.ObjectBinding.UnitTests</AssemblyName>
+    <RootNamespace>Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests</RootNamespace>
+    <AssemblyName>Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -59,64 +59,22 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="BindableDomainObjectDefaultValueStrategyTest.cs" />
-    <Compile Include="BindableDomainObjectGetObjectServiceTest.cs" />
-    <Compile Include="BindableDomainObjectImplementationTest.cs" />
-    <Compile Include="BindableDomainObjectIntegrationTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\CommonTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\DefaultValueTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\DomainObjectSpecificsTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\GetBusinessObjectClassTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\GetDisplayNameTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\IdentityTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\PropertyIntegrationTest.cs" />
-    <Compile Include="BindableDomainObjectMixinTests\SearchTest.cs" />
-    <Compile Include="BindableDomainObjectPropertyWriteAccessStrategyTest.cs" />
-    <Compile Include="BindableDomainObjectPropertyReadAccessStrategyTest.cs" />
-    <Compile Include="BindableDomainObjectProviderAttributeTest.cs" />
-    <Compile Include="BindableDomainObjectProviderTest.cs" />
-    <Compile Include="BindableDomainObjectQuerySearchServiceTest.cs" />
-    <Compile Include="BindableDomainObjectServiceFactoryMixinTest.cs" />
-    <Compile Include="BindableDomainObjectTest.cs" />
-    <Compile Include="BindableDomainObjectWithMixedPersistentPropertiesTest.cs" />
-    <Compile Include="IBindablePropertReadAccessStrategyTest.cs" />
-    <Compile Include="IBindablePropertyWriteAccessStrategyTest.cs" />
-    <Compile Include="SimpleDomainObjectTest.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="ComponentFactoryWithSpecificPersistenceStrategy.cs" />
+    <Compile Include="BindableDomainObjectSearchAllServiceTest.cs" />
     <Compile Include="DatabaseConfiguration.cs" />
-    <Compile Include="ObjectBindingTestBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchServiceTestHelper.cs" />
+    <Compile Include="GetDefaultValueIntegrationTest.cs" />
     <Compile Include="SetUpFixture.cs" />
-    <Compile Include="TestDomain\BindableBaseDomainObject.cs" />
-    <Compile Include="TestDomain\BindableDomainObjectAboveInheritanceRoot.cs" />
-    <Compile Include="TestDomain\BindableDomainObjectOnInheritanceRoot.cs" />
-    <Compile Include="TestDomain\BindableDomainObjectWithMixedPersistentProperties.cs" />
+    <Compile Include="TestBase.cs" />
+    <Compile Include="TestDomain\BaseClassWithMixinWithInterface.cs" />
     <Compile Include="TestDomain\BindableDomainObjectWithProperties.cs" />
     <Compile Include="TestDomain\BindableNonDomainObjectReferencingDomainObject.cs" />
-    <Compile Include="TestDomain\ClassDerivedFromBindableObjectBaseOverridingMixinMethod.cs" />
-    <Compile Include="TestDomain\ClassDerivedFromSimpleDomainObject.cs" />
-    <Compile Include="TestDomain\ClassDerivedFromSimpleDomainObject_ImplementingISerializable.cs" />
-    <Compile Include="TestDomain\IBindableDomainObjectWithProperties.cs" />
-    <Compile Include="TestDomain\IMixinAddingPersistentProperties.cs" />
-    <Compile Include="TestDomain\MixinAddingPersistentProperties.cs" />
-    <Compile Include="TestDomain\MixinStub.cs" />
-    <Compile Include="TestDomain\MixinWithOverridableMethod.cs" />
+    <Compile Include="TestDomain\DerivedClassWithMixinWithDuplicateInterface.cs" />
+    <Compile Include="TestDomain\IMixinAddingProperty.cs" />
+    <Compile Include="TestDomain\MixinAddingProperty.cs" />
+    <Compile Include="TestDomain\MixinAddingPropertyBase.cs" />
     <Compile Include="TestDomain\NonBindableDomainObject.cs" />
     <Compile Include="TestDomain\OppositeAnonymousBindableDomainObject.cs" />
     <Compile Include="TestDomain\OppositeBidirectionalBindableDomainObject.cs" />
     <Compile Include="TestDomain\SampleBindableDomainObject.cs" />
-    <Compile Include="TestDomain\SampleBindableDomainObjectWithOverriddenDisplayName.cs" />
-    <Compile Include="TestDomain\SampleBindableDomainObject_AccessingImplementationFromCtor.cs" />
-    <Compile Include="TestDomain\SampleBindableDomainObject_ImplementingISerializable.cs" />
-    <Compile Include="TestDomain\SampleBindableMixinDomainObject.cs" />
-    <Compile Include="TestDomain\SampleBindableMixinDomainObjectWithOverriddenDisplayName.cs" />
-    <Compile Include="TestDomain\StubDomainObjectQueryGenerator.cs" />
-    <Compile Include="TestDomain\StubSquenceQuery.cs" />
-    <Compile Include="TestDomain\StubStorageFactory.cs" />
-    <Compile Include="TestDomain\StubStorageProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">
@@ -131,10 +89,6 @@
     <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
       <Project>{028e7899-0d5f-49c8-9eb6-8b051e02f1e0}</Project>
       <Name>Linq.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
-      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Linq.SqlBackend</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
@@ -164,6 +118,14 @@
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ObjectBinding\Security\ObjectBinding.Security.csproj">
+      <Project>{89f98c4b-11e3-43ec-8776-b552574f9a9f}</Project>
+      <Name>ObjectBinding.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
+      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Name>Security.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Data.Core.csproj">
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Core</Name>
@@ -178,7 +140,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Queries.xml">
+    <Content Include="Database\CreateDB.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

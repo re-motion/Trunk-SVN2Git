@@ -17,10 +17,9 @@
 
 using System;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
 {
-  public interface IMixinAddingProperty
+  public class MixinAddingProperty : MixinAddingPropertyBase
   {
-    int Property { get; set; }
   }
 }
