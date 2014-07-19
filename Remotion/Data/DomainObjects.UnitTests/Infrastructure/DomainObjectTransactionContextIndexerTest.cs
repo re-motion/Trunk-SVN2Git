@@ -28,7 +28,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     public void Item()
     {
       var order = DomainObjectIDs.Order1.GetObject<Order> ();
-      var tx = ClientTransaction.CreateRootTransaction ();
+      var tx = order.RootTransaction.CreateSubTransaction();
       var indexer = new DomainObjectTransactionContextIndexer (order, false);
 
       var item = indexer[tx];
@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     public void Item_WhileEventIsExecuting ()
     {
       var order = DomainObjectIDs.Order1.GetObject<Order> ();
-      var tx = ClientTransaction.CreateRootTransaction ();
+      var tx = order.RootTransaction.CreateSubTransaction();
       var indexer = new DomainObjectTransactionContextIndexer (order, true);
 
       var item = indexer[tx];

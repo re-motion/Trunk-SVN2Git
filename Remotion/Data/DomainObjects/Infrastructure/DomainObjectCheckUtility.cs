@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -24,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Contains commonly used get and check methods dealing with <see cref="DomainObject"/> instances.
   /// </summary>
-  public class DomainObjectCheckUtility
+  public static class DomainObjectCheckUtility
   {
     /// <summary>
     /// Checks if an object is invalid in the given <paramref name="clientTransaction"/>, and, if yes, throws an <see cref="ObjectInvalidException"/>.
@@ -33,11 +34,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectInvalidException">The object is invalid in the given <see cref="ClientTransaction"/>.</exception>
     [AssertionMethod]
-    public static void EnsureNotInvalid (DomainObject domainObject, ClientTransaction clientTransaction)
+    public static void EnsureNotInvalid ([NotNull] DomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
     {
-      // For performance reasons, because this API is used a lot, use debug assertions rather than argument checks.
-      Assertion.DebugAssert (domainObject != null);
-      Assertion.DebugAssert (clientTransaction != null);
+      ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.DebugCheckNotNull ("clientTransaction", clientTransaction);
 
       if (domainObject.TransactionContext[clientTransaction].IsInvalid)
         throw new ObjectInvalidException (domainObject.ID);
@@ -51,11 +51,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectDeletedException">The object has been deleted in the given <see cref="ClientTransaction"/>.</exception>
     [AssertionMethod]
-    public static void EnsureNotDeleted (DomainObject domainObject, ClientTransaction clientTransaction)
+    public static void EnsureNotDeleted ([NotNull] DomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
     {
-      // For performance reasons, because this API is used a lot, use debug assertions rather than argument checks.
-      Assertion.DebugAssert (domainObject != null);
-      Assertion.DebugAssert (clientTransaction != null);
+      ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.DebugCheckNotNull ("clientTransaction", clientTransaction);
 
       if (domainObject.TransactionContext[clientTransaction].State == StateType.Deleted)
         throw new ObjectDeletedException (domainObject.ID);
@@ -72,11 +71,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// method can be used from within an expression.</returns>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     [AssertionMethod]
-    public static void CheckIfRightTransaction (DomainObject domainObject, ClientTransaction clientTransaction)
+    public static void CheckIfRightTransaction ([NotNull] DomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
     {
-      // For performance reasons, because this API is used a lot, use debug assertions rather than argument checks.
-      Assertion.DebugAssert (domainObject != null);
-      Assertion.DebugAssert (clientTransaction != null);
+      ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.DebugCheckNotNull ("clientTransaction", clientTransaction);
 
       if (clientTransaction.RootTransaction != domainObject.RootTransaction)
       {
@@ -92,7 +90,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     [Obsolete ("This method has been removed. Use DomainObject.DefaultTransactionContext.ClientTransaction instead. (1.13.41)", true)]
     public static ClientTransaction GetNonNullClientTransaction (DomainObject domainObject)
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
   }
 }

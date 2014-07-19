@@ -35,7 +35,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     private DomainObjectTransactionContext _loadedOrder1Context;
     private DomainObjectTransactionContext _notYetLoadedOrder2Context;
     private DomainObjectTransactionContext _newOrderContext;
-    private DomainObjectTransactionContext _invalidContext;
     
     private DomainObjectTransactionContext _referenceInitializationContext;
 
@@ -51,8 +50,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
       _notYetLoadedOrder2Context = new DomainObjectTransactionContext (_notYetLoadedOrder2, TestableClientTransaction);
       _newOrderContext = new DomainObjectTransactionContext (_newOrder, TestableClientTransaction);
 
-      _invalidContext = new DomainObjectTransactionContext (_newOrder, ClientTransaction.CreateRootTransaction ());
-
       var objectBeingInitialized = Order.NewObject ();
       PrivateInvoke.SetNonPublicField (objectBeingInitialized, "_isReferenceInitializeEventExecuting", true);
       _referenceInitializationContext = new DomainObjectTransactionContext (objectBeingInitialized, TestableClientTransaction);
@@ -63,6 +60,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     {
       Assert.That (_loadedOrder1Context.DomainObject, Is.SameAs (_loadedOrder1));
       Assert.That (_loadedOrder1Context.ClientTransaction, Is.SameAs (TestableClientTransaction));
+    }
+
+    [Test]
+    public void Initialization_InvalidTransaction ()
+    {
+      Assert.That (
+          () => new DomainObjectTransactionContext (_newOrder, ClientTransaction.CreateRootTransaction()),
+          Throws.TypeOf<ClientTransactionsDifferException>());
     }
 
     [Test]
@@ -89,13 +94,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     {
       _newOrder.Delete ();
       Assert.That (_newOrderContext.IsInvalid, Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void IsDiscarded_InvalidTransaction ()
-    {
-      Dev.Null = _invalidContext.IsInvalid;
     }
 
     [Test]
@@ -128,13 +126,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
       _loadedOrder1.OrderItems.Clear();
 
       Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void State_InvalidTransaction ()
-    {
-      Dev.Null = _invalidContext.State;
     }
 
     [Test]
@@ -209,13 +200,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void RegisterForCommit_InvalidTransaction ()
-    {
-      _invalidContext.RegisterForCommit ();
-    }
-
-    [Test]
     public void Timestamp_LoadedObject()
     {
       var timestamp = _loadedOrder1Context.Timestamp;
@@ -239,13 +223,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void Timestamp_InvalidTransaction ()
-    {
-      Dev.Null = _invalidContext.Timestamp;
-    }
-
-    [Test]
     public void EnsureDataAvailable ()
     {
       Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Null);
@@ -262,13 +239,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     {
       _newOrder.Delete ();
       _newOrderContext.EnsureDataAvailable ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void EnsureDataAvailable_InvalidTransaction ()
-    {
-      _invalidContext.EnsureDataAvailable();
     }
 
     [Test]
@@ -304,13 +274,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
       _newOrderContext.TryEnsureDataAvailable ();
     }
 
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void TryEnsureDataAvailable_InvalidTransaction ()
-    {
-      _invalidContext.TryEnsureDataAvailable ();
-    }
-    
     [Test]
     public void ClientTransaction_DuringReferenceInitialization_Allowed ()
     {

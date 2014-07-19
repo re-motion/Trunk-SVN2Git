@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
     [Test]
     public void Item_WithShortNotation_WithSpecificTransaction ()
     {
-      var transaction = ClientTransaction.CreateRootTransaction ();
+      var transaction = _industrialSector.RootTransaction.CreateSubTransaction();
 
       var indexer = new PropertyIndexer (_industrialSector);
       var accessor1 = indexer[typeof (IndustrialSector), "Name"];

@@ -33,6 +33,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("associatedTransaction", associatedTransaction);
+      DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, associatedTransaction);
 
       _domainObject = domainObject;
       _associatedTransaction = associatedTransaction;
@@ -50,20 +51,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public StateType State
     {
-      get
-      {
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.DataManager.GetState (DomainObject.ID);
-      }
+      get { return ClientTransaction.DataManager.GetState (DomainObject.ID); }
     }
 
     public bool IsInvalid
     {
-      get
-      {
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.IsInvalid (DomainObject.ID); 
-      }
+      get { return ClientTransaction.IsInvalid (DomainObject.ID); }
     }
 
     [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
@@ -74,17 +67,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public object Timestamp
     {
-      get
-      {
-        DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true).Timestamp;
-      }
+      get { return ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true).Timestamp; }
     }
 
     public void RegisterForCommit ()
     {
-      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-
       var dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true);
       if (dataContainer.State == StateType.Deleted)
         return;
@@ -97,8 +84,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void EnsureDataAvailable ()
     {
-      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-
       ClientTransaction.EnsureDataAvailable (DomainObject.ID);
 
       DataContainer dataContainer;
@@ -110,8 +95,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public bool TryEnsureDataAvailable ()
     {
-      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-
       return ClientTransaction.TryEnsureDataAvailable (DomainObject.ID);
     }
 

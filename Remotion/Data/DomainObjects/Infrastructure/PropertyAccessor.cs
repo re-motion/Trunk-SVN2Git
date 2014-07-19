@@ -44,6 +44,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyData", propertyData);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      DomainObjectCheckUtility.CheckIfRightTransaction (domainObject, clientTransaction);
 
       _domainObject = domainObject;
       _clientTransaction = clientTransaction;
@@ -316,10 +317,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     [AssertionMethod]
-    private void CheckTransactionalStatus (ClientTransaction transaction)
+    private void CheckTransactionalStatus (ClientTransaction clientTransaction)
     {
-      DomainObjectCheckUtility.EnsureNotInvalid (_domainObject, transaction);
-      DomainObjectCheckUtility.CheckIfRightTransaction (_domainObject, transaction);
+      Assertion.DebugAssert (ReferenceEquals (ClientTransaction, clientTransaction));
+      DomainObjectCheckUtility.EnsureNotInvalid (_domainObject, clientTransaction);
     }
 
     private void CheckType (Type typeToCheck)
