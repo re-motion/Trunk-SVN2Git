@@ -439,7 +439,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       var postbackCollection = new NameValueCollection();
 
       string value = _control.Value.UniqueIdentifier;
-      string displayName = _control.Value.DisplayNameSafe;
+      string displayName = _control.Value.DisplayName;
       Assert.That (value, Is.Not.Null.Or.Empty);
       Assert.That (displayName, Is.Not.Null.Or.Empty);
       postbackCollection.Add (((IBocAutoCompleteReferenceValue)_control).GetKeyValueName(), value);
@@ -798,10 +798,16 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
     [Test]
     public void GetValidationValue_UniqueIdentifierNull ()
     {
+      var classStub = MockRepository.GenerateStub<IBusinessObjectClass>();
+      var propertyStub = MockRepository.GenerateStub<IBusinessObjectProperty>();
       var businessObjectWithIdentityStub = MockRepository.GenerateStub<IBusinessObjectWithIdentity>();
+
       businessObjectWithIdentityStub.Stub (stub => stub.UniqueIdentifier).Return (null);
-      businessObjectWithIdentityStub.Stub (stub => stub.DisplayName).Return ("Name");
-      businessObjectWithIdentityStub.Stub (stub => stub.DisplayNameSafe).Return ("Name");
+      businessObjectWithIdentityStub.Stub (_ => _.BusinessObjectClass).Return (classStub);
+      businessObjectWithIdentityStub.Stub (_ => _.GetProperty (propertyStub)).Return ("Name");
+
+      classStub.Stub (_ => _.GetPropertyDefinition ("DisplayName")).Return (propertyStub);
+      propertyStub.Stub (_ => _.IsAccessible (businessObjectWithIdentityStub)).Return (true);
 
       _control.Value = businessObjectWithIdentityStub;
 
