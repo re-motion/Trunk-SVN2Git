@@ -71,39 +71,5 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests.BindableDomainObje
           businessObject.DisplayName,
           Is.EqualTo ("TheDisplayName"));
     }
-
-    [Test]
-    public void DisplayNameSafe_WithOverriddenDisplayNameAndAccessGranted ()
-    {
-      IObjectSecurityStrategy stubSecurityStrategy = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var securableObject = (IBusinessObject) SecurableBindableMixinDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
-      BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (securableObject);
-      var property = ((PropertyBase) bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
-      _bindablePropertyReadAccessStrategyMock
-          .Expect (_ => _.CanRead (securableObject, property))
-          .Return (true);
-
-      string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
-
-      _bindablePropertyReadAccessStrategyMock.VerifyAllExpectations();
-      Assert.That (actual, Is.EqualTo ("TheDisplayName"));
-    }
-
-    [Test]
-    public void DisplayNameSafe_WithOverriddenDisplayNameAndWithAccessDenied ()
-    {
-      IObjectSecurityStrategy stubSecurityStrategy = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var securableObject = (IBusinessObject) SecurableBindableMixinDomainObjectWithOverriddenDisplayName.NewObject (stubSecurityStrategy);
-      BindableDomainObjectMixin bindableObjectMixin = Mixin.Get<BindableDomainObjectMixin> (securableObject);
-      var property = ((PropertyBase) bindableObjectMixin.BusinessObjectClass.GetPropertyDefinition ("DisplayName"));
-      _bindablePropertyReadAccessStrategyMock
-          .Expect (_ => _.CanRead (securableObject, property))
-          .Return (false);
-
-      string actual = ((IBusinessObject) bindableObjectMixin).DisplayNameSafe;
-
-      _bindablePropertyReadAccessStrategyMock.VerifyAllExpectations();
-      Assert.That (actual, Is.EqualTo ("×"));
-    }
   }
 }

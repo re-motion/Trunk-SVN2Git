@@ -62,18 +62,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     }
 
     [Test]
-    public void DisplayNameSafe_Default ()
-    {
-      Assert.That (_instance.DisplayNameSafe, Is.EqualTo (TypeUtility.GetPartialAssemblyQualifiedName (typeof (SampleBindableDomainObject))));
-    }
-
-    [Test]
-    public void DisplayNameSafe_Overridden ()
-    {
-      Assert.That (_instanceOverridingDisplayName.DisplayNameSafe, Is.EqualTo ("TheDisplayName"));
-    }
-
-    [Test]
     public void UniqueIdentifier ()
     {
       Assert.That (_instance.UniqueIdentifier, Is.EqualTo (((SampleBindableDomainObject) _instance).ID.ToString()));
@@ -96,7 +84,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
       Assert.That (businessObject.BusinessObjectClass, Is.SameAs (implementation.BusinessObjectClass));
       Assert.That (businessObject.DisplayName, Is.EqualTo (implementation.DisplayName));
       Assert.That (businessObject.DisplayName, Is.EqualTo ("TheDisplayName"));
-      Assert.That (businessObject.DisplayNameSafe, Is.EqualTo (implementation.DisplayNameSafe));
       businessObject.SetProperty ("Int32", 1);
       Assert.That (businessObject.GetProperty ("Int32"), Is.EqualTo (1));
       Assert.That (businessObject.GetProperty (implementation.BusinessObjectClass.GetPropertyDefinition ("Int32")), Is.EqualTo (1));

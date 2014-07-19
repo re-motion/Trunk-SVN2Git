@@ -119,16 +119,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    public void DisplayNameSafe ()
-    {
-      _implementationMock.Expect (mock => mock.DisplayNameSafe).Return ("Megatron");
-      _implementationMock.Replay ();
-
-      Assert.That (_instance.DisplayNameSafe, Is.EqualTo ("Megatron"));
-      _implementationMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void BusinessObjectClass ()
     {
       _implementationMock.Expect (mock => mock.BusinessObjectClass).Return (_businessObjectClassFake);

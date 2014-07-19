@@ -67,11 +67,6 @@ namespace Remotion.ObjectBinding
       get { return _implementation.BaseDisplayName; }
     }
 
-    public string DisplayNameSafe
-    {
-      get { return _implementation.DisplayNameSafe; }
-    }
-
     public IBusinessObjectClass BusinessObjectClass
     {
       get { return _implementation.BusinessObjectClass; }

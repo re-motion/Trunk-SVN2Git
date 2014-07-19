@@ -105,11 +105,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return _implementation.GetPropertyString (property, format);
     }
 
-    string IBusinessObject.DisplayNameSafe
-    {
-      get { return _implementation.DisplayNameSafe; }
-    }
-
     IBusinessObjectClass IBusinessObject.BusinessObjectClass
     {
       get { return _implementation.BusinessObjectClass; }

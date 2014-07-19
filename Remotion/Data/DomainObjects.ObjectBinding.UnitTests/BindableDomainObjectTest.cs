@@ -191,18 +191,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     }
 
     [Test]
-    public void DisplayNameSafe ()
-    {
-      var instance = SampleBindableDomainObject.NewObject (_implementationMock);
-
-      _implementationMock.Expect (mock => mock.DisplayNameSafe).Return ("Megatron");
-      _implementationMock.Replay ();
-
-      Assert.That (((IBusinessObject) instance).DisplayNameSafe, Is.EqualTo ("Megatron"));
-      _implementationMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void BusinessObjectClass ()
     {
       var instance = SampleBindableDomainObject.NewObject (_implementationMock);

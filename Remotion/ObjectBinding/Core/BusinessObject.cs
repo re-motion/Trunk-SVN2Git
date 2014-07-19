@@ -48,23 +48,6 @@ namespace Remotion.ObjectBinding
     /// <value> A <see cref="string"/> identifying this object to the user. </value>
     public abstract string DisplayName { get; }
 
-    /// <summary>
-    ///   Gets the value of <see cref="DisplayName"/> if it is accessible and otherwise falls back to the <see cref="string"/> returned by
-    ///   <see cref="IBusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder"/>.
-    /// </summary>
-    string IBusinessObject.DisplayNameSafe
-    {
-      get
-      {
-        IBusinessObjectClass businessObjectClass = BusinessObjectClass;
-        IBusinessObjectProperty displayNameProperty = businessObjectClass.GetPropertyDefinition ("DisplayName");
-        if (displayNameProperty.IsAccessible (this))
-          return DisplayName;
-
-        return businessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder ();
-      }
-    }
-
     /// <summary>Gets the <see cref="BusinessObjectStringFormatterService"/> used to convert the property values to strings.</summary>
     protected abstract IBusinessObjectStringFormatterService StringFormatterService { get; }
   }

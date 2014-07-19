@@ -82,10 +82,6 @@ namespace Remotion.ObjectBinding
     /// <value> A <see cref="string"/> identifying this object to the user. </value>
     string DisplayName { get; }
 
-    /// <summary> Gets the human readable representation of this <see cref="IBusinessObjectWithIdentity"/> in an exception-safe manner. </summary>
-    /// <remarks> Accessing this property must not fail during normal operations. </remarks>
-    string DisplayNameSafe { get; }
-
     /// <summary> Gets the <see cref="IBusinessObjectClass"/> of this business object. </summary>
     /// <value> An <see cref="IBusinessObjectClass"/> instance acting as the business object's type. </value>
     IBusinessObjectClass BusinessObjectClass { get; }
