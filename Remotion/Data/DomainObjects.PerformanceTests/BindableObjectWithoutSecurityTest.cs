@@ -35,8 +35,14 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [SetUp]
     public void SetUp ()
     {
-      var bindablePropertyReadAccessStrategy = new CompundBindablePropertyReadAccessStrategy (Enumerable.Empty<IBindablePropertyReadAccessStrategy>());
-      var bindablePropertyWriteAccessStrategy = new CompundBindablePropertyWriteAccessStrategy (Enumerable.Empty<IBindablePropertyWriteAccessStrategy>());
+      var bindablePropertyReadAccessStrategy =
+          new CompundBindablePropertyReadAccessStrategy (
+              new IBindablePropertyReadAccessStrategy[] { new BindableDomainObjectPropertyReadAccessStrategy() });
+
+      var bindablePropertyWriteAccessStrategy =
+          new CompundBindablePropertyWriteAccessStrategy (
+              new IBindablePropertyWriteAccessStrategy[] { new BindableDomainObjectPropertyWriteAccessStrategy() });
+
       var serviceLocator = DefaultServiceLocator.Create();
       serviceLocator.RegisterSingle<IBindablePropertyReadAccessStrategy> (() => bindablePropertyReadAccessStrategy);
       serviceLocator.RegisterSingle<IBindablePropertyWriteAccessStrategy> (() => bindablePropertyWriteAccessStrategy);
@@ -63,7 +69,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_Property_IsAccessible ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithoutSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.05탎 (release build), ~0.66 탎 (debug build)");
+          "Expected average duration of BindableObjectWithoutSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.08탎 (release build), ~0.66 탎 (debug build)");
 
       base.BusinessObject_Property_IsAccessible ();
 

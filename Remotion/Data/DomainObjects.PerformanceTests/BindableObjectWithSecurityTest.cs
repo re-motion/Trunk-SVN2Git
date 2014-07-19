@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_Property_IsAccessible ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.55 탎 (release build), ~2.7 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~0.66 탎 (release build), ~2.7 탎 (debug build)");
 
       base.BusinessObject_Property_IsAccessible();
 
