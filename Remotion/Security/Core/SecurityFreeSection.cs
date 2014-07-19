@@ -26,11 +26,12 @@ namespace Remotion.Security
   {
     private class ActiveSections
     {
-      public readonly int Count;
+      // Mutable to avoid object allocation during increment and decrement
+      public int Count { get; set; }
 
-      public ActiveSections (int count)
+      public ActiveSections ()
       {
-        Count = count; 
+        Count = 0; 
       }
     }
 
@@ -38,25 +39,10 @@ namespace Remotion.Security
 
     public static bool IsActive
     {
-      get { return ActiveSectionCount > 0; }
-    }
-
-    private static int ActiveSectionCount
-    {
       get
       {
-        var activeSections = (ActiveSections) SafeContext.Instance.GetData (s_activeSectionCountKey);
-        if (activeSections == null)
-        {
-          activeSections = new ActiveSections (0);
-          SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
-        }
-
-        return activeSections.Count;
-      }
-      set 
-      { 
-        SafeContext.Instance.SetData (s_activeSectionCountKey, new ActiveSections (value) ); 
+        var activeSections = GetActiveSections();
+        return activeSections.Count > 0;
       }
     }
 
@@ -64,7 +50,7 @@ namespace Remotion.Security
 
     public SecurityFreeSection ()
     {
-      ActiveSectionCount++;
+      IncrementActiveSections();
     }
 
     void IDisposable.Dispose ()
@@ -76,7 +62,7 @@ namespace Remotion.Security
     {
       if (!_isDisposed)
       {
-        ActiveSectionCount--;
+        DecrementActiveSections();
         _isDisposed = true;
       }
     }
@@ -84,6 +70,29 @@ namespace Remotion.Security
     public void Leave ()
     {
       Dispose();
+    }
+
+    private void IncrementActiveSections ()
+    {
+      var activeSections = GetActiveSections();
+      activeSections.Count++;
+    }
+
+    private void DecrementActiveSections ()
+    {
+      var activeSections = GetActiveSections();
+      activeSections.Count--;
+    }
+
+    private static ActiveSections GetActiveSections ()
+    {
+      var activeSections = (ActiveSections) SafeContext.Instance.GetData (s_activeSectionCountKey);
+      if (activeSections == null)
+      {
+        activeSections = new ActiveSections();
+        SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
+      }
+      return activeSections;
     }
   }
 }
