@@ -227,7 +227,9 @@ namespace Remotion.ObjectBinding
     {
       if (value == null)
         return string.Empty;
-      return ((IBusinessObject) value).DisplayNameSafe;
+      if (value is IBusinessObjectWithIdentity)
+        return ((IBusinessObjectWithIdentity) value).GetAccessibleDisplayName();
+      return value.ToString();
     }
 
     private string GetStringValueForStringProperty (object value)
