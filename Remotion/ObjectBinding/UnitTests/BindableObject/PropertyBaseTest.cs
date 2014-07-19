@@ -214,9 +214,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       var actualException = Assert.Throws<Exception> (() => propertyBase.GetValue (((IBusinessObject) instance)));
       Assert.That (actualException, Is.SameAs (originalException));
+#if DEBUG
       Assert.That (
           originalException.StackTrace,
           Is.StringStarting ("   at Remotion.ObjectBinding.UnitTests.TestDomain.ClassWithReferenceType`1.get_ThrowingProperty()"));
+#endif
     }
 
     [Test]
@@ -347,11 +349,13 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       var actualException = Assert.Throws<Exception> (() => propertyBase.SetValue ((IBusinessObject) instance, new SimpleReferenceType()));
       Assert.That (actualException, Is.SameAs (originalException));
+#if DEBUG
       Assert.That (
           originalException.StackTrace,
           Is.StringStarting ("   at Remotion.ObjectBinding.UnitTests.TestDomain.ClassWithReferenceType`1.set_ThrowingProperty(T value)"));
+#endif
     }
-
+   
     [Test]
     public void IsAccessible_ReturnsValueFromStrategy ()
     {
