@@ -169,6 +169,17 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     }
 
     [Test]
+    public void CanRead_BusinessObjectIsNull_ReturnsTrue ()
+    {
+      var property = GetProperty (SampleBindableDomainObject.NewObject());
+
+      var strategy = (IBindablePropertyReadAccessStrategy) new BindableDomainObjectPropertyReadAccessStrategy();
+      var result = strategy.CanRead (null, property);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
     public void IsPropertyAccessible_WithObjectInvalidException_ReturnsTrue ()
     {
       var instance = SampleBindableDomainObject.NewObject();

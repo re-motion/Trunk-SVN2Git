@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     public bool CanWrite (IBusinessObject businessObject, PropertyBase bindableProperty)
     {
-      ArgumentUtility.DebugCheckNotNull ("businessObject", businessObject);
+      // businessObject can be null
       ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
 
       var domainObject = businessObject as DomainObject;
