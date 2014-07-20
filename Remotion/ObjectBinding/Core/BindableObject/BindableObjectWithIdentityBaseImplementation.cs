@@ -23,7 +23,7 @@ using TypeExtensions = Remotion.Reflection.TypeExtensions;
 namespace Remotion.ObjectBinding.BindableObject
 {
   [Serializable]
-  public class BindableObjectWithIdentityBaseImplementation : BindableObjectWithIdentityMixin, IDeserializationCallback, IBindableObjectBaseImplementation
+  public class BindableObjectWithIdentityBaseImplementation : BindableObjectWithIdentityMixin, IDeserializationCallback, IBindableObjectWithIdentityBaseImplementation
   {
     public static BindableObjectWithIdentityBaseImplementation Create (BindableObjectWithIdentityBase wrapper)
     {
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public override string DisplayName
     {
-      get { return ((IBusinessObject) Target).DisplayName; }
+      get { return ((IBusinessObjectWithIdentity) Target).DisplayName; }
     }
   }
 }

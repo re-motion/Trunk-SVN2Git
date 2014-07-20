@@ -20,7 +20,7 @@ using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
-  public interface IBindableDomainObjectImplementation : IBindableObjectBaseImplementation
+  public interface IBindableDomainObjectImplementation : IBindableObjectWithIdentityBaseImplementation
   {
     string BaseUniqueIdentifier { get; }
   }

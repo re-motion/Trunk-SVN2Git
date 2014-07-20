@@ -112,32 +112,6 @@ namespace Remotion.ObjectBinding.BindableObject
       get { return BusinessObjectClass; }
     }
 
-    /// <summary> Gets the human readable representation of this <see cref="IBusinessObject"/>. </summary>
-    /// <value> The default implementation returns the <see cref="BusinessObjectClass"/>'s <see cref="IBusinessObjectClass.Identifier"/>. </value>
-    public virtual string DisplayName
-    {
-      get { return BusinessObjectClass.Identifier; }
-    }
-
-    /// <summary>
-    ///   Gets the value of <see cref="DisplayName"/> if it is accessible and otherwise falls back to the <see cref="string"/> returned by
-    ///   <see cref="IBusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder"/>.
-    /// </summary>
-    public string DisplayNameSafe
-    {
-      get
-      {
-        var displayNameProperty = BusinessObjectClass.GetPropertyDefinition ("DisplayName");
-        if (displayNameProperty == null)
-          return DisplayName;
-
-        if (displayNameProperty.IsAccessible ((IBusinessObject) Target))
-          return DisplayName;
-
-        return BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
-      }
-    }
-
     protected override void OnInitialized ()
     {
       base.OnInitialized();

@@ -39,6 +39,13 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public abstract string UniqueIdentifier { get; }
 
+    /// <summary> Gets the human readable representation of this <see cref="IBusinessObjectWithIdentity"/>. </summary>
+    /// <value> The default implementation returns the <see cref="BindableObjectMixinBase{T}.BusinessObjectClass"/>'s <see cref="IBusinessObjectClass.Identifier"/>. </value>
+    public virtual string DisplayName
+    {
+      get { return BusinessObjectClass.Identifier; }
+    }
+
     protected override Type GetTypeForBindableObjectClass ()
     {
       return MixinTypeUtility.GetUnderlyingTargetType (Target.GetType ());

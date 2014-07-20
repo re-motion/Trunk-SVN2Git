@@ -14,16 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 
-namespace Remotion.ObjectBinding.UnitTests.TestDomain
+namespace Remotion.ObjectBinding.BindableObject
 {
-  public class ClassDerivedFromBindableObjectBaseOverridingDisplayName : BindableObjectBase
+  public interface IBindableObjectWithIdentityBaseImplementation : IBindableObjectBaseImplementation, IBusinessObjectWithIdentity
   {
-    public override string DisplayName
-    {
-      get { return "Overrotten!"; }
-    }
+    string BaseDisplayName { get; }
   }
 }

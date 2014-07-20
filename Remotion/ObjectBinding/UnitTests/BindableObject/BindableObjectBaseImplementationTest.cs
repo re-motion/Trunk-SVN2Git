@@ -44,29 +44,5 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       Assert.That (deserializedData.Item1.BusinessObjectClass, Is.Not.Null);
       Assert.That (PrivateInvoke.GetNonPublicProperty (deserializedData.Item1, "Target"), Is.SameAs (deserializedData.Item2));
     }
-
-    [Test]
-    public void BaseDisplayName()
-    {
-      var wrapper = new ClassDerivedFromBindableObjectBase ();
-      var implementation = BindableObjectBaseImplementation.Create (wrapper);
-      Assert.That (implementation.BaseDisplayName, Is.EqualTo (wrapper.BusinessObjectClass.Identifier));
-    }
-
-    [Test]
-    public void DisplayName_ViaImplementation_Default()
-    {
-      var wrapper = new ClassDerivedFromBindableObjectBase ();
-      var implementation = BindableObjectBaseImplementation.Create (wrapper);
-      Assert.That (implementation.DisplayName, Is.EqualTo (wrapper.BusinessObjectClass.Identifier));
-    }
-
-    [Test]
-    public void DisplayName_ViaImplementation_Overridden ()
-    {
-      var wrapper = new ClassDerivedFromBindableObjectBaseOverridingDisplayName();
-      var implementation = BindableObjectBaseImplementation.Create (wrapper);
-      Assert.That (implementation.DisplayName, Is.EqualTo ("Overrotten!"));
-    }
   }
 }

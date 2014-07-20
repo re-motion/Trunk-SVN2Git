@@ -35,17 +35,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectMixinTes
     }
 
     [Test]
-    public void DisplayName ()
-    {
-      BindableObjectMixin mixin = Mixin.Get<BindableObjectMixin> (ObjectFactory.Create<SimpleBusinessObjectClass>(ParamList.Empty));
-      IBusinessObject businessObject = mixin;
-
-      Assert.That (
-          businessObject.DisplayName,
-          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"));
-    }
-
-    [Test]
     public void GetProvider ()
     {
       Assert.That (

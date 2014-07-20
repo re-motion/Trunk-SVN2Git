@@ -21,7 +21,6 @@ using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.TypePipe;
-using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
 {
@@ -29,13 +28,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
   public class BindableObjectBaseIntegrationTest
   {
     private ClassDerivedFromBindableObjectBase _instance;
-    private ClassDerivedFromBindableObjectBaseOverridingDisplayName _instanceOverridingDisplayName;
 
     [SetUp]
     public void SetUp ()
     {
       _instance = new ClassDerivedFromBindableObjectBase();
-      _instanceOverridingDisplayName = new ClassDerivedFromBindableObjectBaseOverridingDisplayName();
     }
 
     [Test]
@@ -46,18 +43,6 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       Assert.That (bindableObjectClass.BusinessObjectProvider, Is.InstanceOf (typeof (BindableObjectProvider)));
       Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
       Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (ClassDerivedFromBindableObjectBase)));
-    }
-
-    [Test]
-    public void DisplayName_Default ()
-    {
-      Assert.That (_instance.DisplayName, Is.EqualTo (TypeUtility.GetPartialAssemblyQualifiedName (typeof (ClassDerivedFromBindableObjectBase))));
-    }
-
-    [Test]
-    public void DisplayName_Overridden ()
-    {
-      Assert.That (_instanceOverridingDisplayName.DisplayName, Is.EqualTo ("Overrotten!"));
     }
 
     [Test]

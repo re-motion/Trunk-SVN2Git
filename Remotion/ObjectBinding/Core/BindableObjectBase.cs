@@ -58,11 +58,6 @@ namespace Remotion.ObjectBinding
       return _implementation.GetPropertyString(property, format);
     }
 
-    public virtual string DisplayName
-    {
-      get { return _implementation.BaseDisplayName; }
-    }
-
     public IBusinessObjectClass BusinessObjectClass
     {
       get { return _implementation.BusinessObjectClass; }

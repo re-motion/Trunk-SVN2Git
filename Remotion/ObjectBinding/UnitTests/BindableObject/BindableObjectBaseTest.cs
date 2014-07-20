@@ -107,25 +107,5 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       Assert.That (_instance.GetPropertyString (_propertyFake, "gj"), Is.EqualTo ("yay"));
       _implementationMock.VerifyAllExpectations (); 
     }
-
-    [Test]
-    public void DisplayName()
-    {
-      _implementationMock.Expect (mock => mock.BaseDisplayName).Return ("Philips");
-      _implementationMock.Replay ();
-
-      Assert.That (_instance.DisplayName, Is.EqualTo ("Philips"));
-      _implementationMock.VerifyAllExpectations (); 
-    }
-
-    [Test]
-    public void BusinessObjectClass ()
-    {
-      _implementationMock.Expect (mock => mock.BusinessObjectClass).Return (_businessObjectClassFake);
-      _implementationMock.Replay ();
-
-      Assert.That (_instance.BusinessObjectClass, Is.SameAs (_businessObjectClassFake));
-      _implementationMock.VerifyAllExpectations ();
-    }
   }
 }

@@ -21,6 +21,5 @@ namespace Remotion.ObjectBinding.BindableObject
 {
   public interface IBindableObjectBaseImplementation : IBusinessObject
   {
-    string BaseDisplayName { get; }
   }
 }

@@ -28,14 +28,14 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
   public class BindableObjectWithIdentityBaseTest
   {
     private ClassDerivedFromBindableObjectWithIdentityBase _instance;
-    private IBindableObjectBaseImplementation _implementationMock;
+    private IBindableObjectWithIdentityBaseImplementation _implementationMock;
     private IBusinessObjectProperty _propertyFake;
     private IBusinessObjectClass _businessObjectClassFake;
 
     [SetUp]
     public void SetUp()
     {
-      _implementationMock = MockRepository.GenerateMock<IBindableObjectBaseImplementation> ();
+      _implementationMock = MockRepository.GenerateMock<IBindableObjectWithIdentityBaseImplementation> ();
       _instance = new ClassDerivedFromBindableObjectWithIdentityBase (_implementationMock);
 
       _propertyFake = MockRepository.GenerateMock<IBusinessObjectProperty> ();

@@ -20,7 +20,7 @@ using Remotion.Mixins;
 
 namespace Remotion.ObjectBinding.UnitTests.TestDomain
 {
-  [BindableObject]
+  [BindableObjectWithIdentity]
   public class ClassWithOverriddenDisplayName
   {
     public ClassWithOverriddenDisplayName ()
@@ -31,6 +31,12 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
     public string DisplayName
     {
       get { return "TheDisplayName"; }
+    }
+
+    [OverrideMixin]
+    public string UniqueIdentifier
+    {
+      get { return "TheUniqueIdentifier"; }
     }
   }
 }

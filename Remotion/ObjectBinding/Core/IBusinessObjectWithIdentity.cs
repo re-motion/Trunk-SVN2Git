@@ -33,5 +33,10 @@ namespace Remotion.ObjectBinding
     /// <value> A <see cref="string"/> uniquely identifying this object. </value>
     /// <remarks> This value must be be unqiue within its business object domain. </remarks>
     string UniqueIdentifier { get; }
+
+  /// <summary> Gets the human readable representation of this <see cref="IBusinessObjectWithIdentity"/>. </summary>
+  /// <value> A <see cref="String"/> identifying this object to the user. </value>
+  /// <remarks> This value does not have to be unqiue within its business object domain. </remarks>
+  string DisplayName { get; }
   }
 }

@@ -969,7 +969,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     ///   <para>
     ///     Override this method to change the way the display name is composed. 
     ///   </para><para>
-    ///     The default implementation used the <see cref="IBusinessObject.DisplayName"/> property to get the display name.
+    ///     The default implementation used the <see cref="IBusinessObjectWithIdentity.DisplayName"/> property to get the display name.
     ///   </para>
     /// </remarks>
     protected virtual string GetDisplayName (IBusinessObjectWithIdentity businessObject)

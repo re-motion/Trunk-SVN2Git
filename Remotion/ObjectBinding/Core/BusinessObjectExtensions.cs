@@ -109,11 +109,11 @@ namespace Remotion.ObjectBinding
     }
 
     /// <summary>
-    /// Gets the <see cref="IBusinessObject.DisplayName"/> property of <paramref name="businessObject"/> 
+    /// Gets the <see cref="IBusinessObjectWithIdentity.DisplayName"/> property of <paramref name="businessObject"/> 
     /// after checking that the property's value can be read.
     /// </summary>
     /// <remarks>
-    /// Getting the <see cref="IBusinessObject.DisplayName"/> can still fail with an exception if the exception is not part of the 
+    /// Getting the <see cref="IBusinessObjectWithIdentity.DisplayName"/> can still fail with an exception if the exception is not part of the 
     /// property access contract, i.e. the exception is not of type <see cref="BusinessObjectPropertyAccessException"/>.
     /// </remarks>
     public static string GetAccessibleDisplayName (this IBusinessObjectWithIdentity businessObject)

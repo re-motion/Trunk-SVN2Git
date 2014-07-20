@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding
     ///   <item>
     ///     <term>The <paramref name="property"/> parameter implements the <see cref="IBusinessObjectReferenceProperty"/> interface.</term>
     ///     <description> 
-    ///       The value's <see cref="IBusinessObject.DisplayName"/> is returned if the object implements <see cref="IBusinessObjectWithIdentity"/>, 
+    ///       The value's <see cref="IBusinessObjectWithIdentity.DisplayName"/> is returned if the object implements <see cref="IBusinessObjectWithIdentity"/>, 
     ///       otherwise, <see cref="object.ToString()"/> is used.
     ///     </description>
     ///   </item>

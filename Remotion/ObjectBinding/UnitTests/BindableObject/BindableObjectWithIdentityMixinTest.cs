@@ -47,13 +47,32 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    public void DisplayName ()
+    public void DisplayName_Overridden_ValueFromMixin ()
     {
       BindableObjectWithIdentityMixin mixin =
           Mixin.Get<BindableObjectWithIdentityMixin> (ObjectFactory.Create<ClassWithIdentityAndDisplayName> (ParamList.Create ("TheUniqueIdentifier")));
       IBusinessObjectWithIdentity businessObjectWithIdentity = mixin;
 
       Assert.That (businessObjectWithIdentity.DisplayName, Is.SameAs ("TheUniqueIdentifier"));
+    }
+
+    [Test]
+    public void DisplayName_Overridden_ValueFromConcreteType ()
+    {
+      var businessObject = (IBusinessObjectWithIdentity) ObjectFactory.Create<ClassWithOverriddenDisplayName> (ParamList.Empty);
+
+      Assert.That (businessObject.DisplayName, Is.EqualTo ("TheDisplayName"));
+    }
+
+    [Test]
+    public void DisplayName_BaseImplementation ()
+    {
+      var mixin = Mixin.Get<BindableObjectWithIdentityMixin> (ObjectFactory.Create<ClassWithIdentity>(ParamList.Empty));
+      IBusinessObjectWithIdentity businessObject = mixin;
+
+      Assert.That (
+          businessObject.DisplayName,
+          Is.EqualTo ("Remotion.ObjectBinding.UnitTests.TestDomain.ClassWithIdentity, Remotion.ObjectBinding.UnitTests"));
     }
 
     [Test]

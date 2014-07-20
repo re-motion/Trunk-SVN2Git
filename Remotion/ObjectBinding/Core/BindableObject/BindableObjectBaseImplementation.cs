@@ -49,15 +49,5 @@ namespace Remotion.ObjectBinding.BindableObject
           "we assume the mixin does not have a base object");
       ((IInitializableMixin) this).Initialize (_wrapper, null, true);
     }
-
-    public string BaseDisplayName
-    {
-      get { return base.DisplayName; }
-    }
-
-    public override string DisplayName
-    {
-      get { return ((IBusinessObject) Target).DisplayName; }
-    }
   }
 }

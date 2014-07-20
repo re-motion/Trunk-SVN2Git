@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
     {
     }
 
-    public ClassDerivedFromBindableObjectWithIdentityBase(IBindableObjectBaseImplementation implementation) : base(implementation)
+    public ClassDerivedFromBindableObjectWithIdentityBase(IBindableObjectWithIdentityBaseImplementation implementation) : base(implementation)
     {
     }
 

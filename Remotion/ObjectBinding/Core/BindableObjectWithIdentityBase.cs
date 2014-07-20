@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding
   [Serializable]
   public abstract class BindableObjectWithIdentityBase : IBusinessObjectWithIdentity
   {
-    private readonly IBindableObjectBaseImplementation _implementation;
+    private readonly IBindableObjectWithIdentityBaseImplementation _implementation;
 
     protected BindableObjectWithIdentityBase()
     {
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    protected BindableObjectWithIdentityBase (IBindableObjectBaseImplementation implementation)
+    protected BindableObjectWithIdentityBase (IBindableObjectWithIdentityBaseImplementation implementation)
     {
       ArgumentUtility.CheckNotNull ("implementation", implementation);
       _implementation = implementation;

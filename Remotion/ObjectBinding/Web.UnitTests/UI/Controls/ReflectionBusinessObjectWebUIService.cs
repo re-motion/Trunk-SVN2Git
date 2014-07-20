@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
               control.ID,
               businessObjectClass.Identifier,
               (businessObjectProperty != null ? businessObjectProperty.Identifier : "prop"),
-              (businessObject != null ? businessObject.DisplayName : "obj")),
+              (businessObject is IBusinessObjectWithIdentity ? ((IBusinessObjectWithIdentity) businessObject).DisplayName : "obj")),
           "return false;");
     }
   }

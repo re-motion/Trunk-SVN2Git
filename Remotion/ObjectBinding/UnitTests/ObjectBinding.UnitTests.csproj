@@ -203,7 +203,6 @@
     <Compile Include="BindableObject\BindableObjectGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="BindableObject\BindableObjectMixinTests\Common.cs" />
     <Compile Include="BindableObject\BindableObjectMixinTests\DefaultValueTest.cs" />
-    <Compile Include="BindableObject\BindableObjectMixinTests\GetDisplayName.cs" />
     <Compile Include="BindableObject\BindableObjectMixinTests\GetBusinessObjectClass.cs" />
     <Compile Include="BindableObject\BindableObjectMixinTests\SetProperty.cs" />
     <Compile Include="BindableObject\BindableObjectMixinTests\GetProperty.cs" />
@@ -247,7 +246,6 @@
     <Compile Include="TestDomain\ClassWithBaseProperty.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\TestDomain\ClassWithDeleteObjectServiceTypeAttribute.cs" />
     <Compile Include="BindableObject\ReferencePropertyTests\TestDomain\ClassWithIdentityFromOtherBusinessObjectImplementation.cs" />
-    <Compile Include="TestDomain\ClassDerivedFromBindableObjectBaseOverridingDisplayName.cs" />
     <Compile Include="TestDomain\ClassDerivedFromBindableObjectWithIdentityBase.cs" />
     <Compile Include="TestDomain\ClassDerivedFromBindableObjectWithIdentityBaseOverridingDisplayName.cs" />
     <Compile Include="TestDomain\ClassWithOverridingProperty.cs" />

@@ -150,7 +150,7 @@
             Read-Only / <see cref="BocReferenceValueBase.Value"/> is not <see langword="null"/>
           </term>
           <description>
-            Displays the <see cref="IBusinessObject.DisplayName"/> for <see cref="BocReferenceValueBase.Value"/> 
+            Displays the <see cref="IBusinessObjectWithIdentity.DisplayName"/> for <see cref="BocReferenceValueBase.Value"/> 
             and the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/>, 
             if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
           </description>

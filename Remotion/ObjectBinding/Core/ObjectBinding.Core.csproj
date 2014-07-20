@@ -166,6 +166,7 @@
     <Compile Include="BindableObject\BindableObjectWithIdentityBaseImplementation.cs" />
     <Compile Include="BindableObject\BindableObjectWithIdentityMixin.cs" />
     <Compile Include="BindableObject\BindableObjectServiceFactory.cs" />
+    <Compile Include="BindableObject\IBindableObjectWithIdentityBaseImplementation.cs" />
     <Compile Include="BusinessObjectPropertyAccessException.cs" />
     <Compile Include="BindableObject\CompositeEnumerationValueFilter.cs" />
     <Compile Include="BindableObject\CompundBindablePropertyReadAccessStrategy.cs" />

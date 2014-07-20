@@ -51,6 +51,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
       get { return Target.ID.ToString(); }
     }
-    
+
+    public virtual string DisplayName
+    {
+      get { return BusinessObjectClass.Identifier; }
+    }
   }
 }

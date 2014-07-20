@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     public override string DisplayName
     {
-      get { return ((IBusinessObject) Target).DisplayName; }
+      get { return ((IBusinessObjectWithIdentity) Target).DisplayName; }
     }
   }
 }
