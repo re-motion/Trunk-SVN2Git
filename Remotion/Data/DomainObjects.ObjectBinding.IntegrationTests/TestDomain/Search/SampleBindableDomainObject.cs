@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
 using Remotion.TypePipe;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Search
 {
   [Instantiable]
   [DBTable]

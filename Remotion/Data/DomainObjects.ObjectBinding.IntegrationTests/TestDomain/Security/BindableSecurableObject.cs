@@ -20,13 +20,12 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
-using Remotion.ObjectBinding;
 using Remotion.Security;
 using Remotion.TypePipe;
 
-namespace Remotion.Data.DomainObjects.Security.UnitTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Security
 {
-  [BindableObject]
+  [BindableDomainObject]
   [Instantiable]
   [DBTable]
   [Uses (typeof (BindableSecurableObjectMixin))]

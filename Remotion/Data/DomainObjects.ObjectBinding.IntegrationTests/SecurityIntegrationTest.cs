@@ -18,17 +18,20 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.Security.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
+using Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Security;
+using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.Security.UnitTests
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
 {
   [TestFixture]
-  public class ObjectBindingIntegrationTest : TestBase
+  public class SecurityIntegrationTest : TestBase
   {
     private ISecurityProvider _securityProviderStub;
     private IPrincipalProvider _principalProviderStub;
@@ -39,6 +42,8 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     public override void SetUp ()
     {
       base.SetUp();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
 
       _securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       _principalProviderStub = MockRepository.GenerateStub<IPrincipalProvider>();
@@ -61,6 +66,8 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     {
       ClientTransactionScope.ResetActiveScope();
       _serviceLocatorScope.Dispose();
+
+      BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
 
       base.TearDown();
     }

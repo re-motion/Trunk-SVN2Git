@@ -16,11 +16,16 @@
 // 
 
 using System;
+using Remotion.Security;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Security
 {
-  [DBTable]
-  public class NonBindableDomainObject : DomainObject
+
+  [AccessType]
+  public enum TestAccessTypes
   {
+    First = 1,
+    Second = 2,
   }
+
 }

@@ -16,15 +16,12 @@
 // 
 
 using System;
+using Remotion.ObjectBinding;
 
-namespace Remotion.Data.DomainObjects.Security.UnitTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Search
 {
-  public interface IBindableSecurableObjectMixin
+  public class BindableNonDomainObjectReferencingDomainObject : BindableObjectBase
   {
-    string MixedPropertyWithDefaultPermission { get; set; }
-    string MixedPropertyWithReadPermission { get; set; }
-    string MixedPropertyWithWritePermission { get; set; }
-    string DefaultPermissionMixedProperty { get; set; }
-    string CustomPermissionMixedProperty { get; set; }
+    public SampleBindableDomainObject OppositeSampleObject { get; set; }
   }
 }

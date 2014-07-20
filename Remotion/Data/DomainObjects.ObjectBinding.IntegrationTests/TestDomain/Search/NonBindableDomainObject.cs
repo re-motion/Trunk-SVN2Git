@@ -17,11 +17,10 @@
 
 using System;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Search
 {
-  [Instantiable]
   [DBTable]
-  public abstract class OppositeAnonymousBindableDomainObject : BindableDomainObject
+  public class NonBindableDomainObject : DomainObject
   {
   }
 }

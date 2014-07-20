@@ -58,7 +58,6 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjectSecurityStrategyTest.cs" />
-    <Compile Include="ObjectBindingIntegrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityClientTransactionExtensionIntegrationTest.cs" />
     <Compile Include="SecurityClientTransactionExtensionTests\FilterQueryResultTest.cs" />
@@ -78,10 +77,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestBase.cs" />
-    <Compile Include="TestDomain\BindableSecurableObject.cs" />
-    <Compile Include="TestDomain\BindableSecurableObjectMixin.cs" />
-    <Compile Include="TestDomain\DerivedBindableSecurableObject.cs" />
-    <Compile Include="TestDomain\IBindableSecurableObjectMixin.cs" />
     <Compile Include="TestDomain\ISecurableObjectMixin.cs" />
     <Compile Include="TestDomain\NonSecurableObject.cs" />
     <Compile Include="TestDomain\SecurableObject.cs" />

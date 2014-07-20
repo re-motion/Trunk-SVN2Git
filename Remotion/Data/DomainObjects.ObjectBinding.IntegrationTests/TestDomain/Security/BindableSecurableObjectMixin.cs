@@ -19,7 +19,7 @@ using System;
 using Remotion.ObjectBinding;
 using Remotion.Security;
 
-namespace Remotion.Data.DomainObjects.Security.UnitTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Security
 {
   [BindableObject]
   public class BindableSecurableObjectMixin : DomainObjectMixin<DomainObject>, IBindableSecurableObjectMixin

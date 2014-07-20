@@ -18,7 +18,7 @@
 using System;
 using Remotion.Security;
 
-namespace Remotion.Data.DomainObjects.Security.UnitTests.TestDomain
+namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Security
 {
   public class DerivedBindableSecurableObject : BindableSecurableObject
   {
