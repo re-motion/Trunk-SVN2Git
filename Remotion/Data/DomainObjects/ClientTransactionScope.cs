@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   public class ClientTransactionScope : IDisposable, ITransactionScope
   {
-    private static readonly SafeContextSingleton<ClientTransactionScope> _scopeSingleton = 
+    private static readonly SafeContextSingleton<ClientTransactionScope> s_scopeSingleton = 
         new SafeContextSingleton<ClientTransactionScope> (SafeContextKeys.DataDomainObjectsClientTransactionScope, () => null);
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects
     /// <value>The current thread's active scope, or <see langword="null"/> if no scope is currently active.</value>
     public static ClientTransactionScope ActiveScope
     {
-      get { return _scopeSingleton.Current; }
+      get { return s_scopeSingleton.Current; }
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects
 
     private static void SetActiveScope (ClientTransactionScope scope)
     {
-      _scopeSingleton.SetCurrent (scope);
+      s_scopeSingleton.SetCurrent (scope);
     }
 
     /// <summary>
