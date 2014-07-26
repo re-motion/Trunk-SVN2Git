@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _extension.ObjectDeleting (_testHelper.Transaction, securableObject);
       }

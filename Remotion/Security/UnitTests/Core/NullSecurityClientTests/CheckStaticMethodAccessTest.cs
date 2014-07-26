@@ -48,7 +48,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "IsValid");
       }

@@ -72,7 +72,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
     {
       _testHelper.ReplayAll();
 
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         _securityClient.CheckAccess (_testHelper.SecurableObject, (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
       }

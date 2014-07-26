@@ -24,79 +24,81 @@ namespace Remotion.Security.UnitTests.Core
   public class SecurityFreeSectionTest
   {
     [Test]
-    public void Enter_IsActive_Leave_WithSingleSecurityFreeSection ()
+    public void Create_IsActive_Dispose_WithSingleSecurityFreeSection ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      SecurityFreeSection section = new SecurityFreeSection ();
+      var scope = SecurityFreeSection.Create();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      section.Leave ();
+      scope.Dispose ();
       Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
-    public void Enter_IsActive_Leave_WithNestedSecurityFreeSections ()
+    public void Create_IsActive_Dispose_WithNestedSecurityFreeSections ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      SecurityFreeSection section1 = new SecurityFreeSection ();
+      var scope = SecurityFreeSection.Create();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         Assert.That (SecurityFreeSection.IsActive, Is.True);
       }
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      section1.Leave ();
+      scope.Dispose ();
       Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
-    public void Enter_IsActive_Leave_WithNestedSecurityFreeSectionsUnorderd ()
+    public void Create_IsActive_Dispose_WithNestedSecurityFreeSectionsUnorderd_ThrowsInvalidOperationException ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      SecurityFreeSection section1 = new SecurityFreeSection ();
+      IDisposable scope1 = SecurityFreeSection.Create(); // scope1 is boxed to make sure no value-copy errors are introduced.
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      SecurityFreeSection section2 = new SecurityFreeSection ();
+      var scope2 = SecurityFreeSection.Create();
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      section1.Leave ();
+      Assert.That (
+          () => scope1.Dispose(),
+          Throws.InvalidOperationException.With.Message.StringStarting ("Nested SecurityFreeSection scopes have been exited out-of-sequence."));
+
+      scope2.Dispose();
+      scope1.Dispose();
+    }
+
+    [Test]
+    [Obsolete]
+    public void Leave ()
+    {
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+      var scope = SecurityFreeSection.Create();
+
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      section2.Leave ();
+      scope.Leave ();
       Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
 
     [Test]
-    public void Dispose ()
+    public void Create_IsActive_Dispose_Create ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      IDisposable section = new SecurityFreeSection ();
+      var scope = SecurityFreeSection.Create();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      section.Dispose ();
-      Assert.That (SecurityFreeSection.IsActive, Is.False);
-    }
+      scope.Dispose ();
 
-    [Test]
-    public void Enter_IsActive_Leave_Enter ()
-    {
-      Assert.That (SecurityFreeSection.IsActive, Is.False);
-      SecurityFreeSection section = new SecurityFreeSection ();
-
-      Assert.That (SecurityFreeSection.IsActive, Is.True);
-
-      section.Leave ();
-      section.Leave ();
       Assert.That (SecurityFreeSection.IsActive, Is.False);
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         Assert.That (SecurityFreeSection.IsActive, Is.True);
       }
@@ -106,20 +108,21 @@ namespace Remotion.Security.UnitTests.Core
     public void Threading ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      SecurityFreeSection section = new SecurityFreeSection ();
+      var scope = SecurityFreeSection.Create();
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      ThreadRunner.Run (delegate ()
+      ThreadRunner.Run (
+          delegate
           {
             Assert.That (SecurityFreeSection.IsActive, Is.False);
-            using (new SecurityFreeSection ())
+            using (SecurityFreeSection.Create())
             {
               Assert.That (SecurityFreeSection.IsActive, Is.True);
             }
             Assert.That (SecurityFreeSection.IsActive, Is.False);
           });
 
-      section.Leave ();
+      scope.Dispose ();
       Assert.That (SecurityFreeSection.IsActive, Is.False);
     }
   }

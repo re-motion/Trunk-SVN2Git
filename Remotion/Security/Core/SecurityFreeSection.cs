@@ -15,15 +15,55 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Context;
+using Remotion.Utilities;
 
 namespace Remotion.Security
 {
   /// <summary>
-  /// Represents a scope within no security will be evaluated.
+  /// Represents a scope within no security will be evaluated. Use <see cref="SecurityFreeSection"/>.<see cref="Create"/> to enter the scope 
+  /// and <see cref="Scope.Dispose"/> to leave the scope.
   /// </summary>
-  public sealed class SecurityFreeSection : IDisposable
+  public static class SecurityFreeSection
   {
+    /// <summary>
+    /// The <see cref="Scope"/> struct can be used to mark a section of code where no security will be evaluated. 
+    /// The section should be exited by invoking the <see cref="Dispose"/> method.
+    /// </summary>
+    [CannotApplyEqualityOperator]
+    public struct Scope : IDisposable
+    {
+      private readonly int _activeSectionsCount;
+      private bool _isDisposed;
+
+      internal Scope (int activeSectionsCount)
+      {
+        Assertion.DebugAssert (activeSectionsCount > 0);
+
+        _activeSectionsCount = activeSectionsCount;
+        _isDisposed = false;
+      }
+
+      public void Dispose ()
+      {
+        if (!_isDisposed)
+        {
+          if (_activeSectionsCount == 0)
+            throw new InvalidOperationException ("The SecurityFreeSection scope has not been entered by invoking SecurityFreeSection.Create().");
+
+          DecrementActiveSections (_activeSectionsCount);
+          _isDisposed = true;
+        }
+      }
+
+      [Obsolete ("Use Dispose() instead. (Version 1.15.21.0)")]
+      public void Leave ()
+      {
+        Dispose();
+      }
+    }
+
     private class ActiveSections
     {
       // Mutable to avoid object allocation during increment and decrement
@@ -31,11 +71,21 @@ namespace Remotion.Security
 
       public ActiveSections ()
       {
-        Count = 0; 
+        Count = 0;
       }
     }
 
     private static readonly string s_activeSectionCountKey = SafeContextKeys.SecuritySecurityFreeSection;
+
+    /// <summary>
+    /// Enters a new <see cref="SecurityFreeSection"/> <see cref="Scope"/>. 
+    /// The <see cref="Scope"/> should always be used via a using-block, or if that is not possible, disposed inside a finally-block.
+    /// </summary>
+    public static Scope Create ()
+    {
+      var activeSectionsCount = IncrementActiveSections();
+      return new Scope (activeSectionsCount);
+    }
 
     public static bool IsActive
     {
@@ -44,44 +94,6 @@ namespace Remotion.Security
         var activeSections = GetActiveSections();
         return activeSections.Count > 0;
       }
-    }
-
-    private bool _isDisposed;
-
-    public SecurityFreeSection ()
-    {
-      IncrementActiveSections();
-    }
-
-    void IDisposable.Dispose ()
-    {
-      Dispose();
-    }
-
-    private void Dispose ()
-    {
-      if (!_isDisposed)
-      {
-        DecrementActiveSections();
-        _isDisposed = true;
-      }
-    }
-
-    public void Leave ()
-    {
-      Dispose();
-    }
-
-    private void IncrementActiveSections ()
-    {
-      var activeSections = GetActiveSections();
-      activeSections.Count++;
-    }
-
-    private void DecrementActiveSections ()
-    {
-      var activeSections = GetActiveSections();
-      activeSections.Count--;
     }
 
     private static ActiveSections GetActiveSections ()
@@ -93,6 +105,27 @@ namespace Remotion.Security
         SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
       }
       return activeSections;
+    }
+
+    private static int IncrementActiveSections ()
+    {
+      var activeSections = GetActiveSections();
+      activeSections.Count++;
+      return activeSections.Count;
+    }
+
+    private static void DecrementActiveSections (int numberOfActiveSectionsExpected)
+    {
+      var activeSections = GetActiveSections();
+
+      if (activeSections.Count != numberOfActiveSectionsExpected)
+      {
+        throw new InvalidOperationException (
+            "Nested SecurityFreeSection scopes have been exited out-of-sequence. "
+            + "Entering a SecurityFreeSection should always be combined with a using-block for the scope, or if this is not possible, a finally-block for leaving the scope.");
+      }
+
+      activeSections.Count--;
     }
   }
 }

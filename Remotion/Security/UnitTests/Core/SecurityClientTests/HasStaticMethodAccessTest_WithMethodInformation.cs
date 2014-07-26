@@ -72,7 +72,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInformation);
       }
@@ -102,7 +102,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInformation);
       }
@@ -129,7 +129,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInformation);
       }

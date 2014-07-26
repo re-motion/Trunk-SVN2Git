@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Edit) });
       
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -142,7 +142,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.Second) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -202,7 +202,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -222,7 +222,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -242,7 +242,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       securityContextFactoryStub.Stub (mock => mock.CreateSecurityContext()).Return (securityContextStub);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -262,7 +262,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Edit) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -282,7 +282,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -302,7 +302,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -322,7 +322,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -342,7 +342,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -362,7 +362,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -382,7 +382,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -402,7 +402,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -422,7 +422,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateDerivedBindableSecurableObject (securityContextFactoryStub);
       }
@@ -442,7 +442,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateDerivedBindableSecurableObject (securityContextFactoryStub);
       }
@@ -464,7 +464,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Edit) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject(securityContextFactoryStub);
       }
@@ -484,7 +484,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -504,7 +504,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -524,7 +524,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -544,7 +544,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.Second) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -564,7 +564,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -584,7 +584,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }
@@ -604,7 +604,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateBindableSecurableObject (securityContextFactoryStub);
       }

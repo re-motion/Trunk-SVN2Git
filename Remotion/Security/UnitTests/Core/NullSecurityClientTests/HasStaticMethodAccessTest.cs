@@ -79,7 +79,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), "IsValid");
       }
@@ -94,7 +94,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
       }
@@ -109,7 +109,7 @@ namespace Remotion.Security.UnitTests.Core.NullSecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInformation);
       }

@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStr
       if (searchArguments == null || searchArguments.GroupHandle == null)
         return null;
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         var group = searchArguments.GroupHandle.GetObject();
         return group.GroupType;

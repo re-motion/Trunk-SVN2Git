@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -139,7 +139,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -162,7 +162,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -185,7 +185,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -208,7 +208,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -231,7 +231,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -254,7 +254,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -275,7 +275,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -298,7 +298,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -321,7 +321,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -346,7 +346,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateDerivedSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -369,7 +369,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateDerivedSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -392,7 +392,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateDerivedSecurableClassWithProperties (securityContextFactoryStub);
       }
@@ -413,7 +413,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       _securityProviderStub.Stub (mock => mock.GetAccess (securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       IBusinessObject bindableSecurableObject;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         bindableSecurableObject = CreateDerivedSecurableClassWithProperties (securityContextFactoryStub);
       }

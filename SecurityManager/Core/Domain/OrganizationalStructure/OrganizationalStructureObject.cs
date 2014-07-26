@@ -61,7 +61,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     ISecurityContext ISecurityContextFactory.CreateSecurityContext ()
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         return SecurityContext.Create(GetPublicDomainObjectType(), GetOwner(), GetOwningGroup(), GetOwningTenant(), GetStates(), GetAbstractRoles());
       }

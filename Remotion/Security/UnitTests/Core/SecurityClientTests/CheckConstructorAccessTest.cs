@@ -61,7 +61,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _securityClient.CheckConstructorAccess (typeof (SecurableObject));
       }

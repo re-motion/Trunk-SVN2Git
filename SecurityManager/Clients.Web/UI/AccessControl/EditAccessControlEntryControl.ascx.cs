@@ -177,7 +177,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     public override void SaveValues (bool interim)
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         base.SaveValues (interim);
       }

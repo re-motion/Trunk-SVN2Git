@@ -42,7 +42,7 @@ namespace Remotion.SecurityManager.Clients.Web
       _clientTransaction.EnterDiscardingScope();
       if (!IsPostBack)
       {
-        using (new SecurityFreeSection())
+        using (SecurityFreeSection.Create())
         {
           var users = (from u in QueryFactory.CreateLinqQuery<SecurityManagerUser>() orderby u.UserName select u).ToArray();
           var user = SecurityManagerPrincipal.Current.User;

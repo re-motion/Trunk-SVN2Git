@@ -146,7 +146,7 @@ namespace Remotion.SecurityManager.Domain
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
     {
       Tenant tenant;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         tenant = GetUser (CreateClientTransaction()).Tenant;
       }
@@ -166,7 +166,7 @@ namespace Remotion.SecurityManager.Domain
 
     private SecurityPrincipal CreateSecurityPrincipal (ClientTransaction transaction)
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         string user = GetUser (transaction).UserName;
         ISecurityPrincipalRole role = null;
@@ -192,7 +192,7 @@ namespace Remotion.SecurityManager.Domain
 
     private TenantProxy CreateTenantProxy (Tenant tenant)
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         return TenantProxy.Create (tenant);
       }
@@ -200,7 +200,7 @@ namespace Remotion.SecurityManager.Domain
 
     private UserProxy CreateUserProxy (User user)
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         return UserProxy.Create (user);
       }
@@ -208,7 +208,7 @@ namespace Remotion.SecurityManager.Domain
 
     private SubstitutionProxy CreateSubstitutionProxy (Substitution substitution)
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         return SubstitutionProxy.Create (substitution);
       }

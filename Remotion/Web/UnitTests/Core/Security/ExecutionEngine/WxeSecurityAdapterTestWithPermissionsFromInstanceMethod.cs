@@ -119,7 +119,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       function.ThisObject = thisObject; // Required because in this test the WxeFunction has not started executing.
       _mocks.ReplayAll ();
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _securityAdapter.CheckAccess (function);
       }
@@ -166,7 +166,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       _mocks.ReplayAll ();
 
       bool hasAccess;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityAdapter.HasAccess (function);
       }
@@ -205,7 +205,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       _mocks.ReplayAll ();
 
       bool hasAccess;
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityAdapter.HasStatelessAccess (typeof (TestFunctionWithPermissionsFromInstanceMethod));
       }

@@ -128,7 +128,7 @@ namespace Remotion.Security
 
     private ISecurityContext CreateSecurityContext ()
     {
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         var context = _securityContextFactory.CreateSecurityContext();
         Assertion.IsNotNull (context, "ISecurityContextFactory.CreateSecurityContext() evaluated and returned null.");

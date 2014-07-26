@@ -86,7 +86,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
     {
       _testHelper.ReplayAll();
 
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         _securityClient.CheckStatelessAccess (typeof (SecurableObject), (IReadOnlyList<AccessType>) new[] { AccessType.Get (TestAccessTypes.First) });
       }

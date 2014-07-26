@@ -93,7 +93,7 @@ namespace Remotion.Security.UnitTests.Core.SecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (new SecurityFreeSection())
+      using (SecurityFreeSection.Create())
       {
         hasAccess = _securityClient.HasAccess (
             _testHelper.SecurableObject,

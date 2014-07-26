@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper.ReplayAll ();
       var endPointDefinition = securableObject.ID.ClassDefinition.GetRelationEndPointDefinition (typeof (SecurableObject).FullName + ".Parent");
 
-      using (new SecurityFreeSection ())
+      using (SecurityFreeSection.Create())
       {
         _extension.RelationChanging (_testHelper.Transaction, securableObject, endPointDefinition, null, null);
       }
