@@ -1947,14 +1947,14 @@
     <EmbeddedResource Include="Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\TearDownDB_SecondStorageProvider.sql" />
     <EmbeddedResource Include="Persistence\Rdbms\SqlServer\SchemaGeneration\IntegrationTests\TestData\TearDownDB_ThirdStorageProvider.sql" />
     <Content Include="QueriesForStorageGroupTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
     <Content Include="QueriesForLoaderTest2.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="QueriesForLoaderTestDuplicate.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithResolvedInterfaceStorageObjectFactory.xml" />
     <EmbeddedResource Include="Resources\DomainObjectsConfigurationWithUnresolvedInterfaceStorageObjectFactory.xml" />
@@ -1968,19 +1968,19 @@
     </Content>
     <Content Include="Database\DataDomainObjects_SetupDB.sql" />
     <Content Include="QueriesForStandardMapping.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="QueriesForLoaderTest.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="QueriesWithInvalidNamespace.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ScalarQueryWithCollectionType.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Queries.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Resources\Image1.png" />
     <EmbeddedResource Include="Resources\Image2.png" />
