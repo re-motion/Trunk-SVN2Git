@@ -45,6 +45,14 @@ namespace Remotion.Security
         _isDisposed = false;
       }
 
+      /// <summary>
+      /// Exits the <see cref="SecurityFreeSection"/> <see cref="Scope"/>.
+      /// </summary>
+      /// <exception cref="InvalidOperationException">
+      /// The <see cref="Scope"/> was not exited in the correct nesting order.
+      /// <para>- or -</para>
+      /// The <see cref="Scope"/> was initialized using the value type's default construtor.
+      /// </exception>
       public void Dispose ()
       {
         if (!_isDisposed)

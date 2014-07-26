@@ -74,6 +74,20 @@ namespace Remotion.Security.UnitTests.Core
     }
 
     [Test]
+    public void CreatedViaDefaultConstructor_ThrowsInvalidOperationException ()
+    {
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+      IDisposable scope1 = new SecurityFreeSection.Scope();
+
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+
+      Assert.That (
+          () => scope1.Dispose(),
+          Throws.InvalidOperationException.With.Message.StringStarting (
+              "The SecurityFreeSection scope has not been entered by invoking SecurityFreeSection.Create()."));
+    }
+
+    [Test]
     [Obsolete]
     public void Leave ()
     {
