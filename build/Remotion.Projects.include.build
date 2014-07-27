@@ -57,6 +57,7 @@
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Core\Core.Core.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\ExtensibleEnums\Core.ExtensibleEnums.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Extensions\Core.Extensions.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Reflection\Core.Reflection.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Reflection.CodeGeneration\Core.Reflection.CodeGeneration.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Reflection.CodeGeneration.TypePipe\Core.Reflection.CodeGeneration.TypePipe.csproj" />
     <ReleaseProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Tools\Core.Tools.csproj" />
@@ -67,6 +68,9 @@
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Extensions.UnitTests\Core.Extensions.UnitTests.csproj">
+      <IsDatabaseTest>False</IsDatabaseTest>
+    </UnitTestProjectFiles>
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Reflection.UnitTests\Core.Reflection.UnitTests.csproj">
       <IsDatabaseTest>False</IsDatabaseTest>
     </UnitTestProjectFiles>
     <UnitTestProjectFiles Include="$(SolutionDirectory)\Remotion\Core\Reflection.CodeGeneration.UnitTests\Core.Reflection.CodeGeneration.UnitTests.csproj">
