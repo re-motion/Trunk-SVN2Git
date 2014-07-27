@@ -14,9 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Context
@@ -39,34 +40,15 @@ namespace Remotion.Context
   /// The data managed by this class is thread-local. The class is safe to be used from multiple threads at the same time, but each thread will have 
   /// its own copy of the data.
   /// </threadsafety>
-  public class SafeContext
+  public static class SafeContext
   {
-    private static readonly object s_lock = new object ();
-    private static ISafeContextStorageProvider s_instance;
+    private static readonly Lazy<ISafeContextStorageProvider> s_instance = new Lazy<ISafeContextStorageProvider> (
+        () => SafeServiceLocator.Current.GetInstance<ISafeContextStorageProvider>(),
+        LazyThreadSafetyMode.ExecutionAndPublication);
 
     public static ISafeContextStorageProvider Instance
     {
-      get
-      {
-        lock (s_lock)
-        {
-          if (s_instance == null)
-          {
-            s_instance = SafeServiceLocator.Current.GetInstance<ISafeContextStorageProvider>();
-            if (s_instance == null)
-              throw new InvalidOperationException ("No instance of ISafeContextStorageProvider has been registered with the ServiceLocator.");
-          }
-          return s_instance;
-        }
-      }
-    }
-
-    public static void SetInstance (ISafeContextStorageProvider newInstance)
-    {
-      lock (s_lock)
-      {
-        s_instance = newInstance;
-      }
+      get { return s_instance.Value; }
     }
   }
 }
