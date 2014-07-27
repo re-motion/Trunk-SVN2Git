@@ -29,18 +29,18 @@ namespace Remotion.Web.UI.Controls.Hotkey
   ///   <item>
   ///     <description>
   ///       If the string contains a single '<c>&amp;</c>'-character followed by a letter or a digit, then the letter or digit is used as hotkey.
-  ///       The '<c>&amp;</c>' will be removed from the resulting <see cref="Text"/>.
+  ///       The '<c>&amp;</c>' will be removed from the resulting <see cref="TextWithHotkey.Text"/>.
   ///     </description>
   ///   </item>
   ///   <item>
   ///     <description>
   ///       '<c>&amp;</c>'-characters can be escaped by using two '<c>&amp;</c>'. 
-  ///       The parsing logic merges them into a single '<c>&amp;</c>'-character for the resulting <see cref="Text"/>.
+  ///       The parsing logic merges them into a single '<c>&amp;</c>'-character for the resulting <see cref="TextWithHotkey.Text"/>.
   ///     </description>
   ///   </item>
   ///   <item>
   ///     <description>
-  ///       If the string contains multiple possible hotkeys, then no further parsing is attempted and the original string is used as the resulting <see cref="Text"/>.
+  ///       If the string contains multiple possible hotkeys, then no further parsing is attempted and the original string is used as the resulting <see cref="TextWithHotkey.Text"/>.
   ///     </description>
   ///   </item>
   /// </list>
