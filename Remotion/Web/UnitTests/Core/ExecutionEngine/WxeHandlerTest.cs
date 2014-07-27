@@ -103,7 +103,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeFunctionStateManager.Current.Abort (_functionStateWithChildFunction);
 
       Remotion.Web.ExecutionEngine.UrlMapping.UrlMappingConfiguration.SetCurrent (null);
-      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
+      SafeContext.Instance.FreeData (typeof (WxeFunctionStateManager).AssemblyQualifiedName);
       base.TearDown ();
     }
 

@@ -32,6 +32,9 @@ namespace Remotion.Web.ExecutionEngine
   /// </summary>
   public class WxeContext
   {
+    private static readonly SafeContextSingleton<WxeContext> s_context =
+        new SafeContextSingleton<WxeContext> (SafeContextKeys.WebExecutionEngineWxeContextCurrent, () => null);
+
     /// <summary> The current <see cref="WxeContext"/>. </summary>
     /// <value> 
     ///   An instance of the <see cref="WxeContext"/> type 
@@ -39,13 +42,13 @@ namespace Remotion.Web.ExecutionEngine
     /// </value>
     public static WxeContext Current
     {
-      get { return SafeContext.Instance.GetData (SafeContextKeys.WebExecutionEngineWxeContextCurrent) as WxeContext; }
+      get { return s_context.Current; }
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
     public static void SetCurrent (WxeContext value)
     {
-      SafeContext.Instance.SetData (SafeContextKeys.WebExecutionEngineWxeContextCurrent, value);
+      s_context.SetCurrent (value);
     }
 
     /// <summary> 

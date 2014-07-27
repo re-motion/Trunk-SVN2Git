@@ -56,7 +56,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public void TearDown ()
     {
       HttpContextHelper.SetCurrent (null);
-      SafeContext.Instance.SetData (typeof (WxeFunctionStateManager).AssemblyQualifiedName, null);
+      SafeContext.Instance.FreeData (typeof (WxeFunctionStateManager).AssemblyQualifiedName);
     }
 
     [Test]

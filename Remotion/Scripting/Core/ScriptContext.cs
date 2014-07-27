@@ -33,6 +33,9 @@ namespace Remotion.Scripting
   /// </remarks>
   public class ScriptContext
   {
+    private static readonly SafeContextSingleton<ScriptContext> s_scriptContext =
+        new SafeContextSingleton<ScriptContext> (SafeContextKeys.ScriptingScriptContext, () => null);
+
     private static readonly Dictionary<string, ScriptContext> s_scriptContexts = new Dictionary<string, ScriptContext>();
     private static readonly Object s_scriptContextLock = new object();
 
@@ -42,8 +45,8 @@ namespace Remotion.Scripting
     /// </summary>
     public static ScriptContext Current
     {
-      get { return (ScriptContext) SafeContext.Instance.GetData (SafeContextKeys.ScriptingScriptContext); }
-      private set { SafeContext.Instance.SetData (SafeContextKeys.ScriptingScriptContext, value); }
+      get { return s_scriptContext.Current; }
+      private set { s_scriptContext.SetCurrent (value); }
     }
 
     /// <summary>

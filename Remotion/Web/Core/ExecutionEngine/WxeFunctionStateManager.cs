@@ -56,18 +56,13 @@ namespace Remotion.Web.ExecutionEngine
     private static readonly string s_key = typeof (WxeFunctionStateManager).AssemblyQualifiedName;
     private static readonly string s_sessionKeyForFunctionStates = s_key + "|WxeFunctionStates";
 
+    private static readonly SafeContextSingleton<WxeFunctionStateManager> s_functionStateManager = new SafeContextSingleton<WxeFunctionStateManager> (
+        s_key,
+        () => new WxeFunctionStateManager (new HttpSessionStateWrapper (HttpContext.Current.Session)));
+
     public static WxeFunctionStateManager Current
     {
-      get
-      {
-        WxeFunctionStateManager functionStateManager = (WxeFunctionStateManager) SafeContext.Instance.GetData (s_key);
-        if (functionStateManager == null)
-        {
-          functionStateManager = new WxeFunctionStateManager (new HttpSessionStateWrapper(HttpContext.Current.Session));
-          SafeContext.Instance.SetData (s_key, functionStateManager);
-        }
-        return functionStateManager;
-      }
+      get { return s_functionStateManager.Current; }
     }
 
     public static bool HasSession

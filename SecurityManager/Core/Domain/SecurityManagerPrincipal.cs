@@ -81,14 +81,17 @@ namespace Remotion.SecurityManager.Domain
 
     public static readonly ISecurityManagerPrincipal Null = new NullSecurityManagerPrincipal();
 
+    private static readonly SafeContextSingleton<ISecurityManagerPrincipal> s_principal =
+        new SafeContextSingleton<ISecurityManagerPrincipal> (SafeContextKeys.SecurityManagerPrincipalCurrent, () => Null);
+
     [NotNull]
     public static ISecurityManagerPrincipal Current
     {
-      get { return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (SafeContextKeys.SecurityManagerPrincipalCurrent) ?? Null; }
+      get { return s_principal.Current; }
       set
       {
         ArgumentUtility.CheckNotNull ("value", value);
-        SafeContext.Instance.SetData (SafeContextKeys.SecurityManagerPrincipalCurrent, value);
+        s_principal.SetCurrent (value);
       }
     }
 

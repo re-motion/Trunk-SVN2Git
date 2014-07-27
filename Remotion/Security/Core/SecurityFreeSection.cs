@@ -83,7 +83,8 @@ namespace Remotion.Security
       }
     }
 
-    private static readonly string s_activeSectionCountKey = SafeContextKeys.SecuritySecurityFreeSection;
+    private static readonly SafeContextSingleton<ActiveSections> s_activeSections =
+        new SafeContextSingleton<ActiveSections> (SafeContextKeys.SecuritySecurityFreeSection, () => new ActiveSections());
 
     /// <summary>
     /// Enters a new <see cref="SecurityFreeSection"/> <see cref="Scope"/>. 
@@ -106,13 +107,7 @@ namespace Remotion.Security
 
     private static ActiveSections GetActiveSections ()
     {
-      var activeSections = (ActiveSections) SafeContext.Instance.GetData (s_activeSectionCountKey);
-      if (activeSections == null)
-      {
-        activeSections = new ActiveSections();
-        SafeContext.Instance.SetData (s_activeSectionCountKey, activeSections);
-      }
-      return activeSections;
+      return s_activeSections.Current;
     }
 
     private static int IncrementActiveSections ()

@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.Domain
   public abstract class RevisionProviderBase<TRevisionKey> : IRevisionProvider<TRevisionKey, GuidRevisionValue>
       where TRevisionKey : IRevisionKey
   {
-    private readonly string _revisionProviderKey;
+    private readonly SafeContextSingleton<SimpleDataStore<TRevisionKey, GuidRevisionValue>> _cachedRevisions;
 
     protected RevisionProviderBase ()
     {
@@ -35,7 +35,10 @@ namespace Remotion.SecurityManager.Domain
       // Inject an invalidation object where implementations can register for an invalidation of all cached revisions.
       // While this is a potential memory leak, the revision providers are used with singleton-semantics anyway when instantiated via IoC,
       // so this shouldn't be an issue.
-      _revisionProviderKey = SafeContextKeys.SecurityManagerRevision + "_" + Guid.NewGuid().ToString();
+
+      _cachedRevisions = new SafeContextSingleton<SimpleDataStore<TRevisionKey, GuidRevisionValue>> (
+          SafeContextKeys.SecurityManagerRevision + "_" + Guid.NewGuid().ToString(),
+          () => new SimpleDataStore<TRevisionKey, GuidRevisionValue>());
     }
 
     public GuidRevisionValue GetRevision (TRevisionKey key)
@@ -62,13 +65,7 @@ namespace Remotion.SecurityManager.Domain
 
     private SimpleDataStore<TRevisionKey, GuidRevisionValue> GetCachedRevisions ()
     {
-      var revisions = (SimpleDataStore<TRevisionKey, GuidRevisionValue>) SafeContext.Instance.GetData (_revisionProviderKey);
-      if (revisions == null)
-      {
-        revisions = new SimpleDataStore<TRevisionKey, GuidRevisionValue>();
-        SafeContext.Instance.SetData (_revisionProviderKey, revisions);
-      }
-      return revisions;
+      return _cachedRevisions.Current;
     }
 
     private GuidRevisionValue GetRevisionFromDatabase (TRevisionKey key)
