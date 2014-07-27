@@ -28,12 +28,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     ///     <see cref="Int32"/>, <see cref="Double"/> or <see cref="DateTime"/>). If <see cref="ValueType"/> is not
     ///     set, the type is determined by the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
     ///   </para><para>
-    ///     Returns <see langword="null"/> if <see cref="IBocTextValue.Text"/> is an empty <see cref="String"/>.
+    ///     Returns <see langword="null"/> if <see cref="IBocTextValueBase.Text"/> is an empty <see cref="String"/>.
     ///   </para>
     /// </value>
     /// <remarks> The dirty state is reset when the value is set. </remarks>
     /// <exception cref="FormatException"> 
-    ///   The value of the <see cref="IBocTextValue.Text"/> property cannot be converted to the specified <see cref="ValueType"/>.
+    ///   The value of the <see cref="IBocTextValueBase.Text"/> property cannot be converted to the specified <see cref="ValueType"/>.
     /// </exception>
     [Description ("Gets or sets the current value.")]
     [Browsable (false)]
