@@ -40,9 +40,6 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\..\prereq\Assemblies\Castle-3.0\net-4.0 (Client Profile)\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -62,7 +59,6 @@
     </Compile>
     <Compile Include="CodeGeneration\MethodWrapperEmitterTests\ArgumentChecks_MethodWrapperEmitterTest.cs" />
     <Compile Include="CodeGeneration\MethodWrapperEmitterTests\Common_MethodWrapperEmitterTest.cs" />
-    <Compile Include="CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
     <Compile Include="CodeGeneration\MethodWrapperEmitterTests\MethodWrapperEmitterTestBase.cs" />
     <Compile Include="CodeGeneration\MethodWrapperEmitterTests\NotSupportedScenarios_MethodWrapperEmitterTest.cs" />
     <Compile Include="CodeGeneration\MethodWrapperEmitterTests\Parameters_MethodWrapperEmitterTest.cs" />

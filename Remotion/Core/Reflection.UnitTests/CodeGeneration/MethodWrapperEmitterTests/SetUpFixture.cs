@@ -17,7 +17,8 @@
 
 using System;
 using System.IO;
-using Castle.DynamicProxy;
+using System.Reflection;
+using System.Reflection.Emit;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -27,15 +28,16 @@ namespace Remotion.Reflection.UnitTests.CodeGeneration.MethodWrapperEmitterTests
   [SetUpFixture]
   public class SetUpFixture
   {
-    private static ModuleScope s_scope;
+    private static ModuleBuilder s_moduleBuilder;
+    private static AssemblyBuilder s_assemblyBuilder;
 
-    public static ModuleScope Scope
+    public static ModuleBuilder ModuleBuilder
     {
       get
       {
-        if (s_scope == null)
+        if (s_moduleBuilder == null)
           throw new InvalidOperationException ("SetUp must be called before the scope is accessed.");
-        return s_scope;
+        return s_moduleBuilder;
       }
     }
 
@@ -43,14 +45,17 @@ namespace Remotion.Reflection.UnitTests.CodeGeneration.MethodWrapperEmitterTests
     public virtual void SetUp ()
     {
       Console.WriteLine ("Setting up MethodWrapperEmitterTests");
-      s_scope = new ModuleScope (
-          true,
-          true,
-          null,
-          null,
-          "Remotion.Reflection.CodeGeneration.MethodWrapperEmitterTests.Generated.Unsigned",
-          "Remotion.Reflection.CodeGeneration.MethodWrapperEmitterTests.Generated.Unsigned.dll");
-      DeleteIfExists (Path.Combine (s_scope.WeakNamedModuleDirectory ?? Environment.CurrentDirectory, s_scope.WeakNamedModuleName));
+
+      var assemblyName = new AssemblyName ("Remotion.Reflection.CodeGeneration.MethodWrapperEmitterTests.Generated.Unsigned");
+      s_assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly (
+          assemblyName,
+          AssemblyBuilderAccess.RunAndSave,
+          Environment.CurrentDirectory);
+
+      var moduleName = assemblyName + ".dll";
+      s_moduleBuilder = s_assemblyBuilder.DefineDynamicModule (moduleName, emitSymbolInfo: false);
+
+      DeleteIfExists (s_moduleBuilder.FullyQualifiedName);
     }
 
     [TearDown]
@@ -58,11 +63,15 @@ namespace Remotion.Reflection.UnitTests.CodeGeneration.MethodWrapperEmitterTests
     {
       Console.WriteLine ("Tearing down MethodWrapperEmitterTests");
 #if !NO_PEVERIFY
-      var path = s_scope.SaveAssembly (false);
-      s_scope = null;
+
+      s_assemblyBuilder.Save (s_moduleBuilder.ScopeName);
+      var path = s_moduleBuilder.FullyQualifiedName;
+      
+      s_assemblyBuilder = null;
+      s_moduleBuilder = null;
+
       PEVerifier.CreateDefault().VerifyPEFile (path);
       FileUtility.DeleteAndWaitForCompletion (path);
-      FileUtility.DeleteAndWaitForCompletion (path.Replace (".dll", ".pdb"));
 #endif
     }
 

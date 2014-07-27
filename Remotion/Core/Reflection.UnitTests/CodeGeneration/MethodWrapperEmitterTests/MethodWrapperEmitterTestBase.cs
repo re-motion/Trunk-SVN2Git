@@ -17,7 +17,7 @@
 
 using System;
 using System.Reflection;
-using Castle.DynamicProxy.Generators.Emitters;
+using System.Reflection.Emit;
 using NUnit.Framework;
 using Remotion.Reflection.CodeGeneration;
 
@@ -27,8 +27,8 @@ namespace Remotion.Reflection.UnitTests.CodeGeneration.MethodWrapperEmitterTests
   {    
     private static int s_counter;
 
-    private ClassEmitter _classEmitter;
     private bool _hasBeenBuilt;
+    private TypeBuilder _typeBuilder;
 
     [SetUp]
     public virtual void SetUp ()
@@ -36,7 +36,7 @@ namespace Remotion.Reflection.UnitTests.CodeGeneration.MethodWrapperEmitterTests
       var uniqueName = GetType().Name + "." + s_counter;
       s_counter++;
 
-      _classEmitter = new ClassEmitter (SetUpFixture.Scope, uniqueName, typeof (object), new Type[0], TypeAttributes.Class | TypeAttributes.Public, true);
+      _typeBuilder = SetUpFixture.ModuleBuilder.DefineType (uniqueName, TypeAttributes.Class | TypeAttributes.Public, typeof (object), new Type[0]);
       _hasBeenBuilt = false;
     }
 
@@ -44,30 +44,28 @@ namespace Remotion.Reflection.UnitTests.CodeGeneration.MethodWrapperEmitterTests
     public virtual void TearDown ()
     {
       if (!_hasBeenBuilt)
-        _classEmitter.BuildType();
+        _typeBuilder.CreateType();
     }
 
-    protected MethodEmitter GetWrapperMethodFromEmitter (
+    protected MethodBuilder GetWrapperMethodFromEmitter (
         MethodBase executingTestMethod, Type[] publicParameterTypes, Type publicReturnType, MethodInfo innerMethod)
     {
       var methodName = executingTestMethod.DeclaringType.Name + "_" + executingTestMethod.Name;
-      var method = _classEmitter.CreateMethod (methodName, MethodAttributes.Public | MethodAttributes.Static, publicReturnType, publicParameterTypes);
 
-      var statement = new ILStatement ((memberEmitter, ilGenerator) =>
-      {
-        var emitter = new MethodWrapperEmitter (ilGenerator, innerMethod, publicParameterTypes, publicReturnType);
-        emitter.EmitStaticMethodBody ();
-      });
-      method.CodeBuilder.AddStatement (statement);
+      var methodBuilder = _typeBuilder.DefineMethod (methodName, MethodAttributes.Public | MethodAttributes.Static, publicReturnType, publicParameterTypes);
 
-      return method;
+      var ilGenerator = methodBuilder.GetILGenerator();
+      var emitter = new MethodWrapperEmitter (ilGenerator, innerMethod, publicParameterTypes, publicReturnType);
+      emitter.EmitStaticMethodBody();
+
+      return methodBuilder;
     }
 
-    protected object BuildTypeAndInvokeMethod (MethodEmitter method, params object[] arguments)
+    protected object BuildTypeAndInvokeMethod (MethodBuilder methodBuilder, params object[] arguments)
     {
       _hasBeenBuilt = true;
-      Type builtType = _classEmitter.BuildType();
-      var methodInfo = builtType.GetMethod (method.MethodBuilder.Name);
+      Type builtType = _typeBuilder.CreateType();
+      var methodInfo = builtType.GetMethod (methodBuilder.Name);
       return methodInfo.Invoke (null, arguments);
     }
   }
