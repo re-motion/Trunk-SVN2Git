@@ -42,25 +42,19 @@ namespace Remotion.ExtensibleEnums
     }
 
     protected ExtensibleEnum (string id)
-        : this (
-            (string) null, 
-            ArgumentUtility.CheckNotNullOrEmpty ("id", id))
+        : this ((string) null, id)
     {
       throw new NotImplementedException();
     }
 
     protected ExtensibleEnum (Type declaringType, string valueName)
-        : this (
-            ArgumentUtility.CheckNotNull ("declaringType", declaringType).FullName, 
-            ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName))
+        : this (declaringType.FullName, valueName)
     {
       throw new NotImplementedException();
     }
 
     protected ExtensibleEnum (MethodBase currentMethod)
-        : this (
-            ArgumentUtility.CheckNotNull ("currentMethod", currentMethod).DeclaringType,
-            currentMethod.Name)
+        : this (currentMethod.DeclaringType, currentMethod.Name)
     {
       throw new NotImplementedException();
     }

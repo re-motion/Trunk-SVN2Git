@@ -360,6 +360,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Reflection", "Remotion
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Reflection.UnitTests", "Remotion\Core\Reflection.UnitTests\Core.Reflection.UnitTests.csproj", "{3FA43EBF-E154-4610-B14C-0A5A09FEA35C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Obsolete", "Remotion\Core\Obsolete\Core.Obsolete.csproj", "{235ED823-F40C-4836-A2F8-C9C37A54C4F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1350,6 +1352,12 @@ Global
 		{3FA43EBF-E154-4610-B14C-0A5A09FEA35C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3FA43EBF-E154-4610-B14C-0A5A09FEA35C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3FA43EBF-E154-4610-B14C-0A5A09FEA35C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1478,6 +1486,7 @@ Global
 		{408B081B-710E-4C50-8DF0-B8F78E67A498} = {040CC4EF-ACE9-4832-AC0C-56640F2AB337}
 		{82D3420D-F557-4E31-955B-2935A785753E} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
 		{3FA43EBF-E154-4610-B14C-0A5A09FEA35C} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
+		{235ED823-F40C-4836-A2F8-C9C37A54C4F3} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1
