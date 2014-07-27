@@ -145,6 +145,10 @@
       <Project>{25811F76-8D00-496D-AFD0-8225569F666D}</Project>
       <Name>Core.Extensions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\Reflection\Core.Reflection.csproj">
+      <Project>{82D3420D-F557-4E31-955B-2935A785753E}</Project>
+      <Name>Core.Reflection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\Core\Data.Core.csproj">
       <Project>{70273934-12F1-49AF-975A-303BAEFE1CAE}</Project>
       <Name>Data.Core</Name>

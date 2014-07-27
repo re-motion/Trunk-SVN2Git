@@ -30,10 +30,10 @@ namespace Remotion.ExtensibleEnums
       throw new NotImplementedException();
     }
 
-    public static bool IsExtensibleEnumType (ITypeInformation type)
-    {
-      throw new NotImplementedException();
-    }
+    //public static bool IsExtensibleEnumType (ITypeInformation type)
+    //{
+    //  throw new NotImplementedException();
+    //}
 
     public static IExtensibleEnumDefinition GetDefinition (Type extensibleEnumType)
     {

@@ -97,6 +97,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Reflection\Core.Reflection.csproj">
+      <Project>{82D3420D-F557-4E31-955B-2935A785753E}</Project>
+      <Name>Core.Reflection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\Core.Tools.csproj">
       <Project>{18269689-DC0F-4975-879B-A6ACBA0FA596}</Project>
       <Name>Core.Tools</Name>
@@ -293,19 +297,13 @@
     <Compile Include="Logging\Log4NetLogTests\WarningTest.cs" />
     <Compile Include="Logging\LogExtensionsTests\BaseTest.cs" />
     <Compile Include="Logging\LogExtensionsTests\LogTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ILStatement.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\SetUpFixture.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Reflection\CodeGeneration\TestDomain\ClassWithConstrainedGenericMethod.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\CodeGeneration\TestDomain\GenericClassWithGenericMethod.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Reflection\IMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\MethodInfoExtensionsTests\FindDeclaringProperty.cs" />
-    <Compile Include="Reflection\ReflectionBasedMemberInfoNameResolverTest.cs" />
     <Compile Include="Reflection\TestDomain\MethodInfoExtensions\ClassWithDifferentMethods.cs" />
     <Compile Include="Reflection\TestDomain\MethodInfoExtensions\ClassWithReferenceType.cs" />
     <Compile Include="Reflection\TestDomain\MethodInfoExtensions\DerivedClassWithDifferentMethods.cs" />
@@ -377,34 +375,7 @@
     <Compile Include="Logging\ILogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ArgumentChecks_MethodWrapperEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\NotSupportedScenarios_MethodWrapperEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\Parameters_MethodWrapperEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\ReturnValues_MethodWrapperEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\Common_MethodWrapperEmitterTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\MethodWrapperEmitterTestBase.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithMethods.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\ClassWithReferenceTypeProperties.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\StructWithMethods.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\DerivedClassWithMethods.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitterTests\TestDomain\SimpleReferenceType.cs" />
     <Compile Include="Reflection\CodeGeneration\TestMethodReferencingAttribute.cs" />
-    <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactoryTest.cs" />
-    <Compile Include="Reflection\MethodInfoAdapterConverterTest.cs" />
-    <Compile Include="Reflection\PropertyInfoAdapterConverterTest.cs" />
-    <Compile Include="Reflection\ReflectionExtensionsTest.cs" />
-    <Compile Include="Reflection\TestDomain\MemberInfoAdapter\DerivedClassWithReferenceType.cs" />
-    <Compile Include="Reflection\MethodInfoAdapterTest.cs" />
-    <Compile Include="Reflection\NullMethodInformationTest.cs" />
-    <Compile Include="Reflection\NullPropertyInformationTest.cs" />
-    <Compile Include="Reflection\PropertyInfoAdapterTest.cs" />
-    <Compile Include="Reflection\TestDomain\MemberInfoAdapter\ClassWithBaseMember.cs" />
-    <Compile Include="Reflection\TestDomain\MemberInfoAdapter\ClassWithOverridingMember.cs" />
-    <Compile Include="Reflection\TestDomain\MemberInfoAdapter\ClassWithReferenceType.cs" />
-    <Compile Include="Reflection\TestDomain\MemberInfoAdapter\IInterfaceWithReferenceType.cs" />
-    <Compile Include="Reflection\TestDomain\MemberInfoAdapter\SampleAttribute.cs" />
-    <Compile Include="Reflection\TypeAdapterConverterTest.cs" />
-    <Compile Include="Reflection\TypeAdapterTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecoratorTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\NamedRootAssemblyFinderTest.cs" />

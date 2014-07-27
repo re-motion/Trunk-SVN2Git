@@ -439,6 +439,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Remotion\Core\Reflection\Core.Reflection.csproj">
+      <Project>{82D3420D-F557-4E31-955B-2935A785753E}</Project>
+      <Name>Core.Reflection</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Core\Tools\Core.Tools.csproj">
       <Project>{18269689-DC0F-4975-879B-A6ACBA0FA596}</Project>
       <Name>Core.Tools</Name>

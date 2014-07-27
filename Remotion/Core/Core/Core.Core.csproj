@@ -278,18 +278,17 @@
     <Compile Include="Obsolete\Globalization\ResourceIdentifiersAttribute.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerSet.cs" />
     <Compile Include="Obsolete\Globalization\ResourceManagerWrapper.cs" />
-    <Compile Include="Reflection\IMemberInformationNameResolver.cs" />
     <Compile Include="Obsolete\Reflection\ParamList.cs" />
     <Compile Include="Reflection\MethodInfoExtensions.cs" />
+    <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Reflection\PropertyInfoExtensions.cs" />
-    <Compile Include="Reflection\ReflectionBasedMemberInformationNameResolver.cs" />
-    <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyLoading\AssemblyNameCache.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Reflection\AssemblyTypeCache.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCache.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
+    <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="ServiceLocation\BootstrapServiceConfiguration.cs" />
     <Compile Include="ServiceLocation\ConcreteImplementationAttribute.obsolete.cs" />
     <Compile Include="ServiceLocation\DefaultServiceLocator.Registration.cs" />
@@ -312,15 +311,6 @@
     <Compile Include="Logging\LogManager.cs" />
     <Compile Include="Logging\LogThreshold.cs" />
     <Compile Include="PermanentGuidAttribute.cs" />
-    <Compile Include="Reflection\IMemberInformation.cs" />
-    <Compile Include="Reflection\IMethodInformation.cs" />
-    <Compile Include="Reflection\IPropertyInformation.cs" />
-    <Compile Include="Reflection\ITypeInformation.cs" />
-    <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
-    <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
-    <Compile Include="Reflection\ReflectionExtensions.cs" />
-    <Compile Include="Reflection\TypeAdapter.cs" />
-    <Compile Include="Reflection\TypeAdapterConverter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecorator.cs" />
     <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
@@ -362,14 +352,7 @@
     <Compile Include="Configuration\TypeDiscovery\RootAssembliesElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.cs" />
     <Compile Include="Configuration\TypeDiscovery\TypeDiscoveryMode.cs" />
-    <Compile Include="Reflection\CodeGeneration\MethodWrapperEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\MethodReferencingAttribute.cs" />
-    <Compile Include="Reflection\DynamicMethodBasedMethodCallerFactory.cs" />
-    <Compile Include="Reflection\MethodInfoAdapter.cs" />
-    <Compile Include="Reflection\MethodResolver.cs" />
-    <Compile Include="Reflection\NullMethodInformation.cs" />
-    <Compile Include="Reflection\NullPropertyInformation.cs" />
-    <Compile Include="Reflection\PropertyInfoAdapter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyNameSpecification.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinder.cs" />
