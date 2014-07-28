@@ -376,7 +376,7 @@ ChildrenList.RowMenuItemClick += ChildrenList_RowMenuItemClick;
   {
     if (e.ListIndex == 3)
     {
-      e.SetRowReadonly();
+      e.SetRowReadOnly();
       e.SetAdditionalCssClassForDataRow ("test");
     }
   }

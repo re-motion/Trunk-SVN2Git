@@ -138,7 +138,12 @@ public class BocListDataRowRenderEventArgs: BocListItemEventArgs
     get { return _additionalCssClassForDataRow; }
   }
 
-  public void SetRowReadonly ()
+  /// <summary>
+  /// Setting the row read-only will affect only the display of the edit-button for row-edit-mode. Setting the entire row readonly for list-edit-mode
+  /// is currently not supported via the <see cref="BocListDataRowRenderEventArgs"/>. Instead, the controls used for editing should be set to read-only.
+  /// This can be achieved by decorating the  <see cref="BocList.EditModeControlFactory"/> and subscribing to the page lifecycle events of the individual controls.
+  /// </summary>
+  public void SetRowReadOnly ()
   {
     _isEditableRow = false;
   }
