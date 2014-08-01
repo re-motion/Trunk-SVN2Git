@@ -18,7 +18,6 @@
 
 using System;
 using System.Linq;
-using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Context;
 using Remotion.Data.DomainObjects;
@@ -46,39 +45,11 @@ namespace Remotion.SecurityManager.Domain
   /// Changes made to those objects are only saved when that transaction is committed, eg. via 
   /// <code>SecurityManagerPrincipal.Current.User.RootTransaction.Commit()</code>.
   /// </para>
-  /// <para>
-  /// Refreshing the <see cref="SecurityManagerPrincipal"/> via the <see cref="Refresh"/> method must be performed 
-  /// on the same thread where the refreshed data is required. Otherwise the result could be stale due to memory optimizations.
-  /// </para>
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public sealed class SecurityManagerPrincipal : ISecurityManagerPrincipal
   {
-    [Serializable]
-    private sealed class Data
-    {
-      public readonly GuidRevisionValue Revision;
-      public readonly TenantProxy TenantProxy;
-      public readonly UserProxy UserProxy;
-      public readonly SubstitutionProxy SubstitutionProxy;
-      public readonly ISecurityPrincipal SecurityPrincipal;
-
-      public Data (
-          GuidRevisionValue revision,
-          TenantProxy tenantProxy,
-          UserProxy userProxy,
-          SubstitutionProxy substitutionProxy,
-          ISecurityPrincipal securityPrincipal)
-      {
-        Revision = revision;
-        TenantProxy = tenantProxy;
-        UserProxy = userProxy;
-        SubstitutionProxy = substitutionProxy;
-        SecurityPrincipal = securityPrincipal;
-      }
-    }
-
     public static readonly ISecurityManagerPrincipal Null = new NullSecurityManagerPrincipal();
 
     private static readonly SafeContextSingleton<ISecurityManagerPrincipal> s_principal =
@@ -95,11 +66,14 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private readonly object _syncRoot;
-    private Data _cachedData;
     private readonly IDomainObjectHandle<Tenant> _tenantHandle;
     private readonly IDomainObjectHandle<User> _userHandle;
     private readonly IDomainObjectHandle<Substitution> _substitutionHandle;
+    private readonly GuidRevisionValue _revision;
+    private readonly TenantProxy _tenantProxy;
+    private readonly UserProxy _userProxy;
+    private readonly SubstitutionProxy _substitutionProxy;
+    private readonly ISecurityPrincipal _securityPrincipal;
 
     public SecurityManagerPrincipal (
         IDomainObjectHandle<Tenant> tenantHandle, IDomainObjectHandle<User> userHandle, IDomainObjectHandle<Substitution> substitutionHandle)
@@ -107,43 +81,46 @@ namespace Remotion.SecurityManager.Domain
       ArgumentUtility.CheckNotNull ("tenantHandle", tenantHandle);
       ArgumentUtility.CheckNotNull ("userHandle", userHandle);
 
-      _syncRoot = new object();
-
       _tenantHandle = tenantHandle;
       _userHandle = userHandle;
       _substitutionHandle = substitutionHandle;
 
-      _cachedData = CreateDataObject (GetRevision());
+      _revision = GetRevision();
+      var transaction = CreateClientTransaction();
+
+      _tenantProxy = CreateTenantProxy (GetTenant (transaction));
+      _userProxy = CreateUserProxy (GetUser (transaction));
+      var substitution = GetSubstitution (transaction);
+      _substitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
+      _securityPrincipal = CreateSecurityPrincipal (transaction);
     }
 
     public TenantProxy Tenant
     {
-      get { return GetCachedDataVolatile().TenantProxy; }
+      get { return _tenantProxy; }
     }
 
     public UserProxy User
     {
-      get { return GetCachedDataVolatile().UserProxy; }
+      get { return _userProxy; }
     }
 
     public SubstitutionProxy Substitution
     {
-      get { return GetCachedDataVolatile().SubstitutionProxy; }
+      get { return _substitutionProxy; }
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
-      return GetCachedDataVolatile().SecurityPrincipal;
+      return _securityPrincipal;
     }
 
-    public void Refresh ()
+    public ISecurityManagerPrincipal GetRefreshedInstance ()
     {
       var currentRevision = GetRevision();
-      lock (_syncRoot)
-      {
-        if (!_cachedData.Revision.IsCurrent (currentRevision))
-          _cachedData = CreateDataObject (currentRevision);
-      }
+      if (_revision.IsCurrent (currentRevision))
+        return this;
+      return new SecurityManagerPrincipal (_tenantHandle, _userHandle, _substitutionHandle);
     }
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
@@ -217,19 +194,6 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private Data CreateDataObject (GuidRevisionValue revision)
-    {
-      var transaction = CreateClientTransaction();
-
-      var tenantProxy = CreateTenantProxy (GetTenant (transaction));
-      var userProxy = CreateUserProxy (GetUser (transaction));
-      var substitution = GetSubstitution (transaction);
-      var substitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
-      var securityPrincipal = CreateSecurityPrincipal (transaction);
-
-      return new Data (revision, tenantProxy, userProxy, substitutionProxy, securityPrincipal);
-    }
-
     private Tenant GetTenant (ClientTransaction transaction)
     {
       return _tenantHandle.GetObject (transaction);
@@ -256,18 +220,6 @@ namespace Remotion.SecurityManager.Domain
         transaction.Extensions.Add (new SecurityClientTransactionExtension());
 
       return transaction;
-    }
-
-    /// <summary>
-    /// Potentially moving the read-access to field _cachedData to an earlier point in time within the current thread is not an issue:
-    /// If a call to Refresh() on Thread #2 would cause a reload of the data, 
-    /// and the read-access of _cachedData on Thread #1 has been optimized to an ealier point in time, 
-    /// the result would only be stale during this one request.
-    /// ==> Synchronized refresh accross all threads is a non-goal for the SecurityManagerPrincipal.
-    /// </summary>
-    private Data GetCachedDataVolatile ()
-    {
-      return Volatile.Read (ref _cachedData);
     }
 
     private GuidRevisionValue GetRevision ()

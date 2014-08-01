@@ -36,10 +36,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     }
 
     [Test]
-    public void Refresh ()
+    public void GetRefreshedInstance ()
     {
       ISecurityManagerPrincipal principal = SecurityManagerPrincipal.Null;
-      principal.Refresh();
+      Assert.That (principal.GetRefreshedInstance(), Is.SameAs (principal));
     }
 
     [Test]

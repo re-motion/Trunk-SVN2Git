@@ -26,14 +26,21 @@ namespace Remotion.SecurityManager.Domain
   /// and optional <see cref="Substitution"/>. 
   /// See <see cref="SecurityManagerPrincipal"/> for the <see cref="SecurityManagerPrincipal.Current"/> instance.
   /// </summary>
-  /// <remarks>Implementations of the interface must be threadsafe.</remarks>
+  /// <remarks>
+  /// <para>
+  /// Implementations of the interface must be threadsafe.
+  /// </para>
+  /// <para>
+  /// To update the <see cref="ISecurityManagerPrincipal"/> with fresh data, use the <see cref="GetRefreshedInstance"/> method.
+  /// </para>
+  /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   public interface ISecurityManagerPrincipal : INullObject
   {
     TenantProxy Tenant { get; }
     UserProxy User { get; }
     SubstitutionProxy Substitution { get; }
-    void Refresh ();
+    ISecurityManagerPrincipal GetRefreshedInstance ();
     ISecurityPrincipal GetSecurityPrincipal ();
     TenantProxy[] GetTenants (bool includeAbstractTenants);
     SubstitutionProxy[] GetActiveSubstitutions ();

@@ -77,23 +77,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     }
 
     [Test]
-    public void RefreshDoesNotResetCacheWithOldRevision ()
-    {
-      TenantProxy proxy = _principal.Tenant;
-      _principal.Refresh();
-      Assert.That (proxy, Is.SameAs (_principal.Tenant));
-    }
-
-    [Test]
-    public void RefreshResetsCacheWithNewRevision ()
-    {
-      TenantProxy proxy = _principal.Tenant;
-      IncrementRevision();
-      _principal.Refresh();
-      Assert.That (proxy, Is.Not.SameAs (_principal.Tenant));
-    }
-
-    [Test]
     public void UsesSecurityFreeSection ()
     {
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
@@ -101,13 +84,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
       var serviceLocator = DefaultServiceLocator.Create();
       serviceLocator.RegisterSingle (() => securityProviderStub);
+      ISecurityManagerPrincipal refreshedInstance;
       using (new ServiceLocatorScope (serviceLocator))
       {
         IncrementRevision();
-        _principal.Refresh();
+        refreshedInstance = _principal.GetRefreshedInstance();
+        Assert.That (refreshedInstance, Is.Not.SameAs (_principal));
       }
 
-      var tenantProxy = _principal.Tenant;
+      var tenantProxy = refreshedInstance.Tenant;
 
       Assert.That (tenantProxy.ID, Is.EqualTo (_tenant.ID));
     }

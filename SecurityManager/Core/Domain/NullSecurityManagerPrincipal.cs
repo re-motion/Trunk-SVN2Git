@@ -53,8 +53,9 @@ namespace Remotion.SecurityManager.Domain
       get { return null; }
     }
 
-    public void Refresh ()
+    public ISecurityManagerPrincipal GetRefreshedInstance ()
     {
+      return this;
     }
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)

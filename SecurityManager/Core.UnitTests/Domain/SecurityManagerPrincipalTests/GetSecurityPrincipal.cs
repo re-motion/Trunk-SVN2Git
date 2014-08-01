@@ -84,23 +84,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     }
 
     [Test]
-    public void RefreshDoesNotResetCacheWithOldRevision ()
-    {
-      var securityPrincipal = _principal.GetSecurityPrincipal();
-      _principal.Refresh();
-      Assert.That (securityPrincipal, Is.SameAs (_principal.GetSecurityPrincipal()));
-    }
-
-    [Test]
-    public void RefreshResetsCacheWithNewRevision ()
-    {
-      var securityPrincipal = _principal.GetSecurityPrincipal();
-      IncrementRevision();
-      _principal.Refresh();
-      Assert.That (securityPrincipal, Is.Not.SameAs (_principal.GetSecurityPrincipal()));
-    }
-
-    [Test]
     public void UsesSecurityFreeSection ()
     {
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
@@ -108,13 +91,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
 
       var serviceLocator = DefaultServiceLocator.Create();
       serviceLocator.RegisterSingle (() => securityProviderStub);
+      ISecurityManagerPrincipal refreshedInstance;
       using (new ServiceLocatorScope (serviceLocator))
       {
         IncrementRevision();
-        _principal.Refresh();
+        refreshedInstance = _principal.GetRefreshedInstance();
+        Assert.That (refreshedInstance, Is.Not.SameAs (_principal));
       }
 
-      ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
+      ISecurityPrincipal securityPrincipal = refreshedInstance.GetSecurityPrincipal();
       Assert.That (securityPrincipal.IsNull, Is.False);
       Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
     }

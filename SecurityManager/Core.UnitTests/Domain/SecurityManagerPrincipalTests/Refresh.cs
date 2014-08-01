@@ -48,16 +48,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var tenant = user.Tenant;
 
       var principal = CreateSecurityManagerPrincipal (tenant, user, null);
-      
-      var oldTenant = principal.Tenant;
-      var oldUser = principal.User;
-      var oldSubstitution = principal.Substitution;
 
-      principal.Refresh ();
+      var refreshedInstance = principal.GetRefreshedInstance ();
 
-      Assert.That (principal.Tenant, Is.SameAs (oldTenant));
-      Assert.That (principal.User, Is.SameAs (oldUser));
-      Assert.That (principal.Substitution, Is.SameAs (oldSubstitution));
+      Assert.That (refreshedInstance, Is.SameAs (principal));
     }
 
     [Test]
@@ -72,15 +66,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var principal = CreateSecurityManagerPrincipal (tenant, user2, null);
 
       var oldUser = principal.User;
-    
+
       user2.LastName = "New LN";
-      ClientTransaction.Current.Commit ();
-      IncrementRevision ();
+      ClientTransaction.Current.Commit();
+      IncrementRevision();
 
-      principal.Refresh();
+      var refreshedInstance = principal.GetRefreshedInstance();
 
-      Assert.That (principal.User.ID, Is.EqualTo (oldUser.ID));
-      Assert.That (principal.User.DisplayName, Is.Not.EqualTo (oldUser.DisplayName));
+      Assert.That (refreshedInstance, Is.Not.SameAs (principal));
+      Assert.That (refreshedInstance.User.ID, Is.EqualTo (oldUser.ID));
+      Assert.That (refreshedInstance.User.DisplayName, Is.Not.EqualTo (oldUser.DisplayName));
     }
   }
 }
