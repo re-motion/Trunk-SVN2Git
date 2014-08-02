@@ -294,39 +294,41 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns>An enumeration of all applicable validators.</returns>
     protected override IEnumerable<BaseValidator> GetValidators ()
     {
-      IList<BaseValidator> validators = new List<BaseValidator> (2);
+      var resourceManager = GetResourceManager();
 
       if (IsRequired)
-      {
-        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
-        requiredValidator.ID = ID + "_ValidatorRequired";
-        requiredValidator.ControlToValidate = TargetControl.ID;
-        if (string.IsNullOrEmpty (ErrorMessage))
-        {
-          requiredValidator.ErrorMessage =
-              GetResourceManager().GetString (ResourceIdentifier.RequiredValidationMessage);
-        }
-        else
-          requiredValidator.ErrorMessage = ErrorMessage;
-        validators.Add (requiredValidator);
-      }
+        yield return CreateRequiredFieldValidator (resourceManager);
 
-      if (TextBoxStyle.MaxLength != null)
-      {
-        LengthValidator lengthValidator = new LengthValidator();
-        lengthValidator.ID = ID + "_ValidatorMaxLength";
-        lengthValidator.ControlToValidate = TargetControl.ID;
-        lengthValidator.MaximumLength = TextBoxStyle.MaxLength.Value;
-        if (string.IsNullOrEmpty (ErrorMessage))
-        {
-          string maxLengthMessage = GetResourceManager().GetString (ResourceIdentifier.MaxLengthValidationMessage);
-          lengthValidator.ErrorMessage = string.Format (maxLengthMessage, TextBoxStyle.MaxLength.Value);
-        }
-        else
-          lengthValidator.ErrorMessage = ErrorMessage;
-        validators.Add (lengthValidator);
-      }
-      return validators;
+      if (TextBoxStyle.MaxLength.HasValue)
+        yield return CreateLengthValidator (resourceManager);
+    }
+
+    private RequiredFieldValidator CreateRequiredFieldValidator (IResourceManager resourceManager)
+    {
+      RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+      requiredValidator.ID = ID + "_ValidatorRequired";
+      requiredValidator.ControlToValidate = TargetControl.ID;
+      if (string.IsNullOrEmpty (ErrorMessage))
+        requiredValidator.ErrorMessage = resourceManager.GetString (ResourceIdentifier.RequiredValidationMessage);
+      else
+        requiredValidator.ErrorMessage = ErrorMessage;
+      return requiredValidator;
+    }
+
+    private LengthValidator CreateLengthValidator (IResourceManager gesourceManager)
+    {
+      var maxLength = TextBoxStyle.MaxLength;
+      Assertion.IsTrue (maxLength.HasValue);
+
+      LengthValidator lengthValidator = new LengthValidator();
+      lengthValidator.ID = ID + "_ValidatorMaxLength";
+      lengthValidator.ControlToValidate = TargetControl.ID;
+      lengthValidator.MaximumLength = maxLength.Value;
+      if (string.IsNullOrEmpty (ErrorMessage))
+        lengthValidator.ErrorMessage = string.Format (gesourceManager.GetString (ResourceIdentifier.MaxLengthValidationMessage), maxLength.Value);
+      else
+        lengthValidator.ErrorMessage = ErrorMessage;
+      return lengthValidator;
     }
 
     /// <summary>
