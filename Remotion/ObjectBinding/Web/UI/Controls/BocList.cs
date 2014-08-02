@@ -882,19 +882,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       remove { Events.RemoveHandler (s_sortingOrderChangedEvent, value); }
     }
 
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    protected new BaseValidator[] CreateValidators ()
+    {
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+    }
+
     /// <summary>
     ///   Generates a <see cref="EditModeValidator"/>.
     /// </summary>
     /// <returns> Returns a list of <see cref="BaseValidator"/> objects. </returns>
-    public override BaseValidator[] CreateValidators ()
-    {
-      if (IsReadOnly)
-        return new BaseValidator[0];
-
-      return GetValidators().ToArray();
-    }
-
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       return _editModeController.CreateValidators (GetResourceManager());
     }
@@ -2693,7 +2691,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Gets or sets a flag that enables the <see cref="EditModeValidator"/>. </summary>
     /// <remarks> 
     ///   <see langword="false"/> to prevent the <see cref="EditModeValidator"/> from being created by
-    ///   <see cref="CreateValidators"/>.
+    ///   <see cref="CreateValidatorsImplementation"/>.
     /// </remarks>
     [Description ("Enables the EditModeValidator.")]
     [Category ("Edit Mode")]

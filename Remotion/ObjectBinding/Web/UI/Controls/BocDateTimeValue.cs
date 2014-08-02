@@ -15,11 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -385,12 +383,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ErrorMessage = resourceManager.GetString (key);
     }
 
-    public override BaseValidator[] CreateValidators ()
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    protected new BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly)
-        return new BaseValidator[0];
-
-      return GetValidators().ToArray();
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
@@ -398,7 +394,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Generates a <see cref="BocDateTimeValueValidator"/> if the control is in edit mode.
     /// </remarks>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       _dateTimeValidator = CreateDateTimeValidator();
       yield return _dateTimeValidator;

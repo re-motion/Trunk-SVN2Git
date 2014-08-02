@@ -152,7 +152,7 @@ namespace Remotion.ObjectBinding.Sample
         return _owner.ValidateInternal();
       }
 
-      protected override IEnumerable<BaseValidator> GetValidators ()
+      protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
       {
         return Enumerable.Empty<BaseValidator>();
       }

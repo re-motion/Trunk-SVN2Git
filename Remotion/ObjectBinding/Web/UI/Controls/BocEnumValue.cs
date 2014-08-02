@@ -175,12 +175,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IsDirty = false;
     }
 
-    public override BaseValidator[] CreateValidators ()
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    protected new BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly)
-        return new BaseValidator[0];
-
-      return GetValidators().ToArray();
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
@@ -189,7 +187,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   control is in edit mode and input is required.
     /// </remarks>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       _requiredFieldValidator = null;
       if (IsRequired)

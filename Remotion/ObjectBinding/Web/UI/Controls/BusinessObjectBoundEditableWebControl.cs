@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
@@ -241,15 +242,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <returns> An (empty) array of <see cref="BaseValidator"/> controls. </returns>
-    public virtual BaseValidator[] CreateValidators ()
+    /// <remarks> Override <see cref="CreateValidatorsImplementation"/> to define the validators for this control.</remarks>
+    public BaseValidator[] CreateValidators ()
     {
-      return new BaseValidator[0];
+      if (IsReadOnly)
+        return new BaseValidator[0];
+
+      return CreateValidatorsImplementation().ToArray();
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected abstract IEnumerable<BaseValidator> GetValidators ();
+    protected abstract IEnumerable<BaseValidator> CreateValidatorsImplementation ();
 
     /// <summary> Registers a validator that references this control. </summary>
     /// <remarks> 

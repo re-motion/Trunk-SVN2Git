@@ -354,7 +354,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isValid;
     }
 
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       return Enumerable.Empty<BaseValidator>();
     }

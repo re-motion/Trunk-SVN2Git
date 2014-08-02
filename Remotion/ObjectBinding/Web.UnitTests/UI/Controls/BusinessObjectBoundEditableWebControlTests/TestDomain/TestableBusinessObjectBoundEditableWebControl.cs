@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEd
       throw new NotImplementedException();
     }
 
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       return Enumerable.Empty<BaseValidator>();
     }

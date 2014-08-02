@@ -503,6 +503,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ErrorMessage = resourceManager.GetString (key);
     }
 
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    protected IEnumerable<BaseValidator> GetValidators ()
+    {
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+    }
+
     /// <summary>
     /// If applicable, validators for non-empty, maximum length and input format are created.
     /// </summary>
@@ -530,7 +536,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   </list>
     /// </remarks>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       IResourceManager resourceManager = GetResourceManager();
 

@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.Design;
@@ -903,13 +902,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       WebServiceFactory.CreateJsonService<IBusinessObjectIconWebService> (virtualServicePath);
     }
 
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    public override BaseValidator[] CreateValidators ()
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    protected new BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly)
-        return new BaseValidator[0];
-
-      return GetValidators().ToArray();
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
     }
 
     /// <summary>
@@ -921,7 +917,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     ///   control is in edit mode and input is required.
     /// </remarks>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
     {
       _requiredFieldValidator = null;
       if (IsRequired)

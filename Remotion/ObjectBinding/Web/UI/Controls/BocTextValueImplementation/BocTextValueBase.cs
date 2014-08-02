@@ -262,15 +262,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
       remove { Events.RemoveHandler (s_textChangedEvent, value); }
     }
 
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    public override BaseValidator[] CreateValidators ()
-    {
-      if (IsReadOnly)
-        return new BaseValidator[0];
-
-      return GetValidators().ToArray();
-    }
-
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
@@ -317,6 +308,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     public string GetTextBoxUniqueID ()
     {
       throw new NotImplementedException ("Use GetValueName() instead. (1.13.206)");
+    }
+
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    private new BaseValidator[] CreateValidators ()
+    {
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
     }
   }
 }

@@ -15,12 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.Web.UI.WebControls;
@@ -218,9 +216,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       renderer.Render (CreateRenderingContext(writer));
     }
 
-    protected override IEnumerable<BaseValidator> GetValidators ()
+    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    protected new BaseValidator[] CreateValidators ()
     {
-      var baseValidators = base.GetValidators();
+      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+    }
+
+    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    {
+      var baseValidators = base.CreateValidatorsImplementation();
       _invalidDisplayNameValidator = null;
       if (IsReadOnly)
         return baseValidators;
