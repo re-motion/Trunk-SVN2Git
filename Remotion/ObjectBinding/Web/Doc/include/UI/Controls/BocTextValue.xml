@@ -73,7 +73,7 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="BocTextValueBase.ErrorMessage"/> </term>
+          <term> <see cref="BocTextValue.ErrorMessage"/> </term>
           <description>
             <para> &lt;BocTextValue Resource ID&gt;:ErrorMessage </para>
             <para> e.g. auto:MyBocTextValue:ErrorMessage </para>
@@ -208,29 +208,4 @@
     </remarks>
     <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
   </SaveValue>
-  <CreateValidators>
-    <remarks>
-      <list type="bullet">
-        <item>
-          If the control requires input, a <see cref="RequiredFieldValidator"/> is generated.
-        </item>
-        <item>
-          If a maximum length is specified, a <see cref="LengthValidator"/> is generated.
-        </item>
-        <item>
-          If the <see cref="ActualValueType"/> is set to <see cref="BocTextValueType.DateTime"/>,
-          a <see cref="DateTimeValidator"/> is generated.
-        </item>
-        <item>
-          If the <see cref="ActualValueType"/> is set to <see cref="BocTextValueType.Date"/>
-          a <see cref="CompareValidator"/> is generated.
-        </item>
-        <item>
-          If the <see cref="ActualValueType"/> is set to one of the numeric types (such as <see cref="BocTextValueType.Int32"/> or
-          <see cref="BocTextValueType.Double"/>) a <see cref="NumericValidator"/> is generated.
-        </item>
-      </list>
-    </remarks>
-    <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-  </CreateValidators>
 </BocTextValue>

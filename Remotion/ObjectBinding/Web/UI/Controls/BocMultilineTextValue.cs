@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Renderin
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -59,6 +60,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private static readonly Type[] s_supportedPropertyInterfaces = new[] { typeof (IBusinessObjectStringProperty) };
 
     private string[] _text = null;
+    private RequiredFieldValidator _requiredFieldValidator;
+    private LengthValidator _lengthValidator;
+    private string _errorMessage;
 
     // construction and disposing
 
@@ -148,16 +152,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return new BocMultilineTextValueRenderingContext (Context, writer, this);
     }
 
-    // ReSharper disable RedundantOverridenMember
-    // included for documentation
-    /// <include file='..\..\doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/CreateValidators/*' />
-    public override BaseValidator[] CreateValidators ()
-    {
-      return base.CreateValidators();
-    }
-
-    // ReSharper restore RedundantOverridenMember
-
     /// <summary> Gets or sets the <see cref="IBusinessObjectStringProperty"/> object this control is bound to. </summary>
     /// <value> An <see cref="IBusinessObjectStringProperty"/> object. </value>
     [Browsable (false)]
@@ -203,7 +197,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _text = StringUtility.ParseNewLineSeparatedString (value).ToArray();
       }
     }
-        
+
+    /// <summary> Gets or sets the validation error message. </summary>
+    /// <value> 
+    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
+    ///   In case of the default value, the text is read from the resources for this control.
+    /// </value>
+    [Description ("Validation message displayed if there is an error.")]
+    [Category ("Validator")]
+    [DefaultValue ("")]
+    public string ErrorMessage
+    {
+      get { return _errorMessage; }
+      set
+      {
+        _errorMessage = value;
+        if (_requiredFieldValidator != null)
+          _requiredFieldValidator.ErrorMessage = _errorMessage;
+        if (_lengthValidator != null)
+          _lengthValidator.ErrorMessage = _errorMessage;
+      }
+    }
+
     /// <summary>
     /// Gets the value from the backing field.
     /// </summary>
@@ -288,19 +303,54 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
+    /// <summary> Loads the resources into the control's properties. </summary>
+    protected override void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
+    {
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
+      if (IsDesignMode)
+        return;
+      base.LoadResources (resourceManager, globalizationService);
+
+      //  Dispatch simple properties
+      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
+      if (! string.IsNullOrEmpty (key))
+        ErrorMessage = resourceManager.GetString (key);
+    }
+
     /// <summary>
     /// If applicable, validators for non-empty and maximum length are created.
     /// </summary>
     /// <returns>An enumeration of all applicable validators.</returns>
+    /// <remarks>
+    ///   <list type="bullet">
+    ///     <item>
+    ///       If the control requires input, a <see cref="RequiredFieldValidator"/> is generated.
+    ///     </item>
+    ///     <item>
+    ///       If a maximum length is specified, a <see cref="LengthValidator"/> is generated.
+    ///     </item>
+    ///   </list>
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
     protected override IEnumerable<BaseValidator> GetValidators ()
     {
       var resourceManager = GetResourceManager();
 
+      _requiredFieldValidator = null;
       if (IsRequired)
-        yield return CreateRequiredFieldValidator (resourceManager);
+      {
+        _requiredFieldValidator = CreateRequiredFieldValidator (resourceManager);
+        yield return _requiredFieldValidator;
+      }
 
+      _lengthValidator = null;
       if (TextBoxStyle.MaxLength.HasValue)
-        yield return CreateLengthValidator (resourceManager);
+      {
+        _lengthValidator = CreateLengthValidator (resourceManager);
+        yield return _lengthValidator;
+      }
     }
 
     private RequiredFieldValidator CreateRequiredFieldValidator (IResourceManager resourceManager)
@@ -315,7 +365,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return requiredValidator;
     }
 
-    private LengthValidator CreateLengthValidator (IResourceManager gesourceManager)
+    private LengthValidator CreateLengthValidator (IResourceManager resourceManager)
     {
       var maxLength = TextBoxStyle.MaxLength;
       Assertion.IsTrue (maxLength.HasValue);
@@ -325,7 +375,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       lengthValidator.ControlToValidate = TargetControl.ID;
       lengthValidator.MaximumLength = maxLength.Value;
       if (string.IsNullOrEmpty (ErrorMessage))
-        lengthValidator.ErrorMessage = string.Format (gesourceManager.GetString (ResourceIdentifier.MaxLengthValidationMessage), maxLength.Value);
+        lengthValidator.ErrorMessage = string.Format (resourceManager.GetString (ResourceIdentifier.MaxLengthValidationMessage), maxLength.Value);
       else
         lengthValidator.ErrorMessage = ErrorMessage;
       return lengthValidator;

@@ -68,7 +68,7 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="BocTextValueBase.ErrorMessage"/> </term>
+          <term> <see cref="BocMultilineTextValue.ErrorMessage"/> </term>
           <description>
             <para> &lt;BocMultilineTextValue Resource ID&gt;:ErrorMessage </para>
             <para> e.g. auto:MyBocMultilineTextValue:ErrorMessage </para>
@@ -201,17 +201,4 @@
     </remarks>
     <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
   </SaveValue>
-  <CreateValidators>
-    <remarks>
-      <list type="bullet">
-        <item>
-          If the control requires input, a <see cref="RequiredFieldValidator"/> is generated.
-        </item>
-        <item>
-          If a maximum length is specified, a <see cref="LengthValidator"/> is generated.
-        </item>
-      </list>
-    </remarks>
-    <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-  </CreateValidators>
 </BocMultilineTextValue>

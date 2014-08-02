@@ -45,7 +45,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     private readonly Style _commonStyle = new Style();
     private readonly TextBoxStyle _textBoxStyle;
     private readonly Style _labelStyle = new Style();
-    private string _errorMessage;
     private readonly List<BaseValidator> _validators = new List<BaseValidator>();
     private static readonly object s_textChangedEvent = new object();
 
@@ -145,28 +144,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
       get { return _labelStyle; }
     }
 
-    /// <summary> Gets or sets the validation error message. </summary>
-    /// <value> 
-    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
-    ///   In case of the default value, the text is read from the resources for this control.
-    /// </value>
-    [Description ("Validation message displayed if there is an error.")]
-    [Category ("Validator")]
-    [DefaultValue ("")]
-    public string ErrorMessage
-    {
-      get { return _errorMessage; }
-      set
-      {
-        _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
-      }
-    }
-
     /// <summary> Gets or sets the string representation of the current value. </summary>
     /// <value>The text contents of the input field in edit mode and the displayed text in read-only mode.</value>
     /// <remarks> Uses <c>\r\n</c> or <c>\n</c> as separation characters. The default value is an empty <see cref="String"/>. </remarks>
@@ -260,22 +237,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
         if (TextBoxStyle.AutoPostBack == true)
           WcagHelper.Instance.HandleWarning (1, this, "TextBoxStyle.AutoPostBack");
       }
-    }
-
-    /// <summary> Loads the resources into the control's properties. </summary>
-    protected override void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
-    {
-      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
-      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
-      
-      if (IsDesignMode)
-        return;
-      base.LoadResources (resourceManager, globalizationService);
-
-      //  Dispatch simple properties
-      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
-      if (! string.IsNullOrEmpty (key))
-        ErrorMessage = resourceManager.GetString (key);
     }
 
     /// <summary> 

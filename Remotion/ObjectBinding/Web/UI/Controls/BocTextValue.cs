@@ -27,6 +27,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Renderin
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -76,6 +77,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private string _format;
     private string _text = string.Empty;
+    private string _errorMessage;
+    private RequiredFieldValidator _requiredFieldValidator;
+    private LengthValidator _lengthValidator;
+    private BaseValidator _typeValidator;
 
     public BocTextValue ()
     {
@@ -396,6 +401,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _format = value; }
     }
 
+    /// <summary> Gets or sets the validation error message. </summary>
+    /// <value> 
+    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
+    ///   In case of the default value, the text is read from the resources for this control.
+    /// </value>
+    [Description ("Validation message displayed if there is an error.")]
+    [Category ("Validator")]
+    [DefaultValue ("")]
+    public string ErrorMessage
+    {
+      get { return _errorMessage; }
+      set
+      {
+        _errorMessage = value;
+        if (_requiredFieldValidator != null)
+          _requiredFieldValidator.ErrorMessage = _errorMessage;
+        if (_lengthValidator != null)
+          _lengthValidator.ErrorMessage = _errorMessage;
+        if (_typeValidator != null)
+          _typeValidator.ErrorMessage = _errorMessage;
+      }
+    }
+
     /// <summary>
     /// Adds a listener to the <see cref="BusinessObjectBinding.BindingChanged"/> event of the <see cref="BusinessObjectBoundWebControl.Binding"/>. 
     /// </summary>
@@ -459,23 +487,70 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
+    /// <summary> Loads the resources into the control's properties. </summary>
+    protected override void LoadResources (IResourceManager resourceManager, IGlobalizationService globalizationService)
+    {
+      ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
+      
+      if (IsDesignMode)
+        return;
+      base.LoadResources (resourceManager, globalizationService);
+
+      //  Dispatch simple properties
+      string key = ResourceManagerUtility.GetGlobalResourceKey (ErrorMessage);
+      if (! string.IsNullOrEmpty (key))
+        ErrorMessage = resourceManager.GetString (key);
+    }
+
     /// <summary>
     /// If applicable, validators for non-empty, maximum length and input format are created.
     /// </summary>
     /// <returns>An enumeration of all applicable validators.</returns>
+    /// <remarks>
+    ///   <list type="bullet">
+    ///     <item>
+    ///       If the control requires input, a <see cref="RequiredFieldValidator"/> is generated.
+    ///     </item>
+    ///     <item>
+    ///       If a maximum length is specified, a <see cref="LengthValidator"/> is generated.
+    ///     </item>
+    ///     <item>
+    ///       If the <see cref="ActualValueType"/> is set to <see cref="BocTextValueType.DateTime"/>,
+    ///       a <see cref="DateTimeValidator"/> is generated.
+    ///     </item>
+    ///     <item>
+    ///       If the <see cref="ActualValueType"/> is set to <see cref="BocTextValueType.Date"/>
+    ///       a <see cref="CompareValidator"/> is generated.
+    ///     </item>
+    ///     <item>
+    ///       If the <see cref="ActualValueType"/> is set to one of the numeric types (such as <see cref="BocTextValueType.Int32"/> or
+    ///       <see cref="BocTextValueType.Double"/>) a <see cref="NumericValidator"/> is generated.
+    ///     </item>
+    ///   </list>
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
     protected override IEnumerable<BaseValidator> GetValidators ()
     {
       IResourceManager resourceManager = GetResourceManager();
 
+      _requiredFieldValidator = null;
       if (IsRequired)
-        yield return CreateRequiredFieldValidator (resourceManager);
+      {
+        _requiredFieldValidator = CreateRequiredFieldValidator (resourceManager);
+        yield return _requiredFieldValidator;
+      }
 
+      _lengthValidator = null;
       if (TextBoxStyle.MaxLength.HasValue)
-        yield return CreateLengthValidator (resourceManager);
+      {
+        _lengthValidator = CreateLengthValidator (resourceManager);
+        yield return _lengthValidator;
+      }
 
-      var typeValidator = CreateTypeValidator (resourceManager);
-      if (typeValidator != null)
-        yield return typeValidator;
+      _typeValidator = CreateTypeValidator (resourceManager);
+      if (_typeValidator != null)
+        yield return _typeValidator;
     }
 
     private RequiredFieldValidator CreateRequiredFieldValidator (IResourceManager resourceManager)

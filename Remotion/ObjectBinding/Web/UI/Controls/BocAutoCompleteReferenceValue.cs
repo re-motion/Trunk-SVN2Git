@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -103,15 +104,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
     private int _selectionUpdateDelay = 200;
-    private SearchAvailableObjectWebServiceContext _searchServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
-    private readonly ArrayList _validators;
+    private BocAutoCompleteReferenceValueInvalidDisplayNameValidator _invalidDisplayNameValidator;
+    private SearchAvailableObjectWebServiceContext _searchServiceContextFromPreviousLifeCycle;
 
     // construction and disposing
 
     public BocAutoCompleteReferenceValue ()
     {
       _textBoxStyle = new SingleRowTextBoxStyle();
-      _validators = new ArrayList();
+      _searchServiceContextFromPreviousLifeCycle = SearchAvailableObjectWebServiceContext.Create (null, null, null);
     }
 
     // methods and properties
@@ -217,23 +218,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       renderer.Render (CreateRenderingContext(writer));
     }
 
-    public override BaseValidator[] CreateValidators ()
+    protected override IEnumerable<BaseValidator> GetValidators ()
     {
-      var baseValidators = base.CreateValidators();
+      var baseValidators = base.GetValidators();
+      _invalidDisplayNameValidator = null;
       if (IsReadOnly)
         return baseValidators;
+      _invalidDisplayNameValidator = CreateInvalidDisplayNameValidator();
+      return baseValidators.Concat (_invalidDisplayNameValidator);
+    }
 
+    private BocAutoCompleteReferenceValueInvalidDisplayNameValidator CreateInvalidDisplayNameValidator ()
+    {
       var invalidDisplayNameValidator = new BocAutoCompleteReferenceValueInvalidDisplayNameValidator();
       invalidDisplayNameValidator.ID = ID + "_ValidatorValidDisplayName";
       invalidDisplayNameValidator.ControlToValidate = ID;
       if (string.IsNullOrEmpty (InvalidItemErrorMessage))
-        invalidDisplayNameValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.InvalidItemErrorMessage);
+        invalidDisplayNameValidator.ErrorMessage = GetResourceManager().GetString (ResourceIdentifier.InvalidItemErrorMessage);
       else
         invalidDisplayNameValidator.ErrorMessage = InvalidItemErrorMessage;
-
-      _validators.Add (invalidDisplayNameValidator);
-
-      return baseValidators.Concat (invalidDisplayNameValidator).ToArray();
+      return invalidDisplayNameValidator;
     }
 
     protected virtual IBocAutoCompleteReferenceValueRenderer CreateRenderer ()
@@ -444,8 +448,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set
       {
         _invalidItemErrorMessage = value;
-        foreach (var validator in _validators.OfType<BocAutoCompleteReferenceValueInvalidDisplayNameValidator>())
-          validator.ErrorMessage = _invalidItemErrorMessage;
+        if (_invalidDisplayNameValidator != null)
+          _invalidDisplayNameValidator.ErrorMessage = _invalidItemErrorMessage;
       }
     }
 

@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
-using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.Design;
@@ -76,9 +76,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private readonly Style _commonStyle;
     private readonly Style _labelStyle;
-
     private string _nullItemErrorMessage;
-    private readonly ArrayList _validators = new ArrayList ();
+    private RequiredFieldValidator _requiredFieldValidator;
+    private readonly List<BaseValidator> _validators;
     private string _optionsTitle;
     private bool _showOptionsMenu = true;
     private Unit _optionsMenuWidth = Unit.Empty;
@@ -86,7 +86,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private string[] _hiddenMenuItems;
     private string _iconServicePath;
     private string _iconServiceArguments;
-    private IWebServiceFactory _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
+    private IWebServiceFactory _webServiceFactory;
 
     protected BocReferenceValueBase ()
     {
@@ -95,6 +95,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       _command.OwnerControl = this;
       _commonStyle = new Style();
       _labelStyle = new Style();
+      _validators = new List<BaseValidator>();
+      _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
 
       EnableIcon = true;
     }
@@ -239,8 +241,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       set
       {
         _nullItemErrorMessage = value;
-        foreach (var validator in _validators.OfType<RequiredFieldValidator>())
-          validator.ErrorMessage = _nullItemErrorMessage;
+        if (_requiredFieldValidator != null)
+          _requiredFieldValidator.ErrorMessage = _nullItemErrorMessage;
       }
     }
 
@@ -912,24 +914,37 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// </CreateValidators>
     public override BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly || !IsRequired)
+      if (IsReadOnly)
         return new BaseValidator[0];
 
-      BaseValidator[] validators = new BaseValidator[1];
+      _validators.AddRange (GetValidators());
+      return _validators.ToArray();
+    }
 
-      RequiredFieldValidator notNullItemValidator = new RequiredFieldValidator ();
-      notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
-      notNullItemValidator.ControlToValidate = ID;
-      if (string.IsNullOrEmpty (NullItemErrorMessage))
+    /// <summary>
+    /// If applicable, validators for non-empty, maximum length and input format are created.
+    /// </summary>
+    /// <returns>An enumeration of all applicable validators.</returns>
+    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    {
+      _requiredFieldValidator = null;
+      if (IsRequired)
       {
-        notNullItemValidator.ErrorMessage = GetNullItemErrorMessage();
+        _requiredFieldValidator = CreateRequiredFieldValidator();
+        yield return _requiredFieldValidator;
       }
-      else
-        notNullItemValidator.ErrorMessage = NullItemErrorMessage;
-      validators[0] = notNullItemValidator;
+    }
 
-      _validators.AddRange (validators);
-      return validators;
+    private RequiredFieldValidator CreateRequiredFieldValidator ()
+    {
+      var requiredFieldValidator = new RequiredFieldValidator();
+      requiredFieldValidator.ID = ID + "_ValidatorNotNullItem";
+      requiredFieldValidator.ControlToValidate = ID;
+      if (string.IsNullOrEmpty (NullItemErrorMessage))
+        requiredFieldValidator.ErrorMessage = GetNullItemErrorMessage();
+      else
+        requiredFieldValidator.ErrorMessage = NullItemErrorMessage;
+      return requiredFieldValidator;
     }
 
     protected virtual void PreRenderOptionsMenu ()
