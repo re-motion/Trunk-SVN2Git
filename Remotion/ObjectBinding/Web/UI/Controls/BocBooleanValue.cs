@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -80,14 +82,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _showDescription = true;
 
     private string _errorMessage;
-    private readonly ArrayList _validators;
+    private CompareValidator _requiredFieldValidator;
 
     // construction and disposing
 
     public BocBooleanValue ()
     {
       _labelStyle = new Style();
-      _validators = new ArrayList();
     }
 
     // methods and properties
@@ -114,30 +115,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return new BocBooleanValueRenderingContext (Context, writer, this);
     }
 
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/CreateValidators/*' />
     public override BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly || !IsRequired)
+      if (IsReadOnly)
         return new BaseValidator[0];
 
-      BaseValidator[] validators = new BaseValidator[1];
+      return GetValidators().ToArray();
+    }
 
-      CompareValidator notNullItemValidator = new CompareValidator ();
+    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <remarks>
+    ///   Generates a <see cref="CompareValidator"/> checking that the selected item is not the null-item if the 
+    ///   control is in edit mode and input is required.
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    {
+      _requiredFieldValidator = null;
+      if (IsRequired)
+      {
+        _requiredFieldValidator = CreateRequiredFieldValidator();
+        yield return _requiredFieldValidator;
+      }
+    }
+
+    private CompareValidator CreateRequiredFieldValidator ()
+    {
+      CompareValidator notNullItemValidator = new CompareValidator();
       notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
       notNullItemValidator.ControlToValidate = ID;
       notNullItemValidator.ValueToCompare = c_nullString;
       notNullItemValidator.Operator = ValidationCompareOperator.NotEqual;
       if (string.IsNullOrEmpty (_errorMessage))
-        notNullItemValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.NullItemValidationMessage);
+        notNullItemValidator.ErrorMessage = GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
       else
         notNullItemValidator.ErrorMessage = _errorMessage;
-      validators[0] = notNullItemValidator;
-
-      _validators.AddRange (validators);
-      return validators;
+      return notNullItemValidator;
     }
-    
+
     public override void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
@@ -220,11 +235,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set
       {
         _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
+        if (_requiredFieldValidator != null)
+          _requiredFieldValidator.ErrorMessage = _errorMessage;
       }
     }
 

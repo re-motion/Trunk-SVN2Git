@@ -59,6 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     private bool _isEditModeRestored;
 
     private readonly List<EditableRow> _rows = new List<EditableRow>();
+    private EditModeValidator _editModeValidator;
 
     // construction and disposing
 
@@ -541,15 +542,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return editedRow;
     }
 
-    public BaseValidator[] CreateValidators (IResourceManager resourceManager)
+    public IEnumerable<BaseValidator> CreateValidators (IResourceManager resourceManager)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
-      if (! (IsListEditModeActive || IsRowEditModeActive) || ! _editModeHost.EnableEditModeValidator)
-        return new BaseValidator[0];
+      _editModeValidator = null;
+      if ((IsListEditModeActive || IsRowEditModeActive) && _editModeHost.EnableEditModeValidator)
+      {
+        _editModeValidator = CreateEditModeValidator (resourceManager);
+        yield return _editModeValidator;
+      }
+    }
 
-      BaseValidator[] validators = new BaseValidator[1];
-
+    private EditModeValidator CreateEditModeValidator (IResourceManager resourceManager)
+    {
       EditModeValidator editModeValidator = new EditModeValidator (this);
       editModeValidator.ID = ID + "_ValidatorEditMode";
       editModeValidator.ControlToValidate = _editModeHost.ID;
@@ -562,9 +568,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       }
       else
         editModeValidator.ErrorMessage = _editModeHost.ErrorMessage;
-      validators[0] = editModeValidator;
-
-      return validators;
+      return editModeValidator;
     }
 
     /// <remarks>
@@ -606,6 +610,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return isValid;
     }
 
+    public void UpdateValidationErrorMessage (string value)
+    {
+      if (_editModeValidator != null)
+        _editModeValidator.ErrorMessage = value;
+    }
+
+    public EditModeValidator GetEditModeValidator ()
+    {
+      return _editModeValidator;
+    }
 
     public void RenderTitleCellMarkers (HtmlTextWriter writer, BocColumnDefinition column, int columnIndex)
     {

@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -100,7 +101,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _enableClientScript = true;
 
     private string _errorMessage;
-    private readonly List<BaseValidator> _validators;
     private BocDateTimeValueValidator _dateTimeValidator;
     private const string c_dateTextBoxIDPostfix = "_DateValue";
     private const string c_timeTextBoxIDPostfix = "_TimeValue";
@@ -115,7 +115,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _timeTextBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
       _datePickerButton = new DatePickerButton();
-      _validators = new List<BaseValidator>();
     }
 
     // methods and properties
@@ -391,8 +390,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (IsReadOnly)
         return new BaseValidator[0];
 
-      _validators.AddRange (GetValidators());
-      return _validators.ToArray();
+      return GetValidators().ToArray();
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>

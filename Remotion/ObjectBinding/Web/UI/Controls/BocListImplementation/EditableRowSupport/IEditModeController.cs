@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -26,6 +27,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
   {
     bool IsRowEditModeActive { get; }
     bool IsListEditModeActive { get; }
+    void UpdateValidationErrorMessage (string value);
     BocListRow GetEditedRow ();
     void SwitchRowIntoEditMode (int index, BocColumnDefinition[] columns);
     void SwitchListIntoEditMode (BocColumnDefinition[] columns);
@@ -37,7 +39,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     int AddRow (IBusinessObject businessObject, BocColumnDefinition[] columns);
     void RemoveRows (IBusinessObject[] businessObjects);
     void RemoveRow (IBusinessObject businessObject);
-    BaseValidator[] CreateValidators (IResourceManager resourceManager);
+    IEnumerable<BaseValidator> CreateValidators (IResourceManager resourceManager);
+    EditModeValidator GetEditModeValidator ();
 
     /// <remarks>
     ///   Validators must be added to the controls collection after LoadPostData is complete.

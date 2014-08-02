@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Globalization;
@@ -45,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       Invoker.InitRecursive();
 
-      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance);
+      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (0));

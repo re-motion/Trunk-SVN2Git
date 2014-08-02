@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -81,7 +82,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _undefinedItemText = string.Empty;
 
     private string _errorMessage;
-    private readonly ArrayList _validators;
+    private RequiredFieldValidator _requiredFieldValidator;
 
     // construction and disposing
 
@@ -90,7 +91,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _commonStyle = new Style();
       _listControlStyle = new ListControlStyle();
       _labelStyle = new Style();
-      _validators = new ArrayList();
     }
 
     // methods and properties
@@ -175,33 +175,43 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         IsDirty = false;
     }
 
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/CreateValidators/*' />
     public override BaseValidator[] CreateValidators ()
     {
-      if (IsReadOnly || !IsRequired)
+      if (IsReadOnly)
         return new BaseValidator[0];
 
-      BaseValidator[] validators = new BaseValidator[1];
+      return GetValidators().ToArray();
+    }
 
+    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <remarks>
+    ///   Generates a <see cref="CompareValidator"/> checking that the selected item is not the null-item if the 
+    ///   control is in edit mode and input is required.
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    {
+      _requiredFieldValidator = null;
+      if (IsRequired)
+      {
+        _requiredFieldValidator = CreateRequiredFieldValidator();
+        yield return _requiredFieldValidator;
+      }
+
+      //  No validation that only enabled enum values get selected and saved.
+      //  This behaviour is for compatibility
+    }
+
+    private RequiredFieldValidator CreateRequiredFieldValidator ()
+    {
       RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
       requiredValidator.ID = ID + "_ValidatorRequried";
       requiredValidator.ControlToValidate = TargetControl.ID;
       if (string.IsNullOrEmpty (_errorMessage))
-      {
-        requiredValidator.ErrorMessage =
-            GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
-      }
+        requiredValidator.ErrorMessage = GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
       else
         requiredValidator.ErrorMessage = _errorMessage;
-      validators[0] = requiredValidator;
-
-
-      //  No validation that only enabled enum values get selected and saved.
-      //  This behaviour mimics the Fabasoft enum behaviour
-
-      _validators.AddRange (validators);
-      return validators;
+      return requiredValidator;
     }
 
     /// <summary> 
@@ -488,11 +498,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set
       {
         _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
+        if (_requiredFieldValidator != null)
+          _requiredFieldValidator.ErrorMessage = _errorMessage;
       }
     }
 

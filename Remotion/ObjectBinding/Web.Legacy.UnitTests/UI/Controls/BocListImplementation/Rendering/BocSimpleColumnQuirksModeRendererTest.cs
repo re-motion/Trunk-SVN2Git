@@ -136,8 +136,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImpleme
 
       List.EditModeController.Stub (mock => mock.GetEditableRow (EventArgs.ListIndex)).Return (editableRow);
 
-      List.Stub (mock => mock.Validators).Return (new List<IValidator>().AsReadOnly());
-
       var renderer = new BocSimpleColumnQuirksModeRenderer (new FakeResourceUrlFactory(), _bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 

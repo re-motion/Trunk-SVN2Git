@@ -719,7 +719,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       Assert.That (Controller.IsListEditModeActive, Is.True);
 
-      BaseValidator[] validators = Controller.CreateValidators (resourceManager);
+      BaseValidator[] validators = Controller.CreateValidators (resourceManager).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (1));
@@ -737,7 +737,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       Assert.That (Controller.IsListEditModeActive, Is.True);
 
-      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance);
+      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (1));

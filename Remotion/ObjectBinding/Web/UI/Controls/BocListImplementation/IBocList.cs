@@ -116,7 +116,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     IDropDownMenu OptionsMenu { get; }
 
     IEditModeController EditModeController { get; }
-    ReadOnlyCollection<IValidator> Validators { get; }
     ReadOnlyCollection<DropDownMenu> RowMenus { get; }
     ReadOnlyDictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
     bool HasListMenu { get; }

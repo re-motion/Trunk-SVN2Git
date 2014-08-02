@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Globalization;
@@ -747,7 +748,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.IsRowEditModeActive, Is.True);
       Assert.That (Controller.GetEditedRow().Index, Is.EqualTo (2));
 
-      BaseValidator[] validators = Controller.CreateValidators (resourceManager);
+      BaseValidator[] validators = Controller.CreateValidators (resourceManager).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (1));
@@ -766,7 +767,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.IsRowEditModeActive, Is.True);
       Assert.That (Controller.GetEditedRow().Index, Is.EqualTo (2));
 
-      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance);
+      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (1));

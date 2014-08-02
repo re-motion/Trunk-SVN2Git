@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.Design;
@@ -78,7 +79,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private readonly Style _labelStyle;
     private string _nullItemErrorMessage;
     private RequiredFieldValidator _requiredFieldValidator;
-    private readonly List<BaseValidator> _validators;
     private string _optionsTitle;
     private bool _showOptionsMenu = true;
     private Unit _optionsMenuWidth = Unit.Empty;
@@ -95,7 +95,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       _command.OwnerControl = this;
       _commonStyle = new Style();
       _labelStyle = new Style();
-      _validators = new List<BaseValidator>();
       _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
 
       EnableIcon = true;
@@ -917,8 +916,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (IsReadOnly)
         return new BaseValidator[0];
 
-      _validators.AddRange (GetValidators());
-      return _validators.ToArray();
+      return GetValidators().ToArray();
     }
 
     /// <summary>

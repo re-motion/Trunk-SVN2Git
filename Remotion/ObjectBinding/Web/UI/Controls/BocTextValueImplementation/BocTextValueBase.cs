@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
@@ -45,7 +46,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     private readonly Style _commonStyle = new Style();
     private readonly TextBoxStyle _textBoxStyle;
     private readonly Style _labelStyle = new Style();
-    private readonly List<BaseValidator> _validators = new List<BaseValidator>();
     private static readonly object s_textChangedEvent = new object();
 
     protected BocTextValueBase ()
@@ -268,8 +268,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
       if (IsReadOnly)
         return new BaseValidator[0];
 
-      _validators.AddRange (GetValidators());
-      return _validators.ToArray();
+      return GetValidators().ToArray();
     }
 
     bool IBocRenderableControl.IsDesignMode

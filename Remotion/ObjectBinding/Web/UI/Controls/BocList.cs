@@ -309,7 +309,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _disableEditModeValidationMessages;
 
     private string _errorMessage;
-    private readonly List<IValidator> _validators;
     private bool? _isBrowserCapableOfSCripting;
     private ScalarLoadPostDataTarget _currentPagePostBackTarget;
 
@@ -322,7 +321,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _optionsMenu = new DropDownMenu (this);
       _listMenu = new ListMenu (this);
       _availableViews = new BocListViewCollection (this);
-      _validators = new List<IValidator>();
       _fixedColumns = new BocColumnDefinitionCollection (this);
       _fixedColumns.CollectionChanged += delegate { OnColumnsChanged(); };
     }
@@ -893,10 +891,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (IsReadOnly)
         return new BaseValidator[0];
 
-      BaseValidator[] validators = _editModeController.CreateValidators (GetResourceManager());
-      _validators.AddRange (validators);
+      return GetValidators().ToArray();
+    }
 
-      return validators;
+    private IEnumerable<BaseValidator> GetValidators ()
+    {
+      return _editModeController.CreateValidators (GetResourceManager());
     }
 
     /// <summary> Checks whether the control conforms to the required WAI level. </summary>
@@ -2604,7 +2604,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private EditModeValidator GetEditModeValidator ()
     {
-      return _validators.OfType<EditModeValidator>().FirstOrDefault();
+      return _editModeController.GetEditModeValidator();
     }
 
     private void SetFocusImplementation (IFocusableControl control)
@@ -3456,11 +3456,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set
       {
         _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
+        _editModeController.UpdateValidationErrorMessage (_errorMessage);
       }
     }
 
@@ -3503,11 +3499,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     IEditModeController IBocList.EditModeController
     {
       get { return _editModeController; }
-    }
-
-    ReadOnlyCollection<IValidator> IBocList.Validators
-    {
-      get { return _validators.AsReadOnly(); }
     }
 
     ReadOnlyCollection<DropDownMenu> IBocList.RowMenus
