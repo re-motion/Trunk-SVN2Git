@@ -894,7 +894,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetValidators().ToArray();
     }
 
-    private IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> GetValidators ()
     {
       return _editModeController.CreateValidators (GetResourceManager());
     }

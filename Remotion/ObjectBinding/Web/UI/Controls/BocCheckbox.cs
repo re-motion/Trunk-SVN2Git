@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -387,6 +389,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
         return _defaultValue == true ? true : false;
+    }
+
+    protected override IEnumerable<BaseValidator> GetValidators ()
+    {
+      return Enumerable.Empty<BaseValidator>();
     }
 
     /// <summary> Gets the evaluated value for the <see cref="ShowDescription"/> property. </summary>

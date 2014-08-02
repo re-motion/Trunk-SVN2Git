@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
@@ -157,6 +158,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       base.Render (writer);
+    }
+
+    protected override IEnumerable<BaseValidator> GetValidators ()
+    {
+      return Enumerable.Empty<BaseValidator>();
     }
 
     public override void RegisterValidator (BaseValidator validator)

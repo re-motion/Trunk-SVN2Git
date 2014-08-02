@@ -16,8 +16,10 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Design;
@@ -148,6 +150,11 @@ namespace Remotion.ObjectBinding.Sample
         if (! isValid)
           return false;
         return _owner.ValidateInternal();
+      }
+
+      protected override IEnumerable<BaseValidator> GetValidators ()
+      {
+        return Enumerable.Empty<BaseValidator>();
       }
 
       protected override void LoadViewState (object savedState)

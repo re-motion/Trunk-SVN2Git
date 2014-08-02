@@ -247,6 +247,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return new BaseValidator[0];
     }
 
+    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+    protected abstract IEnumerable<BaseValidator> GetValidators ();
+
     /// <summary> Registers a validator that references this control. </summary>
     /// <remarks> 
     ///   <para>

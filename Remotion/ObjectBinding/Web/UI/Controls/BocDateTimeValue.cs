@@ -398,7 +398,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Generates a <see cref="BocDateTimeValueValidator"/> if the control is in edit mode.
     /// </remarks>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> GetValidators ()
     {
       _dateTimeValidator = CreateDateTimeValidator();
       yield return _dateTimeValidator;

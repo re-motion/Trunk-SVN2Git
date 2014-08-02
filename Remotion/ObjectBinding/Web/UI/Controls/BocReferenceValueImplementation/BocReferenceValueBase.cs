@@ -904,13 +904,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <CreateValidators>
-    ///   <remarks>
-    ///     Generates a <see cref="RequiredFieldValidator"/> checking that the selected item is not the null-item if the
-    ///     control is in edit mode and input is required.
-    ///   </remarks>
-    ///   <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    /// </CreateValidators>
     public override BaseValidator[] CreateValidators ()
     {
       if (IsReadOnly)
@@ -923,7 +916,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// If applicable, validators for non-empty, maximum length and input format are created.
     /// </summary>
     /// <returns>An enumeration of all applicable validators.</returns>
-    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    /// <remarks>
+    ///   Generates a <see cref="RequiredFieldValidator"/> checking that the selected item is not the null-item if the
+    ///   control is in edit mode and input is required.
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+    protected override IEnumerable<BaseValidator> GetValidators ()
     {
       _requiredFieldValidator = null;
       if (IsRequired)

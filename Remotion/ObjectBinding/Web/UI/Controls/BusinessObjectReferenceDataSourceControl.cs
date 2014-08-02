@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Web.UI.Controls;
 
@@ -351,6 +352,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           isValid &= control.Validate();
       }
       return isValid;
+    }
+
+    protected override IEnumerable<BaseValidator> GetValidators ()
+    {
+      return Enumerable.Empty<BaseValidator>();
     }
 
     /// <summary>

@@ -16,6 +16,9 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEditableWebControlTests.TestDomain
@@ -59,6 +62,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEd
     public override string[] GetTrackedClientIDs ()
     {
       throw new NotImplementedException();
+    }
+
+    protected override IEnumerable<BaseValidator> GetValidators ()
+    {
+      return Enumerable.Empty<BaseValidator>();
     }
   }
 }

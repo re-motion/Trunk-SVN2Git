@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   control is in edit mode and input is required.
     /// </remarks>
     /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    protected override IEnumerable<BaseValidator> GetValidators ()
     {
       _requiredFieldValidator = null;
       if (IsRequired)

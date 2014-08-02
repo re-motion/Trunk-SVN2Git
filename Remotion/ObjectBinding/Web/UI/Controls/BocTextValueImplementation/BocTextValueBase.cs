@@ -277,12 +277,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     }
 
     /// <summary>
-    /// Creates and configures the validators that validate the control's text value.
-    /// </summary>
-    /// <returns>An enumeration of validators to use for checking whether the control's input is valid.</returns>
-    protected abstract IEnumerable<BaseValidator> GetValidators ();
-
-    /// <summary>
     /// Loads the resources used by the control. <seealso cref="GetResourceManager"/>
     /// </summary>
     /// <param name="e"></param>
