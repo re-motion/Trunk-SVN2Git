@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
@@ -99,7 +100,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool _enableClientScript = true;
 
     private string _errorMessage;
-    private readonly ArrayList _validators;
+    private readonly List<BaseValidator> _validators;
+    private BocDateTimeValueValidator _dateTimeValidator;
     private const string c_dateTextBoxIDPostfix = "_DateValue";
     private const string c_timeTextBoxIDPostfix = "_TimeValue";
 
@@ -113,7 +115,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _timeTextBoxStyle = new SingleRowTextBoxStyle();
       _labelStyle = new Style();
       _datePickerButton = new DatePickerButton();
-      _validators = new ArrayList();
+      _validators = new List<BaseValidator>();
     }
 
     // methods and properties
@@ -384,15 +386,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ErrorMessage = resourceManager.GetString (key);
     }
 
-    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <include file='..\..\doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/CreateValidators/*' />
     public override BaseValidator[] CreateValidators ()
     {
       if (IsReadOnly)
         return new BaseValidator[0];
 
-      BaseValidator[] validators = new BaseValidator[1];
+      _validators.AddRange (GetValidators());
+      return _validators.ToArray();
+    }
 
+    /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <remarks> 
+    ///   Generates a <see cref="BocDateTimeValueValidator"/> if the control is in edit mode.
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
+    protected virtual IEnumerable<BaseValidator> GetValidators ()
+    {
+      _dateTimeValidator = CreateDateTimeValidator();
+      yield return _dateTimeValidator;
+    }
+
+    private BocDateTimeValueValidator CreateDateTimeValidator ()
+    {
       BocDateTimeValueValidator dateTimeValueValidator = new BocDateTimeValueValidator();
       dateTimeValueValidator.ID = ID + "_ValidatorDateTime";
       dateTimeValueValidator.ControlToValidate = ID;
@@ -409,10 +424,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
       else
         dateTimeValueValidator.ErrorMessage = _errorMessage;
-      validators[0] = dateTimeValueValidator;
-
-      _validators.AddRange (validators);
-      return validators;
+      return dateTimeValueValidator;
     }
 
     /// <summary> Handles refreshing the bound control. </summary>
@@ -955,11 +967,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set
       {
         _errorMessage = value;
-        for (int i = 0; i < _validators.Count; i++)
-        {
-          BaseValidator validator = (BaseValidator) _validators[i];
-          validator.ErrorMessage = _errorMessage;
-        }
+        if (_dateTimeValidator != null)
+          _dateTimeValidator.ErrorMessage = _errorMessage;
       }
     }
 

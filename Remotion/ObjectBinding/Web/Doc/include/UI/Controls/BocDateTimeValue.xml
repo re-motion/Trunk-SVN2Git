@@ -198,12 +198,6 @@
     </remarks>
     <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
   </SaveValue>
-  <CreateValidators>
-    <remarks> 
-      Generates a <see cref="BocDateTimeValueValidator"/> if the control is in edit mode.
-    </remarks>
-    <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-  </CreateValidators>
   <CommonStyle>
     <remarks>
       <para>
