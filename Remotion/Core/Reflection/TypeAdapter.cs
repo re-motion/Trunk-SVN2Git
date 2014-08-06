@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
@@ -320,7 +321,7 @@ namespace Remotion.Reflection
 
     public override int GetHashCode ()
     {
-      return base.GetHashCode ();
+      return RuntimeHelpers.GetHashCode (this);
     }
 
     public override string ToString ()
