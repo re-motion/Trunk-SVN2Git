@@ -206,7 +206,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
           CreateBindableObjectProviderWithStubBusinessObjectServiceFactory(),
           propertyInformation,
           typeof (IBusinessObject),
-          typeof (IBusinessObject),
+          new Lazy<Type> (() => typeof (IBusinessObject)),
           null,
           false,
           false,

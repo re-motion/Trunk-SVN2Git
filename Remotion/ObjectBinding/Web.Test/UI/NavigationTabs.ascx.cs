@@ -62,7 +62,7 @@ namespace OBWTest.UI
               (BindableObjectProvider) BusinessObjectProvider.GetProvider<BindableObjectProviderAttribute>(),
               PropertyInfoAdapter.Create (propertyInfo),
               propertyInfo.PropertyType,
-              propertyInfo.PropertyType,
+              new Lazy<Type> (() => propertyInfo.PropertyType),
               null,
               false,
               false,

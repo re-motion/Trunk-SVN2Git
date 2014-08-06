@@ -36,11 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "Parameter 'concreteType' is a 'Remotion.ObjectBinding.UnitTests.TestDomain.ClassWithAllDataTypes', "
-        +"which cannot be assigned to type 'Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass'."
-        + "\r\nParameter name: concreteType")]
-    public void Initialize_WithMissmatchedConcreteType ()
+    public void Initialize_WithMissmatchedConcreteType_ThrowsInvalidOperationExceptionWhenConcreteTypeIsFirstUsed ()
     {
       PropertyBase.Parameters parameters = CreateParameters (
           _businessObjectProvider,
@@ -50,15 +46,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests
           null,
           false,
           false);
-      new ReferenceProperty (parameters);
+      var referenceProperty = new ReferenceProperty (parameters);
+
+      Assert.That (
+          () => referenceProperty.SupportsSearchAvailableObjects,
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The concrete type must be assignable to the underlying type 'Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass'.\r\n"
+              + "Concrete type: Remotion.ObjectBinding.UnitTests.TestDomain.ClassWithAllDataTypes"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'parameters.ConcreteType' is a 'Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass', "
-        + "which cannot be assigned to type 'Remotion.ObjectBinding.IBusinessObject'."
-        + "\r\nParameter name: parameters.ConcreteType")]
-    public void Initialize_WithConcreteTypeNotImplementingIBusinessObject ()
+    public void Initialize_WithConcreteTypeNotImplementingIBusinessObject_ThrowsInvalidOperationExceptionWhenConcreteTypeIsFirstUsed ()
     {
       PropertyBase.Parameters parameters = CreateParameters (
           _businessObjectProvider,
@@ -68,7 +66,13 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.ReferencePropertyTests
           null,
           false,
           false);
-      new ReferenceProperty (parameters);
+      var referenceProperty = new ReferenceProperty (parameters);
+
+      Assert.That (
+          () => referenceProperty.SupportsSearchAvailableObjects,
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The concrete type must implement the IBusinessObject interface.\r\n"
+              + "Concrete type: Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass"));
     }
   }
 }

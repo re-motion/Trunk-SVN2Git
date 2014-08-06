@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Threading;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BindableObject.Properties
@@ -27,20 +29,19 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       DeclaringType
     }
 
-    private readonly Type _concreteType;
-    private readonly DoubleCheckedLockingContainer<IBusinessObjectClass> _referenceClass;
-    private readonly Tuple<ServiceProvider, Type> _searchServiceDefinition;
-    private readonly Tuple<ServiceProvider, Type> _defaultValueServiceDefinition;
-    private readonly Tuple<ServiceProvider, Type> _deleteObjectServiceDefinition;
+    private readonly Lazy<Type> _concreteType;
+    private readonly Lazy<IBusinessObjectClass> _referenceClass;
+    private readonly Lazy<Tuple<ServiceProvider, Type>> _searchServiceDefinition;
+    private readonly Lazy<Tuple<ServiceProvider, Type>> _defaultValueServiceDefinition;
+    private readonly Lazy<Tuple<ServiceProvider, Type>> _deleteObjectServiceDefinition;
 
     public ReferenceProperty (Parameters parameters)
         : base (parameters)
     {
       ArgumentUtility.CheckNotNull ("parameters", parameters);
-      ArgumentUtility.CheckTypeIsAssignableFrom ("parameters.ConcreteType", parameters.ConcreteType, typeof (IBusinessObject));
 
-      _concreteType = parameters.ConcreteType;
-      _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
+      _concreteType = GetConcreteTypeWithCheck (parameters.ConcreteType);
+      _referenceClass = GetReferenceClass();
       _searchServiceDefinition = GetServiceDeclaration<ISearchAvailableObjectsService>();
 #pragma warning disable 612,618
       _defaultValueServiceDefinition = GetServiceDeclaration<IDefaultValueService>();
@@ -78,7 +79,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        ISearchAvailableObjectsService service = GetSearchService();
+        var service = GetServiceOrNull<ISearchAvailableObjectsService> (_searchServiceDefinition.Value);
         if (service == null)
           return false;
 
@@ -155,8 +156,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      ISearchAvailableObjectsService service = GetSearchService();
-      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _searchServiceDefinition.Item2.FullName);
+      var service = GetService<ISearchAvailableObjectsService> (_searchServiceDefinition.Value);
 
       return service.Search (referencingObject, this, searchArguments);
     }
@@ -182,7 +182,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        IDefaultValueService service = GetDefaultValueService();
+        var service = GetServiceOrNull<IDefaultValueService> (_defaultValueServiceDefinition.Value);
         if (service == null)
           return false;
 
@@ -255,8 +255,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      IDefaultValueService service = GetDefaultValueService();
-      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _defaultValueServiceDefinition.Item2.FullName);
+      var service = GetService<IDefaultValueService> (_defaultValueServiceDefinition.Value);
 
       return service.Create (referencingObject, this);
     }
@@ -305,8 +304,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      IDefaultValueService service = GetDefaultValueService();
-      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _defaultValueServiceDefinition.Item2.FullName);
+      var service = GetService<IDefaultValueService> (_defaultValueServiceDefinition.Value);
 
       return service.IsDefaultValue (referencingObject, this, value, emptyProperties);
     }
@@ -330,7 +328,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     {
       get
       {
-        IDeleteObjectService service = GetDeleteObjectService();
+        var service = GetServiceOrNull<IDeleteObjectService> (_deleteObjectServiceDefinition.Value);
         if (service == null)
           return false;
 
@@ -407,23 +405,44 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
                 ReflectedClass.Identifier));
       }
 
-      IDeleteObjectService service = GetDeleteObjectService();
-      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", _deleteObjectServiceDefinition.Item2.FullName);
+      var service = GetService<IDeleteObjectService> (_deleteObjectServiceDefinition.Value);
 
       service.Delete (referencingObject, this, value);
     }
 
-    private IBusinessObjectClass GetReferenceClass ()
+    private static Lazy<Type> GetConcreteTypeWithCheck (Lazy<Type> concreteType)
     {
-      if (BindableObjectProvider.IsBindableObjectImplementation (UnderlyingType))
-      {
-        var provider = BindableObjectProvider.GetProviderForBindableObjectType (UnderlyingType);
-        return provider.GetBindableObjectClass (UnderlyingType);
-      }
-
-      return GetReferenceClassFromService();
+      return new Lazy<Type> (
+          () =>
+          {
+            var actualConcreteType = concreteType.Value;
+            if (!typeof (IBusinessObject).IsAssignableFrom (actualConcreteType))
+            {
+              throw new InvalidOperationException (
+                  string.Format ("The concrete type must implement the IBusinessObject interface.\r\nConcrete type: {0}", actualConcreteType.FullName));
+            }
+            return actualConcreteType;
+          },
+          LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
+    private Lazy<IBusinessObjectClass> GetReferenceClass ()
+    {
+      return new Lazy<IBusinessObjectClass> (
+          () =>
+          {
+            if (BindableObjectProvider.IsBindableObjectImplementation (UnderlyingType))
+            {
+              var provider = BindableObjectProvider.GetProviderForBindableObjectType (UnderlyingType);
+              return provider.GetBindableObjectClass (UnderlyingType);
+            }
+
+            return GetReferenceClassFromService();
+          },
+          LazyThreadSafetyMode.ExecutionAndPublication);
+    }
+
+    [NotNull]
     private IBusinessObjectClass GetReferenceClassFromService ()
     {
       IBusinessObjectClassService service = GetBusinessObjectClassService();
@@ -442,6 +461,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return businessObjectClass;
     }
 
+    [NotNull]
     private IBusinessObjectClassService GetBusinessObjectClassService ()
     {
       IBusinessObjectClassService service = BusinessObjectProvider.GetService<IBusinessObjectClassService>();
@@ -459,26 +479,17 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return service;
     }
 
-    private ISearchAvailableObjectsService GetSearchService ()
-    {
-      return GetService<ISearchAvailableObjectsService> (_searchServiceDefinition);
-    }
-
-#pragma warning disable 612,618
-    private IDefaultValueService GetDefaultValueService ()
-    {
-      return GetService<IDefaultValueService> (_defaultValueServiceDefinition);
-    }
-#pragma warning restore 612,618
-
-#pragma warning disable 612,618
-    private IDeleteObjectService GetDeleteObjectService ()
-    {
-      return GetService<IDeleteObjectService> (_deleteObjectServiceDefinition);
-    }
-#pragma warning restore 612,618
-
+    [NotNull]
     private TService GetService<TService> (Tuple<ServiceProvider, Type> serviceDefinition)
+        where TService: IBusinessObjectService
+    {
+      var service = GetServiceOrNull<TService> (serviceDefinition);
+      Assertion.IsNotNull (service, "The BusinessObjectProvider did not return a service for '{0}'.", serviceDefinition.Item2.FullName);
+      return service;
+    }
+
+    [CanBeNull]
+    private TService GetServiceOrNull<TService> (Tuple<ServiceProvider, Type> serviceDefinition)
         where TService: IBusinessObjectService
     {
       IBusinessObjectProvider provider;
@@ -497,18 +508,24 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return (TService) provider.GetService (serviceDefinition.Item2);
     }
 
-    private Tuple<ServiceProvider, Type> GetServiceDeclaration<TService> ()
+    [NotNull]
+    private Lazy<Tuple<ServiceProvider, Type>> GetServiceDeclaration<TService> ()
         where TService: IBusinessObjectService
     {
-      var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (true);
-      if (attributeFromDeclaringType != null)
-        return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, attributeFromDeclaringType.Type);
+      return new Lazy<Tuple<ServiceProvider, Type>> (
+          () =>
+          {
+            var attributeFromDeclaringType = PropertyInfo.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (true);
+            if (attributeFromDeclaringType != null)
+              return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, attributeFromDeclaringType.Type);
 
-      var attributeFromPropertyType = AttributeUtility.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (_concreteType, true);
-      if (attributeFromPropertyType != null)
-        return new Tuple<ServiceProvider, Type> (ServiceProvider.PropertyType, attributeFromPropertyType.Type);
+            var attributeFromPropertyType =
+                AttributeUtility.GetCustomAttribute<IBusinessObjectServiceTypeAttribute<TService>> (_concreteType.Value, true);
+            if (attributeFromPropertyType != null)
+              return new Tuple<ServiceProvider, Type> (ServiceProvider.PropertyType, attributeFromPropertyType.Type);
 
-      return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, typeof (TService));
+            return new Tuple<ServiceProvider, Type> (ServiceProvider.DeclaringType, typeof (TService));
+          });
     }
   }
 }

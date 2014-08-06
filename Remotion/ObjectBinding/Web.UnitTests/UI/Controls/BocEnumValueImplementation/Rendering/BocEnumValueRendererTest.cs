@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
                   (BindableObjectProvider) businessObjectProvider,
                   propertyInfo,
                   typeof (TestEnum),
-                  typeof (TestEnum),
+                  new Lazy<Type> (() => typeof (TestEnum)),
                   null,
                   true,
                   false,

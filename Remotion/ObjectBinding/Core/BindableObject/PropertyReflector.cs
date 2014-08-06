@@ -122,14 +122,21 @@ namespace Remotion.ObjectBinding.BindableObject
         return new Int32Property (parameters);
       else if (underlyingType == typeof (Int64))
         return new Int64Property (parameters);
-      else if (typeof (IBusinessObject).IsAssignableFrom (parameters.ConcreteType))
-        return new ReferenceProperty (parameters);
       else if (underlyingType == typeof (Single))
         return new SingleProperty (parameters);
       else if (underlyingType == typeof (String))
         return new StringProperty (parameters, GetMaxLength());
+        // IBusinessObject check should be after all regular checks to prevent unnecessary checks for Single and String in the code generation.
+      else if (IsReferenceProperty (parameters))
+        return new ReferenceProperty (parameters);
       else
         return GetMetadata (parameters);
+    }
+
+    private bool IsReferenceProperty (PropertyBase.Parameters parameters)
+    {
+      return typeof (IBusinessObject).IsAssignableFrom (parameters.UnderlyingType)
+             || typeof (IBusinessObject).IsAssignableFrom (parameters.ConcreteType.Value);
     }
 
     protected virtual PropertyBase GetMetadata (PropertyBase.Parameters parameters)
@@ -139,11 +146,11 @@ namespace Remotion.ObjectBinding.BindableObject
       return new NotSupportedProperty (parameters);
     }
 
-    protected virtual Type GetConcreteType (Type type)
+    private Lazy<Type> GetConcreteType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return TypeFactory.GetConcreteType (type);
+      return new Lazy<Type> (() => TypeFactory.GetConcreteType (type));
     }
 
     protected virtual Type GetUnderlyingType ()

@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
           businessObjectProvider,
           propertyInfo,
           underlyingType,
-          concreteType,
+          new Lazy<Type> (() => concreteType),
           listInfo,
           isRequired,
           isReadOnly,

@@ -388,7 +388,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
                   MockRepository.GenerateStub<IMetadataFactory> (), MockRepository.GenerateStub<IBusinessObjectServiceFactory> ()),
               GetPropertyInfo (typeof (ClassWithReferenceType<SimpleReferenceType>), "Scalar"),
               typeof (SimpleReferenceType),
-              typeof (SimpleReferenceType),
+              new Lazy<Type> (() => typeof (SimpleReferenceType)),
               null,
               false,
               false,

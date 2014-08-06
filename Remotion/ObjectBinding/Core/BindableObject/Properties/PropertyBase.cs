@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections;
+using System.Threading;
 using JetBrains.Annotations;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
@@ -38,7 +39,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       public readonly Type UnderlyingType;
 
       [NotNull]
-      public readonly Type ConcreteType;
+      public readonly Lazy<Type> ConcreteType;
 
       [CanBeNull]
       public readonly IListInfo ListInfo;
@@ -63,7 +64,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
           [NotNull] BindableObjectProvider businessObjectProvider,
           [NotNull] IPropertyInformation propertyInfo,
           [NotNull] Type underlyingType,
-          [NotNull] Type concreteType,
+          [NotNull] Lazy<Type> concreteType,
           [CanBeNull] IListInfo listInfo,
           bool isRequired,
           bool isReadOnly,
@@ -75,7 +76,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
         ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
         ArgumentUtility.CheckNotNull ("underlyingType", underlyingType);
-        ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteType", concreteType, underlyingType);
+        ArgumentUtility.CheckNotNull ("concreteType", concreteType);
         ArgumentUtility.CheckNotNull ("defaultValueStrategy", defaultValueStrategy);
         ArgumentUtility.CheckNotNull ("bindablePropertyReadAccessStrategy", bindablePropertyReadAccessStrategy);
         ArgumentUtility.CheckNotNull ("bindablePropertyWriteAccessStrategy", bindablePropertyWriteAccessStrategy);
@@ -84,7 +85,21 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
         BusinessObjectProvider = businessObjectProvider;
         PropertyInfo = propertyInfo;
         UnderlyingType = underlyingType;
-        ConcreteType = concreteType;
+        ConcreteType = new Lazy<Type> (
+            () =>
+            {
+              var actualConcreteType = concreteType.Value;
+              if (!underlyingType.IsAssignableFrom (actualConcreteType))
+              {
+                throw new InvalidOperationException (
+                    string.Format (
+                        "The concrete type must be assignable to the underlying type '{0}'.\r\nConcrete type: {1}",
+                        underlyingType.FullName,
+                        actualConcreteType.FullName));
+              }
+              return actualConcreteType;
+            },
+            LazyThreadSafetyMode.ExecutionAndPublication);
         ListInfo = listInfo;
         IsRequired = isRequired;
         IsReadOnly = isReadOnly;
