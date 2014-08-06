@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -30,9 +31,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     public const BindingFlags PropertyBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+    private static readonly IDataStore<Type, HashSet<MethodInfo>> s_explicitInterfaceImplementations =
+        DataStoreFactory.CreateWithLazyLocking<Type, HashSet<MethodInfo>>();
+
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
-    private readonly HashSet<IMethodInformation> _explicitInterfaceImplementations;
+    private readonly Lazy<HashSet<IMethodInformation>> _explicitInterfaceImplementations;
     private readonly IMemberInformationNameResolver _nameResolver;
     private readonly bool _includeMixinProperties;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
@@ -53,7 +57,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       _includeBaseProperties = includeBaseProperties;
       _includeMixinProperties = includeMixinProperties;
       _persistentMixinFinder = persistentMixinFinder;
-      _explicitInterfaceImplementations = GetExplicitInterfaceImplementations (type);
+      _explicitInterfaceImplementations = new Lazy<HashSet<IMethodInformation>> (
+          () => new HashSet<IMethodInformation> (
+              s_explicitInterfaceImplementations.GetOrCreateValue (_type, GetExplicitInterfaceImplementations)
+                  .Select (MethodInfoAdapter.Create)));
     }
 
     public Type Type
@@ -95,13 +102,13 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
       }
 
-      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType ());
+      propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType());
 
       if (IncludeMixinProperties)
       {
         // Base mixins are included only when base properties are included.
         var mixinPropertyFinder = new MixinPropertyFinder (CreateNewFinder, _persistentMixinFinder, IncludeBaseProperties, NameResolver);
-        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins ());
+        propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins());
       }
 
       return propertyInfos.ToArray();
@@ -139,7 +146,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
       bool isExplicitInterfaceImplementation = Array.Exists (
           propertyInfo.GetAccessors (true),
-          accessor => _explicitInterfaceImplementations.Contains (accessor));
+          accessor => _explicitInterfaceImplementations.Value.Contains (accessor));
       if (!isExplicitInterfaceImplementation)
         return false;
 
@@ -155,22 +162,22 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       MemberInfo[] memberInfos = _type.FindMembers (
           MemberTypes.Property,
           PropertyBindingFlags | BindingFlags.DeclaredOnly,
-          FindPropertiesFilter, 
+          FindPropertiesFilter,
           null);
 
-      var propertyInfos = Array.ConvertAll (memberInfos, input => PropertyInfoAdapter.Create((PropertyInfo) input));
+      var propertyInfos = Array.ConvertAll (memberInfos, input => PropertyInfoAdapter.Create ((PropertyInfo) input));
 
       return propertyInfos;
     }
 
     private bool FindPropertiesFilter (MemberInfo member, object filterCriteria)
     {
-      return FindPropertiesFilter (PropertyInfoAdapter.Create((PropertyInfo) member));
+      return FindPropertiesFilter (PropertyInfoAdapter.Create ((PropertyInfo) member));
     }
 
-    private HashSet<IMethodInformation> GetExplicitInterfaceImplementations (Type type)
+    private static HashSet<MethodInfo> GetExplicitInterfaceImplementations (Type type)
     {
-      var explicitInterfaceImplementationSet = new HashSet<IMethodInformation> ();
+      var explicitInterfaceImplementationSet = new HashSet<MethodInfo>();
 
       foreach (Type interfaceType in type.GetInterfaces())
       {
@@ -178,7 +185,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         MethodInfo[] explicitInterfaceImplementations = Array.FindAll (
             interfaceMapping.TargetMethods,
             targetMethod => targetMethod.IsSpecialName && !targetMethod.IsPublic);
-        explicitInterfaceImplementationSet.UnionWith (explicitInterfaceImplementations.Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi)));
+        explicitInterfaceImplementationSet.UnionWith (explicitInterfaceImplementations);
       }
 
       return explicitInterfaceImplementationSet;
