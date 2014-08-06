@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -33,8 +34,7 @@ namespace Remotion.Reflection
   {
     //If this is changed to an (expiring) cache, equals implementation must be updated.
     private static readonly IDataStore<MethodInfo, MethodInfoAdapter> s_dataStore =
-        new LockingDataStoreDecorator<MethodInfo, MethodInfoAdapter> (
-            new SimpleDataStore<MethodInfo, MethodInfoAdapter> (MemberInfoEqualityComparer<MethodInfo>.Instance));
+        DataStoreFactory.CreateWithLocking<MethodInfo, MethodInfoAdapter> (MemberInfoEqualityComparer<MethodInfo>.Instance);
 
     private static readonly Func<MethodInfo, MethodInfoAdapter> s_ctorFunc = mi => new MethodInfoAdapter (mi); 
 
@@ -45,13 +45,31 @@ namespace Remotion.Reflection
     }
 
     private readonly MethodInfo _methodInfo;
-    private readonly DoubleCheckedLockingContainer<ITypeInformation> _cachedOriginalDeclaringType;
+    private readonly Lazy<ITypeInformation> _cachedDeclaringType;
+    private readonly Lazy<ITypeInformation> _cachedOriginalDeclaringType;
+
+    private readonly Lazy<IPropertyInformation> _declaringProperty;
+    private readonly Lazy<IReadOnlyCollection<IMethodInformation>> _interfaceDeclarations;
 
     private MethodInfoAdapter (MethodInfo methodInfo)
     {
       _methodInfo = methodInfo;
-      _cachedOriginalDeclaringType =
-          new DoubleCheckedLockingContainer<ITypeInformation> (() => TypeAdapter.Create (_methodInfo.GetOriginalDeclaringType()));
+
+      _cachedDeclaringType = new Lazy<ITypeInformation> (
+          () => Maybe.ForValue (_methodInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
+          () => TypeAdapter.Create (_methodInfo.GetOriginalDeclaringType()),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _declaringProperty = new Lazy<IPropertyInformation> (
+          () => Maybe.ForValue ( _methodInfo.FindDeclaringProperty()).Select (PropertyInfoAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _interfaceDeclarations = new Lazy<IReadOnlyCollection<IMethodInformation>> (
+          FindInterfaceDeclarationsImplementation,
+          LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public MethodInfo MethodInfo
@@ -71,7 +89,7 @@ namespace Remotion.Reflection
 
     public ITypeInformation DeclaringType
     {
-      get { return Maybe.ForValue (_methodInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
+      get { return _cachedDeclaringType.Value; }
     }
 
     public ITypeInformation GetOriginalDeclaringType ()
@@ -119,14 +137,19 @@ namespace Remotion.Reflection
 
     public IEnumerable<IMethodInformation> FindInterfaceDeclarations ()
     {
+      return _interfaceDeclarations.Value.ToArray();
+    }
+
+    private IReadOnlyCollection<IMethodInformation> FindInterfaceDeclarationsImplementation ()
+    {
       if (_methodInfo.DeclaringType.IsInterface)
         throw new InvalidOperationException ("This method is itself an interface member, so it cannot have an interface declaration.");
 
-      return from interfaceType in _methodInfo.DeclaringType.GetInterfaces ()
-             let map = _methodInfo.DeclaringType.GetInterfaceMap (interfaceType)
-             from index in Enumerable.Range (0, map.TargetMethods.Length)
-             where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (map.TargetMethods[index], _methodInfo)
-             select (IMethodInformation) Create (map.InterfaceMethods[index]);
+      return (from interfaceType in _methodInfo.DeclaringType.GetInterfaces()
+        let map = _methodInfo.DeclaringType.GetInterfaceMap (interfaceType)
+        from index in Enumerable.Range (0, map.TargetMethods.Length)
+        where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (map.TargetMethods[index], _methodInfo)
+        select (IMethodInformation) Create (map.InterfaceMethods[index])).ToArray();
     }
 
     public T GetFastInvoker<T> () where T: class
@@ -143,8 +166,7 @@ namespace Remotion.Reflection
 
     public IPropertyInformation FindDeclaringProperty ()
     {
-      var propertyInfo = _methodInfo.FindDeclaringProperty();
-      return propertyInfo != null ? PropertyInfoAdapter.Create (propertyInfo) : null;
+      return _declaringProperty.Value;
     }
 
     public ParameterInfo[] GetParameters ()

@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Threading;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -29,22 +30,29 @@ namespace Remotion.Reflection
   [TypeConverter (typeof (TypeAdapterConverter))]
   public sealed class TypeAdapter : ITypeInformation
   {
-    private readonly Type _type;
     //If this is changed to an (expiring) cache, equals implementation must be updated.
     private static readonly IDataStore<Type, TypeAdapter> s_dataStore =
-        new LockingDataStoreDecorator<Type, TypeAdapter> (
-            new SimpleDataStore<Type, TypeAdapter> (MemberInfoEqualityComparer<Type>.Instance));
+        DataStoreFactory.CreateWithLocking<Type, TypeAdapter> (ReferenceEqualityComparer<Type>.Instance);
+
+    private static readonly Func<Type, TypeAdapter> s_ctorFunc = t => new TypeAdapter (t);
 
     public static TypeAdapter Create (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return s_dataStore.GetOrCreateValue (type, t => new TypeAdapter (t));
+      return s_dataStore.GetOrCreateValue (type, s_ctorFunc);
     }
+
+    private readonly Type _type;
+    private readonly Lazy<ITypeInformation> _cachedDeclaringType;
 
     private TypeAdapter (Type type)
     {
       _type = type;
+
+      _cachedDeclaringType = new Lazy<ITypeInformation> (
+          () => Maybe.ForValue (_type.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
     public Type Type
@@ -79,12 +87,12 @@ namespace Remotion.Reflection
 
     public ITypeInformation DeclaringType
     {
-      get { return Maybe.ForValue (_type.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
+      get { return _cachedDeclaringType.Value; }
     }
 
     public ITypeInformation GetOriginalDeclaringType ()
     {
-      return DeclaringType;
+      return _cachedDeclaringType.Value;
     }
 
     public bool IsClass

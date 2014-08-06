@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Collections
       _expirationPolicyMock = MockRepository.GenerateStrictMock<IExpirationPolicy<object, DateTime, DateTime>> ();
       _expirationPolicyMock.Stub (stub => stub.GetNextScanInfo()).Return (_initialScanInfo).Repeat.Once(); // just for the ctor
       
-      _dataStore = new ExpiringDataStore<string, object, DateTime, DateTime> (_expirationPolicyMock, new ReferenceEqualityComparer<string>());
+      _dataStore = new ExpiringDataStore<string, object, DateTime, DateTime> (_expirationPolicyMock, ReferenceEqualityComparer<string>.Instance);
       
       _fakeValue = new object ();
       _fakeValue2 = new object ();

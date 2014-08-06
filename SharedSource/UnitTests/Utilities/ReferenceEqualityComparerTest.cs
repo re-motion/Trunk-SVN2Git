@@ -32,7 +32,7 @@ namespace Remotion.UnitTests.Utilities
     [SetUp]
     public void SetUp ()
     {
-      _comparer = new ReferenceEqualityComparer<object> ();
+      _comparer = ReferenceEqualityComparer<object>.Instance;
       _obj1 = new Object ();
       _obj2 = new Object ();
     }

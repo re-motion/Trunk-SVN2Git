@@ -30,6 +30,12 @@ namespace Remotion.Utilities
   /// <typeparam name="T">the type of object to check</typeparam>  
   partial class ReferenceEqualityComparer<T> : IEqualityComparer<T>
   {
+    public static readonly ReferenceEqualityComparer<T> Instance = new ReferenceEqualityComparer<T>();
+
+    private ReferenceEqualityComparer ()
+    {
+    }
+
     public bool Equals (T x, T y)
     {
       return object.ReferenceEquals (x, y);

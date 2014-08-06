@@ -34,8 +34,7 @@ namespace Remotion.Reflection
   {
     //If this is changed to an (expiring) cache, equals implementation must be updated.
     private static readonly IDataStore<PropertyInfo, PropertyInfoAdapter> s_dataStore =
-        new LockingDataStoreDecorator<PropertyInfo, PropertyInfoAdapter> (
-            new SimpleDataStore<PropertyInfo, PropertyInfoAdapter> (MemberInfoEqualityComparer<PropertyInfo>.Instance));
+        DataStoreFactory.CreateWithLocking<PropertyInfo, PropertyInfoAdapter> (MemberInfoEqualityComparer<PropertyInfo>.Instance);
 
     private static readonly Func<PropertyInfo, PropertyInfoAdapter> s_ctorFunc = pi => new PropertyInfoAdapter (pi); 
 
@@ -50,22 +49,46 @@ namespace Remotion.Reflection
     private readonly Lazy<IMethodInformation> _publicOrNonPublicGetMethod;
     private readonly Lazy<IMethodInformation> _publicSetMethod;
     private readonly Lazy<IMethodInformation> _publicOrNonPublicSetMethod;
+    private readonly Lazy<IReadOnlyCollection<IMethodInformation>> _publicAccessors;
+    private readonly Lazy<IReadOnlyCollection<IMethodInformation>> _publicOrNonPublicAccessors;
 
+    private readonly Lazy<ITypeInformation> _cachedDeclaringType;
     private readonly Lazy<ITypeInformation> _cachedOriginalDeclaringType;
     private readonly Lazy<IPropertyInformation> _cachedOriginalDeclaration;
+
+    private readonly Lazy<IReadOnlyCollection<IPropertyInformation>> _interfaceDeclarations; 
 
     private PropertyInfoAdapter (PropertyInfo propertyInfo)
     {
       _propertyInfo = propertyInfo;
 
-      _publicGetMethod =
-          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetGetMethod (false)).Select (MethodInfoAdapter.Create).ValueOrDefault());
-      _publicOrNonPublicGetMethod =
-          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (MethodInfoAdapter.Create).ValueOrDefault());
-      _publicSetMethod =
-          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetSetMethod (false)).Select (MethodInfoAdapter.Create).ValueOrDefault());
-      _publicOrNonPublicSetMethod =
-          new Lazy<IMethodInformation> (() => Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (MethodInfoAdapter.Create).ValueOrDefault());
+      _publicGetMethod = new Lazy<IMethodInformation> (
+          () => Maybe.ForValue (_propertyInfo.GetGetMethod (false)).Select (MethodInfoAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _publicOrNonPublicGetMethod = new Lazy<IMethodInformation> (
+          () => Maybe.ForValue (_propertyInfo.GetGetMethod (true)).Select (MethodInfoAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _publicSetMethod = new Lazy<IMethodInformation> (
+          () => Maybe.ForValue (_propertyInfo.GetSetMethod (false)).Select (MethodInfoAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _publicOrNonPublicSetMethod = new Lazy<IMethodInformation> (
+          () => Maybe.ForValue (_propertyInfo.GetSetMethod (true)).Select (MethodInfoAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _publicAccessors = new Lazy<IReadOnlyCollection<IMethodInformation>> (
+          () => _propertyInfo.GetAccessors (false).Select (MethodInfoAdapter.Create).ToArray(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _publicOrNonPublicAccessors = new Lazy<IReadOnlyCollection<IMethodInformation>> (
+          () => _propertyInfo.GetAccessors (true).Select (MethodInfoAdapter.Create).ToArray(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _cachedDeclaringType = new Lazy<ITypeInformation> (
+          () => Maybe.ForValue (_propertyInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault(),
+          LazyThreadSafetyMode.ExecutionAndPublication);
 
       _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
           () => TypeAdapter.Create (_propertyInfo.GetOriginalDeclaringType()),
@@ -73,6 +96,10 @@ namespace Remotion.Reflection
 
       _cachedOriginalDeclaration = new Lazy<IPropertyInformation> (
           () => PropertyInfoAdapter.Create (_propertyInfo.GetBaseDefinition()),
+          LazyThreadSafetyMode.ExecutionAndPublication);
+
+      _interfaceDeclarations = new Lazy<IReadOnlyCollection<IPropertyInformation>> (
+          FindInterfaceDeclarationsImplementation,
           LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
@@ -93,7 +120,7 @@ namespace Remotion.Reflection
 
     public ITypeInformation DeclaringType
     {
-      get { return Maybe.ForValue (_propertyInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault (); }
+      get { return _cachedDeclaringType.Value; }
     }
 
     public ITypeInformation GetOriginalDeclaringType ()
@@ -108,7 +135,7 @@ namespace Remotion.Reflection
 
     public bool CanBeSetFromOutside
     {
-      get { return PropertyInfo.GetSetMethod (false) != null; }
+      get { return _publicSetMethod.Value != null; }
     }
 
     public T GetCustomAttribute<T> (bool inherited) where T: class
@@ -130,14 +157,14 @@ namespace Remotion.Reflection
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      return PropertyInfo.GetValue (instance, indexParameters);
+      return _propertyInfo.GetValue (instance, indexParameters);
     }
 
     public void SetValue (object instance, object value, object[] indexParameters)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      PropertyInfo.SetValue (instance, value, indexParameters);
+      _propertyInfo.SetValue (instance, value, indexParameters);
     }
 
     public IMethodInformation GetGetMethod (bool nonPublic)
@@ -163,7 +190,10 @@ namespace Remotion.Reflection
 
     public IMethodInformation[] GetAccessors (bool nonPublic)
     {
-      return Array.ConvertAll (_propertyInfo.GetAccessors (nonPublic), mi => (IMethodInformation) MethodInfoAdapter.Create(mi));
+      if (nonPublic)
+        return _publicOrNonPublicAccessors.Value.ToArray();
+      else
+        return _publicAccessors.Value.ToArray();
     }
 
     public IPropertyInformation FindInterfaceImplementation (Type implementationType)
@@ -173,7 +203,7 @@ namespace Remotion.Reflection
       if (!DeclaringType.IsInterface)
         throw new InvalidOperationException ("This property is not an interface property.");
 
-      var interfaceAccessorMethod = GetGetMethod (false) ?? GetSetMethod (false);
+      var interfaceAccessorMethod = _publicAccessors.Value.First();
       var implementationMethod = interfaceAccessorMethod.FindInterfaceImplementation (implementationType);
       if (implementationMethod == null)
         return null;
@@ -189,12 +219,17 @@ namespace Remotion.Reflection
 
     public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
+      return _interfaceDeclarations.Value.ToArray();
+    }
+
+    private IReadOnlyCollection<IPropertyInformation> FindInterfaceDeclarationsImplementation ()
+    {
       if (DeclaringType.IsInterface)
         throw new InvalidOperationException ("This property is itself an interface member, so it cannot have an interface declaration.");
 
-      var accessorMethod = GetGetMethod (true) ?? GetSetMethod (true);
-      var interfaceAccessorMethods = accessorMethod.FindInterfaceDeclarations ();
-      return interfaceAccessorMethods.Select (m => m.FindDeclaringProperty());
+      var accessorMethod = _publicOrNonPublicAccessors.Value.First();
+      var interfaceAccessorMethods = accessorMethod.FindInterfaceDeclarations();
+      return interfaceAccessorMethods.Select (m => m.FindDeclaringProperty()).ToArray();
     }
 
     public override bool Equals (object obj)
