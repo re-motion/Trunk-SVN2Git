@@ -29,8 +29,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         ClassDefinition classDefinition,
         IPropertyInformation propertyInfo,
         IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider)
-        : base (classDefinition, propertyInfo, nameResolver, domainModelConstraintProvider)
+        : base (classDefinition, propertyInfo, nameResolver, propertyMetadataProvider, domainModelConstraintProvider)
     {
     }
 

@@ -272,6 +272,7 @@
     <Compile Include="Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\ClassExcludedFromMapping.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\ClassDerivedFromExcludedClass.cs" />
     <Compile Include="Mapping\MappingReflectionIntegrationTests\IgnoredTypes\OnlyBaseClassNotInMapping\When_ASingleClassIsExcludedFromTheMapping.cs" />
+    <Compile Include="Mapping\PropertyMetadataReflectorTest.cs" />
     <Compile Include="Mapping\TestDomain\Integration\ReflectionBasedMappingSample\BaseClassWithoutStorageGroupAttribute.cs" />
     <Compile Include="Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassInMapping.cs" />
     <Compile Include="Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassInMappingDerivedFromClassWithIgnoreForMappingConfigurationAttribute.cs" />

@@ -154,7 +154,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
       _classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 
       return new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyReflector.PropertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+          _classDefinition,
+          propertyReflector.PropertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
     }
 
     private PropertyReflector CreatePropertyReflector (string property)
@@ -162,7 +166,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
       var propertyInfo =
           PropertyInfoAdapter.Create (_classType.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
 
-      return new PropertyReflector (_classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      return new PropertyReflector (
+          _classDefinition,
+          propertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
     }
 
     private PropertyDefinition GetPropertyDefinition (string propertyName)

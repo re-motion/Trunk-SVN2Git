@@ -36,7 +36,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
           true,
           true,
           new ReflectionBasedMemberInformationNameResolver(),
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       var properties = propertyFinder.FindPropertyInfos();
 
@@ -53,7 +54,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
           true,
           true,
           new ReflectionBasedMemberInformationNameResolver(),
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       var properties = propertyFinder.FindPropertyInfos();
 
@@ -66,16 +68,25 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateClassDefinition (typeof (DerivedClassWithMappingAttribute));
       var nameResolver = new ReflectionBasedMemberInformationNameResolver();
+      IPropertyMetadataProvider propertyMetadataReflector = new PropertyMetadataReflector();
       var propertyFinder = new NameBasedPropertyFinder (
           "Property2",
           typeof (DerivedClassWithMappingAttribute),
           true,
           true,
           nameResolver,
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder,
+          propertyMetadataReflector);
 
       var result = (NameBasedPropertyFinder) PrivateInvoke.InvokeNonPublicMethod (
-          propertyFinder, "CreateNewFinder", typeof (string), true, true, nameResolver, classDefinition.PersistentMixinFinder);
+          propertyFinder,
+          "CreateNewFinder",
+          typeof (string),
+          true,
+          true,
+          nameResolver,
+          classDefinition.PersistentMixinFinder,
+          propertyMetadataReflector);
 
       Assert.That (result.Type, Is.SameAs (typeof (string)));
       Assert.That (result.IncludeBaseProperties, Is.True);

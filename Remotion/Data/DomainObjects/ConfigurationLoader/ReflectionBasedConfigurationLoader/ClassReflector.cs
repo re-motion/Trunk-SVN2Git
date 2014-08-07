@@ -34,6 +34,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     private readonly IMappingObjectFactory _mappingObjectFactory;
     private readonly IMemberInformationNameResolver _nameResolver;
     private readonly IClassIDProvider _classIDProvider;
+    private readonly IPropertyMetadataProvider _propertyMetadataProvider;
     private readonly IDomainModelConstraintProvider _domainModelConstraintProvider;
     private readonly IDomainObjectCreator _instanceCreator;
 
@@ -42,6 +43,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         IMappingObjectFactory mappingObjectFactory,
         IMemberInformationNameResolver nameResolver,
         IClassIDProvider classIDProvider,
+        IPropertyMetadataProvider propertyMetadataProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider,
         IDomainObjectCreator instanceCreator)
     {
@@ -49,14 +51,15 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
       ArgumentUtility.CheckNotNull ("classIDProvider", classIDProvider);
+      ArgumentUtility.CheckNotNull ("propertyMetadataProvider", propertyMetadataProvider);
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
       ArgumentUtility.CheckNotNull ("instanceCreator", instanceCreator);
-      
 
       _type = type;
       _mappingObjectFactory = mappingObjectFactory;
       _nameResolver = nameResolver;
       _classIDProvider = classIDProvider;
+      _propertyMetadataProvider = propertyMetadataProvider;
       _domainModelConstraintProvider = domainModelConstraintProvider;
       _instanceCreator = instanceCreator;
     }
@@ -113,8 +116,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           classDefinition,
           classDefinition.BaseClass == null,
           true,
-          NameResolver,
+          _nameResolver,
           classDefinition.PersistentMixinFinder, 
+          _propertyMetadataProvider,
           _domainModelConstraintProvider
           );
       return propertyFinder.FindPropertyInfos();

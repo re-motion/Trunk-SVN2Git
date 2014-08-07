@@ -34,7 +34,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
           true,
           true,
           new ReflectionBasedMemberInformationNameResolver(),
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       Assert.That (propertyFinder.Type, Is.SameAs (typeof (DerivedClassWithDifferentProperties)));
       Assert.That (propertyFinder.IncludeBaseProperties, Is.True);
@@ -45,7 +46,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateClassDefinition (typeof (ClassWithDifferentProperties));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithDifferentProperties), true, true, new ReflectionBasedMemberInformationNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithDifferentProperties),
+          true,
+          true,
+          new ReflectionBasedMemberInformationNameResolver(),
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),
@@ -63,7 +69,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
     {
       var classDefinition = CreateClassDefinition (typeof (ClassWithVirtualRelationEndPoints));
       var propertyFinder = new RelationPropertyFinder (
-          typeof (ClassWithVirtualRelationEndPoints), true, true, new ReflectionBasedMemberInformationNameResolver(), classDefinition.PersistentMixinFinder);
+          typeof (ClassWithVirtualRelationEndPoints),
+          true,
+          true,
+          new ReflectionBasedMemberInformationNameResolver(),
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       Assert.That (
           propertyFinder.FindPropertyInfos(),

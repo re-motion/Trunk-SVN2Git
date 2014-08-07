@@ -36,7 +36,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
       Assert.IsInstanceOf (
           typeof (RdbmsRelationEndPointReflector),
           RelationEndPointReflector.CreateRelationEndPointReflector (
-              ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub));
+              ClassDefinitionObjectMother.CreateClassDefinition (classType: type),
+              propertyInfo,
+              Configuration.NameResolver,
+              PropertyMetadataProvider,
+              DomainModelConstraintProviderStub));
     }
 
     [Test]
@@ -44,9 +48,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     {
       var type = typeof (ClassWithRealRelationEndPoints);
       var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("NoAttribute"));
-      var relationEndPointReflector =
-          RelationEndPointReflector.CreateRelationEndPointReflector (
-              ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          ClassDefinitionObjectMother.CreateClassDefinition (classType: type),
+          propertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
 
       Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
@@ -56,9 +63,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     {
       var type = typeof (ClassWithInvalidUnidirectionalRelation);
       var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("LeftSide"));
-      var relationEndPointReflector =
-          RelationEndPointReflector.CreateRelationEndPointReflector (
-              ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          ClassDefinitionObjectMother.CreateClassDefinition (classType: type),
+          propertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
 
       Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
@@ -68,9 +78,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     {
       var type = typeof (ClassWithRealRelationEndPoints);
       var propertyInfo = PropertyInfoAdapter.Create (type.GetProperty ("Unidirectional"));
-      var relationEndPointReflector =
-          new RdbmsRelationEndPointReflector (
-              ClassDefinitionObjectMother.CreateClassDefinition (classType: type), propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
+          ClassDefinitionObjectMother.CreateClassDefinition (classType: type),
+          propertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
 
       Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.False);
     }
@@ -87,7 +100,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
       mappingNameResolverMock.Stub (mock => mock.GetPropertyName (propertyDefinition.PropertyInfo)).Return (propertyDefinition.PropertyName);
 
       var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
-          classDefinition, propertyDefinition.PropertyInfo, mappingNameResolverMock, DomainModelConstraintProviderStub);
+          classDefinition,
+          propertyDefinition.PropertyInfo,
+          mappingNameResolverMock,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
 
       var result = relationEndPointReflector.GetMetadata();
 

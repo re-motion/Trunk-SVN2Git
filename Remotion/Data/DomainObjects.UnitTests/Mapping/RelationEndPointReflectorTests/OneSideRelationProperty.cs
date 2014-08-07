@@ -42,8 +42,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     public void GetMetadata_ForOptional ()
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("NoAttribute"));
-      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = CreateRelationEndPointReflector (propertyInfo);
 
       DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (true);
 
@@ -59,8 +58,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     public void GetMetadata_ForMandatory ()
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("NotNullable"));
-      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = CreateRelationEndPointReflector (propertyInfo);
 
       DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (false);
 
@@ -76,8 +74,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     public void GetMetadata_BidirectionalOneToOne ()
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToOne"));
-      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = CreateRelationEndPointReflector (propertyInfo);
 
       DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (true);
 
@@ -97,8 +94,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     public void GetMetadata_BidirectionalOneToMany ()
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToMany"));
-      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = CreateRelationEndPointReflector (propertyInfo);
 
       DomainModelConstraintProviderStub.Stub (stub => stub.IsNullable (propertyInfo)).Return (true);
 
@@ -119,8 +115,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     public void IsVirtualEndRelationEndpoint_BidirectionalOneToOne ()
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToOne"));
-      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = CreateRelationEndPointReflector (propertyInfo);
 
       Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.True);
     }
@@ -129,10 +124,19 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.RelationEndPointReflecto
     public void IsVirtualEndRelationEndpoint_BidirectionalOneToMany ()
     {
       var propertyInfo = PropertyInfoAdapter.Create (_classType.GetProperty ("BidirectionalOneToMany"));
-      var relationEndPointReflector = new RdbmsRelationEndPointReflector (
-          _classDefinition, propertyInfo, Configuration.NameResolver, DomainModelConstraintProviderStub);
+      var relationEndPointReflector = CreateRelationEndPointReflector (propertyInfo);
 
       Assert.That (relationEndPointReflector.IsVirtualEndRelationEndpoint(), Is.True);
+    }
+
+    private RdbmsRelationEndPointReflector CreateRelationEndPointReflector (PropertyInfoAdapter propertyInfo)
+    {
+      return new RdbmsRelationEndPointReflector (
+          _classDefinition,
+          propertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
     }
   }
 }

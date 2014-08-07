@@ -34,7 +34,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
           false,
           true,
           new ReflectionBasedMemberInformationNameResolver(),
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       var properties = propertyFinder.FindPropertyInfos();
 
@@ -58,7 +59,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
           true,
           true,
           new ReflectionBasedMemberInformationNameResolver(),
-          classDefinition.PersistentMixinFinder);
+          classDefinition.PersistentMixinFinder,
+          new PropertyMetadataReflector());
 
       var properties = propertyFinder.FindPropertyInfos();
 

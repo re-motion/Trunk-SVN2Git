@@ -65,13 +65,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       
       ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (ClassWithDifferentProperties))).Return ("ClassWithDifferentProperties");
       
-      var classReflector = new ClassReflector (
-          typeof (ClassWithDifferentProperties),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (ClassWithDifferentProperties));
       var expected = CreateClassWithDifferentPropertiesClassDefinition();
 
       var actual = classReflector.GetMetadata (null);
@@ -96,13 +90,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 
       ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (DerivedClassWithDifferentProperties))).Return ("DerivedClassWithDifferentProperties");
 
-      var classReflector = new ClassReflector (
-          typeof (DerivedClassWithDifferentProperties),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (DerivedClassWithDifferentProperties));
       var expected = CreateDerivedClassWithDifferentPropertiesClassDefinition();
 
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
@@ -118,8 +106,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (TargetClassA))).Return ("ClassID");
 
-      var classReflector = new ClassReflector (
-          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderStub, DomainModelConstraintProviderStub, DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (TargetClassA));
       var actual = classReflector.GetMetadata (null);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinA), typeof (MixinC), typeof (MixinD) }));
     }
@@ -127,15 +114,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     [Test]
     public void GetMetadata_ForDerivedMixedClass ()
     {
-      ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (TargetClassA))).Return ("ClassID");
-      ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (TargetClassB))).Return ("ClassID");
+      ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (TargetClassA))).Return ("ClassID");
+      ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (TargetClassB))).Return ("ClassID");
 
-      var classReflectorForBaseClass = new ClassReflector (
-          typeof (TargetClassA), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderStub, DomainModelConstraintProviderStub, DomainObjectCreatorStub);
+      var classReflectorForBaseClass = CreateClassReflector (typeof (TargetClassA));
       var baseClass = classReflectorForBaseClass.GetMetadata (null);
-      
-      var classReflector = new ClassReflector (
-          typeof (TargetClassB), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderStub, DomainModelConstraintProviderStub, DomainObjectCreatorStub);
+
+      var classReflector = CreateClassReflector (typeof (TargetClassB));
       var actual = classReflector.GetMetadata (baseClass);
       Assert.That (actual.PersistentMixins, Is.EquivalentTo (new[] { typeof (MixinB), typeof (MixinE) }));
     }
@@ -170,13 +155,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 
       ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (ClassWithVirtualRelationEndPoints))).Return ("ClassWithVirtualRelationEndPoints");
 
-      var classReflector = new ClassReflector (
-          typeof (ClassWithVirtualRelationEndPoints),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (ClassWithVirtualRelationEndPoints));
       var expected = CreateClassWithVirtualRelationEndPointsClassDefinition();
       expected.SetPropertyDefinitions (new PropertyDefinitionCollection());
       CreateEndPointDefinitionsForClassWithVirtualRelationEndPoints (expected);
@@ -193,13 +172,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       ClassIDProviderStub.Stub(stub => stub.GetClassID (typeof (ClassHavingClassIDAttribute))).Return ("ClassIDForClassHavingClassIDAttribute");
 
-      var classReflector = new ClassReflector (
-          typeof (ClassHavingClassIDAttribute),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (ClassHavingClassIDAttribute));
 
       var actual = classReflector.GetMetadata (null);
 
@@ -211,9 +184,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     public void GetMetadata_ForClosedGenericClass ()
     {
       ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (ClosedGenericClass))).Return ("ClassID");
-     
-      var classReflector = new ClassReflector (
-          typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderStub, DomainModelConstraintProviderStub, DomainObjectCreatorStub);
+
+      var classReflector = CreateClassReflector (typeof (ClosedGenericClass));
 
       Assert.That (classReflector.GetMetadata (null), Is.Not.Null);
     }
@@ -225,13 +197,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       ClassIDProviderStub.Stub(stub => stub.GetClassID (type)).Return ("ClassID");
       Assert.That (type.IsDefined (typeof (DBStorageGroupAttribute), false), Is.False);
   
-      var classReflector = new ClassReflector (
-          type,
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (type);
 
       var actual = classReflector.GetMetadata (null);
 
@@ -246,13 +212,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       ClassIDProviderStub.Stub (stub => stub.GetClassID (type)).Return ("ClassID");
       Assert.That (type.IsDefined (typeof (DBStorageGroupAttribute), false), Is.True);
 
-      var classReflector = new ClassReflector (
-          type,
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (type);
 
       var actual = classReflector.GetMetadata (null);
 
@@ -266,13 +226,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       
       ClassIDProviderStub.Stub(mock => mock.GetClassID (typeof (ClassWithDifferentProperties))).Return ("ClassID");
 
-      var classReflector = new ClassReflector (
-          typeof (ClassWithDifferentProperties),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (ClassWithDifferentProperties));
 
       var actual = classReflector.GetMetadata (null);
 
@@ -284,13 +238,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (DerivedClassWithDifferentProperties))).Return ("ClassID");
 
-      var classReflector = new ClassReflector (
-          typeof (DerivedClassWithDifferentProperties),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (DerivedClassWithDifferentProperties));
       var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition_WithEmptyMembers_AndDerivedClasses();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
@@ -303,17 +251,23 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (ClassWithDifferentProperties))).Return ("ClassID");
 
-      var classReflector = new ClassReflector (
-          typeof (ClassWithDifferentProperties),
-          MappingObjectFactory,
-          Configuration.NameResolver,
-          ClassIDProviderStub,
-          DomainModelConstraintProviderStub,
-          DomainObjectCreatorStub);
+      var classReflector = CreateClassReflector (typeof (ClassWithDifferentProperties));
 
       var actual = classReflector.GetMetadata (null);
 
       Assert.That (actual.InstanceCreator, Is.SameAs (DomainObjectCreatorStub));
+    }
+
+    private ClassReflector CreateClassReflector (Type type)
+    {
+      return new ClassReflector (
+          type,
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          ClassIDProviderStub,
+          PropertyMetadataProvider, 
+          DomainModelConstraintProviderStub,
+          DomainObjectCreatorStub);
     }
 
     private ClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()

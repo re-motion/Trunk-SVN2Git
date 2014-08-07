@@ -43,8 +43,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
       var mappingLoader = new MappingReflector (
           new FixedTypeDiscoveryService (GetReflectedTypes()),
           new ClassIDProvider(),
-          new DomainModelConstraintProvider(),
           new ReflectionBasedMemberInformationNameResolver(),
+          new PropertyMetadataReflector(),
+          new DomainModelConstraintProvider(),
           new ThrowingDomainObjectCreator());
       _storageObjectFactory = CreateSqlStorageObjectFactory ();
       var storageProviderDefinitionFinderStub = MockRepository.GenerateStub<IStorageProviderDefinitionFinder>();

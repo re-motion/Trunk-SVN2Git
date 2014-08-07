@@ -165,6 +165,8 @@
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
+    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\IPropertyMetadataProvider.cs" />
+    <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\PropertyMetadataReflector.cs" />
     <Compile Include="DomainObjectHandleConverter.cs" />
     <Compile Include="Infrastructure\CompoundClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\DomainObjectHandleAttribute.cs" />

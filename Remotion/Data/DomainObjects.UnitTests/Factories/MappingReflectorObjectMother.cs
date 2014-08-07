@@ -23,7 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Factories
 {
-  public class MappingReflectorObjectMother
+  public static class MappingReflectorObjectMother
   {
     public static readonly DomainObjectCreator DomainObjectCreator = MappingReflector.CreateDomainObjectCreator();
 
@@ -34,8 +34,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
       return new MappingReflector (
           typeDiscoveryService,
           new ClassIDProvider(),
-          new DomainModelConstraintProvider(),
           new ReflectionBasedMemberInformationNameResolver(),
+          new PropertyMetadataReflector(),
+          new DomainModelConstraintProvider(),
           DomainObjectCreator);
     }
   }

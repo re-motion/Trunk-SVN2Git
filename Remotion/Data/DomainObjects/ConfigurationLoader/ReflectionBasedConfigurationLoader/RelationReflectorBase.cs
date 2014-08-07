@@ -26,8 +26,12 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   /// <summary>Base class for reflecting on the relations of a class.</summary>
   public abstract class RelationReflectorBase<T> : MemberReflectorBase where T: BidirectionalRelationAttribute
   {
-    protected RelationReflectorBase (ClassDefinition classDefinition, IPropertyInformation propertyInfo, IMemberInformationNameResolver nameResolver)
-        : base (propertyInfo, nameResolver)
+    protected RelationReflectorBase (
+        ClassDefinition classDefinition,
+        IPropertyInformation propertyInfo,
+        IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider)
+        : base (propertyInfo, nameResolver, propertyMetadataProvider)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -52,7 +56,8 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           true, 
           true, 
           NameResolver, 
-          new PersistentMixinFinder (type, true));
+          new PersistentMixinFinder (type, true),
+          PropertyMetadataProvider);
       
       return propertyFinder.FindPropertyInfos().LastOrDefault();
     }

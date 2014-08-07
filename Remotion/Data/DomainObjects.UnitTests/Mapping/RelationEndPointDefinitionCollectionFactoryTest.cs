@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Reflection;
@@ -35,7 +36,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       _mappingObjectFactoryMock = MockRepository.GenerateStrictMock<IMappingObjectFactory>();
       _memberInformationNameResolverMock = MockRepository.GenerateStrictMock<IMemberInformationNameResolver>();
-      _factory = new RelationEndPointDefinitionCollectionFactory(_mappingObjectFactoryMock, _memberInformationNameResolverMock);
+      _factory = new RelationEndPointDefinitionCollectionFactory (
+          _mappingObjectFactoryMock,
+          _memberInformationNameResolverMock,
+          new PropertyMetadataReflector());
     }
 
     [Test]

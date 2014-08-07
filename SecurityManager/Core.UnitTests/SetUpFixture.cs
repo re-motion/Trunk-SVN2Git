@@ -81,8 +81,9 @@ namespace Remotion.SecurityManager.UnitTests
                 new MappingReflector (
                     typeDiscoveryService,
                     new ClassIDProvider(),
-                    new DomainModelConstraintProvider(),
                     new ReflectionBasedMemberInformationNameResolver(),
+                    new PropertyMetadataReflector(),
+                    new DomainModelConstraintProvider(),
                     MappingReflector.CreateDomainObjectCreator()),
                 new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 

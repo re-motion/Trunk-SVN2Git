@@ -28,9 +28,10 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         ClassDefinition classDefinition,
         IPropertyInformation propertyInfo,
         IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider)
     {
-      return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver, domainModelConstraintProvider);
+      return new RdbmsRelationEndPointReflector (classDefinition, propertyInfo, nameResolver, propertyMetadataProvider, domainModelConstraintProvider);
     }
   }
 
@@ -44,8 +45,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         ClassDefinition classDefinition,
         IPropertyInformation propertyInfo,
         IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider)
-        : base (classDefinition, propertyInfo, nameResolver)
+        : base (classDefinition, propertyInfo, nameResolver, propertyMetadataProvider)
     {
       ArgumentUtility.CheckNotNull ("domainModelConstraintProvider", domainModelConstraintProvider);
 

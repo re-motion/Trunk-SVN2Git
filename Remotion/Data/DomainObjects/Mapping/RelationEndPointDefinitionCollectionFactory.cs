@@ -29,15 +29,21 @@ namespace Remotion.Data.DomainObjects.Mapping
   public class RelationEndPointDefinitionCollectionFactory
   {
     private readonly IMappingObjectFactory _mappingObjectFactory;
-    private readonly IMemberInformationNameResolver _memberInformationNameResolver;
+    private readonly IMemberInformationNameResolver _nameResolver;
+    private readonly IPropertyMetadataProvider _propertyMetadataProvider;
 
-    public RelationEndPointDefinitionCollectionFactory (IMappingObjectFactory mappingObjectFactory, IMemberInformationNameResolver memberInformationNameResolver)
+    public RelationEndPointDefinitionCollectionFactory (
+        IMappingObjectFactory mappingObjectFactory,
+        IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
       ArgumentUtility.CheckNotNull ("mappingObjectFactory", mappingObjectFactory);
-      ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("propertyMetadataProvider", propertyMetadataProvider);
 
       _mappingObjectFactory = mappingObjectFactory;
-      _memberInformationNameResolver = memberInformationNameResolver;
+      _nameResolver = nameResolver;
+      _propertyMetadataProvider = propertyMetadataProvider;
     }
 
     public RelationEndPointDefinitionCollection CreateRelationEndPointDefinitionCollection (ClassDefinition classDefinition)
@@ -59,8 +65,9 @@ namespace Remotion.Data.DomainObjects.Mapping
           classDefinition.ClassType,
           classDefinition.BaseClass == null,
           true,
-          _memberInformationNameResolver,
-          classDefinition.PersistentMixinFinder);
+          _nameResolver,
+          classDefinition.PersistentMixinFinder,
+          _propertyMetadataProvider);
       return relationPropertyFinder.FindPropertyInfos ();
     }
   }

@@ -32,8 +32,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder)
-        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider)
+        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder, propertyMetadataProvider)
     {
     }
 
@@ -52,9 +53,21 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
-      return new RelationPropertyFinder(type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
+      ArgumentUtility.CheckNotNull ("propertyMetadataProvider", propertyMetadataProvider);
+
+      return new RelationPropertyFinder (
+          type,
+          includeBaseProperties,
+          includeMixinProperties,
+          nameResolver,
+          persistentMixinFinder,
+          propertyMetadataProvider);
     }
   }
 }

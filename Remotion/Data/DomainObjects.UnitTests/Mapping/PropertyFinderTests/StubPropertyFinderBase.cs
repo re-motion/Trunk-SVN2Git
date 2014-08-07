@@ -28,8 +28,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder)
-        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider)
+        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder, propertyMetadataProvider)
     {
     }
 
@@ -38,7 +39,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
         bool includeBaseProperties,
         bool includeMixinProperties,
         IPersistentMixinFinder persistentMixinFinder)
-        : this (type, includeBaseProperties, includeMixinProperties, new ReflectionBasedMemberInformationNameResolver(), persistentMixinFinder)
+        : this (
+            type,
+            includeBaseProperties,
+            includeMixinProperties,
+            new ReflectionBasedMemberInformationNameResolver(),
+            persistentMixinFinder,
+            new PropertyMetadataReflector())
     {
     }
 
@@ -47,9 +54,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyFinderTests
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
-      return new StubPropertyFinderBase (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder);
+      return new StubPropertyFinderBase (
+          type,
+          includeBaseProperties,
+          includeMixinProperties,
+          nameResolver,
+          persistentMixinFinder,
+          propertyMetadataProvider);
     }
   }
 }

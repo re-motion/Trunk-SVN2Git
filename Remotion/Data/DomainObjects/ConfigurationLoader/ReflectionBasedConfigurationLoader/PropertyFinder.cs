@@ -37,8 +37,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
         IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider,
         IDomainModelConstraintProvider domainModelConstraintProvider)
-        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder)
+        : base (type, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder, propertyMetadataProvider)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
@@ -64,16 +65,30 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
-      return new PropertyFinder (type, _classDefinition, includeBaseProperties, includeMixinProperties, nameResolver, persistentMixinFinder, _domainModelConstraintProvider);
+      return new PropertyFinder (
+          type,
+          _classDefinition,
+          includeBaseProperties,
+          includeMixinProperties,
+          nameResolver,
+          persistentMixinFinder,
+          propertyMetadataProvider,
+          _domainModelConstraintProvider);
     }
 
     private bool IsVirtualRelationEndPoint (IPropertyInformation propertyInfo)
     {
       if (!ReflectionUtility.IsRelationType (propertyInfo.PropertyType))
         return false;
-      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (_classDefinition, propertyInfo, NameResolver, _domainModelConstraintProvider);
+      var relationEndPointReflector = RelationEndPointReflector.CreateRelationEndPointReflector (
+          _classDefinition,
+          propertyInfo,
+          NameResolver,
+          PropertyMetadataProvider,
+          _domainModelConstraintProvider);
       return relationEndPointReflector.IsVirtualEndRelationEndpoint();
     }
   }

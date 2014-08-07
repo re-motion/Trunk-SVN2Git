@@ -28,21 +28,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
   {
     private readonly IPersistentMixinFinder _persistentMixinFinder;
     private readonly bool _includeBaseMixins;
-    private readonly IMemberInformationNameResolver _nameResolver;
-    private readonly Func<Type, bool, bool, IMemberInformationNameResolver, IPersistentMixinFinder, PropertyFinderBase> _propertyFinderFactory;
+    private readonly Func<Type, bool, bool, PropertyFinderBase> _propertyFinderFactory;
 
     public MixinPropertyFinder (
-        Func<Type, bool, bool, IMemberInformationNameResolver, IPersistentMixinFinder, PropertyFinderBase> propertyFinderFactory,
+        Func<Type, bool, bool, PropertyFinderBase> propertyFinderFactory,
         IPersistentMixinFinder persistentMixinFinder,
-        bool includeBaseMixins,
-        IMemberInformationNameResolver nameResolver)
+        bool includeBaseMixins)
     {
       ArgumentUtility.CheckNotNull ("propertyFinderFactory", propertyFinderFactory);
-      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
 
       _propertyFinderFactory = propertyFinderFactory;
       _persistentMixinFinder = persistentMixinFinder;
-      _nameResolver = nameResolver;
       _includeBaseMixins = includeBaseMixins;
     }
 
@@ -69,7 +65,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         if (!processedMixins.Contains (current) && (_includeBaseMixins || !_persistentMixinFinder.IsInParentContext (current)))
         {
           // Note: mixins on mixins are not checked
-          var mixinPropertyFinder = _propertyFinderFactory (current, false, false, _nameResolver, _persistentMixinFinder);
+          var mixinPropertyFinder = _propertyFinderFactory (current, false, false);
           foreach (var propertyInfo in mixinPropertyFinder.FindPropertyInfosDeclaredOnThisType ())
             yield return propertyInfo;
 

@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
@@ -34,7 +35,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation.Reflection
     [SetUp]
     public void SetUp ()
     {
-      _validationRule = new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (new ReflectionBasedMemberInformationNameResolver());
+      _validationRule = new MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (
+          new ReflectionBasedMemberInformationNameResolver(),
+          new PropertyMetadataReflector());
     }
 
     [Test]

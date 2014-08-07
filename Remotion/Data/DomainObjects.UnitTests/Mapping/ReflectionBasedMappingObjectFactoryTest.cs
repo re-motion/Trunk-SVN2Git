@@ -42,7 +42,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       _domainObjectCreator = new ThrowingDomainObjectCreator();
 
       _factory = new ReflectionBasedMappingObjectFactory (
-          _mappingMemberInformationNameResolver, new ClassIDProvider (), new DomainModelConstraintProvider (), _domainObjectCreator);
+          _mappingMemberInformationNameResolver,
+          new ClassIDProvider(),
+          new PropertyMetadataReflector(),
+          new DomainModelConstraintProvider(),
+          _domainObjectCreator);
     }
 
     [Test]

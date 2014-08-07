@@ -36,27 +36,31 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private readonly Type _type;
     private readonly bool _includeBaseProperties;
-    private readonly Lazy<HashSet<IMethodInformation>> _explicitInterfaceImplementations;
-    private readonly IMemberInformationNameResolver _nameResolver;
     private readonly bool _includeMixinProperties;
+    private readonly IMemberInformationNameResolver _nameResolver;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
+    private readonly IPropertyMetadataProvider _propertyMetadataProvider;
+    private readonly Lazy<HashSet<IMethodInformation>> _explicitInterfaceImplementations;
 
     protected PropertyFinderBase (
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
       ArgumentUtility.CheckNotNull ("persistentMixinFinder", persistentMixinFinder);
+      ArgumentUtility.CheckNotNull ("propertyMetadataProvider", propertyMetadataProvider);
 
       _type = type;
-      _nameResolver = nameResolver;
       _includeBaseProperties = includeBaseProperties;
       _includeMixinProperties = includeMixinProperties;
+      _nameResolver = nameResolver;
       _persistentMixinFinder = persistentMixinFinder;
+      _propertyMetadataProvider = propertyMetadataProvider;
       _explicitInterfaceImplementations = new Lazy<HashSet<IMethodInformation>> (
           () => new HashSet<IMethodInformation> (
               s_explicitInterfaceImplementations.GetOrCreateValue (_type, GetExplicitInterfaceImplementations)
@@ -83,12 +87,18 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       get { return _nameResolver; }
     }
 
+    protected IPropertyMetadataProvider PropertyMetadataProvider
+    {
+      get { return _propertyMetadataProvider; }
+    }
+
     protected abstract PropertyFinderBase CreateNewFinder (
         Type type,
         bool includeBaseProperties,
         bool includeMixinProperties,
         IMemberInformationNameResolver nameResolver,
-        IPersistentMixinFinder persistentMixinFinder);
+        IPersistentMixinFinder persistentMixinFinder,
+        IPropertyMetadataProvider propertyMetadataProvider);
 
     public IPropertyInformation[] FindPropertyInfos ()
     {
@@ -98,16 +108,26 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
       {
         // Use a new PropertyFinder of the same type as this one to get all properties from above this class. Mixins are not included for the base
         // classes; the mixin finder below will include the mixins for those classes anyway.
-        var propertyFinder = CreateNewFinder (_type.BaseType, true, false, NameResolver, _persistentMixinFinder);
+        var propertyFinder = CreateNewFinder (_type.BaseType, true, false, _nameResolver, _persistentMixinFinder, _propertyMetadataProvider);
         propertyInfos.AddRange (propertyFinder.FindPropertyInfos());
       }
 
       propertyInfos.AddRange (FindPropertyInfosDeclaredOnThisType());
 
-      if (IncludeMixinProperties)
+      if (_includeMixinProperties)
       {
+        Func<Type, bool, bool, PropertyFinderBase> propertyFinderFactory =
+            (type, includeBaseProperties, includeMixinProperties) =>
+                CreateNewFinder (
+                    type,
+                    includeBaseProperties,
+                    includeMixinProperties,
+                    _nameResolver,
+                    _persistentMixinFinder,
+                    _propertyMetadataProvider);
         // Base mixins are included only when base properties are included.
-        var mixinPropertyFinder = new MixinPropertyFinder (CreateNewFinder, _persistentMixinFinder, IncludeBaseProperties, NameResolver);
+        var includeBaseMixins = _includeBaseProperties;
+        var mixinPropertyFinder = new MixinPropertyFinder (propertyFinderFactory, _persistentMixinFinder, includeBaseMixins);
         propertyInfos.AddRange (mixinPropertyFinder.FindPropertyInfosOnMixins());
       }
 
@@ -133,11 +153,17 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
-      var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
-      if (storageClassAttribute == null)
+      var storageClass = _propertyMetadataProvider.GetStorageClass (propertyInfo);
+      if (storageClass == null)
         return false;
 
-      return storageClassAttribute.StorageClass == StorageClass.None;
+      return storageClass == StorageClass.None;
+      
+      //var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
+      //if (storageClassAttribute == null)
+      //  return false;
+
+      //return storageClassAttribute.StorageClass == StorageClass.None;
     }
 
     protected bool IsUnmanagedExplictInterfaceImplementation (IPropertyInformation propertyInfo)
@@ -151,10 +177,16 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return false;
 
       var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
-      if (storageClassAttribute == null)
+      //if (storageClassAttribute == null)
+      //  return true;
+
+      //return storageClassAttribute.StorageClass == StorageClass.None;
+
+      var storageClass = _propertyMetadataProvider.GetStorageClass (propertyInfo);
+      if (storageClass == null)
         return true;
 
-      return storageClassAttribute.StorageClass == StorageClass.None;
+      return storageClass == StorageClass.None;
     }
 
     public IEnumerable<IPropertyInformation> FindPropertyInfosDeclaredOnThisType ()

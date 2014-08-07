@@ -29,15 +29,21 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
 
     private readonly IPropertyInformation _propertyInfo;
     private readonly IMemberInformationNameResolver _nameResolver;
+    private readonly IPropertyMetadataProvider _propertyMetadataProvider;
     private readonly StorageClassAttribute _storageClassAttribute;
 
-    protected MemberReflectorBase (IPropertyInformation propertyInfo, IMemberInformationNameResolver nameResolver)
+    protected MemberReflectorBase (
+        IPropertyInformation propertyInfo,
+        IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
       ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("propertyMetadataProvider", propertyMetadataProvider);
 
       _propertyInfo = propertyInfo;
       _nameResolver = nameResolver;
+      _propertyMetadataProvider = propertyMetadataProvider;
       _storageClassAttribute = PropertyInfo.GetCustomAttribute<StorageClassAttribute> (true);
     }
 
@@ -49,6 +55,11 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public IMemberInformationNameResolver NameResolver
     {
       get { return _nameResolver; }
+    }
+
+    protected IPropertyMetadataProvider PropertyMetadataProvider
+    {
+      get { return _propertyMetadataProvider; }
     }
 
     public StorageClassAttribute StorageClassAttribute

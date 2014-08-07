@@ -41,7 +41,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping.PropertyReflectorTests
         classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: type, isAbstract: false);
       }
 
-      return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, domainModelConstraintProvider);
+      return new PropertyReflector (
+          classDefinition,
+          propertyInfo,
+          Configuration.NameResolver,
+          PropertyMetadataProvider,
+          domainModelConstraintProvider);
     }
   }
 }

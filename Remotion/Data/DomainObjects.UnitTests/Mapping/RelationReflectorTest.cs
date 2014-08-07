@@ -388,7 +388,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       var classDefinitions = new[] { originatingClass, classDeclaringOppositeProperty, derivedOfClassDeclaringOppositeProperty }
           .ToDictionary (cd => cd.ClassType);
 
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _memberInformationNameResolver);
+      var relationReflector = CreateRelationReflector (originatingClass, originatingProperty);
       var result = relationReflector.GetMetadata (classDefinitions);
 
       Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
@@ -423,7 +423,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 
       var classDefinitions = new[] { originatingClass, derivedOfClassDeclaringOppositeProperty }.ToDictionary (cd => cd.ClassType);
 
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _memberInformationNameResolver);
+      var relationReflector = CreateRelationReflector (originatingClass, originatingProperty);
       var result = relationReflector.GetMetadata (classDefinitions);
 
       Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
@@ -443,7 +443,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
           originatingClass, typeof (TestDomain.RelationReflector.RelatedPropertyTypeIsNotInMapping.Class1), "BidirectionalRelationProperty");
       var classDefinitions = new[] { originatingClass }.ToDictionary (cd => cd.ClassType);
 
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _memberInformationNameResolver);
+      var relationReflector = CreateRelationReflector (originatingClass, originatingProperty);
       var result = relationReflector.GetMetadata (classDefinitions);
 
       Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.EqualTo (originatingClass));
@@ -473,7 +473,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
           EnsurePropertyDefinitionExisitsOnClassDefinition (oppositeClass, typeof (OppositeClass), "OppositeProperty");
 
       var classDefinitions = new[] { originatingClass, oppositeClass, oppositeBaseClass }.ToDictionary (cd => cd.ClassType);
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _memberInformationNameResolver);
+      var relationReflector = CreateRelationReflector (originatingClass, originatingProperty);
       var result = relationReflector.GetMetadata (classDefinitions);
 
       Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
@@ -490,7 +490,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       var originatingClass = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (classType);
       var originatingProperty = PropertyInfoAdapter.Create (classType.GetProperty ("OppositeProperty"));
 
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _memberInformationNameResolver);
+      var relationReflector = CreateRelationReflector (originatingClass, originatingProperty);
 
       var oppositePropertyInfo = (IPropertyInformation) PrivateInvoke.InvokeNonPublicMethod (relationReflector, "GetOppositePropertyInfo");
       Assert.That (oppositePropertyInfo, Is.Null);
@@ -508,7 +508,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 
     private RelationReflector CreateRelationReflector (ClassDefinition classDefinition, IPropertyInformation propertyInfo)
     {
-      return new RelationReflector (classDefinition, propertyInfo, _memberInformationNameResolver);
+      return new RelationReflector (classDefinition, propertyInfo, _memberInformationNameResolver, PropertyMetadataProvider);
     }
 
     private RelationReflector CreateRelationReflector (ClassDefinition classDefinition, Type declaringType, string propertyName)
@@ -525,7 +525,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       var propertyInfo =
           PropertyInfoAdapter.Create (declaringType.GetProperty (propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
       var propertyReflector = new PropertyReflector (
-          classDefinition, propertyInfo, new ReflectionBasedMemberInformationNameResolver(), DomainModelConstraintProviderStub);
+          classDefinition,
+          propertyInfo,
+          new ReflectionBasedMemberInformationNameResolver(),
+          PropertyMetadataProvider,
+          DomainModelConstraintProviderStub);
       var propertyDefinition = propertyReflector.GetMetadata();
 
       if (!classDefinition.MyPropertyDefinitions.Contains (propertyDefinition.PropertyName))

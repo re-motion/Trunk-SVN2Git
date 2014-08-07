@@ -28,13 +28,18 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
   /// </summary>
   public class MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule : IPropertyDefinitionValidationRule
   {
-    private readonly IMemberInformationNameResolver _memberInformationNameResolver;
+    private readonly IMemberInformationNameResolver _nameResolver;
+    private readonly IPropertyMetadataProvider _propertyMetadataProvider;
 
-    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (IMemberInformationNameResolver memberInformationNameResolver)
+    public MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule (
+        IMemberInformationNameResolver nameResolver,
+        IPropertyMetadataProvider propertyMetadataProvider)
     {
-      ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
-      
-      _memberInformationNameResolver = memberInformationNameResolver;
+      ArgumentUtility.CheckNotNull ("nameResolver", nameResolver);
+      ArgumentUtility.CheckNotNull ("propertyMetadataProvider", propertyMetadataProvider);
+
+      _nameResolver = nameResolver;
+      _propertyMetadataProvider = propertyMetadataProvider;
     }
 
     public IEnumerable<MappingValidationResult> Validate (ClassDefinition classDefinition)
@@ -49,8 +54,9 @@ namespace Remotion.Data.DomainObjects.Mapping.Validation.Reflection
           classDefinition.ClassType,
           isInheritanceRoot,
           true,
-          _memberInformationNameResolver,
-          classDefinition.PersistentMixinFinder);
+          _nameResolver,
+          classDefinition.PersistentMixinFinder,
+          _propertyMetadataProvider);
       var propertyInfos = propertyFinder.FindPropertyInfos();
 
       return from IPropertyInformation propertyInfo in propertyInfos 
