@@ -158,12 +158,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
         return false;
 
       return storageClass == StorageClass.None;
-      
-      //var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
-      //if (storageClassAttribute == null)
-      //  return false;
-
-      //return storageClassAttribute.StorageClass == StorageClass.None;
     }
 
     protected bool IsUnmanagedExplictInterfaceImplementation (IPropertyInformation propertyInfo)
@@ -175,12 +169,6 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
           accessor => _explicitInterfaceImplementations.Value.Contains (accessor));
       if (!isExplicitInterfaceImplementation)
         return false;
-
-      var storageClassAttribute = propertyInfo.GetCustomAttribute<StorageClassAttribute> (false);
-      //if (storageClassAttribute == null)
-      //  return true;
-
-      //return storageClassAttribute.StorageClass == StorageClass.None;
 
       var storageClass = _propertyMetadataProvider.GetStorageClass (propertyInfo);
       if (storageClass == null)
