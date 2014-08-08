@@ -91,7 +91,9 @@ namespace Remotion.Utilities
             + qualifiedTypePattern
             + closeQualifiedPattern;
 
-        const RegexOptions options = RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled;
+        // Do not use RegexOptions.Compiled because it takes 200ms to compile which is not offset by the calls made after cache lookups.
+        // This is an issue in .NET up to at least version 4.5.1 in x64 mode.
+        const RegexOptions options = RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace;
         s_enclosedQualifiedTypeRegex = new Regex (enclosedQualifiedTypePattern, options);
         s_enclosedTypeRegex = new Regex (enclosedTypePattern, options);
         s_typeRegex = new Regex (typePattern, options);
