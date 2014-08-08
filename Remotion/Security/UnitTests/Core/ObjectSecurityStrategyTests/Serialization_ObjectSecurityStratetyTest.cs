@@ -28,20 +28,6 @@ namespace Remotion.Security.UnitTests.Core.ObjectSecurityStrategyTests
   public class Serialization_ObjectSecurityStratetyTest
   {
     [Serializable]
-    private class SerializableAccessTypeFilter : IAccessTypeFilter
-    {
-      public bool IsNull
-      {
-        get { return false; }
-      }
-
-      public IEnumerable<AccessType> Filter (IEnumerable<AccessType> accessTypes, ISecurityContext context, ISecurityPrincipal principal)
-      {
-        return accessTypes;
-      }
-    }
-
-    [Serializable]
     private class SerializableSecurityContextFactory : ISecurityContextFactory
     {
       private readonly ISecurityContext _securityContext;
@@ -69,7 +55,6 @@ namespace Remotion.Security.UnitTests.Core.ObjectSecurityStrategyTests
       _cacheInvalidationToken = CacheInvalidationToken.Create();
       _strategy = new ObjectSecurityStrategy (
           new SerializableSecurityContextFactory (_context),
-          new SerializableAccessTypeFilter(),
           _cacheInvalidationToken);
     }
 

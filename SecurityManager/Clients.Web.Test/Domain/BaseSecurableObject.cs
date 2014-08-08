@@ -35,7 +35,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test.Domain
     public IObjectSecurityStrategy GetSecurityStrategy ()
     {
       if (_objectSecurityStrategy == null)
-        _objectSecurityStrategy = new ObjectSecurityStrategy (this, NullAccessTypeFilter.Instance, CacheInvalidationToken.Create());
+        _objectSecurityStrategy = new ObjectSecurityStrategy (this, CacheInvalidationToken.Create());
 
       return _objectSecurityStrategy;
     }

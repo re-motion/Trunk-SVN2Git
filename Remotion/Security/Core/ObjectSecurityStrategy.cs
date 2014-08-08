@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Collections;
 using Remotion.Utilities;
 
@@ -28,9 +27,8 @@ namespace Remotion.Security
   /// is typically created and held for each <see cref="ISecurableObject"/> implementation.
   /// </summary>
   /// <remarks>
-  /// The <see cref="ObjectSecurityStrategy"/> supports the use of an <see cref="ISecurityContextFactory"/> for creating the relevant <see cref="ISecurityContext"/>, 
-  /// an <see cref="IAccessTypeFilter"/> for filtering the allowed access types returned by the <see cref="ISecurityProvider"/>, 
-  /// and caches the result.
+  /// The <see cref="ObjectSecurityStrategy"/> supports the use of an <see cref="ISecurityContextFactory"/> 
+  /// for creating the relevant <see cref="ISecurityContext"/> and caches the result returned by the <see cref="ISecurityProvider"/>.
   /// </remarks>
   /// <threadsafety static="true" instance="false" />
   [Serializable]
@@ -57,20 +55,16 @@ namespace Remotion.Security
 
     private readonly ICache<ISecurityPrincipal, AccessType[]> _cache;
     private readonly ISecurityContextFactory _securityContextFactory;
-    private readonly IAccessTypeFilter _accessTypeFilter;
     private readonly CacheInvalidationToken _cacheInvalidationToken;
 
     public ObjectSecurityStrategy (
         ISecurityContextFactory securityContextFactory,
-        IAccessTypeFilter accessTypeFilter,
         CacheInvalidationToken cacheInvalidationToken)
     {
       ArgumentUtility.CheckNotNull ("securityContextFactory", securityContextFactory);
-      ArgumentUtility.CheckNotNull ("accessTypeFilter", accessTypeFilter);
       ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
 
       _securityContextFactory = securityContextFactory;
-      _accessTypeFilter = accessTypeFilter;
       _cacheInvalidationToken = cacheInvalidationToken;
       _cache = CacheFactory.Create<ISecurityPrincipal, AccessType[]> (cacheInvalidationToken);
     }
@@ -123,7 +117,7 @@ namespace Remotion.Security
       var accessTypes = securityProvider.GetAccess (context, principal);
       Assertion.IsNotNull (accessTypes, "GetAccess evaluated and returned null.");
 
-      return FilterAccessTypes (accessTypes, principal, context);
+      return accessTypes;
     }
 
     private ISecurityContext CreateSecurityContext ()
@@ -135,22 +129,6 @@ namespace Remotion.Security
 
         return context;
       }
-    }
-
-    private AccessType[] FilterAccessTypes (AccessType[] accessTypes, ISecurityPrincipal principal, ISecurityContext context)
-    {
-      var filteredAccessTypes = _accessTypeFilter.Filter (accessTypes, context, principal).ToArray();
-
-      if (!filteredAccessTypes.IsSubsetOf (accessTypes))
-      {
-        throw new InvalidOperationException (
-            string.Format (
-                "The access type filter injected additional access types ('{0}') into the filter result. "
-                + "An access type filter may only remove (i.e. filter) the list of access types returned from the security provider.",
-                string.Join ("', '", filteredAccessTypes.Except (accessTypes))));
-      }
-
-      return filteredAccessTypes;
     }
   }
 }

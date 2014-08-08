@@ -93,7 +93,6 @@
     <Compile Include="AccessTypeExtensions.cs" />
     <Compile Include="DemandPermissionAttribute.cs" />
     <Compile Include="EnumWrapper.cs" />
-    <Compile Include="IAccessTypeFilter.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
     <Compile Include="Obsolete\IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
@@ -109,7 +108,6 @@
     <Compile Include="Metadata\IMemberResolver.cs" />
     <Compile Include="Metadata\NullMemberResolver.cs" />
     <Compile Include="Metadata\ReflectionBasedMemberResolver.cs" />
-    <Compile Include="NullAccessTypeFilter.cs" />
     <Compile Include="NullFunctionalSecurityStrategy.cs" />
     <Compile Include="NullSecurityPrincipal.cs" />
     <Compile Include="NullSecurityClient.cs" />

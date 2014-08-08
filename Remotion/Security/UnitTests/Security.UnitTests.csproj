@@ -116,7 +116,6 @@
     <Compile Include="Core\Metadata\MetadataCacheTest.cs" />
     <Compile Include="Core\Metadata\MetadataExtractorTest.cs" />
     <Compile Include="Core\Metadata\StatePropertyReflectorTest.cs" />
-    <Compile Include="Core\NullAccessTypeFilterTest.cs" />
     <Compile Include="Core\NullFunctionalSecurityStrategyTest.cs" />
     <Compile Include="Core\NullMemberResolverTest.cs" />
     <Compile Include="Core\NullPrincipalTest.cs" />
@@ -139,7 +138,6 @@
     <Compile Include="Core\NullSecurityClientTests\NullSecurityClientTestHelper.cs" />
     <Compile Include="Core\NullSecurityProviderTest.cs" />
     <Compile Include="Core\NullPrincipalProviderTest.cs" />
-    <Compile Include="Core\ObjectSecurityStrategyTests\HasAccessWithFilter_ObjectSecurityStratetyTest.cs" />
     <Compile Include="Core\ObjectSecurityStrategyTests\Serialization_ObjectSecurityStratetyTest.cs" />
     <Compile Include="Core\ObjectSecurityStrategyTests\HasAccessWithCaching_ObjectSecurityStrategyTest.cs" />
     <Compile Include="Core\ObjectSecurityStrategyTests\HasAccess_ObjectSecurityStratetyTest.cs" />
