@@ -175,21 +175,25 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       AdjustSpecificAbstractRoleField();
     }
 
-    public override void SaveValues (bool interim)
+    public override bool SaveValues (bool interim)
     {
+      bool hasSaved;
       using (SecurityFreeSection.Create())
       {
-        base.SaveValues (interim);
+        hasSaved = base.SaveValues (interim);
       }
 
-      SavePermissions (interim);
+      hasSaved &= SavePermissions (interim);
+      return hasSaved;
     }
 
-    private void SavePermissions (bool interim)
+    private bool SavePermissions (bool interim)
     {
+      bool hasSaved = true;
       foreach (EditPermissionControl control in _editPermissionControls)
-        control.SaveValues (interim);
-    }
+        hasSaved &= control.SaveValues (interim);
+      return hasSaved;
+   }
 
     public override bool Validate ()
     {

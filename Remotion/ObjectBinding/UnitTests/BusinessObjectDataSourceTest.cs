@@ -159,14 +159,43 @@ namespace Remotion.ObjectBinding.UnitTests
 
       SetupResult.For (mockControl1.HasValidBinding).Return (true);
       SetupResult.For (mockControl2.HasValidBinding).Return (true);
-      mockControl1.SaveValue (true);
-      mockControl2.SaveValue (true);
+      SetupResult.For (mockControl1.SaveValue (true)).Return (true);
+      SetupResult.For (mockControl2.SaveValue (true)).Return (true);
       _mockRepository.ReplayAll();
 
       _dataSource.Register (mockControl1);
       _dataSource.Register (mockControl2);
-      _dataSource.SaveValues (true);
+      var result = _dataSource.SaveValues (true);
 
+      Assert.That (result, Is.True);
+      _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void SaveValues_WithoutControls_ReturnsTrue ()
+    {
+      var result = _dataSource.SaveValues (true);
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void SaveValues_WithNotAllControlsSavingTheValue_ReturnsFalse ()
+    {
+      var mockControl1 = _mockRepository.StrictMock<IBusinessObjectBoundEditableControl>();
+      var mockControl2 = _mockRepository.StrictMock<IBusinessObjectBoundEditableControl>();
+
+      SetupResult.For (mockControl1.HasValidBinding).Return (true);
+      SetupResult.For (mockControl2.HasValidBinding).Return (true);
+      SetupResult.For (mockControl1.SaveValue (true)).Return (false);
+      SetupResult.For (mockControl2.SaveValue (true)).Return (true);
+      _mockRepository.ReplayAll();
+
+      _dataSource.Register (mockControl1);
+      _dataSource.Register (mockControl2);
+      var result = _dataSource.SaveValues (true);
+
+      Assert.That (result, Is.False);
       _mockRepository.VerifyAll();
     }
 

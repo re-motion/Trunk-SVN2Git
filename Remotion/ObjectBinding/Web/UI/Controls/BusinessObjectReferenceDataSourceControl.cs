@@ -176,12 +176,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="ReferenceProperty"/>.
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
-    public override void SaveValue (bool interim) // inherited from control interface
+    /// <returns><see langword="true"/> if the value was saved into the bound <see cref="IBusinessObjectDataSource"/>.<see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
+    public override bool SaveValue (bool interim) // inherited from control interface
     {
+      // Validate to keep things consistent, i.e. all validators have executed during the save-operation.
+      // Do not abort the save-operation because the value of the ReferenceDataSource should always be allowed to be written back into the parent.
+      Validate();
+
       // Do not include check for IsDirty.
       // The wrapped reference data source has its own mechanism to prevent unnecessary write-backs.
       // The bound controls also have their own IsDirty-checks and do not concern the DataSourceControl's write-back semantics.
-      _internalDataSource.SaveValue (interim);
+      return _internalDataSource.SaveValue (interim);
     }
 
     /// <summary> 
@@ -189,9 +194,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <see cref="IBusinessObjectBoundEditableControl"/>.
     /// </summary>
     /// <param name="interim"> Spefifies whether this is the final saving, or an interim saving. </param>
-    public virtual void SaveValues (bool interim) // inherited data source interface
+    /// <returns>
+    /// <see langword="true"/> if all bound controls have saved their value into the <see cref="IBusinessObjectDataSource.BusinessObject"/> 
+    /// and the <see cref="BusinessObject"/> was saved back into the bound <see cref="IBusinessObjectDataSource"/>.<see cref="IBusinessObjectDataSource.BusinessObject"/>.
+    /// </returns>
+    public virtual bool SaveValues (bool interim) // inherited data source interface
     {
-      _internalDataSource.SaveValues (interim);
+      return _internalDataSource.SaveValues (interim);
     }
 
     /// <summary>

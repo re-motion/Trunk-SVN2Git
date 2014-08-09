@@ -109,13 +109,14 @@ namespace Remotion.ObjectBinding
     ///   <see cref="IBusinessObjectBoundEditableControl"/>.
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
+    /// <returns><see langword="true"/> if all bound controls have saved their value into the <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
     /// <remarks>
     ///   On final saves, all values must be saved. (It is assumed that invalid values were already identified using 
     ///   validators.) On interim saves, each <see cref="IBusinessObjectBoundEditableControl"/> decides whether it 
     ///   saves its values into the <see cref="BusinessObject"/> or uses an alternate mechanism (e.g. view state).
     /// </remarks>
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
-    void SaveValues (bool interim);
+    bool SaveValues (bool interim);
 
     /// <summary>
     ///   Gets the <see cref="IBusinessObjectClass"/> of the <see cref="IBusinessObject"/> connected to this 

@@ -42,9 +42,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       DataSource.LoadValues (interim);
     }
 
-    public virtual void SaveValues (bool interim)
+    public virtual bool SaveValues (bool interim)
     {
-      DataSource.SaveValues (interim);
+      return DataSource.SaveValues (interim);
     }
 
     public virtual void CancelEdit ()

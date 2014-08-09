@@ -166,13 +166,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='..\..\doc\include\UI\Controls\BocEnumValue.xml' path='BocEnumValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       if (interim)
-        return;
+        return false;
+      
+      bool isValid = Validate();
+      if (!isValid)
+        return false;
 
-      if (IsDirty && SaveValueToDomainModel())
+      if (!IsDirty)
+        return true;
+
+      if (SaveValueToDomainModel())
+      {
         IsDirty = false;
+        return true;
+      }
+      return false;
     }
 
     [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]

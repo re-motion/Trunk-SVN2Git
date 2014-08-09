@@ -92,11 +92,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _userControl.LoadValues (interim);
     }
 
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
+      // Validate to keep things consistent, i.e. all validators have executed during the save-operation.
+      // Do not abort the save-operation because the value of the ReferenceDataSource should always be allowed to be written back into the parent.
+      Validate();
+
       _userControl.SaveValues (interim);
       _referenceDataSource.BusinessObject = _userControl.BusinessObject;
-      _referenceDataSource.SaveValue (interim);
+
+      return _referenceDataSource.SaveValue (interim);
     }
 
     protected override sealed object ValueImplementation

@@ -64,21 +64,35 @@ namespace Remotion.ObjectBinding.Sample
         _owner.LoadValueInternal (interim);
       }
 
-      public override void SaveValue (bool interim)
+      public override bool SaveValue (bool interim)
       {
         if (Property == null)
-          return;
+          return false;
 
         if (DataSource == null)
-          return;
+          return false;
 
-        if (IsDirty && SaveValueToDomainModel())
+        bool hasSaved;
+        if (IsDirty)
         {
-          if (!interim)
-            IsDirty = false;
+          if (SaveValueToDomainModel())
+          {
+            hasSaved = true;
+            if (!interim)
+              IsDirty = false;
+          }
+          else
+          {
+            hasSaved = false;
+          }
+        }
+        else
+        {
+          hasSaved = true;
         }
 
-        _owner.SaveValueInternal (interim);
+        hasSaved &=_owner.SaveValueInternal (interim);
+        return hasSaved;
       }
 
       public override bool IsDirty
@@ -223,9 +237,9 @@ namespace Remotion.ObjectBinding.Sample
       _repeaterInternal.LoadValue (interim);
     }
 
-    public void SaveValue (bool interim)
+    public bool SaveValue (bool interim)
     {
-      _repeaterInternal.SaveValue (interim);
+      return _repeaterInternal.SaveValue (interim);
     }
 
     object IBusinessObjectBoundControl.Value
@@ -461,13 +475,16 @@ namespace Remotion.ObjectBinding.Sample
         control.LoadValues (interim);
     }
 
-    protected virtual void SaveValueInternal (bool interim)
+    protected virtual bool SaveValueInternal (bool interim)
     {
+      var hasSaved = true;
       foreach (BusinessObjectDataSourceControl dataSource in _dataSources)
-        dataSource.SaveValues (interim);
+        hasSaved &= dataSource.SaveValues (interim);
 
       foreach (IDataEditControl control in _dataEditControls)
-        control.SaveValues (interim);
+        hasSaved &= control.SaveValues (interim);
+
+      return hasSaved;
     }
 
 

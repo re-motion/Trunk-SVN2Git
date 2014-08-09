@@ -103,13 +103,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='..\..\..\doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       if (interim)
-        return;
+        return false;
 
-      if (IsDirty && SaveValueToDomainModel())
+      bool isValid = Validate();
+      if (!isValid)
+        return false;
+
+      if (!IsDirty)
+        return true;
+
+      if (SaveValueToDomainModel())
+      {
         IsDirty = false;
+        return true;
+      }
+      return false;
     }
 
 

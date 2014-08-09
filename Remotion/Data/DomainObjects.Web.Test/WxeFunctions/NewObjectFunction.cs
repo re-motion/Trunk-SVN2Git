@@ -72,13 +72,13 @@ namespace Remotion.Data.DomainObjects.Web.Test.WxeFunctions
       test.ByteProperty = 23;
       test.DateProperty = DateTime.Now;
       test.DateTimeProperty = DateTime.Now;
-      test.DecimalProperty = decimal.Parse ("23.2");
+      test.DecimalProperty = 23.2m;
       test.DoubleProperty = 23.2;
       test.GuidProperty = new Guid ("{00000008-0000-0000-0000-000000000009}");
       test.Int16Property = 2;
       test.Int32Property = 4;
       test.Int64Property = 8;
-      test.SingleProperty = Single.Parse ("9.8");
+      test.SingleProperty = 9.8f;
       test.StringProperty = "aasdf";
 
       return test;

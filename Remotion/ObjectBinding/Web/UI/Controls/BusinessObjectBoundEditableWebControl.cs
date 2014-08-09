@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     private bool? _required;
     private bool? _readOnly;
-    private List<BaseValidator> _validators;
+    private HashSet<BaseValidator> _validators;
     private bool _isDirty;
     private bool _hasBeenRenderedInPreviousLifecycle;
     private bool _isRenderedInCurrentLifecycle;
@@ -131,7 +131,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Saves the <see cref="IBusinessObjectBoundControl.Value"/> back into the bound <see cref="IBusinessObject"/>.
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
-    public abstract void SaveValue (bool interim);
+    /// <returns><see langword="true"/> if the value was saved into the bound <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
+    public abstract bool SaveValue (bool interim);
 
     /// <summary>
     ///   Gets a flag that determines whether the control is to be displayed in read-only mode.
@@ -266,7 +267,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public virtual void RegisterValidator (BaseValidator validator)
     {
       if (_validators == null)
-        _validators = new List<BaseValidator>();
+        _validators = new HashSet<BaseValidator>();
 
       _validators.Add (validator);
     }
@@ -287,9 +288,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return true;
 
       bool isValid = true;
-      for (int i = 0; i < _validators.Count; i++)
+      foreach (var validator in _validators)
       {
-        BaseValidator validator = _validators[i];
         validator.Validate();
         isValid &= validator.IsValid;
       }
@@ -354,7 +354,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary>
     /// Saves the value into the bound <see cref="BusinessObjectBoundWebControl.Property"/>.
     /// </summary>
-    /// <returns><see langword="true"/> if the value was saved into the bound <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
+    /// <returns>
+    ///   <see langword="true"/> if the value was valid and saved into the bound <see cref="IBusinessObjectDataSource"/>.<see cref="IBusinessObjectDataSource.BusinessObject"/>.
+    /// </returns>
     /// <exception cref="InvalidOperationException">
     ///   Thrown if the bound <see cref="BusinessObjectBoundWebControl.Property"/> is read-only but the <see cref="BusinessObjectBoundWebControl.Value"/> is dirty.
     /// </exception>

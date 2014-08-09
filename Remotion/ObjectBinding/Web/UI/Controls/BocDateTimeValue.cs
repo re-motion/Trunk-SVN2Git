@@ -348,18 +348,27 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='..\..\doc\include\UI\Controls\BocDateTimeValue.xml' path='BocDateTimeValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       if (interim)
-        return;
+        return false;
+      
+      bool isValid = Validate();
+      if (!isValid)
+        return false;
 
-      if (IsDirty && SaveValueToDomainModel())
+      if (!IsDirty)
+        return true;
+
+      if (SaveValueToDomainModel())
       {
         //  GetValue parses the internal representation of the date/time value
         //  SetValue updates the internal representation of the date/time value
         SetValue (GetValue());
         IsDirty = false;
+        return true;
       }
+      return false;
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>

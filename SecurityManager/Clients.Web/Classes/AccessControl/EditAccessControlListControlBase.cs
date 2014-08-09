@@ -120,17 +120,20 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       }
     }
 
-    public override void SaveValues (bool interim)
+    public override bool SaveValues (bool interim)
     {
-      base.SaveValues (interim);
+      var hasSaved = base.SaveValues (interim);
 
-      SaveAccessControlEntries (interim);
+      hasSaved &= SaveAccessControlEntries (interim);
+      return hasSaved;
     }
 
-    private void SaveAccessControlEntries (bool interim)
+    private bool SaveAccessControlEntries (bool interim)
     {
+      bool hasSaved = true;
       foreach (EditAccessControlEntryControl control in _editAccessControlEntryControls)
-        control.SaveValues (interim);
+        hasSaved &= control.SaveValues (interim);
+      return hasSaved;
     }
 
     public override bool Validate ()

@@ -285,7 +285,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocMultilineTextValue.Value = null;
       _bocMultilineTextValue.IsDirty = true;
 
-      _bocMultilineTextValue.SaveValue (true);
+      var result = _bocMultilineTextValue.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.StringArray, Is.EqualTo (new[] { "Foo", "Bar" }));
       Assert.That (_bocMultilineTextValue.IsDirty, Is.True);
     }
@@ -299,9 +300,26 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocMultilineTextValue.Value = null;
       _bocMultilineTextValue.IsDirty = true;
 
-      _bocMultilineTextValue.SaveValue (false);
+      var result = _bocMultilineTextValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.StringArray, Is.EqualTo (null));
       Assert.That (_bocMultilineTextValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      _businessObject.StringArray = new[] { "Foo", "Bar" };
+      _bocMultilineTextValue.DataSource = _dataSource;
+      _bocMultilineTextValue.Property = _propertyStringArray;
+      _bocMultilineTextValue.Value = null;
+      _bocMultilineTextValue.IsDirty = true;
+      _bocMultilineTextValue.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _bocMultilineTextValue.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.StringArray, Is.EqualTo (new[] { "Foo", "Bar" }));
+      Assert.That (_bocMultilineTextValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -313,7 +331,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocMultilineTextValue.Value = null;
       _bocMultilineTextValue.IsDirty = false;
 
-      _bocMultilineTextValue.SaveValue (false);
+      var result = _bocMultilineTextValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.StringArray, Is.EqualTo (new[] { "Foo", "Bar" }));
       Assert.That (_bocMultilineTextValue.IsDirty, Is.False);
     }

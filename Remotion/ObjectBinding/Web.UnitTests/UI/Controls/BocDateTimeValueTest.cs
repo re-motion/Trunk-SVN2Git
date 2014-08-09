@@ -434,7 +434,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocDateTimeValue.Value = DateTime.Now;
       _bocDateTimeValue.IsDirty = true;
 
-      _bocDateTimeValue.SaveValue (true);
+      var result = _bocDateTimeValue.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2000, 1, 1)));
       Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
@@ -448,9 +449,26 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocDateTimeValue.Value = new DateTime (2011, 5, 5);
       _bocDateTimeValue.IsDirty = true;
 
-      _bocDateTimeValue.SaveValue (false);
+      var result = _bocDateTimeValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2011, 5, 5)));
       Assert.That (_bocDateTimeValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      _businessObject.DateTimeValue = new DateTime (2000, 1, 1);
+      _bocDateTimeValue.DataSource = _dataSource;
+      _bocDateTimeValue.Property = _propertyDateTimeValue;
+      _bocDateTimeValue.Value = DateTime.Now;
+      _bocDateTimeValue.IsDirty = true;
+      _bocDateTimeValue.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _bocDateTimeValue.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2000, 1, 1)));
+      Assert.That (_bocDateTimeValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -462,7 +480,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocDateTimeValue.Value = DateTime.Now;
       _bocDateTimeValue.IsDirty = false;
 
-      _bocDateTimeValue.SaveValue (false);
+      var result = _bocDateTimeValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.DateTimeValue, Is.EqualTo (new DateTime (2000, 1, 1)));
       Assert.That (_bocDateTimeValue.IsDirty, Is.False);
     }

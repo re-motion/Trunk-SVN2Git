@@ -110,9 +110,9 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       return isValid;
     }
 
-    public override void SaveValues (bool interim)
+    public override bool SaveValues (bool interim)
     {
-      base.SaveValues (interim);
+      var hasSaved = base.SaveValues (interim);
 
       if (CurrentStateCombination.Class.StateProperties.Count == 1)
       {
@@ -120,6 +120,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         CurrentStateCombination.ClearStates();
         CurrentStateCombination.AttachState (stateDefinition);
       }
+
+      return hasSaved;
     }
 
     protected void DeleteStateDefinitionButton_Click (object sender, EventArgs e)

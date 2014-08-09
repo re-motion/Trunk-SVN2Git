@@ -41,10 +41,11 @@ namespace Remotion.ObjectBinding
     ///   </para>
     /// </remarks>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
+    /// <returns><see langword="true"/> if the value was saved into the bound <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
     /// <exception cref="InvalidOperationException">
     ///   Thrown if the bound <see cref="IBusinessObjectBoundControl.Property"/> is read-only but the <see cref="IBusinessObjectBoundControl.Value"/> is dirty.
     /// </exception>
-    void SaveValue (bool interim);
+    bool SaveValue (bool interim);
   
     /// <summary>
     ///   Gets a flag that determines whether the control is to be displayed in read-only mode.

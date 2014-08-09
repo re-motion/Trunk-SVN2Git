@@ -99,17 +99,20 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
     }
 
-    public override void SaveValues (bool interim)
+    public override bool SaveValues (bool interim)
     {
-      base.SaveValues (interim);
+      var hasSaved = base.SaveValues (interim);
 
-      SaveStateCombinations (interim);
+      hasSaved &= SaveStateCombinations (interim);
+      return hasSaved;
     }
 
-    private void SaveStateCombinations (bool interim)
+    private bool SaveStateCombinations (bool interim)
     {
+      bool hasSaved = true;
       foreach (EditStateCombinationControl control in _editStateCombinationControls)
-        control.SaveValues (interim);
+        hasSaved &= control.SaveValues (interim);
+      return hasSaved;
     }
 
     public override bool Validate ()

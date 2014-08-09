@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BusinessObjectBoundEd
       throw new NotImplementedException();
     }
 
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       throw new NotImplementedException();
     }

@@ -67,6 +67,15 @@ namespace OBWTest.IndividualControlTests {
         protected global::Remotion.Web.UI.Controls.WebButton PostBackButton;
         
         /// <summary>
+        /// ValidateButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton ValidateButton;
+        
+        /// <summary>
         /// SaveButton control.
         /// </summary>
         /// <remarks>

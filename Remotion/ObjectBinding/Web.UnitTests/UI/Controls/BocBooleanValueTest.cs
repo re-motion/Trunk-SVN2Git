@@ -454,7 +454,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocBooleanValue.Value = false;
       _bocBooleanValue.IsDirty = true;
 
-      _bocBooleanValue.SaveValue (true);
+      var result = _bocBooleanValue.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.BooleanValue, Is.EqualTo (true));
       Assert.That (_bocBooleanValue.IsDirty, Is.True);
     }
@@ -468,9 +469,26 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocBooleanValue.Value = false;
       _bocBooleanValue.IsDirty = true;
 
-      _bocBooleanValue.SaveValue (false);
+      var result = _bocBooleanValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.BooleanValue, Is.EqualTo (false));
       Assert.That (_bocBooleanValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      _businessObject.BooleanValue = true;
+      _bocBooleanValue.DataSource = _dataSource;
+      _bocBooleanValue.Property = _propertyBooleanValue;
+      _bocBooleanValue.Value = false;
+      _bocBooleanValue.IsDirty = true;
+      _bocBooleanValue.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _bocBooleanValue.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.BooleanValue, Is.EqualTo (true));
+      Assert.That (_bocBooleanValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -482,7 +500,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocBooleanValue.Value = false;
       _bocBooleanValue.IsDirty = false;
 
-      _bocBooleanValue.SaveValue (false);
+      var result = _bocBooleanValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.BooleanValue, Is.EqualTo (true));
       Assert.That (_bocBooleanValue.IsDirty, Is.False);
     }

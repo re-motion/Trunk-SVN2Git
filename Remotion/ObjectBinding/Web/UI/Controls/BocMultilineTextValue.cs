@@ -123,13 +123,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='..\..\doc\include\UI\Controls\BocMultilineTextValue.xml' path='BocMultilineTextValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       if (interim)
-        return;
+        return false;
+      
+      bool isValid = Validate();
+      if (!isValid)
+        return false;
 
-      if (IsDirty && SaveValueToDomainModel())
+      if (!IsDirty)
+        return true;
+
+      if (SaveValueToDomainModel())
+      {
         IsDirty = false;
+        return true;
+      }
+      return false;
     }
 
     protected override void Render (HtmlTextWriter writer)

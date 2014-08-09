@@ -95,10 +95,13 @@ namespace Remotion.ObjectBinding
     ///   Saves the values of the <see cref="BusinessObject"/> from all bound controls implementing <see cref="IBusinessObjectBoundEditableControl"/>.
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
-    public void SaveValues (bool interim)
+    /// <returns><see langword="true"/> if all bound controls have saved their value into the <see cref="BusinessObject"/>.</returns>
+    public bool SaveValues (bool interim)
     {
+      bool hasSaved = true;
       foreach (var control in GetBoundControlsWithValidBinding().OfType<IBusinessObjectBoundEditableControl>())
-        control.SaveValue (interim);
+        hasSaved &= control.SaveValue (interim);
+      return hasSaved;
     }
 
     /// <summary>

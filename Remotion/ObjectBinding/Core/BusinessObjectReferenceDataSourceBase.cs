@@ -125,13 +125,20 @@ namespace Remotion.ObjectBinding
     ///   <see cref="ReferenceProperty"/>.
     /// </summary>
     /// <param name="interim"> Specifies whether this is the final saving, or an interim saving. </param>
+    /// <returns>
+    /// <see langword="true"/> if all bound controls have saved their value into the <see cref="BusinessObject"/> 
+    /// and the <see cref="BusinessObject"/> was saved back into the bound <see cref="ReferencedDataSource"/>.<see cref="IBusinessObjectDataSource.BusinessObject"/>.
+    /// </returns>
     /// <remarks>
     ///   For details on <see cref="SaveValue"/>, 
     ///   see <see cref="IBusinessObjectDataSource.SaveValues">IBusinessObjectDataSource.SaveValues</see>.
     /// </remarks>
     /// <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
-    public void SaveValue (bool interim)
+    public bool SaveValue (bool interim)
     {
+      if (!HasValidBinding)
+        return false;
+
       if (!interim && IsBusinessObjectSetToDefaultValue())
       {
         DeleteBusinessObject();
@@ -141,25 +148,35 @@ namespace Remotion.ObjectBinding
       }
 
       // save values from "child" controls
-      SaveValues (interim);
+      var hasSavedAllBoundControl = SaveValues (interim);
 
       // if required, save value into "parent" data source
-      if (HasValidBinding && RequiresWriteBack)
-      {
-        if (IsReadOnlyInDomainModel)
-        {
-          throw new InvalidOperationException (
-              string.Format (
-                  "The business object of the {0} could not be saved into the domain model because the property '{1}' is read only.",
-                  GetDataSourceIdentifier(),
-                  ReferenceProperty.Identifier));
-        }
-        if (ReferencedDataSource.BusinessObject != null)
-          ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
 
-        HasBusinessObjectChanged = false;
-        HasBusinessObjectCreated = false;
+      if (!RequiresWriteBack)
+        return hasSavedAllBoundControl;
+
+      if (IsReadOnlyInDomainModel)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The business object of the {0} could not be saved into the domain model because the property '{1}' is read only.",
+                GetDataSourceIdentifier(),
+                ReferenceProperty.Identifier));
       }
+
+      bool hasSaved;
+      if (ReferencedDataSource.BusinessObject == null)
+      {
+        hasSaved = false;
+      }
+      else
+      {
+        ReferencedDataSource.BusinessObject.SetProperty (ReferenceProperty, BusinessObject);
+        hasSaved = hasSavedAllBoundControl;
+      }
+      HasBusinessObjectChanged = false;
+      HasBusinessObjectCreated = false;
+      return hasSaved;
     }
 
     /// <summary>

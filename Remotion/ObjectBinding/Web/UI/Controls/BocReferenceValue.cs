@@ -284,13 +284,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Saves the <see cref="BocReferenceValueBase.Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='..\..\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/SaveValue/*' />
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       if (interim)
-        return;
+        return false;
 
-      if (IsDirty && SaveValueToDomainModel())
+      bool isValid = Validate();
+      if (!isValid)
+        return false;
+
+      if (!IsDirty)
+        return true;
+
+      if (SaveValueToDomainModel())
+      {
         IsDirty = false;
+        return true;
+      }
+      return false;
     }
 
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>

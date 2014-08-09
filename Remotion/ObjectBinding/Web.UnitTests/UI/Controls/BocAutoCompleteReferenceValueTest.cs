@@ -680,7 +680,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _control.Value = null;
       _control.IsDirty = true;
 
-      _control.SaveValue (true);
+      var result = _control.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
       Assert.That (_control.IsDirty, Is.True);
     }
@@ -695,9 +696,27 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _control.Value = null;
       _control.IsDirty = true;
 
-      _control.SaveValue (false);
+      var result = _control.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.ReferenceValue, Is.EqualTo (null));
       Assert.That (_control.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _control.DataSource = _dataSource;
+      _control.Property = _propertyReferenceValue;
+      _control.Value = null;
+      _control.IsDirty = true;
+      _control.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _control.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
+      Assert.That (_control.IsDirty, Is.True);
     }
 
     [Test]
@@ -710,7 +729,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _control.Value = null;
       _control.IsDirty = false;
 
-      _control.SaveValue (false);
+      var result = _control.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
       Assert.That (_control.IsDirty, Is.False);
     }

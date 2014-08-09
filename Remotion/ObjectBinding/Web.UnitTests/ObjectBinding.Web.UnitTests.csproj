@@ -72,6 +72,7 @@
     <Compile Include="StubDataSource.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\Controls\AlwaysInvalidValidator.cs" />
     <Compile Include="UI\Controls\BocAutoCompleteReferenceValueMock.cs" />
     <Compile Include="UI\Controls\BocAutoCompleteReferenceValueTest.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\BocBooleanValueRendererTest.cs" />

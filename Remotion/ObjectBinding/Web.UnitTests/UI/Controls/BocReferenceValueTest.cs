@@ -430,7 +430,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocReferenceValue.Value = null;
       _bocReferenceValue.IsDirty = true;
 
-      _bocReferenceValue.SaveValue (true);
+      var result = _bocReferenceValue.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
       Assert.That (_bocReferenceValue.IsDirty, Is.True);
     }
@@ -445,9 +446,27 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocReferenceValue.Value = null;
       _bocReferenceValue.IsDirty = true;
 
-      _bocReferenceValue.SaveValue (false);
+      var result = _bocReferenceValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.ReferenceValue, Is.EqualTo (null));
       Assert.That (_bocReferenceValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      var value = TypeWithReference.Create ();
+      _businessObject.ReferenceValue = value;
+      _bocReferenceValue.DataSource = _dataSource;
+      _bocReferenceValue.Property = _propertyReferenceValue;
+      _bocReferenceValue.Value = null;
+      _bocReferenceValue.IsDirty = true;
+      _bocReferenceValue.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _bocReferenceValue.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
+      Assert.That (_bocReferenceValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -460,7 +479,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocReferenceValue.Value = null;
       _bocReferenceValue.IsDirty = false;
 
-      _bocReferenceValue.SaveValue (false);
+      var result = _bocReferenceValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.ReferenceValue, Is.EqualTo (value));
       Assert.That (_bocReferenceValue.IsDirty, Is.False);
     }

@@ -285,7 +285,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueTests
       _bocTextValue.Value = null;
       _bocTextValue.IsDirty = true;
 
-      _bocTextValue.SaveValue (true);
+      var result = _bocTextValue.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.StringValue, Is.EqualTo ("Foo Bar"));
       Assert.That (_bocTextValue.IsDirty, Is.True);
     }
@@ -299,9 +300,26 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueTests
       _bocTextValue.Value = null;
       _bocTextValue.IsDirty = true;
 
-      _bocTextValue.SaveValue (false);
+      var result = _bocTextValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.StringValue, Is.EqualTo (null));
       Assert.That (_bocTextValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      _businessObject.StringValue = "Foo Bar";
+      _bocTextValue.DataSource = _dataSource;
+      _bocTextValue.Property = _propertyStringValue;
+      _bocTextValue.Value = null;
+      _bocTextValue.IsDirty = true;
+      _bocTextValue.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _bocTextValue.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.StringValue, Is.EqualTo ("Foo Bar"));
+      Assert.That (_bocTextValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -313,7 +331,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueTests
       _bocTextValue.Value = null;
       _bocTextValue.IsDirty = false;
 
-      _bocTextValue.SaveValue (false);
+      var result = _bocTextValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.StringValue, Is.EqualTo ("Foo Bar"));
       Assert.That (_bocTextValue.IsDirty, Is.False);
     }

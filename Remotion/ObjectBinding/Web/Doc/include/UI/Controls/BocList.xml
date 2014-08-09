@@ -472,6 +472,7 @@
   </LoadUnboundValue>
   <SaveValue>
     <param name="interim"> Specifies whether this is the final saving or an interim saving. </param>
+    <returns><see langword="true"/> if the value was saved into the <see cref="BusinessObjectBoundWebControl.DataSource"/>.<see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
     <remarks>
       <para>
         Saves the <see cref="Value"/> into the <see cref="BusinessObjectBoundWebControl.DataSource"/> if the control's

@@ -103,6 +103,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Saves the values of the <see cref="BusinessObject"/> from all bound controls implementing <see cref="IBusinessObjectBoundEditableControl"/>.
     /// </summary>
     /// <param name="interim"> Spefifies whether this is the final saving, or an interim saving. </param>
+    /// <returns><see langword="true"/> if all bound controls have saved their value into the <see cref="IBusinessObjectDataSource.BusinessObject"/>.</returns>
     /// <remarks> 
     ///   Executes the <see cref="IBusinessObjectDataSource.SaveValues"/> method of the encapsulated  <see cref="IBusinessObjectDataSource"/>.
     ///   <note>
@@ -110,9 +111,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///     remarks section for an example of the <b>SaveValues Pattern</b>.
     ///   </note>
     /// </remarks>
-    public virtual void SaveValues (bool interim)
+    public virtual bool SaveValues (bool interim)
     {
-      InnerDataSource.SaveValues (interim);
+      return InnerDataSource.SaveValues (interim);
     }
 
     /// <summary>

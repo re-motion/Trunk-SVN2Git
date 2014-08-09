@@ -459,7 +459,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocCheckBox.Value = false;
       _bocCheckBox.IsDirty = false;
 
-      _bocCheckBox.SaveValue (false);
+      var result = _bocCheckBox.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.BooleanValue, Is.EqualTo (true));
       Assert.That (_bocCheckBox.IsDirty, Is.False);
     }

@@ -1425,41 +1425,44 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
     /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
-    public override void SaveValue (bool interim)
+    public override bool SaveValue (bool interim)
     {
       if (Property == null)
-        return;
+        return false;
 
       if (DataSource == null)
-        return;
+        return false;
 
       if (!interim)
       {
+        bool isValid = Validate();
+        if (!isValid)
+          return false;
+
         if (_editModeController.IsRowEditModeActive)
         {
           EndRowEditMode (true);
           if (_editModeController.IsRowEditModeActive)
-          {
-            throw new InvalidOperationException (
-                string.Format ("Could not end row edit mode on BocList '{0}'. The edited row contains contains a validation error.", ID));
-          }
+            return false;
         }
         else if (_editModeController.IsListEditModeActive)
         {
           EndListEditMode (true);
           if (_editModeController.IsListEditModeActive)
-          {
-            throw new InvalidOperationException (
-                string.Format ("Could not end list edit mode on BocList '{0}'. At least one edited row contains a validation error.", ID));
-          }
+            return false;
         }
       }
 
-      if (IsDirty && SaveValueToDomainModel())
+      if (!IsDirty)
+        return true;
+
+      if (SaveValueToDomainModel())
       {
         if (!interim)
           IsDirty = false;
+        return true;
       }
+      return false;
     }
 
     /// <summary> Find the <see cref="IResourceManager"/> for this control. </summary>

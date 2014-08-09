@@ -50,7 +50,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   Indicates whether saving is interim (preserving values between requests) or final (all values must be saved). Before final saving,
     ///   <see cref="Validate"/> must be called and succeeded. 
     /// </param>
-    void SaveValues (bool interim);
+    /// <returns><see langword="true"/> if all bound controls have saved their value into the <see cref="BusinessObject"/>.</returns>
+    bool SaveValues (bool interim);
 
     /// <summary>
     ///   Notifies the control that editing is cancelled. 

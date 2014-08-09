@@ -36,6 +36,7 @@ namespace OBWTest.IndividualControlTests
       base.RegisterEventHandlers();
 
       PostBackButton.Click += new EventHandler (PostBackButton_Click);
+      ValidateButton.Click += new EventHandler (ValidateButton_Click);
       SaveButton.Click += new EventHandler (SaveButton_Click);
       SaveAndRestartButton.Click += new EventHandler (SaveAndRestartButton_Click);
       CancelButton.Click += new EventHandler (CancelButton_Click);
@@ -86,22 +87,22 @@ namespace OBWTest.IndividualControlTests
     {
     }
 
+    private void ValidateButton_Click (object sender, EventArgs e)
+    {
+      ValidateDataSources();
+    }
+
     private void SaveButton_Click (object sender, EventArgs e)
     {
-      bool isValid = ValidateDataSources();
-      if (isValid)
-      {
-        SaveValues (false);
-        _isCurrentObjectSaved = true;
-      }
+      PrepareValidation();
+      _isCurrentObjectSaved = SaveValues (false);
     }
 
     private void SaveAndRestartButton_Click (object sender, EventArgs e)
     {
-      bool isValid = ValidateDataSources();
-      if (isValid)
+      PrepareValidation();
+      if (SaveValues (false))
       {
-        SaveValues (false);
         _isCurrentObjectSaved = true;
         ExecuteNextStep();
       }
@@ -135,11 +136,13 @@ namespace OBWTest.IndividualControlTests
         _dataEditControl.LoadValues (interim);
     }
 
-    private void SaveValues (bool interim)
+    private bool SaveValues (bool interim)
     {
+      var hasSaved = true;
       if (_dataEditControl != null)
-        _dataEditControl.SaveValues (interim);
-      CurrentObject.SaveValues (interim);
+        hasSaved &= _dataEditControl.SaveValues (interim);
+      hasSaved &= CurrentObject.SaveValues (interim);
+      return hasSaved;
     }
 
     private bool ValidateDataSources ()

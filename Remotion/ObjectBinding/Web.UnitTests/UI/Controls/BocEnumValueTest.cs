@@ -298,7 +298,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocEnumValue.Value = TestEnum.First;
       _bocEnumValue.IsDirty = true;
 
-      _bocEnumValue.SaveValue (true);
+      var result = _bocEnumValue.SaveValue (true);
+      Assert.That (result, Is.False);
       Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.Second));
       Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
@@ -312,9 +313,26 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocEnumValue.Value = TestEnum.First;
       _bocEnumValue.IsDirty = true;
 
-      _bocEnumValue.SaveValue (false);
+      var result = _bocEnumValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.First));
       Assert.That (_bocEnumValue.IsDirty, Is.False);
+    }
+
+    [Test]
+    public void SaveValueAndNotValid ()
+    {
+      _businessObject.EnumValue = TestEnum.Second;
+      _bocEnumValue.DataSource = _dataSource;
+      _bocEnumValue.Property = _propertyEnumValue;
+      _bocEnumValue.Value = TestEnum.First;
+      _bocEnumValue.IsDirty = true;
+      _bocEnumValue.RegisterValidator (new AlwaysInvalidValidator());
+
+      var result = _bocEnumValue.SaveValue (false);
+      Assert.That (result, Is.False);
+      Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.Second));
+      Assert.That (_bocEnumValue.IsDirty, Is.True);
     }
 
     [Test]
@@ -326,7 +344,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _bocEnumValue.Value = TestEnum.First;
       _bocEnumValue.IsDirty = false;
 
-      _bocEnumValue.SaveValue (false);
+      var result = _bocEnumValue.SaveValue (false);
+      Assert.That (result, Is.True);
       Assert.That (_businessObject.EnumValue, Is.EqualTo (TestEnum.Second));
       Assert.That (_bocEnumValue.IsDirty, Is.False);
     }
