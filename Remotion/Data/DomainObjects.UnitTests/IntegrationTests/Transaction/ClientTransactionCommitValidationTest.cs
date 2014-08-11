@@ -110,5 +110,98 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
                   "Remotion.Data.DomainObjects.UnitTests.TestDomain.IndustrialSector.Companies")
               .And.Property<MandatoryRelationNotSetException> (ex => ex.DomainObject).SameAs (newIndustrialSector));
     }
+
+    [Test]
+    public void CommitWithValidProperties ()
+    {
+      SetDatabaseModifyable();
+
+      var newObject = CreateClassWithAllDataTypes();
+      newObject.StringWithNullValueProperty = null;
+      newObject.NullableBinaryProperty = null;
+
+      Assert.That (() => TestableClientTransaction.Commit(), Throws.Nothing);
+    }
+
+    [Test]
+    public void ExceptionForNotNullableStringPropertyNotSet ()
+    {
+      var newObject = CreateClassWithAllDataTypes();
+      newObject.StringProperty = null;
+
+      Assert.That (
+          () => TestableClientTransaction.Commit(),
+          Throws.TypeOf<PropertyValueNotSetException>().With.Message.EqualTo (
+              string.Format (
+                  "Not-nullable property 'Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringProperty' of domain object '{0}' cannot be null.",
+                  newObject.ID))
+              .And.Property<PropertyValueNotSetException> (ex => ex.PropertyName).EqualTo (
+                  "Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringProperty")
+              .And.Property<PropertyValueNotSetException> (ex => ex.DomainObject).SameAs (newObject));
+    }
+
+    [Test]
+    public void ExceptionForNotNullableBinaryPropertyNotSet ()
+    {
+      var newObject = CreateClassWithAllDataTypes();
+      newObject.BinaryProperty = null;
+
+      Assert.That (
+          () => TestableClientTransaction.Commit(),
+          Throws.TypeOf<PropertyValueNotSetException>().With.Message.EqualTo (
+              string.Format (
+                  "Not-nullable property 'Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.BinaryProperty' of domain object '{0}' cannot be null.",
+                  newObject.ID))
+              .And.Property<PropertyValueNotSetException> (ex => ex.PropertyName).EqualTo (
+                  "Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.BinaryProperty")
+              .And.Property<PropertyValueNotSetException> (ex => ex.DomainObject).SameAs (newObject));
+    }
+
+    [Test]
+    public void ExceptionForStringPropertyExceedingMaxLength ()
+    {
+      var newObject = CreateClassWithAllDataTypes();
+      newObject.StringProperty = new string ('x', 101);
+
+      Assert.That (
+          () => TestableClientTransaction.Commit(),
+          Throws.TypeOf<PropertyValueTooLongException>().With.Message.EqualTo (
+              string.Format (
+                  "Value for property 'Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringProperty' of domain object '{0}' is too long. Maximum number of characters: 100.",
+                  newObject.ID))
+              .And.Property<PropertyValueTooLongException> (ex => ex.PropertyName).EqualTo (
+                  "Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.StringProperty")
+              .And.Property<PropertyValueTooLongException> (ex => ex.DomainObject).SameAs (newObject));
+    }
+
+    [Test]
+    public void ExceptionForBinaryPropertyExceedingMaxLength ()
+    {
+      var newObject = CreateClassWithAllDataTypes();
+      newObject.TransactionOnlyBinaryProperty = new byte[1000001];
+
+      Assert.That (
+          () => TestableClientTransaction.Commit(),
+          Throws.TypeOf<PropertyValueTooLongException>().With.Message.EqualTo (
+              string.Format (
+                  "Value for property 'Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.TransactionOnlyBinaryProperty' of domain object '{0}' is too large. Maximum size: 1000000.",
+                  newObject.ID))
+              .And.Property<PropertyValueTooLongException> (ex => ex.PropertyName).EqualTo (
+                  "Remotion.Data.DomainObjects.UnitTests.TestDomain.ClassWithAllDataTypes.TransactionOnlyBinaryProperty")
+              .And.Property<PropertyValueTooLongException> (ex => ex.DomainObject).SameAs (newObject));
+    }
+
+    private ClassWithAllDataTypes CreateClassWithAllDataTypes ()
+    {
+      ClassWithAllDataTypes newObject = ClassWithAllDataTypes.NewObject();
+      newObject.DateProperty = DateTime.Now;
+      newObject.DateTimeProperty = DateTime.Now;
+      newObject.StringProperty = "value";
+      newObject.StringPropertyWithoutMaxLength = "value";
+      newObject.TransactionOnlyStringProperty = "value";
+      newObject.BinaryProperty = new byte[10];
+      newObject.TransactionOnlyBinaryProperty = new byte[10];
+      return newObject;
+    }
   }
 }
