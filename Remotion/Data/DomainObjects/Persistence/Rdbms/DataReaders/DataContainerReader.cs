@@ -20,6 +20,7 @@ using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
@@ -36,24 +37,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     private readonly IRdbmsStoragePropertyDefinition _timestampProperty;
     private readonly IColumnOrdinalProvider _ordinalProvider;
     private readonly IRdbmsPersistenceModelProvider _persistenceModelProvider;
+    private readonly IDataContainerValidator _dataContainerValidator;
 
     public DataContainerReader (
         IRdbmsStoragePropertyDefinition idProperty,
         IRdbmsStoragePropertyDefinition timestampProperty,
         IColumnOrdinalProvider ordinalProvider,
-        IRdbmsPersistenceModelProvider persistenceModelProvider)
+        IRdbmsPersistenceModelProvider persistenceModelProvider,
+        IDataContainerValidator dataContainerValidator)
     {
       ArgumentUtility.CheckNotNull ("idProperty", idProperty);
       ArgumentUtility.CheckNotNull ("timestampProperty", timestampProperty);
       ArgumentUtility.CheckNotNull ("ordinalProvider", ordinalProvider);
       ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
+      ArgumentUtility.CheckNotNull ("dataContainerValidator", dataContainerValidator);
 
       _idProperty = idProperty;
       _timestampProperty = timestampProperty;
       _ordinalProvider = ordinalProvider;
       _persistenceModelProvider = persistenceModelProvider;
+      _dataContainerValidator = dataContainerValidator;
     }
-    
+
     public IRdbmsStoragePropertyDefinition IDProperty
     {
       get { return _idProperty; }
@@ -72,6 +77,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     public IRdbmsPersistenceModelProvider PersistenceModelProvider
     {
       get { return _persistenceModelProvider; }
+    }
+
+    public IDataContainerValidator DataContainerValidator
+    {
+      get { return _dataContainerValidator; }
     }
 
     public virtual DataContainer Read (IDataReader dataReader)
@@ -104,10 +114,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
         return null;
 
       var timestamp = _timestampProperty.CombineValue (columnValueReader);
-      return DataContainer.CreateForExisting (
+
+      var dataContainer = DataContainer.CreateForExisting (
           id, 
           timestamp, 
           pd => pd.StorageClass == StorageClass.Persistent ? ReadPropertyValue (pd, columnValueReader, id) : pd.DefaultValue);
+
+      _dataContainerValidator.Validate (dataContainer);
+
+      return dataContainer;
     }
 
     private object ReadPropertyValue (PropertyDefinition propertyDefinition, IColumnValueProvider columnValueProvider, ObjectID id)

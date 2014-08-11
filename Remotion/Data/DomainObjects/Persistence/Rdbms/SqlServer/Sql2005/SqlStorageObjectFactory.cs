@@ -31,6 +31,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlPreparation;
@@ -47,10 +48,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
     private readonly ITypeConversionProvider _typeConversionProvider;
+    private readonly IDataContainerValidator _dataContainerValidator;
 
     public SqlStorageObjectFactory ()
     {
       _typeConversionProvider = SafeServiceLocator.Current.GetInstance<ITypeConversionProvider>();
+      _dataContainerValidator = SafeServiceLocator.Current.GetInstance<IDataContainerValidator>();
     }
 
     public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)
@@ -440,15 +443,30 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
+      var dataContainerValidator = CreateDataContainerValidator (storageProviderDefinition);
+
+      var objectReaderFactory = new ObjectReaderFactory (
+          persistenceModelProvider,
+          infrastructureStoragePropertyDefinitionProvider,
+          storageTypeInformationProvider,
+          dataContainerValidator);
+
       var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (storageProviderDefinition);
 
       return new RdbmsProviderCommandFactory (
           storageProviderDefinition,
           dbCommandBuilderFactory,
           persistenceModelProvider,
-          new ObjectReaderFactory (persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
+          objectReaderFactory,
           new TableDefinitionFinder (persistenceModelProvider),
           dataStoragePropertyDefinitionFactory);
+    }
+
+    protected virtual IDataContainerValidator CreateDataContainerValidator (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      
+      return _dataContainerValidator;
     }
 
     protected virtual ISqlQueryGenerator CreateSqlQueryGenerator (

@@ -329,7 +329,10 @@
     <Compile Include="Queries\LinqProviderComponentFactory.cs" />
     <Compile Include="Queries\QueryExtensions.cs" />
     <Compile Include="Tracing\CompoundPersistenceExtensionFactory.cs" />
+    <Compile Include="Validation\BinaryPropertyMaxLengthValidator.cs" />
     <Compile Include="Validation\CommitValidationClientTransactionExtensionFactory.cs" />
+    <Compile Include="Validation\CompoundDataContainerValidator.cs" />
+    <Compile Include="Validation\CompoundPersistableDataValidator.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />
@@ -860,6 +863,7 @@
     <Compile Include="DataManagement\RelationEndPoints\IRelationEndPoint.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Validation\IDataContainerValidator.cs" />
     <Compile Include="Validation\IPersistableDataValidator.cs" />
     <Compile Include="Validation\MandatoryRelationNotSetException.cs">
       <SubType>Code</SubType>
@@ -1052,8 +1056,12 @@
     <Compile Include="DomainImplementation\Transport\XmlImportStrategy.cs" />
     <Compile Include="DataManagement\ValueAccess.cs" />
     <Compile Include="Validation\MandatoryRelationValidator.cs" />
+    <Compile Include="Validation\NotNullablePropertyValidator.cs" />
+    <Compile Include="Validation\PropertyValueNotSetException.cs" />
+    <Compile Include="Validation\PropertyValueTooLongException.cs" />
+    <Compile Include="Validation\StringPropertyMaxLengthValidator.cs" />
     <Compile Include="ValueChangeEventArgs.cs" />
-    <Compile Include="ValueTooLongException.cs">
+    <Compile Include="Obsolete\ValueTooLongException.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="..\..\Remotion LGPL.licenseheader">

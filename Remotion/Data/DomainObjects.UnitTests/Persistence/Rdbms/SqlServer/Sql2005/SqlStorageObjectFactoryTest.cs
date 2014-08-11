@@ -34,11 +34,13 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.DomainObjects.Validation;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2005
@@ -307,6 +309,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
       Assert.That (resultAsRdbmsProviderCommandFactory.DbCommandBuilderFactory, Is.SameAs (_dbCommandBuilderFactoryStub));
       Assert.That (resultAsRdbmsProviderCommandFactory.RdbmsPersistenceModelProvider, Is.SameAs (_rdbmsPersistenceModelProviderStub));
       Assert.That (resultAsRdbmsProviderCommandFactory.DataStoragePropertyDefinitionFactory, Is.SameAs (_dataStoragePropertyDefinitionFactoryStub));
+      var objectReader = resultAsRdbmsProviderCommandFactory.ObjectReaderFactory.CreateDataContainerReader();
+      Assert.That (objectReader, Is.TypeOf (typeof (DataContainerReader)));
+      var expectedDataContainerValidator = SafeServiceLocator.Current.GetInstance<IDataContainerValidator>();
+      Assert.That (((DataContainerReader)objectReader).DataContainerValidator, Is.SameAs (expectedDataContainerValidator));
     }
 
     [Test]

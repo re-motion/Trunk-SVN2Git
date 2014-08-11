@@ -23,14 +23,14 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.DomainObjects.UnitTests.Validation
 {
   [TestFixture]
-  public class MandatoryRelationNotSetExceptionTest : ClientTransactionBaseTest
+  public class NotNullablePropertyValueNotSetExceptionTest : ClientTransactionBaseTest
   {
     [Test]
     public void Serialization ()
     {
       var domainObject = Order.NewObject();
       var inner = new InvalidOperationException ("Test");
-      var exception = new MandatoryRelationNotSetException (domainObject, "xy", "Msg", inner);
+      var exception = new PropertyValueNotSetException (domainObject, "xy", "Msg", inner);
 
       var deserializedException = Serializer.SerializeAndDeserialize (exception);
 

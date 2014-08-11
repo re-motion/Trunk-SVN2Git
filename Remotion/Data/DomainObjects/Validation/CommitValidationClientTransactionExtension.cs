@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
@@ -30,37 +32,56 @@ namespace Remotion.Data.DomainObjects.Validation
   [Serializable]
   public class CommitValidationClientTransactionExtension : ClientTransactionExtensionBase
   {
-    private readonly Func<ClientTransaction, IPersistableDataValidator> _validatorFactory;
-
     public static string DefaultKey
     {
       get { return typeof (CommitValidationClientTransactionExtension).FullName; }
     }
+    
+    [NonSerialized]
+    private IPersistableDataValidator _validator;
 
-    public Func<ClientTransaction, IPersistableDataValidator> ValidatorFactory
-    {
-      get { return _validatorFactory; }
-    }
-
-    public CommitValidationClientTransactionExtension (Func<ClientTransaction, IPersistableDataValidator> validatorFactory)
-      : this (validatorFactory, DefaultKey)
+    public CommitValidationClientTransactionExtension (IPersistableDataValidator validator)
+      : this (validator, DefaultKey)
     {
     }
 
-    protected CommitValidationClientTransactionExtension (Func<ClientTransaction, IPersistableDataValidator> validatorFactory, string key)
+    protected CommitValidationClientTransactionExtension (IPersistableDataValidator validator, string key)
         : base (key)
     {
-      ArgumentUtility.CheckNotNull ("validatorFactory", validatorFactory);
-      ArgumentUtility.CheckNotNullOrEmpty ("key", key);
+      ArgumentUtility.CheckNotNull ("validator", validator);
 
-      _validatorFactory = validatorFactory;
+      _validator = validator;
+    }
+
+    public IPersistableDataValidator Validator
+    {
+      get { return _validator; }
     }
 
     public override void CommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
-      var validator = _validatorFactory (clientTransaction);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("committedData", committedData);
+
       foreach (var item in committedData)
-        validator.Validate (item);
+        _validator.Validate (clientTransaction, item);
+    }
+
+    [OnSerializing]
+    private void OnSerializing (StreamingContext context)
+    {
+      var validatorFromServiceLocator = SafeServiceLocator.Current.GetInstance<IPersistableDataValidator>();
+      if (!object.ReferenceEquals (_validator, validatorFromServiceLocator))
+      {
+        throw new InvalidOperationException (
+            "Cannot serialize CommitValidationClientTransactionExtension because the IPersistableDataValidator cannot be loaded from the ServiceLocator.");
+      }
+    }
+
+    [OnDeserialized]
+    private void OnDeserialized (StreamingContext context)
+    {
+      _validator = SafeServiceLocator.Current.GetInstance<IPersistableDataValidator>();
     }
   }
 }

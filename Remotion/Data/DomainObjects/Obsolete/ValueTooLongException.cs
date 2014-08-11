@@ -14,17 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 
-namespace Remotion.Data.DomainObjects.Validation
+using System;
+using Remotion.Data.DomainObjects.Mapping;
+
+// ReSharper disable once CheckNamespace
+namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Provides an interface for validation of <see cref="PersistableData"/> instances.
+  /// The exception that is thrown when a domain object property is set with a value that is exceeds the <see cref="PropertyDefinition.MaxLength"/> of 
+  /// the property.
   /// </summary>
-  /// <threadsafety static="true" instance="true" />
-  public interface IPersistableDataValidator
+  [Obsolete (
+      "Use PropertyValueTooLongException instead. Note that the new exception will only be thrown when committing the DomainObject in the root transaction. (Version 1.15.22.0)",
+      true)]
+  public class ValueTooLongException : DomainObjectException
   {
-    void Validate (ClientTransaction clientTransaction, PersistableData data);
+    private ValueTooLongException ()
+        : base (null)
+    {
+    }
   }
 }

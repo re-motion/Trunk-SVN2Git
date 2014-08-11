@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     public void CommitWithMandatoryOneToOneRelationNotSet_WithValidationExtension ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
-      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()));
+      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (new MandatoryRelationValidator()));
 
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -159,7 +159,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     public void CommitWithMandatoryOneToManyRelationNotSet_WithValidationExtension ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
-      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator ()));
+      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (new MandatoryRelationValidator ()));
 
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -178,7 +178,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     public void MandatoryRelationNotSetExceptionForOneToOneRelation_WithValidationExtension ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
-      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator ()));
+      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (new MandatoryRelationValidator ()));
 
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -200,7 +200,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     public void MandatoryRelationNotSetExceptionForOneToManyRelation_WithValidationExtension ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction();
-      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator ()));
+      subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (new MandatoryRelationValidator ()));
 
       using (subTransaction.EnterDiscardingScope ())
       {

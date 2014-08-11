@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Validation
       _endPointMock.Expect (mock => mock.ValidateMandatory());
       _endPointMock.Replay();
 
-      _validator.Validate (dataItem);
+      _validator.Validate (ClientTransaction.CreateRootTransaction(), dataItem);
 
       _endPointMock.VerifyAllExpectations();
     }
@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Validation
       _endPointMock.Stub (stub => stub.IsDataComplete).Return (false);
       _endPointMock.Replay ();
 
-      _validator.Validate (dataItem);
+      _validator.Validate (ClientTransaction.CreateRootTransaction(), dataItem);
 
       _endPointMock.AssertWasNotCalled (mock => mock.ValidateMandatory ());
     }
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Validation
       _endPointMock.Stub (stub => stub.IsDataComplete).Return (true);
       _endPointMock.Replay ();
 
-      _validator.Validate (dataItem);
+      _validator.Validate (ClientTransaction.CreateRootTransaction(), dataItem);
 
       _endPointMock.AssertWasNotCalled (mock => mock.ValidateMandatory ());
     }
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Validation
       _endPointMock.Stub (stub => stub.IsDataComplete).Return (true);
       _endPointMock.Replay ();
 
-      _validator.Validate (dataItem);
+      _validator.Validate (ClientTransaction.CreateRootTransaction(), dataItem);
 
       _endPointMock.AssertWasNotCalled (mock => mock.ValidateMandatory ());
     }
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Validation
         orderTicket.Order = Order.NewObject();
 
         var persistableData = PersistableDataObjectMother.Create (ClientTransaction.Current, orderTicket);
-        Assert.That (() => _validator.Validate (persistableData), Throws.Nothing);
+        Assert.That (() => _validator.Validate (ClientTransaction.Current, persistableData), Throws.Nothing);
       }
     }
 
@@ -128,7 +128,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Validation
 
         var persistableData = PersistableDataObjectMother.Create (ClientTransaction.Current, orderTicket);
         Assert.That (
-            () => _validator.Validate (persistableData),
+            () => _validator.Validate (ClientTransaction.Current, persistableData),
             Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.Matches (
                 @"Mandatory relation property 'Remotion\.Data\.DomainObjects\.UnitTests\.TestDomain\.OrderTicket\.Order' of domain object "
                 + @"'OrderTicket|.*|System\.Guid' cannot be null."));

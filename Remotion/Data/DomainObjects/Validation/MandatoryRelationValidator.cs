@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation
@@ -24,10 +25,19 @@ namespace Remotion.Data.DomainObjects.Validation
   /// Validates the mandatory relations of a <see cref="DomainObject"/>, throwing a <see cref="MandatoryRelationNotSetException"/> when a mandatory
   /// relation is not set. Only complete relations are validated, no data is loaded by the validation.
   /// </summary>
+  /// <threadsafety static="true" instance="true" />
+  [ImplementationFor (typeof (IPersistableDataValidator), RegistrationType = RegistrationType.Multiple, Position = PersistableDataValidatorPosition)]
   public class MandatoryRelationValidator : IPersistableDataValidator
   {
-    public void Validate (PersistableData data)
+    public const int PersistableDataValidatorPosition = BinaryPropertyMaxLengthValidator.PersistableDataValidatorPosition + 1;
+
+    public MandatoryRelationValidator ()
     {
+    }
+
+    public void Validate (ClientTransaction clientTransaction,PersistableData data)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("data", data);
 
       if (data.DomainObjectState == StateType.Deleted)

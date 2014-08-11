@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
+using Remotion.Data.DomainObjects.Validation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
@@ -37,6 +38,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
     private SimpleStoragePropertyDefinition _timestampProperty;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProviderStub;
     private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
+    private IDataContainerValidator _dataContainerValidatorStub;
 
     public override void SetUp ()
     {
@@ -45,6 +47,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
       _entityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
+      _dataContainerValidatorStub = MockRepository.GenerateStub<IDataContainerValidator>();
 
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
       _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
@@ -58,7 +61,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       _factory = new ObjectReaderFactory (
           _rdbmsPersistenceModelProviderStub,
           _infrastructureStoragePropertyDefinitionProviderStub,
-          _storageTypeInformationProviderStub);
+          _storageTypeInformationProviderStub,
+          _dataContainerValidatorStub);
     }
 
     [Test]
@@ -74,6 +78,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       Assert.That (dataContainerReader.OrdinalProvider, Is.TypeOf (typeof (NameBasedColumnOrdinalProvider)));
       Assert.That (dataContainerReader.IDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (dataContainerReader.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (dataContainerReader.DataContainerValidator, Is.SameAs (_dataContainerValidatorStub));
     }
 
     [Test]
@@ -86,6 +91,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       CheckOrdinalProvider (dataContainerReader.OrdinalProvider);
       Assert.That (dataContainerReader.IDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (dataContainerReader.TimestampProperty, Is.SameAs (_timestampProperty));
+      Assert.That (dataContainerReader.DataContainerValidator, Is.SameAs (_dataContainerValidatorStub));
     }
 
     [Test]

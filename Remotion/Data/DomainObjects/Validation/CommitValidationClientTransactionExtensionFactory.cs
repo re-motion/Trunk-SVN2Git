@@ -28,10 +28,14 @@ namespace Remotion.Data.DomainObjects.Validation
   [ImplementationFor (typeof(IClientTransactionExtensionFactory), Position = Position, Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple)]
   public class CommitValidationClientTransactionExtensionFactory : IClientTransactionExtensionFactory
   {
+    private readonly IPersistableDataValidator _persistableDataValidator;
     public const int Position = 0;
 
-    public CommitValidationClientTransactionExtensionFactory ()
+    public CommitValidationClientTransactionExtensionFactory (IPersistableDataValidator persistableDataValidator)
     {
+      ArgumentUtility.CheckNotNull ("persistableDataValidator", persistableDataValidator);
+      
+      _persistableDataValidator = persistableDataValidator;
     }
 
     public IEnumerable<IClientTransactionExtension> CreateClientTransactionExtensions (ClientTransaction clientTransaction)
@@ -39,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Validation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       if (clientTransaction.RootTransaction == clientTransaction)
-        yield return new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator());
+        yield return new CommitValidationClientTransactionExtension (_persistableDataValidator);
     }
   }
 }

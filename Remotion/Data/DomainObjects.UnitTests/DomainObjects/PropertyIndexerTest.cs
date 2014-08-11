@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
       Assert.That (orderItem.Properties.GetPropertyCount (), Is.EqualTo (3));
 
       ClassWithAllDataTypes cwadt = _transaction.ExecuteInScope (() =>ClassWithAllDataTypes.NewObject ());
-      Assert.That (cwadt.Properties.GetPropertyCount (), Is.EqualTo (46));
+      Assert.That (cwadt.Properties.GetPropertyCount (), Is.EqualTo (48));
     }
 
     [Test]

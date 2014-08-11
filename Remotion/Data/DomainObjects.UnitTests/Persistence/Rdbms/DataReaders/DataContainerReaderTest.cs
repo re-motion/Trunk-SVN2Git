@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.Validation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
@@ -38,6 +39,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
 
     private IColumnOrdinalProvider _ordinalProviderStub;
     private IRdbmsPersistenceModelProvider _persistenceModelProviderStub;
+    private IDataContainerValidator _dataContainerValidatorStub;
 
     private DataContainerReader _dataContainerReader;
 
@@ -56,12 +58,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       
       _ordinalProviderStub = MockRepository.GenerateStub<IColumnOrdinalProvider>();
       _persistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
+      _dataContainerValidatorStub = MockRepository.GenerateStub<IDataContainerValidator>();
 
       _dataContainerReader = new DataContainerReader (
           _idPropertyStrictMock,
           _timestampPropertyStrictMock,
           _ordinalProviderStub,
-          _persistenceModelProviderStub);
+          _persistenceModelProviderStub,
+          _dataContainerValidatorStub);
 
       _fakeTimestamp = new object();
     }
@@ -96,6 +100,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       VerifyAll();
       Assert.That (dataContainer, Is.Not.Null);
       CheckLoadedDataContainer(dataContainer, DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
+      _dataContainerValidatorStub.AssertWasCalled (_ => _.Validate (dataContainer));
     }
 
     [Test]
@@ -170,6 +175,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.DataReaders
       CheckLoadedDataContainer (result[0], DomainObjectIDs.OrderTicket1, 0, "first", DomainObjectIDs.Order1);
       CheckLoadedDataContainer (result[1], DomainObjectIDs.OrderTicket2, 1, "second", DomainObjectIDs.Order3);
       CheckLoadedDataContainer (result[2], DomainObjectIDs.OrderTicket3, 2, "third", DomainObjectIDs.Order4);
+
+      _dataContainerValidatorStub.AssertWasCalled (_ => _.Validate (result[0]));
+      _dataContainerValidatorStub.AssertWasCalled (_ => _.Validate (result[1]));
+      _dataContainerValidatorStub.AssertWasCalled (_ => _.Validate (result[2]));
     }
 
     [Test]

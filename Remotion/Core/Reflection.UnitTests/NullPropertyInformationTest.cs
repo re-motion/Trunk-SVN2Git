@@ -36,7 +36,7 @@ namespace Remotion.Reflection.UnitTests
     {
       Assert.That (_nullPropertyInformation.Name, Is.Null);
       Assert.That (_nullPropertyInformation.DeclaringType, Is.Null);
-      Assert.That (_nullPropertyInformation.PropertyType, Is.Null);
+      Assert.That (_nullPropertyInformation.PropertyType, Is.EqualTo (typeof (INullObject)));
       Assert.That (_nullPropertyInformation.CanBeSetFromOutside, Is.False);
     }
 

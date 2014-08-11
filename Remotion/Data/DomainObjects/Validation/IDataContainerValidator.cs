@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,17 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+
+using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
   /// <summary>
-  /// Provides an interface for validation of <see cref="PersistableData"/> instances.
+  /// Provides an interface for validation of <see cref="DataContainer"/> instances.
   /// </summary>
   /// <threadsafety static="true" instance="true" />
-  public interface IPersistableDataValidator
+  public interface IDataContainerValidator
   {
-    void Validate (ClientTransaction clientTransaction, PersistableData data);
+    void Validate (DataContainer dataContainer);
   }
 }

@@ -534,9 +534,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
     private PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, string propertyName, string columnName)
     {
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub.Stub (_ => _.PropertyType).Return (typeof (string));
       var propertyDefinition = new PropertyDefinition (
           classDefinition,
-          MockRepository.GenerateStub<IPropertyInformation>(),
+          propertyInformationStub,
           propertyName,
           true,
           true,

@@ -57,7 +57,7 @@ namespace Remotion.Reflection
 
     public Type PropertyType
     {
-      get { return null; }
+      get { return typeof (INullObject); }
     }
 
     public bool CanBeSetFromOutside

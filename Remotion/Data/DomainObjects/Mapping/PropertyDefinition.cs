@@ -35,12 +35,13 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly IPropertyInformation _propertyInfo;
     private readonly Type _propertyType;
     private readonly bool _isNullable;
+    private bool _isNullablePropertyType;
     private readonly bool _isObjectID;
 
     public PropertyDefinition (
-        ClassDefinition classDefinition, 
-        IPropertyInformation propertyInfo, 
-        string propertyName, 
+        ClassDefinition classDefinition,
+        IPropertyInformation propertyInfo,
+        string propertyName,
         bool isObjectID,
         bool isNullable,
         int? maxLength,
@@ -52,9 +53,10 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _classDefinition = classDefinition;
       _propertyInfo = propertyInfo;
-      _propertyType = isObjectID ? typeof (ObjectID): propertyInfo.PropertyType;
+      _propertyType = isObjectID ? typeof (ObjectID) : propertyInfo.PropertyType;
       _propertyName = propertyName;
       _isObjectID = isObjectID;
+      _isNullablePropertyType = NullableTypeUtility.IsNullableType (propertyInfo.PropertyType);
       _isNullable = isNullable;
       _maxLength = maxLength;
       _storageClass = storageClass;
@@ -99,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Mapping
           return null;
 
         if (_propertyType.IsArray)
-          return Array.CreateInstance (_propertyType.GetElementType (), 0);
+          return Array.CreateInstance (_propertyType.GetElementType(), 0);
 
         if (_propertyType == typeof (string))
           return string.Empty;
@@ -108,12 +110,23 @@ namespace Remotion.Data.DomainObjects.Mapping
           return EnumUtility.GetEnumMetadata (_propertyType).OrderedValues[0];
 
         if (ExtensibleEnumUtility.IsExtensibleEnumType (_propertyType))
-          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos ().First ().Value;
+          return ExtensibleEnumUtility.GetDefinition (_propertyType).GetValueInfos().First().Value;
 
         return Activator.CreateInstance (_propertyType, new object[0]);
       }
     }
 
+    /// <summary>
+    /// Caches the information on whether the property's .NET type is nullable.
+    /// </summary>
+    internal bool IsNullablePropertyType
+    {
+      get { return _isNullablePropertyType; }
+    }
+
+    /// <summary>
+    /// Gets a flag describing whether the property's value is required for persistence.
+    /// </summary>
     public bool IsNullable
     {
       get { return _isNullable; }
@@ -124,6 +137,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _isObjectID; }
     }
 
+    /// <summary>
+    /// Gets the maximum length of the property's value when the value is persisted.
+    /// </summary>
     public int? MaxLength
     {
       get { return _maxLength; }

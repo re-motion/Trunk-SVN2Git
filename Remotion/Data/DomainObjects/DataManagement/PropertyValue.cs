@@ -58,7 +58,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <param name="value">The initial <see cref="Value"/> for the <b>PropertyValue</b>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="definition"/> is <see langword="null"/>.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <paramref name="definition"/>.</exception>
-    /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <paramref name="definition"/>.</exception>
     public PropertyValue (PropertyDefinition definition, object value)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);
@@ -87,7 +86,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="PropertyValue"/> has been discarded. 
     /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <see cref="PropertyDefinition"/>.</exception>
-    /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <see cref="PropertyDefinition"/>.</exception>
     public object Value
     {
       get
@@ -193,47 +191,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
         if (!definition.PropertyType.IsInstanceOfType (value))
           throw new InvalidTypeException (definition.PropertyName, definition.PropertyType, value.GetType ());
 
-        var valueAsString = value as string;
-        if (valueAsString != null)
-          CheckStringValue (valueAsString, definition);
-
-        var valueAsBinary = value as byte[];
-        if (valueAsBinary != null)
-          CheckByteArrayValue (valueAsBinary, definition);
-
         if (value is Enum)
           CheckEnumValue (value, definition);
       }
       else
       {
-        if (!definition.IsNullable)
+        if (!definition.IsNullablePropertyType)
         {
           throw new InvalidOperationException (string.Format ("Property '{0}' does not allow null values.", definition.PropertyName));
         }
-      }
-    }
-
-    private void CheckStringValue (string value, PropertyDefinition definition)
-    {
-      if (definition.MaxLength.HasValue && value.Length > definition.MaxLength.Value)
-      {
-        string message = string.Format (
-            "Value for property '{0}' is too long. Maximum number of characters: {1}.",
-            definition.PropertyName, definition.MaxLength.Value);
-
-        throw new ValueTooLongException (message, definition.PropertyName, definition.MaxLength.Value);
-      }
-    }
-
-    private void CheckByteArrayValue (byte[] value, PropertyDefinition definition)
-    {
-      if (definition.MaxLength.HasValue && value.Length > definition.MaxLength.Value)
-      {
-        string message = string.Format (
-            "Value for property '{0}' is too large. Maximum size: {1}.",
-            definition.PropertyName, definition.MaxLength.Value);
-
-        throw new ValueTooLongException (message, definition.PropertyName, definition.MaxLength.Value);
       }
     }
 

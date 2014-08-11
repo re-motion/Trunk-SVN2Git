@@ -210,5 +210,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
     [BinaryProperty (MaximumLength = 1000000)]
     [DBColumn ("NullableBinary")]
     public abstract byte[] NullableBinaryProperty { get; set; }
+
+    [StringProperty (IsNullable = false, MaximumLength = 100)]
+    [StorageClassTransaction]
+    public abstract string TransactionOnlyStringProperty { get; set; }
+
+    [BinaryProperty (IsNullable = false, MaximumLength = 1000000)]
+    [StorageClassTransaction]
+    public abstract byte[] TransactionOnlyBinaryProperty { get; set; }
   }
 }

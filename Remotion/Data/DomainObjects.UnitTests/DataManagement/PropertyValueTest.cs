@@ -219,53 +219,62 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ValueTooLongException))]
-    public void MaxLengthCheck ()
+    public void DoesNotPerformMaxLengthCheck ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_MaxLength ("test", typeof (string), 10);
+
       var propertyValue = new PropertyValue (definition, "12345");
       propertyValue.Value = "12345678901";
+      Assert.That (propertyValue.Value, Is.EqualTo ("12345678901"));
     }
 
     [Test]
-    [ExpectedException (typeof (ValueTooLongException))]
-    public void MaxLengthCheckInConstructor ()
+    public void DoesNotPerformMaxLengthCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_MaxLength ("test", typeof (string), 10);
-      new PropertyValue (definition, "12345678901");
+
+      var propertyValue = new PropertyValue (definition, "12345678901");
+      Assert.That (propertyValue.Value, Is.EqualTo ("12345678901"));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (string));
-      new PropertyValue (definition, 123);
+
+      Assert.That (
+          () =>  new PropertyValue (definition, 123),
+          Throws.TypeOf<InvalidTypeException>()
+              .With.Message.EqualTo("Actual type 'System.Int32' of property 'test' does not match expected type 'System.String'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheck ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (string));
       var propertyValue = new PropertyValue (definition, "123");
-      propertyValue.Value = 123;
+
+      Assert.That (
+          () =>  propertyValue.Value = 123,
+          Throws.TypeOf<InvalidTypeException>()
+              .With.Message.EqualTo("Actual type 'System.Int32' of property 'test' does not match expected type 'System.String'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableStringToNull ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (string), false);
       var propertyValue = new PropertyValue (definition, string.Empty);
 
       propertyValue.Value = null;
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
     public void SetNullableBinary ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), true);
+
       var propertyValue = new PropertyValue (definition, null);
       Assert.That (propertyValue.Value, Is.Null);
     }
@@ -283,28 +292,33 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException))]
     public void SetBinaryWithInvalidType ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]));
-      new PropertyValue (definition, new int[0]);
+
+      Assert.That (
+          () =>  new PropertyValue (definition, new int[0]),
+          Throws.TypeOf<InvalidTypeException>()
+              .With.Message.EqualTo("Actual type 'System.Int32[]' of property 'test' does not match expected type 'System.Byte[]'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableBinaryToNullViaConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), false);
-      new PropertyValue (definition, null);
+
+      var propertyValue = new PropertyValue (definition, null);
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableBinaryToNullViaProperty ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (byte[]), false);
       var propertyValue = new PropertyValue (definition, ResourceManager.GetImage1());
+
       propertyValue.Value = null;
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
@@ -326,38 +340,45 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException))]
     public void SetExtensibleEnumWithInvalidType ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
-      new PropertyValue (definition, 12);
+
+      Assert.That (
+          () =>  new PropertyValue (definition, 12),
+          Throws.TypeOf<InvalidTypeException>()
+              .With.Message.EqualTo("Actual type 'System.Int32' of property 'test' does not match expected type 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Color'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableExtensibleEnumToNullViaConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
-      new PropertyValue (definition, null);
+
+      var propertyValue = new PropertyValue (definition, null);
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void SetNotNullableExtensibleEnumToNullViaProperty ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (Color), false);
-
       var propertyValue = new PropertyValue (definition, ExtensibleEnum<Color>.Values.Red());
+
       propertyValue.Value = null;
+      Assert.That (propertyValue.Value, Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (ValueTooLongException), ExpectedMessage = "Value for property 'test' is too large. Maximum size: 1000000.")]
     public void SetBinaryLargerThanMaxLength ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_MaxLength ("test", typeof (byte[]), 1000000);
       var propertyValue = new PropertyValue (definition, new byte[0]);
-      propertyValue.Value = ResourceManager.GetImageLarger1MB();
+
+      byte[] value = ResourceManager.GetImageLarger1MB();
+      propertyValue.Value = value;
+
+      Assert.That (propertyValue.Value, Is.SameAs (value));
     }
 
     [Test]
@@ -371,35 +392,37 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
-                                                                              + "'System.DayOfWeek'.")]
     public void EnumCheck_InvalidNonFlagsEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek));
-
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
-      propertyValue.Value = (DayOfWeek) 17420;
+
+      Assert.That (
+          () => propertyValue.Value = (DayOfWeek) 17420,
+          Throws.TypeOf<InvalidEnumValueException>()
+              .With.Message.EqualTo ("Value '17420' for property 'test' is not defined by enum type 'System.DayOfWeek'."));
     }
 
     [Test]
     public void EnumCheck_ValidFlagsEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (AttributeTargets));
-
       var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
+      
       propertyValue.Value = AttributeTargets.Field | AttributeTargets.Method;
       Assert.That (propertyValue.Value, Is.EqualTo (AttributeTargets.Field | AttributeTargets.Method));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '-1' for property 'test' is not defined by enum type "
-                                                                              + "'System.AttributeTargets'.")]
     public void EnumCheck_InvalidFlagsEnum ()
     {
       var definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (AttributeTargets));
-
       var propertyValue = new PropertyValue (definition, AttributeTargets.Method);
-      propertyValue.Value = (AttributeTargets) (-1);
+
+      Assert.That (
+          () => propertyValue.Value = (AttributeTargets) (-1),
+          Throws.TypeOf<InvalidEnumValueException>()
+              .With.Message.EqualTo ("Value '-1' for property 'test' is not defined by enum type 'System.AttributeTargets'."));
     }
 
     [Test]
@@ -415,33 +438,38 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = "Value '17420' for property 'test' is not defined by enum type "
-                                                                              + "'System.DayOfWeek'.")]
     public void EnumCheck_InvalidNullEnum ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek?), true);
-
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
-      propertyValue.Value = (DayOfWeek) 17420;
+
+      Assert.That (
+          () => propertyValue.Value = (DayOfWeek) 17420,
+          Throws.TypeOf<InvalidEnumValueException>()
+              .With.Message.EqualTo ("Value '17420' for property 'test' is not defined by enum type 'System.DayOfWeek'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'test' does not allow null values.")]
     public void EnumCheck_InvalidNonNullEnum_Null ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek), false);
-
       var propertyValue = new PropertyValue (definition, DayOfWeek.Monday);
-      propertyValue.Value = null;
+
+      Assert.That (
+          () => propertyValue.Value = null,
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Property 'test' does not allow null values."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidEnumValueException), ExpectedMessage = 
-        "Value '17420' for property 'test' is not defined by enum type 'System.DayOfWeek'.")]
     public void EnumCheckInConstructor ()
     {
       PropertyDefinition definition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ("test", typeof (DayOfWeek));
-      new PropertyValue (definition, (DayOfWeek) 17420);
+
+      Assert.That (
+          () => new PropertyValue (definition, (DayOfWeek) 17420),
+          Throws.TypeOf<InvalidEnumValueException>()
+              .With.Message.EqualTo ("Value '17420' for property 'test' is not defined by enum type 'System.DayOfWeek'."));
     }
 
     [Test]
@@ -565,15 +593,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot set this property's value from 'Remotion.Data.DomainObjects.Mapping.PropertyDefinition: OrderNumber'; the properties "
-        + "do not have the same property definition.\r\nParameter name: source")]
     public void SetDataFromSubTransaction_InvalidDefinition ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
       var target = new PropertyValue (CreateIntPropertyDefinition ("test"), 1);
 
-      target.SetDataFromSubTransaction (source);
+      Assert.That (
+          () => target.SetDataFromSubTransaction (source),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Cannot set this property's value from 'Remotion.Data.DomainObjects.Mapping.PropertyDefinition: OrderNumber'; the properties "
+              + "do not have the same property definition.\r\nParameter name: source"));
     }
 
     [Test]

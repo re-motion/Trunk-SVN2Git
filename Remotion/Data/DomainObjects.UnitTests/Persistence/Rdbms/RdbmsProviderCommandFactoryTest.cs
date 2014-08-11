@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -30,6 +31,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Data.DomainObjects.Validation;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
@@ -49,6 +51,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
 
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+      var dataContainerValidator = new CompoundDataContainerValidator (Enumerable.Empty<IDataContainerValidator>());
       
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var infrastructureStoragePropertyDefinitionProvider = 
@@ -63,7 +66,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
           new SqlDbCommandBuilderFactory (new SqlDialect()),
           rdbmsPersistenceModelProvider,
           new ObjectReaderFactory (
-              rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
+              rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider, dataContainerValidator),
           new TableDefinitionFinder (rdbmsPersistenceModelProvider),
           dataStoragePropertyDefinitionFactory);
 

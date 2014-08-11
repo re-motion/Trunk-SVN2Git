@@ -19,28 +19,35 @@ using System.Runtime.Serialization;
 
 namespace Remotion.Data.DomainObjects.Validation
 {
+  /// <summary>
+  /// The <see cref="PropertyValueTooLongException"/> is thrown when a domain object property's value exceeds it's maximum length.
+  /// </summary>
   [Serializable]
-  public class MandatoryRelationNotSetException : DomainObjectValidationException
+  public class PropertyValueTooLongException : DomainObjectValidationException
   {
     private readonly DomainObject _domainObject;
     private readonly string _propertyName;
+    private readonly int _maxLength;
 
-    public MandatoryRelationNotSetException (DomainObject domainObject, string propertyName, string message) 
-        : this (domainObject, propertyName, message, null) 
-    { 
+    public PropertyValueTooLongException (DomainObject domainObject, string propertyName, int maxLength, string message)
+        : this (domainObject, propertyName, maxLength, message, null)
+    {
     }
 
-    public MandatoryRelationNotSetException (DomainObject domainObject, string propertyName, string message, Exception inner) 
-        : base (message, inner) 
+    public PropertyValueTooLongException (DomainObject domainObject, string propertyName, int maxLength, string message, Exception inner)
+        : base (message, inner)
     {
       _domainObject = domainObject;
       _propertyName = propertyName;
+      _maxLength = maxLength;
     }
-    
-    protected MandatoryRelationNotSetException (SerializationInfo info, StreamingContext context) : base (info, context)
+
+    protected PropertyValueTooLongException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
     {
       _domainObject = (DomainObject) info.GetValue ("_domainObject", typeof (DomainObject));
       _propertyName = info.GetString ("_propertyName");
+      _maxLength = info.GetInt32 ("_maxLength");
     }
 
     public override void GetObjectData (SerializationInfo info, StreamingContext context)
@@ -49,6 +56,7 @@ namespace Remotion.Data.DomainObjects.Validation
 
       info.AddValue ("_domainObject", _domainObject);
       info.AddValue ("_propertyName", _propertyName);
+      info.AddValue ("_maxLength", _maxLength);
     }
 
     public DomainObject DomainObject
@@ -59,6 +67,11 @@ namespace Remotion.Data.DomainObjects.Validation
     public string PropertyName
     {
       get { return _propertyName; }
+    }
+
+    public int MaxLength
+    {
+      get { return _maxLength; }
     }
 
     public override DomainObject[] AffectedObjects

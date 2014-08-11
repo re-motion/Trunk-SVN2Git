@@ -203,6 +203,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model.Building
       var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation> ();
       propertyInformationStub.Stub (stub => stub.Name).Return (propertyName);
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (declaringType));
+      propertyInformationStub.Stub (_ => _.PropertyType).Return (typeof (string));
       return propertyInformationStub;
     }
   }

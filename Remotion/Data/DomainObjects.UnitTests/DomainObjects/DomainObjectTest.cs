@@ -404,13 +404,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ValueTooLongException))]
-    public void MaxLengthCheck ()
+    public void DoesNotPerformMaxLengthCheck ()
     {
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       const string tooLongName = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901";
       customer.Name = tooLongName;
+      Assert.That (customer.Name, Is.EqualTo (tooLongName));
     }
 
     [Test]
