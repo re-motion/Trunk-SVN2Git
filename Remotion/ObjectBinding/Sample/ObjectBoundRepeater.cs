@@ -350,7 +350,7 @@ namespace Remotion.ObjectBinding.Sample
     }
 
 
-    public virtual BaseValidator[] CreateValidators ()
+    public virtual IEnumerable<BaseValidator> CreateValidators ()
     {
       return _repeaterInternal.CreateValidators();
     }

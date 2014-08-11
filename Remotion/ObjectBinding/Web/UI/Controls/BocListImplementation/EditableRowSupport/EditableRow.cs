@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
@@ -221,13 +222,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         return false;
     }
 
-    protected void AddToValidators (int columnIndex, BaseValidator[] validators)
+    protected void AddToValidators (int columnIndex, IEnumerable<BaseValidator> validators)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("validators", validators);
+      ArgumentUtility.CheckNotNull ("validators", validators);
 
       ControlCollection cellValidators = GetValidators (columnIndex);
-      for (int i = 0; i < validators.Length; i++)
-        cellValidators.Add (validators[i]);
+      foreach (var validator in validators)
+        cellValidators.Add (validator);
     }
 
     public ControlCollection GetValidators (int columnIndex)
@@ -275,9 +276,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       if (HasEditControl (columnIndex))
       {
         IBusinessObjectBoundEditableWebControl editControl = GetEditControl (columnIndex);
-        BaseValidator[] validators = editControl.CreateValidators();
-        if (validators != null)
-          AddToValidators (columnIndex, validators);
+        var validators = editControl.CreateValidators();
+        AddToValidators (columnIndex, validators);
       }
     }
 

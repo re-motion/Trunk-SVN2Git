@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -741,7 +742,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       _control.NullItemErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = true;
       _control.Required = true;
-      BaseValidator[] validators = _control.CreateValidators();
+      BaseValidator[] validators = _control.CreateValidators().ToArray();
       Assert.That (validators.Length, Is.EqualTo (0));
     }
 
@@ -750,7 +751,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
     {
       _control.ReadOnly = false;
       _control.Required = false;
-      BaseValidator[] validators = _control.CreateValidators();
+      BaseValidator[] validators = _control.CreateValidators().ToArray();
       Assert.That (validators.Length, Is.EqualTo (1));
       Assert.That (validators[0] is BocAutoCompleteReferenceValueInvalidDisplayNameValidator);
     }
@@ -760,7 +761,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
     {
       _control.ReadOnly = false;
       _control.Required = true;
-      BaseValidator[] validators = _control.CreateValidators();
+      BaseValidator[] validators = _control.CreateValidators().ToArray();
       Assert.That (validators.Length, Is.EqualTo (2));
       Assert.That (validators[0] is RequiredFieldValidator);
       Assert.That (validators[1] is BocAutoCompleteReferenceValueInvalidDisplayNameValidator);

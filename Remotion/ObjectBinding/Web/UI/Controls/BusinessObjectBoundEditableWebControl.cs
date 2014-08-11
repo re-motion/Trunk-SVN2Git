@@ -244,12 +244,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
     /// <remarks> Override <see cref="CreateValidatorsImplementation"/> to define the validators for this control.</remarks>
-    public BaseValidator[] CreateValidators ()
+    public IEnumerable<BaseValidator> CreateValidators ()
     {
       if (IsReadOnly)
-        return new BaseValidator[0];
+        return Enumerable.Empty<BaseValidator>();
 
-      return CreateValidatorsImplementation().ToArray();
+      return CreateValidatorsImplementation();
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>

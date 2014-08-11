@@ -2513,13 +2513,8 @@ namespace Remotion.Web.UI.Controls
         //  }
         //}
 
-        BaseValidator[] newValidators = smartControl.CreateValidators();
-
-        for (int idxValidators = 0; idxValidators < newValidators.Length; idxValidators++)
-        {
-          BaseValidator validator = (BaseValidator) newValidators[idxValidators];
+        foreach (BaseValidator validator in  smartControl.CreateValidators())
           dataRow.ControlsCell.Controls.Add (validator);
-        }
       }
     }
 

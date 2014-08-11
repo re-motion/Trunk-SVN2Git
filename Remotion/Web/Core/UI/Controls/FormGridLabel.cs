@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -67,9 +69,9 @@ public class FormGridLabel: Label, ISmartControl
     get { return (_helpUrl != null) ? new HelpInfo (_helpUrl) : null; }
   }
 
-  BaseValidator[] ISmartControl.CreateValidators()
+  IEnumerable<BaseValidator> ISmartControl.CreateValidators()
   {
-    return new BaseValidator[0];
+    return Enumerable.Empty<BaseValidator>();
   }
 
   Control ISmartControl.TargetControl

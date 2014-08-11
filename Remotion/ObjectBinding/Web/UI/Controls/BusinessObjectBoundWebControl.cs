@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -445,9 +447,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return false; }
     }
 
-    BaseValidator[] ISmartControl.CreateValidators ()
+    IEnumerable<BaseValidator> ISmartControl.CreateValidators ()
     {
-      return new BaseValidator[0];
+      return Enumerable.Empty<BaseValidator>();
     }
 
     public new IPage Page

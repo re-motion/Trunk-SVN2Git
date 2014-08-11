@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -39,7 +40,7 @@ namespace Remotion.Web.UI.Controls
     /// <summary>
     ///   Creates an appropriate validator for this control.
     /// </summary>
-    BaseValidator[] CreateValidators ();
+    IEnumerable<BaseValidator> CreateValidators ();
 
     /// <summary>
     ///   Gets the input control that can be referenced by HTML tags like &lt;label for=...&gt; using its ClientID.
