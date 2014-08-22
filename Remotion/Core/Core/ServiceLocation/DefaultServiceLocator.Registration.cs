@@ -148,6 +148,7 @@ namespace Remotion.ServiceLocation
       Func<Func<object>, object> activator = (innerActivator) => innerActivator();
 
       //TODO RM-5506: Refactor to simple expression tree without closures etc
+      // Note: for singleton-registrations, using a code-generation-free invocation might be benefical for performance.
       // arg => new DecoratorType3 (
       //            new DecoratorType2 (
       //                new DecoratorType1 ((ServiceType) arg)))
