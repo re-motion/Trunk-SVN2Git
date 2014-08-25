@@ -4,7 +4,8 @@
     <id>Remotion.JetBrains.Annotations.Sources</id>
     <version>$version$</version>
     <title>JetBrains Annotations for re-motion</title>
-    <authors>rubicon IT GmbH</authors>
+    <authors>rubicon IT GmbH, JetBrains</authors>
+    <owners>rubicon IT GmbH</owners>
     <projectUrl>http://www.re-motion.org</projectUrl>
     <description>An adaption of the JetBrains Annotations for use in the re-motion framework. Distributed in source form.</description>
     <copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</copyright>

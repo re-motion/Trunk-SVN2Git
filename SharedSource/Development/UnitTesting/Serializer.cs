@@ -30,13 +30,16 @@ namespace Remotion.Development.UnitTesting
   {
     public static T SerializeAndDeserialize<T> (T t)
     {
-      ArgumentUtility.CheckNotNull ("t", t);
+      if (t == null)
+        throw new ArgumentNullException ("t");
+
       return (T) Serializer.Deserialize (Serializer.Serialize ((object) t));
     }
 
     public static byte[] Serialize (object o)
     {
-      ArgumentUtility.CheckNotNull ("o", o);
+      if (o == null)
+        throw new ArgumentNullException ("o");
 
       using (MemoryStream stream = new MemoryStream ())
       {
@@ -48,7 +51,8 @@ namespace Remotion.Development.UnitTesting
 
     public static object Deserialize (byte[] bytes)
     {
-      ArgumentUtility.CheckNotNull ("bytes", bytes);
+      if (bytes == null)
+        throw new ArgumentNullException ("bytes");
 
       using (MemoryStream stream = new MemoryStream (bytes))
       {

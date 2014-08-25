@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Remotion.Development.UnitTesting.PrivateInvoke.Sources</id>
+    <version>$version$</version>
+    <title>re-motion Unit Testing PrivateInvoke</title>
+    <authors>rubicon IT GmbH</authors>
+    <owners>rubicon IT GmbH</owners>
+    <projectUrl>http://www.re-motion.org</projectUrl>
+    <description>The re-motion PrivateInvoke utility is used during unit testing when a non-public member needs to be invoked. Distributed as source code.</description>
+    <copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</copyright>
+    <tags>re-motion Development PrivateInvoke Reflection</tags>
+    <developmentDependency>true</developmentDependency>
+  </metadata>
+  <files>
+    <file src="UnitTesting\PrivateInvoke.cs" target="content/App_Packages/Remotion.Development.UnitTesting.PrivateInvoke.Sources.$version$" />
+    <file src="..\*.licenseheader" target="content/App_Packages/Remotion.Development.UnitTesting.PrivateInvoke.Sources.$version$" />
+  </files>
+</package>

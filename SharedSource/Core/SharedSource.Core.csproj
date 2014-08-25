@@ -82,6 +82,12 @@
     <None Include="..\SharedSource Apache-2.0.licenseheader">
       <Link>SharedSource Apache-2.0.licenseheader</Link>
     </None>
+    <None Include="Remotion.JetBrains.Annotations.Sources.nuspec" />
+    <None Include="Remotion.Utilities.ArgumentUtility.Sources.nuspec" />
+    <None Include="Remotion.Utilities.Assertion.Sources.nuspec" />
+    <None Include="Remotion.Utilities.EqualityUtility.Sources.nuspec" />
+    <None Include="Remotion.Utilities.ExceptionUtility.Sources.nuspec" />
+    <None Include="Remotion.Utilities.NullableTypeUtility.Sources.nuspec" />
     <None Include="ReSharperAnnotations\ReSharperAnnotations Apache-2.0.licenseheader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
