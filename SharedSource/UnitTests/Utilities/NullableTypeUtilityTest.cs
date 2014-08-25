@@ -47,6 +47,14 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void IsNullableType_WithNull_ThrowsArgumentNullException ()
+    {
+      Assert.That (
+          () => NullableTypeUtility.IsNullableType (null),
+          Throws.TypeOf<ArgumentNullException>().With.Message.EndsWith ("Parameter name: type"));
+    }
+
+    [Test]
     public void GetNullableType_ValueType ()
     {
       Assert.That (NullableTypeUtility.GetNullableType (typeof (int)), Is.EqualTo (typeof (int?)));
@@ -65,6 +73,14 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void GetNullableType_WithNull_ThrowsArgumentNullException ()
+    {
+      Assert.That (
+          () => NullableTypeUtility.GetNullableType (null),
+          Throws.TypeOf<ArgumentNullException>().With.Message.EndsWith ("Parameter name: type"));
+    }
+
+    [Test]
     public void GetBasicType_ValueType ()
     {
       Assert.That (NullableTypeUtility.GetBasicType (typeof (int)), Is.EqualTo (typeof (int)));
@@ -76,11 +92,18 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (NullableTypeUtility.GetBasicType (typeof (int?)), Is.EqualTo (typeof (int)));
     }
 
-
     [Test]
     public void GetBasicType_ReferenceType ()
     {
       Assert.That (NullableTypeUtility.GetBasicType (typeof (string)), Is.EqualTo (typeof (string)));
+    }
+
+    [Test]
+    public void GetBasicType_WithNull_ThrowsArgumentNullException ()
+    {
+      Assert.That (
+          () => NullableTypeUtility.GetBasicType (null),
+          Throws.TypeOf<ArgumentNullException>().With.Message.EndsWith ("Parameter name: type"));
     }
   }
 }

@@ -34,7 +34,9 @@ namespace Remotion.Utilities
     /// </remarks>
     public static bool IsNullableType (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      if (type == null)
+        throw new ArgumentNullException ("type");
+
       return IsNullableType_NoArgumentCheck (type);
     }
 
@@ -45,7 +47,9 @@ namespace Remotion.Utilities
 
     public static Type GetNullableType (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      if (type == null)
+        throw new ArgumentNullException ("type");
+
       if (IsNullableType (type))
         return type;
       else
@@ -54,7 +58,9 @@ namespace Remotion.Utilities
 
     public static Type GetBasicType (Type type)
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+      if (type == null)
+        throw new ArgumentNullException ("type");
+
       return Nullable.GetUnderlyingType (type) ?? type;
     }
   }
