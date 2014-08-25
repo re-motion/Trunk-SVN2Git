@@ -6,11 +6,15 @@
     <title>JetBrains Annotations for re-motion</title>
     <authors>rubicon IT GmbH, JetBrains</authors>
     <owners>rubicon IT GmbH</owners>
+    <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <projectUrl>http://www.re-motion.org</projectUrl>
     <description>An adaption of the JetBrains Annotations for use in the re-motion framework. Distributed in source form.</description>
     <copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</copyright>
     <tags>re-motion ReSharper Annotations</tags>
     <developmentDependency>true</developmentDependency>
+    <dependencies>
+      <dependency id="Remotion.Utilities.ArgumentUtility.Sources" version="[1.15.23.0,2)" />
+    </dependencies>
   </metadata>
   <files>
     <file src="ReSharperAnnotations\*.cs" target="content/App_Packages/Remotion.JetBrains.Annotations.Sources.$version$" />
