@@ -82,6 +82,7 @@
     <None Include="..\SharedSource Apache-2.0.licenseheader">
       <Link>SharedSource Apache-2.0.licenseheader</Link>
     </None>
+    <None Include="ReSharperAnnotations\ReSharperAnnotations Apache-2.0.licenseheader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

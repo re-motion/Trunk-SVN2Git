@@ -1,3 +1,4 @@
+﻿extensions: .cs
 // NOTE: This file was originally generated via JetBrains ReSharper
 // and is part of the JetBrains.Annoations for ReSharper. 
 // It has since been modified for use in the re-motion framework development.
@@ -34,35 +35,3 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // 
-
-using System;
-
-namespace JetBrains.Annotations
-{
-  [Flags]
-  enum ImplicitUseKindFlags
-  {
-    Default = Access | Assign | InstantiatedWithFixedConstructorSignature,
-
-    /// <summary>
-    /// Only entity marked with attribute considered used
-    /// </summary>
-    Access = 1,
-
-    /// <summary>
-    /// Indicates implicit assignment to a member
-    /// </summary>
-    Assign = 2,
-
-    /// <summary>
-    /// Indicates implicit instantiation of a type with fixed constructor signature.
-    /// That means any unused constructor parameters won't be reported as such.
-    /// </summary>
-    InstantiatedWithFixedConstructorSignature = 4,
-
-    /// <summary>
-    /// Indicates implicit instantiation of a type
-    /// </summary>
-    InstantiatedNoFixedConstructorSignature = 8,
-  }
-}
