@@ -20,7 +20,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Linq;
-using Remotion.Linq.EagerFetching;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -117,4 +116,6 @@ namespace Remotion.Data.DomainObjects.Linq
       return new FluentFetchRequest<TOriginating, TRelated> (queryProvider, callExpression);
     }
   }
+
+  // ReSharper restore UnusedTypeParameter
 }

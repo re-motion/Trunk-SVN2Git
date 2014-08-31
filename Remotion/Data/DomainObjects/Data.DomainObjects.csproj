@@ -182,6 +182,7 @@
     <Compile Include="Infrastructure\TypePipe\WrappingAccessorInterceptor.cs" />
     <Compile Include="Linq\ExtendedSqlGeneratingOuterSelectExpressionVisitor.cs" />
     <Compile Include="Linq\ExtendedSqlGenerationStage.cs" />
+    <Compile Include="Linq\FluentFetchRequest.cs" />
     <Compile Include="ObjectIDExtensions.cs" />
     <Compile Include="DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBase.cs" />
     <Compile Include="DomainImplementation\Cloning\CloneContext.cs" />

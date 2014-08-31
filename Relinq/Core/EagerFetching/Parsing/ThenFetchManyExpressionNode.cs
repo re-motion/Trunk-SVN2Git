@@ -28,7 +28,7 @@ namespace Remotion.Linq.EagerFetching.Parsing
   /// </summary>
   /// <remarks>
   /// This class is not automatically configured for any query operator methods. LINQ provider implementations must explicitly provide and register 
-  /// these methods in order for <see cref="ThenFetchManyExpressionNode"/> to be used. See also <see cref="FluentFetchRequest{TQueried,TFetch}"/>.
+  /// these methods in order for <see cref="ThenFetchManyExpressionNode"/> to be used. See also <see cref="T:Remotion.Data.DomainObjects.Linq.FluentFetchRequest{TQueried,TFetch}"/>.
   /// </remarks>
   public class ThenFetchManyExpressionNode : ThenFetchExpressionNodeBase
   {

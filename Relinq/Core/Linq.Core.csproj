@@ -237,7 +237,6 @@
     <Compile Include="Clauses\OrderingDirection.cs" />
     <Compile Include="Clauses\ResultOperatorBase.cs" />
     <Compile Include="Clauses\Expressions\SubQueryExpression.cs" />
-    <Compile Include="EagerFetching\FluentFetchRequest.cs" />
     <Compile Include="Parsing\ExpressionTreeVisitors\MemberBindings\FieldInfoBinding.cs" />
     <Compile Include="Parsing\ExpressionTreeVisitors\MemberBindings\MemberBinding.cs" />
     <Compile Include="Parsing\ExpressionTreeVisitors\MemberBindings\MethodInfoBinding.cs" />
