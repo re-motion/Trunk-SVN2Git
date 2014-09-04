@@ -83,6 +83,7 @@
       <Link>SharedSource Apache-2.0.licenseheader</Link>
     </None>
     <None Include="Remotion.Development.UnitTesting.PrivateInvoke.Sources.nuspec" />
+    <None Include="Remotion.Development.UnitTesting.ObjectMothers.BooleanObjectMother.Sources.nuspec" />
     <None Include="Remotion.Development.UnitTesting.Serializer.Sources.nuspec" />
   </ItemGroup>
   <ItemGroup>
