@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Web.Test
 
     protected void Application_Start (Object sender, EventArgs e)
     {
-      MappingConfiguration mappingConfiguration = MappingConfiguration.Current;
+      var mappingConfiguration = MappingConfiguration.Current;
       Trace.WriteLine (mappingConfiguration.GetTypeDefinitions().Length);
 
       _resourceVirtualPathProvider = new ResourceVirtualPathProvider (

@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
   public class SetUpFixture
   {
     private StandardMappingDatabaseAgent _standardMappingDatabaseAgent;
-    private DoubleCheckedLockingContainer<MappingConfiguration> _previousMappingConfigurationContainer;
+    private DoubleCheckedLockingContainer<IMappingConfiguration> _previousMappingConfigurationContainer;
 
     [SetUp]
     public void SetUp ()
@@ -64,10 +64,10 @@ namespace Remotion.Data.DomainObjects.UnitTests
         // We don't want the tests to initialize a default mapping; therefore, modify MappingConfiguration.s_mappingConfiguration so that it will 
         // throw when asked to generate a new MappingConfiguration.
 
-        _previousMappingConfigurationContainer = (DoubleCheckedLockingContainer<MappingConfiguration>) PrivateInvoke.GetNonPublicStaticField (
+        _previousMappingConfigurationContainer = (DoubleCheckedLockingContainer<IMappingConfiguration>) PrivateInvoke.GetNonPublicStaticField (
             typeof (MappingConfiguration), 
             "s_mappingConfiguration");
-        var throwingMappingConfigurationContainer = new DoubleCheckedLockingContainer<MappingConfiguration> (
+        var throwingMappingConfigurationContainer = new DoubleCheckedLockingContainer<IMappingConfiguration> (
             () =>
             {
               throw new InvalidOperationException (

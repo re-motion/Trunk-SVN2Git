@@ -32,6 +32,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     ClassDefinition GetClassDefinition (string classID);
     ClassDefinition GetClassDefinition (string classID, Func<string, Exception> missingClassDefinitionExceptionFactory);
 
+    bool ResolveTypes { get; }
+
     IMemberInformationNameResolver NameResolver { get; }
   }
 }

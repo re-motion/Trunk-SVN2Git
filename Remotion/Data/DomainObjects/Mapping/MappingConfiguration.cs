@@ -49,19 +49,19 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (MappingConfiguration));
 
-    private static readonly DoubleCheckedLockingContainer<MappingConfiguration> s_mappingConfiguration =
-        new DoubleCheckedLockingContainer<MappingConfiguration> (
+    private static readonly DoubleCheckedLockingContainer<IMappingConfiguration> s_mappingConfiguration =
+        new DoubleCheckedLockingContainer<IMappingConfiguration> (
             () =>
             new MappingConfiguration (
                 DomainObjectsConfiguration.Current.MappingLoader.CreateMappingLoader(),
                 new PersistenceModelLoader(new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage))));
 
-    public static MappingConfiguration Current
+    public static IMappingConfiguration Current
     {
       get { return s_mappingConfiguration.Value; }
     }
 
-    public static void SetCurrent (MappingConfiguration mappingConfiguration)
+    public static void SetCurrent (IMappingConfiguration mappingConfiguration)
     {
       if (mappingConfiguration != null)
       {

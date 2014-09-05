@@ -22,9 +22,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 {
   public sealed class DomainObjectIDs
   {
-    private readonly MappingConfiguration _mappingConfiguration;
+    private readonly IMappingConfiguration _mappingConfiguration;
 
-    public DomainObjectIDs (MappingConfiguration mappingConfiguration)
+    public DomainObjectIDs (IMappingConfiguration mappingConfiguration)
     {
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
 

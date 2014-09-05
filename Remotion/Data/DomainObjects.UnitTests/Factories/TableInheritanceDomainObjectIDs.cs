@@ -23,9 +23,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Factories
 {
   public class TableInheritanceDomainObjectIDs
   {
-    private readonly MappingConfiguration _mappingConfiguration;
+    private readonly IMappingConfiguration _mappingConfiguration;
 
-    public TableInheritanceDomainObjectIDs (MappingConfiguration mappingConfiguration)
+    public TableInheritanceDomainObjectIDs (IMappingConfiguration mappingConfiguration)
     {
       ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
 

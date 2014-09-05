@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       get { return StandardConfiguration.Instance.GetDomainObjectIDs(); }
     }
 
-    protected MappingConfiguration Configuration
+    protected IMappingConfiguration Configuration
     {
       get { return MappingConfiguration.Current; }
     }
