@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToFirstAlternateText" xml:space="preserve">
-    <value>Ersten Seite anzeigen</value>
+    <value>Erste Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToLastAlternateText" xml:space="preserve">
-    <value>Letzten Seite anzeigen</value>
+    <value>Letzte Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToNextAlternateText" xml:space="preserve">
-    <value>Nächsten Seite anzeigen</value>
+    <value>Nächste Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.GoToPreviousAlternateText" xml:space="preserve">
-    <value>Vorherigen Seite anzeigen</value>
+    <value>Vorherige Seite anzeigen</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockRenderer.PageLabelText" xml:space="preserve">
     <value>Seite</value>
