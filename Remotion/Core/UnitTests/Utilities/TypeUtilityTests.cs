@@ -22,12 +22,6 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities
 {
-// ReSharper disable UnusedTypeParameter
-  public class GenericType<T1, T2>
-// ReSharper restore UnusedTypeParameter
-  {
-  }
-
   [TestFixture]
   public class TypeUtilityTests
   {

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel.Design;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,15 +34,13 @@ namespace Remotion.Utilities
     /// The implementation of <see cref="TypeUtility.ParseAbbreviatedTypeName"/>, implemented in a nested class in order to prevent unnecessary
     /// initialization of pre-compiled regular expressions.
     /// </summary>
-    private static class AbbreviationParser
+    private class AbbreviationParser
     {
-      private static readonly Regex s_enclosedQualifiedTypeRegex;
-      private static readonly Regex s_enclosedTypeRegex;
-      private static readonly Regex s_typeRegex;
+      private readonly Regex _enclosedQualifiedTypeRegex;
+      private readonly Regex _enclosedTypeRegex;
+      private readonly Regex _typeRegex;
 
-      private static readonly LockingCacheDecorator<string, string> s_fullTypeNames = CacheFactory.CreateWithLocking<string, string>();
-
-      static AbbreviationParser ()
+      public AbbreviationParser ()
       {
         const string typeNamePattern = //  <asm>::<type>
             @"(?<asm>[^\[\]\,]+)" //       <asm> is the assembly part of the type name (before ::)
@@ -94,31 +93,25 @@ namespace Remotion.Utilities
         // Do not use RegexOptions.Compiled because it takes 200ms to compile which is not offset by the calls made after cache lookups.
         // This is an issue in .NET up to at least version 4.5.1 in x64 mode.
         const RegexOptions options = RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace;
-        s_enclosedQualifiedTypeRegex = new Regex (enclosedQualifiedTypePattern, options);
-        s_enclosedTypeRegex = new Regex (enclosedTypePattern, options);
-        s_typeRegex = new Regex (typePattern, options);
+        _enclosedQualifiedTypeRegex = new Regex (enclosedQualifiedTypePattern, options);
+        _enclosedTypeRegex = new Regex (enclosedTypePattern, options);
+        _typeRegex = new Regex (typePattern, options);
       }
 
-      public static string ParseAbbreviatedTypeNameWithCache (string abbreviatedTypeName)
+      public string ParseAbbreviatedTypeName (string abbreviatedTypeName)
       {
-        if (abbreviatedTypeName == null)
-          return null;
+        ArgumentUtility.CheckNotNull ("abbreviatedTypeName", abbreviatedTypeName);
 
-        return s_fullTypeNames.GetOrCreateValue (abbreviatedTypeName, ParseAbbreviatedTypeName);
-      }
-
-      private static string ParseAbbreviatedTypeName (string abbreviatedTypeName)
-      {
         string fullTypeName = abbreviatedTypeName;
         const string replace = @"${asm}.${type}${br}, ${asm}";
-        fullTypeName = ReplaceRecursive (s_enclosedQualifiedTypeRegex, fullTypeName, replace + "${sn}");
-        fullTypeName = ReplaceRecursive (s_enclosedTypeRegex, fullTypeName, "[" + replace + "]");
-        fullTypeName = s_typeRegex.Replace (fullTypeName, replace);
+        fullTypeName = ReplaceRecursive (_enclosedQualifiedTypeRegex, fullTypeName, replace + "${sn}");
+        fullTypeName = ReplaceRecursive (_enclosedTypeRegex, fullTypeName, "[" + replace + "]");
+        fullTypeName = _typeRegex.Replace (fullTypeName, replace);
 
         return fullTypeName;
       }
 
-      private static string ReplaceRecursive (Regex regex, string input, string replacement)
+      private string ReplaceRecursive (Regex regex, string input, string replacement)
       {
         string result = regex.Replace (input, replacement);
         while (result != input)
@@ -130,7 +123,11 @@ namespace Remotion.Utilities
       }
     }
 
-    private static readonly ICache<Type, string> s_partialAssemblyQualifiedNameCache = CacheFactory.CreateWithLocking<Type, string>();
+    private static readonly ConcurrentDictionary<string, string> s_fullTypeNames = new ConcurrentDictionary<string, string> ();
+    private static readonly ConcurrentDictionary<Type, string> s_partialAssemblyQualifiedNameCache = new ConcurrentDictionary<Type, string>();
+
+    /// <summary>The <see cref="Lazy{T}"/> protects the expensive regex-creation.</summary>
+    private static readonly Lazy<AbbreviationParser> s_abbreviationParser = new Lazy<AbbreviationParser> (() => new AbbreviationParser());
 
     /// <summary>
     ///   Converts abbreviated qualified type names into standard qualified type names.
@@ -142,9 +139,20 @@ namespace Remotion.Utilities
     /// </remarks>
     /// <param name="abbreviatedTypeName"> A standard or abbreviated type name. </param>
     /// <returns> A standard type name as expected by <see cref="Type.GetType(string)"/>. </returns>
-    public static string ParseAbbreviatedTypeName (string abbreviatedTypeName)
+    public static string ParseAbbreviatedTypeName ([CanBeNull]string abbreviatedTypeName)
     {
-      return AbbreviationParser.ParseAbbreviatedTypeNameWithCache (abbreviatedTypeName);
+      if (abbreviatedTypeName == null)
+        return null;
+
+      return s_fullTypeNames.GetOrAdd (abbreviatedTypeName, AbbreviatedTypeNameWithoutCache);
+    }
+
+    private static string AbbreviatedTypeNameWithoutCache ([NotNull] string abbreviatedTypeName)
+    {
+      if (!abbreviatedTypeName.Contains ("::"))
+        return abbreviatedTypeName;
+
+      return s_abbreviationParser.Value.ParseAbbreviatedTypeName (abbreviatedTypeName);
     }
 
     /// <summary>
@@ -155,7 +163,7 @@ namespace Remotion.Utilities
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
     [CanBeNull]
-    public static Type GetType (string abbreviatedTypeName)
+    public static Type GetType ([NotNull]string abbreviatedTypeName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
       return GetType (abbreviatedTypeName, false);
@@ -169,7 +177,7 @@ namespace Remotion.Utilities
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
     [CanBeNull]
-    public static Type GetType (string abbreviatedTypeName, bool throwOnError)
+    public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
       return ContextAwareTypeDiscoveryUtility.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
@@ -182,19 +190,19 @@ namespace Remotion.Utilities
         "GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity "
         + "is required, use Type.GetType. To use abbreviated type names for the lookup, use ParseAbbreviatedTypeName.", true)]
     [CanBeNull]
-    public static Type GetType (string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
+    public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
       return Type.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError, ignoreCase);
     }
 
-    public static string GetPartialAssemblyQualifiedName (Type type)
+    public static string GetPartialAssemblyQualifiedName ([NotNull]Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return s_partialAssemblyQualifiedNameCache.GetOrCreateValue (type, key => type.FullName + ", " + type.Assembly.GetName ().Name);
+      return s_partialAssemblyQualifiedNameCache.GetOrAdd (type, key => key.FullName + ", " + key.Assembly.GetName ().Name);
     }
 
-    public static Type GetDesignModeType (string abbreviatedTypeName, bool throwOnError)
+    public static Type GetDesignModeType ([NotNull]string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
       return ContextAwareTypeDiscoveryUtility.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
@@ -203,7 +211,7 @@ namespace Remotion.Utilities
     /// <summary>
     /// Gets the type name in abbreviated syntax (<see cref="ParseAbbreviatedTypeName"/>).
     /// </summary>
-    public static string GetAbbreviatedTypeName (Type type, bool includeVersionAndCulture)
+    public static string GetAbbreviatedTypeName ([NotNull]Type type, bool includeVersionAndCulture)
     {
       StringBuilder sb = new StringBuilder (50);
       BuildAbbreviatedTypeName (sb, type, includeVersionAndCulture, false);
