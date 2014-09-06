@@ -189,7 +189,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
     // GroupType is equal to the ACE specific GroupType.
     private Group FindBranchRoot (Group referenceGroup)
     {
-      Assertion.IsNotNull (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
+      Assertion.IsTrue (_ace.GroupCondition == GroupCondition.BranchOfOwningGroup);
 
       if (referenceGroup == null)
         return null;
