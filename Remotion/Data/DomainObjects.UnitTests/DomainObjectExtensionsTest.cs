@@ -101,5 +101,50 @@ namespace Remotion.Data.DomainObjects.UnitTests
 
       Assert.That (state, Is.EqualTo (domainObject.TransactionContext[domainObject.RootTransaction.ActiveTransaction].State));
     }
+
+    [Test]
+    public void RegisterForCommit ()
+    {
+      var transaction = new TestableClientTransaction();
+      Order order = transaction.ExecuteInScope (() => DomainObjectIDs.Order1.GetObject<Order> ());
+      transaction.ExecuteInScope (() => Assert.That (order.State, Is.EqualTo (StateType.Unchanged)));
+
+      transaction.ExecuteInScope (order.RegisterForCommit);
+
+      transaction.ExecuteInScope (() => Assert.That (order.State, Is.EqualTo (StateType.Changed)));
+    }
+
+    [Test]
+    public void EnsureDataAvailable ()
+    {
+      var transaction = new TestableClientTransaction();
+      var order = DomainObjectMother.GetNotLoadedObject (transaction, DomainObjectIDs.Order1);
+      Assert.That (transaction.DataManager.DataContainers[order.ID], Is.Null);
+      
+      transaction.ExecuteInScope (order.EnsureDataAvailable);
+
+      Assert.That (transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
+      Assert.That (transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
+    }
+
+    [Test]
+    public void TryEnsureDataAvailable ()
+    {
+      var transaction = new TestableClientTransaction();
+      var order = DomainObjectMother.GetNotLoadedObject (transaction, DomainObjectIDs.Order1);
+      Assert.That (transaction.DataManager.DataContainers[order.ID], Is.Null);
+
+      transaction.ExecuteInScope (() => Assert.That (() => order.TryEnsureDataAvailable(), Is.True));
+
+      Assert.That (transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
+      Assert.That (transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
+
+      var nonExistingOrder = DomainObjectMother.GetNotLoadedObject (transaction, new ObjectID(typeof (ClassWithAllDataTypes), Guid.NewGuid()));
+      Assert.That (transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
+
+      transaction.ExecuteInScope (() => Assert.That (() => nonExistingOrder.TryEnsureDataAvailable (), Is.False));
+
+      Assert.That (transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
+    }
   }
 }

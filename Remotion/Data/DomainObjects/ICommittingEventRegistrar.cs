@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="domainObjects">The <see cref="DomainObject"/> instances for which the event chain should be reexecuted. Each object must be part 
     /// of the commit set, i.e., its state must be <see cref="StateType.New"/>, <see cref="StateType.Changed"/>, or <see cref="StateType.Deleted"/>.
-    /// Call <see cref="DomainObject.RegisterForCommit"/> to add an <see cref="StateType.Unchanged"/> object to the commit set.</param>
+    /// Call <see cref="DomainObjectExtensions.RegisterForCommit"/> to add an <see cref="StateType.Unchanged"/> object to the commit set.</param>
     /// <exception cref="ArgumentException">One of the given objects is not part of the commit set.</exception>
     /// <remarks>
     /// <para>

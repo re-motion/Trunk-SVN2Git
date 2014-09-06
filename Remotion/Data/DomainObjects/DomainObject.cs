@@ -484,87 +484,6 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Ensures that the <see cref="DomainObject"/> is included in the commit set of the default transaction, ie. in its binding transaction or 
-    /// - if none - <see cref="DomainObjects.ClientTransaction.Current"/>. The object may not be in state <see cref="StateType.Deleted"/>, and if
-    /// its state is <see cref="StateType.NotLoadedYet"/>, this method loads the object's data.
-    /// </summary>
-    /// <exception cref="ObjectDeletedException">The object has already been deleted.</exception>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
-    /// <remarks>
-    /// <para>
-    /// This operation affects the <see cref="DomainObject"/> as follows (in the default transaction):
-    /// <list type="table">
-    /// <item>
-    /// <term><see cref="StateType.NotLoadedYet"/></term>
-    /// <description>The object is loaded and then handled according to its new state, see below.</description>
-    /// </item>
-    /// <item>
-    /// <term><see cref="StateType.Unchanged"/></term>
-    /// <description>The object's state is modified to be <see cref="StateType.Changed"/>, even though no property value is actually changed. The 
-    /// object will then behave like any <see cref="StateType.Changed"/> object. On commit (of a root transaction), it is checked for concurrency 
-    /// violations, and its timestamp is updated.</description>
-    /// </item>
-    /// <item>
-    /// <term><see cref="StateType.Changed"/></term>
-    /// <description>The object's state is modified so that even when all changed properties are reset to their original values (so that it would
-    /// usually become <see cref="StateType.Unchanged"/> again), it still remains <see cref="StateType.Changed"/>. In that case, the object will 
-    /// behave like in the <see cref="StateType.Unchanged"/> case above.
-    /// </description>
-    /// </item>
-    /// <item>
-    /// <term><see cref="StateType.New"/></term>
-    /// <description>The method has no effect.</description>
-    /// </item>
-    /// <item>
-    /// <term><see cref="StateType.Deleted"/></term>
-    /// <description>An <see cref="ObjectDeletedException"/> is thrown.</description>
-    /// </item>
-    /// <item>
-    /// <term><see cref="StateType.Invalid"/></term>
-    /// <description>An <see cref="ObjectInvalidException"/> is thrown.</description>
-    /// </item>
-    /// </list>
-    /// </para>
-    /// <para>
-    /// When the <see cref="ClientTransaction"/> affected by this operation is rolled back (before being committed), any modifications made by this 
-    /// API are also rolled back.
-    /// </para>
-    /// </remarks>
-    public void RegisterForCommit ()
-    {
-      DefaultTransactionContext.RegisterForCommit();
-    }
-
-    /// <summary>
-    /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
-    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the objec's data to be loaded.
-    /// If the object's data can't be found, an exception is thrown.
-    /// </summary>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
-    /// <exception cref="ObjectsNotFoundException">No data could be loaded for this <see cref="DomainObject"/> because the object was not
-    /// found in the data source.</exception>
-    public void EnsureDataAvailable ()
-    {
-      DefaultTransactionContext.EnsureDataAvailable();
-    }
-
-    /// <summary>
-    /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
-    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
-    /// The method returns a value indicating whether the object's data was found.
-    /// </summary>
-    /// <returns><see langword="true" /> if the object's data is now available in the <see cref="ClientTransaction"/>, <see langword="false" /> if the 
-    /// data couldn't be found.</returns>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
-    public bool TryEnsureDataAvailable ()
-    {
-      return DefaultTransactionContext.TryEnsureDataAvailable();
-    }
-
-    /// <summary>
     /// Deletes the <see cref="DomainObject"/> in the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
@@ -665,9 +584,10 @@ namespace Remotion.Data.DomainObjects
     /// <para>
     /// While this method is being executed, it is not possible to access any properties or methods of the DomainObject that read or modify the state 
     /// or data of the object in a <see cref="ClientTransaction"/>. All automatically implemented properties, <see cref="CurrentProperty"/>, 
-    /// <see cref="Properties"/>, <see cref="State"/>, <see cref="Timestamp"/>, <see cref="RegisterForCommit"/>, <see cref="EnsureDataAvailable"/>, 
-    /// etc. will throw <see cref="InvalidOperationException"/>. It is possible to inspect the <see cref="RootTransaction"/> of the object, and the 
-    /// object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
+    /// <see cref="Properties"/>, <see cref="State"/>, <see cref="Timestamp"/>, <see cref="DomainObjectExtensions.RegisterForCommit"/>, 
+    /// <see cref="DomainObjectExtensions.EnsureDataAvailable"/>, etc. will throw <see cref="InvalidOperationException"/>. 
+    /// It is possible to inspect the <see cref="RootTransaction"/> of the object, and the object is guaranteed to be enlisted in the 
+    /// <see cref="ClientTransaction.Current"/> transaction.
     /// </para>
     /// <para>The reason why it is explicitly disallowed to access mapped properties from the notification method is that 
     /// <see cref="OnReferenceInitializing"/> is usually called when no data has yet been loaded for the object. Accessing a property would cause the 
@@ -859,6 +779,40 @@ namespace Remotion.Data.DomainObjects
     public bool HasBindingTransaction
     {
       get { throw new NotImplementedException(); }
+    }
+
+    /// <summary>
+    /// Ensures that the <see cref="DomainObject"/> is included in the commit set of its <see cref="ClientTransaction.ActiveTransaction"/>. 
+    /// The object may not be in state <see cref="StateType.Deleted"/>, and if its state is <see cref="StateType.NotLoadedYet"/>, 
+    /// this method loads the object's data.
+    /// </summary>
+    /// <remarks>This method is only provided for compatibility, i.e. to make it easier to call the actual implementation.</remarks>
+    /// <seealso cref="DomainObjectExtensions.RegisterForCommit"/>
+    protected void RegisterForCommit ()
+    {
+      DomainObjectExtensions.RegisterForCommit (this);
+    }
+
+    /// <summary>
+    /// Ensures that the <see cref="DomainObject"/>'s data has been loaded into the its <see cref="ClientTransaction.ActiveTransaction"/>.
+    /// If it hasn't, this method causes the objec's data to be loaded. If the object's data can't be found, an exception is thrown.
+    /// </summary>
+    /// <remarks>This method is only provided for compatibility, i.e. to make it easier to call the actual implementation.</remarks>
+    /// <seealso cref="DomainObjectExtensions.EnsureDataAvailable"/>
+    protected void EnsureDataAvailable ()
+    {
+      DomainObjectExtensions.EnsureDataAvailable (this);
+    }
+
+    /// <summary>
+    /// Ensures that the <see cref="DomainObject"/>'s data has been loaded into its <see cref="ClientTransaction.ActiveTransaction"/>.
+    /// If it hasn't, this method causes the object's data to be loaded. The method returns a value indicating whether the object's data was found.
+    /// </summary>
+    /// <remarks>This method is only provided for compatibility, i.e. to make it easier to call the actual implementation.</remarks>
+    /// <seealso cref="DomainObjectExtensions.TryEnsureDataAvailable"/>
+    protected bool TryEnsureDataAvailable ()
+    {
+      return DomainObjectExtensions.TryEnsureDataAvailable (this);
     }
   }
 }

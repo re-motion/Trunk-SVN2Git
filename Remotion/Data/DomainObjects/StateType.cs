@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// The <see cref="DomainObject"/>'s data has not been loaded yet into the <see cref="ClientTransaction"/>. It will be loaded when needed,
     /// e.g. when a property value or relation is accessed, or when 
-    /// <see cref="DomainObject.EnsureDataAvailable"/> is called for the <see cref="DomainObject"/>.
+    /// <see cref="DomainObjectExtensions.EnsureDataAvailable"/> is called for the <see cref="IDomainObject"/>.
     /// </summary>
     NotLoadedYet = 5,
     [Obsolete ("This state is now called Invalid. (1.13.60)", true)]

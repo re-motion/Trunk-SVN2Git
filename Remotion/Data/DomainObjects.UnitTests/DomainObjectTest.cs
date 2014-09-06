@@ -317,37 +317,6 @@ namespace Remotion.Data.DomainObjects.UnitTests
     }
 
     [Test]
-    public void EnsureDataAvailable ()
-    {
-      var order = DomainObjectMother.GetNotLoadedObject (_transaction, DomainObjectIDs.Order1);
-      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Null);
-      
-      _transaction.ExecuteInScope (order.EnsureDataAvailable);
-
-      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
-      Assert.That (_transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
-    }
-
-    [Test]
-    public void TryEnsureDataAvailable ()
-    {
-      var order = DomainObjectMother.GetNotLoadedObject (_transaction, DomainObjectIDs.Order1);
-      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Null);
-
-      _transaction.ExecuteInScope (() => Assert.That (() => order.TryEnsureDataAvailable(), Is.True));
-
-      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
-      Assert.That (_transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
-
-      var nonExistingOrder = DomainObjectMother.GetNotLoadedObject (_transaction, new ObjectID(typeof (ClassWithAllDataTypes), Guid.NewGuid()));
-      Assert.That (_transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
-
-      _transaction.ExecuteInScope (() => Assert.That (() => nonExistingOrder.TryEnsureDataAvailable (), Is.False));
-
-      Assert.That (_transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "DomainObject.GetType should not be used.")]
     public void GetType_Throws ()
     {
@@ -385,17 +354,6 @@ namespace Remotion.Data.DomainObjects.UnitTests
       _transaction.ExecuteInScope (() => Assert.That (customer.State, Is.EqualTo (StateType.Unchanged)));
       _transaction.ExecuteInScope (() => customer.Name = "New name");
       _transaction.ExecuteInScope (() => Assert.That (customer.State, Is.EqualTo (StateType.Changed)));
-    }
-
-    [Test]
-    public void RegisterForCommit ()
-    {
-      Order order = _transaction.ExecuteInScope (() => DomainObjectIDs.Order1.GetObject<Order> ());
-      _transaction.ExecuteInScope (() => Assert.That (order.State, Is.EqualTo (StateType.Unchanged)));
-
-      _transaction.ExecuteInScope (order.RegisterForCommit);
-
-      _transaction.ExecuteInScope (() => Assert.That (order.State, Is.EqualTo (StateType.Changed)));
     }
 
     [Test]

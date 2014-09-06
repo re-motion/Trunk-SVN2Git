@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// When an object with the given <paramref name="objectID"/> has already been enlisted in the transaction, that object is returned. Otherwise,
     /// an object in <see cref="StateType.NotLoadedYet"/> state is created and enlisted without loading its data from the data source. In such a case,
     /// the object's data is loaded when it's first needed; e.g., when one of its properties is accessed or when
-    /// <see cref="DomainObject.EnsureDataAvailable"/> is called on it. At that point, an
+    /// <see cref="DomainObjectExtensions.EnsureDataAvailable"/> is called on it. At that point, an
     /// <see cref="ObjectsNotFoundException"/> may be triggered when the object's data cannot be found.
     /// </remarks>
     /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
