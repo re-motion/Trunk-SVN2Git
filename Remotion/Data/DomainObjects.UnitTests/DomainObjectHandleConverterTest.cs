@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       Assert.That (
           () => _converter.ConvertTo (12, typeof (string)),
           Throws.TypeOf<NotSupportedException>().With.Message.EqualTo (
-              "This TypeConverter can only convert values of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[Remotion.Data.DomainObjects.DomainObject]'."));
+              "This TypeConverter can only convert values of type 'Remotion.Data.DomainObjects.IDomainObjectHandle`1[Remotion.Data.DomainObjects.IDomainObject]'."));
     }
 
     [Test]

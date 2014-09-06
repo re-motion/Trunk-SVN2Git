@@ -159,11 +159,11 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 
     private IEnumerable<DomainObject> LazyLoadWithRelatedObjects (ObjectID objectID)
     {
-      DomainObject sourceObject = _transportTransaction.GetObject (objectID, false);
+      IReflectableDomainObject sourceObject = _transportTransaction.GetObject (objectID, false);
       yield return Load (sourceObject.ID);
       using (_transportTransaction.EnterNonDiscardingScope ())
       {
-        IEnumerable<DomainObject> relatedObjects = sourceObject.Properties.GetAllRelatedObjects ();
+        IEnumerable<DomainObject> relatedObjects = sourceObject.Properties.GetAllRelatedObjects();
         foreach (DomainObject domainObject in relatedObjects)
           yield return Load (domainObject.ID); // explicitly call load rather than just implicitly loading it into the transaction
       }

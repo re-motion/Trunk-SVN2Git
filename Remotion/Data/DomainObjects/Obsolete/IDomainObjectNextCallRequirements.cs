@@ -15,25 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.ObjectBinding.BindableObject;
+using Remotion.Data.DomainObjects.Infrastructure;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding
+// ReSharper disable once CheckNamespace
+
+namespace Remotion.Data.DomainObjects
 {
-  internal class BindableDomainObjectPropertyFinder : ReflectionBasedPropertyFinder
+  /// <summary>
+  /// Describes the minimum base call requirements that <see cref="DomainObjectMixin{TDomainObject,TNextCallRequirements}"/> has to its target
+  /// objects.
+  /// </summary>
+  [Obsolete ("No specific base-interface is needed. (Version 1.15.23.0)")]
+  public interface IDomainObjectNextCallRequirements
   {
-    public BindableDomainObjectPropertyFinder (Type targetType)
-        : base (targetType)
-    {
-    }
-
-    protected override bool IsInfrastructureProperty (PropertyInfo propertyInfo, MethodInfo accessorDeclaration)
-    {
-      return base.IsInfrastructureProperty (propertyInfo, accessorDeclaration)
-          || accessorDeclaration.DeclaringType == typeof (DomainObject)
-          || accessorDeclaration.DeclaringType == typeof (BindableDomainObject)
-          || accessorDeclaration.DeclaringType == typeof (IDomainObject)
-          || accessorDeclaration.DeclaringType == typeof (IReflectableDomainObject);
-    }
+    [Obsolete ("Use DomainObjectMixin<TDomainObject,TNextCallRequirements>.Properties instead. (Version 1.15.23.0)", true)]
+    PropertyIndexer Properties { get; }
   }
 }

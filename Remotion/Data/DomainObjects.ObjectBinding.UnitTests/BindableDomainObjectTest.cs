@@ -224,15 +224,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.UnitTests
     }
 
     [Test]
-    public void Properties()
-    {
-      var instance = SampleBindableDomainObject.NewObject (_implementationMock);
-
-      Assert.That (((BindableDomainObjectMixin.IDomainObject) instance).Properties, Is.EqualTo (instance.PublicProperties));
-      _implementationMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void BindableDomainObject_IsNotPartOfMapping ()
     {
       Assert.That (MappingConfiguration.Current.GetTypeDefinitions().Where (o => o.ClassType == typeof (BindableDomainObject)), Is.Empty);

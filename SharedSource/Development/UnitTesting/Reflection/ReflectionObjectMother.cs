@@ -419,7 +419,7 @@ namespace Remotion.Development.UnitTesting.Reflection
       return array[index];
     }
 
-    private static T[] EnsureNoNulls<T> (T[] items)
+    private static T[] EnsureNoNulls<T> (T[] items) where T : class
     {
       foreach (var item in items)
         Assertion.IsNotNull (item);

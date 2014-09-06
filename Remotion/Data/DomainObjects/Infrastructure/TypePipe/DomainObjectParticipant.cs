@@ -54,13 +54,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
       PipelineRegistryInitializer.InitializeWithServiceLocator();
     }
 
+    private static readonly Type s_domainObjectBaseType = typeof (DomainObject);
     private static readonly MethodInfo s_getPublicDomainObjectTypeImplementation = GetInfrastructureHook ("GetPublicDomainObjectTypeImplementation");
     private static readonly MethodInfo s_performConstructorCheck = GetInfrastructureHook ("PerformConstructorCheck");
 
     private static MethodInfo GetInfrastructureHook (string name)
     {
       var bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = typeof (DomainObject).GetMethod (name, bindingFlags);
+      var method = s_domainObjectBaseType.GetMethod (name, bindingFlags);
       Assertion.IsNotNull (method);
 
       return method;
@@ -99,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     {
       ArgumentUtility.CheckNotNull ("proxyTypeAssemblyContext", proxyTypeAssemblyContext);
 
-      if (!typeof (DomainObject).IsTypePipeAssignableFrom (proxyTypeAssemblyContext.RequestedType))
+      if (!s_domainObjectBaseType.IsTypePipeAssignableFrom (proxyTypeAssemblyContext.RequestedType))
         return;
 
       var proxyType = proxyTypeAssemblyContext.ProxyType;
@@ -124,7 +125,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
     {
       ArgumentUtility.CheckNotNull ("nonSubclassableRequestedType", nonSubclassableRequestedType);
 
-      if (!typeof (DomainObject).IsTypePipeAssignableFrom (nonSubclassableRequestedType))
+      if (!s_domainObjectBaseType.IsTypePipeAssignableFrom (nonSubclassableRequestedType))
         return;
 
       var classDefinition = _typeDefinitionProvider.GetTypeDefinition (nonSubclassableRequestedType);

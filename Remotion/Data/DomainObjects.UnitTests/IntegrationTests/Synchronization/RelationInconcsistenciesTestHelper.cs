@@ -49,10 +49,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Synchronization
       }
     }
 
-    public static void SetForeignKeyProperty (DomainObject domainObject, RelationEndPointDefinition endPointDefinition, ObjectID relatedID)
+    public static void SetForeignKeyProperty (IReflectableDomainObject domainObject, RelationEndPointDefinition endPointDefinition, ObjectID relatedID)
     {
       var relatedObject = LifetimeService.GetObjectReference (ClientTransaction.Current, relatedID);
-      DomainObjectTestHelper.GetProperties (domainObject)[endPointDefinition.PropertyName].SetValue (relatedObject);
+      domainObject.Properties[endPointDefinition.PropertyName].SetValue (relatedObject);
     }
 
     public static ObjectID CreateObjectAndSetRelationInOtherTransaction<TCreated, TRelated> (ObjectID relatedID, Action<TCreated, TRelated> setter)

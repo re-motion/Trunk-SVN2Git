@@ -24,11 +24,11 @@ namespace Remotion.Data.DomainObjects
   /// Implements <see cref="IDomainObjectHandle{T}"/>, providing a typed handle to a <see cref="DomainObject"/>.
   /// Since this class is not covariant, instances are usually accessed through the <see cref="IDomainObjectHandle{T}"/> interface instead.
   /// </summary>
-  /// <typeparam name="T">The type of <see cref="DomainObject"/> identified by this class.</typeparam>
+  /// <typeparam name="T">The type of <see cref="IDomainObject"/> identified by this class.</typeparam>
   /// <threadsafety static="true" instance="true"/>
   [Serializable]
   public class DomainObjectHandle<T> : IDomainObjectHandle<T>
-      where T : DomainObject
+      where T : IDomainObject
   {
     private readonly ObjectID _objectID;
 
@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects
     }
 
     public IDomainObjectHandle<TOther> Cast<TOther> () 
-      where TOther : DomainObject
+      where TOther : IDomainObject
     {
       try
       {
@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects
       }
     }
 
-    public bool Equals (IDomainObjectHandle<DomainObject> other)
+    public bool Equals (IDomainObjectHandle<IDomainObject> other)
     {
       if (ReferenceEquals (null, other))
         return false;
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects
         return false;
       if (ReferenceEquals (this, obj))
         return true;
-      return Equals (obj as IDomainObjectHandle<DomainObject>);
+      return Equals (obj as IDomainObjectHandle<IDomainObject>);
     }
 
     public override int GetHashCode ()

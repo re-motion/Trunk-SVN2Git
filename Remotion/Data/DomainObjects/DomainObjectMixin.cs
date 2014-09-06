@@ -24,28 +24,33 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Base class for mixins adding persistent properties to domain objects.
   /// </summary>
-  /// <typeparam name="TDomainObject">The type of the <see cref="Mixin{TTarget}.Target"/> property within the mixin. This type must be assignable from
-  /// the domain object extended by the mixin. Note that an <see cref="ExtendsAttribute"/> or
-  /// <see cref="UsesAttribute"/> is still required to actually apply the mixin to the domain object type. See <see cref="Mixin{TTarget}"/> for 
-  /// additional information.</typeparam>
+  /// <typeparam name="TDomainObject">
+  /// The type of the <see cref="Mixin{TTarget}.Target"/> property within the mixin. All members of this type must be available on the concrete mixed type. 
+  /// Note that an <see cref="ExtendsAttribute"/> or <see cref="UsesAttribute"/> is still required to actually apply the mixin to the domain object type.
+  /// See <see cref="Mixin{TTarget, TNext}"/> for additional information.
+  /// </typeparam>
   /// <remarks>Use this base class to implement a mixin adding persistent properties to a domain object which does not need to call the base 
   /// implementation of any overridden methods. Use <see cref="DomainObjectMixin{TDomainObject,TNextCallRequirements}"/> if the mixin needs to call overridden
   /// base methods.</remarks>
   [Serializable]
-  public class DomainObjectMixin<TDomainObject> : DomainObjectMixin<TDomainObject, IDomainObjectNextCallRequirements>
-    where TDomainObject : DomainObject
+  public class DomainObjectMixin<TDomainObject> : DomainObjectMixin<TDomainObject, IDomainObject>
+    where TDomainObject : class, IReflectableDomainObject
   {
   }
 
   /// <summary>
   /// Base class for mixins adding persistent properties to domain objects.
   /// </summary>
-  /// <typeparam name="TDomainObject">The type of the <see cref="Mixin{TTarget}.Target"/> property within the mixin. This type must be assignable from
-  /// the domain object extended by the mixin. Note that an <see cref="ExtendsAttribute"/> or
-  /// <see cref="UsesAttribute"/> is still required to actually apply the mixin to the domain object type.</typeparam>
-  /// <typeparam name="TNextCallRequirements">An interface type specifying the members whose base implementation needs to be called via the
-  /// <see cref="Mixin{TTarget,TNext}.Next"/> property when overridden by this mixin. The interface needs to implement
-  /// <see cref="IDomainObjectNextCallRequirements"/>. See <see cref="Mixin{TTarget, TNext}"/> for additional information.</typeparam>
+  /// <typeparam name="TDomainObject">
+  /// The type of the <see cref="Mixin{TTarget}.Target"/> property within the mixin. All members of this type must be available on the concrete mixed type. 
+  /// Note that an <see cref="ExtendsAttribute"/> or <see cref="UsesAttribute"/> is still required to actually apply the mixin to the domain object type.
+  /// See <see cref="Mixin{TTarget, TNext}"/> for additional information.
+  /// </typeparam>
+  /// <typeparam name="TNextCallRequirements">
+  /// An interface type specifying the members whose base implementation needs to be called via the <see cref="Mixin{TTarget,TNext}.Next"/> property 
+  /// when overridden by this mixin. The interface needs to implement <see cref="IReflectableDomainObject"/>. 
+  /// See <see cref="Mixin{TTarget, TNext}"/> for additional information.
+  /// </typeparam>
   /// <remarks><para>Use this base class to implement a mixin adding persistent properties to a domain object which overrides mixin members and needs to
   /// call the base implementations of these members on its target object. Specify those members you need to call via the
   /// <see cref="Mixin{TTarget,TNext}.Next"/> property via the <typeparamref name="TNextCallRequirements"/> type parameter; the target object does not
@@ -55,8 +60,8 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class DomainObjectMixin<TDomainObject, TNextCallRequirements>
       : Mixin<TDomainObject, TNextCallRequirements>, IDomainObjectMixin
-      where TDomainObject : DomainObject
-      where TNextCallRequirements : class, IDomainObjectNextCallRequirements
+      where TDomainObject : class, IReflectableDomainObject
+      where TNextCallRequirements : class
   {
     /// <summary>
     /// Gets the <see cref="ObjectID"/> of this mixin's target object.
@@ -84,7 +89,7 @@ namespace Remotion.Data.DomainObjects
     [StorageClassNone]
     protected StateType State
     {
-      get { return Target.State; }
+      get { return Target.GetState(); }
     }
 
     /// <summary>
@@ -94,7 +99,7 @@ namespace Remotion.Data.DomainObjects
     [StorageClassNone]
     protected bool IsInvalid
     {
-      get { return Target.IsInvalid; }
+      get { return State == StateType.Invalid; }
     }
 
     /// <summary>
@@ -145,18 +150,5 @@ namespace Remotion.Data.DomainObjects
     protected virtual void OnDomainObjectLoaded (LoadMode loadMode)
     {
     }
-  }
-
-  /// <summary>
-  /// Describes the minimum base call requirements that <see cref="DomainObjectMixin{TDomainObject,TNextCallRequirements}"/> has to its target
-  /// objects.
-  /// </summary>
-  public interface IDomainObjectNextCallRequirements
-  {
-    /// <summary>
-    /// Defines that the mixin's target object must have a property called Properties which returns an object of type <see cref="PropertyIndexer"/>.
-    /// The <see cref="DomainObject"/> base class already defines this property.
-    /// </summary>
-    PropertyIndexer Properties { get; }
   }
 }

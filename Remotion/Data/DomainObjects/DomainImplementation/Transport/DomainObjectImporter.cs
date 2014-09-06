@@ -120,7 +120,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       {
         TransportItem transportItem = sourceToTargetContainer.Item1;
         DataContainer targetContainer = sourceToTargetContainer.Item2;
-        DomainObject targetObject = targetContainer.DomainObject;
+        IReflectableDomainObject targetObject = targetContainer.DomainObject;
 
         foreach (KeyValuePair<string, object> sourceProperty in transportItem.Properties)
         {
@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
               if (!targetProperty.PropertyData.RelationEndPointDefinition.IsVirtual)
               {
                 var relatedObjectID = (ObjectID) sourceProperty.Value;
-                DomainObject targetRelatedObject = relatedObjectID != null ? targetTransaction.GetObject (relatedObjectID, false) : null;
+                IReflectableDomainObject targetRelatedObject = relatedObjectID != null ? targetTransaction.GetObject (relatedObjectID, false) : null;
                 targetProperty.SetValueWithoutTypeCheck (targetRelatedObject);
               }
               break;

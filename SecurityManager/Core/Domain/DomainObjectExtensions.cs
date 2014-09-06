@@ -18,7 +18,6 @@
 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain
@@ -26,14 +25,13 @@ namespace Remotion.SecurityManager.Domain
   internal static class DomainObjectExtensions
   {
     public static bool IsRelation<TDoaminObject> (this RelationChangedEventArgs args, TDoaminObject domainObject, string shortPropertyName)
-        where TDoaminObject : DomainObject
+        where TDoaminObject : IReflectableDomainObject
     {
       ArgumentUtility.CheckNotNull ("args", args);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
 
-      var propertyIndexer = new PropertyIndexer (domainObject);
-      var propertyAccessor = propertyIndexer[typeof (TDoaminObject), shortPropertyName];
+      var propertyAccessor = domainObject.Properties[typeof (TDoaminObject), shortPropertyName];
       return args.RelationEndPointDefinition == propertyAccessor.PropertyData.RelationEndPointDefinition;
     }
   }

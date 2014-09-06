@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.UnitTests
@@ -26,7 +27,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
     [Test]
     public void GetIDOrNull ()
     {
-      Assert.That (((DomainObject) null).GetSafeID(), Is.Null);
+      Assert.That (((IDomainObject) null).GetSafeID(), Is.Null);
 
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
       Assert.That (domainObject.GetSafeID(), Is.EqualTo (domainObject.ID));
@@ -38,16 +39,16 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var domainObject = DomainObjectMother.CreateFakeObject<Order>();
 
       var handle = domainObject.GetHandle ();
-      var domainObjectTypedObjectID1 = domainObject.GetHandle<DomainObject> ();
-      var domainObjectTypedObjectID2 = ((DomainObject) domainObject).GetHandle ();
+      var domainObjectTypedObjectID1 = domainObject.GetHandle<IDomainObject> ();
+      var domainObjectTypedObjectID2 = ((IDomainObject) domainObject).GetHandle ();
 
       Assert.That (handle, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
       Assert.That (domainObjectTypedObjectID1, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
       Assert.That (domainObjectTypedObjectID2, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
 
       Assert.That (VariableTypeInferrer.GetVariableType (handle), Is.SameAs (typeof (IDomainObjectHandle<Order>)));
-      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IDomainObjectHandle<DomainObject>)));
-      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IDomainObjectHandle<DomainObject>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IDomainObjectHandle<IDomainObject>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IDomainObjectHandle<IDomainObject>)));
     }
 
     [Test]
@@ -56,23 +57,49 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
 
       var handle = domainObject.GetSafeHandle ();
-      var domainObjectTypedObjectID1 = domainObject.GetSafeHandle<DomainObject> ();
-      var domainObjectTypedObjectID2 = ((DomainObject) domainObject).GetSafeHandle ();
+      var domainObjectTypedObjectID1 = domainObject.GetSafeHandle<IDomainObject> ();
+      var domainObjectTypedObjectID2 = ((IDomainObject) domainObject).GetSafeHandle ();
 
       Assert.That (handle, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
       Assert.That (domainObjectTypedObjectID1, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
       Assert.That (domainObjectTypedObjectID2, Is.TypeOf<DomainObjectHandle<Order>> ().And.Property ("ObjectID").EqualTo (domainObject.ID));
 
       Assert.That (VariableTypeInferrer.GetVariableType (handle), Is.SameAs (typeof (IDomainObjectHandle<Order>)));
-      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IDomainObjectHandle<DomainObject>)));
-      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IDomainObjectHandle<DomainObject>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID1), Is.SameAs (typeof (IDomainObjectHandle<IDomainObject>)));
+      Assert.That (VariableTypeInferrer.GetVariableType (domainObjectTypedObjectID2), Is.SameAs (typeof (IDomainObjectHandle<IDomainObject>)));
     }
 
     [Test]
     public void GetSafeHandle_Null ()
     {
-      var handle = ((Order) null).GetSafeHandle ();
+      var handle = ((IDomainObject) null).GetSafeHandle ();
       Assert.That (handle, Is.Null);
+    }
+
+    [Test]
+    public void GetDefaultTransactionContext ()
+    {
+      IDomainObject domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var actualTransactionContext = (DomainObjectTransactionContext)domainObject.GetDefaultTransactionContext();
+
+      var expectedTransactionContext =
+          (DomainObjectTransactionContext) domainObject.TransactionContext[domainObject.RootTransaction.ActiveTransaction];
+
+      Assert.That (actualTransactionContext.ClientTransaction, Is.EqualTo (expectedTransactionContext.ClientTransaction));
+      Assert.That (actualTransactionContext.DomainObject, Is.EqualTo (expectedTransactionContext.DomainObject));
+      Assert.That (actualTransactionContext, Is.Not.EqualTo (expectedTransactionContext), "DomainObjectTransactionContext cannot be compared by reference at the moment.");
+
+    }
+
+    [Test]
+    public void GetState ()
+    {
+      IDomainObject domainObject = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var state = domainObject.GetState();
+
+      Assert.That (state, Is.EqualTo (domainObject.TransactionContext[domainObject.RootTransaction.ActiveTransaction].State));
     }
   }
 }

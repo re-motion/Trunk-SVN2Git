@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   /// <summary>
-  /// Implements <see cref="IDefaultValueStrategy"/> for instances of types that implement <see cref="BindableDomainObjectMixin.IDomainObject"/> instances. 
+  /// Implements <see cref="IDefaultValueStrategy"/> for instances of types that implement <see cref="IReflectableDomainObject"/> instances. 
   /// A <see cref="DomainObject"/> property is defined to have its default value set if it is a new object and the property has not been touched yet.
   /// </summary>
   public class BindableDomainObjectDefaultValueStrategy : IDefaultValueStrategy
@@ -37,10 +37,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {
-      var domainObject = ArgumentUtility.CheckNotNullAndType<BindableDomainObjectMixin.IDomainObject> ("obj", obj);
+      var domainObject = ArgumentUtility.CheckNotNullAndType<IReflectableDomainObject> ("obj", obj);
       ArgumentUtility.CheckNotNull ("property", property);
       
-      if (domainObject.State != StateType.New)
+      if (domainObject.GetState() != StateType.New)
         return false;
 
       var propertyDefinition = domainObject.ID.ClassDefinition.ResolveProperty (property.PropertyInfo);

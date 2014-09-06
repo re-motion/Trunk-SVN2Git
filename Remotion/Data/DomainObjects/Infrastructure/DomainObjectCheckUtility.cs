@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Contains commonly used get and check methods dealing with <see cref="DomainObject"/> instances.
+  /// Contains commonly used get and check methods dealing with <see cref="IDomainObject"/> instances.
   /// </summary>
   public static class DomainObjectCheckUtility
   {
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectInvalidException">The object is invalid in the given <see cref="ClientTransaction"/>.</exception>
     [AssertionMethod]
-    public static void EnsureNotInvalid ([NotNull] DomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
+    public static void EnsureNotInvalid ([NotNull] IDomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
     {
       ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
       ArgumentUtility.DebugCheckNotNull ("clientTransaction", clientTransaction);
@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The transaction to check the object against.</param>
     /// <exception cref="ObjectDeletedException">The object has been deleted in the given <see cref="ClientTransaction"/>.</exception>
     [AssertionMethod]
-    public static void EnsureNotDeleted ([NotNull] DomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
+    public static void EnsureNotDeleted ([NotNull] IDomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
     {
       ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
       ArgumentUtility.DebugCheckNotNull ("clientTransaction", clientTransaction);
@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Checks if the given <see cref="DomainObject"/> can be used in the given transaction, and, if not, throws a 
+    /// Checks if the given <see cref="IDomainObject"/> can be used in the given transaction, and, if not, throws a 
     /// <see cref="ClientTransactionsDifferException"/>. If the method succeeds, <see cref="ClientTransaction.IsEnlisted"/> is guaranteed to be
     /// <see langword="true" /> for the given <see cref="DomainObject"/>.
     /// </summary>
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// method can be used from within an expression.</returns>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     [AssertionMethod]
-    public static void CheckIfRightTransaction ([NotNull] DomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
+    public static void CheckIfRightTransaction ([NotNull] IDomainObject domainObject, [NotNull] ClientTransaction clientTransaction)
     {
       ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
       ArgumentUtility.DebugCheckNotNull ("clientTransaction", clientTransaction);

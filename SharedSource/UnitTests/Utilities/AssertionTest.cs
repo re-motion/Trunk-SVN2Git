@@ -156,6 +156,21 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void DebugIsNotNull_Message_True ()
+    {
+      var instance = "x";
+
+      Assert.That (()=>Assertion.DebugIsNotNull (instance, "a"), Throws.Nothing);
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "a")]
+    public void DebugIsNotNull_Message_False ()
+    {
+      Assertion.DebugIsNotNull<object> (null, "a");
+    }
+
+    [Test]
     public void IsNotNull_Message_Args_True ()
     {
       var instance = "x";

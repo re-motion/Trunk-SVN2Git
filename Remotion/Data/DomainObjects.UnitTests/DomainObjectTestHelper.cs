@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
@@ -58,11 +57,6 @@ namespace Remotion.Data.DomainObjects.UnitTests
       }
 
       return result;
-    }
-
-    public static PropertyIndexer GetProperties (DomainObject domainObject)
-    {
-      return new PropertyIndexer (domainObject);
     }
   }
 }

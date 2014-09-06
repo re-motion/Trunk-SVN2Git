@@ -248,7 +248,7 @@ namespace Remotion.Data.DomainObjects
     /// <typeparam name="T">The handle's object type. This must either be the <see cref="Mapping.ClassDefinition.ClassType"/> of this 
     /// <see cref="ObjectID"/>, or a base type of it.</typeparam>
     /// <returns>A typed handle to the <see cref="DomainObject"/> identified by this <see cref="ObjectID"/>.</returns>
-    public IDomainObjectHandle<T> GetHandle<T> () where T : DomainObject
+    public IDomainObjectHandle<T> GetHandle<T> () where T : IDomainObject
     {
       try
       {

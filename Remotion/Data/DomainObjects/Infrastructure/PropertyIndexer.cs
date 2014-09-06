@@ -28,16 +28,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public class PropertyIndexer
   {
-    private readonly DomainObject _domainObject;
+    private readonly IReflectableDomainObject _domainObject;
     private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
 
     /// <summary>
     /// Initializes a new <see cref="PropertyIndexer"/> instance. This is usually not called from the outside; instead, <see cref="PropertyIndexer"/>
-    /// instances are returned by <see cref="DomainObjects.DomainObject.Properties"/>.
+    /// instances are returned by <see cref="IReflectableDomainObject.Properties"/>.
     /// </summary>
     /// <param name="domainObject">The domain object whose properties should be accessed with this <see cref="PropertyIndexer"/>.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
-    public PropertyIndexer (DomainObject domainObject)
+    public PropertyIndexer (IReflectableDomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       _domainObject = domainObject;
@@ -45,10 +45,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     }
 
     /// <summary>
-    /// Gets the <see cref="DomainObject"/> associated with this <see cref="PropertyIndexer"/>.
+    /// Gets the <see cref="IReflectableDomainObject"/> associated with this <see cref="PropertyIndexer"/>.
     /// </summary>
     /// <value>The domain object associated with this <see cref="PropertyIndexer"/>.</value>
-    public DomainObject DomainObject
+    public IReflectableDomainObject DomainObject
     {
       get { return _domainObject; }
     }
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        return this[propertyName, _domainObject.DefaultTransactionContext.ClientTransaction];
+        return this[propertyName, _domainObject.GetDefaultTransactionContext().ClientTransaction];
       }
     }
 
@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
         ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
 
-        return this[domainObjectType, shortPropertyName, _domainObject.DefaultTransactionContext.ClientTransaction];
+        return this[domainObjectType, shortPropertyName, _domainObject.GetDefaultTransactionContext().ClientTransaction];
       }
     }
 
@@ -157,7 +157,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="DomainObject"/>.</returns>
     public IEnumerable<PropertyAccessor> AsEnumerable ()
     {
-      return AsEnumerable (_domainObject.DefaultTransactionContext.ClientTransaction);
+      return AsEnumerable (_domainObject.GetDefaultTransactionContext().ClientTransaction);
     }
 
     /// <summary>
@@ -230,7 +230,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       if (propertyAccessorData != null)
       {
-        return GetPropertyAccessor (_domainObject.DefaultTransactionContext.ClientTransaction, propertyAccessorData);
+        return GetPropertyAccessor (_domainObject.GetDefaultTransactionContext().ClientTransaction, propertyAccessorData);
       }
       else
       {

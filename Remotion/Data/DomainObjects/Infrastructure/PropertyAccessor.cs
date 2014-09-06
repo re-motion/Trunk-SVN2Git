@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public struct PropertyAccessor
   {
-    private readonly DomainObject _domainObject;
+    private readonly IDomainObject _domainObject;
     private readonly PropertyAccessorData _propertyData;
     private readonly ClientTransaction _clientTransaction;
 
@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The transaction to be used for accessing the property.</param>
     /// <exception cref="ArgumentNullException">One of the parameters passed to the constructor is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The domain object does not have a property with the given identifier.</exception>
-    public PropertyAccessor (DomainObject domainObject, PropertyAccessorData propertyData, ClientTransaction clientTransaction)
+    public PropertyAccessor (IDomainObject domainObject, PropertyAccessorData propertyData, ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyData", propertyData);
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// Gets the domain object of this property.
     /// </summary>
     /// <value>The domain object this <see cref="PropertyAccessor"/> is associated with.</value>
-    public DomainObject DomainObject
+    public IDomainObject DomainObject
     {
       get { return _domainObject; }
     }

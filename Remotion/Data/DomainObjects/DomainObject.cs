@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   [IgnoreForMappingConfiguration]
   [Serializable]
-  public class DomainObject
+  public class DomainObject : IReflectableDomainObject
   {
     #region Creation and GetObject factory methods
 
@@ -101,24 +101,24 @@ namespace Remotion.Data.DomainObjects
     }
 
     [Obsolete ("This method has been removed. Domain users: Use id.GetObject<DomainObjectClass>() instead. "
-        + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
+               + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
     protected static T GetObject<T> (ObjectID id) where T : DomainObject
     {
       throw new NotImplementedException();
     }
 
     [Obsolete ("This method has been removed. Domain users: Use id.GetObject<DomainObjectClass>() instead. "
-        + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
+               + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
     protected static T GetObject<T> (ObjectID id, bool includeDeleted) where T : DomainObject
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     [Obsolete ("This method has been removed. Domain users: Use id.GetObject<DomainObjectClass>() instead. "
-        + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
+               + "Domain implementers: Use LifetimeService.GetObject instead. (1.13.184.0)", true)]
     protected static T TryGetObject<T> (ObjectID id) where T : DomainObject
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     #endregion
@@ -210,9 +210,9 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     protected DomainObject ()
     {
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
-      PerformConstructorCheck ();
-// ReSharper restore DoNotCallOverridableMethodsInConstructor
+      // ReSharper disable DoNotCallOverridableMethodsInConstructor
+      PerformConstructorCheck();
+      // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
       Assertion.IsNotNull (ClientTransaction.Current, "This constructor cannot be called with a null ClientTransaction.");
       var initializationContext = ObjectInititalizationContextScope.CurrentObjectInitializationContext;
@@ -226,13 +226,13 @@ namespace Remotion.Data.DomainObjects
       Initialize (initializationContext.ObjectID, initializationContext.RootTransaction);
       initializationContext.RegisterObject (this);
 
-      RaiseReferenceInitializatingEvent ();
+      RaiseReferenceInitializatingEvent();
 
       _needsLoadModeDataContainerOnly = true;
     }
 
 #pragma warning disable 168
-// ReSharper disable UnusedParameter.Local
+    // ReSharper disable UnusedParameter.Local
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainObject"/> class in the process of deserialization.
     /// </summary>
@@ -241,7 +241,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>Be sure to call this base constructor from the deserialization constructor of any concrete <see cref="DomainObject"/> type
     /// implementing the <see cref="ISerializable"/> interface.</remarks>
     protected DomainObject (SerializationInfo info, StreamingContext context)
-// ReSharper restore UnusedParameter.Local
+        // ReSharper restore UnusedParameter.Local
 #pragma warning restore 168
     {
       ArgumentUtility.CheckNotNull ("info", info);
@@ -252,24 +252,32 @@ namespace Remotion.Data.DomainObjects
         _rootTransaction = (ClientTransaction) info.GetValue ("DomainObject._rootTransaction", typeof (ClientTransaction));
         _needsLoadModeDataContainerOnly = info.GetBoolean ("DomainObject._needsLoadModeDataContainerOnly");
 
-        PropertyChanging = (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanging", typeof (EventHandler<PropertyChangeEventArgs>));
-        PropertyChanged = (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanged", typeof (EventHandler<PropertyChangeEventArgs>));
-        RelationChanging = (EventHandler<RelationChangingEventArgs>) info.GetValue ("DomainObject.RelationChanging", typeof (EventHandler<RelationChangingEventArgs>));
-        RelationChanged = (EventHandler<RelationChangedEventArgs>) info.GetValue ("DomainObject.RelationChanged", typeof (EventHandler<RelationChangedEventArgs>));
+        PropertyChanging =
+            (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanging", typeof (EventHandler<PropertyChangeEventArgs>));
+        PropertyChanged =
+            (EventHandler<PropertyChangeEventArgs>) info.GetValue ("DomainObject.PropertyChanged", typeof (EventHandler<PropertyChangeEventArgs>));
+        RelationChanging =
+            (EventHandler<RelationChangingEventArgs>)
+                info.GetValue ("DomainObject.RelationChanging", typeof (EventHandler<RelationChangingEventArgs>));
+        RelationChanged =
+            (EventHandler<RelationChangedEventArgs>) info.GetValue ("DomainObject.RelationChanged", typeof (EventHandler<RelationChangedEventArgs>));
         Deleting = (EventHandler) info.GetValue ("DomainObject.Deleting", typeof (EventHandler));
         Deleted = (EventHandler) info.GetValue ("DomainObject.Deleted", typeof (EventHandler));
-        Committing = (EventHandler<DomainObjectCommittingEventArgs>) info.GetValue ("DomainObject.Committing", typeof (EventHandler<DomainObjectCommittingEventArgs>));
+        Committing =
+            (EventHandler<DomainObjectCommittingEventArgs>)
+                info.GetValue ("DomainObject.Committing", typeof (EventHandler<DomainObjectCommittingEventArgs>));
         Committed = (EventHandler) info.GetValue ("DomainObject.Committed", typeof (EventHandler));
         RollingBack = (EventHandler) info.GetValue ("DomainObject.RollingBack", typeof (EventHandler));
         RolledBack = (EventHandler) info.GetValue ("DomainObject.RolledBack", typeof (EventHandler));
       }
       catch (SerializationException ex)
       {
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
+        // ReSharper disable DoNotCallOverridableMethodsInConstructor
         Type publicDomainObjectType = GetPublicDomainObjectType();
-// ReSharper restore DoNotCallOverridableMethodsInConstructor
+        // ReSharper restore DoNotCallOverridableMethodsInConstructor
         string message = String.Format (
-            "The GetObjectData method on type {0} did not call DomainObject's BaseGetObjectData method.", publicDomainObjectType.FullName);
+            "The GetObjectData method on type {0} did not call DomainObject's BaseGetObjectData method.",
+            publicDomainObjectType.FullName);
         throw new SerializationException (message, ex);
       }
     }
@@ -317,7 +325,7 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     public IDomainObjectTransactionContext DefaultTransactionContext
     {
-      get  { return TransactionContext[RootTransaction.ActiveTransaction]; }
+      get { return this.GetDefaultTransactionContext(); }
     }
 
     /// <summary>
@@ -325,7 +333,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     public StateType State
     {
-      get { return DefaultTransactionContext.State; }
+      get { return this.GetState(); }
     }
 
     /// <summary>
@@ -347,7 +355,7 @@ namespace Remotion.Data.DomainObjects
       get { return IsInvalid; }
     }
 
-      /// <summary>
+    /// <summary>
     /// Gets the timestamp used for optimistic locking when the object is committed to the database in the default transaction, ie. in 
     /// its binding transaction or - if none - <see cref="DomainObjects.ClientTransaction.Current"/>.
     /// </summary>
@@ -370,7 +378,8 @@ namespace Remotion.Data.DomainObjects
     [EditorBrowsable (EditorBrowsableState.Never)]
     protected virtual void PerformConstructorCheck ()
     {
-      throw new InvalidOperationException ("DomainObject constructors must not be called directly. Use DomainObject.NewObject to create DomainObject "
+      throw new InvalidOperationException (
+          "DomainObject constructors must not be called directly. Use DomainObject.NewObject to create DomainObject "
           + "instances.");
     }
 
@@ -381,9 +390,9 @@ namespace Remotion.Data.DomainObjects
     /// <param name="context">The <see cref="StreamingContext"/> coming from the .NET serialization infrastructure.</param>
     /// <remarks>Be sure to call this method from the <see cref="ISerializable.GetObjectData"/> implementation of any concrete
     /// <see cref="DomainObject"/> type implementing the <see cref="ISerializable"/> interface.</remarks>
-// ReSharper disable UnusedParameter.Global
+    // ReSharper disable UnusedParameter.Global
     protected void BaseGetObjectData (SerializationInfo info, StreamingContext context)
-// ReSharper restore UnusedParameter.Global
+        // ReSharper restore UnusedParameter.Global
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
@@ -448,7 +457,7 @@ namespace Remotion.Data.DomainObjects
     /// <returns>The public type representation of this domain object.</returns>
     public Type GetPublicDomainObjectType ()
     {
-      return GetPublicDomainObjectTypeImplementation ();
+      return GetPublicDomainObjectTypeImplementation();
     }
 
     /// <summary>
@@ -460,7 +469,7 @@ namespace Remotion.Data.DomainObjects
     /// as if it was of the type returned by this method and ignore its actual type.</remarks>
     protected virtual Type GetPublicDomainObjectTypeImplementation ()
     {
-      return base.GetType ();
+      return base.GetType();
     }
 
     /// <summary>
@@ -471,7 +480,7 @@ namespace Remotion.Data.DomainObjects
     /// </returns>
     public override string ToString ()
     {
-      return ID.ToString ();
+      return ID.ToString();
     }
 
     /// <summary>
@@ -538,7 +547,7 @@ namespace Remotion.Data.DomainObjects
     /// found in the data source.</exception>
     public void EnsureDataAvailable ()
     {
-      DefaultTransactionContext.EnsureDataAvailable ();
+      DefaultTransactionContext.EnsureDataAvailable();
     }
 
     /// <summary>
@@ -552,7 +561,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
     public bool TryEnsureDataAvailable ()
     {
-      return DefaultTransactionContext.TryEnsureDataAvailable ();
+      return DefaultTransactionContext.TryEnsureDataAvailable();
     }
 
     /// <summary>
@@ -563,7 +572,7 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>To perform custom actions when a <see cref="DomainObject"/> is deleted <see cref="OnDeleting"/> and <see cref="OnDeleted"/> should be overridden.</remarks>
     protected void Delete ()
     {
-      CheckInitializeEventNotExecuting ();
+      CheckInitializeEventNotExecuting();
       LifetimeService.DeleteObject (DefaultTransactionContext.ClientTransaction, this);
     }
 
@@ -581,7 +590,7 @@ namespace Remotion.Data.DomainObjects
     {
       get
       {
-        CheckInitializeEventNotExecuting ();
+        CheckInitializeEventNotExecuting();
 
         string propertyName = CurrentPropertyManager.GetAndCheckCurrentPropertyName();
         return Properties[propertyName];
@@ -592,7 +601,7 @@ namespace Remotion.Data.DomainObjects
     /// Provides simple, encapsulated access to the properties of this <see cref="DomainObject"/>.
     /// </summary>
     /// <returns>A <see cref="PropertyIndexer"/> object which can be used to select a specific property of this <see cref="DomainObject"/>.</returns>
-    protected internal PropertyIndexer Properties
+    protected PropertyIndexer Properties
     {
       get
       {
@@ -604,6 +613,11 @@ namespace Remotion.Data.DomainObjects
       }
     }
 
+    PropertyIndexer IReflectableDomainObject.Properties
+    {
+      get { return Properties; }
+    }
+
     /// <summary>
     /// Calls the <see cref="OnReferenceInitializing"/> method, setting a flag indicating that no mapped properties must be used.
     /// </summary>
@@ -612,7 +626,7 @@ namespace Remotion.Data.DomainObjects
       _isReferenceInitializeEventExecuting = true;
       try
       {
-        OnReferenceInitializing ();
+        OnReferenceInitializing();
         DomainObjectMixinCodeGenerationBridge.OnDomainObjectReferenceInitializing (this);
       }
       finally
@@ -831,20 +845,20 @@ namespace Remotion.Data.DomainObjects
     [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]
     public void MarkAsChanged ()
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     [Obsolete ("This API is obsolete, all ClientTransactions now bind their DomainObjects. Use the RootTransaction property instead. (1.13.189.0)",
         true)]
     public ClientTransaction GetBindingTransaction ()
     {
-      throw new NotImplementedException ();
+      throw new NotImplementedException();
     }
 
     [Obsolete ("This API is obsolete, all ClientTransactions now bind their DomainObjects. (1.13.189.0)", true)]
     public bool HasBindingTransaction
     {
-      get { throw new NotImplementedException (); }
+      get { throw new NotImplementedException(); }
     }
   }
 }

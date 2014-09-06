@@ -182,11 +182,11 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     private void Swap (ClassWithRelationProperties one, ClassWithRelationProperties two, string shortPropertyName)
     {
-      var accessorOne = one.Properties[typeof (ClassWithRelationProperties), shortPropertyName];
-      var accessorTwo = two.Properties[typeof (ClassWithRelationProperties), shortPropertyName];
+      var accessorOne = ((IReflectableDomainObject) one).Properties[typeof (ClassWithRelationProperties), shortPropertyName];
+      var accessorTwo = ((IReflectableDomainObject) two).Properties[typeof (ClassWithRelationProperties), shortPropertyName];
 
-      var oldValue = accessorOne.GetValueWithoutTypeCheck ();
-      accessorOne.SetValueWithoutTypeCheck (accessorTwo.GetValueWithoutTypeCheck ());
+      var oldValue = accessorOne.GetValueWithoutTypeCheck();
+      accessorOne.SetValueWithoutTypeCheck (accessorTwo.GetValueWithoutTypeCheck());
       accessorTwo.SetValueWithoutTypeCheck (oldValue);
     }
   }

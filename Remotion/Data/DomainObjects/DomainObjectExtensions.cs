@@ -30,13 +30,21 @@ namespace Remotion.Data.DomainObjects
     /// Returns the <see cref="DomainObject.ID"/> of the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if 
     /// <paramref name="domainObjectOrNull"/> is itself <see langword="null" />.
     /// </summary>
-    /// <param name="domainObjectOrNull">The <see cref="DomainObject"/> whose <see cref="DomainObject.ID"/> to get. If this parameter is 
+    /// <param name="domainObjectOrNull">The <see cref="IDomainObject"/> whose <see cref="IDomainObject.ID"/> to get. If this parameter is 
     /// <see langword="null" />, the method returns <see langword="null" />.</param>
     /// <returns>The <paramref name="domainObjectOrNull"/>'s <see cref="DomainObject.ID"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
     /// is <see langword="null" />.</returns>
-    public static ObjectID GetSafeID ([CanBeNull] this DomainObject domainObjectOrNull)
+    [CanBeNull]
+    [ContractAnnotation ("null => null; notnull => notnull")]
+    public static ObjectID GetSafeID ([CanBeNull] this IDomainObject domainObjectOrNull)
     {
-      return domainObjectOrNull != null ? domainObjectOrNull.ID : null;
+      if (domainObjectOrNull == null)
+        return null;
+
+      var objectID = domainObjectOrNull.ID;
+      Assertion.DebugIsNotNull (objectID, "domainObjectOrNull.ID was null");
+
+      return domainObjectOrNull.ID;
     }
 
     /// <summary>
@@ -44,12 +52,17 @@ namespace Remotion.Data.DomainObjects
     /// static type of the value passed as <paramref name="domainObject"/>.
     /// </summary>
     /// <typeparam name="T">The type to be used for the returned <see cref="IDomainObjectHandle{T}"/>.</typeparam>
-    /// <param name="domainObject">The <see cref="DomainObject"/> to get a handle for. Must not be <see langword="null" />.</param>
+    /// <param name="domainObject">The <see cref="IDomainObject"/> to get a handle for. Must not be <see langword="null" />.</param>
     /// <returns>A typed handle to the given <paramref name="domainObject"/>.</returns>
-    public static IDomainObjectHandle<T> GetHandle<T> ([NotNull] this T domainObject) where T : DomainObject
+    [NotNull]
+    public static IDomainObjectHandle<T> GetHandle<T> ([NotNull] this T domainObject) where T : IDomainObject
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-      return domainObject.ID.GetHandle<T>();
+
+      var objectID = domainObject.ID;
+      Assertion.DebugIsNotNull (objectID, "domainObject.ID was null");
+
+      return objectID.GetHandle<T>();
     }
 
     /// <summary>
@@ -59,13 +72,50 @@ namespace Remotion.Data.DomainObjects
     /// static type of the value passed as <paramref name="domainObjectOrNull"/>.
     /// </summary>
     /// <typeparam name="T">The type to be used for the returned <see cref="IDomainObjectHandle{T}"/>.</typeparam>
-    /// <param name="domainObjectOrNull">The <see cref="DomainObject"/> to get a handle for. If this parameter is 
+    /// <param name="domainObjectOrNull">The <see cref="IDomainObject"/> to get a handle for. If this parameter is 
     /// <see langword="null" />, the method returns <see langword="null" />.</param>
     /// <returns>A typed handle to the given <paramref name="domainObjectOrNull"/>, or <see langword="null" /> if <paramref name="domainObjectOrNull"/>
     /// is <see langword="null" />.</returns>
-    public static IDomainObjectHandle<T> GetSafeHandle<T> ([CanBeNull] this T domainObjectOrNull) where T : DomainObject
+    [CanBeNull]
+    [ContractAnnotation ("null => null; notnull => notnull")]
+    public static IDomainObjectHandle<T> GetSafeHandle<T> ([CanBeNull] this T domainObjectOrNull) where T : class, IDomainObject
     {
-      return domainObjectOrNull != null ?domainObjectOrNull.GetHandle() : null;
+      return domainObjectOrNull != null ? domainObjectOrNull.GetHandle() : null;
+    }
+
+    /// <summary>
+    /// Gets the current state of the <paramref name="domainObject"/> in the <see cref="ClientTransaction.ActiveTransaction"/>.
+    /// </summary>
+    /// <param name="domainObject">The <see cref="IDomainObject"/> to get the <see cref="StateType"/> for. Must not be <see langword="null" />.</param>
+    public static StateType GetState ([NotNull] this IDomainObject domainObject)
+    {
+      ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
+
+      return GetDefaultTransactionContext (domainObject).State;
+    }
+
+    /// <summary>
+    /// Gets the default <see cref="IDomainObjectTransactionContext"/>, i.e. the transaction context that is used when this 
+    /// <see cref="IDomainObject"/>'s properties are accessed without specifying a <see cref="DomainObjects.ClientTransaction"/>.
+    /// </summary>
+    /// <param name="domainObject">
+    /// The <see cref="IDomainObject"/> to get the default <see cref="IDomainObjectTransactionContext"/> for. Must not be <see langword="null" />.
+    /// </param>
+    /// <returns>The default transaction context.</returns>
+    /// <remarks>
+    /// The default transaction for a <see cref="DomainObject"/> is the <see cref="ClientTransaction.ActiveTransaction"/> of the associated 
+    /// <see cref="IDomainObject.RootTransaction"/>. The <see cref="ClientTransaction.ActiveTransaction"/> is usually the 
+    /// <see cref="ClientTransaction.LeafTransaction"/>, but it can be changed by using <see cref="ClientTransaction"/> APIs.
+    /// </remarks>
+    [NotNull]
+    public static IDomainObjectTransactionContext GetDefaultTransactionContext ([NotNull] this IDomainObject domainObject)
+    {
+      ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
+
+      var rootTransaction = domainObject.RootTransaction;
+      Assertion.DebugAssert (rootTransaction != null, "domainObject.RootTransaction was null");
+
+      return domainObject.TransactionContext[rootTransaction.ActiveTransaction];
     }
   }
 }

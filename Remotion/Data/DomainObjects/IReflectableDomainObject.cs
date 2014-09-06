@@ -14,26 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Reflection;
-using Remotion.ObjectBinding.BindableObject;
+using JetBrains.Annotations;
+using Remotion.Data.DomainObjects.Infrastructure;
 
-namespace Remotion.Data.DomainObjects.ObjectBinding
+namespace Remotion.Data.DomainObjects
 {
-  internal class BindableDomainObjectPropertyFinder : ReflectionBasedPropertyFinder
+  /// <summary>
+  /// Extends the <see cref="IDomainObject"/> interface with the ability to perform reflection-like operations.
+  /// </summary>
+  public interface IReflectableDomainObject : IDomainObject
   {
-    public BindableDomainObjectPropertyFinder (Type targetType)
-        : base (targetType)
-    {
-    }
-
-    protected override bool IsInfrastructureProperty (PropertyInfo propertyInfo, MethodInfo accessorDeclaration)
-    {
-      return base.IsInfrastructureProperty (propertyInfo, accessorDeclaration)
-          || accessorDeclaration.DeclaringType == typeof (DomainObject)
-          || accessorDeclaration.DeclaringType == typeof (BindableDomainObject)
-          || accessorDeclaration.DeclaringType == typeof (IDomainObject)
-          || accessorDeclaration.DeclaringType == typeof (IReflectableDomainObject);
-    }
+    /// <summary>
+    /// Provides simple, encapsulated access to the properties of this <see cref="DomainObject"/>.
+    /// </summary>
+    /// <returns>A <see cref="PropertyIndexer"/> object which can be used to select a specific property of this <see cref="DomainObject"/>.</returns>
+    [NotNull]
+    PropertyIndexer Properties { get; }
   }
 }

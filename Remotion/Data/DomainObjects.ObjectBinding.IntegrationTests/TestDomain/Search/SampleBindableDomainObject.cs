@@ -48,12 +48,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.
     public abstract string Name { get; set; }
     public abstract int Int32 { get; set; }
 
-    [StorageClassNone]
-    public PropertyIndexer PublicProperties
-    {
-      get { return base.Properties; }
-    }
-
     [StorageClassTransaction]
     [DBBidirectionalRelation ("OppositeSampleObject")]
     public abstract OppositeBidirectionalBindableDomainObject RelatedObjectProperty1 { get; set; }

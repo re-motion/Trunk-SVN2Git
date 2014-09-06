@@ -80,11 +80,5 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
 
     [DBBidirectionalRelation ("EndOfCollection")]
     public abstract ObjectList<OppositeClassWithCollectionRelationProperties> Collection { get; }
-
-    [StorageClassNone]
-    public new PropertyIndexer Properties
-    {
-      get { return base.Properties; }
-    }
   }
 }

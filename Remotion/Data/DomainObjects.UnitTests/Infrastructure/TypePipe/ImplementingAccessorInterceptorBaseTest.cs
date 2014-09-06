@@ -26,6 +26,7 @@ using Remotion.TypePipe.Dlr.Ast;
 using Remotion.TypePipe.Expressions;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.BodyBuilding;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.TypePipe
@@ -74,7 +75,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.TypePipe
       var expectedbody =
           Expression.Call (
               Expression.Call (
-                  Expression.Property (new ThisExpression (_proxyType), "Properties"),
+                  Expression.Property (
+                      new ThisExpression (_proxyType),
+                      MemberInfoFromExpressionUtility.GetProperty ((IReflectableDomainObject o) => o.Properties)),
                   "get_Item",
                   null,
                   Expression.Constant ("abc")),

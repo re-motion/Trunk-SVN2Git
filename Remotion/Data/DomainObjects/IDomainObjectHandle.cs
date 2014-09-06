@@ -16,29 +16,31 @@
 // 
 using System;
 using System.ComponentModel;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Provides a covariant, typed interface for handles to <see cref="DomainObject"/> instances.
+  /// Provides a covariant, typed interface for handles to <see cref="IDomainObject"/> instances.
   /// </summary>
-  /// <typeparam name="T">The class of the <see cref="DomainObject"/> identified by this <see cref="IDomainObjectHandle{T}"/>.</typeparam>
+  /// <typeparam name="T">The class of the <see cref="IDomainObject"/> identified by this <see cref="IDomainObjectHandle{T}"/>.</typeparam>
   /// <remarks>
-  /// Use this interface when you need a typed representation of a certain <see cref="DomainObject"/> instance that is not bound to a specific
-  /// <see cref="ClientTransaction"/>. Get a handle for a <see cref="DomainObject"/> or an <see cref="DomainObjects.ObjectID"/> by calling 
+  /// Use this interface when you need a typed representation of a certain <see cref="IDomainObject"/> instance that is not bound to a specific
+  /// <see cref="ClientTransaction"/>. Get a handle for an <see cref="IDomainObject"/> or an <see cref="DomainObjects.ObjectID"/> by calling 
   /// <see cref="DomainObjectExtensions.GetHandle{T}"/> or <see cref="DomainObjects.ObjectID.GetHandle{T}"/>.
   /// <note type="inotes">Implementations of the interface must be threadsafe.</note>
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   [TypeConverter (typeof (DomainObjectHandleConverter))]
   [DomainObjectHandle]
-  public interface IDomainObjectHandle<out T> : IEquatable<IDomainObjectHandle<DomainObject>>
-      where T : DomainObject
+  public interface IDomainObjectHandle<out T> : IEquatable<IDomainObjectHandle<IDomainObject>>
+      where T : IDomainObject
   {
     /// <summary>
     /// Returns the <see cref="DomainObjects.ObjectID"/> of the object represented by this <see cref="IDomainObjectHandle{T}"/>.
     /// </summary>
+    [NotNull]
     ObjectID ObjectID { get; }
 
     /// <summary>
@@ -46,6 +48,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <returns>The same <see cref="IDomainObjectHandle{T}"/> as this object, but typed to another type <typeparamref name="TOther"/>>.</returns>
     /// <exception cref="InvalidCastException">This <see cref="IDomainObjectHandle{T}"/> is not compatible with <typeparamref name="TOther"/>.</exception>
-    IDomainObjectHandle<TOther> Cast<TOther> () where TOther : DomainObject;
+    [NotNull]
+    IDomainObjectHandle<TOther> Cast<TOther> () where TOther : IDomainObject;
   }
 }

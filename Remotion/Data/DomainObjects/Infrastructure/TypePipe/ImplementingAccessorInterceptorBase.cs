@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.TypePipe
   /// </summary>
   public abstract class ImplementingAccessorInterceptorBase : WrappingAccessorInterceptor
   {
-    private static readonly PropertyInfo s_properties = MemberInfoFromExpressionUtility.GetProperty ((DomainObject o) => o.Properties);
+    private static readonly PropertyInfo s_properties = MemberInfoFromExpressionUtility.GetProperty ((IReflectableDomainObject o) => o.Properties);
     private static readonly MethodInfo s_getPropertyAccessor = MemberInfoFromExpressionUtility.GetMethod ((PropertyIndexer i) => i["propertyName"]);
 
     private readonly string _propertyName;

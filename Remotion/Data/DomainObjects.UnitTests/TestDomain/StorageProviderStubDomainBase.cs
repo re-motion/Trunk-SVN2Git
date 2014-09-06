@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
 
 #pragma warning disable 0618
 
@@ -51,12 +50,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain
     public void SetRelatedObject (string propertyName, DomainObject newRelatedObject)
     {
       Properties[propertyName].SetValueWithoutTypeCheck (newRelatedObject);
-    }
-
-    [StorageClassNone]
-    public new PropertyIndexer Properties
-    {
-      get { return base.Properties; }
     }
   }
 }

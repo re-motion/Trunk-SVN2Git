@@ -128,6 +128,13 @@ namespace Remotion.Utilities
         throw new InvalidOperationException (string.Format (message, arguments));
     }
 
+    [Conditional ("DEBUG")]
+    [AssertionMethod]
+    public static void DebugIsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message)
+    {
+      IsNotNull (obj, message, s_emptyArguments);
+    }
+
     [AssertionMethod]
     public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message)
     {

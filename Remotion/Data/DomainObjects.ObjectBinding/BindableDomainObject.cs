@@ -17,7 +17,6 @@
 using System;
 using System.Runtime.Serialization;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 
@@ -34,7 +33,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   [BindableObjectBaseClass]
   [IgnoreForMappingConfiguration]
   [Serializable]
-  public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity, BindableDomainObjectMixin.IDomainObject
+  public abstract class BindableDomainObject : DomainObject, IBusinessObjectWithIdentity
   {
     private IBindableDomainObjectImplementation _implementation;
 
@@ -108,11 +107,6 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     IBusinessObjectClass IBusinessObject.BusinessObjectClass
     {
       get { return _implementation.BusinessObjectClass; }
-    }
-
-    PropertyIndexer BindableDomainObjectMixin.IDomainObject.Properties
-    {
-      get { return Properties; }
     }
   }
 }

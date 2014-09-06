@@ -178,7 +178,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction.Rea
         Expression<Func<TDomainObject, IEnumerable<TValue>>> propertyExpression,
         IEnumerable<TValue> expectedCurrentValue,
         IEnumerable<TValue> expectedOriginalValue)
-        where TDomainObject : DomainObject
+        where TDomainObject : DomainObject, IReflectableDomainObject
     {
       var isReadOnlyTransaction = !clientTransaction.IsWriteable;
       if (isReadOnlyTransaction)
@@ -188,12 +188,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction.Rea
 
       try
       {
-        var propertyIndexer = new PropertyIndexer (domainObject);
         var propertyAccessorData = domainObject.ID.ClassDefinition.PropertyAccessorDataCache.ResolveMandatoryPropertyAccessorData (propertyExpression);
         Assert.That (
-            propertyIndexer[propertyAccessorData.PropertyIdentifier, clientTransaction].GetValueWithoutTypeCheck (), Is.EquivalentTo (expectedCurrentValue));
+            domainObject.Properties[propertyAccessorData.PropertyIdentifier, clientTransaction].GetValueWithoutTypeCheck (), 
+            Is.EquivalentTo (expectedCurrentValue));
         Assert.That (
-            propertyIndexer[propertyAccessorData.PropertyIdentifier, clientTransaction].GetOriginalValueWithoutTypeCheck (),
+            domainObject.Properties[propertyAccessorData.PropertyIdentifier, clientTransaction].GetOriginalValueWithoutTypeCheck (),
             Is.EquivalentTo (expectedOriginalValue));
       }
       finally

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappingSample
 {
@@ -27,12 +26,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.TestDomain.ReflectionBasedMappin
   {
     protected ClosedGenericClassWithManySideRelationProperties ()
     {
-    }
-
-    [StorageClassNone]
-    public new PropertyIndexer Properties
-    {
-      get { return base.Properties; }
     }
   }
 }

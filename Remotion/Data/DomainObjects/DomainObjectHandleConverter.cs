@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects
 
       try
       {
-        return ObjectID.Parse (stringValue).GetHandle<DomainObject>();
+        return ObjectID.Parse (stringValue).GetHandle<IDomainObject>();
       }
       catch (FormatException ex)
       {
@@ -62,10 +62,10 @@ namespace Remotion.Data.DomainObjects
       if (value == null)
         return null;
 
-      var domainObjectHandle = value as IDomainObjectHandle<DomainObject>;
+      var domainObjectHandle = value as IDomainObjectHandle<IDomainObject>;
       if (domainObjectHandle == null)
       {
-        var message = string.Format ("This TypeConverter can only convert values of type '{0}'.", typeof (IDomainObjectHandle<DomainObject>));
+        var message = string.Format ("This TypeConverter can only convert values of type '{0}'.", typeof (IDomainObjectHandle<IDomainObject>));
         throw new NotSupportedException (message);
       }
       
