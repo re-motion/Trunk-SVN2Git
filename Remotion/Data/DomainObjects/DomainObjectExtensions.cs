@@ -93,7 +93,23 @@ namespace Remotion.Data.DomainObjects
     {
       ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
 
-      return GetDefaultTransactionContext (domainObject).State;
+      var defaultTransactionContext = GetDefaultTransactionContext (domainObject);
+      return defaultTransactionContext.State;
+    }
+
+    /// <summary>
+    /// Gets the timestamp used for optimistic locking when the <paramref name="domainObject"/> is committed to the database in its 
+    /// <see cref="IDomainObject.RootTransaction"/>.
+    /// </summary>
+    /// <value>The timestamp of the object.</value>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
+    [CanBeNull]
+    public static object GetTimestamp ([NotNull] this IDomainObject domainObject)
+    {
+      ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
+
+      var defaultTransactionContext = GetDefaultTransactionContext (domainObject);
+      return defaultTransactionContext.Timestamp;
     }
 
     /// <summary>

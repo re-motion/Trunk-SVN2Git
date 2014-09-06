@@ -349,12 +349,6 @@ namespace Remotion.Data.DomainObjects
       get { return State == StateType.Invalid; }
     }
 
-    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
-    public bool IsDiscarded
-    {
-      get { return IsInvalid; }
-    }
-
     /// <summary>
     /// Gets the timestamp used for optimistic locking when the object is committed to the database in the default transaction, ie. in 
     /// its binding transaction or - if none - <see cref="DomainObjects.ClientTransaction.Current"/>.
@@ -364,7 +358,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     public object Timestamp
     {
-      get { return DefaultTransactionContext.Timestamp; }
+      get { return this.GetTimestamp(); }
     }
 
     /// <summary>
@@ -777,6 +771,12 @@ namespace Remotion.Data.DomainObjects
 
     [Obsolete ("This API is obsolete, all ClientTransactions now bind their DomainObjects. (1.13.189.0)", true)]
     public bool HasBindingTransaction
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    [Obsolete ("This state is now called Invalid. (1.13.60)", true)]
+    public bool IsDiscarded
     {
       get { throw new NotImplementedException(); }
     }

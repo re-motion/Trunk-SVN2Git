@@ -103,6 +103,16 @@ namespace Remotion.Data.DomainObjects.UnitTests
     }
 
     [Test]
+    public void GetTimestamp ()
+    {
+      var domainObject = DomainObjectIDs.Order1.GetObject<Order> (ClientTransaction.CreateRootTransaction());
+
+      var timestamp = domainObject.GetTimestamp();
+
+      Assert.That (timestamp, Is.SameAs (domainObject.TransactionContext[domainObject.RootTransaction.ActiveTransaction].Timestamp));
+    }
+
+    [Test]
     public void RegisterForCommit ()
     {
       var transaction = new TestableClientTransaction();
