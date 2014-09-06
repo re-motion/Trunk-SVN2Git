@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation
     {
       var instance = Order.NewObject ();
       instance.Delete ();
-      Assert.That (instance.IsInvalid, Is.True);
+      Assert.That (instance.State, Is.EqualTo (StateType.Invalid));
 
       Assert.That (() => LifetimeService.GetObject (TestableClientTransaction, instance.ID, false), Throws.TypeOf<ObjectInvalidException> ());
       Assert.That (() => LifetimeService.GetObject (TestableClientTransaction, instance.ID, true), Throws.TypeOf<ObjectInvalidException> ());
@@ -134,7 +134,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation
     {
       var instance = Order.NewObject ();
       instance.Delete ();
-      Assert.That (instance.IsInvalid, Is.True);
+      Assert.That (instance.State, Is.EqualTo (StateType.Invalid));
 
       var instanceAgain = LifetimeService.TryGetObject (TestableClientTransaction, instance.ID);
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation
     {
       var instance = Order.NewObject ();
       instance.Delete();
-      Assert.That (instance.IsInvalid, Is.True);
+      Assert.That (instance.State, Is.EqualTo (StateType.Invalid));
 
       var result = LifetimeService.GetObjectReference (TestableClientTransaction, instance.ID);
 
@@ -192,7 +192,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation
     {
       var instance = Order.NewObject ();
       instance.Delete ();
-      Assert.That (instance.IsInvalid, Is.True);
+      Assert.That (instance.State, Is.EqualTo (StateType.Invalid));
 
       Assert.That (() => LifetimeService.GetObjects<Order> (TestableClientTransaction, instance.ID, instance.ID), Throws.TypeOf<ObjectInvalidException> ());
     }
@@ -208,7 +208,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation
 
       var invalidInstance = Order.NewObject ();
       invalidInstance.Delete ();
-      Assert.That (invalidInstance.IsInvalid, Is.True);
+      Assert.That (invalidInstance.State, Is.EqualTo (StateType.Invalid));
 
       Order[] orders = LifetimeService.TryGetObjects<Order> (
           TestableClientTransaction, DomainObjectIDs.Order1, notFoundObjectID, deletedObjectID, invalidInstance.ID);

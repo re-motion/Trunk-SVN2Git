@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
       Customer customer = Customer.NewObject ();
       collection.Add (customer);
       customer.Delete ();
-      Assert.That (customer.IsInvalid, Is.True);
+      Assert.That (customer.State, Is.EqualTo (StateType.Invalid));
 
       //The next line does not throw an ObjectInvalidException:
       collection.Remove (customer);
@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
       collection.Add (customer);
 
       customer.Delete ();
-      Assert.That (customer.IsInvalid, Is.True);
+      Assert.That (customer.State, Is.EqualTo (StateType.Invalid));
 
       //The next line does not throw an exception:
       collection.Clear ();

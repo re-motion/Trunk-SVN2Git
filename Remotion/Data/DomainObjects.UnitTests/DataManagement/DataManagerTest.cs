@@ -573,7 +573,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       var invalidObject = Order.NewObject ();
       invalidObject.Delete ();
-      Assert.That (invalidObject.IsInvalid, Is.True);
+      Assert.That (invalidObject.State, Is.EqualTo (StateType.Invalid));
 
       _dataManager.CreateDeleteCommand (invalidObject);
     }

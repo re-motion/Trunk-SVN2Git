@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.RoleTests
@@ -39,7 +40,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure.Role
 
       role.Delete();
 
-      Assert.That (substitution.IsInvalid, Is.True);
+      Assert.That (substitution.State, Is.EqualTo (StateType.Invalid));
     }
   }
 }

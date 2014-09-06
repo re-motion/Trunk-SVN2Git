@@ -18,6 +18,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using Remotion.Data.DomainObjects;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain
@@ -43,7 +44,7 @@ namespace Remotion.SecurityManager.Domain
       if (IsDeleted)
         throw new InvalidOperationException ("The Delete operation my only be performed once.");
 
-      foreach (BaseSecurityManagerObject domainObject in _objectsToBeDeleted.Where (o => !o.IsInvalid))
+      foreach (BaseSecurityManagerObject domainObject in _objectsToBeDeleted.Where (o => o.State != StateType.Invalid))
         domainObject.Delete();
 
       _objectsToBeDeleted = null;

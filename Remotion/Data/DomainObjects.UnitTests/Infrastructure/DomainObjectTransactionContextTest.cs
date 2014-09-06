@@ -71,16 +71,19 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    public void IsDiscarded_False()
+    public void IsInvalid_False()
     {
       Assert.That (_newOrderContext.IsInvalid, Is.False);
     }
 
     [Test]
-    public void IsDiscarded_False_DiscardedInCurrentTransaction ()
+    public void IsInvalid_False_InvalidInCurrentTransaction ()
     {
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope())
       {
+        Assert.That (_loadedOrder1.IsInvalid, Is.False);
+        Assert.That (_loadedOrder1Context.IsInvalid, Is.False);
+
         DeleteOrder(_loadedOrder1);
         ClientTransaction.Current.Commit ();
 
@@ -90,7 +93,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    public void IsDiscarded_True ()
+    public void IsInvalid_True ()
     {
       _newOrder.Delete ();
       Assert.That (_newOrderContext.IsInvalid, Is.True);

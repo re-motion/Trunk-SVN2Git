@@ -69,7 +69,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     bool IDomainObjectSecurityContextFactory.IsInvalid
     {
-      get { return IsInvalid; }
+      get { return State == StateType.Invalid; }
     }
 
     bool IDomainObjectSecurityContextFactory.IsNew

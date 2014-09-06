@@ -134,13 +134,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Delete
     }
 
     [Test]
-    public void DomainObjectIsDiscarded ()
+    public void DomainObjectIsInvalid ()
     {
-      Assert.That (_newOrder.IsInvalid, Is.False);
+      Assert.That (_newOrder.State, Is.Not.EqualTo (StateType.Invalid));
 
       _newOrder.Delete ();
 
-      Assert.That (_newOrder.IsInvalid, Is.True);
+      Assert.That (_newOrder.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]

@@ -247,7 +247,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       {
         var objectReference = LifetimeService.GetObjectReference (subTransaction, order1.ID);
         Assert.That (objectReference, Is.SameAs (order1));
-        Assert.That (objectReference.IsInvalid, Is.True);
+        Assert.That (objectReference.State, Is.EqualTo (StateType.Invalid));
       }
     }
 
@@ -529,8 +529,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       {
         var result = LifetimeService.TryGetObjects<Order> (subTransaction, order1.ID, order3.ID, order4.ID);
         Assert.That (result, Is.EqualTo(new[] { order1, order3, order4}));
-        Assert.That (result[1].IsInvalid, Is.True);
-        Assert.That (result[2].IsInvalid, Is.True);
+        Assert.That (result[1].State, Is.EqualTo (StateType.Invalid));
+        Assert.That (result[2].State, Is.EqualTo (StateType.Invalid));
       }
     }
 

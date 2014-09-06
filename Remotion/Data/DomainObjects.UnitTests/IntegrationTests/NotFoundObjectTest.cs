@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
       // After the object has been marked invalid
       Assert.That (() => instance = _nonExistingObjectID.TryGetObject<TestDomainBase> (), Throws.Nothing);
       Assert.That (instance, Is.Not.Null);
-      Assert.That (instance.IsInvalid, Is.True);
+      Assert.That (instance.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests
         Assert.That (() => instance = _nonExistingObjectIDForSubtransaction.TryGetObject<TestDomainBase> (), Throws.Nothing);
 
         Assert.That (instance, Is.Not.Null);
-        Assert.That (instance.IsInvalid, Is.True);
+        Assert.That (instance.State, Is.EqualTo (StateType.Invalid));
 
         Assert.That (() => instance = _nonExistingObjectID.TryGetObject<TestDomainBase> (), Throws.Nothing);
 

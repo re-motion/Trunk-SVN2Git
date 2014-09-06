@@ -135,7 +135,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       Assert.That (unidirectionalWithDeleted.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (unidirectionalWithDeletedNew.State, Is.EqualTo (StateType.Changed));
 
-      Assert.That (invalid.IsInvalid, Is.True);
+      Assert.That (invalid.State, Is.EqualTo (StateType.Invalid));
     }
 
     protected void FullyDeleteOrder (Order order)

@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       Order obj = GetDeleted ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
       }
       Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       ObjectID id = obj.ID;
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
         id.GetObject<Order> ();
       }
     }
@@ -152,7 +152,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
         Assert.That (obj.State, Is.EqualTo (StateType.NotLoadedYet));
         obj.EnsureDataAvailable ();
         Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
-        Assert.That (deleted.IsInvalid, Is.True);
+        Assert.That (deleted.State, Is.EqualTo (StateType.Invalid));
       }
       Assert.That (obj.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (deleted.State, Is.EqualTo (StateType.Deleted));
@@ -197,9 +197,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       DomainObject obj = GetInvalid ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
       }
-      Assert.That (obj.IsInvalid, Is.True);
+      Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
     }
   }
 }

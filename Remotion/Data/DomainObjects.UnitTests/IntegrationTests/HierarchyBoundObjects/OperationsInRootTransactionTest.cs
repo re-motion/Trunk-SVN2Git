@@ -168,12 +168,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.HierarchyBoundO
       var order = (Order) LifetimeService.NewObject (_rootTransaction, typeof (Order), ParamList.Empty);
       
       Assert.That (GetStateFromTransaction (order, _rootTransaction), Is.EqualTo (StateType.New));
-      Assert.That (order.IsInvalid, Is.False);
+      Assert.That (order.State, Is.Not.EqualTo (StateType.Invalid));
 
       order.Delete();
 
       Assert.That (GetStateFromTransaction (order, _rootTransaction), Is.EqualTo (StateType.Invalid));
-      Assert.That (order.IsInvalid, Is.True);
+      Assert.That (order.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]

@@ -342,12 +342,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
     }
 
     [Test]
-    public void DiscardedStateType ()
+    public void InvalidStateType ()
     {
       ClassWithAllDataTypes newObject = ClassWithAllDataTypes.NewObject ();
       DataContainer newObjectDataContainer = newObject.InternalDataContainer;
       ClassWithAllDataTypes loadedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       DataContainer loadedObjectDataContainer = newObject.InternalDataContainer;
+
+      Assert.That (newObject.IsInvalid, Is.False);
+      Assert.That (newObject.State, Is.EqualTo (StateType.New));
+      Assert.That (loadedObject.IsInvalid, Is.False);
+      Assert.That (loadedObject.State, Is.EqualTo (StateType.Unchanged));
 
       newObject.Delete ();
 
@@ -388,7 +393,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
     }
 
     [Test]
-    public void IsDiscardedInTransaction ()
+    public void IsInvalidInTransaction ()
     {
       var discardedObject = DomainObjectIDs.ClassWithAllDataTypes1.GetObject<ClassWithAllDataTypes> ();
       var nonDiscardedObject = DomainObjectIDs.ClassWithAllDataTypes2.GetObject<ClassWithAllDataTypes> ();
@@ -396,11 +401,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
       discardedObject.Delete ();
       TestableClientTransaction.Commit ();
       
-      Assert.That (discardedObject.IsInvalid, Is.True);
-      Assert.That (nonDiscardedObject.IsInvalid, Is.False);
+      Assert.That (discardedObject.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (nonDiscardedObject.State, Is.Not.EqualTo (StateType.Invalid));
 
-      Assert.That (discardedObject.TransactionContext[TestableClientTransaction].IsInvalid, Is.True);
-      Assert.That (nonDiscardedObject.TransactionContext[TestableClientTransaction].IsInvalid, Is.False);
+      Assert.That (discardedObject.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Invalid));
+      Assert.That (nonDiscardedObject.TransactionContext[TestableClientTransaction].State, Is.Not.EqualTo (StateType.Invalid));
     }
 
     [Test]

@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
         FullyDeleteOrder (obj);
         Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
         ClientTransactionScope.CurrentTransaction.Commit();
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
       }
       Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
     }
@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
         Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.That (obj.IsInvalid, Is.True);
+      Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -197,7 +197,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
       Assert.That (obj.State, Is.EqualTo (StateType.Deleted));
@@ -209,10 +209,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       Order obj = GetInvalid();
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.That (obj.IsInvalid, Is.True);
+      Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
@@ -312,7 +312,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
       using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetInvalid();
-        Assert.That (obj.IsInvalid, Is.True);
+        Assert.That (obj.State, Is.EqualTo (StateType.Invalid));
         ClientTransactionScope.CurrentTransaction.Commit();
       }
       Assert.That (TestableClientTransaction.DataManager.DataContainers[obj.ID], Is.Null);

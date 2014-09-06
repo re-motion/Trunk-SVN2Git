@@ -142,9 +142,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Delete
 
       //Expectation: no exception
 
-      Assert.That (newOrder.IsInvalid, Is.True);
-      Assert.That (newOrderTicket.IsInvalid, Is.True);
-      Assert.That (newOrderItem.IsInvalid, Is.True);
+      Assert.That (newOrder.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (newOrderTicket.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (newOrderItem.State, Is.EqualTo (StateType.Invalid));
     }
   }
 }

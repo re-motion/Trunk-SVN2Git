@@ -346,7 +346,7 @@ namespace Remotion.Data.DomainObjects
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the given transaction.</exception>
     public bool IsInvalid
     {
-      get { return DefaultTransactionContext.IsInvalid; }
+      get { return State == StateType.Invalid; }
     }
 
     [Obsolete ("This state is now called Invalid. (1.13.60)", true)]

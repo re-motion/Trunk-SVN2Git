@@ -223,7 +223,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
         OrderItem orderItem1 = DomainObjectIDs.OrderItem1.GetObject<OrderItem>();
         orderItem1.Delete ();
         ClientTransactionScope.CurrentTransaction.Commit ();
-        Assert.That (orderItem1.IsInvalid, Is.True);
+        Assert.That (orderItem1.State, Is.EqualTo (StateType.Invalid));
 
         ObjectList<OrderItem> orderItems = loadedOrder.OrderItems;
         Assert.That (orderItems.Count, Is.EqualTo (1));

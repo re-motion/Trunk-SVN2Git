@@ -352,7 +352,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         for (int i = 0; i < domainObjects.Count; i++)
         {
           var domainObject = domainObjects[i];
-          if (!domainObject.IsInvalid)
+          if (domainObject.State != StateType.Invalid)
             domainObject.OnCommitting (new DomainObjectCommittingEventArgs (eventRegistrar));
         }
         // ReSharper restore ForCanBeConvertedToForeach
@@ -396,7 +396,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         for (int i = 0; i < domainObjects.Count; i++)
         {
           var domainObject = domainObjects[i];
-          if (!domainObject.IsInvalid)
+          if (domainObject.State != StateType.Invalid)
             domainObject.OnRollingBack (EventArgs.Empty);
         }
         // ReSharper restore ForCanBeConvertedToForeach
