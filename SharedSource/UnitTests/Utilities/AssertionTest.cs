@@ -155,6 +155,9 @@ namespace Remotion.UnitTests.Utilities
       Assertion.IsNotNull<object> (null, "a");
     }
 
+#if !DEBUG
+  [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     public void DebugIsNotNull_Message_True ()
     {
@@ -163,6 +166,9 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (()=>Assertion.DebugIsNotNull (instance, "a"), Throws.Nothing);
     }
 
+#if !DEBUG
+  [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "a")]
     public void DebugIsNotNull_Message_False ()
