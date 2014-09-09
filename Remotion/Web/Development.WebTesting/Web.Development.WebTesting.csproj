@@ -60,9 +60,12 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="Component.cs" />
-    <Compile Include="ComponentContext.cs" />
+    <Compile Include="WebTestingObject.cs" />
+    <Compile Include="WebTestingObjectContext.cs" />
+    <Compile Include="ControlObject.cs" />
+    <Compile Include="PageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Todo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\remotion.snk">
