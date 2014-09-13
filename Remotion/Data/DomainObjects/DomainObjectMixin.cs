@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects
   /// base methods.</remarks>
   [Serializable]
   public class DomainObjectMixin<TDomainObject> : DomainObjectMixin<TDomainObject, IDomainObject>
-    where TDomainObject : class, IReflectableDomainObject
+    where TDomainObject : class, IDomainObject
   {
   }
 
@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects
   /// </typeparam>
   /// <typeparam name="TNextCallRequirements">
   /// An interface type specifying the members whose base implementation needs to be called via the <see cref="Mixin{TTarget,TNext}.Next"/> property 
-  /// when overridden by this mixin. The interface needs to implement <see cref="IReflectableDomainObject"/>. 
+  /// when overridden by this mixin. The interface needs to implement <see cref="IDomainObject"/>. 
   /// See <see cref="Mixin{TTarget, TNext}"/> for additional information.
   /// </typeparam>
   /// <remarks><para>Use this base class to implement a mixin adding persistent properties to a domain object which overrides mixin members and needs to
@@ -60,9 +60,14 @@ namespace Remotion.Data.DomainObjects
   [Serializable]
   public class DomainObjectMixin<TDomainObject, TNextCallRequirements>
       : Mixin<TDomainObject, TNextCallRequirements>, IDomainObjectMixin
-      where TDomainObject : class, IReflectableDomainObject
+      where TDomainObject : class, IDomainObject
       where TNextCallRequirements : class
   {
+    [NonSerialized]
+    private PropertyIndexer? _properties; // lazily initialized
+
+    private bool _domainObjectReferenceInitialized;
+
     /// <summary>
     /// Gets the <see cref="ObjectID"/> of this mixin's target object.
     /// </summary>
@@ -109,12 +114,22 @@ namespace Remotion.Data.DomainObjects
     [StorageClassNone]
     protected PropertyIndexer Properties
     {
-      get { return Target.Properties; }
+      get
+      {
+        if (!_domainObjectReferenceInitialized)
+          throw new InvalidOperationException ("This member cannot be used until the OnDomainObjectReferenceInitializing event has been executed.");
+
+        if (!_properties.HasValue)
+          _properties = new PropertyIndexer (Target);
+
+        return _properties.Value;
+      }
     }
 
     void IDomainObjectMixin.OnDomainObjectReferenceInitializing ()
     {
-      OnDomainObjectReferenceInitializing ();
+      OnDomainObjectReferenceInitializing();
+      _domainObjectReferenceInitialized = true;
     }
 
     /// <summary>

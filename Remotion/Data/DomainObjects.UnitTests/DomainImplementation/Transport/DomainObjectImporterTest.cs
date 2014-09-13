@@ -21,6 +21,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
@@ -395,8 +396,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport
     {
       var transporter = new DomainObjectTransporter();
       transporter.Load (id);
-      IReflectableDomainObject domainObject = transporter.GetTransportedObject (id);
-      domainObject.Properties[propertyToTouch].SetValueWithoutTypeCheck (newValue);
+      var domainObject = transporter.GetTransportedObject (id);
+      var properties = new PropertyIndexer (domainObject);
+      properties[propertyToTouch].SetValueWithoutTypeCheck (newValue);
       return DomainObjectTransporterTestHelper.GetBinaryDataFor (transporter);
     }
 

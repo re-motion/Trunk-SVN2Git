@@ -505,9 +505,6 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var propertyIndexer = _transaction.ExecuteInScope (() => order.Properties);
       Assert.That (propertyIndexer, Is.Not.Null);
       Assert.That (propertyIndexer.DomainObject, Is.SameAs (order));
-
-      var propertyIndexer2 = _transaction.ExecuteInScope (() => order.Properties);
-      Assert.That (propertyIndexer, Is.SameAs (propertyIndexer2));
     }
 
     [Test]

@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
@@ -182,8 +183,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
     private void Swap (ClassWithRelationProperties one, ClassWithRelationProperties two, string shortPropertyName)
     {
-      var accessorOne = ((IReflectableDomainObject) one).Properties[typeof (ClassWithRelationProperties), shortPropertyName];
-      var accessorTwo = ((IReflectableDomainObject) two).Properties[typeof (ClassWithRelationProperties), shortPropertyName];
+      var propertiesOne = new PropertyIndexer (one);
+      var propertiesTwo  = new PropertyIndexer (two);
+      var accessorOne = propertiesOne[typeof (ClassWithRelationProperties), shortPropertyName];
+      var accessorTwo = propertiesTwo[typeof (ClassWithRelationProperties), shortPropertyName];
 
       var oldValue = accessorOne.GetValueWithoutTypeCheck();
       accessorOne.SetValueWithoutTypeCheck (accessorTwo.GetValueWithoutTypeCheck());

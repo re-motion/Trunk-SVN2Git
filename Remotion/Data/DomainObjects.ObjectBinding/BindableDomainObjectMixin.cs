@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   /// <summary>
   /// The <see cref="BindableDomainObjectMixin"/> applies the <see cref="IBusinessObjectWithIdentity"/> implementation for bindable types 
-  /// that implement the <see cref="IReflectableDomainObject"/> interface.
+  /// that implement the <see cref="DomainObjects.IDomainObject"/> interface.
   /// </summary>
   /// <remarks>
   /// If you do not wish to cast to <see cref="IBusinessObject"/> and <see cref="IBusinessObjectWithIdentity"/>, you can use the default 
@@ -32,14 +32,14 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   /// </remarks>
   [Serializable]
   [BindableDomainObjectProvider]
-  public class BindableDomainObjectMixin : BindableObjectMixinBase<IReflectableDomainObject>, IBusinessObjectWithIdentity
+  public class BindableDomainObjectMixin : BindableObjectMixinBase<IDomainObject>, IBusinessObjectWithIdentity
   {
     [Obsolete ("Use IReflectableDomainObject instead. (Version 1.25.23.0)", true)]
-    public interface IDomainObject : IReflectableDomainObject
+    public interface IDomainObject : DomainObjects.IDomainObject
     {
       new Type GetPublicDomainObjectType ();
       new ObjectID ID { get; }
-      new PropertyIndexer Properties { get; }
+      PropertyIndexer Properties { get; }
       StateType State { get; }
     }
 

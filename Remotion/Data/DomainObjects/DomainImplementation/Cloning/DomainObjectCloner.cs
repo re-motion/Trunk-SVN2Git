@@ -150,10 +150,12 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Cloning
     }
 
     private void CopyProperties<T> (T source, T clone, ICloneStrategy strategy, CloneContext context)
-        where T : IReflectableDomainObject
+        where T : IDomainObject
     {
-      ClientTransaction sourceTransaction = source.GetDefaultTransactionContext().ClientTransaction;
-      CopyProperties (source.Properties, sourceTransaction, clone.Properties.AsEnumerable (CloneTransaction), strategy, context);
+      var sourceTransaction = source.GetDefaultTransactionContext().ClientTransaction;
+      var sourceProperties = new PropertyIndexer (source);
+      var cloneProperties = new PropertyIndexer (clone);
+      CopyProperties (sourceProperties, sourceTransaction, cloneProperties.AsEnumerable (CloneTransaction), strategy, context);
     }
 
     private void CopyProperties (

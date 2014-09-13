@@ -305,8 +305,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport
           {
             foreach (var id in objectsToLoadAndDelete)
             {
-              IReflectableDomainObject domainObject = LifetimeService.GetObject (ClientTransaction.Current, id, false);
-              domainObject.Properties[propertyName].SetValueWithoutTypeCheck (newValue);
+              var domainObject = LifetimeService.GetObject (ClientTransaction.Current, id, false);
+              var properties = new PropertyIndexer (domainObject);
+              properties[propertyName].SetValueWithoutTypeCheck (newValue);
             }
           });
 

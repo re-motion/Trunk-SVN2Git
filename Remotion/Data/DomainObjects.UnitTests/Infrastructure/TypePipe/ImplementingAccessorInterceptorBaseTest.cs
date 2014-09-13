@@ -77,7 +77,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.TypePipe
               Expression.Call (
                   Expression.Property (
                       new ThisExpression (_proxyType),
-                      MemberInfoFromExpressionUtility.GetProperty ((IReflectableDomainObject o) => o.Properties)),
+                      typeof (DomainObject).GetProperty ("Properties", BindingFlags.Instance | BindingFlags.NonPublic)),
                   "get_Item",
                   null,
                   Expression.Constant ("abc")),

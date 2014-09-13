@@ -182,7 +182,6 @@
     <Compile Include="Infrastructure\TypePipe\ImplementingGetAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\ImplementingSetAccessorInterceptor.cs" />
     <Compile Include="Infrastructure\TypePipe\WrappingAccessorInterceptor.cs" />
-    <Compile Include="IReflectableDomainObject.cs" />
     <Compile Include="Linq\ExtendedSqlGeneratingOuterSelectExpressionVisitor.cs" />
     <Compile Include="Linq\ExtendedSqlGenerationStage.cs" />
     <Compile Include="Linq\FluentFetchRequest.cs" />

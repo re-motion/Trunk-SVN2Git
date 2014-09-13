@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain
   [Extends (typeof (ClassWithAllDataTypes), MixinTypeArguments = new[] { typeof (ClassWithAllDataTypes) })]
   [Serializable]
   public class MixinWithAccessToDomainObjectProperties<TDomainObject> : DomainObjectMixin<TDomainObject>
-      where TDomainObject : class, IReflectableDomainObject
+      where TDomainObject : class, IDomainObject
   {
     public bool OnDomainObjectCreatedCalled;
     public ClientTransaction OnDomainObjectCreatedTx;

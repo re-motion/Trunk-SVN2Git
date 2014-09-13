@@ -72,7 +72,8 @@ namespace Remotion.Data.DomainObjects
 
     protected virtual IEnumerable<Tuple<DomainObject, int>> GetNextTraversedObjects (DomainObject current, int currentDepth, IGraphTraversalStrategy strategy)
     {
-      foreach (PropertyAccessor property in ((IReflectableDomainObject) current).Properties.AsEnumerable())
+      var properties = new PropertyIndexer (current);
+      foreach (PropertyAccessor property in properties.AsEnumerable())
       {
         switch (property.PropertyData.Kind)
         {

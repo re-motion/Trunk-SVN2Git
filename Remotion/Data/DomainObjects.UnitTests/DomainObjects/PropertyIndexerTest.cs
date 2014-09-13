@@ -344,12 +344,5 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
       var indexer = new PropertyIndexer (order);
       Assert.That (indexer[typeof (Order), "OrderNumber"].PropertyData, Is.SameAs (indexer[typeof (Order), "OrderNumber"].PropertyData));
     }
-
-    [Test]
-    public void DomainObject_CachesPropertyIndexer()
-    {
-      Order order = DomainObjectIDs.Order1.GetObject<Order> (_transaction);
-      Assert.That (order.Properties, Is.SameAs (order.Properties));
-    }
   }
 }

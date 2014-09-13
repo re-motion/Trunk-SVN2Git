@@ -24,7 +24,6 @@ namespace Remotion.Data.DomainObjects
   /// <summary>
   /// Represents the minimal API for working with a <see cref="DomainObject"/>
   /// </summary>
-  /// <seealso cref="IReflectableDomainObject"/>
   /// <seealso cref="DomainObject"/>
   public interface IDomainObject
   {

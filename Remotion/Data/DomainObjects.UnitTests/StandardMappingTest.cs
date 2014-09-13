@@ -158,14 +158,14 @@ namespace Remotion.Data.DomainObjects.UnitTests
 
     protected PropertyAccessor GetPropertyAccessor<TDomainObject, TValue> (
         TDomainObject domainObject, Expression<Func<TDomainObject, TValue>> propertyExpression, ClientTransaction clientTransaction)
-        where TDomainObject: DomainObject, IReflectableDomainObject
+        where TDomainObject: IDomainObject
     {
       var propertyAccessorData = GetPropertyAccessorData(domainObject, propertyExpression);
-      return domainObject.Properties[propertyAccessorData.PropertyIdentifier, clientTransaction];
+      return new PropertyAccessor (domainObject, propertyAccessorData, clientTransaction);
     }
 
     protected PropertyAccessorData GetPropertyAccessorData<TDomainObject, TValue> (TDomainObject domainObject, Expression<Func<TDomainObject, TValue>> propertyExpression)
-      where TDomainObject : DomainObject
+      where TDomainObject : IDomainObject
     {
       return domainObject.ID.ClassDefinition.PropertyAccessorDataCache.ResolveMandatoryPropertyAccessorData (propertyExpression);
     }

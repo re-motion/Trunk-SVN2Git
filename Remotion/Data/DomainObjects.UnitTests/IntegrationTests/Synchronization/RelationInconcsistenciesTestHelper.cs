@@ -18,6 +18,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.TypePipe;
 
@@ -49,10 +50,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Synchronization
       }
     }
 
-    public static void SetForeignKeyProperty (IReflectableDomainObject domainObject, RelationEndPointDefinition endPointDefinition, ObjectID relatedID)
+    public static void SetForeignKeyProperty (IDomainObject domainObject, RelationEndPointDefinition endPointDefinition, ObjectID relatedID)
     {
       var relatedObject = LifetimeService.GetObjectReference (ClientTransaction.Current, relatedID);
-      domainObject.Properties[endPointDefinition.PropertyName].SetValue (relatedObject);
+      var properties = new PropertyIndexer (domainObject);
+      properties[endPointDefinition.PropertyName].SetValue (relatedObject);
     }
 
     public static ObjectID CreateObjectAndSetRelationInOtherTransaction<TCreated, TRelated> (ObjectID relatedID, Action<TCreated, TRelated> setter)

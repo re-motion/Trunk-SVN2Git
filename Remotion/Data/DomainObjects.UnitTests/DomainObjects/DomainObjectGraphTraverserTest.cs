@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
         strategy.Expect (mock => mock.ShouldFollowLink (order, order, 0, order.Properties[typeof (Order), "OrderItems"])).Return (true);
         strategy.Expect (mock => mock.ShouldFollowLink (order, order, 0, order.Properties[typeof (Order), "Customer"])).Return (true);
 
-        strategy.Expect (mock => mock.ShouldFollowLink (order, order.Official, 1, ((IReflectableDomainObject) order.Official).Properties[typeof (Official), "Orders"])).Return (true);
+        strategy.Expect (mock => mock.ShouldFollowLink (order, order.Official, 1, order.Official.Properties[typeof (Official), "Orders"])).Return (true);
         strategy.Expect (mock => mock.ShouldFollowLink (order, order.OrderTicket, 1, order.OrderTicket.Properties[typeof (OrderTicket), "Order"])).Return (true);
         strategy.Expect (mock => mock.ShouldFollowLink (order, order.OrderItems[0], 1, order.OrderItems[0].Properties[typeof (OrderItem), "Order"])).Return (true);
         strategy.Expect (mock => mock.ShouldFollowLink (order, order.OrderItems[1], 1, order.OrderItems[1].Properties[typeof (OrderItem), "Order"])).Return (true);

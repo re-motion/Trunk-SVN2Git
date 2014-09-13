@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
@@ -23,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
   /// <summary>
-  /// Implements <see cref="IDefaultValueStrategy"/> for instances of types that implement <see cref="IReflectableDomainObject"/> instances. 
+  /// Implements <see cref="IDefaultValueStrategy"/> for instances of types that implement <see cref="IDomainObject"/> instances. 
   /// A <see cref="DomainObject"/> property is defined to have its default value set if it is a new object and the property has not been touched yet.
   /// </summary>
   public class BindableDomainObjectDefaultValueStrategy : IDefaultValueStrategy
@@ -37,7 +38,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
     public bool IsDefaultValue (IBusinessObject obj, PropertyBase property)
     {
-      var domainObject = ArgumentUtility.CheckNotNullAndType<IReflectableDomainObject> ("obj", obj);
+      var domainObject = ArgumentUtility.CheckNotNullAndType<IDomainObject> ("obj", obj);
       ArgumentUtility.CheckNotNull ("property", property);
       
       if (domainObject.GetState() != StateType.New)
@@ -45,7 +46,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
 
       var propertyDefinition = domainObject.ID.ClassDefinition.ResolveProperty (property.PropertyInfo);
       if (propertyDefinition != null)
-        return !domainObject.Properties[propertyDefinition.PropertyName].HasBeenTouched;
+      {
+        var properties = new PropertyIndexer (domainObject);
+        return !properties[propertyDefinition.PropertyName].HasBeenTouched;
+      }
 
       return _innerDefaultValueStrategy.IsDefaultValue (obj, property);
     }

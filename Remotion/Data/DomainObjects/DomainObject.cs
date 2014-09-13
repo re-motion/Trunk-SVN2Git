@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects
   /// </remarks>
   [IgnoreForMappingConfiguration]
   [Serializable]
-  public class DomainObject : IReflectableDomainObject
+  public class DomainObject : IDomainObject
   {
     #region Creation and GetObject factory methods
 
@@ -191,7 +191,7 @@ namespace Remotion.Data.DomainObjects
     private bool _isReferenceInitializeEventExecuting; // true only while OnReferenceInitializing is executed
 
     [NonSerialized] // required when ISerializable is not implemented by subclass
-    private PropertyIndexer _properties; // lazily initialized
+    private PropertyIndexer? _properties; // lazily initialized
 
     /// <summary>
     /// Initializes a new <see cref="DomainObject"/> with the current <see cref="DomainObjects.ClientTransaction"/>.
@@ -520,15 +520,11 @@ namespace Remotion.Data.DomainObjects
       {
         CheckInitializeEventNotExecuting();
 
-        if (_properties == null)
+        if (!_properties.HasValue)
           _properties = new PropertyIndexer (this);
-        return _properties;
-      }
-    }
 
-    PropertyIndexer IReflectableDomainObject.Properties
-    {
-      get { return Properties; }
+        return _properties.Value;
+      }
     }
 
     /// <summary>

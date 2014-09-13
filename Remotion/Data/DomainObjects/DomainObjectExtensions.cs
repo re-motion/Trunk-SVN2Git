@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects
         return null;
 
       var objectID = domainObjectOrNull.ID;
-      Assertion.DebugIsNotNull (objectID, "domainObjectOrNull.ID was null");
+      Assertion.DebugIsNotNull (objectID, "domainObjectOrNull.ID must not be null.");
 
       return domainObjectOrNull.ID;
     }
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       var objectID = domainObject.ID;
-      Assertion.DebugIsNotNull (objectID, "domainObject.ID was null");
+      Assertion.DebugIsNotNull (objectID, "domainObject.ID must not be null.");
 
       return objectID.GetHandle<T>();
     }
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects
       ArgumentUtility.DebugCheckNotNull ("domainObject", domainObject);
 
       var rootTransaction = domainObject.RootTransaction;
-      Assertion.DebugAssert (rootTransaction != null, "domainObject.RootTransaction was null");
+      Assertion.DebugAssert (rootTransaction != null, "domainObject.RootTransaction must not be null.");
 
       return domainObject.TransactionContext[rootTransaction.ActiveTransaction];
     }

@@ -32,8 +32,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return base.IsInfrastructureProperty (propertyInfo, accessorDeclaration)
           || accessorDeclaration.DeclaringType == typeof (DomainObject)
           || accessorDeclaration.DeclaringType == typeof (BindableDomainObject)
-          || accessorDeclaration.DeclaringType == typeof (IDomainObject)
-          || accessorDeclaration.DeclaringType == typeof (IReflectableDomainObject);
+          || accessorDeclaration.DeclaringType == typeof (IDomainObject);
     }
   }
 }

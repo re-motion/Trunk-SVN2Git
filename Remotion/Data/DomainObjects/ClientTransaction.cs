@@ -630,7 +630,8 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);
 
-    foreach (PropertyAccessor property in ((IReflectableDomainObject) domainObject).Properties.AsEnumerable (sourceTransaction))
+    var properties = new PropertyIndexer (domainObject);
+    foreach (PropertyAccessor property in properties.AsEnumerable (sourceTransaction))
     {
       if (property.PropertyData.Kind == PropertyKind.RelatedObjectCollection)
       {

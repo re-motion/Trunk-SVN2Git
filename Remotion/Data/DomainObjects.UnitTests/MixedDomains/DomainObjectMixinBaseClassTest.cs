@@ -106,8 +106,22 @@ namespace Remotion.Data.DomainObjects.UnitTests.MixedDomains
     [Test]
     public void Properties ()
     {
-      Assert.That (_loadedClassWithAllDataTypesMixin.Properties, Is.EqualTo (_loadedClassWithAllDataTypes.Properties));
-      Assert.That (_newClassWithAllDataTypesMixin.Properties, Is.EqualTo (_newClassWithAllDataTypes.Properties));
+      Assert.That (
+          _loadedClassWithAllDataTypesMixin.Properties[typeof (ClassWithAllDataTypes), "StringProperty"].GetValue<string>(),
+          Is.EqualTo (_loadedClassWithAllDataTypes.StringProperty));
+      Assert.That (
+          _newClassWithAllDataTypes.Properties[typeof (ClassWithAllDataTypes), "StringProperty"].GetValue<string>(),
+          Is.EqualTo (_newClassWithAllDataTypes.StringProperty));
+    }
+
+    [Test]
+    public void PropertiesThrowsBeforeOnDomainObjectReferenceInitializingWasCalled ()
+    {
+      var mixin = new MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>();
+      Assert.That (
+          () => mixin.Properties,
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "This member cannot be used until the OnDomainObjectReferenceInitializing event has been executed."));
     }
 
     [Test]

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -26,29 +27,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Provides an indexer to access a specific property of a domain object. Instances of this value type are returned by
   /// <see cref="DomainObjects.DomainObject.Properties"/>.
   /// </summary>
-  public class PropertyIndexer
+  public struct PropertyIndexer
   {
-    private readonly IReflectableDomainObject _domainObject;
-    private readonly PropertyAccessorDataCache _propertyAccessorDataCache;
+    private readonly IDomainObject _domainObject;
 
     /// <summary>
-    /// Initializes a new <see cref="PropertyIndexer"/> instance. This is usually not called from the outside; instead, <see cref="PropertyIndexer"/>
-    /// instances are returned by <see cref="IReflectableDomainObject.Properties"/>.
+    /// Initializes a new <see cref="PropertyIndexer"/> instance.
     /// </summary>
     /// <param name="domainObject">The domain object whose properties should be accessed with this <see cref="PropertyIndexer"/>.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="domainObject"/> parameter is <see langword="null"/>.</exception>
-    public PropertyIndexer (IReflectableDomainObject domainObject)
+    public PropertyIndexer (IDomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       _domainObject = domainObject;
-      _propertyAccessorDataCache = _domainObject.ID.ClassDefinition.PropertyAccessorDataCache;
     }
 
     /// <summary>
-    /// Gets the <see cref="IReflectableDomainObject"/> associated with this <see cref="PropertyIndexer"/>.
+    /// Gets the <see cref="IDomainObject"/> associated with this <see cref="PropertyIndexer"/>.
     /// </summary>
     /// <value>The domain object associated with this <see cref="PropertyIndexer"/>.</value>
-    public IReflectableDomainObject DomainObject
+    public IDomainObject DomainObject
     {
       get { return _domainObject; }
     }
@@ -62,11 +60,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentException">
     /// The <paramref name="propertyName"/> parameter does not denote a valid mapping property of the domain object.
     /// </exception>
-    public PropertyAccessor this[string propertyName]
+    public PropertyAccessor this[[NotNull] string propertyName]
     {
       get
       {
-        return this[propertyName, _domainObject.GetDefaultTransactionContext().ClientTransaction];
+        // Overloaded member checks the arguments
+        ArgumentUtility.DebugCheckNotNullOrEmpty ("propertyName", propertyName);
+
+        return this[propertyName, ClientTransaction];
       }
     }
 
@@ -80,14 +81,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentException">
     /// The <paramref name="shortPropertyName"/> parameter does not denote a valid mapping property declared on the <paramref name="domainObjectType"/>.
     /// </exception>
-    public PropertyAccessor this[Type domainObjectType, string shortPropertyName]
+    public PropertyAccessor this[[NotNull] Type domainObjectType, [NotNull] string shortPropertyName]
     {
       get
       {
-        ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-        ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
+        // Overloaded member checks the arguments
+        ArgumentUtility.DebugCheckNotNull ("domainObjectType", domainObjectType);
+        ArgumentUtility.DebugCheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
 
-        return this[domainObjectType, shortPropertyName, _domainObject.GetDefaultTransactionContext().ClientTransaction];
+        return this[domainObjectType, shortPropertyName, ClientTransaction];
       }
     }
 
@@ -101,14 +103,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentException">
     /// The <paramref name="propertyName"/> parameter does not denote a valid mapping property of the domain object.
     /// </exception>
-    public PropertyAccessor this[string propertyName, ClientTransaction transaction]
+    public PropertyAccessor this[[NotNull] string propertyName, [NotNull] ClientTransaction transaction]
     {
       get
       {
-        ArgumentUtility.CheckNotNull ("propertyName", propertyName);
-        ArgumentUtility.CheckNotNull ("transaction", transaction);
+        // PropertyAccessorDataCache checks the argument
+        ArgumentUtility.DebugCheckNotNullOrEmpty ("propertyName", propertyName);
+        // GetPropertyAccessor checks the argument
+        ArgumentUtility.DebugCheckNotNull ("transaction", transaction);
 
-        var data = _propertyAccessorDataCache.GetMandatoryPropertyAccessorData (propertyName);
+        var data = PropertyAccessorDataCache.GetMandatoryPropertyAccessorData (propertyName);
         return GetPropertyAccessor (transaction, data);
       }
     }
@@ -124,15 +128,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <exception cref="ArgumentException">
     /// The <paramref name="shortPropertyName"/> parameter does not denote a valid mapping property declared on the <paramref name="domainObjectType"/>.
     /// </exception>
-    public PropertyAccessor this[Type domainObjectType, string shortPropertyName, ClientTransaction transaction]
+    public PropertyAccessor this[[NotNull] Type domainObjectType, [NotNull] string shortPropertyName, [NotNull] ClientTransaction transaction]
     {
       get
       {
-        ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
-        ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
-        ArgumentUtility.CheckNotNull ("transaction", transaction);
+        // PropertyAccessorDataCache checks the argument
+        ArgumentUtility.DebugCheckNotNull ("domainObjectType", domainObjectType);
+        // PropertyAccessorDataCache checks the argument
+        ArgumentUtility.DebugCheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+        // GetPropertyAccessor checks the argument
+        ArgumentUtility.DebugCheckNotNull ("transaction", transaction);
 
-        var data = _propertyAccessorDataCache.GetMandatoryPropertyAccessorData (domainObjectType, shortPropertyName);
+        var data = PropertyAccessorDataCache.GetMandatoryPropertyAccessorData (domainObjectType, shortPropertyName);
         return GetPropertyAccessor (transaction, data);
       }
     }
@@ -144,9 +151,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>The number of properties defined by the domain object.</returns>
     public int GetPropertyCount ()
     {
-      ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
-      var endPointDefinitions = classDefinition.GetRelationEndPointDefinitions();
-      return classDefinition.GetPropertyDefinitions().Count + endPointDefinitions.Count (endPointDefinition => endPointDefinition.IsVirtual);
+      var endPointDefinitions = ClassDefinition.GetRelationEndPointDefinitions();
+      return ClassDefinition.GetPropertyDefinitions().Count + endPointDefinitions.Count (endPointDefinition => endPointDefinition.IsVirtual);
     }
 
     /// <summary>
@@ -157,7 +163,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <see cref="DomainObject"/>.</returns>
     public IEnumerable<PropertyAccessor> AsEnumerable ()
     {
-      return AsEnumerable (_domainObject.GetDefaultTransactionContext().ClientTransaction);
+      return AsEnumerable (ClientTransaction);
     }
 
     /// <summary>
@@ -167,17 +173,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="transaction">The transaction to be used to enumerate the properties.</param>
     /// <returns>A sequence containing <see cref="PropertyAccessor"/> objects for each property of this <see cref="PropertyIndexer"/>'s 
     /// <see cref="DomainObject"/>.</returns>
-    public IEnumerable<PropertyAccessor> AsEnumerable (ClientTransaction transaction)
+    [NotNull]
+    public IEnumerable<PropertyAccessor> AsEnumerable ([NotNull] ClientTransaction transaction)
     {
       ArgumentUtility.CheckNotNull ("transaction", transaction);
       DomainObjectCheckUtility.CheckIfRightTransaction (_domainObject, transaction);
-      
-      ClassDefinition classDefinition = _domainObject.ID.ClassDefinition;
 
-      foreach (PropertyDefinition propertyDefinition in classDefinition.GetPropertyDefinitions ())
+      foreach (PropertyDefinition propertyDefinition in ClassDefinition.GetPropertyDefinitions ())
         yield return this[propertyDefinition.PropertyName, transaction];
 
-      foreach (IRelationEndPointDefinition endPointDefinition in classDefinition.GetRelationEndPointDefinitions ())
+      foreach (IRelationEndPointDefinition endPointDefinition in ClassDefinition.GetRelationEndPointDefinitions ())
       {
         if (endPointDefinition.IsVirtual)
           yield return this[endPointDefinition.PropertyName, transaction];
@@ -191,9 +196,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>
     /// True if the domain object contains a property named as specified by <paramref name="propertyIdentifier"/>; otherwise, false.
     /// </returns>
-    public bool Contains (string propertyIdentifier)
+    public bool Contains ([NotNull] string propertyIdentifier)
     {
-      return _propertyAccessorDataCache.GetPropertyAccessorData (propertyIdentifier) != null;
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
+
+      return PropertyAccessorDataCache.GetPropertyAccessorData (propertyIdentifier) != null;
     }
 
 
@@ -206,10 +213,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// True if the domain object contains a property named as specified by <paramref name="shortPropertyName"/> declared on
     /// <paramref name="domainObjectType"/>; otherwise, false.
     /// </returns>
-    public bool Contains (Type domainObjectType, string shortPropertyName)
+    public bool Contains ([NotNull] Type domainObjectType, [NotNull] string shortPropertyName)
     {
-      var propertyAccessorData = _propertyAccessorDataCache.GetPropertyAccessorData (domainObjectType, shortPropertyName);
-      return propertyAccessorData != null;
+      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+
+      return PropertyAccessorDataCache.GetPropertyAccessorData (domainObjectType, shortPropertyName) != null;
     }
 
     /// <summary>
@@ -221,18 +230,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// found when traversing upwards through the inheritance hierarchy, starting from <paramref name="typeToStartSearch"/>.</returns>
     /// <exception cref="ArgumentNullException">One or more of the arguments passed to this method are <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">No matching property could be found.</exception>
-    public PropertyAccessor Find (Type typeToStartSearch, string shortPropertyName)
+    public PropertyAccessor Find ([NotNull] Type typeToStartSearch, [NotNull] string shortPropertyName)
     {
       ArgumentUtility.CheckNotNull ("typeToStartSearch", typeToStartSearch);
-      ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
 
-      var propertyAccessorData = _propertyAccessorDataCache.FindPropertyAccessorData (typeToStartSearch, shortPropertyName);
+      var propertyAccessorData = PropertyAccessorDataCache.FindPropertyAccessorData (typeToStartSearch, shortPropertyName);
 
-      if (propertyAccessorData != null)
-      {
-        return GetPropertyAccessor (_domainObject.GetDefaultTransactionContext().ClientTransaction, propertyAccessorData);
-      }
-      else
+      if (propertyAccessorData == null)
       {
         var message = string.Format (
             "The domain object type '{0}' does not have or inherit a mapping property with the short name '{1}'.",
@@ -240,6 +245,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             shortPropertyName);
         throw new ArgumentException (message, "shortPropertyName");
       }
+
+      return GetPropertyAccessor (ClientTransaction, propertyAccessorData);
     }
 
     /// <summary>
@@ -256,10 +263,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// This method exists as a convenience overload of <see cref="Find(Type, string)"/>. Instead of needing to specify a lengthy <c>typeof(...)</c>
     /// expression, this method can usually infer the type to search from the <c>this</c> parameter passed as the first argument.
     /// </remarks>
-    public PropertyAccessor Find<TDomainObject> (TDomainObject thisDomainObject, string shortPropertyName)
+    [NotNull]
+    public PropertyAccessor Find<TDomainObject> ([CanBeNull] TDomainObject thisDomainObject, [NotNull] string shortPropertyName)
         where TDomainObject : DomainObject
     {
-      ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
       return Find (typeof (TDomainObject), shortPropertyName);
     }
 
@@ -276,10 +284,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// This method exists as a convenience overload of <see cref="Find(Type, string)"/>. Instead of needing to specify a starting type for the search, 
     /// this method assumes that it should start at the actual type of the current <see cref="DomainObject"/>.
     /// </remarks>
-    public PropertyAccessor Find (string shortPropertyName)
+    [NotNull]
+    public PropertyAccessor Find ([NotNull] string shortPropertyName)
     {
-      ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
-      return Find (_domainObject.ID.ClassDefinition.ClassType, shortPropertyName);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+      return Find (ClassDefinition.ClassType, shortPropertyName);
     }
 
     /// <summary>
@@ -287,6 +296,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     /// <returns>An enumeration of all <see cref="DomainObject"/> directly referenced by the associated <see cref="DomainObject"/> in the form of
     /// <see cref="PropertyKind.RelatedObject"/> and <see cref="PropertyKind.RelatedObjectCollection"/> properties.</returns>
+    [NotNull]
     public IEnumerable<DomainObject> GetAllRelatedObjects ()
     {
       foreach (var property in AsEnumerable())
@@ -307,8 +317,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    private PropertyAccessor GetPropertyAccessor (ClientTransaction transaction, PropertyAccessorData data)
+    private ClassDefinition ClassDefinition
     {
+      get
+      {
+        var objectID = _domainObject.ID;
+        Assertion.DebugIsNotNull (objectID, "DomainObject.ID must not be null.");
+        return objectID.ClassDefinition;
+      }
+    }
+
+    private PropertyAccessorDataCache PropertyAccessorDataCache
+    {
+      get { return ClassDefinition.PropertyAccessorDataCache; }
+    }
+
+    private ClientTransaction ClientTransaction
+    {
+      get { return _domainObject.GetDefaultTransactionContext().ClientTransaction; }
+    }
+
+    private PropertyAccessor GetPropertyAccessor ([NotNull] ClientTransaction transaction, [NotNull] PropertyAccessorData data)
+    {
+      // PropertyAccesor-ctor checks the argument
       return new PropertyAccessor (_domainObject, data, transaction);
     }
   }
