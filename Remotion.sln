@@ -367,10 +367,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Development.WebTesting", "Remotion\ObjectBinding\Web.Development.WebTesting\ObjectBinding.Web.Development.WebTesting.csproj", "{78086B10-9951-4680-A060-2395E1990F8A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.IntegrationTests", "Remotion\Web\Development.WebTesting.IntegrationTests\Web.Development.WebTesting.IntegrationTests.csproj", "{5282552B-F3AB-42D3-B965-BF676E4F40F0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E660CF09-930B-4381-9AC6-7A349E899D3B} = {E660CF09-930B-4381-9AC6-7A349E899D3B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.TestSite", "Remotion\Web\Development.WebTesting.TestSite\Web.Development.WebTesting.TestSite.csproj", "{E660CF09-930B-4381-9AC6-7A349E899D3B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Development.WebTesting.IntegrationTests", "Remotion\ObjectBinding\Web.Development.WebTesting.IntegrationTests\ObjectBinding.Web.Development.WebTesting.IntegrationTests.csproj", "{6FE3C047-655C-4C26-92BC-E3C0D293D1A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{652E65FE-81EF-4D91-9C52-1CB781862957} = {652E65FE-81EF-4D91-9C52-1CB781862957}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Development.WebTesting.TestSite", "Remotion\ObjectBinding\Web.Development.WebTesting.TestSite\ObjectBinding.Web.Development.WebTesting.TestSite.csproj", "{652E65FE-81EF-4D91-9C52-1CB781862957}"
 EndProject
