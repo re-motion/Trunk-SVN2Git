@@ -25,4 +25,3 @@ using System.Reflection;
 //
 [assembly: AssemblyTitle("Remotion WebTesting Framework Integration Tests")]
 [assembly: AssemblyCulture("")]		
-

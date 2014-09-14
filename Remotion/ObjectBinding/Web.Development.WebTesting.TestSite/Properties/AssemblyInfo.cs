@@ -25,4 +25,3 @@ using System.Reflection;
 //
 [assembly: AssemblyTitle("Remotion BusinessObjectControls Library WebTesting Framework Integration TestSite For Integration Tests")]
 [assembly: AssemblyCulture("")]		
-

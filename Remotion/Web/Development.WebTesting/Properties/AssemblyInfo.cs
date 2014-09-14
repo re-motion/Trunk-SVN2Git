@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Resources;
 using System.Web.UI;
 
-// TODO DR: Are the following assembly attributes necessary?
+// Todo: Are the following assembly attributes necessary?
 [assembly: TagPrefix ("Remotion.Web.Development.WebTesting", "remotion")]
 
 [assembly: NeutralResourcesLanguage ("en")]
@@ -32,4 +32,4 @@ using System.Web.UI;
 [assembly: AssemblyTitle("Remotion WebTesting Framework")]
 [assembly: AssemblyDescription("WebTesting framework for Remotion applications.")]
 [assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)] // Todo: discuss with MK.
