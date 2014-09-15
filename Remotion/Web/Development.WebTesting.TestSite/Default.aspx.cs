@@ -1,12 +1,9 @@
 ﻿using System;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class Default : TestSitePageBase
+  public partial class Default : SmartPage
   {
-    protected void Page_Load (object sender, EventArgs e)
-    {
-
-    }
   }
 }
