@@ -45,6 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		build\DependDB.ConfigurationTemplate.xml = build\DependDB.ConfigurationTemplate.xml
 		Generate-Snk.cmd = Generate-Snk.cmd
 		How to build.txt = How to build.txt
+		NuGet.config = NuGet.config
 		build\NuGet.ConfigurationTemplate.nuspec = build\NuGet.ConfigurationTemplate.nuspec
 		build\NUnitErrors.xslt = build\NUnitErrors.xslt
 		build\Remotion.AssembleBuildOutput.include.build = build\Remotion.AssembleBuildOutput.include.build
@@ -379,6 +380,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Developme
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Development.WebTesting.TestSite", "Remotion\ObjectBinding\Web.Development.WebTesting.TestSite\ObjectBinding.Web.Development.WebTesting.TestSite.csproj", "{652E65FE-81EF-4D91-9C52-1CB781862957}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_SolutionItems", "_SolutionItems", "{8FD13EC8-8054-47D6-A818-847C3B022C89}"
+	ProjectSection(SolutionItems) = preProject
+		NuGet.config = NuGet.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
