@@ -40,12 +40,66 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
         protected global::System.Web.UI.HtmlControls.HtmlTable FormGrid;
         
         /// <summary>
-        /// PartnerField control.
+        /// PartnerField_Normal control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField;
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_Normal;
+        
+        /// <summary>
+        /// PartnerField_Normal_AlternativeRendering control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_Normal_AlternativeRendering;
+        
+        /// <summary>
+        /// PartnerField_ReadOnly control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_ReadOnly;
+        
+        /// <summary>
+        /// PartnerField_ReadOnly_AlternativeRendering control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_ReadOnly_AlternativeRendering;
+        
+        /// <summary>
+        /// PartnerField_Disabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_Disabled;
+        
+        /// <summary>
+        /// PartnerField_NoAutoPostBack control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_NoAutoPostBack;
+        
+        /// <summary>
+        /// PartnerField_NoCommandNoMenu control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue PartnerField_NoCommandNoMenu;
     }
 }

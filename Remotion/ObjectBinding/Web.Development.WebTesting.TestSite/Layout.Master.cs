@@ -21,9 +21,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       base.OnPreRender (e);
     }
 
-    public void AddTestOutput (string text)
+    public void SetBOUINormal (string uniqueIdentifier)
     {
-      TestOutputLabel.Text += text + "<br/>";
+      BOUINormalLabel.Text = uniqueIdentifier;
+    }
+
+    public void SetBOUINoAutoPostBack (string uniqueIdentifier)
+    {
+      BOUINoAutoPostBackLabel.Text = uniqueIdentifier;
+    }
+
+    public void SetActionPerformed (string action, string parameter, string sender)
+    {
+      ActionPerformedLabel.Text = action;
+      ActionPerformedParameterLabel.Text = parameter;
+      ActionPerformedSenderLabel.Text = sender;
     }
   }
 }

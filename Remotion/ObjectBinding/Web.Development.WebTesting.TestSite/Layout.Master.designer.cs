@@ -58,13 +58,49 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite {
         protected global::System.Web.UI.UpdatePanel MainUpdatePanel;
         
         /// <summary>
-        /// TestOutputLabel control.
+        /// BOUINormalLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label TestOutputLabel;
+        protected global::System.Web.UI.WebControls.Label BOUINormalLabel;
+        
+        /// <summary>
+        /// BOUINoAutoPostBackLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label BOUINoAutoPostBackLabel;
+        
+        /// <summary>
+        /// ActionPerformedLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ActionPerformedLabel;
+        
+        /// <summary>
+        /// ActionPerformedParameterLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ActionPerformedParameterLabel;
+        
+        /// <summary>
+        /// ActionPerformedSenderLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ActionPerformedSenderLabel;
         
         /// <summary>
         /// RefreshButton control.
