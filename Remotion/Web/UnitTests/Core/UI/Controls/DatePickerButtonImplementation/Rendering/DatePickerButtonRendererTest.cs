@@ -18,6 +18,7 @@ using System;
 using System.Web;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Rhino.Mocks;
@@ -77,7 +78,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation
 
     private void AssertDateTimePickerButton (bool isDisabled, bool hasClientScript)
     {
-      var renderer = new DatePickerButtonRenderer (new FakeResourceUrlFactory(), GlobalizationService);
+      var renderer = new DatePickerButtonRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
       renderer.Render (new DatePickerButtonRenderingContext (_httpContext, _htmlHelper.Writer, _datePickerButton));
       var buttonDocument = _htmlHelper.GetResultDocument();
 

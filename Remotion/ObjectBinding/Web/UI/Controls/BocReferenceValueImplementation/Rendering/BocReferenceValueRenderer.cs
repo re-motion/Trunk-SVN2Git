@@ -54,16 +54,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
-    public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : this (resourceUrlFactory, globalizationService, () => new DropDownList())
+    public BocReferenceValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : this (resourceUrlFactory, globalizationService, renderingFeatures, () => new DropDownList())
     {
     }
 
     protected BocReferenceValueRenderer (
         IResourceUrlFactory resourceUrlFactory,
         IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures,
         Func<DropDownList> dropDownListFactoryMethod)
-        : base (resourceUrlFactory, globalizationService)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("dropDownListFactoryMethod", dropDownListFactoryMethod);
       _dropDownListFactoryMethod = dropDownListFactoryMethod;

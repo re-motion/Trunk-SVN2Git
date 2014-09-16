@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Text;
 using System.Web.UI;
@@ -29,24 +30,27 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl>
-      where TControl: IStyledControl
+      where TControl : IStyledControl
   {
-    private readonly ICache<Tuple<Type, IResourceManager>, IResourceManager> _resourceManagerCache = 
+    private readonly ICache<Tuple<Type, IResourceManager>, IResourceManager> _resourceManagerCache =
         CacheFactory.Create<Tuple<Type, IResourceManager>, IResourceManager>();
 
     private readonly IResourceUrlFactory _resourceUrlFactory;
     private readonly IGlobalizationService _globalizationService;
+    private readonly IRenderingFeatures _renderingFeatures;
 
     /// <summary>
     /// Initializes the <see cref="Context"/> and the <see cref="Control"/> properties from the arguments.
     /// </summary>
-    protected RendererBase (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
+    protected RendererBase (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, IRenderingFeatures renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
-      
+      ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
+
       _resourceUrlFactory = resourceUrlFactory;
       _globalizationService = globalizationService;
+      _renderingFeatures = renderingFeatures;
     }
 
     /// <summary>
@@ -55,6 +59,15 @@ namespace Remotion.Web.UI.Controls
     protected IResourceUrlFactory ResourceUrlFactory
     {
       get { return _resourceUrlFactory; }
+    }
+
+    /// <summary>
+    /// Returns whether the diagnostic metadata rendering feature is enabled and thereby whether a specific control renderer should render such
+    /// information as additional data attributes.
+    /// </summary>
+    private bool IsDiagnosticMetadataRenderingEnabled
+    {
+      get { return _renderingFeatures.EnableDiagnosticMetadata; }
     }
 
     protected void AddStandardAttributesToRender (RenderingContext<TControl> renderingContext)
@@ -76,6 +89,14 @@ namespace Remotion.Web.UI.Controls
         if (!string.IsNullOrEmpty (value))
           renderingContext.Writer.AddAttribute (attribute, value);
       }
+
+      if (IsDiagnosticMetadataRenderingEnabled)
+        AddDiagnosticMetadataAttributes (renderingContext);
+    }
+
+    protected virtual void AddDiagnosticMetadataAttributes (RenderingContext<TControl> renderingContext)
+    {
+      // Todo
     }
 
     protected void AppendStringValueOrNullToScript (StringBuilder scriptBuilder, string stringValue)
@@ -115,7 +136,7 @@ namespace Remotion.Web.UI.Controls
 
       return _resourceManagerCache.GetOrCreateValue (
           Tuple.Create (localResourcesType, controlResourceManager),
-          key => ResourceManagerSet.Create (key.Item2 , _globalizationService.GetResourceManager (key.Item1)));
+          key => ResourceManagerSet.Create (key.Item2, _globalizationService.GetResourceManager (key.Item1)));
     }
   }
 }

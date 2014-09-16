@@ -30,8 +30,11 @@ namespace Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering
   [ImplementationFor (typeof (IDatePickerButtonRenderer), Lifetime = LifetimeKind.Singleton)]
   public class DatePickerButtonRenderer : RendererBase<IDatePickerButton>, IDatePickerButtonRenderer
   {
-    public DatePickerButtonRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public DatePickerButtonRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

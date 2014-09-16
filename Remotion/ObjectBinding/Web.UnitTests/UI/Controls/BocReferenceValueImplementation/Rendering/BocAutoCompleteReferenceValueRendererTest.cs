@@ -414,7 +414,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, GlobalizationService, () => new StubTextBox ());
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
+          _resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.Default,
+          () => new StubTextBox());
 
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
@@ -431,7 +435,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, GlobalizationService, () => new StubTextBox());
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
+          _resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.Default,
+          () => new StubTextBox());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (CreateRenderingContext());
@@ -608,7 +616,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactory, GlobalizationService, () => TextBox);
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
+          _resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.Default,
+          () => TextBox);
       renderer.Render (CreateRenderingContext());
 
       var document = Html.GetResultDocument();

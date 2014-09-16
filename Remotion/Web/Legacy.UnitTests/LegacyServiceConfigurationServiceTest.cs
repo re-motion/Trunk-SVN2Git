@@ -24,6 +24,7 @@ using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Resources;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
@@ -49,6 +50,7 @@ namespace Remotion.Web.Legacy.UnitTests
                                   typeof (IHttpContextProvider),
                                   typeof (IInternalControlMemberCaller),
                                   typeof (IBuildManager),
+                                  typeof (IRenderingFeatures),
                                   typeof (IWebSecurityAdapter),
                                   typeof (IWxeSecurityAdapter),
                               };

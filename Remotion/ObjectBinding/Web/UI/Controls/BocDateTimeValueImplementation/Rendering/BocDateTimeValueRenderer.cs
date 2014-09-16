@@ -23,6 +23,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
@@ -43,13 +44,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     private readonly TextBox _dateTextBox;
     private readonly TextBox _timeTextBox;
 
-    public BocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : this (resourceUrlFactory, globalizationService, new RenderOnlyTextBox(), new RenderOnlyTextBox())
+    public BocDateTimeValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : this (resourceUrlFactory, globalizationService, renderingFeatures, new RenderOnlyTextBox(), new RenderOnlyTextBox())
     {
     }
 
-    protected BocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, TextBox dateTextBox, TextBox timeTextBox)
-        : base (resourceUrlFactory, globalizationService)
+    protected BocDateTimeValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures,
+        TextBox dateTextBox,
+        TextBox timeTextBox)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("dateTextBox", dateTextBox);
       ArgumentUtility.CheckNotNull ("timeTextBox", timeTextBox);

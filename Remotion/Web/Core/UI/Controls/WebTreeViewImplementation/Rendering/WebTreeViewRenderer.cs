@@ -27,8 +27,11 @@ namespace Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering
   [ImplementationFor (typeof (IWebTreeViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public class WebTreeViewRenderer : RendererBase<IWebTreeView>, IWebTreeViewRenderer
   {
-    public WebTreeViewRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : base (resourceUrlFactory, globalizationService)
+    public WebTreeViewRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

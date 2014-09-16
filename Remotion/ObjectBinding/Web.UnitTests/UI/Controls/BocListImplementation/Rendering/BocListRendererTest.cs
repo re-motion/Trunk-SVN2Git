@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
@@ -47,6 +48,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
           GlobalizationService,
+          RenderingFeatures.Default,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -74,6 +76,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
           GlobalizationService,
+          RenderingFeatures.Default,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -109,6 +112,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
           GlobalizationService,
+          RenderingFeatures.Default,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),
@@ -140,6 +144,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var renderer = new BocListRenderer (
           new FakeResourceUrlFactory(),
           GlobalizationService,
+          RenderingFeatures.Default,
           _bocListCssClassDefinition,
           new StubRenderer ("table"),
           new StubRenderer ("navigation"),

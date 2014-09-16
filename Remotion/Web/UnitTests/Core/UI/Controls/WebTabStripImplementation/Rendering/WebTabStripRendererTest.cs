@@ -275,7 +275,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private void AssertControl (bool withCssClass, bool isEmpty, bool isDesignMode, int tabCount, WebTabStripRenderingContext renderingContext)
     {
-      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), GlobalizationService);
+      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
       _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();

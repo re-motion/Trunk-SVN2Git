@@ -24,6 +24,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering
@@ -35,8 +36,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
   [ImplementationFor (typeof (IBocTextValueRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocTextValueRenderer : BocTextValueRendererBase<IBocTextValue>, IBocTextValueRenderer
   {
-    public BocTextValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public BocTextValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Globalization;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering
 {
@@ -27,11 +29,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
   /// </summary>
   /// <typeparam name="T">The concrete control or corresponding interface that will be rendered.</typeparam>
   public abstract class BocBooleanValueRendererBase<T> : BocRendererBase<T>
-      where T: IBocBooleanValueBase
+      where T : IBocBooleanValueBase
   {
-    protected BocBooleanValueRendererBase (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : base (resourceUrlFactory, globalizationService)
-    { 
+    protected BocBooleanValueRendererBase (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
+    {
     }
   }
 }

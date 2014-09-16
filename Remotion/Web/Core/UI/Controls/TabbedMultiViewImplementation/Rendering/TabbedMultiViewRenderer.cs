@@ -31,8 +31,11 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
   [ImplementationFor (typeof (ITabbedMultiViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public class TabbedMultiViewRenderer : RendererBase<ITabbedMultiView>, ITabbedMultiViewRenderer
   {
-    public TabbedMultiViewRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public TabbedMultiViewRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

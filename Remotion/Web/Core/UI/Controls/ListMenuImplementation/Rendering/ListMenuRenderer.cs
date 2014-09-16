@@ -35,8 +35,8 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   {
     private const string c_whiteSpace = "&nbsp;";
 
-    public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

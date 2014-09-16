@@ -31,8 +31,11 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   [ImplementationFor (typeof (ITabbedMenuRenderer), Lifetime = LifetimeKind.Singleton)]
   public class TabbedMenuRenderer : RendererBase<ITabbedMenu>, ITabbedMenuRenderer
   {
-    public TabbedMenuRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public TabbedMenuRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

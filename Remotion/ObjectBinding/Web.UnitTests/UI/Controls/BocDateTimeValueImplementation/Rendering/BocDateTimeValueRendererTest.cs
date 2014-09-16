@@ -29,6 +29,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rend
 using Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Rhino.Mocks;
 
@@ -169,7 +170,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImple
       _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.DateTime);
       _control.Stub (stub => stub.Enabled).Return (true);
 
-      var renderer = new BocDateTimeValueRenderer (new FakeResourceUrlFactory (), GlobalizationService);
+      var renderer = new BocDateTimeValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, RenderingFeatures.Default);
       renderer.Render (new BocDateTimeValueRenderingContext (HttpContext, Html.Writer, _control));
       var document = Html.GetResultDocument ();
       var container = document.GetAssertedChildElement ("span", 0);
@@ -230,7 +231,12 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImple
 
     private XmlNode GetAssertedContainer (out BocDateTimeValueRenderer renderer, bool isDateOnly)
     {
-      renderer = new TestableBocDateTimeValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, _dateTextBox, _timeTextBox);
+      renderer = new TestableBocDateTimeValueRenderer (
+          new FakeResourceUrlFactory(),
+          GlobalizationService,
+          RenderingFeatures.Default,
+          _dateTextBox,
+          _timeTextBox);
       renderer.Render (new BocDateTimeValueRenderingContext(HttpContext, Html.Writer, _control));
 
       var document = Html.GetResultDocument ();

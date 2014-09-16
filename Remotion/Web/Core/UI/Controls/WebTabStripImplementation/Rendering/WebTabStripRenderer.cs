@@ -31,8 +31,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   [ImplementationFor (typeof (IWebTabStripRenderer), Lifetime = LifetimeKind.Singleton)]
   public class WebTabStripRenderer : RendererBase<IWebTabStrip>, IWebTabStripRenderer
   {
-    public WebTabStripRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public WebTabStripRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

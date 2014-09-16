@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rende
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
 
@@ -260,7 +261,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
     private void CheckRendering (string value, string iconUrl, string description)
     {
       var resourceUrlFactory = new FakeResourceUrlFactory();
-      _renderer = new BocBooleanValueRenderer (resourceUrlFactory, GlobalizationService, new BocBooleanValueResourceSetFactory (resourceUrlFactory));
+      _renderer = new BocBooleanValueRenderer (resourceUrlFactory, GlobalizationService, RenderingFeatures.Default, new BocBooleanValueResourceSetFactory (resourceUrlFactory));
       _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);

@@ -20,18 +20,27 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   public class TestableBocDateTimeValueRenderer : BocDateTimeValueRenderer
   {
-    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : base(resourceUrlFactory, globalizationService)
+    public TestableBocDateTimeValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 
-    public TestableBocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, TextBox dateTextBox, TextBox timeTextBox)
-        : base(resourceUrlFactory, globalizationService, dateTextBox, timeTextBox)
+    public TestableBocDateTimeValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures,
+        TextBox dateTextBox,
+        TextBox timeTextBox)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures, dateTextBox, timeTextBox)
     {
     }
   }

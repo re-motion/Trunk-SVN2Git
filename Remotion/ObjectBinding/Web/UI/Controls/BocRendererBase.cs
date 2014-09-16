@@ -31,8 +31,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public abstract class BocRendererBase<TControl> : RendererBase<TControl>
       where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
-    protected BocRendererBase (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : base (resourceUrlFactory, globalizationService)
+    protected BocRendererBase (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

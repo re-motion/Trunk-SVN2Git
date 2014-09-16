@@ -26,6 +26,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplementation.Rendering
@@ -42,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
     {
       Initialize();
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
-      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService);
+      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
       TextValue.Stub (stub => stub.ClientID).Return (c_clientID);
       TextValue.Stub (stub => stub.GetValueName()).Return (c_valueName);
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();

@@ -408,7 +408,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
     [Ignore ("Assertions for embedded menu are incorrect: COMMONS-2431")]
     public void RenderOptions ()
     {
-      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, GlobalizationService, () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (
+          _resourceUrlFactoryStub,
+          GlobalizationService,
+          RenderingFeatures.Default,
+          () => new StubDropDownList());
       Control.Stub (stub => stub.HasValueEmbeddedInsideOptionsMenu).Return (true);
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
@@ -427,7 +431,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
-      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, GlobalizationService, () => new StubDropDownList());
+      var renderer = new TestableBocReferenceValueRenderer (
+          _resourceUrlFactoryStub,
+          GlobalizationService,
+          RenderingFeatures.Default,
+          () => new StubDropDownList());
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.RenderOptionsMenuTitle (CreateRenderingContext());
@@ -442,7 +450,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
     {
       Control.Stub (stub => stub.Enabled).Return (true);
 
-      var renderer = new BocReferenceValueRenderer (_resourceUrlFactoryStub, GlobalizationService);
+      var renderer = new BocReferenceValueRenderer (_resourceUrlFactoryStub, GlobalizationService, RenderingFeatures.Default);
       renderer.Render (CreateRenderingContext ());
       var document = Html.GetResultDocument ();
       var select = document.GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 1).GetAssertedChildElement ("select", 0);
@@ -513,7 +521,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
     private XmlNode GetAssertedContainerSpan (bool withStyle)
     {
-      var renderer = new TestableBocReferenceValueRenderer (_resourceUrlFactoryStub, GlobalizationService, () => DropDownList);
+      var renderer = new TestableBocReferenceValueRenderer (
+          _resourceUrlFactoryStub,
+          GlobalizationService,
+          RenderingFeatures.Default,
+          () => DropDownList);
       renderer.Render (CreateRenderingContext());
       
       var document = Html.GetResultDocument();

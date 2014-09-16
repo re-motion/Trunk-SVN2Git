@@ -108,8 +108,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocListRenderer"/> should use a
     /// factory to obtain an instance of this class.
     /// </remarks>
-    public BocListNavigationBlockRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, BocListCssClassDefinition cssClasses)
-      :base (resourceUrlFactory, globalizationService)
+    public BocListNavigationBlockRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures,
+        BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 

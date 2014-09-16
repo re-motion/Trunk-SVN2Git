@@ -23,6 +23,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -104,7 +105,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
 
     private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
     {
-      var renderer = new TabbedMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService);
+      var renderer = new TabbedMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
       renderer.Render (new TabbedMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
       // _control.RenderControl (_htmlHelper.Writer);
 

@@ -28,8 +28,11 @@ namespace Remotion.Web.UI.Controls.WebButtonImplementation.Rendering
   [ImplementationFor (typeof (IWebButtonRenderer), Lifetime = LifetimeKind.Singleton)]
   public class WebButtonRenderer : RendererBase<IWebButton>, IWebButtonRenderer
   {
-    public WebButtonRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : base (resourceUrlFactory, globalizationService)
+    public WebButtonRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

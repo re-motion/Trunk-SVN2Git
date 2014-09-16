@@ -31,8 +31,11 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
   [ImplementationFor (typeof (ISingleViewRenderer), Lifetime = LifetimeKind.Singleton)]
   public class SingleViewRenderer : RendererBase<ISingleView>, ISingleViewRenderer
   {
-    public SingleViewRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-      : base (resourceUrlFactory, globalizationService)
+    public SingleViewRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 

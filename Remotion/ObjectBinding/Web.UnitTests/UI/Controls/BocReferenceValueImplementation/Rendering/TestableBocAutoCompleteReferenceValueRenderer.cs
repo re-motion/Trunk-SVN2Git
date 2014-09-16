@@ -20,18 +20,26 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImplementation.Rendering
 {
   public class TestableBocAutoCompleteReferenceValueRenderer : BocAutoCompleteReferenceValueRenderer
   {
-    public TestableBocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
-        : base(resourceUrlFactory, globalizationService)
+    public TestableBocAutoCompleteReferenceValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
     }
 
-    public TestableBocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, Func<TextBox> textBoxFactory)
-        : base(resourceUrlFactory, globalizationService, textBoxFactory)
+    public TestableBocAutoCompleteReferenceValueRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService,
+        IRenderingFeatures renderingFeatures,
+        Func<TextBox> textBoxFactory)
+        : base (resourceUrlFactory, globalizationService, renderingFeatures, textBoxFactory)
     {
     }
   }
