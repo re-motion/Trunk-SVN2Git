@@ -43,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting
 
       var newContext = Context.CloneForNewPage();
       pageIsShownCondition (newContext);
-      return (TPageObject) Activator.CreateInstance (typeof (TPageObject), new[] { newContext });
+      return (TPageObject) Activator.CreateInstance (typeof (TPageObject), new object[] { newContext });
     }
   }
 }
