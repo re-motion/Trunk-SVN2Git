@@ -27,6 +27,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
@@ -71,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
 
-      IBocColumnRenderer renderer = new BocCustomColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
       var args = new BocListDataRowRenderEventArgs (10, EventArgs.BusinessObject, EventArgs.IsEditableRow, EventArgs.IsOddRow);
       renderer.RenderDataCell (_renderingContext, 0, false, args);
 
@@ -88,7 +89,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
 
-      IBocColumnRenderer renderer = new BocCustomColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
       var args = new BocListDataRowRenderEventArgs (20, EventArgs.BusinessObject, EventArgs.IsEditableRow, EventArgs.IsOddRow);
       renderer.RenderDataCell (_renderingContext, 0, false,args);
 
@@ -105,7 +106,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
 
-      IBocColumnRenderer renderer = new BocCustomColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCustomColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();

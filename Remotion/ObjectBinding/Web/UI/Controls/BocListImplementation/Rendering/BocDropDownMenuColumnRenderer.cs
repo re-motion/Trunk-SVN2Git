@@ -39,8 +39,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </remarks>
     public BocDropDownMenuColumnRenderer (
         IResourceUrlFactory resourceUrlFactory,
+        IRenderingFeatures renderingFeatures,
         BocListCssClassDefinition cssClasses)
-        : base (resourceUrlFactory, cssClasses)
+        : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
 

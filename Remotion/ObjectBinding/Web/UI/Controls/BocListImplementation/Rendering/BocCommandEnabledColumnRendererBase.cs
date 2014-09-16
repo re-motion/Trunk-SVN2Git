@@ -34,8 +34,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRendererBase (IResourceUrlFactory resourceUrlFactory, BocListCssClassDefinition cssClasses)
-        : base (resourceUrlFactory, cssClasses)
+    protected BocCommandEnabledColumnRendererBase (IResourceUrlFactory resourceUrlFactory, IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
 
@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         try
         {
           command.ItemID = command.ItemID + "_Row_" + originalRowIndex;
-          command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+          command.RenderBegin (renderingContext.Writer, RenderingFeatures, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
         }
         finally
         {

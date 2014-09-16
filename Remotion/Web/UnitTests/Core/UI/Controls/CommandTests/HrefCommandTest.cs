@@ -67,6 +67,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
       command.RenderBegin (
           _testHelper.HtmlWriter, 
+          RenderingFeatures.Default,
           _testHelper.PostBackEvent, 
           parameters, 
           _testHelper.OnClick, 
@@ -105,6 +106,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
       command.RenderBegin (
           _testHelper.HtmlWriter, 
+          RenderingFeatures.Default,
           _testHelper.PostBackEvent, 
           parameters, 
           _testHelper.OnClick, 

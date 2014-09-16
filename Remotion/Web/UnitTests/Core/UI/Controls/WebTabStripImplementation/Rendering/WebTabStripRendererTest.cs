@@ -409,7 +409,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private WebTabRenderer CreateWebTabRenderer ()
     {
-      return new WebTabRenderer(new NoneHotkeyFormatter());
+      return new WebTabRenderer(new NoneHotkeyFormatter(), RenderingFeatures.Default);
     }
   }
 }

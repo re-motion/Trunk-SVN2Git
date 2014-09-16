@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         try
         {
           command.ItemID = command.ItemID + "_Row_" + originalRowIndex;
-          command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+          command.RenderBegin (renderingContext.Writer, RenderingFeatures.ForLegacy, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
         }
         finally
         {

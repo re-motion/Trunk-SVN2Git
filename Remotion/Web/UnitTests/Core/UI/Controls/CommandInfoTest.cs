@@ -77,7 +77,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag();
@@ -98,7 +98,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag();
@@ -119,7 +119,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag();
@@ -140,7 +140,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag ();
@@ -158,7 +158,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag ();
@@ -176,7 +176,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag ();
@@ -194,7 +194,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
-      commandInfo.AddAttributesToRender (htmlTextWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
       htmlTextWriter.RenderEndTag ();
@@ -202,6 +202,60 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var result = stringWriter.ToString ();
 
       Assert.That (result, Is.StringContaining ("target=\"TheTarget\"Space'\""));
+    }
+
+    [Test]
+    public void AddDiagnosticMetadataAttributes_Href ()
+    {
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "http://localhost/My.wxe", "TheTarget", "javascript:Foo();");
+
+      var stringWriter = new StringWriter ();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.WithDiagnosticMetadata);
+
+      htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
+      htmlTextWriter.RenderEndTag ();
+
+      var result = stringWriter.ToString ();
+
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.HasAutoPostBack + "=\"false\""));
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersNavigation + "=\"true\""));
+    }
+
+    [Test]
+    public void AddDiagnosticMetadataAttributes_PostBack ()
+    {
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "#", "TheTarget", "FrontGarbage__doPostBackBackGarbage");
+
+      var stringWriter = new StringWriter ();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.WithDiagnosticMetadata);
+
+      htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
+      htmlTextWriter.RenderEndTag ();
+
+      var result = stringWriter.ToString ();
+
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.HasAutoPostBack + "=\"true\""));
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersNavigation + "=\"false\""));
+    }
+
+    [Test]
+    public void AddDiagnosticMetadataAttributes_PureJavaScript ()
+    {
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "#", "TheTarget", "javascript:Foo();");
+
+      var stringWriter = new StringWriter ();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.WithDiagnosticMetadata);
+
+      htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
+      htmlTextWriter.RenderEndTag ();
+
+      var result = stringWriter.ToString ();
+
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.HasAutoPostBack + "=\"false\""));
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersNavigation + "=\"false\""));
     }
   }
 }

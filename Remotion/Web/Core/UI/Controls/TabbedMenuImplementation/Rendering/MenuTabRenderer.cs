@@ -32,8 +32,8 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   {
     private Command _renderingCommand;
 
-    public MenuTabRenderer (IHotkeyFormatter hotkeyFormatter)
-        : base(hotkeyFormatter)
+    public MenuTabRenderer (IHotkeyFormatter hotkeyFormatter, IRenderingFeatures renderingFeatures)
+        : base(hotkeyFormatter, renderingFeatures)
     {
     }
 
@@ -53,7 +53,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
           _renderingCommand.ItemID = tab.ItemID + "_Command";
 
         _renderingCommand.RenderBegin (
-            renderingContext.Writer, tab.GetPostBackClientEvent(), new string[0], string.Empty, null, additionalUrlParameters, false, style);
+            renderingContext.Writer, RenderingFeatures, tab.GetPostBackClientEvent(), new string[0], string.Empty, null, additionalUrlParameters, false, style);
       }
       finally
       {

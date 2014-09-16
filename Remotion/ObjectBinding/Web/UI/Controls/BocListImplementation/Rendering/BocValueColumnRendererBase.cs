@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -31,8 +32,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   public abstract class BocValueColumnRendererBase<TBocColumnDefinition> : BocCommandEnabledColumnRendererBase<TBocColumnDefinition>
       where TBocColumnDefinition: BocValueColumnDefinition
   {
-    protected BocValueColumnRendererBase (IResourceUrlFactory resourceUrlFactory, BocListCssClassDefinition cssClasses)
-        : base (resourceUrlFactory, cssClasses)
+    protected BocValueColumnRendererBase (IResourceUrlFactory resourceUrlFactory, IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
 

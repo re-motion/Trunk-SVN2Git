@@ -22,6 +22,7 @@ using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
@@ -56,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       Column.FormatString = string.Empty;
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -74,7 +75,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     [Test]
     public void RenderBasicCell ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();
@@ -92,7 +93,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     [Test]
     public void RenderBasicCell_WithNewLineAndEncoding ()
     {
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
 
       var renderArgs = new BocListDataRowRenderEventArgs (0, (IBusinessObject) TypeWithReference.Create ("value\r\nExtraText<html>"), false, true);
       renderer.RenderDataCell (_renderingContext, 0, false, renderArgs);
@@ -116,7 +117,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Column.EnforceWidth = true;
       Column.Width = new Unit (40, UnitType.Pixel);
 
-      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
       var document = Html.GetResultDocument();

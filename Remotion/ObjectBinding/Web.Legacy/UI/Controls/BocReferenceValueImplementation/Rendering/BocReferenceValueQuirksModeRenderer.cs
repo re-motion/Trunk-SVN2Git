@@ -381,7 +381,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (isCommandEnabled)
       {
         renderingContext.Control.Command.ItemID = "Command";
-        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, RenderingFeatures.ForLegacy, postBackEvent, onClick, objectID, null);
         if (!string.IsNullOrEmpty (renderingContext.Control.Command.ToolTip))
           icon.ToolTip = renderingContext.Control.Command.ToolTip;
       }
@@ -411,7 +411,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       if (isCommandEnabled)
       {
         renderingContext.Control.Command.ItemID = "Command";
-        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+        renderingContext.Control.Command.RenderBegin (renderingContext.Writer, RenderingFeatures.ForLegacy, postBackEvent, onClick, objectID, null);
       }
       else
       {

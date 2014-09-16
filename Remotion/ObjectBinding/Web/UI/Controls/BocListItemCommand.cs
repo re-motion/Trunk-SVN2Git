@@ -155,6 +155,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Renders the opening tag for the command. </summary>
     /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. </param>
+    /// <param name="renderingFeatures"> The rendering features to use. </param>
     /// <param name="postBackLink">
     ///   The string rendered in the <c>href</c> tag of the anchor element when the command type is <see cref="CommandType.Event"/> or 
     ///   <see cref="CommandType.WxeFunction"/>. This string is usually the call to the <c>__doPostBack</c> script function used by ASP.net
@@ -174,13 +175,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </param>
     public void RenderBegin (
         HtmlTextWriter writer,
+        IRenderingFeatures renderingFeatures,
         string postBackLink,
         string onClick,
         int listIndex,
         string businessObjectID,
         ISecurableObject securableObject)
     {
-      base.RenderBegin (writer, postBackLink, new string[] { listIndex.ToString(), businessObjectID }, onClick, securableObject);
+      base.RenderBegin (writer, renderingFeatures, postBackLink, new string[] { listIndex.ToString(), businessObjectID }, onClick, securableObject);
     }
 
     /// <summary>

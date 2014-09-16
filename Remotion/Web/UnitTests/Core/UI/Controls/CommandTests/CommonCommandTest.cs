@@ -43,7 +43,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
 
       var expectedID = _testHelper.OwnerControlClientID + "_" + _testHelper.ItemID;
 
-      command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
+      command.RenderBegin (_testHelper.HtmlWriter, RenderingFeatures.Default, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
@@ -61,7 +61,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       command.OwnerControl = null;
       Assert.That (command.ItemID, Is.Not.Empty);
 
-      command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
+      command.RenderBegin (_testHelper.HtmlWriter, RenderingFeatures.Default, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");
@@ -76,7 +76,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       command.ItemID = null;
       Assert.That (command.OwnerControl, Is.Not.Null);
 
-      command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
+      command.RenderBegin (_testHelper.HtmlWriter, RenderingFeatures.Default, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
       Assert.AreEqual (HtmlTextWriterTag.A, _testHelper.HtmlWriter.Tag, "Wrong Tag");

@@ -88,7 +88,7 @@ namespace Remotion.Web.UI.Controls
       get { return _title; }
     }
 
-    public void AddAttributesToRender (HtmlTextWriter writer)
+    public void AddAttributesToRender (HtmlTextWriter writer, IRenderingFeatures renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
 
@@ -103,6 +103,24 @@ namespace Remotion.Web.UI.Controls
 
       if (!string.IsNullOrEmpty (_title))
         writer.AddAttribute (HtmlTextWriterAttribute.Title, _title);
+
+      if (renderingFeatures.EnableDiagnosticMetadata)
+        AddDiagnosticMetadataAttributes (writer);
+    }
+
+    private void AddDiagnosticMetadataAttributes (HtmlTextWriter writer)
+    {
+      if(_href != "#")
+      {
+        writer.AddAttribute (DiagnosticMetadataAttributes.TriggersNavigation, "true");
+        writer.AddAttribute (DiagnosticMetadataAttributes.HasAutoPostBack, "false");
+      }
+      else
+      {
+        writer.AddAttribute (DiagnosticMetadataAttributes.TriggersNavigation, "false");
+        var hasAutoPostBack = _onClick.Contains ("__doPostBack");
+        writer.AddAttribute (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+      }
     }
   }
 }

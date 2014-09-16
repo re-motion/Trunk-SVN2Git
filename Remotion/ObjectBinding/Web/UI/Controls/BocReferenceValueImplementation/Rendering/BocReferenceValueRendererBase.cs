@@ -278,7 +278,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       var isCommandEnabled = isIconEnabled && IsCommandEnabled (renderingContext);
       var command = GetCommand (renderingContext, isCommandEnabled);
-      command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+      command.RenderBegin (renderingContext.Writer, RenderingFeatures, postBackEvent, onClick, objectID, null);
 
       if (isIconEnabled)
         icon = icon ?? IconInfo.CreateSpacer (ResourceUrlFactory);
@@ -308,7 +308,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       var isCommandEnabled = IsCommandEnabled (renderingContext);
       var command = GetCommand (renderingContext, isCommandEnabled);
-      command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
+      command.RenderBegin (renderingContext.Writer, RenderingFeatures, postBackEvent, onClick, objectID, null);
 
       if (icon != null)
         icon.Render (renderingContext.Writer, renderingContext.Control);

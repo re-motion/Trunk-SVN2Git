@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSu
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -37,8 +38,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// factory to obtain instances of this class.
     /// </remarks>
-    public BocCommandColumnRenderer (IResourceUrlFactory resourceUrlFactory, BocListCssClassDefinition cssClasses)
-        : base (resourceUrlFactory, cssClasses)
+    public BocCommandColumnRenderer (IResourceUrlFactory resourceUrlFactory, IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
+        : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
 

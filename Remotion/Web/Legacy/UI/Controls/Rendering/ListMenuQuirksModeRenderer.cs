@@ -120,6 +120,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
 
       command.RenderBegin (
           renderingContext.Writer,
+          RenderingFeatures.ForLegacy,
           renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, index.ToString()),
           new[] { index.ToString() },
           "",

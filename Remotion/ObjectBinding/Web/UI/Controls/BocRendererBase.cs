@@ -83,6 +83,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<TControl> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      var control = renderingContext.Control;
+      if (!string.IsNullOrEmpty (control.DisplayName))
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.DisplayName, control.DisplayName);
+
+      var isBound = control.Property != null && control.DataSource != null;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsBound, isBound.ToString().ToLower());
+      
+      if (isBound)
+      {
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundType, control.DataSource.BusinessObjectClass.Identifier);
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundProperty, control.Property.Identifier);
+      }
+    }
+
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed in read-only mode. </summary>
     /// <remarks> 
     ///   <para> Class: <c>readOnly</c>. </para>

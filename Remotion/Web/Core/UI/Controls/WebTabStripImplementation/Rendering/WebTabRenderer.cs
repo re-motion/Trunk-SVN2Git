@@ -31,12 +31,23 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   public class WebTabRenderer : IWebTabRenderer
   {
     private readonly IHotkeyFormatter _hotkeyFormatter;
+    private readonly IRenderingFeatures _renderingFeatures;
 
-    public WebTabRenderer (IHotkeyFormatter hotkeyFormatter)
+    public WebTabRenderer (IHotkeyFormatter hotkeyFormatter, IRenderingFeatures renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("hotkeyFormatter", hotkeyFormatter);
+      ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
       
       _hotkeyFormatter = hotkeyFormatter;
+      _renderingFeatures = renderingFeatures;
+    }
+
+    /// <summary>
+    /// Returns the configured <see cref="IRenderingFeatures"/> object.
+    /// </summary>
+    public IRenderingFeatures RenderingFeatures
+    {
+      get { return _renderingFeatures; }
     }
 
     public void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style)

@@ -62,6 +62,14 @@ namespace Remotion.Web.UI.Controls
     }
 
     /// <summary>
+    /// Returns the configured <see cref="IRenderingFeatures"/> object.
+    /// </summary>
+    protected IRenderingFeatures RenderingFeatures
+    {
+      get { return _renderingFeatures; }
+    }
+
+    /// <summary>
     /// Returns whether the diagnostic metadata rendering feature is enabled and thereby whether a specific control renderer should render such
     /// information as additional data attributes.
     /// </summary>
@@ -96,7 +104,7 @@ namespace Remotion.Web.UI.Controls
 
     protected virtual void AddDiagnosticMetadataAttributes (RenderingContext<TControl> renderingContext)
     {
-      // Todo
+      // Nothing to do in RendererBase.
     }
 
     protected void AppendStringValueOrNullToScript (StringBuilder scriptBuilder, string stringValue)

@@ -207,6 +207,7 @@
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\DefaultRenderingFeatures.cs" />
+    <Compile Include="UI\Controls\DiagnosticMetadataAttributes.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\FormGridManagerImplementation\FormGridCellNamingContainer.cs" />

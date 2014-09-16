@@ -24,6 +24,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
@@ -68,6 +69,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
     private DropDownMenu OptionsMenu { get; set; }
     private IClientScriptManager ClientScriptManagerMock { get; set; }
     private TypeWithReference BusinessObject { get; set; }
+    private IBusinessObjectDataSource DataSource { get; set; }
     private StubTextBox TextBox { get; set; }
 
 
@@ -105,11 +107,15 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
                                          TypeWithReference.Create ("ReferencedObject 1"),
                                          TypeWithReference.Create ("ReferencedObject 2")
                                      };
+
       _dataSource = new BusinessObjectReferenceDataSource();
       _dataSource.BusinessObject = (IBusinessObject) BusinessObject;
 
       _provider = ((IBusinessObject) BusinessObject).BusinessObjectClass.BusinessObjectProvider;
       _provider.AddService<IBusinessObjectWebUIService> (new ReflectionBusinessObjectWebUIService());
+
+      DataSource = new BindableObjectDataSource { Type = typeof (TypeWithReference) };
+      DataSource.Register (Control);
 
       StateBag stateBag = new StateBag();
       Control.Stub (mock => mock.Attributes).Return (new AttributeCollection (stateBag));
@@ -447,6 +453,93 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       
       var document = Html.GetResultDocument();
       AssertReadOnlyContent (document);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataUnbound ()
+    {
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
+          _resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata,
+          () => TextBox);
+
+      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
+      Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderer.Render (CreateRenderingContext());
+      Html.Writer.RenderEndTag();
+
+      var document = Html.GetResultDocument();
+      var control = document.DocumentElement.GetAssertedChildElement ("span", 0);
+      AssertDiagnosticMetadataOfUnboundControl (control, null, false);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataBound ()
+    {
+      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
+          _resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata,
+          () => TextBox);
+
+      TextBox.AutoPostBack = false;
+      Control.Stub (stub => stub.DisplayName).Return ("MyDisplayName");
+      Control.Stub (stub => stub.Enabled).Return (true);
+      SetUpClientScriptExpectations();
+      SetValue();
+
+      Control.Stub (stub => stub.TextBoxStyle).Return (new SingleRowTextBoxStyle());
+      Control.TextBoxStyle.AutoPostBack = true;
+
+      Control.DataSource = DataSource;
+      ((IBusinessObjectBoundControl) Control).Property =
+          ((IBusinessObject) BusinessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue");
+
+      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
+      Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderer.Render (CreateRenderingContext());
+      Html.Writer.RenderEndTag();
+
+      var document = Html.GetResultDocument();
+      var control = document.DocumentElement.GetAssertedChildElement ("span", 0);
+      AssertDiagnosticMetadataOfBoundControl (
+          control,
+          "MyDisplayName",
+          "Remotion.ObjectBinding.Web.UnitTests.Domain.TypeWithReference, Remotion.ObjectBinding.Web.UnitTests",
+          "ReferenceValue",
+          true);
+    }
+
+    private void AssertDiagnosticMetadataOfUnboundControl (XmlNode control, string displayName, bool hasAutoPostBack)
+    {
+      AssertDisplayNameAttribute (control, displayName);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "false");
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+      control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundType);
+      control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundProperty);
+    }
+
+    private void AssertDiagnosticMetadataOfBoundControl (
+        XmlNode control,
+        string displayName,
+        string boundType,
+        string boundProperty,
+        bool hasAutoPostBack)
+    {
+      AssertDisplayNameAttribute (control, displayName);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundType, boundType);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundProperty, boundProperty);
+    }
+
+    private void AssertDisplayNameAttribute (XmlNode control, string displayName)
+    {
+      if (displayName != null)
+        control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.DisplayName, displayName);
+      else
+        control.AssertNoAttribute (DiagnosticMetadataAttributes.DisplayName);
     }
 
     protected void AddStyle ()

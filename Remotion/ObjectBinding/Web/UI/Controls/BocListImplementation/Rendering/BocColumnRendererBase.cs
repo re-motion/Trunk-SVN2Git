@@ -47,16 +47,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     protected const string c_onCommandClickScript = "BocList_OnCommandClick();";
 
     private readonly IResourceUrlFactory _resourceUrlFactory;
+    private readonly IRenderingFeatures _renderingFeatures;
     private readonly BocListCssClassDefinition _cssClasses;
 
     protected BocColumnRendererBase (
         IResourceUrlFactory resourceUrlFactory,
+        IRenderingFeatures renderingFeatures,
         BocListCssClassDefinition cssClasses)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+      ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
-
+      
       _resourceUrlFactory = resourceUrlFactory;
+      _renderingFeatures = renderingFeatures;
       _cssClasses = cssClasses;
     }
 
@@ -68,6 +72,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public IResourceUrlFactory ResourceUrlFactory
     {
       get { return _resourceUrlFactory; }
+    }
+
+    /// <summary>
+    /// Returns the configured <see cref="IRenderingFeatures"/> object.
+    /// </summary>
+    protected IRenderingFeatures RenderingFeatures
+    {
+      get { return _renderingFeatures; }
     }
 
     public BocListCssClassDefinition CssClasses

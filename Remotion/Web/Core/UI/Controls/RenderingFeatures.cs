@@ -11,5 +11,6 @@ namespace Remotion.Web.UI.Controls
   {
     public static readonly IRenderingFeatures Default = new DefaultRenderingFeatures();
     public static readonly IRenderingFeatures WithDiagnosticMetadata = new WithDiagnosticMetadataRenderingFeatures();
+    public static readonly IRenderingFeatures ForLegacy = Default;
   }
 }

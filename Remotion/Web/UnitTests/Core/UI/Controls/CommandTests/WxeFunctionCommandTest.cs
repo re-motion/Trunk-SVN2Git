@@ -82,7 +82,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       _testHelper.ExpectOnceOnHasAccess (command, true);
       _testHelper.ReplayAll();
 
-      command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
+      command.RenderBegin (_testHelper.HtmlWriter, RenderingFeatures.Default, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
       _testHelper.VerifyAll();
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");
@@ -107,7 +107,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests
       _testHelper.ExpectOnceOnHasAccess (command, false);
       _testHelper.ReplayAll();
 
-      command.RenderBegin (_testHelper.HtmlWriter, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
+      command.RenderBegin (_testHelper.HtmlWriter, RenderingFeatures.Default, _testHelper.PostBackEvent, new string[0], _testHelper.OnClick, _testHelper.SecurableObject);
 
       _testHelper.VerifyAll();
       Assert.IsNotNull (_testHelper.HtmlWriter.Tag, "Missing Tag");

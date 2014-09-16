@@ -351,6 +351,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> Renders the opening tag for the command. </summary>
     /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. Must not be <see langword="null"/>. </param>
+    /// <param name="renderingFeatures"> The rendering features to use. </param>
     /// <param name="postBackEvent">
     ///   The string executed upon the click on a command of types
     ///   <see cref="CommandType.Event"/> or <see cref="CommandType.WxeFunction"/>.
@@ -376,6 +377,7 @@ namespace Remotion.Web.UI.Controls
     /// <param name="style"> The style applied to the opening tag. </param>
     public virtual void RenderBegin (
         HtmlTextWriter writer,
+        IRenderingFeatures renderingFeatures,
         string postBackEvent,
         string[] parameters,
         string onClick,
@@ -389,8 +391,8 @@ namespace Remotion.Web.UI.Controls
 
       var commandInfo = GetCommandInfo (postBackEvent, parameters, onClick, securableObject, additionalUrlParameters, includeNavigationUrlParameters);
       if (commandInfo != null)
-        commandInfo.AddAttributesToRender (writer);
-
+        commandInfo.AddAttributesToRender (writer, renderingFeatures);
+      
       if (OwnerControl != null && !string.IsNullOrEmpty (OwnerControl.ClientID) && !string.IsNullOrEmpty ( ItemID))
       {
         var clientID = OwnerControl.ClientID + "_" + ItemID;
@@ -404,6 +406,7 @@ namespace Remotion.Web.UI.Controls
 
     /// <summary> Renders the opening tag for the command. </summary>
     /// <param name="writer"> The <see cref="HtmlTextWriter"/> object to use. Must not be <see langword="null"/>. </param>
+    /// <param name="renderingFeatures"> The rendering features to use. </param>
     /// <param name="postBackEvent">
     ///   The string executed upon the click on a command of types
     ///   <see cref="CommandType.Event"/> or <see cref="CommandType.WxeFunction"/>.
@@ -419,9 +422,9 @@ namespace Remotion.Web.UI.Controls
     /// <param name="securableObject">
     ///   The <see cref="ISecurableObject"/> for which security is evaluated. Use <see landword="null"/> if security is stateless or not evaluated.
     /// </param>
-    public void RenderBegin (HtmlTextWriter writer, string postBackEvent, string[] parameters, string onClick, ISecurableObject securableObject)
+    public void RenderBegin (HtmlTextWriter writer, IRenderingFeatures renderingFeatures, string postBackEvent, string[] parameters, string onClick, ISecurableObject securableObject)
     {
-      RenderBegin (writer, postBackEvent, parameters, onClick, securableObject, new NameValueCollection (0), true, new Style());
+      RenderBegin (writer, renderingFeatures, postBackEvent, parameters, onClick, securableObject, new NameValueCollection (0), true, new Style());
     }
 
     /// <summary> Gets the <see cref="CommandInfo"/> for the command. </summary>

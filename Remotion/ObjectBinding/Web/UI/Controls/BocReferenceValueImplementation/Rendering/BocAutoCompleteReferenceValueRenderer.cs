@@ -105,6 +105,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     }
 
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      var hasAutoPostBack = renderingContext.Control.TextBoxStyle.AutoPostBack.HasValue && renderingContext.Control.TextBoxStyle.AutoPostBack.Value;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+    }
+
     protected override sealed void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);

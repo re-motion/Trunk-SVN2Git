@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
@@ -94,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     [Test]
     public void RenderTitleCellNoSorting ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
@@ -117,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();

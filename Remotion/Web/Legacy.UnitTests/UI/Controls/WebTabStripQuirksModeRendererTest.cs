@@ -376,7 +376,7 @@ namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 
     private WebTabRenderer CreateWebTabRenderer ()
     {
-      return new WebTabRenderer(new NoneHotkeyFormatter());
+      return new WebTabRenderer(new NoneHotkeyFormatter(), RenderingFeatures.ForLegacy);
     }
   }
 }

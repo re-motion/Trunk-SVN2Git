@@ -22,6 +22,7 @@ using System.Web.UI.WebControls;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -41,8 +42,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </remarks>
     public BocCustomColumnRenderer (
         IResourceUrlFactory resourceUrlFactory,
+        IRenderingFeatures renderingFeatures,
         BocListCssClassDefinition cssClasses)
-        : base (resourceUrlFactory, cssClasses)
+        : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
 

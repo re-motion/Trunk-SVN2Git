@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSu
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -39,8 +40,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </remarks>
     public BocCompoundColumnRenderer (
         IResourceUrlFactory resourceUrlFactory,
+        IRenderingFeatures renderingFeatures,
         BocListCssClassDefinition cssClasses)
-        : base (resourceUrlFactory, cssClasses)
+        : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
 
