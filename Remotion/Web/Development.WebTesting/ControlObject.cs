@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -7,13 +8,9 @@ namespace Remotion.Web.Development.WebTesting
   /// developer and instead provide a semantic interface. In contrast to <see cref="PageObject"/>s, control objects represent a specific
   /// ASP.NET (custom) control and not a whole page.
   /// </summary>
-  public class ControlObject : WebTestingObject
+  public abstract class ControlObject : TestObject
   {
-    /// <summary>
-    /// Initializes the control object.
-    /// </summary>
-    /// <param name="context">The control's context.</param>
-    public ControlObject (WebTestingObjectContext context)
+    protected ControlObject ([NotNull] TestObjectContext context)
         : base (context)
     {
     }

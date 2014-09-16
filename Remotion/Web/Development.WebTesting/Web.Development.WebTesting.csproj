@@ -93,10 +93,27 @@
     <Compile Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.25.23.0\ArgumentUtility.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
+    <Compile Include="BrowserFactory.cs" />
+    <Compile Include="ControlObjects\DropDownMenuControlObject.cs" />
+    <Compile Include="ControlObjects\RemotionControlObject.cs" />
+    <Compile Include="ControlSelectionParameters.cs" />
+    <Compile Include="ControlSelectorBase.cs" />
+    <Compile Include="CoypuElementScopeExtensions.cs" />
+    <Compile Include="IControlSelector.cs" />
+    <Compile Include="IisExpressProcessWrapper.cs" />
+    <Compile Include="WaitingStrategies\WxePostBackWaitingStrategy.cs" />
+    <Compile Include="WaitingStrategies\IWaitingStrategy.cs" />
+    <Compile Include="PageObjects\RemotionPageObject.cs" />
+    <Compile Include="UnspecifiedPageObject.cs" />
+    <Compile Include="WebTestHelper.cs" />
+    <Compile Include="WebTestConfiguration.cs" />
+    <Compile Include="TestObject.cs" />
+    <Compile Include="TestObjectContext.cs" />
     <Compile Include="ControlObject.cs" />
     <Compile Include="PageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Todo.cs" />
+    <Compile Include="WebTestSetUpFixtureHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\packages\Selenium.WebDriver.ChromeDriver.2.10.0.0\content\chromedriver.exe">
