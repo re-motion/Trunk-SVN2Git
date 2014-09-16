@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Web;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Development.Web.ResourceHosting;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
+using Remotion.ServiceLocation;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
 {
@@ -21,6 +24,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       RegisterAutoCompleteService();
       RegisterIconService();
       RegisterResourceVirtualPathProvider();
+      SetRenderingFeatures(RenderingFeatures.WithDiagnosticMetadata);
     }
 
     protected void Application_BeginRequest (Object sender, EventArgs e)
@@ -57,6 +61,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
           },
           FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register();
+    }
+
+    private void SetRenderingFeatures (IRenderingFeatures renderingFeatures)
+    {
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle (() => renderingFeatures);
+      ServiceLocator.SetLocatorProvider (() => serviceLocator);
     }
   }
 }

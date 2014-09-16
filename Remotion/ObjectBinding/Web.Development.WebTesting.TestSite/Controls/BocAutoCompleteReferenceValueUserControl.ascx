@@ -161,7 +161,7 @@
     <td></td>
     <td>
       <remotion:BocAutoCompleteReferenceValue ID="PartnerField_NoAutoPostBack" SearchServicePath="AutoCompleteService.asmx"
-        TextBoxStyle-AutoPostBack="false" ReadOnly="False" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" CompletionSetCount="5" runat="server">
+        TextBoxStyle-AutoPostBack="false" ReadOnly="False" DataSourceControl="CurrentObject" PropertyIdentifier="Partner" CompletionSetCount="5" IconServicePath="IconService.asmx" runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
