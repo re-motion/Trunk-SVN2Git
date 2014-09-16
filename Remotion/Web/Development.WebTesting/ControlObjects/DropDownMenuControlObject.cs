@@ -1,13 +1,15 @@
 ﻿using System;
+using JetBrains.Annotations;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="Remotion.Web.UI.Controls.DropDownMenu"/>.
+  /// Control object for <see cref="DropDownMenu"/>.
   /// </summary>
   public class DropDownMenuControlObject : RemotionControlObject
   {
-    public DropDownMenuControlObject (string id, TestObjectContext context)
+    public DropDownMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

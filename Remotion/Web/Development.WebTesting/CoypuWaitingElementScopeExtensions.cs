@@ -1,6 +1,6 @@
 ﻿using System;
 using Coypu;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
+using log4net;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -10,6 +10,8 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class CoypuWaitingElementScopeExtensions
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (CoypuWaitingElementScopeExtensions));
+
     /// <summary>
     /// Performs an <paramref name="action"/> on a DOM element (given by <paramref name="scope"/>), which is part of a control object (represented by
     /// its <paramref name="context"/>) using the given <paramref name="waitStrategy"/>.
@@ -24,6 +26,8 @@ namespace Remotion.Web.Development.WebTesting
         TestObjectContext context,
         IWaitingStrategy waitStrategy)
     {
+      s_log.DebugFormat ("Perform action using wait strategy '{0}'.", waitStrategy.GetType().Name);
+
       var state = waitStrategy.OnBeforeActionPerformed (context);
       action (scope);
       waitStrategy.PerformWaitAfterActionPerformed (context, state);

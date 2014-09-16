@@ -1,6 +1,5 @@
 ﻿using System;
 using Coypu;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
 {
