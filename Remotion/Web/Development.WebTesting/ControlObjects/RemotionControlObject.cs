@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -9,6 +10,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class RemotionControlObject : ControlObject
   {
+    protected static readonly IWaitingStrategy _defaultWaitStrategy = new WxePostBackWaitingStrategy();
     private readonly string _id;
 
     /// <summary>

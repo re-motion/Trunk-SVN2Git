@@ -24,9 +24,9 @@ namespace Remotion.Web.Development.WebTesting
     /// Gets the page's title.<br/>
     /// The default implementation returns the corresponding window's title, defined by the HTML &lt;title&gt; tag.
     /// </summary>
-    public virtual string Title
+    public virtual string GetTitle ()
     {
-      get { return Context.Window.Title; }
+      return Context.Window.Title;
     }
 
     /// <summary>

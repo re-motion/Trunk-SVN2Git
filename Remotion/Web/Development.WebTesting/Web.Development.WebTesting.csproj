@@ -99,8 +99,10 @@
     <Compile Include="ControlSelectionParameters.cs" />
     <Compile Include="ControlSelectorBase.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />
+    <Compile Include="CoypuWaitingElementScopeExtensions.cs" />
     <Compile Include="IControlSelector.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
+    <Compile Include="Then.cs" />
     <Compile Include="WaitingStrategies\WxePostBackWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\IWaitingStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
