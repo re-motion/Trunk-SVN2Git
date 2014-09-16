@@ -1,7 +1,8 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
+using Remotion.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -10,7 +11,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class RemotionControlObject : ControlObject
   {
-    protected static readonly IWaitingStrategy _defaultWaitStrategy = new WxePostBackWaitingStrategy();
     private readonly string _id;
 
     /// <summary>
@@ -19,6 +19,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     protected RemotionControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (context)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+
       _id = id;
     }
 
@@ -37,6 +39,31 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var fullId = string.Format ("{0}_{1}", ID, idSuffix);
       return Scope.FindId (fullId);
+    }
+
+    /// <summary>
+    /// Returns the waiting strategy to be used.
+    /// </summary>
+    /// <param name="waitStrategy">User-provided waiting strategy.</param>
+    /// <returns>Waiting strategy to be used.</returns>
+    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy waitStrategy)
+    {
+      if (waitStrategy != null)
+        return waitStrategy;
+
+      // Todo RM-6297: Improve exception handling if attributes are not present or not in the correct format.
+      var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.HasAutoPostBack]);
+      if (hasAutoPostBack)
+        return WaitingStrategies.WxePostBack;
+
+      if (Scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
+      {
+        var triggersNavigation = bool.Parse (Scope[DiagnosticMetadataAttributes.TriggersNavigation]);
+        if (triggersNavigation)
+          return WaitingStrategies.WxeReset;
+      }
+
+      return WaitingStrategies.Null;
     }
   }
 }

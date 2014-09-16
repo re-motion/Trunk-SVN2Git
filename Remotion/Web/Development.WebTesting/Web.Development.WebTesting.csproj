@@ -94,6 +94,7 @@
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
+    <Compile Include="ControlObjects\CommandControlObject.cs" />
     <Compile Include="ControlObjects\DropDownMenuControlObject.cs" />
     <Compile Include="ControlObjects\RemotionControlObject.cs" />
     <Compile Include="ControlSelectionParameters.cs" />
