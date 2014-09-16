@@ -103,10 +103,14 @@
     <Compile Include="IControlSelector.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
     <Compile Include="Then.cs" />
-    <Compile Include="WaitingStrategies\WxePostBackWaitingStrategy.cs" />
-    <Compile Include="WaitingStrategies\IWaitingStrategy.cs" />
+    <Compile Include="WaitingStrategies.cs" />
+    <Compile Include="WaitingStrategyImplementations\NullWaitingStrategy.cs" />
+    <Compile Include="WaitingStrategyImplementations\WxePostBackWaitingStrategy.cs" />
+    <Compile Include="IWaitingStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
+    <Compile Include="WaitingStrategyImplementations\WxeResetWaitingStrategy.cs" />
+    <Compile Include="WaitingStrategyImplementations\WxeWaitingStrategyBase.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="WebTestConfiguration.cs" />
     <Compile Include="TestObject.cs" />

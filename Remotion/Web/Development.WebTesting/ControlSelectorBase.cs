@@ -7,14 +7,17 @@ namespace Remotion.Web.Development.WebTesting
   /// <see cref="FindControl"/> based on <see cref="FindTypedControl"/>.
   /// </summary>
   /// <typeparam name="TControlObject">The control object type to be found.</typeparam>
-  public abstract class ControlSelectorBase<TControlObject> : IControlSelector<TControlObject>
+  /// <typeparam name="TControlSelectionParameters">The control selection parameters type required for this control selector.</typeparam>
+  public abstract class ControlSelectorBase<TControlObject, TControlSelectionParameters>
+      : IControlSelector<TControlObject, TControlSelectionParameters>
       where TControlObject : ControlObject
+      where TControlSelectionParameters : ControlSelectionParameters
   {
-    public ControlObject FindControl (TestObjectContext context, ControlSelectionParameters selectionParameters)
+    public ControlObject FindControl (TestObjectContext context, TControlSelectionParameters selectionParameters)
     {
       return FindTypedControl (context, selectionParameters);
     }
 
-    public abstract TControlObject FindTypedControl (TestObjectContext context, ControlSelectionParameters selectionParameters);
+    public abstract TControlObject FindTypedControl (TestObjectContext context, TControlSelectionParameters selectionParameters);
   }
 }

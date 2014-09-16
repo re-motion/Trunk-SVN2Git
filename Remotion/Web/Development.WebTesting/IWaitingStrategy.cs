@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Remotion.Web.Development.WebTesting.WaitingStrategies
+namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
   /// <para>
