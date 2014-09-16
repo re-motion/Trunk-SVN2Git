@@ -2,7 +2,7 @@
 
 namespace Remotion.Web.UI.Controls
 {
-  // Todo RM-6297: Unit test?
+  // Todo RM-6297: Unit tests?
 
   /// <summary>
   /// <see cref="IRenderingFeatures"/> implementations which are directly supported by the framework.
