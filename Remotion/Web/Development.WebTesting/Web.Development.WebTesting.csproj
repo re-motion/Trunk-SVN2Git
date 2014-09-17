@@ -101,6 +101,7 @@
     <Compile Include="ControlSelectorBase.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />
     <Compile Include="CoypuWaitingElementScopeExtensions.cs" />
+    <Compile Include="IControlHost.cs" />
     <Compile Include="IControlSelector.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
     <Compile Include="Then.cs" />
