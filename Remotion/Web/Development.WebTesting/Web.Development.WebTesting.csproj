@@ -96,6 +96,8 @@
     <Compile Include="BrowserFactory.cs" />
     <Compile Include="ControlObjects\CommandControlObject.cs" />
     <Compile Include="ControlObjects\DropDownMenuControlObject.cs" />
+    <Compile Include="ControlObjects\FormGridControlObject.cs" />
+    <Compile Include="ControlObjects\FormGridSelector.cs" />
     <Compile Include="ControlObjects\RemotionControlObject.cs" />
     <Compile Include="ControlSelectionParameters.cs" />
     <Compile Include="ControlSelectorBase.cs" />

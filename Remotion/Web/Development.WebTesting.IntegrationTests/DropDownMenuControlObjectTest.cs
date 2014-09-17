@@ -9,7 +9,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void SampleTest ()
     {
-      var page = Start();
+      
     }
   }
 }

@@ -10,7 +10,7 @@
 namespace Remotion.Web.Development.WebTesting.TestSite {
     
     
-    public partial class Default {
+    public partial class SingleFormGridTest {
         
         /// <summary>
         /// form1 control.
@@ -29,5 +29,14 @@ namespace Remotion.Web.Development.WebTesting.TestSite {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.ScriptManager ScriptManager;
+        
+        /// <summary>
+        /// MyFormGrid control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable MyFormGrid;
     }
 }

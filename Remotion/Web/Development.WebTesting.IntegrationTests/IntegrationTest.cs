@@ -24,8 +24,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.OnTearDown (hasSucceeded);
     }
 
-    protected RemotionPageObject Start ()
+    protected RemotionPageObject Start (string page)
     {
+      var url = _webTestHelper.Configuration.WebApplicationRoot + page;
+      _webTestHelper.MainBrowserSession.Visit (url);
+
       var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }

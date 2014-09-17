@@ -3,7 +3,7 @@ using Remotion.Web.UI;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class Default : SmartPage
+  public partial class FormGridTest : SmartPage
   {
   }
 }
