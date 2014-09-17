@@ -102,6 +102,7 @@
     <Compile Include="ControlObjects\ScopeControlObject.cs" />
     <Compile Include="ControlObjects\SingleViewControlObject.cs" />
     <Compile Include="ControlObjects\SingleViewSelector.cs" />
+    <Compile Include="Utilities\XPathUtils.cs" />
     <Compile Include="ControlSelectionParameters.cs" />
     <Compile Include="ControlSelectorBase.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />
