@@ -22,4 +22,5 @@
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 
   <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe"/>
+  <add id="TabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::TabStripTestFunction" resource="~/TabStripTest.wxe"/>
 </urlMapping>

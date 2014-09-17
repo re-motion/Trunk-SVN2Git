@@ -105,6 +105,7 @@
     <Compile Include="ControlObjects\SingleViewSelector.cs" />
     <Compile Include="ControlObjects\TabbedMultiViewSelector.cs" />
     <Compile Include="ControlObjects\TabStripControlObject.cs" />
+    <Compile Include="ControlObjects\TabStripSelector.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
     <Compile Include="ControlSelectionParameters.cs" />
     <Compile Include="ControlSelectorBase.cs" />

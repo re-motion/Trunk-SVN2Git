@@ -70,6 +70,7 @@
     <Compile Include="SetUpFixture.cs" />
     <Compile Include="IntegrationTest.cs" />
     <Compile Include="TabbedMultiViewControlObjectTest.cs" />
+    <Compile Include="TabStripControlObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\remotion.snk">

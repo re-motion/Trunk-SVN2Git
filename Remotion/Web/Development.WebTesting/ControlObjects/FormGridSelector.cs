@@ -20,7 +20,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       else if (selectionParameters.Index != null)
       {
         scope = context.Scope.FindXPath (
-            string.Format (".//table{0}[{1}]", XPathUtils.CreateContainsClassCheck (c_cssClass), selectionParameters.Index.Value));
+            string.Format ("(.//table{0})[{1}]", XPathUtils.CreateContainsClassCheck (c_cssClass), selectionParameters.Index.Value));
       }
       else if (selectionParameters.Title != null)
       {

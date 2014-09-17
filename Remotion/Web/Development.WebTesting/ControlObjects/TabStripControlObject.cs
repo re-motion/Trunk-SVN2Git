@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -10,14 +11,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class TabStripControlObject : RemotionControlObject
   {
-    public TabStripControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    private readonly string _itemSuffix;
+
+    public TabStripControlObject ([NotNull] string id, [NotNull]string itemSuffix, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      ArgumentUtility.CheckNotNull ("itemSuffix", itemSuffix);
+
+      _itemSuffix = itemSuffix;
     }
 
     public UnspecifiedPageObject SwitchTo (string localID)
     {
-      var commandScope = FindChild (string.Format ("{0}_Tab_Command", localID));
+      var commandScope = FindChild (string.Format ("{0}{1}_Command", localID, _itemSuffix));
       return SwitchToUsingCommandScope (commandScope);
     }
 

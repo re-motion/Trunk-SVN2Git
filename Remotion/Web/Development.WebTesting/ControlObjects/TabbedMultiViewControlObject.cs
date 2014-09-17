@@ -17,8 +17,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public TabStripControlObject GetTabStrip()
     {
+      // Todo RM-6297: use constants from TabbedMultiView instead of magic strings? Refactoring safetey, etc. Talk to MK about this.
       var scope = FindChild ("TabStrip");
-      return new TabStripControlObject(scope.Id, Context.CloneForScope(scope));
+      return new TabStripControlObject(scope.Id, "_Tab", Context.CloneForScope(scope));
     }
 
     public ScopeControlObject GetTopControls()

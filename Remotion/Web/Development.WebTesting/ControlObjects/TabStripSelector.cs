@@ -1,17 +1,17 @@
-﻿using System;
-using Coypu;
+﻿using Coypu;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object selector for <see cref="SingleViewControlObject"/>.
+  /// Control object selector for <see cref="WebTabStrip"/>.
   /// </summary>
-  public class SingleViewSelector : ControlSelectorBase<SingleViewControlObject, ControlSelectionParameters>
+  public class TabStripSelector : ControlSelectorBase<TabStripControlObject, ControlSelectionParameters>
   {
-    private const string c_cssClass = "singleView";
+    private const string c_cssClass = "tabStrip";
 
-    public override SingleViewControlObject FindTypedControl (TestObjectContext context, ControlSelectionParameters selectionParameters)
+    public override TabStripControlObject FindTypedControl (TestObjectContext context, ControlSelectionParameters selectionParameters)
     {
       ElementScope scope;
 
@@ -28,7 +28,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         scope = context.Scope.FindCss ("." + c_cssClass, Options.Single);
       }
 
-      return new SingleViewControlObject (scope.Id, context.CloneForScope (scope));
+      return new TabStripControlObject (scope.Id, string.Empty, context.CloneForScope (scope));
     }
   }
 }

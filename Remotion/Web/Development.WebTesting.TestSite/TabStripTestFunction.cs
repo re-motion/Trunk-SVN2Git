@@ -4,9 +4,9 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public class TabbedMultiViewTestFunction : WxeFunction
+  public class TabStripTestFunction : WxeFunction
   {
-    public TabbedMultiViewTestFunction ()
+    public TabStripTestFunction ()
         : base (new NoneTransactionMode())
     {
     }
@@ -17,6 +17,6 @@ namespace Remotion.Web.Development.WebTesting.TestSite
       ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
     }
 
-    private WxeStep Step2 = new WxePageStep ("TabbedMultiViewTest.aspx");
+    private WxeStep Step2 = new WxePageStep ("TabStripTest.aspx");
   }
 }
