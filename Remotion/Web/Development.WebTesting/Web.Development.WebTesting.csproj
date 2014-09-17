@@ -99,6 +99,8 @@
     <Compile Include="ControlObjects\FormGridControlObject.cs" />
     <Compile Include="ControlObjects\FormGridSelector.cs" />
     <Compile Include="ControlObjects\RemotionControlObject.cs" />
+    <Compile Include="ControlObjects\SingleViewControlObject.cs" />
+    <Compile Include="ControlObjects\SingleViewSelector.cs" />
     <Compile Include="ControlSelectionParameters.cs" />
     <Compile Include="ControlSelectorBase.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />

@@ -69,6 +69,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SingleViewTest.aspx" />
     <Content Include="SingleFormGridTest.aspx" />
     <Content Include="FormGridTest.aspx" />
     <Content Include="Global.asax" />
@@ -77,6 +78,13 @@
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="SingleViewTest.aspx.cs">
+      <DependentUpon>SingleViewTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SingleViewTest.aspx.designer.cs">
+      <DependentUpon>SingleViewTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="SingleFormGridTest.aspx.cs">
       <DependentUpon>SingleFormGridTest.aspx</DependentUpon>
