@@ -74,15 +74,16 @@
     <Content Include="FormGridSingleTest.aspx" />
     <Content Include="FormGridTest.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="UrlMapping.xml" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="TabbedMultiViewTestFunction.cs" />
     <Compile Include="TabbedMultiViewTest.aspx.cs">
       <DependentUpon>TabbedMultiViewTest.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="TabbedMultiViewTest.aspx.designer.cs">
       <DependentUpon>TabbedMultiViewTest.aspx</DependentUpon>

@@ -11,7 +11,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelector ()
     {
-      var home = Start ("TabbedMultiViewTest.aspx");
+      var home = Start ("TabbedMultiViewTest.wxe");
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -38,11 +38,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content1"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("DoNotFindMe"));
 
-      // Todo RM-6297: put test site into WXE.
-      //home = tabbedMultiView.GetTabStrip().SwitchTo ("Tab2").Expect<RemotionPageObject>();
-      //tabbedMultiView = home.GetControl (new TabbedMultiViewSelector(), new ControlSelectionParameters { ID = "MyTabbedMultiView" });
-      //Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content2"));
-      //Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content1"));
+      home = tabbedMultiView.GetTabStrip().SwitchTo ("Tab2").Expect<RemotionPageObject>();
+      tabbedMultiView = home.GetControl (new TabbedMultiViewSelector(), new ControlSelectionParameters { ID = "MyTabbedMultiView" });
+      Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content2"));
+      Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content1"));
+
+      home = tabbedMultiView.GetTabStrip().SwitchTo ("Tab1").Expect<RemotionPageObject>();
+      tabbedMultiView = home.GetControl (new TabbedMultiViewSelector(), new ControlSelectionParameters { ID = "MyTabbedMultiView" });
+      Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content1"));
+      Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content2"));
     }
   }
 }

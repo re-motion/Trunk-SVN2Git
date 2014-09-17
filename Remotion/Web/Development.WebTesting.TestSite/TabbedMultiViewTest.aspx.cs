@@ -1,9 +1,9 @@
 ﻿using System;
-using Remotion.Web.UI;
+using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class TabbedMultiViewTest : SmartPage
+  public partial class TabbedMultiViewTest : WxePage
   {
   }
 }
