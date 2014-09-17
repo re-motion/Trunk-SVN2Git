@@ -14,15 +14,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start("FormGridTest.aspx");
 
       var formGrid1 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { ID = "My1FormGrid" });
-      Assert.That (formGrid1.Scope.Text, Is.StringContaining ("FindMe1"));
+      Assert.That (formGrid1.Scope.Text, Is.StringContaining ("Content1"));
       Assert.That (formGrid1.Scope.Text, Is.Not.StringContaining ("DoNotFindMe1"));
 
       var formGrid2 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { Index = 2 });
-      Assert.That (formGrid2.Scope.Text, Is.StringContaining ("FindMe2"));
+      Assert.That (formGrid2.Scope.Text, Is.StringContaining ("Content2"));
       Assert.That (formGrid2.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
 
       formGrid2 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { Title = "MyFormGrid2" });
-      Assert.That (formGrid2.Scope.Text, Is.StringContaining ("FindMe2"));
+      Assert.That (formGrid2.Scope.Text, Is.StringContaining ("Content2"));
       Assert.That (formGrid2.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
     }
 
@@ -34,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
       var formGrid = home.GetControl (new FormGridSelector(), new ControlSelectionParameters());
-      Assert.That (formGrid.Scope.Text, Is.StringContaining ("FindMe"));
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content"));
       Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe"));
 
       home = Start ("FormGridTest.aspx");

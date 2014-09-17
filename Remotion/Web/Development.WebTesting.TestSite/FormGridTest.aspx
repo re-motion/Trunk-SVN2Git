@@ -19,7 +19,7 @@
       </tr>
       <tr>
         <td></td>
-        <td>FindMe1</td>
+        <td>Content1</td>
       </tr>
     </table>
     <table ID="My2FormGrid" runat="server">
@@ -32,7 +32,7 @@
       </tr>
       <tr>
         <td></td>
-        <td>FindMe2</td>
+        <td>Content2</td>
       </tr>
     </table>
   </form>
