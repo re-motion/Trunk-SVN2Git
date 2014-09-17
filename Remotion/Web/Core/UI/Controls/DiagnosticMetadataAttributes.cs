@@ -8,6 +8,7 @@ namespace Remotion.Web.UI.Controls
   public static class DiagnosticMetadataAttributes
   {
     public static readonly string DisplayName = "data-displayname";
+    public static readonly string Title = "data-title";
     public static readonly string HasAutoPostBack = "data-autopostback";
     public static readonly string TriggersNavigation = "data-triggers-nav";
     public static readonly string IsBound = "data-is-bound";
