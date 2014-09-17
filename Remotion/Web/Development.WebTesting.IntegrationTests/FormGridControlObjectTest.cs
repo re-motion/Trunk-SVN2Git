@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelector_WithoutParameters ()
     {
-      var home = Start("SingleFormGridTest.aspx");
+      var home = Start("FormGridSingleTest.aspx");
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 

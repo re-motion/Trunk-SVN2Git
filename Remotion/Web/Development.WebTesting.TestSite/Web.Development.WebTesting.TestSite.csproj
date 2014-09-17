@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SingleViewTest.aspx" />
-    <Content Include="SingleFormGridTest.aspx" />
+    <Content Include="FormGridSingleTest.aspx" />
     <Content Include="FormGridTest.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -86,12 +86,12 @@
     <Compile Include="SingleViewTest.aspx.designer.cs">
       <DependentUpon>SingleViewTest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="SingleFormGridTest.aspx.cs">
-      <DependentUpon>SingleFormGridTest.aspx</DependentUpon>
+    <Compile Include="FormGridSingleTest.aspx.cs">
+      <DependentUpon>FormGridSingleTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="SingleFormGridTest.aspx.designer.cs">
-      <DependentUpon>SingleFormGridTest.aspx</DependentUpon>
+    <Compile Include="FormGridSingleTest.aspx.designer.cs">
+      <DependentUpon>FormGridSingleTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="FormGridTest.aspx.cs">
       <DependentUpon>FormGridTest.aspx</DependentUpon>

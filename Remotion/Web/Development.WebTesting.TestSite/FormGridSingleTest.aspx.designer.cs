@@ -10,7 +10,7 @@
 namespace Remotion.Web.Development.WebTesting.TestSite {
     
     
-    public partial class SingleFormGridTest {
+    public partial class FormGridSingleTest {
         
         /// <summary>
         /// form1 control.
