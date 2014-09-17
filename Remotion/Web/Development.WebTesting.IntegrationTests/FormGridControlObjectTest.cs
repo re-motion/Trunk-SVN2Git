@@ -21,8 +21,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (formGrid2.Scope.Text, Is.StringContaining ("FindMe2"));
       Assert.That (formGrid2.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
 
-      // Todo RM-6297: Change title to "MyFormGrid2" as soon as the FormGrid data-title rendering is fixed.
-      formGrid2 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { Title = "My2FormGrid" });
+      formGrid2 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { Title = "MyFormGrid2" });
       Assert.That (formGrid2.Scope.Text, Is.StringContaining ("FindMe2"));
       Assert.That (formGrid2.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
     }

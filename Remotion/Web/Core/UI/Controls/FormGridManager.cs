@@ -978,9 +978,6 @@ namespace Remotion.Web.UI.Controls
     /// </summary>
     private readonly Dictionary<string, FormGrid> _formGrids = new Dictionary<string, FormGrid>();
 
-    /// <summary> The configured rendering features. </summary>
-    private readonly IRenderingFeatures _renderingFeatures;
-
     /// <summary> Index of the column normally containing the labels. </summary>
     private int _labelsColumn;
 
@@ -1034,9 +1031,6 @@ namespace Remotion.Web.UI.Controls
     /// <summary> Simple constructor. </summary>
     public FormGridManager()
     {
-      // Todo RM-6297: Anti pattern: do not use SafeServiceLocator directly - injection possibilities?
-      _renderingFeatures = SafeServiceLocator.Current.GetInstance<IRenderingFeatures>();
-
       _labelsColumn = 0;
       _controlsColumn = 1;
 
@@ -1463,10 +1457,6 @@ namespace Remotion.Web.UI.Controls
           labelsColumn,
           controlsColumn,
           false);
-
-        // Todo RM-6297: Obtain title from title row inner text instead.
-        if(_renderingFeatures.EnableDiagnosticMetadata)
-          table.Attributes.Add (DiagnosticMetadataAttributes.Title, table.ID);
 
         formGridRows.Add (formGridRow);
       }
