@@ -100,8 +100,11 @@
     <Compile Include="ControlObjects\FormGridSelector.cs" />
     <Compile Include="ControlObjects\RemotionControlObject.cs" />
     <Compile Include="ControlObjects\ScopeControlObject.cs" />
+    <Compile Include="ControlObjects\TabbedMultiViewControlObject.cs" />
     <Compile Include="ControlObjects\SingleViewControlObject.cs" />
     <Compile Include="ControlObjects\SingleViewSelector.cs" />
+    <Compile Include="ControlObjects\TabbedMultiViewSelector.cs" />
+    <Compile Include="ControlObjects\TabStripControlObject.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
     <Compile Include="ControlSelectionParameters.cs" />
     <Compile Include="ControlSelectorBase.cs" />

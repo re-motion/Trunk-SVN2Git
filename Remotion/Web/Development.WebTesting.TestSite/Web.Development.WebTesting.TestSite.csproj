@@ -69,6 +69,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="TabbedMultiViewTest.aspx" />
     <Content Include="SingleViewTest.aspx" />
     <Content Include="FormGridSingleTest.aspx" />
     <Content Include="FormGridTest.aspx" />
@@ -78,6 +79,13 @@
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="TabbedMultiViewTest.aspx.cs">
+      <DependentUpon>TabbedMultiViewTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TabbedMultiViewTest.aspx.designer.cs">
+      <DependentUpon>TabbedMultiViewTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="SingleViewTest.aspx.cs">
       <DependentUpon>SingleViewTest.aspx</DependentUpon>
