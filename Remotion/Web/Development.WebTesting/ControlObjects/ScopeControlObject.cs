@@ -1,36 +1,19 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for form grids created with <see cref="SingleView"/>.
+  /// This control object represents controls (or areas within a control) which do not have any additional features than hosting other
+  /// controls (<see cref="IControlHost"/>). Typcially this control object is returned by other control objects in order to scope into a specific
+  /// area (e.g. top controls or bottom controls in <see cref="TabbedMultiViewControlObject"/>.
   /// </summary>
-  public class SingleViewControlObject : RemotionControlObject, IControlHost
+  public class ScopeControlObject : RemotionControlObject, IControlHost
   {
-    public SingleViewControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ScopeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-    }
-
-    public ScopeControlObject GetTopControls()
-    {
-      var scope = FindChild ("TopControl");
-      return new ScopeControlObject(scope.Id, Context.CloneForScope(scope));
-    }
-
-    public ScopeControlObject GetView()
-    {
-      var scope = FindChild ("View");
-      return new ScopeControlObject(scope.Id, Context.CloneForScope(scope));
-    }
-
-    public ScopeControlObject GetBottomControls()
-    {
-      var scope = FindChild ("BottomControl");
-      return new ScopeControlObject(scope.Id, Context.CloneForScope(scope));
     }
 
     // Todo RM-6297: ControlHostingRemotionControlObject?

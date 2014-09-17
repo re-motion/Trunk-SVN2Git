@@ -1,5 +1,6 @@
 ﻿using System;
 using Coypu;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -22,8 +23,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
             string.Format (".//div{0}[{1}]", XPathUtils.CreateContainsClassCheck (c_cssClass), selectionParameters.Index.Value));
       }
       else
-          // If no parameters are given, assume that the default form (= the only form) on the page has been requested
+      {
+        // If no parameters are given, assume that the default form (= the only form) on the page has been requested
         scope = context.Scope.FindCss ("." + c_cssClass, Options.Single);
+      }
 
       return new SingleViewControlObject (scope.Id, context.CloneForScope (scope));
     }
