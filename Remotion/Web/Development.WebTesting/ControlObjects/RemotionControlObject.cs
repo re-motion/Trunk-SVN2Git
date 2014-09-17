@@ -51,10 +51,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       if (waitStrategy != null)
         return waitStrategy;
 
-      // Todo RM-6297: Improve exception handling if attributes are not present or not in the correct format.
-      var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.HasAutoPostBack]);
-      if (hasAutoPostBack)
-        return WaitingStrategies.WxePostBack;
+      // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
+
+      if (Scope[DiagnosticMetadataAttributes.HasAutoPostBack] != null)
+      {
+        var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.HasAutoPostBack]);
+        if (hasAutoPostBack)
+          return WaitingStrategies.WxePostBack;
+      }
 
       if (Scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
