@@ -8,6 +8,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class FormGridSelector : ControlSelectorBase<FormGridControlObject, ControlSelectionParameters>
   {
+    private const string c_cssClass = "formGridTable";
+
     public override FormGridControlObject FindTypedControl (TestObjectContext context, ControlSelectionParameters selectionParameters)
     {
       ElementScope scope;
@@ -17,7 +19,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       else if (selectionParameters.Index != null)
       {
         scope = context.Scope.FindXPath (
-            string.Format (".//table{0}[{1}]", XPathUtils.CreateContainsClassCheck ("formGridTable"), selectionParameters.Index.Value));
+            string.Format (".//table{0}[{1}]", XPathUtils.CreateContainsClassCheck (c_cssClass), selectionParameters.Index.Value));
       }
       else if (selectionParameters.Title != null)
       {
@@ -32,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       }
       else
           // If no parameters are given, assume that the default form (= the only form) on the page has been requested
-        scope = context.Scope.FindCss (".formGridTable", Options.Single);
+        scope = context.Scope.FindCss ("." + c_cssClass, Options.Single);
 
       return new FormGridControlObject (scope.Id, context.CloneForScope (scope));
     }

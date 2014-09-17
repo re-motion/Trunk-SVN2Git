@@ -15,7 +15,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    // Todo RM-6297: Code duplication with PageObject IControlHost implementation. Another indirection for one line does not make too many sense either...
+    // Todo RM-6297: ControlHostingRemotionControlObject?
     public ControlObject GetControl<TControlSelectionParameters> (
         IControlSelector<TControlSelectionParameters> selector,
         TControlSelectionParameters selectionParameters) where TControlSelectionParameters : ControlSelectionParameters
