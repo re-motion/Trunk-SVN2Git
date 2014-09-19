@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.IO;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
@@ -107,7 +106,7 @@ namespace Remotion.UnitTests.ServiceLocation
       var attribute2 = Tuple.Create (
           typeof (TestMultipleConcreteImplementationAttributesType2),
           new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
-          { Lifetime = LifetimeKind.Instance, Position = 1 });
+          { Lifetime = LifetimeKind.InstancePerDependency, Position = 1 });
 
       var attributes = new[] { attribute1, attribute2};
 
@@ -119,7 +118,7 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (entry.ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType1)));
       Assert.That (entry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Singleton));
       Assert.That (entry.ImplementationInfos[1].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType2)));
-      Assert.That (entry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (entry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
     }
     
     [Test]
@@ -133,7 +132,7 @@ namespace Remotion.UnitTests.ServiceLocation
       var attribute2 = Tuple.Create (
           typeof (TestMultipleConcreteImplementationAttributesType2),
           new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
-          { Lifetime = LifetimeKind.Instance, Position = 1, RegistrationType = RegistrationType.Multiple});
+          { Lifetime = LifetimeKind.InstancePerDependency, Position = 1, RegistrationType = RegistrationType.Multiple});
 
       var attributes = new[] { attribute1, attribute2};
 
@@ -151,7 +150,7 @@ namespace Remotion.UnitTests.ServiceLocation
       var attribute2 = Tuple.Create (
           typeof (TestMultipleConcreteImplementationAttributesType2),
           new ImplementationForAttribute (typeof (ITestMultipleConcreteImplementationAttributesType))
-          { Lifetime = LifetimeKind.Instance, Position = -1 });
+          { Lifetime = LifetimeKind.InstancePerDependency, Position = -1 });
 
       var attributes = new[] { attribute1, attribute2 };
 
@@ -161,7 +160,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (entry.ImplementationInfos.Count, Is.EqualTo (2));
       Assert.That (entry.ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType2)));
-      Assert.That (entry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (entry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
       Assert.That (entry.ImplementationInfos[1].ImplementationType, Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType1)));
       Assert.That (entry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
@@ -190,10 +189,10 @@ namespace Remotion.UnitTests.ServiceLocation
       var entry = new ServiceConfigurationEntry (
           typeof (IComparable),
           new ServiceImplementationInfo (typeof (int), LifetimeKind.Singleton, RegistrationType.Single),
-          new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance, RegistrationType.Decorator));
+          new ServiceImplementationInfo (typeof (string), LifetimeKind.InstancePerDependency, RegistrationType.Decorator));
 
       Assert.That (entry.ToString (), Is.EqualTo (
-        "System.IComparable implementations: [{System.Int32, Singleton, Single}, {System.String, Instance, Decorator}]"));
+        "System.IComparable implementations: [{System.Int32, Singleton, Single}, {System.String, InstancePerDependency, Decorator}]"));
     }
   }
 }

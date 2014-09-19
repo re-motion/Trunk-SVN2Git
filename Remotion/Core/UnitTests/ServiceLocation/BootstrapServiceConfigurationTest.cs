@@ -61,14 +61,14 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void Register_Types_AddsEntry ()
     {
-      _configuration.Register (typeof (IService), typeof (Service), LifetimeKind.Instance);
+      _configuration.Register (typeof (IService), typeof (Service), LifetimeKind.InstancePerDependency);
 
       Assert.That (_configuration.Registrations, Has.Length.EqualTo (1));
       Assert.That (_configuration.Registrations[0].ServiceType, Is.SameAs (typeof (IService)));
 
       Assert.That (_configuration.Registrations[0].ImplementationInfos.Count, Is.EqualTo (1));
       Assert.That (_configuration.Registrations[0].ImplementationInfos[0].ImplementationType, Is.EqualTo (typeof (Service)));
-      Assert.That (_configuration.Registrations[0].ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (_configuration.Registrations[0].ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
 
       Assert.That (_configuration.BootstrapServiceLocator.GetInstance<IService> (), Is.Not.Null.And.TypeOf<Service> ());
     }
@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void Reset ()
     {
-      _configuration.Register (typeof (IService), typeof (Service), LifetimeKind.Instance);
+      _configuration.Register (typeof (IService), typeof (Service), LifetimeKind.InstancePerDependency);
 
       Assert.That (_configuration.Registrations, Is.Not.Empty);
       Assert.That (_configuration.BootstrapServiceLocator.GetInstance<IService> (), Is.Not.Null.And.TypeOf<Service> ());

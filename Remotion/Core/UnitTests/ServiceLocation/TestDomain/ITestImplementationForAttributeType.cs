@@ -24,7 +24,7 @@ namespace Remotion.UnitTests.ServiceLocation.TestDomain
   {
   }
 
-  [ImplementationFor (typeof (ITestImplementationForAttributeType), Lifetime = LifetimeKind.Instance, RegistrationType = RegistrationType.Multiple)]
+  [ImplementationFor (typeof (ITestImplementationForAttributeType), Lifetime = LifetimeKind.InstancePerDependency, RegistrationType = RegistrationType.Multiple)]
   public class TestImplementationForAttributeType : ITestImplementationForAttributeType
   {
   }

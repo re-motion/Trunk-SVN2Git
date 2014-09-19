@@ -20,7 +20,6 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
 using Rhino.Mocks;
@@ -85,12 +84,12 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (
           serviceConfigurationEntry.ImplementationInfos[0].ImplementationType,
           Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType2)));
-      Assert.That (serviceConfigurationEntry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (serviceConfigurationEntry.ImplementationInfos[0].Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
 
       Assert.That (
           serviceConfigurationEntry.ImplementationInfos[1].ImplementationType,
           Is.EqualTo (typeof (TestMultipleConcreteImplementationAttributesType3)));
-      Assert.That (serviceConfigurationEntry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (serviceConfigurationEntry.ImplementationInfos[1].Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
 
       Assert.That (
           serviceConfigurationEntry.ImplementationInfos[2].ImplementationType,

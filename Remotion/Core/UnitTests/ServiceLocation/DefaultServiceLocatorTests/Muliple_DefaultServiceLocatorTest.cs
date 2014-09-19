@@ -99,7 +99,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     public void GetAllInstances_WithMixedLifetimeKind_ReturnsSingletonAsSingletonAndInstanceAsInstance ()
     {
       var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Singleton, RegistrationType.Multiple);
-      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.Instance, RegistrationType.Multiple);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation1, implementation2);
 
       var serviceLocator = CreateServiceLocator();
@@ -131,7 +131,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
       TestImplementation1 expectedInstance = null;
       var serviceImplementation = ServiceImplementationInfo.CreateMultiple (
           () => expectedInstance = new TestImplementation1(),
-          LifetimeKind.Instance);
+          LifetimeKind.InstancePerDependency);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), serviceImplementation);
 
       var serviceLocator = CreateServiceLocator();

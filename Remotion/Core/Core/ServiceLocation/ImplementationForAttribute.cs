@@ -40,7 +40,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
       _serviceType = serviceType;
-      Lifetime = LifetimeKind.Instance;
+      Lifetime = LifetimeKind.InstancePerDependency;
       _registrationType = RegistrationType.Single;
     }
 
@@ -54,7 +54,7 @@ namespace Remotion.ServiceLocation
 
     /// <summary>
     /// Gets or sets the lifetime of instances of the concrete implementation type. The lifetime is used by service locators to control when to reuse 
-    /// instances of the concrete implementation type and when to create new ones. The default value is <see cref="LifetimeKind.Instance"/>.
+    /// instances of the concrete implementation type and when to create new ones. The default value is <see cref="LifetimeKind.InstancePerDependency"/>.
     /// </summary>
     /// <value>The lifetime of instances of the concrete implementation type.</value>
     public LifetimeKind Lifetime { get; set; }

@@ -68,7 +68,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     [Test]
     public void GetInstance_CompoundIsInstance_ImplementationIsSingleton_ImplementationsBehaveAsSingleton ()
     {
-      var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.Instance, RegistrationType.Compound);
+      var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.InstancePerDependency, RegistrationType.Compound);
       var implementation = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Singleton, RegistrationType.Multiple);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), compound, implementation);
 
@@ -83,10 +83,10 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     }
 
     [Test]
-    public void GetInstance_CompoundIsSingleton_ImplementationIsInstance_ImplementationsBehaveAsSingleton()
+    public void GetInstance_CompoundIsSingleton_ImplementationIsInstancePerDependency_ImplementationsBehaveAsSingleton()
     {
       var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.Singleton, RegistrationType.Compound);
-      var implementation = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Multiple);
+      var implementation = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), compound, implementation);
 
       var serviceLocator = CreateServiceLocator();
@@ -176,11 +176,11 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     {
       var compound1 = new ServiceImplementationInfo (
           typeof (TestCompoundWithMultipleRegistrations1),
-          LifetimeKind.Instance,
+          LifetimeKind.InstancePerDependency,
           RegistrationType.Compound);
       var compound2 = new ServiceImplementationInfo (
           typeof (TestCompoundWithMultipleRegistrations2),
-          LifetimeKind.Instance,
+          LifetimeKind.InstancePerDependency,
           RegistrationType.Compound);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestCompoundWithErrors), compound1, compound2);
 

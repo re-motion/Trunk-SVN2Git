@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     public void GetInstance_DecoratorIsInstance_ImplementationIsSingleton_DecoratorBehaveAsSingleton ()
     {
       var implementation = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Singleton, RegistrationType.Single);
-      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.Instance, RegistrationType.Decorator);
+      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.InstancePerDependency, RegistrationType.Decorator);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation, decorator);
 
       var serviceLocator = CreateServiceLocator();
@@ -85,11 +85,11 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     }
 
     [Test]
-    public void GetInstance_DecoratorIsSingleton_ImplementationIsInstance_DecoratorBehaveAsInstance ()
+    public void GetInstance_DecoratorIsSingleton_ImplementationIsInstancePerDependency_DecoratorBehaveAsInstance ()
     {
       // Integration test to ensure behavior even if ctor-check in ServiceImplementationInfo is removed.
-      var implementation = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Single);
-      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.Instance, RegistrationType.Decorator);
+      var implementation = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Single);
+      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.InstancePerDependency, RegistrationType.Decorator);
       PrivateInvoke.SetNonPublicField (decorator, "_lifetime", LifetimeKind.Singleton);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation, decorator);
 
@@ -104,11 +104,11 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     }
 
     [Test]
-    public void GetInstance_ImplementationIsRegisteredAsFactoryWithInstanceLifetime_DecoratedFactoryIsUsed ()
+    public void GetInstance_ImplementationIsRegisteredAsFactoryWithInstancePerDependencyLifetime_DecoratedFactoryIsUsed ()
     {
       TestImplementation1 expectedInstance = null;
-      var implementation = ServiceImplementationInfo.CreateSingle (() => expectedInstance = new TestImplementation1(), LifetimeKind.Instance);
-      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.Instance, RegistrationType.Decorator);
+      var implementation = ServiceImplementationInfo.CreateSingle (() => expectedInstance = new TestImplementation1(), LifetimeKind.InstancePerDependency);
+      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.InstancePerDependency, RegistrationType.Decorator);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation, decorator);
 
       var serviceLocator = CreateServiceLocator();
@@ -129,7 +129,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     {
       TestImplementation1 expectedInstance = null;
       var implementation = ServiceImplementationInfo.CreateSingle (() => expectedInstance = new TestImplementation1(), LifetimeKind.Singleton);
-      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.Instance, RegistrationType.Decorator);
+      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.InstancePerDependency, RegistrationType.Decorator);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation, decorator);
 
       var serviceLocator = CreateServiceLocator();
@@ -148,9 +148,9 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     [Test]
     public void GetAllInstances_DecoratesImplementations ()
     {
-      var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Multiple);
-      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.Instance, RegistrationType.Multiple);
-      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.Instance, RegistrationType.Decorator);
+      var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
+      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.InstancePerDependency, RegistrationType.Decorator);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation1, implementation2, decorator);
 
       var serviceLocator = CreateServiceLocator();
@@ -170,10 +170,10 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     [Test]
     public void GetInstance_DecoratedCompound_DecoratesCompound_DoesNotDecorateImplementations ()
     {
-      var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Multiple);
-      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.Instance, RegistrationType.Multiple);
-      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.Instance, RegistrationType.Decorator);
-      var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.Instance, RegistrationType.Compound);
+      var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
+      var decorator = new ServiceImplementationInfo (typeof (TestDecorator1), LifetimeKind.InstancePerDependency, RegistrationType.Decorator);
+      var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.InstancePerDependency, RegistrationType.Compound);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation1, implementation2, decorator, compound);
 
       var serviceLocator = CreateServiceLocator();

@@ -110,8 +110,12 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (null);
 
-      var entry1 = new ServiceConfigurationEntry (typeof (IService1), new ServiceImplementationInfo (typeof (Service1), LifetimeKind.Instance));
-      var entry2 = new ServiceConfigurationEntry (typeof (IService2), new ServiceImplementationInfo (typeof (Service2), LifetimeKind.Instance));
+      var entry1 = new ServiceConfigurationEntry (
+          typeof (IService1),
+          new ServiceImplementationInfo (typeof (Service1), LifetimeKind.InstancePerDependency));
+      var entry2 = new ServiceConfigurationEntry (
+          typeof (IService2),
+          new ServiceImplementationInfo (typeof (Service2), LifetimeKind.InstancePerDependency));
 
       SafeServiceLocator.BootstrapConfiguration.Register (entry1);
       SafeServiceLocator.BootstrapConfiguration.Register (entry2);
@@ -213,7 +217,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void DefaultConfiguration_IntegrationTest ()
     {
-      SafeServiceLocator.BootstrapConfiguration.Register (typeof (IService1), typeof (Service1), LifetimeKind.Instance);
+      SafeServiceLocator.BootstrapConfiguration.Register (typeof (IService1), typeof (Service1), LifetimeKind.InstancePerDependency);
 
       Assert.That (SafeServiceLocator.Current, Is.TypeOf<DefaultServiceLocator> ());
       Assert.That (SafeServiceLocator.Current.GetInstance<IServiceWithAttribute> (), Is.Not.Null.And.TypeOf<ServiceWithAttribute> ());

@@ -67,9 +67,12 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     }
 
     [Test]
-    public void GetInstance_WithInstanceLifetimeKind_ReturnsNotSameInstancesForAServiceType ()
+    public void GetInstance_WithInstancePerDependencyLifetimeKind_ReturnsNotSameInstancesForAServiceType ()
     {
-      var serviceConfigurationEntry = CreateSingleServiceConfigurationEntry (typeof (ITestType), typeof (TestImplementation1), LifetimeKind.Instance);
+      var serviceConfigurationEntry = CreateSingleServiceConfigurationEntry (
+          typeof (ITestType),
+          typeof (TestImplementation1),
+          LifetimeKind.InstancePerDependency);
 
       var serviceLocator = CreateServiceLocator();
       serviceLocator.Register (serviceConfigurationEntry);
@@ -110,7 +113,9 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     public void GetInstance_ImplementationIsRegisteredAsFactoryWithInstanceLifetime ()
     {
       TestImplementation1 expectedInstance = null;
-      var serviceImplementation = ServiceImplementationInfo.CreateSingle (() => expectedInstance = new TestImplementation1(), LifetimeKind.Instance);
+      var serviceImplementation = ServiceImplementationInfo.CreateSingle (
+          () => expectedInstance = new TestImplementation1(),
+          LifetimeKind.InstancePerDependency);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), serviceImplementation);
 
       var serviceLocator = CreateServiceLocator();
@@ -234,8 +239,8 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     [Test]
     public void Register_SingleWithMultipleRegistrations_ThrowsInvalidOperationException ()
     {
-      var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Single);
-      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.Instance, RegistrationType.Single);
+      var implementation1 = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Single);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.InstancePerDependency, RegistrationType.Single);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), implementation1, implementation2);
 
       var serviceLocator = CreateServiceLocator();

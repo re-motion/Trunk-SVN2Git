@@ -105,7 +105,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       ServiceLocator.SetLocatorProvider (() => _locator1);
       Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
 
-      var entry1 = new ServiceConfigurationEntry (typeof (object), new ServiceImplementationInfo (typeof (DomainType1), LifetimeKind.Instance));
+      var entry1 = new ServiceConfigurationEntry (typeof (object), new ServiceImplementationInfo (typeof (DomainType1), LifetimeKind.InstancePerDependency));
       var entry2 = new ServiceConfigurationEntry (typeof (IFormattable), new ServiceImplementationInfo (typeof (DomainType2), LifetimeKind.Singleton));
       
       using (new ServiceLocatorScope (entry1, entry2))

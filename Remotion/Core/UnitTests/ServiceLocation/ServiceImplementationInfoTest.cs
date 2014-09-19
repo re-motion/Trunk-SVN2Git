@@ -31,7 +31,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (implementationInfo.Factory, Is.Not.Null);
       Assert.That (implementationInfo.ImplementationType, Is.SameAs (typeof (ServiceImplementationInfoTest)));
-      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
     }
 
     [Test]
@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (implementationInfo.Factory, Is.Not.Null);
       Assert.That (implementationInfo.ImplementationType, Is.SameAs (typeof (ServiceImplementationInfoTest)));
-      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (implementationInfo.Lifetime, Is.EqualTo (LifetimeKind.InstancePerDependency));
     }
 
     [Test]
@@ -73,17 +73,17 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (
           () => new ServiceImplementationInfo (typeof (ServiceImplementationInfoTest), LifetimeKind.Singleton, RegistrationType.Decorator),
           Throws.ArgumentException.And.Message.EqualTo (
-              "For implementations of type 'Decorator', the lifetime can only be specified as 'Instance'.\r\nParameter name: lifetime"));
+              "For implementations of type 'Decorator', the lifetime can only be specified as 'InstancePerDependency'.\r\nParameter name: lifetime"));
     }
 
     [Test]
     public void ToString_DebugInfo ()
     {
       var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton, RegistrationType.Compound);
-      var implementation1 = new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance, RegistrationType.Multiple);
+      var implementation1 = new ServiceImplementationInfo (typeof (string), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
 
       Assert.That (implementation0.ToString (), Is.EqualTo ("{System.Object, Singleton, Compound}"));
-      Assert.That (implementation1.ToString (), Is.EqualTo ("{System.String, Instance, Multiple}"));
+      Assert.That (implementation1.ToString (), Is.EqualTo ("{System.String, InstancePerDependency, Multiple}"));
     }
   }
 }

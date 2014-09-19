@@ -31,7 +31,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
   /// Implements <see cref="IExtensibleEnumValueDiscoveryService"/> by discovering and invoking extension methods defining extensible enum values
   /// via reflection and <see cref="ITypeDiscoveryService"/>.
   /// </summary>
-  [ImplementationFor (typeof (IExtensibleEnumValueDiscoveryService), Lifetime = LifetimeKind.Instance)]
+  [ImplementationFor (typeof (IExtensibleEnumValueDiscoveryService), Lifetime = LifetimeKind.InstancePerDependency)]
   public class ExtensibleEnumValueDiscoveryService : IExtensibleEnumValueDiscoveryService
   {
     private readonly ITypeDiscoveryService _typeDiscoveryService;

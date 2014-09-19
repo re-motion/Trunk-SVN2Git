@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     protected ServiceConfigurationEntry CreateSingleServiceConfigurationEntry (
         Type serviceType,
         Type implementationType,
-        LifetimeKind lifetimeKind = LifetimeKind.Instance)
+        LifetimeKind lifetimeKind = LifetimeKind.InstancePerDependency)
     {
       var implementation = new ServiceImplementationInfo (implementationType, lifetimeKind, RegistrationType.Single);
       return new ServiceConfigurationEntry (serviceType, implementation);
@@ -43,7 +43,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     protected ServiceConfigurationEntry CreateMultipleServiceConfigurationEntry (
         Type serviceType,
         Type[] implementationTypes,
-        LifetimeKind lifetimeKind = LifetimeKind.Instance)
+        LifetimeKind lifetimeKind = LifetimeKind.InstancePerDependency)
     {
       var implementations = implementationTypes.Select (t=> new ServiceImplementationInfo (t, lifetimeKind, RegistrationType.Multiple));
       return new ServiceConfigurationEntry (serviceType, implementations);
@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
         Type serviceType,
         Type compoundType,
         Type[] implementationTypes,
-        LifetimeKind lifetimeKind = LifetimeKind.Instance)
+        LifetimeKind lifetimeKind = LifetimeKind.InstancePerDependency)
     {
       var implementations = new[] { new ServiceImplementationInfo (compoundType, lifetimeKind, RegistrationType.Compound) }
           .Concat (implementationTypes.Select (t => new ServiceImplementationInfo (t, lifetimeKind, RegistrationType.Multiple)));
@@ -64,7 +64,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
         Type serviceType,
         Type[] decoratorTypes,
         Type implementationType,
-        LifetimeKind lifetimeKind = LifetimeKind.Instance)
+        LifetimeKind lifetimeKind = LifetimeKind.InstancePerDependency)
     {
       var implementations = decoratorTypes.Select (t => new ServiceImplementationInfo (t, lifetimeKind, RegistrationType.Decorator))
           .Concat (new[] { new ServiceImplementationInfo (implementationType, lifetimeKind, RegistrationType.Single) });
@@ -75,7 +75,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     {
       return new ServiceConfigurationEntry (
           typeof (InstanceService),
-          new ServiceImplementationInfo (typeof (InstanceService), LifetimeKind.Instance, RegistrationType.Single));
+          new ServiceImplementationInfo (typeof (InstanceService), LifetimeKind.InstancePerDependency, RegistrationType.Single));
     }
 
     protected ServiceConfigurationEntry CreateSingletonService ()
@@ -103,7 +103,7 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     {
       return new ServiceConfigurationEntry (
           typeof (ParameterizedService),
-          new ServiceImplementationInfo (typeof (ParameterizedService), LifetimeKind.Instance, RegistrationType.Single));
+          new ServiceImplementationInfo (typeof (ParameterizedService), LifetimeKind.InstancePerDependency, RegistrationType.Single));
     }
   }
 }

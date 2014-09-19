@@ -29,12 +29,12 @@ namespace Remotion.UnitTests.ServiceLocation.TestDomain
   {
   }
 
-  [ImplementationFor (typeof (ITestMultipleImplementationsForRegistrationTypeSingle), Lifetime = LifetimeKind.Instance, Position = 1, RegistrationType = RegistrationType.Single)]
+  [ImplementationFor (typeof (ITestMultipleImplementationsForRegistrationTypeSingle), Lifetime = LifetimeKind.InstancePerDependency, Position = 1, RegistrationType = RegistrationType.Single)]
   public class TestMultipleImplementationsForRegistrationTypeSingle2 : ITestMultipleImplementationsForRegistrationTypeSingle
   {
   }
 
-  [ImplementationFor (typeof (ITestMultipleImplementationsForRegistrationTypeSingle), Lifetime = LifetimeKind.Instance, Position = 2, RegistrationType = RegistrationType.Single)]
+  [ImplementationFor (typeof (ITestMultipleImplementationsForRegistrationTypeSingle), Lifetime = LifetimeKind.InstancePerDependency, Position = 2, RegistrationType = RegistrationType.Single)]
   public class TestMultipleImplementationsForRegistrationTypeSingle3 : ITestMultipleImplementationsForRegistrationTypeSingle
   {
   }

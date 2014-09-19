@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests.TestDomain;
-using Remotion.UnitTests.ServiceLocation.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
@@ -32,8 +31,8 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     [Test]
     public void Register_SingleAndCompoundImplementations_ThrowsInvalidOperationException ()
     {
-      var single = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Single);
-      var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.Instance, RegistrationType.Compound);
+      var single = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Single);
+      var compound = new ServiceImplementationInfo (typeof (TestCompound), LifetimeKind.InstancePerDependency, RegistrationType.Compound);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), single, compound);
 
       var serviceLocator = CreateServiceLocator();
@@ -48,8 +47,8 @@ namespace Remotion.UnitTests.ServiceLocation.DefaultServiceLocatorTests
     [Test]
     public void Register_SingleAndMultipleImplementations_ThrowsInvalidOperationException ()
     {
-      var single = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.Instance, RegistrationType.Single);
-      var multiple = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.Instance, RegistrationType.Multiple);
+      var single = new ServiceImplementationInfo (typeof (TestImplementation1), LifetimeKind.InstancePerDependency, RegistrationType.Single);
+      var multiple = new ServiceImplementationInfo (typeof (TestImplementation2), LifetimeKind.InstancePerDependency, RegistrationType.Multiple);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestType), single, multiple);
 
       var serviceLocator = CreateServiceLocator();
