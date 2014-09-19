@@ -47,7 +47,7 @@ namespace Remotion.ExtensibleEnums.UnitTests.Infrastructure
       var factory1 = _serviceLocator.GetInstance<IExtensibleEnumValueDiscoveryService> ();
       var factory2 = _serviceLocator.GetInstance<IExtensibleEnumValueDiscoveryService> ();
 
-      Assert.That (factory1, Is.Not.SameAs (factory2));
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }
