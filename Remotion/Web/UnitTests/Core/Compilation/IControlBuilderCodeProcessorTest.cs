@@ -47,7 +47,7 @@ namespace Remotion.Web.UnitTests.Core.Compilation
       var instance1 = _serviceLocator.GetInstance<IControlBuilderCodeProcessor> ();
       var instance2 = _serviceLocator.GetInstance<IControlBuilderCodeProcessor> ();
 
-      Assert.That (instance1, Is.Not.SameAs (instance2));
+      Assert.That (instance1, Is.SameAs (instance2));
     }
   }
 }
