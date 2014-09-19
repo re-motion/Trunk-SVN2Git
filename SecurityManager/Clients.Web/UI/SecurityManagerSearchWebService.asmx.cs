@@ -90,8 +90,15 @@ namespace Remotion.SecurityManager.Clients.Web.UI
         string args)
     {
       var result = Search (searchString, 2, businessObjectClass, businessObjectProperty, businessObject, args);
-      if (result.Count() == 1)
+      var hasSingleMatch = result.Count() == 1;
+      if (hasSingleMatch)
         return result.Single();
+
+      var exactMatches = result.Where (r => string.Equals (r.DisplayName, searchString, StringComparison.CurrentCultureIgnoreCase)).ToArray();
+      var hasExactMatch = exactMatches.Count() == 1;
+      if (hasExactMatch)
+        return exactMatches.Single();
+
       return null;
     }
 
