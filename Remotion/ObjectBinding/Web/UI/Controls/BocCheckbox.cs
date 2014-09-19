@@ -391,7 +391,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return _defaultValue == true ? true : false;
     }
 
-    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    protected override IEnumerable<BaseValidator> CreateValidators (bool isReadOnly)
     {
       return Enumerable.Empty<BaseValidator>();
     }

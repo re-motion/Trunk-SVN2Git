@@ -514,15 +514,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         ErrorMessage = resourceManager.GetString (key);
     }
 
-    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    [Obsolete ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)", true)]
     protected IEnumerable<BaseValidator> GetValidators ()
     {
-      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+      throw new NotImplementedException ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)");
     }
 
     /// <summary>
     /// If applicable, validators for non-empty, maximum length and input format are created.
     /// </summary>
+    /// <param name="isReadOnly">
+    /// This flag is initialized with the value of <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/>. 
+    /// Implemantations should consider whether they require a validator also when the control is rendered as read-only.
+    /// </param>
     /// <returns>An enumeration of all applicable validators.</returns>
     /// <remarks>
     ///   <list type="bullet">
@@ -546,19 +550,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///     </item>
     ///   </list>
     /// </remarks>
-    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators()">BusinessObjectBoundEditableWebControl.CreateValidators()</seealso>
+    protected override IEnumerable<BaseValidator> CreateValidators (bool isReadOnly)
     {
       IResourceManager resourceManager = GetResourceManager();
 
       _requiredFieldValidator = null;
+      _lengthValidator = null;
+      _typeValidator = null;
+
+      if (isReadOnly)
+        yield break;
+
       if (IsRequired)
       {
         _requiredFieldValidator = CreateRequiredFieldValidator (resourceManager);
         yield return _requiredFieldValidator;
       }
 
-      _lengthValidator = null;
       if (TextBoxStyle.MaxLength.HasValue)
       {
         _lengthValidator = CreateLengthValidator (resourceManager);

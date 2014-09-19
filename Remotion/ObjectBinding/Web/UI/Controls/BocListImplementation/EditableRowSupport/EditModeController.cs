@@ -542,11 +542,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return editedRow;
     }
 
-    public IEnumerable<BaseValidator> CreateValidators (IResourceManager resourceManager)
+    public IEnumerable<BaseValidator> CreateValidators (bool isReadOnly, IResourceManager resourceManager)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
       _editModeValidator = null;
+
+      if (isReadOnly)
+        yield break;
+
       if ((IsListEditModeActive || IsRowEditModeActive) && _editModeHost.EnableEditModeValidator)
       {
         _editModeValidator = CreateEditModeValidator (resourceManager);

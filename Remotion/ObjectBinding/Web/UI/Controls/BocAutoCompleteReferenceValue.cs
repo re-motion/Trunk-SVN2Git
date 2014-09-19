@@ -216,18 +216,33 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       renderer.Render (CreateRenderingContext(writer));
     }
 
-    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    [Obsolete ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)", true)]
     protected new BaseValidator[] CreateValidators ()
     {
-      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+      throw new NotImplementedException ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)");
     }
 
-    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    /// <summary>
+    /// A validator for the display name is created.
+    /// </summary>
+    /// <param name="isReadOnly">
+    /// This flag is initialized with the value of <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/>. 
+    /// Implemantations should consider whether they require a validator also when the control is rendered as read-only.
+    /// </param>
+    /// <returns>An enumeration of all applicable validators.</returns>
+    /// <remarks>
+    ///   Generates a <see cref="BocAutoCompleteReferenceValueInvalidDisplayNameValidator"/> checking that the display name can be resolved 
+    /// to a valid object reference.
+    /// </remarks>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators()">BusinessObjectBoundEditableWebControl.CreateValidators()</seealso>
+    protected override IEnumerable<BaseValidator> CreateValidators (bool isReadOnly)
     {
-      var baseValidators = base.CreateValidatorsImplementation();
       _invalidDisplayNameValidator = null;
-      if (IsReadOnly)
+
+      var baseValidators = base.CreateValidators (isReadOnly);
+      if (isReadOnly)
         return baseValidators;
+
       _invalidDisplayNameValidator = CreateInvalidDisplayNameValidator();
       return baseValidators.Concat (_invalidDisplayNameValidator);
     }

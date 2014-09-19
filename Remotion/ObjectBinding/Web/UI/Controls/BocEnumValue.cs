@@ -186,21 +186,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return false;
     }
 
-    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    [Obsolete ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)", true)]
     protected new BaseValidator[] CreateValidators ()
     {
-      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+      throw new NotImplementedException ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)");
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
+    /// <param name="isReadOnly">
+    /// This flag is initialized with the value of <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/>. 
+    /// Implemantations should consider whether they require a validator also when the control is rendered as read-only.
+    /// </param>
     /// <remarks>
     ///   Generates a <see cref="CompareValidator"/> checking that the selected item is not the null-item if the 
     ///   control is in edit mode and input is required.
     /// </remarks>
-    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators()">BusinessObjectBoundEditableWebControl.CreateValidators()</seealso>
+    protected override IEnumerable<BaseValidator> CreateValidators (bool isReadOnly)
     {
       _requiredFieldValidator = null;
+
+      if (isReadOnly)
+        yield break;
+
       if (IsRequired)
       {
         _requiredFieldValidator = CreateRequiredFieldValidator();

@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     int AddRow (IBusinessObject businessObject, BocColumnDefinition[] columns);
     void RemoveRows (IBusinessObject[] businessObjects);
     void RemoveRow (IBusinessObject businessObject);
-    IEnumerable<BaseValidator> CreateValidators (IResourceManager resourceManager);
+    IEnumerable<BaseValidator> CreateValidators (bool isReadOnly, IResourceManager resourceManager);
     EditModeValidator GetEditModeValidator ();
 
     /// <remarks>

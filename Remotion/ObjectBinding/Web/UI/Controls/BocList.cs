@@ -882,19 +882,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       remove { Events.RemoveHandler (s_sortingOrderChangedEvent, value); }
     }
 
-    [Obsolete ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)", true)]
+    [Obsolete ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)", true)]
     protected new BaseValidator[] CreateValidators ()
     {
-      throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+      throw new NotImplementedException ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.22)");
     }
 
     /// <summary>
     ///   Generates a <see cref="EditModeValidator"/>.
     /// </summary>
+    /// <param name="isReadOnly">
+    /// This flag is initialized with the value of <see cref="BusinessObjectBoundEditableWebControl.IsReadOnly"/>. 
+    /// Implemantations should consider whether they require a validator also when the control is rendered as read-only.
+    /// </param>
     /// <returns> Returns a list of <see cref="BaseValidator"/> objects. </returns>
-    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators()">BusinessObjectBoundEditableWebControl.CreateValidators()</seealso>
+    protected override IEnumerable<BaseValidator> CreateValidators (bool isReadOnly)
     {
-      return _editModeController.CreateValidators (GetResourceManager());
+      return _editModeController.CreateValidators (isReadOnly, GetResourceManager());
     }
 
     /// <summary> Checks whether the control conforms to the required WAI level. </summary>
@@ -2694,7 +2699,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Gets or sets a flag that enables the <see cref="EditModeValidator"/>. </summary>
     /// <remarks> 
     ///   <see langword="false"/> to prevent the <see cref="EditModeValidator"/> from being created by
-    ///   <see cref="CreateValidatorsImplementation"/>.
+    ///   <see cref="CreateValidators(bool)"/>.
     /// </remarks>
     [Description ("Enables the EditModeValidator.")]
     [Category ("Edit Mode")]

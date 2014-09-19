@@ -165,7 +165,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.Render (writer);
     }
 
-    protected override IEnumerable<BaseValidator> CreateValidatorsImplementation ()
+    /// <inheritdoc />
+    protected override IEnumerable<BaseValidator> CreateValidators (bool isReadOnly)
     {
       return Enumerable.Empty<BaseValidator>();
     }

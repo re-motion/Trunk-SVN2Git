@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
@@ -243,18 +242,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <remarks> Override <see cref="CreateValidatorsImplementation"/> to define the validators for this control.</remarks>
+    /// <remarks> Override <see cref="CreateValidators(bool)"/> to define the validators for this control.</remarks>
     public IEnumerable<BaseValidator> CreateValidators ()
     {
-      if (IsReadOnly)
-        return Enumerable.Empty<BaseValidator>();
-
-      return CreateValidatorsImplementation();
+      return CreateValidators (IsReadOnly);
     }
 
     /// <summary> Creates the list of validators required for the current binding and property settings. </summary>
-    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators">BusinessObjectBoundEditableWebControl.CreateValidators</seealso>
-    protected abstract IEnumerable<BaseValidator> CreateValidatorsImplementation ();
+    /// <param name="isReadOnly">
+    /// This flag is initialized with the value of <see cref="IsReadOnly"/>. 
+    /// Implemantations should consider whether they require a validator also when the control is rendered as read-only.
+    /// </param>
+    /// <seealso cref="BusinessObjectBoundEditableWebControl.CreateValidators()">BusinessObjectBoundEditableWebControl.CreateValidators()</seealso>
+    protected abstract IEnumerable<BaseValidator> CreateValidators (bool isReadOnly);
+
+    [Obsolete ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.23)", true)]
+    protected IEnumerable<BaseValidator>  CreateValidatorsImplementation ()
+    {
+      throw new NotImplementedException ("Use CreateValidators(bool isReadOnly) instead. (Version 1.15.23)");
+    }
 
     /// <summary> Registers a validator that references this control. </summary>
     /// <remarks> 
