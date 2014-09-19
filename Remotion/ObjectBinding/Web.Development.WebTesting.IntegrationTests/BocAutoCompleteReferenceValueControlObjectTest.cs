@@ -1,6 +1,9 @@
 ﻿using System;
+using Coypu;
 using NUnit.Framework;
-using Remotion.Web.Development.WebTesting;
+using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -8,69 +11,151 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
   public class BocAutoCompleteReferenceValueControlObjectTest : IntegrationTest
   {
     [Test]
-    public void TestInsertOfValidValue ()
+    public void TestSelection_ByHtmlID ()
     {
       var home = Start();
 
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { ID = "body_DataEditControl_PartnerField_Normal" }).FillWith ("Bla");
+      var bocAutoComplete = home.GetAutoComplete().ByID ("body_DataEditControl_PartnerField_Normal");
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
 
+    [Test]
+    public void TestSelection_ByIndex ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByIndex (1);
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
+
+    [Test]
+    public void TestSelection_ByLocalID ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
+
+    [Test]
+    public void TestSelection_First ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().First();
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
+
+    [Test]
+    public void TestSelection_Single ()
+    {
+      var home = Start();
+
+      try
+      {
+        home.GetAutoComplete().Single();
+        Assert.Fail ("Should not be able to unambigously find a BOC auto complete reference value.");
+      }
+      catch (AmbiguousException)
+      {
+      }
+    }
+
+    [Test]
+    public void TestSelection_DisplayName ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByDisplayName ("Partner");
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
+
+    [Test]
+    public void TestSelection_DomainProperty ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByDomainProperty ("Partner");
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
+
+    [Test]
+    public void TestSelection_DomainPropertyAndClass ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByDomainProperty ("Partner", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+    }
+
+    [Test]
+    public void TestText ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal_AlternativeRendering");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_ReadOnly");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_ReadOnly_AlternativeRendering");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Disabled");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_NoAutoPostBack");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_NoCommandNoMenu");
+      Assert.That (bocAutoComplete.GetText(), Is.EqualTo ("D, A"));
+    }
+
+    [Test]
+    public void TestFillWith ()
+    {
+      var home = Start();
+
+      const string baLabel = "c8ace752-55f6-4074-8890-130276ea6cd1";
+      const string daLabel = "00000000-0000-0000-0000-000000000009";
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      bocAutoComplete.FillWith ("Invalid");
       Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.Empty);
 
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { ID = "body_DataEditControl_PartnerField_Normal_AlternativeRendering" }).FillWith ("Blubba");
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      bocAutoComplete.FillWith ("B, A");
+      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.EqualTo (baLabel));
 
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { LocalID = "PartnerField_Normal" }).FillWith ("D, A");
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_NoAutoPostBack");
+      bocAutoComplete.FillWith ("B, A"); // no auto post back
+      Assert.That (home.Scope.FindId ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
-      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.EqualTo("00000000-0000-0000-0000-000000000009"));
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      bocAutoComplete.FillWith ("B, A", WaitFor.Nothing); // same value, does not trigger post back
+      Assert.That (home.Scope.FindId ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { DisplayName = "Partner" }).FillWith ("Bla");
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      bocAutoComplete.FillWith ("D, A");
+      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
+      Assert.That (home.Scope.FindId ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (baLabel));
+    }
 
-      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.Empty);
+    [Test]
+    public void TestExecuteCommand ()
+    {
+      var home = Start();
 
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { BoundProperty = "Partner" }).FillWith ("D, A");
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      bocAutoComplete.ExecuteCommand();
 
-      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.EqualTo("00000000-0000-0000-0000-000000000009"));
-
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters
-          {
-              BoundType = "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample",
-              BoundProperty = "Partner"
-          }).FillWith ("Bla");
-
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { LocalID = "PartnerField_NoAutoPostBack" }).FillWith ("Blubba");
-
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { LocalID = "PartnerField_Normal" }).FillWith ("Foo");
-
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { LocalID = "PartnerField_Normal" }).FillWith ("Foo", WaitingStrategies.Null);
-
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { LocalID = "PartnerField_Normal" }).FillWith ("D, A");
-
-      home.GetControl (
-          new BocAutoCompleteReferenceValueSelector(),
-          new BocControlSelectionParameters { LocalID = "PartnerField_Normal" }).ExecuteCommand();
-
-      Assert.That (home.Scope.FindId ("ActionPerformedLabel").Text, Is.EqualTo("CommandClick"));
+      Assert.That (home.Scope.FindId ("ActionPerformedLabel").Text, Is.EqualTo ("CommandClick"));
       Assert.That (home.Scope.FindId ("ActionPerformedParameterLabel").Text, Is.Empty);
-      Assert.That (home.Scope.FindId ("ActionPerformedSenderLabel").Text, Is.EqualTo("PartnerField_Normal"));
+      Assert.That (home.Scope.FindId ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal"));
     }
   }
 }

@@ -2,6 +2,7 @@
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -44,12 +45,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the waiting strategy to be used.
     /// </summary>
-    /// <param name="waitStrategy">User-provided waiting strategy.</param>
+    /// <param name="waitingStrategy">User-provided waiting strategy.</param>
     /// <returns>Waiting strategy to be used.</returns>
-    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy waitStrategy)
+    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy waitingStrategy)
     {
-      if (waitStrategy != null)
-        return waitStrategy;
+      if (waitingStrategy != null)
+        return waitingStrategy;
 
       // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
 
@@ -57,17 +58,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       {
         var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.HasAutoPostBack]);
         if (hasAutoPostBack)
-          return WaitingStrategies.WxePostBack;
+          return WaitFor.WxePostBack;
       }
 
       if (Scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (Scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return WaitingStrategies.WxeReset;
+          return WaitFor.WxeReset;
       }
 
-      return WaitingStrategies.Null;
+      return WaitFor.Nothing;
     }
   }
 }

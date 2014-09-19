@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using log4net;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -14,38 +15,38 @@ namespace Remotion.Web.Development.WebTesting
 
     /// <summary>
     /// Performs an <paramref name="action"/> on a DOM element (given by <paramref name="scope"/>), which is part of a control object (represented by
-    /// its <paramref name="context"/>) using the given <paramref name="waitStrategy"/>.
+    /// its <paramref name="context"/>) using the given <paramref name="waitingStrategy"/>.
     /// </summary>
     /// <param name="scope">The DOM element.</param>
     /// /// <param name="action">Action to be performed on the DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
-    /// <param name="waitStrategy">Wait strategy for proper waiting.</param>
+    /// <param name="waitingStrategy">Wait strategy for proper waiting.</param>
     public static void PerformActionUsingWaitStrategy (
         this ElementScope scope,
         Action<ElementScope> action,
         TestObjectContext context,
-        IWaitingStrategy waitStrategy)
+        IWaitingStrategy waitingStrategy)
     {
-      s_log.DebugFormat ("Perform action using wait strategy '{0}'.", waitStrategy.GetType().Name);
+      s_log.DebugFormat ("Perform action using wait strategy '{0}'.", waitingStrategy.GetType().Name);
 
-      var state = waitStrategy.OnBeforeActionPerformed (context);
+      var state = waitingStrategy.OnBeforeActionPerformed (context);
       action (scope);
-      waitStrategy.PerformWaitAfterActionPerformed (context, state);
+      waitingStrategy.PerformWaitAfterActionPerformed (context, state);
     }
 
     /// <summary>
     /// Performs a click on a DOM element (given by <paramref name="scope"/>), which is part of a control object (represented by its
-    /// <paramref name="context"/>) using the given <paramref name="waitStrategy"/>.
+    /// <paramref name="context"/>) using the given <paramref name="waitingStrategy"/>.
     /// </summary>
     /// <param name="scope">The DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
-    /// <param name="waitStrategy">Wait strategy for proper waiting.</param>
+    /// <param name="waitingStrategy">Wait strategy for proper waiting.</param>
     public static void ClickAndWait (
         this ElementScope scope,
         TestObjectContext context,
-        IWaitingStrategy waitStrategy)
+        IWaitingStrategy waitingStrategy)
     {
-      PerformActionUsingWaitStrategy (scope, s => s.FocusClick(), context, waitStrategy);
+      PerformActionUsingWaitStrategy (scope, s => s.FocusClick(), context, waitingStrategy);
     }
 
     public static void FillWithAndWait (
@@ -53,7 +54,7 @@ namespace Remotion.Web.Development.WebTesting
         string value,
         ThenAction thenAction,
         TestObjectContext context,
-        IWaitingStrategy waitStrategy)
+        IWaitingStrategy waitingStrategy)
     {
       Action<ElementScope> action = s =>
       {
@@ -61,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting
         thenAction (s);
       };
 
-      PerformActionUsingWaitStrategy (scope, action, context, waitStrategy);
+      PerformActionUsingWaitStrategy (scope, action, context, waitingStrategy);
     }
   }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -28,27 +29,12 @@ namespace Remotion.Web.Development.WebTesting
       return Context.Window.Title;
     }
 
-    public ControlObject GetControl<TControlSelectionParameters> (
-        [NotNull] IControlSelector<TControlSelectionParameters> selector,
-        [NotNull] TControlSelectionParameters selectionParameters)
-        where TControlSelectionParameters : ControlSelectionParameters
-    {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-      ArgumentUtility.CheckNotNull ("selectionParameters", selectionParameters);
-
-      return selector.FindControl (Context, selectionParameters);
-    }
-
-    public TControlObject GetControl<TControlObject, TControlSelectionParameters> (
-        [NotNull] IControlSelector<TControlObject, TControlSelectionParameters> selector,
-        [NotNull] TControlSelectionParameters selectionParameters)
+    public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
-        where TControlSelectionParameters : ControlSelectionParameters
     {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-      ArgumentUtility.CheckNotNull ("selectionParameters", selectionParameters);
+      ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
 
-      return selector.FindTypedControl (Context, selectionParameters);
+      return controlSelectionCommand.Select (Context);
     }
   }
 }

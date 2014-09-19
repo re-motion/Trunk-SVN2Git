@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -16,26 +17,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    // Todo RM-6297: ControlHostingRemotionControlObject?
-    public ControlObject GetControl<TControlSelectionParameters> (
-        IControlSelector<TControlSelectionParameters> selector,
-        TControlSelectionParameters selectionParameters) where TControlSelectionParameters : ControlSelectionParameters
+    // Todo RM-6297: ControlHostingRemotionControlObject to remove code duplication with other IControlHost implementations?
+    public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
+        where TControlObject : ControlObject
     {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-      ArgumentUtility.CheckNotNull ("selectionParameters", selectionParameters);
+      ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
 
-      return selector.FindControl (Context, selectionParameters);
-    }
-
-    public TControlObject GetControl<TControlObject, TControlSelectionParameters> (
-        IControlSelector<TControlObject, TControlSelectionParameters> selector,
-        TControlSelectionParameters selectionParameters) where TControlObject : ControlObject
-        where TControlSelectionParameters : ControlSelectionParameters
-    {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-      ArgumentUtility.CheckNotNull ("selectionParameters", selectionParameters);
-
-      return selector.FindTypedControl (Context, selectionParameters);
+      return controlSelectionCommand.Select (Context);
     }
   }
 }

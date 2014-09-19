@@ -11,6 +11,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   {
     private readonly WebTestHelper _webTestHelper = new WebTestHelper();
 
+    [TestFixtureSetUp]
+    public void IntegrationTestTestFixtureSetUp()
+    {
+      _webTestHelper.OnFixtureSetUp();
+    }
+
     [SetUp]
     public void IntegrationTestSetUp ()
     {
@@ -22,6 +28,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var hasSucceeded = TestContext.CurrentContext.Result.Status != TestStatus.Failed;
       _webTestHelper.OnTearDown (hasSucceeded);
+    }
+
+    [TestFixtureTearDown]
+    public void IntegrationTestTestFixtureTearDown()
+    {
+      _webTestHelper.OnFixtureTearDown();
     }
 
     protected RemotionPageObject Start (string page)

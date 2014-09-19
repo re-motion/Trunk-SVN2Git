@@ -12,6 +12,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
   {
     private readonly WebTestHelper _webTestHelper = new WebTestHelper();
 
+    [TestFixtureSetUp]
+    public void IntegrationTestTestFixtureSetUp()
+    {
+      _webTestHelper.OnFixtureSetUp();
+    }
+
     [SetUp]
     public void IntegrationTestSetUp ()
     {
@@ -25,14 +31,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.OnTearDown (hasSucceeded);
     }
 
-    public RemotionPageObject Start ()
+    [TestFixtureTearDown]
+    public void IntegrationTestTestFixtureTearDown()
     {
-      var browser = _webTestHelper.MainBrowserSession;
+      _webTestHelper.OnFixtureTearDown();
+    }
 
-      var context = TestObjectContext.New (browser);
-
-      //return new UnspecifiedPageObject (context).ExpectPage(); // Todo RM-6297: ExpectPage should be specific to? Re-motion? Definitely not ActaNova.
-      return new RemotionPageObject (context);
+    protected RemotionPageObject Start ()
+    {
+      var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
+      return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
   }
 }

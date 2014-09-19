@@ -455,6 +455,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       AssertReadOnlyContent (document);
     }
 
+    // Todo RM-6297: move everything except the auto-postback checks from the next two unit tests up to some BocRenderBaseTest.
     [Test]
     public void RenderDiagnosticMetadataUnbound ()
     {
@@ -464,6 +465,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
           RenderingFeatures.WithDiagnosticMetadata,
           () => TextBox);
 
+      Control.Stub (stub => stub.IsReadOnly).Return (true);
+
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.Render (CreateRenderingContext());
@@ -471,7 +474,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
       var document = Html.GetResultDocument();
       var control = document.DocumentElement.GetAssertedChildElement ("span", 0);
-      AssertDiagnosticMetadataOfUnboundControl (control, null, false);
+      AssertDiagnosticMetadataOfUnboundControl (control, null, true, false);
     }
 
     [Test]
@@ -495,7 +498,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       Control.DataSource = DataSource;
       ((IBusinessObjectBoundControl) Control).Property =
           ((IBusinessObject) BusinessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue");
-
+      
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.Render (CreateRenderingContext());
@@ -506,14 +509,16 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       AssertDiagnosticMetadataOfBoundControl (
           control,
           "MyDisplayName",
+          false,
           "Remotion.ObjectBinding.Web.UnitTests.Domain.TypeWithReference, Remotion.ObjectBinding.Web.UnitTests",
           "ReferenceValue",
           true);
     }
 
-    private void AssertDiagnosticMetadataOfUnboundControl (XmlNode control, string displayName, bool hasAutoPostBack)
+    private void AssertDiagnosticMetadataOfUnboundControl (XmlNode control, string displayName, bool isReadOnly, bool hasAutoPostBack)
     {
       AssertDisplayNameAttribute (control, displayName);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, isReadOnly.ToString().ToLower());
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "false");
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
       control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundType);
@@ -523,11 +528,13 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
     private void AssertDiagnosticMetadataOfBoundControl (
         XmlNode control,
         string displayName,
+      bool isReadOnly,
         string boundType,
         string boundProperty,
         bool hasAutoPostBack)
     {
       AssertDisplayNameAttribute (control, displayName);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, isReadOnly.ToString().ToLower());
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundType, boundType);

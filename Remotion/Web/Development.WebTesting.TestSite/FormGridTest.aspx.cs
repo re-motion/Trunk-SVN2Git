@@ -1,8 +1,9 @@
 ﻿using System;
+using Remotion.Web.UI;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class FormGridTest : TestSmartPage
+  public partial class FormGridTest : SmartPage
   {
   }
 }

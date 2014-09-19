@@ -50,6 +50,20 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// SetUp method for each web test fixture.
+    /// </summary>
+    public void OnFixtureSetUp()
+    {
+      // Note: otherwise the Selenium web driver may get confused when searching for windows.
+      EnsureAllBrowserWindowsAreClosed();
+
+      MainBrowserSession = CreateNewBrowserSession(_webTestConfiguration.WebApplicationRoot);
+
+      // Note: otherwise cursor could interfere with element hovering.
+      EnsureCursorIsOutsideBrowserWindow();
+    }
+
+    /// <summary>
     /// SetUp method for each web test.
     /// </summary>
     /// <param name="testName">Name of the test being performed.</param>
@@ -58,14 +72,6 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNullOrEmpty ("testName", testName);
 
       _testName = testName;
-
-      // Note: otherwise the Selenium web driver may get confused when searching for windows.
-      EnsureAllBrowserWindowsAreClosed();
-
-      MainBrowserSession = CreateNewBrowserSession(_webTestConfiguration.WebApplicationRoot);
-
-      // Note: otherwise cursor could interfere with element hovering.
-      EnsureCursorIsOutsideBrowserWindow();
     }
 
     /// <summary>
@@ -93,7 +99,13 @@ namespace Remotion.Web.Development.WebTesting
       {
         // Todo: take screenshots.
       }
+    }
 
+    /// <summary>
+    /// TearDown method for each web test fixture.
+    /// </summary>
+    public void OnFixtureTearDown()
+    {
       if (MainBrowserSession != null)
         MainBrowserSession.Dispose();
 

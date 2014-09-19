@@ -2,6 +2,7 @@
 using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.FluentControlSelection;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -9,45 +10,73 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   public class FormGridControlObjectTest : IntegrationTest
   {
     [Test]
-    public void TestSelector_WithParameters ()
+    public void TestSelection_ByHtmlID ()
     {
-      var home = Start("FormGridTest.aspx");
+      var home = Start ("FormGridTest.aspx");
 
-      var formGrid1 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { ID = "My1FormGrid" });
-      Assert.That (formGrid1.Scope.Text, Is.StringContaining ("Content1"));
-      Assert.That (formGrid1.Scope.Text, Is.Not.StringContaining ("DoNotFindMe1"));
-
-      var formGrid2 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { Index = 2 });
-      Assert.That (formGrid2.Scope.Text, Is.StringContaining ("Content2"));
-      Assert.That (formGrid2.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
-
-      formGrid2 = home.GetControl (new FormGridSelector(), new ControlSelectionParameters { Title = "MyFormGrid2" });
-      Assert.That (formGrid2.Scope.Text, Is.StringContaining ("Content2"));
-      Assert.That (formGrid2.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
+      var formGrid = home.GetFormGrid().ByID ("body_My1FormGrid");
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content1"));
+      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe1"));
     }
 
     [Test]
-    public void TestSelector_WithoutParameters ()
+    public void TestSelection_ByIndex ()
     {
-      var home = Start("FormGridSingleTest.aspx");
+      var home = Start ("FormGridTest.aspx");
 
-      Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
+      var formGrid = home.GetFormGrid().ByIndex (2);
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content2"));
+      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
+    }
 
-      var formGrid = home.GetControl (new FormGridSelector(), new ControlSelectionParameters());
-      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content"));
-      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe"));
+    [Test]
+    public void TestSelection_ByLocalID ()
+    {
+      var home = Start ("FormGridTest.aspx");
 
-      home = Start ("FormGridTest.aspx");
+      var formGrid = home.GetFormGrid().ByLocalID ("My1FormGrid");
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content1"));
+      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe1"));
+    }
+
+    [Test]
+    public void TestSelection_ByTitle ()
+    {
+      var home = Start ("FormGridTest.aspx");
+
+      var formGrid = home.GetFormGrid().ByTitle ("MyFormGrid2");
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content2"));
+      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
+    }
+
+    [Test]
+    public void TestSelection_First ()
+    {
+      var home = Start ("FormGridTest.aspx");
+
+      var formGrid = home.GetFormGrid().First();
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content1"));
+      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe1"));
+    }
+
+    [Test]
+    public void TestSelection_Single ()
+    {
+      var home = Start ("FormGridTest.aspx");
+      var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
+
+      var formGrid = scope.GetFormGrid().Single();
+      Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content2"));
+      Assert.That (formGrid.Scope.Text, Is.Not.StringContaining ("DoNotFindMe2"));
+
       try
       {
-        home.GetControl (new FormGridSelector(), new ControlSelectionParameters());
+        home.GetFormGrid().Single();
+        Assert.Fail ("Should not be able to unambigously find a form grid.");
       }
-      catch(AmbiguousException)
+      catch (AmbiguousException)
       {
-        return;
       }
-
-      Assert.Fail ("Should not be able to unambigously find a form grid.");
     }
   }
 }

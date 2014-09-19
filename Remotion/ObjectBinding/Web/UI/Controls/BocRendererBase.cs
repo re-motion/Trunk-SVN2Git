@@ -91,6 +91,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!string.IsNullOrEmpty (control.DisplayName))
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.DisplayName, control.DisplayName);
 
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsReadOnly, control.IsReadOnly.ToString().ToLower());
+
       var isBound = control.Property != null && control.DataSource != null;
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsBound, isBound.ToString().ToLower());
       

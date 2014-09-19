@@ -6,11 +6,8 @@
   <style type="text/css">
     div.container {
       margin-top: 1em;
-      padding: 1em;
+      padding: 0 1em 1em;
       border: 1px dotted black;
-    }
-    h3 {
-      margin-top: 0;
     }
   </style>
   <asp:ContentPlaceHolder ID="head" runat="server">

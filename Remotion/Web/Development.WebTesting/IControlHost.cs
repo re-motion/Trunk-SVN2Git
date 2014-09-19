@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -10,29 +11,14 @@ namespace Remotion.Web.Development.WebTesting
   public interface IControlHost
   {
     /// <summary>
-    /// Tries to find a <see cref="ControlObject"/> within the scope of the control host, using the given <paramref name="selector"/> and the given
-    /// <paramref name="selectionParameters"/>.
-    /// </summary>
-    /// <typeparam name="TControlSelectionParameters">The control selection parameters type required for this control selector.</typeparam>
-    /// <returns>The control object.</returns>
-    /// <exception cref="MissingHtmlException">If the element cannot be found.</exception>
-    ControlObject GetControl<TControlSelectionParameters> (
-        [NotNull] IControlSelector<TControlSelectionParameters> selector,
-        [NotNull] TControlSelectionParameters selectionParameters)
-        where TControlSelectionParameters : ControlSelectionParameters;
-
-    /// <summary>
-    /// Tries to find a <see cref="ControlObject"/> within the scope of the control host, using the given <paramref name="selector"/> and the given
-    /// <paramref name="selectionParameters"/>.
+    /// Tries to find a <see cref="ControlObject"/> within the scope of the control host, using the given <paramref name="controlSelectionCommand"/>.
     /// </summary>
     /// <typeparam name="TControlObject">The type of the control to be found.</typeparam>
-    /// <typeparam name="TControlSelectionParameters">The control selection parameters type required for this control selector.</typeparam>
+    /// <param name="controlSelectionCommand">Encapsulating the <see cref="IControlSelector"/> implementation and all necessary selection parameters.</param>
     /// <returns>The control object.</returns>
+    /// <exception cref="AmbiguousException">If the selection command cannot unambiguously identify the control.</exception>
     /// <exception cref="MissingHtmlException">If the element cannot be found.</exception>
-    TControlObject GetControl<TControlObject, TControlSelectionParameters> (
-        [NotNull] IControlSelector<TControlObject, TControlSelectionParameters> selector,
-        [NotNull] TControlSelectionParameters selectionParameters)
-        where TControlObject : ControlObject
-        where TControlSelectionParameters : ControlSelectionParameters;
+    TControlObject GetControl<TControlObject> ([NotNull] IControlSelectionCommand<TControlObject> controlSelectionCommand)
+        where TControlObject : ControlObject;
   }
 }

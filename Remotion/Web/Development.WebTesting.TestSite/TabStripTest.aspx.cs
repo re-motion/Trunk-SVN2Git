@@ -1,9 +1,10 @@
 ﻿using System;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class TabStripTest : TestWxePage
+  public partial class TabStripTest : WxePage
   {
     protected override void OnInit (EventArgs e)
     {
@@ -16,7 +17,9 @@ namespace Remotion.Web.Development.WebTesting.TestSite
     private void MyTabStripOnSelectedIndexChanged (object sender, EventArgs eventArgs)
     {
       var tabStrip = (WebTabStrip) sender;
-      TestOutputLabel.Text = tabStrip.ID + "/" + tabStrip.SelectedTab.ItemID;
+
+      var testOutput = tabStrip.ID + "/" + tabStrip.SelectedTab.ItemID;
+      ((Layout)Master).SetTestOutput(testOutput);
     }
   }
 }

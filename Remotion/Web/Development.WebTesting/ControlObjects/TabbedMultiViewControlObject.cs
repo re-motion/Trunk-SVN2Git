@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -8,57 +9,58 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="TabbedMultiView"/>.
   /// </summary>
-  public class TabbedMultiViewControlObject : RemotionControlObject, IControlHost
+  public class TabbedMultiViewControlObject : RemotionControlObject, IControlHost, ITabStrip
   {
     public TabbedMultiViewControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }
 
-    public TabStripControlObject GetTabStrip()
-    {
-      // Todo RM-6297: use constants from TabbedMultiView instead of magic strings? Refactoring safetey, etc. Talk to MK about this.
-      var scope = FindChild ("TabStrip");
-      return new TabStripControlObject(scope.Id, "_Tab", Context.CloneForScope(scope));
-    }
-
-    public ScopeControlObject GetTopControls()
+    public ScopeControlObject GetTopControls ()
     {
       var scope = FindChild ("TopControl");
-      return new ScopeControlObject(scope.Id, Context.CloneForScope(scope));
+      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
     }
 
-    public ScopeControlObject GetActiveView()
+    public ScopeControlObject GetActiveView ()
     {
       var scope = FindChild ("ActiveView");
-      return new ScopeControlObject(scope.Id, Context.CloneForScope(scope));
+      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
     }
 
-    public ScopeControlObject GetBottomControls()
+    public ScopeControlObject GetBottomControls ()
     {
       var scope = FindChild ("BottomControl");
-      return new ScopeControlObject(scope.Id, Context.CloneForScope(scope));
+      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
     }
 
-    public ControlObject GetControl<TControlSelectionParameters> (
-        IControlSelector<TControlSelectionParameters> selector,
-        TControlSelectionParameters selectionParameters) where TControlSelectionParameters : ControlSelectionParameters
+    public UnspecifiedPageObject SwitchTo (string localID)
     {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-      ArgumentUtility.CheckNotNull ("selectionParameters", selectionParameters);
+      ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
 
-      return selector.FindControl (Context, selectionParameters);
+      return GetTabStrip().SwitchTo (localID + "_Tab");
     }
 
-    public TControlObject GetControl<TControlObject, TControlSelectionParameters> (
-        IControlSelector<TControlObject, TControlSelectionParameters> selector,
-        TControlSelectionParameters selectionParameters) where TControlObject : ControlObject
-        where TControlSelectionParameters : ControlSelectionParameters
+    public UnspecifiedPageObject SwitchToByLabel (string label)
     {
-      ArgumentUtility.CheckNotNull ("selector", selector);
-      ArgumentUtility.CheckNotNull ("selectionParameters", selectionParameters);
+      ArgumentUtility.CheckNotNullOrEmpty ("label", label);
 
-      return selector.FindTypedControl (Context, selectionParameters);
+      return GetTabStrip().SwitchToByLabel (label);
+    }
+
+    private TabStripControlObject GetTabStrip ()
+    {
+      var scope = FindChild ("TabStrip");
+      return new TabStripControlObject (scope.Id, Context.CloneForScope (scope));
+    }
+
+    // Todo RM-6297: ControlHostingRemotionControlObject to remove code duplication with other IControlHost implementations?
+    public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
+        where TControlObject : ControlObject
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
+
+      return controlSelectionCommand.Select (Context);
     }
   }
 }

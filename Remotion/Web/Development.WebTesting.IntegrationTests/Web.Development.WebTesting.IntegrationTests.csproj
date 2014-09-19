@@ -63,7 +63,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="DropDownMenuControlObjectTest.cs" />
+    <Compile Include="FluentControlSelectorExtensionsForIntegrationTests.cs" />
     <Compile Include="SingleViewControlObjectTest.cs" />
     <Compile Include="FormGridControlObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +71,7 @@
     <Compile Include="IntegrationTest.cs" />
     <Compile Include="TabbedMultiViewControlObjectTest.cs" />
     <Compile Include="TabStripControlObjectTest.cs" />
+    <Compile Include="WebButtonControlObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\remotion.snk">

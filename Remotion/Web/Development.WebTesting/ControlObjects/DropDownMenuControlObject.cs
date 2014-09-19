@@ -14,14 +14,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    /// <summary>
-    /// Returns the current label of the DropDownMenu.
-    /// </summary>
-    public string GetLabel ()
-    {
-      return Scope.FindCss ("a.DropDownMenuLabel").Text;
-    }
-
+    ///// <summary>
+    ///// Returns the current label of the DropDownMenu.
+    ///// </summary>
+    //public string GetLabel ()
+    //{
+    //  return Scope.FindCss ("a.DropDownMenuLabel").Text;
+    //}
     ///// <summary>
     ///// Todo RM-6297: Docs
     ///// </summary>

@@ -2,6 +2,7 @@
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -9,21 +10,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="WebTabStrip"/>.
   /// </summary>
-  public class TabStripControlObject : RemotionControlObject
+  public class TabStripControlObject : RemotionControlObject, ITabStrip
   {
-    private readonly string _itemSuffix;
-
-    public TabStripControlObject ([NotNull] string id, [NotNull]string itemSuffix, [NotNull] TestObjectContext context)
+    public TabStripControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      ArgumentUtility.CheckNotNull ("itemSuffix", itemSuffix);
-
-      _itemSuffix = itemSuffix;
     }
 
     public UnspecifiedPageObject SwitchTo (string localID)
     {
-      var commandScope = FindChild (string.Format ("{0}{1}_Command", localID, _itemSuffix));
+      var commandScope = FindChild (string.Format ("{0}_Command", localID));
       return SwitchToUsingCommandScope (commandScope);
     }
 
@@ -37,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var commandContext = Context.CloneForScope (commandScope);
       var command = new CommandControlObject (commandScope.Id, commandContext);
-      return command.Click (WaitingStrategies.WxePostBack);
+      return command.Click (WaitFor.WxePostBack);
     }
   }
 }
