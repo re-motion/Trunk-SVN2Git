@@ -46,10 +46,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       Invoker.InitRecursive();
 
-      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance).ToArray();
+      BaseValidator[] validators = Controller.CreateValidators (false, NullResourceManager.Instance).ToArray();
 
-      Assert.That (validators, Is.Not.Null);
-      Assert.That (validators.Length, Is.EqualTo (0));
+      Assert.That (validators, Is.Empty);
     }
 
     [Test]

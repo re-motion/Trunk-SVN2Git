@@ -738,7 +738,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
   
     [Test]
-    public void CreateValidators ()
+    public void CreateValidators_IsReadOnlyFalse ()
     {
       IResourceManager resourceManager = (IResourceManager) NullResourceManager.Instance;
 
@@ -748,7 +748,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.IsRowEditModeActive, Is.True);
       Assert.That (Controller.GetEditedRow().Index, Is.EqualTo (2));
 
-      BaseValidator[] validators = Controller.CreateValidators (resourceManager).ToArray();
+      BaseValidator[] validators = Controller.CreateValidators (false, resourceManager).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (1));
@@ -767,7 +767,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (Controller.IsRowEditModeActive, Is.True);
       Assert.That (Controller.GetEditedRow().Index, Is.EqualTo (2));
 
-      BaseValidator[] validators = Controller.CreateValidators (NullResourceManager.Instance).ToArray();
+      BaseValidator[] validators = Controller.CreateValidators (false, NullResourceManager.Instance).ToArray();
 
       Assert.That (validators, Is.Not.Null);
       Assert.That (validators.Length, Is.EqualTo (1));
@@ -776,6 +776,21 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Assert.That (validators[0].ErrorMessage, Is.EqualTo ("Foo Bar"));
     }
 
+    [Test]
+    public void CreateValidatorsWithIsReadOnlyTrue ()
+    {
+      IResourceManager resourceManager = (IResourceManager) NullResourceManager.Instance;
+
+      Invoker.InitRecursive();
+      Controller.SwitchRowIntoEditMode (2, Columns);
+
+      Assert.That (Controller.IsRowEditModeActive, Is.True);
+      Assert.That (Controller.GetEditedRow().Index, Is.EqualTo (2));
+
+      BaseValidator[] validators = Controller.CreateValidators (true, resourceManager).ToArray();
+
+      Assert.That (validators, Is.Empty);
+    }
 
     [Test]
     public void ValidateWithValidValues ()
