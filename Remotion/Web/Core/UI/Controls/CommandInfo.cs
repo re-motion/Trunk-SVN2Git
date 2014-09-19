@@ -122,6 +122,7 @@ namespace Remotion.Web.UI.Controls
 
     private void AddDiagnosticMetadataAttributes (HtmlTextWriter writer)
     {
+      // TODO RM-6297: rename the parameter "HasAutoPostBack". Only postbacks caused by chaning the value of a control are called "auto postbacks".
       if(_href != "#")
       {
         writer.AddAttribute (DiagnosticMetadataAttributes.TriggersNavigation, "true");

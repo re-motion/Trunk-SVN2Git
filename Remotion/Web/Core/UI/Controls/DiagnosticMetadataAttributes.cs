@@ -7,6 +7,8 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   public static class DiagnosticMetadataAttributes
   {
+    // TODO RM-6297: Move BOC-revelant bits to ObjectBinding asssembly.
+    // TODO RM-6297: When would title be needed, i.e. title is usally an attribute
     public static readonly string DisplayName = "data-displayname";
     public static readonly string Title = "data-title";
     public static readonly string HasAutoPostBack = "data-autopostback";
