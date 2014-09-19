@@ -47,7 +47,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
       var factory1 = _serviceLocator.GetInstance<IMenuTabRenderer> ();
       var factory2 = _serviceLocator.GetInstance<IMenuTabRenderer> ();
 
-      Assert.That (factory1, Is.Not.SameAs (factory2));
+      Assert.That (factory1, Is.SameAs (factory2));
     }
   }
 }

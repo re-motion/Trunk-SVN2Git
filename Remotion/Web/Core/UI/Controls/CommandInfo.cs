@@ -29,40 +29,44 @@ namespace Remotion.Web.UI.Controls
     /// Creates a <see cref="CommandInfo"/> for a hyperlink-based command.
     /// </summary>
     /// <param name="title">The text displayed as the command's title. Must not be empty.</param>
+    /// <param name="accessKey">The <see cref="char"/> to use for keyboard-shortcut navigation.</param>
     /// <param name="href">The url to be opened when the command is clicked. Must not be <see langword="null" /> or empty.</param>
     /// <param name="target">The target where the url is opened.  Must not be empty.</param>
     /// <param name="onClick">An optional javascript hooked up to the click event. The script is only allowed to do housekeeping. Must not be empty.</param>
-    public static CommandInfo CreateForLink (string title, string href, string target, string onClick)
+    public static CommandInfo CreateForLink (string title, string accessKey, string href, string target, string onClick)
     {
       ArgumentUtility.CheckNotEmpty ("title", title);
       ArgumentUtility.CheckNotNullOrEmpty ("href", href);
       ArgumentUtility.CheckNotEmpty ("target", target);
       ArgumentUtility.CheckNotEmpty ("onClick", onClick);
 
-      return new CommandInfo (title, href, target, onClick);
+      return new CommandInfo (title, accessKey, href, target, onClick);
     }
 
     /// <summary>
     /// Creates a <see cref="CommandInfo"/> for a postback-based command.
     /// </summary>
     /// <param name="title">The <see cref="string"/> displayed as the commands title. Must not be empty.</param>
+    /// <param name="accessKey">The <see cref="char"/> to use for keyboard-shortcut navigation.</param>
     /// <param name="onClick">The javascript hooked up to the click event. Must not be <see langword="null" /> or empty.</param>
-    public static CommandInfo CreateForPostBack (string title, string onClick)
+    public static CommandInfo CreateForPostBack (string title, string accessKey, string onClick)
     {
       ArgumentUtility.CheckNotEmpty ("title", title);
       ArgumentUtility.CheckNotNullOrEmpty ("onClick", onClick);
 
-      return new CommandInfo (title, "#", null, onClick);
+      return new CommandInfo (title, accessKey, "#", null, onClick);
     }
 
     private readonly string _title;
+    private readonly string _accessKey;
     private readonly string _href;
     private readonly string _target;
     private readonly string _onClick;
 
-    private CommandInfo (string title, string href, string target, string onClick)
+    private CommandInfo (string title, string accessKey, string href, string target, string onClick)
     {
       _title = title;
+      _accessKey = accessKey;
       _href = href;
       _target = target;
       _onClick = onClick;
@@ -88,6 +92,11 @@ namespace Remotion.Web.UI.Controls
       get { return _title; }
     }
 
+    public string AccessKey
+    {
+      get { return _accessKey; }
+    }
+
     public void AddAttributesToRender (HtmlTextWriter writer, IRenderingFeatures renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
@@ -100,6 +109,9 @@ namespace Remotion.Web.UI.Controls
 
       if (!string.IsNullOrEmpty (_onClick))
         writer.AddAttribute (HtmlTextWriterAttribute.Onclick, _onClick);
+
+      if (!string.IsNullOrEmpty (_accessKey))
+        writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, _accessKey);
 
       if (!string.IsNullOrEmpty (_title))
         writer.AddAttribute (HtmlTextWriterAttribute.Title, _title);

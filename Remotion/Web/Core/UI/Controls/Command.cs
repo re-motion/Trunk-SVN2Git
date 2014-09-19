@@ -303,6 +303,7 @@ namespace Remotion.Web.UI.Controls
     }
 
     private string _toolTip = string.Empty;
+    private string _accessKey = string.Empty;
     private CommandType _type;
     private readonly CommandType _defaultType = CommandType.None;
     private CommandShow _show = CommandShow.Always;
@@ -525,6 +526,7 @@ namespace Remotion.Web.UI.Controls
 
       return CommandInfo.CreateForLink (
           StringUtility.EmptyToNull (_toolTip),
+          StringUtility.EmptyToNull (_accessKey),
           href,
           StringUtility.EmptyToNull (HrefCommand.Target),
           StringUtility.EmptyToNull (onClick));
@@ -551,6 +553,7 @@ namespace Remotion.Web.UI.Controls
 
       return CommandInfo.CreateForPostBack (
           StringUtility.EmptyToNull (_toolTip),
+          StringUtility.EmptyToNull (_accessKey),
           postBackEvent + (onClick ?? string.Empty));
     }
 
@@ -589,6 +592,7 @@ namespace Remotion.Web.UI.Controls
 
       return CommandInfo.CreateForPostBack (
           StringUtility.EmptyToNull (_toolTip),
+          StringUtility.EmptyToNull (_accessKey),
           postBackEvent + (onClick ?? string.Empty));
     }
 
@@ -712,11 +716,18 @@ namespace Remotion.Web.UI.Controls
     public string ToolTip
     {
       get { return _toolTip; }
-      set
-      {
-        _toolTip = value ?? string.Empty;
-        _toolTip = _toolTip.Trim();
-      }
+      set { _toolTip = (value ?? string.Empty).Trim(); }
+    }
+
+    [PersistenceMode (PersistenceMode.Attribute)]
+    [Category ("Appearance")]
+    [Description ("The AccessKey rendered in the anchor tag.")]
+    [NotifyParentProperty (true)]
+    [DefaultValue ("")]
+    public string AccessKey
+    {
+      get { return _accessKey; }
+      set { _accessKey = (value ?? string.Empty).Trim(); }
     }
 
     [DesignerSerializationVisibility (DesignerSerializationVisibility.Hidden)]

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Specialized;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ServiceLocation;
@@ -42,6 +43,11 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       _renderingFeatures = renderingFeatures;
     }
 
+    public IHotkeyFormatter HotkeyFormatter
+    {
+      get { return _hotkeyFormatter; }
+    }
+
     /// <summary>
     /// Returns the configured <see cref="IRenderingFeatures"/> object.
     /// </summary>
@@ -61,9 +67,9 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       RenderSeperator (renderingContext);
       RenderWrapperBegin (renderingContext, tab);
 
-      RenderBeginTagForCommand (renderingContext, tab, isEnabled, style);
+      var command = RenderBeginTagForCommand (renderingContext, tab, isEnabled, style);
       RenderContents (renderingContext, tab);
-      RenderEndTagForCommand (renderingContext);
+      RenderEndTagForCommand (renderingContext, command);
 
       renderingContext.Writer.RenderEndTag (); // End tab span
       renderingContext.Writer.RenderEndTag (); // End tab wrapper span
@@ -121,30 +127,47 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       renderingContext.Writer.RenderEndTag ();
     }
 
-    protected virtual void RenderBeginTagForCommand (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, WebTabStyle style)
+    protected virtual Command RenderBeginTagForCommand (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, WebTabStyle style)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetTabClientID (renderingContext, tab) + "_Command");
-      if (tab.EvaluateEnabled())
+      var command = new Command();
+      command.OwnerControl = renderingContext.Control;
+      command.ItemID = tab.ItemID + "_Command";
+      if (isEnabled && tab.EvaluateEnabled())
       {
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        if (isEnabled)
-          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, tab.GetPostBackClientEvent ());
+        command.Type = CommandType.Event;
 
         var textWithHotkey = HotkeyParser.Parse (tab.Text);
         if (textWithHotkey.Hotkey.HasValue)
-          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, _hotkeyFormatter.FormatHotkey (textWithHotkey));
+          command.AccessKey = _hotkeyFormatter.FormatHotkey (textWithHotkey);
       }
-      style.AddAttributesToRender (renderingContext.Writer);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
+      else
+      {
+        command.Type = CommandType.None;
+      }
+
+      command.RenderBegin (
+          renderingContext.Writer,
+          RenderingFeatures,
+          tab.GetPostBackClientEvent(),
+          new string[0],
+          string.Empty,
+          null,
+          new NameValueCollection(),
+          false,
+          style);
+
+      return command;
     }
 
-    protected virtual void RenderEndTagForCommand (WebTabStripRenderingContext renderingContext)
+    protected virtual void RenderEndTagForCommand (WebTabStripRenderingContext renderingContext, Command command)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
-      renderingContext.Writer.RenderEndTag ();
+      ArgumentUtility.CheckNotNull ("command", command);
+      
+      command.RenderEnd (renderingContext.Writer);
     }
 
     protected virtual void RenderContents (WebTabStripRenderingContext renderingContext, IWebTab tab)

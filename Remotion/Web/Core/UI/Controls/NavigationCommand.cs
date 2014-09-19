@@ -93,6 +93,7 @@ namespace Remotion.Web.UI.Controls
 
       return CommandInfo.CreateForLink (
           StringUtility.EmptyToNull (ToolTip),
+          StringUtility.EmptyToNull (AccessKey),
           href,
           StringUtility.EmptyToNull (WxeFunctionCommand.Target),
           StringUtility.EmptyToNull (onClick));

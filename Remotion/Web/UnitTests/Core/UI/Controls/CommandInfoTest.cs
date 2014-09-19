@@ -28,9 +28,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void CreateForPostBack ()
     {
-      var commandInfo = CommandInfo.CreateForPostBack ("TheTitle", "ClickHandler");
+      var commandInfo = CommandInfo.CreateForPostBack ("TheTitle", "A", "ClickHandler");
 
       Assert.That (commandInfo.Title, Is.EqualTo ("TheTitle"));
+      Assert.That (commandInfo.AccessKey, Is.EqualTo ("A"));
       Assert.That (commandInfo.OnClick, Is.EqualTo ("ClickHandler"));
       Assert.That (commandInfo.Href, Is.EqualTo ("#"));
       Assert.That (commandInfo.Target, Is.Null);
@@ -39,9 +40,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void CreateForPostBack_OnClickOnly ()
     {
-      var commandInfo = CommandInfo.CreateForPostBack (null, "ClickHandler");
+      var commandInfo = CommandInfo.CreateForPostBack (null, null, "ClickHandler");
 
       Assert.That (commandInfo.Title, Is.Null);
+      Assert.That (commandInfo.AccessKey, Is.Null);
       Assert.That (commandInfo.OnClick, Is.EqualTo ("ClickHandler"));
       Assert.That (commandInfo.Href, Is.EqualTo ("#"));
       Assert.That (commandInfo.Target, Is.Null);
@@ -50,9 +52,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void CreateForLink ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "Url", "TheTarget", "ClickHandler");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "A", "Url", "TheTarget", "ClickHandler");
 
       Assert.That (commandInfo.Title, Is.EqualTo ("TheTitle"));
+      Assert.That (commandInfo.AccessKey, Is.EqualTo ("A"));
       Assert.That (commandInfo.OnClick, Is.EqualTo ("ClickHandler"));
       Assert.That (commandInfo.Href, Is.EqualTo ("Url"));
       Assert.That (commandInfo.Target, Is.EqualTo ("TheTarget"));
@@ -61,9 +64,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void CreateForLink_HrefOnly ()
     {
-      var commandInfo = CommandInfo.CreateForLink (null, "Url", null, null);
+      var commandInfo = CommandInfo.CreateForLink (null, null, "Url", null, null);
 
       Assert.That (commandInfo.Title, Is.Null);
+
       Assert.That (commandInfo.OnClick, Is.Null);
       Assert.That (commandInfo.Href, Is.EqualTo ("Url"));
       Assert.That (commandInfo.Target, Is.Null);
@@ -72,7 +76,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddAttributesToRender ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "Url", "TheTarget", "ClickHandler");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "A", "Url", "TheTarget", "ClickHandler");
 
       var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -85,6 +89,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("title=\"TheTitle\""));
+      Assert.That (result, Is.StringContaining ("accesskey=\"A\""));
       Assert.That (result, Is.StringContaining ("onclick=\"ClickHandler\""));
       Assert.That (result, Is.StringContaining ("href=\"Url\""));
       Assert.That (result, Is.StringContaining ("target=\"TheTarget\""));
@@ -93,7 +98,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddAttributesToRender_HrefOnly ()
     {
-      var commandInfo = CommandInfo.CreateForLink (null, "Url", null, null);
+      var commandInfo = CommandInfo.CreateForLink (null, null, "Url", null, null);
 
       var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -106,6 +111,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var result = stringWriter.ToString();
 
       Assert.That (result, Is.Not.StringContaining ("title="));
+      Assert.That (result, Is.Not.StringContaining ("accesskey="));
       Assert.That (result, Is.Not.StringContaining ("onclick="));
       Assert.That (result, Is.StringContaining ("href=\"Url\""));
       Assert.That (result, Is.Not.StringContaining ("target="));
@@ -114,7 +120,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddAttributesToRender_OnClickOnly ()
     {
-      var commandInfo = CommandInfo.CreateForPostBack (null, "ClickHandler");
+      var commandInfo = CommandInfo.CreateForPostBack (null, null, "ClickHandler");
 
       var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -127,6 +133,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
       var result = stringWriter.ToString();
 
       Assert.That (result, Is.Not.StringContaining ("title="));
+      Assert.That (result, Is.Not.StringContaining ("accesskey="));
       Assert.That (result, Is.StringContaining ("onclick=\"ClickHandler\""));
       Assert.That (result, Is.StringContaining ("href=\"#\""));
       Assert.That (result, Is.Not.StringContaining ("target="));
@@ -135,7 +142,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddAttributesToRender_EncodesTitle ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle\"Space'", "Url", "TheTarget", "ClickHandler");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle\"Space'", null, "Url", "TheTarget", "ClickHandler");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -151,9 +158,27 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     }
 
     [Test]
+    public void AddAttributesToRender_EncodesAccesskey ()
+    {
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle\"Space'", "\'", "Url", "TheTarget", "ClickHandler");
+
+      var stringWriter = new StringWriter ();
+      var htmlTextWriter = new HtmlTextWriter (stringWriter);
+
+      commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
+
+      htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
+      htmlTextWriter.RenderEndTag ();
+
+      var result = stringWriter.ToString ();
+
+      Assert.That (result, Is.StringContaining ("accesskey=\"&#39;"));
+    }
+
+    [Test]
     public void AddAttributesToRender_EncodesOnClick ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "Url", "TheTarget", "ClickHandler\"Space'");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "Url", "TheTarget", "ClickHandler\"Space'");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -171,7 +196,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddAttributesToRender_EncodesHref ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "Url\"Space'", "TheTarget", "ClickHandler");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "Url\"Space'", "TheTarget", "ClickHandler");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -189,7 +214,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddAttributesToRender_DoesNotEncodeTarget ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "Url", "TheTarget\"Space'", "ClickHandler");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "Url", "TheTarget\"Space'", "ClickHandler");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -207,7 +232,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddDiagnosticMetadataAttributes_Href ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "http://localhost/My.wxe", "TheTarget", "javascript:Foo();");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "http://localhost/My.wxe", "TheTarget", "javascript:Foo();");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -225,7 +250,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddDiagnosticMetadataAttributes_PostBack ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "#", "TheTarget", "FrontGarbage__doPostBackBackGarbage");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "#", "TheTarget", "FrontGarbage__doPostBackBackGarbage");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
@@ -243,7 +268,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     [Test]
     public void AddDiagnosticMetadataAttributes_PureJavaScript ()
     {
-      var commandInfo = CommandInfo.CreateForLink ("TheTitle", "#", "TheTarget", "javascript:Foo();");
+      var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "#", "TheTarget", "javascript:Foo();");
 
       var stringWriter = new StringWriter ();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
