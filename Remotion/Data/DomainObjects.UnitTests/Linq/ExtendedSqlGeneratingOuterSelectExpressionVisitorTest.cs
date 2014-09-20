@@ -70,7 +70,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     }
 
     [Test]
-    [Ignore ("TODO RM-5753")]
     public void VisitNewExpression_ForObjectID_GeneratesNullCheckInInMemoryProjection ()
     {
       var constructorInfo = typeof (ObjectID).GetConstructor (new[] { typeof (string), typeof (object) });

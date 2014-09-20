@@ -62,7 +62,7 @@ namespace Remotion.Linq.Development.UnitTesting
       }
       else
       {
-        Assert.AreEqual (expected.GetType(), actual.GetType(), GetMessage (expected, actual, "NodeType"));
+        Assert.IsNotNull (actual, "Actual node is null");
         Assert.AreEqual (expected.NodeType, actual.NodeType, GetMessage (expected, actual, "NodeType"));
         Assert.AreEqual (expected.Type, actual.Type, GetMessage (expected, actual, "Type"));
         CheckAreEqualObjects (expected, actual);
@@ -71,7 +71,18 @@ namespace Remotion.Linq.Development.UnitTesting
 
     private void CheckAreEqualObjects (object expected, object actual)
     {
-      Assert.AreEqual (expected.GetType(), actual.GetType(), GetMessage (expected, actual, "GetType()"));
+      if (expected is Expression && actual is Expression)
+      {
+        var expectedType = expected.GetType();
+        var actualType = actual.GetType();
+        var publicExpectedType = GetPublicType (expectedType);
+        var publicActualType = GetPublicType (actualType);
+        Assert.AreEqual (publicExpectedType, publicActualType, GetMessage (expected, actual, "GetType()"));
+      }
+      else
+      {
+        Assert.AreEqual (expected.GetType(), actual.GetType(), GetMessage (expected, actual, "GetType()"));
+      }
 
       foreach (PropertyInfo property in expected.GetType().GetProperties (BindingFlags.Instance | BindingFlags.Public))
       {
@@ -132,6 +143,16 @@ namespace Remotion.Linq.Development.UnitTesting
     {
       return string.Format ("Trees are not equal: {0}\nNode 1: {1}\nNode 2: {2}\nTree 1: {3}\nTree 2: {4}", context, e1, e2, _expectedInitial, _actualInitial);
     }
+
+    private object GetPublicType (Type type)
+    {
+      for (var currentType = type; currentType != null; currentType = currentType.BaseType)
+      {
+        if (currentType.IsPublic)
+          return currentType;
+      }
+      throw new InvalidOperationException ("Unreachable code because every type eventually results in a public base type.");
+    }
   }
 
   internal static class Assert
@@ -153,6 +174,12 @@ namespace Remotion.Linq.Development.UnitTesting
         return;
 
       throw new InvalidOperationException (message);
+    }
+
+    public static void IsNotNull (object actual, string message)
+    {
+      if (actual == null)
+        throw new InvalidOperationException (message);
     }
   }
 }
