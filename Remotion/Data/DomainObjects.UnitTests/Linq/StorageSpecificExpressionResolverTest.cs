@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;

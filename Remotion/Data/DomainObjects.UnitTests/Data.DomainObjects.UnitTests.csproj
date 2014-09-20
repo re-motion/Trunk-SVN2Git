@@ -133,6 +133,10 @@
       <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
       <Name>Linq.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Relinq\Development\Linq.Development.csproj">
+      <Project>{31a1ae30-079f-489e-9757-4efb4c457e43}</Project>
+      <Name>Linq.Development</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
       <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
       <Name>Linq.SqlBackend</Name>
@@ -1187,7 +1191,6 @@
     <Compile Include="LinqPropertyRedirectionAttributeTest.cs" />
     <Compile Include="Linq\DomainObjectQueryableTest.cs" />
     <Compile Include="Linq\DomainObjectQueryExecutorTest.cs" />
-    <Compile Include="Linq\ExpressionTreeComparer.cs" />
     <Compile Include="Linq\IntegrationTests\DifferentMappingScenariosIntegrationTest.cs" />
     <Compile Include="Linq\IntegrationTests\ExplicitJoinsIntegrationTest.cs" />
     <Compile Include="Linq\IntegrationTests\MixinAddedPropertyIntegrationTest.cs" />

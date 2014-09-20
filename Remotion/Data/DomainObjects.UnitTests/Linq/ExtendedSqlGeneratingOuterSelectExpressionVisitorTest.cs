@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
+using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;

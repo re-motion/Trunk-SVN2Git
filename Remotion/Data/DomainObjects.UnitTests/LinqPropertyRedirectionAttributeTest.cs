@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.UnitTests.Linq;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting.Reflection;
+using Remotion.Linq.Development.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.UnitTests
 {
