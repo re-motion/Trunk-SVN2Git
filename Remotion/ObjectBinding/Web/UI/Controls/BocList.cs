@@ -959,9 +959,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void OnPreRender (EventArgs e)
     {
-      _optionsMenu.Visible = HasOptionsMenu;
       _optionsMenu.Enabled = !_editModeController.IsRowEditModeActive;
-      _listMenu.Visible = HasListMenu;
       _listMenu.Enabled = !_editModeController.IsRowEditModeActive;
 
       BocColumnDefinition[] columns = EnsureColumnsGot();
@@ -3561,9 +3559,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     protected virtual string GetSelectionChangedHandlerScript ()
     {
-      return HasListMenu
-                 ? string.Format ("function(bocList, isInitializing) {{ {0} }}", _listMenu.GetUpdateScriptReference (GetSelectionCountScript()))
-                 : "function(){{}}";
+      if (!HasListMenu)
+        return "function(){{}}";
+
+      Assertion.IsTrue (_listMenu.Visible, "BocList '{0}': The ListMenu must remain visible if BocList.HasListMenu is evaluates 'true'.", ID);
+
+      return string.Format ("function(bocList, isInitializing) {{ {0} }}", _listMenu.GetUpdateScriptReference (GetSelectionCountScript()));
     }
 
     [PublicAPI]

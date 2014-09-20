@@ -72,6 +72,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       StateBag bag = new StateBag();
       AttributeCollection attributes = new AttributeCollection (bag);
       optionsMenu.Stub (stub => stub.Style).Return (attributes.CssStyle);
+      optionsMenu.Visible = true;
 
       List.Stub (mock => mock.OptionsMenu).Return (optionsMenu);
       List.Stub (mock => mock.HasOptionsMenu).Return (true);
@@ -91,6 +92,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public void RenderWithListMenu ()
     {
       List.Stub (mock => mock.HasListMenu).Return (true);
+      List.ListMenu.Visible = true;
 
       Unit menuBlockOffset = new Unit (3, UnitType.Pixel);
       List.Stub (mock => mock.MenuBlockItemOffset).Return (menuBlockOffset);

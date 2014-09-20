@@ -77,6 +77,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (!renderingContext.Control.HasListMenu)
         return;
 
+      Assertion.IsTrue (
+          renderingContext.Control.ListMenu.Visible,
+          "BocList '{0}': The ListMenu must remain visible if BocList.HasListMenu is evaluates 'true'.",
+          renderingContext.Control.ID);
+
       renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, "100%");
       renderingContext.Writer.AddStyleAttribute ("margin-bottom", menuBlockItemOffset);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
@@ -88,6 +93,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       if (!renderingContext.Control.HasOptionsMenu)
         return;
+
+      Assertion.IsTrue (
+          renderingContext.Control.OptionsMenu.Visible,
+          "BocList '{0}': The OptionsMenu must remain visible if BocList.HasOptionsMenu is evaluates 'true'.",
+          renderingContext.Control.ID);
 
       renderingContext.Control.OptionsMenu.Style.Add ("margin-bottom", menuBlockItemOffset);
       renderingContext.Control.OptionsMenu.RenderControl (renderingContext.Writer);
