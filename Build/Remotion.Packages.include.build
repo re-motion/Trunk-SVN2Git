@@ -21,7 +21,7 @@
     <!-- Important: Keep list order! Core depends on Relinq and TypePipe, so Relinq and TypePipe should be
          ordered first. Especially required for DependDB import (DependDB.Receiver) -->
     
-    <!--<AllPackages Include="Relinq">
+    <AllPackages Include="Relinq">
       <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
       <DocumentationDeclaration>Remotion.Documentation.Relinq.build</DocumentationDeclaration>
       <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
@@ -30,7 +30,7 @@
       <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
       <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
       <ProductNameShort>re-linq</ProductNameShort>
-    </AllPackages>-->
+    </AllPackages>
 
     <AllPackages Include="TypePipe">
       <PackageDeclaration>Remotion.Packaging.TypePipe.build</PackageDeclaration>
