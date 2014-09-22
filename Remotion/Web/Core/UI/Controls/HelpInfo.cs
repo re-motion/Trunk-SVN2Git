@@ -22,7 +22,7 @@ namespace Remotion.Web.UI.Controls
   /// <summary>
   /// The <see cref="HelpInfo"/> type is used to group all information required for displaying a help-link in a form-grid.
   /// </summary>
-  public sealed class HelpInfo
+  public class HelpInfo
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="HelpInfo"/> type.

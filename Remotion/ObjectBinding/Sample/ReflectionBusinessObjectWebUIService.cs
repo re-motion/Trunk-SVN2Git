@@ -26,6 +26,14 @@ namespace Remotion.ObjectBinding.Sample
 {
   public class ReflectionBusinessObjectWebUIService : IBusinessObjectWebUIService
   {
+    private class ToolTipBasedHelpInfo : HelpInfo
+    {
+      public ToolTipBasedHelpInfo (string toolTip)
+          : base("#", null, toolTip,  "return false;")
+      {
+      }
+    }
+
     public IconInfo GetIcon (IBusinessObject obj)
     {
       if (obj == null)
@@ -56,16 +64,12 @@ namespace Remotion.ObjectBinding.Sample
       ArgumentUtility.CheckNotNull ("control", control);
       ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
 
-      return new HelpInfo (
-          "#",
-          null,
-          string.Format (
+      return new ToolTipBasedHelpInfo (string.Format (
               "{0}\r\n{1}\r\n{2}\r\n{3}",
               control.ID,
               businessObjectClass.Identifier,
               (businessObjectProperty != null ? businessObjectProperty.Identifier : "prop"),
-              (businessObject is IBusinessObjectWithIdentity ? ((IBusinessObjectWithIdentity) businessObject).DisplayName : "obj")),
-          "return false;");
+              (businessObject is IBusinessObjectWithIdentity ? ((IBusinessObjectWithIdentity) businessObject).DisplayName : "obj")));
     }
   }
 }
