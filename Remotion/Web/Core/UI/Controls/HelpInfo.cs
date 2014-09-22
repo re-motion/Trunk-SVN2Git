@@ -22,6 +22,11 @@ namespace Remotion.Web.UI.Controls
   /// <summary>
   /// The <see cref="HelpInfo"/> type is used to group all information required for displaying a help-link in a form-grid.
   /// </summary>
+  /// <remarks>
+  /// When extending <see cref="HelpInfo"/> to add additional state, the <see cref="FormGridManager"/>'s 
+  /// <see cref="FormGridManager.CreateHelpProvider(Remotion.Web.UI.Controls.HelpInfo)"/> method must also be extended to make use of the addiontal
+  /// state.
+  /// </remarks>
   public class HelpInfo
   {
     /// <summary>
