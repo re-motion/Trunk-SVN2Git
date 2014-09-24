@@ -63,9 +63,6 @@ namespace Remotion.Data.DomainObjects
       where TDomainObject : class, IDomainObject
       where TNextCallRequirements : class
   {
-    [NonSerialized]
-    private PropertyIndexer? _properties; // lazily initialized
-
     private bool _domainObjectReferenceInitialized;
 
     /// <summary>
@@ -119,10 +116,7 @@ namespace Remotion.Data.DomainObjects
         if (!_domainObjectReferenceInitialized)
           throw new InvalidOperationException ("This member cannot be used until the OnDomainObjectReferenceInitializing event has been executed.");
 
-        if (!_properties.HasValue)
-          _properties = new PropertyIndexer (Target);
-
-        return _properties.Value;
+        return new PropertyIndexer (Target);
       }
     }
 

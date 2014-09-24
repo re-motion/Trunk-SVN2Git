@@ -190,9 +190,6 @@ namespace Remotion.Data.DomainObjects
     private bool _needsLoadModeDataContainerOnly; // true if the object was created by a constructor call or OnLoaded has already been called once
     private bool _isReferenceInitializeEventExecuting; // true only while OnReferenceInitializing is executed
 
-    [NonSerialized] // required when ISerializable is not implemented by subclass
-    private PropertyIndexer? _properties; // lazily initialized
-
     /// <summary>
     /// Initializes a new <see cref="DomainObject"/> with the current <see cref="DomainObjects.ClientTransaction"/>.
     /// </summary>
@@ -520,10 +517,7 @@ namespace Remotion.Data.DomainObjects
       {
         CheckInitializeEventNotExecuting();
 
-        if (!_properties.HasValue)
-          _properties = new PropertyIndexer (this);
-
-        return _properties.Value;
+        return new PropertyIndexer (this);
       }
     }
 
