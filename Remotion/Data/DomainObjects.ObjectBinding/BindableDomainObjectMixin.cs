@@ -34,11 +34,12 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
   [BindableDomainObjectProvider]
   public class BindableDomainObjectMixin : BindableObjectMixinBase<IDomainObject>, IBusinessObjectWithIdentity
   {
-    [Obsolete ("Use IReflectableDomainObject instead. (Version 1.25.23.0)", true)]
+    [Obsolete ("Use IDomainObject instead. (Version 1.25.23.0)", true)]
     public interface IDomainObject : DomainObjects.IDomainObject
     {
       new Type GetPublicDomainObjectType ();
       new ObjectID ID { get; }
+      [Obsolete ("Use new PropertyIndexer (domainObject) instead. (Version 1.25.23.0)", true)]
       PropertyIndexer Properties { get; }
       StateType State { get; }
     }
