@@ -133,14 +133,14 @@
       outline-width: 1px;
     }
 
-    .bocCheckBoxStyled input[type=checkbox]:checked + label:after
+    .bocCheckBoxStyled input[type=checkbox]:checked + label::after
     {
-      content: "yes";
+      content: attr(data-text-checked);
     }
 
-    .bocCheckBoxStyled input[type=checkbox] + label:after
+    .bocCheckBoxStyled input[type=checkbox]:not(:checked) + label::after
     {
-      content: "no";
+      content: attr(data-text-unchecked);
     }
 
     .bocTriStateStyled input[type=radio]
@@ -205,20 +205,14 @@
       outline-width: 1px;
     }
 
-    .bocTriStateStyled input[type=radio][value="null"]:checked + label:after,
-    .bocTriStateStyled input[type=radio][value="true"][required]:not(:checked) + label + input[type=radio][value="false"][required]:not(:checked) + label:after
+    .bocTriStateStyled input[type=radio]:checked + label::after
     {
-      content: "undefined";
+      content: attr(data-text);
     }
 
-    .bocTriStateStyled input[type=radio][value="true"]:checked + label:after
+    .bocTriStateStyled input[type=radio][value="true"][required]:not(:checked) + label + input[type=radio][value="false"][required]:not(:checked) + label::after
     {
-      content: "yes";
-    }
-
-    .bocTriStateStyled input[type=radio][value="false"]:checked + label:after
-    {
-      content: "no";
+      content: attr(data-text-undefined);
     }
   </style>
 </head>
@@ -228,18 +222,18 @@
   <h1>Checkbox using image:</h1>
   <span class="bocCheckBoxStyled">
     <input id="bocCheckBoxStyled_Value" type="checkbox"/>
-    <label for="bocCheckBoxStyled_Value"></label>
+    <label for="bocCheckBoxStyled_Value" data-text-checked="yes" data-text-unchecked="no"></label>
   </span>
   M<br/>
 
   <h1>Tri-State using image:</h1>
   <span class="bocTriStateStyled">
     <input id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" value="null" title="undefined" checked="checked"/>
-    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'yes'"></label>
+    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'yes'" data-text="undefined"></label>
     <input id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" value="true"title="yes"/>
-    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'no'"></label>
+    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'no'" data-text="yes"></label>
     <input id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" value="false" title="no"/>
-    <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset"></label>
+    <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset" data-text="no"></label>
   </span>
   M<br/>
 
@@ -247,9 +241,9 @@
   TODO: Solve display of validation error once the input controls are hidden<br />
   <span class="bocTriStateStyled">
     <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes" required="required" />
-    <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'no'"></label>
+    <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'no'" data-text="yes"></label>
     <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no" required="required" />
-    <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'yes'"></label>
+    <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'yes'" data-text="no" data-text-undefined="undefined"></label>
   </span>
   M
   <h1>Date Time Value:</h1>
