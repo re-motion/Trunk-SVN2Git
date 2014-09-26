@@ -180,7 +180,7 @@
     }
 
     .bocTriStateStyled input[type=radio][value="null"]:checked + label,
-    .bocTriStateStyled input[type=radio][value="true"][required]:not(:checked) + label + input[type=radio][value="false"][required]:not(:checked) + label
+    .bocTriStateStyled input[type=radio][value="true"]:required:not(:checked) + label + input[type=radio][value="false"]:required:not(:checked) + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
       display: inline;
@@ -199,7 +199,7 @@
     }
 
     .bocTriStateStyled input[type=radio]:focus + label,
-    .bocTriStateStyled input[type=radio][required]:not(:checked):focus +label + input[type=radio][required]:not(:checked) + label
+    .bocTriStateStyled input[type=radio]:required:not(:checked):focus +label + input[type=radio]:required:not(:checked) + label
     {
       outline-style: dotted;
       outline-width: 1px;
@@ -210,7 +210,7 @@
       content: attr(data-text);
     }
 
-    .bocTriStateStyled input[type=radio][value="true"][required]:not(:checked) + label + input[type=radio][value="false"][required]:not(:checked) + label::after
+    .bocTriStateStyled input[type=radio][value="true"]:required:not(:checked) + label + input[type=radio][value="false"]:required:not(:checked) + label::after
     {
       content: attr(data-text-undefined);
     }
