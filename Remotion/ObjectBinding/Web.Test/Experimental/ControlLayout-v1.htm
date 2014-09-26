@@ -218,72 +218,74 @@
 </head>
 <body>
   <form action="/" method="post">
-  <input type="submit"/>
-  <h1>Checkbox using image:</h1>
-  <span class="bocCheckBoxStyled">
-    <input id="bocCheckBoxStyled_Value" type="checkbox"/>
-    <label for="bocCheckBoxStyled_Value" data-text-checked="yes" data-text-unchecked="no"></label>
-  </span>
-  M<br/>
+    <input type="submit" />
+    <h1>Checkbox using image:</h1>
+    <span class="bocCheckBoxStyled">
+      <input id="bocCheckBoxStyled_Value" type="checkbox" />
+      <label for="bocCheckBoxStyled_Value" data-text-checked="yes" data-text-unchecked="no"></label>
+    </span>
+    M<br />
 
-  <h1>Tri-State using image:</h1>
-  <span class="bocTriStateStyled">
-    <input id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" value="null" title="undefined" checked="checked"/>
-    <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'yes'" data-text="undefined"></label>
-    <input id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" value="true"title="yes"/>
-    <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'no'" data-text="yes"></label>
-    <input id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" value="false" title="no"/>
-    <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset" data-text="no"></label>
-  </span>
-  M<br/>
+    <h1>Tri-State using image:</h1>
+    <span class="bocTriStateStyled">
+      <input id="bocTriStateStyles_ValueNull" name="bocTriStateStyles_Value" type="radio" value="null" title="undefined" checked="checked" />
+      <label for="bocTriStateStyles_ValueTrue" aria-hidden="true" title="select 'yes'" data-text="undefined"></label>
+      <input id="bocTriStateStyles_ValueTrue" name="bocTriStateStyles_Value" type="radio" value="true" title="yes" />
+      <label for="bocTriStateStyles_ValueFalse" aria-hidden="true" title="select 'no'" data-text="yes"></label>
+      <input id="bocTriStateStyles_ValueFalse" name="bocTriStateStyles_Value" type="radio" value="false" title="no" />
+      <label for="bocTriStateStyles_ValueNull" aria-hidden="true" title="reset" data-text="no"></label>
+    </span>
+    M<br />
 
-  <h1>Tri-State with disabled NULL value using image:</h1>
-  TODO: Solve display of validation error once the input controls are hidden<br />
-  <span class="bocTriStateStyled">
-    <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes" required="required" />
-    <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'no'" data-text="yes"></label>
-    <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no" required="required" />
-    <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'yes'" data-text="no" data-text-undefined="undefined"></label>
-  </span>
-  M
-  <h1>Date Time Value:</h1>
-  <span class="dateTimeValue">
-    <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
-    <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
-    <input name="timeValue" type="text" class="timeField" maxlength="10" value="12:24:59" />
-  </span>
-  M<br/>
-  Note: The clear-button (IE10) was disabled on the date and time input elements.
+    <h1>Tri-State with disabled NULL value using image:</h1>
+    TODO: Solve display of validation error once the input controls are hidden.
+    One option is to apply "novalidate" to the form or "formnovalidate" to the input element. This will disable validation globally or just for the element. 
+    Other option is to use a custom data-attribute for this instead of the html5-required attribute.<br />
+    <span class="bocTriStateStyled">
+      <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes" required="required" />
+      <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'no'" data-text="yes"></label>
+      <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no" required="required" />
+      <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'yes'" data-text="no" data-text-undefined="undefined"></label>
+    </span>
+    M
+    <h1>Date Time Value:</h1>
+    <span class="dateTimeValue">
+      <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
+      <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
+      <input name="timeValue" type="text" class="timeField" maxlength="10" value="12:24:59" />
+    </span>
+    M<br />
+    Note: The clear-button (IE10) was disabled on the date and time input elements.
 
-  <h1>Date Value:</h1>
-  <span class="dateTimeValue">
-    <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
-    <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
-  </span>
-  M<br/>
-  Note: The clear-button (IE10) was disabled on the date input element.
+    <h1>Date Value:</h1>
+    <span class="dateTimeValue">
+      <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
+      <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
+    </span>
+    M<br />
+    Note: The clear-button (IE10) was disabled on the date input element.
 
-  <h1>Reference Value:</h1>
-  <span class="referenceValue">
-    <select name="referenceValue" class="dropDownList" >
-      <option value="1" >Value 1</option>
-      <option value="2" >Value 2</option>
-    </select>
-  </span>
-  M
-  <h1>Auto Complete Reference Value:</h1>
-  (Issue in IE&lt;10: text will end up behind the dropdown until IE moves back to left. Can be solved with CSS-tricks, currently commented out)<br/>
-  <span class="autoCompleteReferenceValue">
-    <input name="autoCompleteReferenceValue" type="text" class="textField" />
-    <a href="#" class="dropDownButton" title="Show the value list">&nbsp;</a>
-  </span>
-  M
-  <h1>Multiline tooltip:</h1>
-   <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
-    <br/>
+    <h1>Reference Value:</h1>
+    <span class="referenceValue">
+      <select name="referenceValue" class="dropDownList">
+        <option value="1">Value 1</option>
+        <option value="2">Value 2</option>
+      </select>
+    </span>
+    M
+    <h1>Auto Complete Reference Value:</h1>
+    (Issue in IE&lt;10: text will end up behind the dropdown until IE moves back to left. Can be solved with CSS-tricks, currently commented out)<br />
+    <span class="autoCompleteReferenceValue">
+      <input name="autoCompleteReferenceValue" type="text" class="textField" />
+      <a href="#" class="dropDownButton" title="Show the value list">&nbsp;</a>
+    </span>
+    M
+    <h1>Multiline tooltip:</h1>
+    <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br />
+    <br />
     See Chosen (http://harvesthq.github.io/chosen/) for Reference Values and Enum Values
     <p>
-      Drop-Down-List without arrow: http://blogs.windows.com/windows_phone/b/wpdev/archive/2012/11/15/adapting-your-webkit-optimized-site-for-internet-explorer-10.aspx#step5      
+      Drop-Down-List without arrow: http://blogs.windows.com/windows_phone/b/wpdev/archive/2012/11/15/adapting-your-webkit-optimized-site-for-internet-explorer-10.aspx#step5
     </p>
   </form>
 </body>
