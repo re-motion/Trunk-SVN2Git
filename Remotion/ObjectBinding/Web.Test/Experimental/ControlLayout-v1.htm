@@ -179,7 +179,8 @@
       display: none;
     }
 
-    .bocTriStateStyled input[type=radio][value="null"]:checked + label
+    .bocTriStateStyled input[type=radio][value="null"]:checked + label,
+    .bocTriStateStyled input[type=radio][value="true"][required]:not(:checked) + label + input[type=radio][value="false"][required]:not(:checked) + label
     {
       background-image: url('../res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxNull.gif');
       display: inline;
@@ -197,13 +198,15 @@
       display: inline;
     }
 
-    .bocTriStateStyled input[type=radio]:focus + label
+    .bocTriStateStyled input[type=radio]:focus + label,
+    .bocTriStateStyled input[type=radio][required]:not(:checked):focus +label + input[type=radio][required]:not(:checked) + label
     {
       outline-style: dotted;
       outline-width: 1px;
     }
 
-    .bocTriStateStyled input[type=radio][value="null"]:checked + label:after
+    .bocTriStateStyled input[type=radio][value="null"]:checked + label:after,
+    .bocTriStateStyled input[type=radio][value="true"][required]:not(:checked) + label + input[type=radio][value="false"][required]:not(:checked) + label:after
     {
       content: "undefined";
     }
@@ -221,6 +224,7 @@
 </head>
 <body>
   <form action="/" method="post">
+  <input type="submit"/>
   <h1>Checkbox using image:</h1>
   <span class="bocCheckBoxStyled">
     <input id="bocCheckBoxStyled_Value" type="checkbox"/>
@@ -240,13 +244,11 @@
   M<br/>
 
   <h1>Tri-State with disabled NULL value using image:</h1>
-  (skipping the disabled value has to be done using javascript)<br/>
+  TODO: Solve display of validation error once the input controls are hidden<br />
   <span class="bocTriStateStyled">
-    <input id="bocTriStateStyles2_ValueNull" name="bocTriStateStyles2_Value" type="radio" value="null" title="undefined" checked="checked" />
-    <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'yes'"></label>
-    <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes" onchange="document.getElementById('bocTriStateStyles2_ValueNull').disabled=true" />
+    <input id="bocTriStateStyles2_ValueTrue" name="bocTriStateStyles2_Value" type="radio" value="true" title="yes" required="required" />
     <label for="bocTriStateStyles2_ValueFalse" aria-hidden="true" title="select 'no'"></label>
-    <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no" onchange="document.getElementById('bocTriStateStyles2_ValueNull').disabled=true" />
+    <input id="bocTriStateStyles2_ValueFalse" name="bocTriStateStyles2_Value" type="radio" value="false" title="no" required="required" />
     <label for="bocTriStateStyles2_ValueTrue" aria-hidden="true" title="select 'yes'"></label>
   </span>
   M
