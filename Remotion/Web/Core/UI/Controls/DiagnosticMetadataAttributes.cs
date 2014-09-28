@@ -11,7 +11,7 @@ namespace Remotion.Web.UI.Controls
     // TODO RM-6297: When would title be needed, i.e. title is usally an attribute
     public static readonly string DisplayName = "data-displayname";
     public static readonly string Title = "data-title";
-    public static readonly string HasAutoPostBack = "data-autopostback";
+    public static readonly string TriggersPostBack = "data-autopostback";
     public static readonly string TriggersNavigation = "data-triggers-nav";
     public static readonly string IsReadOnly = "data-is-readonly";
     public static readonly string IsBound = "data-is-bound";

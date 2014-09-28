@@ -54,9 +54,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
       // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
 
-      if (Scope[DiagnosticMetadataAttributes.HasAutoPostBack] != null)
+      if (Scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
       {
-        var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.HasAutoPostBack]);
+        var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
           return WaitFor.WxePostBack;
       }

@@ -520,7 +520,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       AssertDisplayNameAttribute (control, displayName);
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, isReadOnly.ToString().ToLower());
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "false");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
       control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundType);
       control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundProperty);
     }
@@ -536,7 +536,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       AssertDisplayNameAttribute (control, displayName);
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, isReadOnly.ToString().ToLower());
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundType, boundType);
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundProperty, boundProperty);
     }

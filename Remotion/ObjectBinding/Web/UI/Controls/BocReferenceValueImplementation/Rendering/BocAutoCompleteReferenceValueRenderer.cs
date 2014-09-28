@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       base.AddDiagnosticMetadataAttributes (renderingContext);
 
       var hasAutoPostBack = renderingContext.Control.TextBoxStyle.AutoPostBack.HasValue && renderingContext.Control.TextBoxStyle.AutoPostBack.Value;
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.HasAutoPostBack, hasAutoPostBack.ToString().ToLower());
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
     }
 
     protected override sealed void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)
