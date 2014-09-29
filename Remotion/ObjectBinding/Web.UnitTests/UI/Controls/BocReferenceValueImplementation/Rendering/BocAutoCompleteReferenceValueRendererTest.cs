@@ -455,30 +455,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       AssertReadOnlyContent (document);
     }
 
-    // Todo RM-6297: move everything except the auto-postback checks from the next two unit tests up to some BocRenderBaseTest.
     [Test]
-    public void RenderDiagnosticMetadataUnbound ()
-    {
-      var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
-          _resourceUrlFactory,
-          GlobalizationService,
-          RenderingFeatures.WithDiagnosticMetadata,
-          () => TextBox);
-
-      Control.Stub (stub => stub.IsReadOnly).Return (true);
-
-      Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
-      Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderer.Render (CreateRenderingContext());
-      Html.Writer.RenderEndTag();
-
-      var document = Html.GetResultDocument();
-      var control = document.DocumentElement.GetAssertedChildElement ("span", 0);
-      AssertDiagnosticMetadataOfUnboundControl (control, null, true, false);
-    }
-
-    [Test]
-    public void RenderDiagnosticMetadataBound ()
+    public void RenderDiagnosticMetadataAttributes()
     {
       var renderer = new TestableBocAutoCompleteReferenceValueRenderer (
           _resourceUrlFactory,
@@ -487,7 +465,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
           () => TextBox);
 
       TextBox.AutoPostBack = false;
-      Control.Stub (stub => stub.DisplayName).Return ("MyDisplayName");
       Control.Stub (stub => stub.Enabled).Return (true);
       SetUpClientScriptExpectations();
       SetValue();
@@ -495,10 +472,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.TextBoxStyle).Return (new SingleRowTextBoxStyle());
       Control.TextBoxStyle.AutoPostBack = true;
 
-      Control.DataSource = DataSource;
-      ((IBusinessObjectBoundControl) Control).Property =
-          ((IBusinessObject) BusinessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue");
-      
       Html.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "body");
       Html.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderer.Render (CreateRenderingContext());
@@ -506,49 +479,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
       var document = Html.GetResultDocument();
       var control = document.DocumentElement.GetAssertedChildElement ("span", 0);
-      AssertDiagnosticMetadataOfBoundControl (
-          control,
-          "MyDisplayName",
-          false,
-          "Remotion.ObjectBinding.Web.UnitTests.Domain.TypeWithReference, Remotion.ObjectBinding.Web.UnitTests",
-          "ReferenceValue",
-          true);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
-
-    private void AssertDiagnosticMetadataOfUnboundControl (XmlNode control, string displayName, bool isReadOnly, bool hasAutoPostBack)
-    {
-      AssertDisplayNameAttribute (control, displayName);
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, isReadOnly.ToString().ToLower());
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "false");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
-      control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundType);
-      control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundProperty);
-    }
-
-    private void AssertDiagnosticMetadataOfBoundControl (
-        XmlNode control,
-        string displayName,
-      bool isReadOnly,
-        string boundType,
-        string boundProperty,
-        bool hasAutoPostBack)
-    {
-      AssertDisplayNameAttribute (control, displayName);
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, isReadOnly.ToString().ToLower());
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundType, boundType);
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundProperty, boundProperty);
-    }
-
-    private void AssertDisplayNameAttribute (XmlNode control, string displayName)
-    {
-      if (displayName != null)
-        control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.DisplayName, displayName);
-      else
-        control.AssertNoAttribute (DiagnosticMetadataAttributes.DisplayName);
-    }
-
+    
     protected void AddStyle ()
     {
       Control.Height = s_height;

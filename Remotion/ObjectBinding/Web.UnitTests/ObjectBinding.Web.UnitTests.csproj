@@ -174,6 +174,7 @@
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocReferenceValueRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueMock.cs" />
     <Compile Include="UI\Controls\BocReferenceValueTest.cs" />
+    <Compile Include="UI\Controls\BocRendererBaseTest.cs" />
     <Compile Include="UI\Controls\BocSimpleColumnDefinitionTest.cs" />
     <Compile Include="UI\Controls\BocTest.cs" />
     <Compile Include="UI\Controls\BocTextBoxValueMock.cs" />
