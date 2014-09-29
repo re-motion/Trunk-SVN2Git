@@ -20,8 +20,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// See <see cref="Expect{TPageObject}(System.Func{Remotion.Web.Development.WebTesting.TestObjectContext,bool})"/>. It is implicitly assumed that
-    /// the actual page matches the expected page.
+    /// See <see cref="Expect{TPageObject}(System.Func{TPageObject,bool})"/>. It is implicitly assumed that the actual page matches the expected page.
     /// </summary>
     /// <typeparam name="TPageObject">Expected page type.</typeparam>
     /// <returns>A page object of the expected type.</returns>
@@ -31,19 +30,62 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Expects a page of type <typeparamref name="TPageObject"/>. A conditon given by <paramref name="pageIsShownCondition"/> may check whether the
+    /// Expects a page of type <typeparamref name="TPageObject"/>. A conditon given by <paramref name="pageIsShownAssertion"/> may check whether the
     /// actual page matches the expected page.
     /// </summary>
     /// <typeparam name="TPageObject">Expected page type.</typeparam>
-    /// <param name="pageIsShownCondition">Condition which determines whether the correct page is shown.</param>
+    /// <param name="pageIsShownAssertion">Condition which asserts whether the correct page is shown.</param>
     /// <returns>A page object of the expected type.</returns>
-    public TPageObject Expect<TPageObject> ([NotNull] Func<TestObjectContext, bool> pageIsShownCondition) where TPageObject : PageObject
+    public TPageObject Expect<TPageObject> ([NotNull] Func<TPageObject, bool> pageIsShownAssertion) where TPageObject : PageObject
     {
-      ArgumentUtility.CheckNotNull ("pageIsShownCondition", pageIsShownCondition);
+      ArgumentUtility.CheckNotNull ("pageIsShownAssertion", pageIsShownAssertion);
 
       var newContext = Context.CloneForNewPage();
-      pageIsShownCondition (newContext);
-      return (TPageObject) Activator.CreateInstance (typeof (TPageObject), new object[] { newContext });
+      return AssertPageIsShownAndReturnNewPageObject (newContext, pageIsShownAssertion);
+    }
+
+    /// <summary>
+    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new window with title <see cref="windowLocator"/>. A conditon given by
+    /// <paramref name="pageIsShownAssertion"/> may check whether the actual page matches the expected page.
+    /// </summary>
+    /// <typeparam name="TPageObject">Expected page type.</typeparam>
+    /// <param name="windowLocator">Title of the new window.</param>
+    /// <param name="pageIsShownAssertion">Condition which asserts whether the correct page is shown.</param>
+    /// <returns>A page object of the expected type.</returns>
+    public TPageObject ExpectOnNewWindow<TPageObject> (string windowLocator, [NotNull] Func<TPageObject, bool> pageIsShownAssertion)
+        where TPageObject : PageObject
+    {
+      ArgumentUtility.CheckNotNull ("pageIsShownAssertion", pageIsShownAssertion);
+
+      var newContext = Context.CloneForNewWindow (windowLocator);
+      return AssertPageIsShownAndReturnNewPageObject (newContext, pageIsShownAssertion);
+    }
+
+    /// <summary>
+    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new popup window with title <see cref="windowLocator"/>. A conditon given by
+    /// <paramref name="pageIsShownAssertion"/> may check whether the actual page matches the expected page.
+    /// </summary>
+    /// <typeparam name="TPageObject">Expected page type.</typeparam>
+    /// <param name="windowLocator">Title of the new popup window.</param>
+    /// <param name="pageIsShownAssertion">Condition which asserts whether the correct page is shown.</param>
+    /// <returns>A page object of the expected type.</returns>
+    public TPageObject ExpectOnNewPopupWindow<TPageObject> (string windowLocator, [NotNull] Func<TPageObject, bool> pageIsShownAssertion)
+        where TPageObject : PageObject
+    {
+      ArgumentUtility.CheckNotNull ("pageIsShownAssertion", pageIsShownAssertion);
+
+      var newContext = Context.CloneForNewPopupWindow (windowLocator);
+      return AssertPageIsShownAndReturnNewPageObject (newContext, pageIsShownAssertion);
+    }
+
+    private static TPageObject AssertPageIsShownAndReturnNewPageObject<TPageObject> (
+        TestObjectContext newContext,
+        Func<TPageObject, bool> pageIsShownAssertion)
+        where TPageObject : PageObject
+    {
+      var pageObject = (TPageObject) Activator.CreateInstance (typeof (TPageObject), new object[] { newContext });
+      pageIsShownAssertion (pageObject);
+      return pageObject;
     }
   }
 }

@@ -41,7 +41,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var url = _webTestHelper.Configuration.WebApplicationRoot + page;
       _webTestHelper.MainBrowserSession.Visit (url);
 
-      var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
+      var context = TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
   }

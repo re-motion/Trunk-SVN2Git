@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.MainBrowserSession.Visit (url);
       AcceptPossibleModalDialog();
 
-      var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
+      var context = TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
 
