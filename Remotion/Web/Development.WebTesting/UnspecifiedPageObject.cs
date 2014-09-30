@@ -45,7 +45,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new window with title <see cref="windowLocator"/>. A conditon given by
+    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new window with title <paramref name="windowLocator"/>. A conditon given by
     /// <paramref name="pageIsShownAssertion"/> may check whether the actual page matches the expected page.
     /// </summary>
     /// <typeparam name="TPageObject">Expected page type.</typeparam>
@@ -62,8 +62,8 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new popup window with title <see cref="windowLocator"/>. A conditon given by
-    /// <paramref name="pageIsShownAssertion"/> may check whether the actual page matches the expected page.
+    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new popup window with title <paramref name="windowLocator"/>. A conditon
+    /// given by <paramref name="pageIsShownAssertion"/> may check whether the actual page matches the expected page.
     /// </summary>
     /// <typeparam name="TPageObject">Expected page type.</typeparam>
     /// <param name="windowLocator">Title of the new popup window.</param>
