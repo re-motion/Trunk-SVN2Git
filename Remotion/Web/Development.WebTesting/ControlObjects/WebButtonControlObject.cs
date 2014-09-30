@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
@@ -9,17 +10,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class WebButtonControlObject : RemotionControlObject
   {
+    private readonly CommandControlObject _command;
+
     public WebButtonControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base(id, context)
+        : base (id, context)
     {
+      _command = new CommandControlObject (id, context);
     }
 
-    public UnspecifiedPageObject Click (IWaitingStrategy waitStrategy = null)
+    public UnspecifiedPageObject Click (IWaitingStrategy waitingStrategy = null)
     {
-      // Todo RM-6297: todo todo todo here
-      var actualWaitStrategy = GetActualWaitingStrategy (waitStrategy);
-      Scope.ClickAndWait (Context, actualWaitStrategy);
-      return UnspecifiedPage();
+      return _command.Click (waitingStrategy);
     }
   }
 }
