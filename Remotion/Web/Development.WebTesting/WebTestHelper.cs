@@ -39,6 +39,7 @@ namespace Remotion.Web.Development.WebTesting
     public WebTestHelper ()
     {
       _webTestConfiguration = (WebTestConfiguration) ConfigurationManager.GetSection ("webTestConfiguration");
+      Assertion.IsNotNull (_webTestConfiguration, "Configuration section 'webTestConfiguration' missing.");
     }
 
     /// <summary>
