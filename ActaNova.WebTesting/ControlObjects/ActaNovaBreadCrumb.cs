@@ -6,7 +6,7 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaBreadCrumb : ActaNovaControlObject, IClickable
+  public class ActaNovaBreadCrumb : ActaNovaMainFrameControlObject, IClickable
   {
     public ActaNovaBreadCrumb ([NotNull] TestObjectContext context)
         : base (context)
@@ -20,9 +20,8 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Click (IWaitingStrategy waitingStrategy = null)
     {
-      // TODO RM-62978: Use a different waiting strategy - wait for second increase of main wxePostSequenceCounter!
-
-      Scope.ClickAndWait (Context, waitingStrategy);
+      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
+      Scope.ClickAndWait (Context, actualWaitingStrategy);
       return UnspecifiedPage();
     }
   }

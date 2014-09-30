@@ -8,7 +8,7 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
   public static class WaitFor
   {
     public static readonly IWaitingStrategy Nothing = new NullWaitingStrategy();
-    public static readonly IWaitingStrategy WxePostBack = new WxePostBackWaitingStrategy();
+    public static readonly IWaitingStrategy WxePostBack = new WxePostBackWaitingStrategy(1);
     public static readonly IWaitingStrategy WxeReset = new WxeResetWaitingStrategy();
   }
 }

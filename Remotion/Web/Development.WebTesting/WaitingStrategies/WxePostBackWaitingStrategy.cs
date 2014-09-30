@@ -7,6 +7,13 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
   /// </summary>
   public class WxePostBackWaitingStrategy : WxeWaitingStrategyBase, IWaitingStrategy
   {
+    private readonly int _expectedWxePostBackSequenceNumberIncrease;
+
+    public WxePostBackWaitingStrategy (int expectedWxePostBackSequenceNumberIncrease)
+    {
+      _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
+    }
+
     public object OnBeforeActionPerformed (TestObjectContext context)
     {
       var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber (context);
@@ -16,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
     public void PerformWaitAfterActionPerformed (TestObjectContext context, object state)
     {
       var oldWxePostBackSequenceNumber = (int) state;
-      var expectedWxePostBackSequenceNumber = oldWxePostBackSequenceNumber + 1;
+      var expectedWxePostBackSequenceNumber = oldWxePostBackSequenceNumber + _expectedWxePostBackSequenceNumberIncrease;
 
       WaitForWxePostBackSequenceNumber (context, expectedWxePostBackSequenceNumber);
     }

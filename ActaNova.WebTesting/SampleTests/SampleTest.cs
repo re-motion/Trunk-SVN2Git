@@ -1,4 +1,5 @@
 ﻿using System;
+using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 
 namespace ActaNova.WebTesting.SampleTests
@@ -10,6 +11,8 @@ namespace ActaNova.WebTesting.SampleTests
     public void MySampleTest ()
     {
       var home = Start();
+
+      var newCitizenConcernPage = home.MainMenu.Select ("New", "Citizen concern").Expect<ActaNovaMainPageObject>();
     }
   }
 }

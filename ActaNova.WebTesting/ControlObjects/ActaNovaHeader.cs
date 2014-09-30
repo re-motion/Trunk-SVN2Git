@@ -7,7 +7,7 @@ using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaHeader : ActaNovaControlObject
+  public class ActaNovaHeader : ActaNovaMainFrameControlObject
   {
     public ActaNovaHeader ([NotNull] TestObjectContext context)
         : base (context)
