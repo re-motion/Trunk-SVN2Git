@@ -104,6 +104,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ReSharperAnnotations Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.25.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
