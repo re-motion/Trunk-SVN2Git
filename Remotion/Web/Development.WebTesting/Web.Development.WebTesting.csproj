@@ -135,6 +135,10 @@
     <Compile Include="FluentControlSelection\PerHtmlIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
+    <Compile Include="IHostingStrategy.cs" />
+    <Compile Include="IisExpressAppConfigConfiguredHostingStrategy.cs" />
+    <Compile Include="IisExpressHostingStrategy.cs" />
+    <Compile Include="NullHostingStrategy.cs" />
     <Compile Include="Utilities\RetryUntilTimeout.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />

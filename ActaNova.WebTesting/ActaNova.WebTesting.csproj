@@ -37,6 +37,9 @@
     <Reference Include="Coypu">
       <HintPath>..\packages\Coypu.2.5.1\lib\net40\Coypu.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -90,6 +93,9 @@
     <Compile Include="PageObjects\ActaNovaPopupWindow.cs" />
     <Compile Include="PageObjects\ActaNovaWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleTests\ActaNovaWebTestBase.cs" />
+    <Compile Include="SampleTests\SampleTest.cs" />
+    <Compile Include="SampleTests\SetUpFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Remotion\Web\Development.WebTesting\Web.Development.WebTesting.csproj">

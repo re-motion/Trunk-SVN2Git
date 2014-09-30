@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Threading;
+using JetBrains.Annotations;
 using log4net;
 using log4net.Config;
 using Remotion.Utilities;
@@ -14,11 +12,16 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class WebTestSetUpFixtureHelper
   {
-    // Todo RM-6297: IIS Express hosting should be optional.
-
     private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestSetUpFixtureHelper));
 
-    private IisExpressProcessWrapper _webApplicationHost;
+    private readonly IHostingStrategy _hostingStrategy;
+
+    public WebTestSetUpFixtureHelper([NotNull] IHostingStrategy hostingStrategy)
+    {
+      ArgumentUtility.CheckNotNull ("hostingStrategy", hostingStrategy);
+      
+      _hostingStrategy = hostingStrategy;
+    }
 
     /// <summary>
     /// One-time SetUp method for all web tests.
@@ -56,20 +59,12 @@ namespace Remotion.Web.Development.WebTesting
 
     private void HostWebApplication ()
     {
-      var webTestConfiguration = (WebTestConfiguration) ConfigurationManager.GetSection ("webTestConfiguration");
-      Assertion.IsNotNull(webTestConfiguration,"Configuration section 'webTestConfiguration' missing.");
-
-      var absoluteWebTestApplicationPath = Path.GetFullPath (webTestConfiguration.WebApplicationPath);
-      _webApplicationHost = new IisExpressProcessWrapper (absoluteWebTestApplicationPath, webTestConfiguration.WebApplicationPort);
-
-      var iisExpressThread = new Thread (() => _webApplicationHost.Run()) { IsBackground = true };
-      iisExpressThread.Start();
+      _hostingStrategy.DeployAndStartWebApplication();
     }
 
     private void UnhostWebApplication ()
     {
-      if (_webApplicationHost != null)
-        _webApplicationHost.Dispose();
+      _hostingStrategy.StopAndUndeployWebApplication();
     }
   }
 }

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
@@ -6,7 +7,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
   [SetUpFixture]
   public class SetUpFixture
   {
-     private readonly WebTestSetUpFixtureHelper _setUpFixtureHelper = new WebTestSetUpFixtureHelper();
+    private readonly WebTestSetUpFixtureHelper _setUpFixtureHelper = new WebTestSetUpFixtureHelper (
+        new IisExpressAppConfigConfiguredHostingStrategy());
 
     [SetUp]
     public void SetUp ()

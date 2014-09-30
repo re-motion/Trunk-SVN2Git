@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Absolute file path to the web application under test. The framework will automatically host an IIS Express instance for this web application.
     /// </summary>
-    [ConfigurationProperty ("webApplicationPath", IsRequired = true)]
+    [ConfigurationProperty ("webApplicationPath", IsRequired = false)]
     public string WebApplicationPath
     {
       get { return (string) this["webApplicationPath"]; }
@@ -59,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Port to be used for hosting the web application given by <see cref="WebApplicationPath"/>.
     /// </summary>
-    [ConfigurationProperty ("webApplicationPort", IsRequired = true)]
+    [ConfigurationProperty ("webApplicationPort", IsRequired = false)]
     //[IntegerValidator(MinValue = 49152, MaxValue = 65534)] // Todo RM-6297: does not work?
     public int WebApplicationPort
     {
