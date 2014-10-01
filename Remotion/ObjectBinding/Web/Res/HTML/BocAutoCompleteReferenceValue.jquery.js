@@ -465,9 +465,9 @@
                   }
                 };
 
-                var failureHandler = function() {
+                var failureHandler = function(termParameter) {
                     stopLoading();
-                    updateResult({ DisplayName: term, UniqueIdentifier: options.nullValue });
+                    updateResult({ DisplayName: termParameter, UniqueIdentifier: options.nullValue });
                 };
 
                 if (isInvalidated) {
@@ -535,7 +535,7 @@
                         select.selectItem(index);
                     }
                 };
-                var failureHandler = function () {
+                var failureHandler = function (termParameter) {
                     stopLoading();
                     closeDropDownListAndSetValue(state.previousValue);
                 };
@@ -676,8 +676,13 @@
                                           },
                                           function(err, context, methodName) {
                                             executingRequest = null;
-                                            failure(term);
-                                            options.handleRequestError(err);
+                                            var isTimedOut = err.get_timedOut();
+                                            var isAborting = !isTimedOut && err.get_statusCode() == -1;
+                                            if (!isAborting)
+                                            {
+                                              failure(term);
+                                              options.handleRequestError (err);
+                                            }
                                           });
             } else {
                 // if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
@@ -722,8 +727,13 @@
                                                   },
                                                   function (err, context, methodName) {
                                                     executingRequest = null;
-                                                    failure(term);
-                                                    options.handleRequestError(err);
+                                                    var isTimedOut = err.get_timedOut();
+                                                    var isAborting = !isTimedOut && err.get_statusCode() == -1;
+                                                    if (!isAborting)
+                                                    {
+                                                      failure(term);
+                                                      options.handleRequestError (err);
+                                                    }
                                                   });
         };
 
