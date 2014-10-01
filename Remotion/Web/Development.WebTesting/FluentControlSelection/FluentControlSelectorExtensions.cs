@@ -18,8 +18,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     public static TControlObject ByID<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string id)
-        where TControlSelector : IPerHtmlIDControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : IPerHtmlIDControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
@@ -34,8 +33,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     public static TControlObject ByIndex<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         int index)
-        where TControlSelector : IPerIndexControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : IPerIndexControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
 
@@ -49,8 +47,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     public static TControlObject ByLocalID<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string localID)
-        where TControlSelector : IPerLocalIDControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : IPerLocalIDControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
@@ -65,8 +62,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     public static TControlObject ByTitle<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string title)
-        where TControlSelector : IPerTitleControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : IPerTitleControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("title", title);
@@ -80,8 +76,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     /// </summary>
     public static TControlObject First<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector)
-        where TControlSelector : IFirstControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : IFirstControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
 
@@ -94,8 +89,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     /// </summary>
     public static TControlObject Single<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector)
-        where TControlSelector : ISingleControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : ISingleControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
 
@@ -106,7 +100,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     /// Extension method for selecting a control by display name (using the
     /// <see cref="PerDisplayNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
-    public static TControlObject DisplayName<TControlSelector, TControlObject> (
+    public static TControlObject ByDisplayName<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string displayName)
         where TControlSelector : IPerDisplayNameControlSelector<TControlObject>
@@ -122,11 +116,10 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     /// Extension method for selecting a control by command name (using the
     /// <see cref="PerCommandNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
-    public static TControlObject CommandName<TControlSelector, TControlObject> (
+    public static TControlObject ByCommandName<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string commandName)
-        where TControlSelector : IPerCommandNameControlSelector<TControlObject>
-        where TControlObject : ControlObject
+        where TControlSelector : IPerCommandNameControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);

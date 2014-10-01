@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors
@@ -12,10 +13,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// Control object selector base class for all business object controls.
   /// </summary>
   public abstract class BocSelectorBase<TControlObject>
-      : RemotionControlSelectorBase<TControlObject>
-          ,
-          IPerDisplayNameControlSelector<TControlObject>
-          ,
+      : RemotionControlSelectorBase<TControlObject>,
+          IPerDisplayNameControlSelector<TControlObject>,
           IPerDomainPropertyControlSelector<TControlObject>
       where TControlObject : BocControlObject
   {

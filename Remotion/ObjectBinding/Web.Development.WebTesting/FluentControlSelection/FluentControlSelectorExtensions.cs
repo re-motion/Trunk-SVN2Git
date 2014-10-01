@@ -14,22 +14,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelecti
   public static class FluentControlSelectorExtensionsForObjectBinding
   {
     /// <summary>
-    /// Extension method for selecting a control by display name (using the
-    /// <see cref="PerDisplayNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
-    /// </summary>
-    public static TControlObject ByDisplayName<TControlSelector, TControlObject> (
-        [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
-        [NotNull] string displayName)
-        where TControlSelector : IPerDisplayNameControlSelector<TControlObject>
-        where TControlObject : ControlObject
-    {
-      ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
-
-      return fluentControlSelector.GetControl (new PerDisplayNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (displayName));
-    }
-
-    /// <summary>
     /// Extension method for selecting a control by the domain property it represetns (using the
     /// <see cref="PerDomainPropertyControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
