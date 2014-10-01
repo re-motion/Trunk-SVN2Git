@@ -6,11 +6,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 {
   public partial class BocListUserControlTestOutput : UserControl
   {
-    public void SetInfoForBocList (BocList bocList)
+    public void SetInfoForNormalBocList (BocList bocList)
     {
-      SelectedIndicesLabel.Text =GetSelectedRowIndicesAsString(bocList);
+      SelectedIndicesLabel.Text = GetSelectedRowIndicesAsString (bocList);
       SelectedViewLabel.Text = bocList.SelectedView.ItemID;
       EditModeLabel.Text = bocList.IsRowEditModeActive.ToString();
+    }
+
+    public void SetInfoForNoItemIDsBocList (BocList bocList)
+    {
+      SelectedIndicesNoItemIDsLabel.Text = GetSelectedRowIndicesAsString (bocList);
+      SelectedViewNoItemIDsLabel.Text = bocList.SelectedView.ItemID;
+      EditModeNoItemIDsLabel.Text = bocList.IsRowEditModeActive.ToString();
     }
 
     private string GetSelectedRowIndicesAsString (BocList bocList)
