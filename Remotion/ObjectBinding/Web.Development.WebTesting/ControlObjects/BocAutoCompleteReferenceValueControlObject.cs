@@ -1,5 +1,4 @@
 ﻿using System;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
