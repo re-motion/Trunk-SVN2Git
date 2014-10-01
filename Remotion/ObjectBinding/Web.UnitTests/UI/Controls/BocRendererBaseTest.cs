@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
     }
 
     [Test]
-    public void TestDiagnosticMetadataRenderingForBoundControl ()
+    public void TestDiagnosticMetadataRenderingForBoundControl_DataSourceWithBusinessObject ()
     {
       var businessObject = TypeWithReference.Create ("MyBusinessObject");
       ((IBusinessObjectBoundControl) Control).Property =
@@ -132,6 +132,33 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       var control = document.DocumentElement;
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.DisplayName, "ReferenceValue");
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, "false");
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
+      control.AssertAttributeValueEquals (
+          DiagnosticMetadataAttributes.BoundType,
+          "Remotion.ObjectBinding.Web.UnitTests.Domain.TypeWithReference, Remotion.ObjectBinding.Web.UnitTests");
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundProperty, "ReferenceValue");
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRenderingForBoundControl_DataSourceWithoutBusinessObject ()
+    {
+      var businessObject = TypeWithReference.Create ("MyBusinessObject");
+      ((IBusinessObjectBoundControl) Control).Property =
+          ((IBusinessObject) businessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue");
+
+      var dataSource = new BindableObjectDataSource { Type = typeof (TypeWithReference) };
+      dataSource.Register (Control);
+      Control.DataSource = dataSource;
+
+      var renderingContext = CreateRenderingContext();
+      BocRendererBase = new TestableBocRendererBase (_resourceUrlFactory, GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+
+      BocRendererBase.AddDiagnosticMetadataAttributes (renderingContext);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+      renderingContext.Writer.RenderEndTag();
+
+      var document = Html.GetResultDocument();
+      var control = document.DocumentElement;
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
       control.AssertAttributeValueEquals (
           DiagnosticMetadataAttributes.BoundType,

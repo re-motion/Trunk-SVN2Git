@@ -93,14 +93,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsReadOnly, control.IsReadOnly.ToString().ToLower());
 
-      var isBound = control.Property != null && control.DataSource != null;
+      var isBound = IsBound (control);
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsBound, isBound.ToString().ToLower());
       
       if (isBound)
       {
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundType, control.DataSource.BusinessObjectClass.Identifier);
+        var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier (control);
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundType, businessObjectClassIdentifier);
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundProperty, control.Property.Identifier);
       }
+    }
+
+    private bool IsBound(TControl control)
+    {
+      return control.Property != null && control.DataSource != null
+             && (control.DataSource.BusinessObject != null || control.DataSource.BusinessObjectClass != null);
+    }
+
+    private string GetBusinessObjectClassIdentifier(TControl control)
+    {
+      // Try dynamic bound type first, afterwards static bound type. Order due to behavioral uniformity.
+
+      if (control.DataSource.BusinessObject != null)
+        return control.DataSource.BusinessObject.BusinessObjectClass.Identifier;
+      
+      if (control.DataSource.BusinessObjectClass != null)
+        return control.DataSource.BusinessObjectClass.Identifier;
+
+      throw new NotSupportedException ("Cannot determine BusinessObjectClass.Identifier for unbound control.");
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="IBocRenderableControl"/> when it is displayed in read-only mode. </summary>
