@@ -48,6 +48,7 @@ namespace Remotion.Web.UI.Controls
     private static readonly object s_clickEvent = new object();
 
     private IconInfo _icon;
+    private readonly IRenderingFeatures _renderingFeatures;
     private PostBackOptions _options;
 
     private bool _useLegacyButton;
@@ -63,6 +64,7 @@ namespace Remotion.Web.UI.Controls
     public WebButton ()
     {
       _icon = new IconInfo();
+      _renderingFeatures = SafeServiceLocator.Current.GetInstance<IRenderingFeatures>();
     }
 
     protected override void OnInit (EventArgs e)
@@ -203,12 +205,24 @@ namespace Remotion.Web.UI.Controls
       ControlStyle.CssClass = computedCssClass;
 
       base.AddAttributesToRender (writer);
+      AddDiagnosticMetadataAttributes (writer);
 
       ControlStyle.CssClass = cssClassBackup;
 
       OnClientClick = backUpOnClientClick;
 
       _options = null;
+    }
+
+    private void AddDiagnosticMetadataAttributes (HtmlTextWriter writer)
+    {
+      if (!_renderingFeatures.EnableDiagnosticMetadata)
+        return;
+
+      writer.AddAttribute (DiagnosticMetadataAttributes.DisplayName, Text);
+      
+      if(!string.IsNullOrEmpty(CommandName))
+        writer.AddAttribute (DiagnosticMetadataAttributes.CommandName, CommandName);
     }
 
     protected override PostBackOptions GetPostBackOptions ()
