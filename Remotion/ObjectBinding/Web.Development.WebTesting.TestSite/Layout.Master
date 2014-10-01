@@ -39,6 +39,7 @@
       </asp:UpdatePanel>
     </div>
     <div class="container">
+      <h3>Need to refresh?</h3>
       <asp:HyperLink ID="RefreshButton" runat="server">Click here to Refresh page</asp:HyperLink>
     </div>
   </form>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
@@ -7,9 +8,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
   {
     protected override void OnInit (EventArgs e)
     {
-      var requestUrl = Context.Request.Url;
-      var requestUrlWithoutQueryString = requestUrl.GetLeftPart (UriPartial.Path);
-      RefreshButton.NavigateUrl = string.Format ("{0}?Garbage={1}", requestUrlWithoutQueryString, Guid.NewGuid());
+      var requestUrl = Request.Url;
+
+      var query = HttpUtility.ParseQueryString(requestUrl.Query);
+      query["GuaranteeRefresh"] = Guid.NewGuid().ToString();
+
+      RefreshButton.NavigateUrl = requestUrl.GetLeftPart(UriPartial.Path) + "?" + query;
 
       base.OnInit (e);
     }
