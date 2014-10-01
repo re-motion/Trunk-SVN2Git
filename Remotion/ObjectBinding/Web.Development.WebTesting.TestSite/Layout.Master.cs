@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Web;
+using System.Web.UI;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
 {
-  public partial class Layout : System.Web.UI.MasterPage
+  public partial class Layout : MasterPage
   {
     protected override void OnInit (EventArgs e)
     {
@@ -25,21 +26,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       base.OnPreRender (e);
     }
 
-    public void SetBOUINormal (string uniqueIdentifier)
+    public TUserControl GetTestOutputControl<TUserControl>()
+      where TUserControl : UserControl
     {
-      BOUINormalLabel.Text = uniqueIdentifier;
-    }
-
-    public void SetBOUINoAutoPostBack (string uniqueIdentifier)
-    {
-      BOUINoAutoPostBackLabel.Text = uniqueIdentifier;
-    }
-
-    public void SetActionPerformed (string action, string parameter, string sender)
-    {
-      ActionPerformedLabel.Text = action;
-      ActionPerformedParameterLabel.Text = parameter;
-      ActionPerformedSenderLabel.Text = sender;
+      return (TUserControl) testOutput.Controls[1].Controls[0];
     }
   }
 }

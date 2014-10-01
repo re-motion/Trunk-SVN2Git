@@ -2,3 +2,6 @@
 <asp:Content ContentPlaceHolderID="body" runat="server">
   <asp:PlaceHolder ID="ControlPlaceHolder" runat="server" />
 </asp:Content>
+<asp:Content ContentPlaceHolderID="testOutput" runat="server">
+  <asp:PlaceHolder ID="TestOutputControlPlaceHolder" runat="server" />
+</asp:Content>

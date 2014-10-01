@@ -37,6 +37,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
         throw new InvalidOperationException (string.Format ("IDataEditControl '{0}' could not be loaded.", CurrentFunction.UserControl));
       _dataEditControl.ID = "DataEditControl";
       ControlPlaceHolder.Controls.Add ((Control) _dataEditControl);
+
+      var loadTestOutputControl = LoadControl (CurrentFunction.UserControl.Replace (".ascx", "TestOutput.ascx"));
+      TestOutputControlPlaceHolder.Controls.Add (loadTestOutputControl);
     }
 
     private void PopulateDataSources ()

@@ -7,72 +7,54 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite {
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
     
     
-    public partial class Layout {
+    public partial class BocAutoCompleteReferenceValueUserControlTestOutput {
         
         /// <summary>
-        /// head control.
+        /// BOUINormalLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder head;
+        protected global::System.Web.UI.WebControls.Label BOUINormalLabel;
         
         /// <summary>
-        /// form1 control.
+        /// BOUINoAutoPostBackLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Label BOUINoAutoPostBackLabel;
         
         /// <summary>
-        /// ScriptManager control.
+        /// ActionPerformedSenderLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.ScriptManager ScriptManager;
+        protected global::System.Web.UI.WebControls.Label ActionPerformedSenderLabel;
         
         /// <summary>
-        /// body control.
+        /// ActionPerformedLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder body;
+        protected global::System.Web.UI.WebControls.Label ActionPerformedLabel;
         
         /// <summary>
-        /// MainUpdatePanel control.
+        /// ActionPerformedParameterLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel MainUpdatePanel;
-        
-        /// <summary>
-        /// testOutput control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder testOutput;
-        
-        /// <summary>
-        /// RefreshButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink RefreshButton;
+        protected global::System.Web.UI.WebControls.Label ActionPerformedParameterLabel;
     }
 }

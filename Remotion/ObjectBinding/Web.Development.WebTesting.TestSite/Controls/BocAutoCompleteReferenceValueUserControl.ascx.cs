@@ -35,21 +35,23 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     {
       base.OnLoad (e);
 
-      var masterPage = ((Layout) Page.Master);
-      masterPage.SetBOUINormal (PartnerField_Normal.BusinessObjectUniqueIdentifier);
-      masterPage.SetBOUINoAutoPostBack (PartnerField_NoAutoPostBack.BusinessObjectUniqueIdentifier);
+      TestOutput.SetBOUINormal (PartnerField_Normal.BusinessObjectUniqueIdentifier);
+      TestOutput.SetBOUINoAutoPostBack (PartnerField_NoAutoPostBack.BusinessObjectUniqueIdentifier);
     }
 
     private void PartnerField_CommandClick (object sender, BocCommandClickEventArgs e)
     {
-      var masterPage = ((Layout) Page.Master);
-      masterPage.SetActionPerformed ("CommandClick", "", e.Command.OwnerControl.ID);
+      TestOutput.SetActionPerformed ("CommandClick", "", e.Command.OwnerControl.ID);
     }
 
     private void MenuItemClickHandler (object sender, WebMenuItemClickEventArgs e)
     {
-      var masterPage = ((Layout) Page.Master);
-      masterPage.SetActionPerformed ("MenuItemClick", e.Item.Text, e.Command.OwnerControl.ID);
+      TestOutput.SetActionPerformed ("MenuItemClick", e.Item.Text, e.Command.OwnerControl.ID);
+    }
+
+    private BocAutoCompleteReferenceValueUserControlTestOutput TestOutput
+    {
+      get { return ((Layout) Page.Master).GetTestOutputControl<BocAutoCompleteReferenceValueUserControlTestOutput>(); }
     }
   }
 }

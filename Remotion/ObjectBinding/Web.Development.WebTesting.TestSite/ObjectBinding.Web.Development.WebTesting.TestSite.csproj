@@ -65,9 +65,13 @@
       <Link>remotion.snk</Link>
     </Content>
     <Content Include="Controls\AutoCompleteService.asmx" />
+    <Content Include="Controls\BocListUserControlTestOutput.ascx" />
+    <Content Include="Controls\BocAutoCompleteReferenceValueUserControlTestOutput.ascx" />
+    <Content Include="Controls\BocListUserControl.ascx" />
     <Content Include="Controls\BocAutoCompleteReferenceValueUserControl.ascx" />
     <Content Include="Controls\IconService.asmx" />
     <Content Include="ControlTestForm.aspx" />
+    <Content Include="Images\SampleIcon.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Job.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Person.gif" />
     <Content Include="Layout.Master" />
@@ -91,6 +95,27 @@
       <DependentUpon>AutoCompleteService.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\BocListUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocListUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocListUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocListUserControlTestOutput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocAutoCompleteReferenceValueUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocAutoCompleteReferenceValueUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocAutoCompleteReferenceValueUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocAutoCompleteReferenceValueUserControlTestOutput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocListUserControl.ascx.cs">
+      <DependentUpon>BocListUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocListUserControl.ascx.designer.cs">
+      <DependentUpon>BocListUserControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\BocAutoCompleteReferenceValueUserControl.ascx.cs">
       <DependentUpon>BocAutoCompleteReferenceValueUserControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -102,6 +127,7 @@
       <DependentUpon>IconService.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TestBocListWithRowMenuItems.cs" />
     <Compile Include="ControlTestForm.aspx.cs">
       <DependentUpon>ControlTestForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
