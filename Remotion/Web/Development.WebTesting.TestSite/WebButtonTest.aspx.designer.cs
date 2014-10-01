@@ -38,5 +38,14 @@ namespace Remotion.Web.Development.WebTesting.TestSite {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.Web.UI.Controls.WebButton MyWebButton2Async;
+        
+        /// <summary>
+        /// MyWebButton3Href control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton MyWebButton3Href;
     }
 }

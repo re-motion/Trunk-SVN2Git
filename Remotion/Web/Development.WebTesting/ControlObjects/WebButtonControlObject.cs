@@ -10,17 +10,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class WebButtonControlObject : RemotionControlObject
   {
-    private readonly CommandControlObject _command;
-
     public WebButtonControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _command = new CommandControlObject (id, context);
     }
 
     public UnspecifiedPageObject Click (IWaitingStrategy waitingStrategy = null)
     {
-      return _command.Click (waitingStrategy);
+      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
+      Scope.ClickAndWait (Context, actualWaitingStrategy);
+      return UnspecifiedPage();
     }
   }
 }

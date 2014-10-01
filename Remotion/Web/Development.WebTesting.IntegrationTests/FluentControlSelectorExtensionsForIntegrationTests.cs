@@ -29,5 +29,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       return new FluentControlSelector<TabStripSelector, TabStripControlObject> (host, new TabStripSelector());
     }
+
+    public static FluentControlSelector<WebButtonSelector, WebButtonControlObject> GetWebButton (this IControlHost host)
+    {
+      return new FluentControlSelector<WebButtonSelector, WebButtonControlObject> (host, new WebButtonSelector());
+    }
   }
 }
