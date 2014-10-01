@@ -640,7 +640,7 @@
             // re-motion: if an async postback is in progress, updating the DOM results in an exception
             var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
             if (pageRequestManager.get_isInAsyncPostBack()) {
-                failure(term);
+                stopLoading();
                 return;
             }
 
@@ -700,8 +700,7 @@
 
             // re-motion: if an async postback is in progress, updating the DOM results in an exception
             var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
-            if (pageRequestManager.get_isInAsyncPostBack())
-            {
+            if (pageRequestManager.get_isInAsyncPostBack()) {
               failure(term);
               return;
             }
