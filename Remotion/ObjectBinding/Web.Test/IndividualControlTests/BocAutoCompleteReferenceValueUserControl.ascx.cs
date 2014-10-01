@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Globalization;
@@ -192,6 +193,14 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
   {
     base.OnPreRender (e);
 
+    var delay = ((TestFunction)((IWxePage)Page).CurrentFunction).Delay;
+    if (delay.HasValue)
+    {
+      var args = (delay.Value / 2).ToString();
+      PartnerField.Args = args;
+      UnboundPartnerField.Args = args;
+    }
+
     SetDebugLabel (PartnerField, PartnerFieldValueLabel);
     SetDebugLabel (ReadOnlyPartnerField, ReadOnlyPartnerFieldValueLabel);
     SetDebugLabel (UnboundPartnerField, UnboundPartnerFieldValueLabel);
@@ -208,6 +217,13 @@ public class BocAutoCompleteReferenceValueUserControl : BaseUserControl
       label.Text = control.Value.ToString();
     else
       label.Text = "not set";
+  }
+
+  protected void Control_SelectionChanged (object sender, EventArgs e)
+  {
+    ((SmartPage) Page).PrepareValidation();
+    if (!((IValidatableControl) sender).Validate())
+      ((ISmartNavigablePage) Page).SetFocus (((IFocusableControl)sender));
   }
 
   private void PartnerTestSetNullButton_Click(object sender, EventArgs e)

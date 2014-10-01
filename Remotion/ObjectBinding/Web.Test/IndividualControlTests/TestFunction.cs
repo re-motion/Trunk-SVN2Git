@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Threading;
 using Remotion.ObjectBinding.Sample;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
@@ -48,12 +49,34 @@ public class TestFunction: WxeFunction
     }
   }
 
+  [WxeParameter (2, false, WxeParameterDirection.In)]
+  public int? Delay
+  {
+    get 
+    {
+      return (int?) Variables["Delay"]; 
+    }
+    set
+    {
+      Variables["Delay"] = value; 
+    }
+  }
+
   public Person Person
   {
     get
     {
       return _person;
     }
+  }
+
+  public override void Execute (WxeContext context)
+  {
+    var delay = Delay;
+    if (delay.HasValue)
+      Thread.Sleep (delay.Value);
+
+    base.Execute (context);
   }
 
   // steps

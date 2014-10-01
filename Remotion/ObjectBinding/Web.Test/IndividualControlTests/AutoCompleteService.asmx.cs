@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -158,7 +159,7 @@ namespace OBWTest.IndividualControlTests
 
     #endregion
 
-    [WebMethod]
+    [WebMethod (EnableSession = true)]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] Search (
         string searchString,
@@ -170,6 +171,12 @@ namespace OBWTest.IndividualControlTests
     {
       if (searchString.Equals ("throw", StringComparison.OrdinalIgnoreCase))
         throw new Exception ("Test Exception");
+
+      if (!string.IsNullOrEmpty (args))
+      {
+        var delay = int.Parse (args);
+        Thread.Sleep (delay);
+      }
 
       List<BusinessObjectWithIdentityProxy> persons = new List<BusinessObjectWithIdentityProxy>();
       foreach (Person person in XmlReflectionBusinessObjectStorageProvider.Current.GetObjects (typeof (Person)))
@@ -199,6 +206,12 @@ namespace OBWTest.IndividualControlTests
     {
       if (searchString.Equals ("exactthrow", StringComparison.OrdinalIgnoreCase))
         throw new Exception ("Test Exception");
+
+      if (!string.IsNullOrEmpty (args))
+      {
+        var delay = int.Parse (args);
+        Thread.Sleep (delay);
+      }
 
       var result = Search (searchString, 2, businessObjectClass, businessObjectProperty, businessObject, args);
       if (result.Length == 0)
