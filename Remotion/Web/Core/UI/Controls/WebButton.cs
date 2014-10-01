@@ -223,6 +223,8 @@ namespace Remotion.Web.UI.Controls
       
       if(!string.IsNullOrEmpty(CommandName))
         writer.AddAttribute (DiagnosticMetadataAttributes.CommandName, CommandName);
+
+      writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, true.ToString().ToLower());
     }
 
     protected override PostBackOptions GetPostBackOptions ()
