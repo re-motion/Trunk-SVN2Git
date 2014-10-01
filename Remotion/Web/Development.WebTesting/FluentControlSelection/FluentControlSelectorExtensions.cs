@@ -101,5 +101,37 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 
       return fluentControlSelector.GetControl (new SingleControlSelectionCommandBuilder<TControlSelector, TControlObject>());
     }
+
+    /// <summary>
+    /// Extension method for selecting a control by display name (using the
+    /// <see cref="PerDisplayNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// </summary>
+    public static TControlObject DisplayName<TControlSelector, TControlObject> (
+        [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
+        [NotNull] string displayName)
+        where TControlSelector : IPerDisplayNameControlSelector<TControlObject>
+        where TControlObject : ControlObject
+    {
+      ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
+
+      return fluentControlSelector.GetControl (new PerDisplayNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (displayName));
+    }
+
+    /// <summary>
+    /// Extension method for selecting a control by command name (using the
+    /// <see cref="PerCommandNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// </summary>
+    public static TControlObject CommandName<TControlSelector, TControlObject> (
+        [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
+        [NotNull] string commandName)
+        where TControlSelector : IPerCommandNameControlSelector<TControlObject>
+        where TControlObject : ControlObject
+    {
+      ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);
+
+      return fluentControlSelector.GetControl (new PerCommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (commandName));
+    }
   }
 }
