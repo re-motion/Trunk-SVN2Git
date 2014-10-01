@@ -38,6 +38,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 
       Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.DisplayName + "=\"" + webButton.Text + "\""));
       Assert.That (renderedText, Is.Not.StringContaining (DiagnosticMetadataAttributes.CommandName));
+      Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"true\""));
     }
 
     [Test]
@@ -48,6 +49,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
       var renderedText = RenderControl (webButton);
 
       Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.CommandName + "=\"MyCommand\""));
+      Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"true\""));
     }
 
     private string RenderControl (Control control)
