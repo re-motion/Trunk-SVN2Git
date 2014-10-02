@@ -84,7 +84,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestWebButton ()
+    public void TestClick ()
     {
       var home = Start ("WebButtonTest.wxe");
 

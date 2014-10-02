@@ -106,7 +106,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestTabStrip ()
+    public void TestSwitchTo ()
     {
       var home = Start ("TabbedMultiViewTest.wxe");
 
