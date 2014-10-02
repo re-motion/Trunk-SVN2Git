@@ -45,12 +45,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the waiting strategy to be used.
     /// </summary>
-    /// <param name="waitingStrategy">User-provided waiting strategy.</param>
+    /// <param name="userDefinedWaitingStrategy">User-provided waiting strategy.</param>
     /// <returns>Waiting strategy to be used.</returns>
-    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy waitingStrategy)
+    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy userDefinedWaitingStrategy)
     {
-      if (waitingStrategy != null)
-        return waitingStrategy;
+      if (userDefinedWaitingStrategy != null)
+        return userDefinedWaitingStrategy;
 
       // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
 
