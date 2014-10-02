@@ -3,6 +3,7 @@ using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting.PageObjects;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
@@ -24,8 +25,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocAutoComplete = home.GetAutoComplete().ByIndex (1);
-      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
+      var bocAutoComplete = home.GetAutoComplete().ByIndex (2);
+      Assert.That (bocAutoComplete.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal_AlternativeRendering"));
     }
 
     [Test]
@@ -125,24 +126,24 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       bocAutoComplete.FillWith ("Invalid");
-      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.Empty);
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.Empty);
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       bocAutoComplete.FillWith ("B, A");
-      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.EqualTo (baLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (baLabel));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_NoAutoPostBack");
       bocAutoComplete.FillWith ("B, A"); // no auto post back
-      Assert.That (home.Scope.FindId ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       bocAutoComplete.FillWith ("B, A", WaitFor.Nothing); // same value, does not trigger post back
-      Assert.That (home.Scope.FindId ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       bocAutoComplete.FillWith ("D, A");
-      Assert.That (home.Scope.FindId ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
-      Assert.That (home.Scope.FindId ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (baLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (baLabel));
     }
 
     [Test]
@@ -153,9 +154,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       bocAutoComplete.ExecuteCommand();
 
-      Assert.That (home.Scope.FindId ("ActionPerformedLabel").Text, Is.EqualTo ("CommandClick"));
-      Assert.That (home.Scope.FindId ("ActionPerformedParameterLabel").Text, Is.Empty);
-      Assert.That (home.Scope.FindId ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal"));
+      Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal"));
+      Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("CommandClick"));
+      Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.Empty);
+    }
+
+    private RemotionPageObject Start()
+    {
+      return Start ("BocAutoCompleteReferenceValue");
     }
   }
 }

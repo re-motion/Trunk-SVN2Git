@@ -39,9 +39,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.OnFixtureTearDown();
     }
 
-    protected RemotionPageObject Start ()
+    protected RemotionPageObject Start (string userControl)
     {
-      var url = _webTestHelper.Configuration.WebApplicationRoot;
+      var userControlUrl = string.Format ("Controls/{0}UserControl.ascx", userControl);
+
+      var url = string.Format ("{0}?UserControl={1}", _webTestHelper.Configuration.WebApplicationRoot, userControlUrl);
       _webTestHelper.MainBrowserSession.Visit (url);
       AcceptPossibleModalDialog();
 
