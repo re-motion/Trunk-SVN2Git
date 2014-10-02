@@ -34,5 +34,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       return new FluentControlSelector<WebButtonSelector, WebButtonControlObject> (host, new WebButtonSelector());
     }
+
+    public static FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> GetHtmlAnchor (this IControlHost host)
+    {
+      return new FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> (host, new HtmlAnchorSelector());
+    }
   }
 }
