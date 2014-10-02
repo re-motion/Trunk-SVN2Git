@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 
       var view1noItemId = new BocListView { Title = "View 1" };
       var view2noItemId = new BocListView { Title = "View 2" };
-      JobList_NoItemIDs.AvailableViews.AddRange (view1, view2);
+      JobList_NoItemIDs.AvailableViews.AddRange (view1noItemId, view2noItemId);
 
       JobList_Normal.MenuItemClick += MenuItemClickHandler;
       JobList_ReadOnly.MenuItemClick += MenuItemClickHandler;
