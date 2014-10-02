@@ -146,8 +146,11 @@ BocAutoCompleteReferenceValue.Initialize = function (
         if (item.DisplayName.toLowerCase() == _itemBackUp.DisplayName.toLowerCase()
             && (item.UniqueIdentifier == _itemBackUp.UniqueIdentifier || item.UniqueIdentifier == nullValueString))
         {
+          if (item.UniqueIdentifier == nullValueString)
+            textbox.val(_itemBackUp.DisplayName); // keep the latest user input to preservce current casing
+          else
+            textbox.val(actualItem.DisplayName); // fall back to the last confirmed user input to preserve correct casing
           actualItem = _itemBackUp;
-          textbox.val (actualItem.DisplayName);
         }
 
         var hasChanged = _itemBackUp != actualItem;
@@ -238,10 +241,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
   function BackupItemData(uniqueIdentifier, displayName)
   {
-    if (uniqueIdentifier == nullValueString)
-      _itemBackUp = { UniqueIdentifier : nullValueString, DisplayName: '' };
-    else
-      _itemBackUp = { UniqueIdentifier : uniqueIdentifier, DisplayName : displayName };
+    _itemBackUp = { UniqueIdentifier : uniqueIdentifier, DisplayName : displayName };
   }
 
   function GetDropDownSearchStringForValidInput(searchString)
