@@ -98,6 +98,7 @@
     <Compile Include="ControlObjects\HtmlControlObject.cs" />
     <Compile Include="ControlObjects\IClickable.cs" />
     <Compile Include="ControlObjects\ITabStrip.cs" />
+    <Compile Include="ControlObjects\ListMenuControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlAnchorSelector.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />
