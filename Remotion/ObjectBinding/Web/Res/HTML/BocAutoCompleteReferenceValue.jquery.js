@@ -436,6 +436,10 @@
             closeDropDownListAndSetValue(term);
 
             if (state.previousValue == term && selectedItem != null) {
+
+                if (confirmValue)
+                  $input.val(selectedItem.result);
+
                 updateResult(selectedItem.data);
                 return;
             }
