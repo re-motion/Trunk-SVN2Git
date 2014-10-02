@@ -71,6 +71,7 @@
     <Compile Include="IntegrationTest.cs" />
     <Compile Include="TabbedMultiViewControlObjectTest.cs" />
     <Compile Include="TabStripControlObjectTest.cs" />
+    <Compile Include="HtmlAnchorControlObjectTest.cs" />
     <Compile Include="WebButtonControlObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>

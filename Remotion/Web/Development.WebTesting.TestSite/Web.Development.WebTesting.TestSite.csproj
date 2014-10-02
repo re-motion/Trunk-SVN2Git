@@ -73,6 +73,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="HtmlAnchorTest.aspx" />
     <Content Include="WebButtonTest.aspx" />
     <Content Include="TabStripTest.aspx" />
     <Content Include="TabbedMultiViewTest.aspx" />
@@ -93,6 +94,14 @@
     <Compile Include="Layout.Master.designer.cs">
       <DependentUpon>Layout.Master</DependentUpon>
     </Compile>
+    <Compile Include="HtmlAnchorTest.aspx.cs">
+      <DependentUpon>HtmlAnchorTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="HtmlAnchorTest.aspx.designer.cs">
+      <DependentUpon>HtmlAnchorTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="HtmlAnchorTestFunction.cs" />
     <Compile Include="WebButtonTestFunction.cs" />
     <Compile Include="WebButtonTest.aspx.cs">
       <DependentUpon>WebButtonTest.aspx</DependentUpon>

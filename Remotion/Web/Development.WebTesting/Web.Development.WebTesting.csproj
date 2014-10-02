@@ -94,8 +94,12 @@
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
+    <Compile Include="ControlObjects\HtmlAnchorControlObject.cs" />
+    <Compile Include="ControlObjects\HtmlControlObject.cs" />
     <Compile Include="ControlObjects\IClickable.cs" />
     <Compile Include="ControlObjects\ITabStrip.cs" />
+    <Compile Include="ControlObjects\Selectors\HtmlAnchorSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\HtmlControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\WebButtonSelector.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />

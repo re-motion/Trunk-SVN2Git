@@ -21,6 +21,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 
+  <add id="HtmlAnchorTest" type="Remotion.Web.Development.WebTesting.TestSite::HtmlAnchorTestFunction" resource="~/HtmlAnchorTest.wxe"/>
   <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe"/>
   <add id="TabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::TabStripTestFunction" resource="~/TabStripTest.wxe"/>
   <add id="WebButtonTest" type="Remotion.Web.Development.WebTesting.TestSite::WebButtonTestFunction" resource="~/WebButtonTest.wxe"/>
