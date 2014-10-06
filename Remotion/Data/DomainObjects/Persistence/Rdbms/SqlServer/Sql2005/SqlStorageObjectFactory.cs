@@ -328,7 +328,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new PropertySerializer (CreateColumnSerializer());
     }
 
-    public virtual ColumnSerializer CreateColumnSerializer ()
+    public virtual IColumnSerializer CreateColumnSerializer ()
     {
       return new ColumnSerializer();
     }
