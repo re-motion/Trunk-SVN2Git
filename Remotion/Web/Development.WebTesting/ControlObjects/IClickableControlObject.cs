@@ -6,7 +6,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Interface for all <see cref="ControlObject"/> implementations representing something clickable.
   /// </summary>
-  public interface IClickable
+  public interface IClickableControlObject
   {
     /// <summary>
     /// Clicks the link, using a given <paramref name="waitingStrategy"/> to wait for the triggered action's results.

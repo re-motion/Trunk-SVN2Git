@@ -10,7 +10,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a <see cref="Command"/>.
   /// </summary>
-  public class CommandControlObject : RemotionControlObject, IClickable
+  public class CommandControlObject : RemotionControlObject, IClickableControlObject
   {
     public CommandControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)

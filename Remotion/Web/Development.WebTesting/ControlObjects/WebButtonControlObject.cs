@@ -8,7 +8,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="WebButton"/>.
   /// </summary>
-  public class WebButtonControlObject : RemotionControlObject
+  public class WebButtonControlObject : RemotionControlObject, IClickableControlObject
   {
     public WebButtonControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)

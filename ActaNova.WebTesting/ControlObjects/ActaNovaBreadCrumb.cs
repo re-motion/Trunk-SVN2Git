@@ -6,7 +6,7 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaBreadCrumb : ActaNovaMainFrameControlObject, IClickable
+  public class ActaNovaBreadCrumb : ActaNovaMainFrameControlObject, IClickableControlObject
   {
     public ActaNovaBreadCrumb ([NotNull] TestObjectContext context)
         : base (context)

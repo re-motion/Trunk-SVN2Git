@@ -96,8 +96,8 @@
     <Compile Include="BrowserFactory.cs" />
     <Compile Include="ControlObjects\HtmlAnchorControlObject.cs" />
     <Compile Include="ControlObjects\HtmlControlObject.cs" />
-    <Compile Include="ControlObjects\IClickable.cs" />
-    <Compile Include="ControlObjects\ITabStrip.cs" />
+    <Compile Include="ControlObjects\IClickableControlObject.cs" />
+    <Compile Include="ControlObjects\ITabStripControlObject.cs" />
     <Compile Include="ControlObjects\ListMenuControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlAnchorSelector.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlControlSelectorBase.cs" />

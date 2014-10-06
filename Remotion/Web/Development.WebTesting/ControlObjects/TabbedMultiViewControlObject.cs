@@ -9,7 +9,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="TabbedMultiView"/>.
   /// </summary>
-  public class TabbedMultiViewControlObject : RemotionControlObject, IControlHost, ITabStrip
+  public class TabbedMultiViewControlObject : RemotionControlObject, IControlHost, ITabStripControlObject
   {
     public TabbedMultiViewControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)

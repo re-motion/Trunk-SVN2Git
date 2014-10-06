@@ -5,7 +5,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Interface for all <see cref="ControlObject"/> implementations representing a tab strip.
   /// </summary>
-  public interface ITabStrip
+  public interface ITabStripControlObject
   {
     /// <summary>
     /// Switch to another tab using the tab's local ID.
