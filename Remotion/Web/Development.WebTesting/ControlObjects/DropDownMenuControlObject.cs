@@ -1,5 +1,7 @@
 ﻿using System;
+using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -7,58 +9,53 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="DropDownMenu"/>.
   /// </summary>
-  public class DropDownMenuControlObject : RemotionControlObject
+  public class DropDownMenuControlObject : RemotionControlObject, IClickableItemsControlObject
   {
     public DropDownMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }
 
-    ///// <summary>
-    ///// Returns the current label of the DropDownMenu.
-    ///// </summary>
-    //public string GetLabel ()
-    //{
-    //  return Scope.FindCss ("a.DropDownMenuLabel").Text;
-    //}
-    ///// <summary>
-    ///// Todo RM-6297: Docs
-    ///// </summary>
-    ///// <param name="label"></param>
-    ///// <param name="waitStrategy"></param>
-    ///// <returns></returns>
-    //public UnspecifiedPageObject SelectMenuItem (string label, IWaitingStrategy waitStrategy)
-    //{
-    //  var dropDownMenuButton = Scope.FindCss ("a.DropDownMenuButton");
-    //  dropDownMenuButton.Click();
+    public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
+    {
+      var dropDownMenuScope = GetDropDownMenuScope();
+      throw new NotImplementedException();
+    }
 
-    //  var dropDownMenuOptions = Context.RootElement.FindCss ("ul.DropDownMenuOptions");
-    //  var dropDownMenuItem = dropDownMenuOptions.FindXPath (string.Format ("./li/a[contains(span, '{0}')]", label));
+    public UnspecifiedPageObject ClickItem (int index, IWaitingStrategy waitingStrategy = null)
+    {
+      var dropDownMenuScope = GetDropDownMenuScope();
+      throw new NotImplementedException();
+    }
 
-    //  // Todo RM-6297: Implementation
-    //  //dropDownMenuItem.ClickUsingWaitStrategy (Context, waitStrategy);
+    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IWaitingStrategy waitingStrategy = null)
+    {
+      var dropDownMenuScope = GetDropDownMenuScope();
+      throw new NotImplementedException();
+    }
 
-    //  return UnspecifiedPage();
-    //}
+    public UnspecifiedPageObject ClickItemByLabel (string label, IWaitingStrategy waitingStrategy = null)
+    {
+      var dropDownMenuScope = GetDropDownMenuScope();
+      throw new NotImplementedException();
+    }
 
-    ///// <summary>
-    ///// Todo RM-6297: Docs
-    ///// </summary>
-    ///// <param name="index"></param>
-    ///// <param name="waitStrategy"></param>
-    ///// <returns></returns>
-    //public UnspecifiedPageObject SelectMenuItem (int index, IWaitingStrategy waitStrategy)
-    //{
-    //  var dropDownMenuButton = Scope.FindCss ("a.DropDownMenuButton");
-    //  dropDownMenuButton.Click();
+    private ElementScope GetDropDownMenuScope ()
+    {
+      var dropDownMenuButtonScope = Scope.FindCss ("a.DropDownMenuButton");
+      dropDownMenuButtonScope.Click();
 
-    //  var dropDownMenuOptions = Context.RootElement.FindCss ("ul.DropDownMenuOptions");
-    //  var dropDownMenuItem = dropDownMenuOptions.FindXPath (string.Format ("./li/a[{0}]", index));
+      var dropDownMenuOptionsScope = Context.RootElement.FindCss ("ul.DropDownMenuOptions");
+      return dropDownMenuOptionsScope;
+    }
 
-    //  // Todo RM-6297: Implementation
-    //  //dropDownMenuItem.ClickUsingWaitStrategy (Context, waitStrategy);
+    private UnspecifiedPageObject ClickItem (ElementScope item, IWaitingStrategy waitingStrategy = null)
+    {
+      var anchorScope = item.FindCss ("a");
 
-    //  return UnspecifiedPage();
-    //}
+      var actualWaitingStrategy = GetActualWaitingStrategy (anchorScope, waitingStrategy);
+      anchorScope.ClickAndWait (Context, actualWaitingStrategy);
+      return UnspecifiedPage();
+    }
   }
 }
