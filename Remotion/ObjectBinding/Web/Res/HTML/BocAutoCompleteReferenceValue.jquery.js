@@ -346,8 +346,6 @@
                 else updateResult(result.data);
             }
             var value = $.trim($input.val());
-            if (!options.matchCase)
-              value = value.toLowerCase();
             requestData(value, findValueCallback, findValueCallback);
         }).bind("flushCache", function() {
             cache.flush();
@@ -523,8 +521,6 @@
             if (openFromInput || openFromTrigger) {
                 startLoading();
                 var searchString = currentValue;
-                if (!options.matchCase)
-                    searchString = searchString.toLowerCase();
                 if (dropDownTriggered)
                     searchString = options.searchStringValidationParams.getDropDownSearchString(searchString);
 
@@ -696,8 +692,6 @@
         };
 
         function requestDataExact(term, success, failure) {
-            if (!options.matchCase)
-              term = term.toLowerCase();
 
             // re-motion: cancel an already running request
             abortRequest();
@@ -796,7 +790,6 @@
         dropDownRefreshDelay: 400,
         selectionUpdateDelay: 400,
         noDataFoundMessage: '',
-        matchCase: false,
         matchContains: false,
         cacheLength: 10,
         max: 100,
@@ -824,8 +817,6 @@
         var length = 0;
 
         function matchSubset(s, sub) {
-            if (!options.matchCase)
-                s = s.toLowerCase();
             var i = s.indexOf(sub);
             if (options.matchContains == "word") {
                 i = s.toLowerCase().search("\\b" + sub.toLowerCase());
