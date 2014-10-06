@@ -48,9 +48,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
             indexes,
             synonyms)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("unionedEntities", unionedEntities);
- 
+      ArgumentUtility.CheckNotNull ("unionedEntities", unionedEntities);
+
       var unionedEntitiesList = unionedEntities.ToList().AsReadOnly();
+      ArgumentUtility.CheckNotEmpty ("unionedEntities", unionedEntitiesList);
+
       for (int i = 0; i < unionedEntitiesList.Count; ++i)
       {
         var unionedEntity = unionedEntitiesList[i];
@@ -66,7 +68,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       }
 
       _unionedEntities = unionedEntitiesList;
-      indexes.ToList().AsReadOnly();
     }
 
     public ReadOnlyCollection<IRdbmsStorageEntityDefinition> UnionedEntities
