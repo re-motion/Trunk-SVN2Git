@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       _bocListCssClassDefinition = new BocListCssClassDefinition();
 
       _renderingContext =
-          new BocColumnRenderingContext<BocRowEditModeColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+          new BocColumnRenderingContext<BocRowEditModeColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]

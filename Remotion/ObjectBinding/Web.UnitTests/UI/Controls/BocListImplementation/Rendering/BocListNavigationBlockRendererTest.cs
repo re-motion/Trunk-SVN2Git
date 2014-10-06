@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -27,7 +28,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
   [TestFixture]
-  [SetUICulture("en-US")]
+  [SetUICulture ("en-US")]
   public class BocListNavigationBlockRendererTest : BocListRendererTestBase
   {
     private BocListCssClassDefinition _bocListCssClassDefinition;
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           GlobalizationService,
           RenderingFeatures.Default,
           _bocListCssClassDefinition);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -177,7 +178,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           GlobalizationService,
           RenderingFeatures.Default,
           _bocListCssClassDefinition);
-      renderer.Render (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
 
@@ -203,6 +204,28 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       AssertPageIndexHiddenField (pageIndexField, currentPageIndex);
     }
 
+    [Test]
+    public void TestDiagnosticMetadataRendering ()
+    {
+      var currentPageIndex = 3;
+      var totalPageCount = 7;
+
+      List.Stub (mock => mock.CurrentPageIndex).Return (currentPageIndex);
+      List.Stub (mock => mock.PageCount).Return (totalPageCount);
+
+      var renderer = new BocListNavigationBlockRenderer (
+          new FakeResourceUrlFactory(),
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition);
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+
+      var document = Html.GetResultDocument();
+
+      var div = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (div, DiagnosticMetadataAttributes.BocListNumberOfPages, totalPageCount.ToString());
+    }
+
     private void AssertManualInputArea (XmlNode manualInputArea, int currentPageIndex, int totalPageCount)
     {
       var inputID = List.GetCurrentPageControlName().Replace ('$', '_') + "_TextBox";
@@ -216,10 +239,14 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertAttribute (pageNumberField, "id", inputID);
       Html.AssertNoAttribute (pageNumberField, "name");
       Html.AssertAttribute (pageNumberField, "type", "text");
-      Html.AssertAttribute (pageNumberField, "maxlength", 
-          totalPageCount.ToString(CultureInfo.InvariantCulture).Length.ToString(CultureInfo.InvariantCulture));
-      Html.AssertAttribute (pageNumberField, "size", 
-          totalPageCount.ToString(CultureInfo.InvariantCulture).Length.ToString(CultureInfo.InvariantCulture));
+      Html.AssertAttribute (
+          pageNumberField,
+          "maxlength",
+          totalPageCount.ToString (CultureInfo.InvariantCulture).Length.ToString (CultureInfo.InvariantCulture));
+      Html.AssertAttribute (
+          pageNumberField,
+          "size",
+          totalPageCount.ToString (CultureInfo.InvariantCulture).Length.ToString (CultureInfo.InvariantCulture));
 
       Html.AssertTextNode (manualInputArea, c_totalPageCountText + " " + totalPageCount, 2);
     }
@@ -237,21 +264,21 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     private void AssertActiveIcon (XmlNode link, string command, int pageIndex)
     {
       Html.AssertAttribute (link, "id", List.ClientID + "_Navigation_" + command);
-      Html.AssertAttribute (link, "onclick", string.Format("$('#CurrentPageControl_UniqueID').val({0}).trigger('change');", pageIndex));
+      Html.AssertAttribute (link, "onclick", string.Format ("$('#CurrentPageControl_UniqueID').val({0}).trigger('change');", pageIndex));
       Html.AssertAttribute (link, "href", "#");
 
       var icon = Html.GetAssertedChildElement (link, "img", 0);
-      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}.gif", command), HtmlHelperBase.AttributeValueCompareMode.Contains);
     }
 
     private void AssertInactiveIcon (XmlNode link, string command)
     {
       Html.AssertAttribute (link, "id", List.ClientID + "_Navigation_" + command);
-      Html.AssertNoAttribute(link, "onclick");
+      Html.AssertNoAttribute (link, "onclick");
       Html.AssertNoAttribute (link, "href");
 
       var icon = Html.GetAssertedChildElement (link, "img", 0);
-      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}Inactive.gif", command), HtmlHelper.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (icon, "src", string.Format ("/Move{0}Inactive.gif", command), HtmlHelperBase.AttributeValueCompareMode.Contains);
     }
   }
 }

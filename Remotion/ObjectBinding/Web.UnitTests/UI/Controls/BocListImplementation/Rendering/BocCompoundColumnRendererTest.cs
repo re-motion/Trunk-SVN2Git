@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Column.PropertyPathBindings.Add (new PropertyPathBinding ("DisplayName"));
 
       _renderingContext =
-          new BocColumnRenderingContext<BocCompoundColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+          new BocColumnRenderingContext<BocCompoundColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]

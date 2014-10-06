@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       _bocListCssClassDefinition = new BocListCssClassDefinition();
 
       _renderingContext =
-          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     [Test]
     public void RenderTitleCellNoSorting ()
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), RenderingFeatures.Default, _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, SortingDirection.None, -1);
 
       var document = Html.GetResultDocument();
@@ -112,13 +112,31 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertChildElementCount (sortCommandLink, 0);
     }
 
+    [Test]
+    public void TestDiagnosticMetadataRendering ()
+    {
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition);
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 6));
+
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+
+      var document = Html.GetResultDocument();
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      Html.AssertAttribute (td, DiagnosticMetadataAttributes.BocListCellIndex, 7.ToString());
+    }
+
     private void RenderTitleCell (
         SortingDirection sortDirection,
         int sortIndex,
         string iconFilename,
         string iconAltText)
     {
-      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory (), RenderingFeatures.Default, _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (_renderingContext, sortDirection, sortIndex);
 
       var document = Html.GetResultDocument();

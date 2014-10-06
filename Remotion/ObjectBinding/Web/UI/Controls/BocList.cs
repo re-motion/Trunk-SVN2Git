@@ -1509,6 +1509,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       columnRendererBuilder.IsBrowserCapableOfScripting = IsBrowserCapableOfScripting;
       columnRendererBuilder.IsClientSideSortingEnabled = IsClientSideSortingEnabled;
       columnRendererBuilder.HasSortingKeys = HasSortingKeys;
+      columnRendererBuilder.IsIndexEnabled = IsIndexEnabled;
+      columnRendererBuilder.IsSelectionEnabled = IsSelectionEnabled;
       columnRendererBuilder.SortingOrder = GetSortingOrder();
 
       return columnRendererBuilder.CreateColumnRenderers ();

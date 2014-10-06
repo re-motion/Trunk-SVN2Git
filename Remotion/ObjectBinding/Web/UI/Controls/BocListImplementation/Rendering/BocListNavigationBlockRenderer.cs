@@ -133,6 +133,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
+      if(RenderingFeatures.EnableDiagnosticMetadata)
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListNumberOfPages, renderingContext.Control.PageCount.ToString());
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       if (renderingContext.Control.HasClientScript)

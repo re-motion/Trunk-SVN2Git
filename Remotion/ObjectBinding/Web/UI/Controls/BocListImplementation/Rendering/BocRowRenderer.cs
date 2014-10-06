@@ -19,6 +19,7 @@ using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
@@ -39,15 +40,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly BocListCssClassDefinition _cssClasses;
     private readonly IBocIndexColumnRenderer _indexColumnRenderer;
     private readonly IBocSelectorColumnRenderer _selectorColumnRenderer;
+    private readonly IRenderingFeatures _renderingFeatures;
 
     public BocRowRenderer (
-        BocListCssClassDefinition cssClasses, IBocIndexColumnRenderer indexColumnRenderer, IBocSelectorColumnRenderer selectorColumnRenderer)
+        BocListCssClassDefinition cssClasses,
+        IBocIndexColumnRenderer indexColumnRenderer,
+        IBocSelectorColumnRenderer selectorColumnRenderer,
+        IRenderingFeatures renderingFeatures)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
       _cssClasses = cssClasses;
       _indexColumnRenderer = indexColumnRenderer;
       _selectorColumnRenderer = selectorColumnRenderer;
+      _renderingFeatures = renderingFeatures;
     }
 
     public BocListCssClassDefinition CssClasses
@@ -139,6 +145,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       string cssClassTableCell = CssClasses.DataCell;
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        var oneBasedRowIndex = rowIndex + 1;
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListRowIndex, oneBasedRowIndex.ToString());
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
       GetIndexColumnRenderer().RenderDataCell (renderingContext, originalRowIndex, absoluteRowIndex, cssClassTableCell);

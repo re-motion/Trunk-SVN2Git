@@ -29,6 +29,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IBocColumnRenderer _columnRenderer;
     private readonly BocColumnDefinition _columnDefinition;
     private readonly int _columnIndex;
+    private readonly int _visibleColumnIndex;
     private readonly bool _showIcon;
     private readonly SortingDirection _sortingDirection;
     private readonly int _orderIndex;
@@ -37,6 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         IBocColumnRenderer columnRenderer,
         BocColumnDefinition columnDefinition,
         int columnIndex,
+        int visibleColumnIndex,
         bool showIcon,
         SortingDirection sortingDirection,
         int orderIndex)
@@ -47,6 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _columnRenderer = columnRenderer;
       _columnDefinition = columnDefinition;
       _columnIndex = columnIndex;
+      _visibleColumnIndex = visibleColumnIndex;
       _showIcon = showIcon;
       _sortingDirection = sortingDirection;
       _orderIndex = orderIndex;
@@ -65,6 +68,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public int ColumnIndex
     {
       get { return _columnIndex; }
+    }
+
+    public int VisibleColumnIndex
+    {
+      get { return _visibleColumnIndex; }
     }
 
     public bool ShowIcon
@@ -91,7 +99,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           renderingContext.Writer,
           renderingContext.Control,
           ColumnDefinition,
-          ColumnIndex);
+          ColumnIndex,
+          VisibleColumnIndex);
 
       _columnRenderer.RenderTitleCell (columnRenderingContext, _sortingDirection, _orderIndex);
     }
@@ -105,7 +114,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           renderingContext.Writer,
           renderingContext.Control,
           ColumnDefinition,
-          ColumnIndex);
+          ColumnIndex,
+          VisibleColumnIndex);
 
       _columnRenderer.RenderDataColumnDeclaration (columnRenderingContext, isTextXml);
     }
@@ -120,7 +130,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           renderingContext.Writer,
           renderingContext.Control,
           ColumnDefinition,
-          ColumnIndex);
+          ColumnIndex,
+          VisibleColumnIndex);
 
       _columnRenderer.RenderDataCell (columnRenderingContext, rowIndex, _showIcon, dataRowRenderEventArgs);
     }

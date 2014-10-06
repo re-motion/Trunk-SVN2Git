@@ -29,7 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
             renderingContext.Writer,
             renderingContext.Control,
             renderingContext.ColumnDefinition,
-            renderingContext.ColumnIndex)
+            renderingContext.ColumnIndex,
+            renderingContext.VisibleColumnIndex)
     {
       if (!(renderingContext.ColumnDefinition is TBocColumnDefinition))
         throw ArgumentUtility.CreateArgumentTypeException (

@@ -20,5 +20,10 @@ namespace Remotion.Web.UI.Controls
     public static readonly string IsBound = "data-is-bound";
     public static readonly string BoundType = "data-bound-type";
     public static readonly string BoundProperty = "data-bound-property";
+
+    public static readonly string BocListRowIndex = "data-boclist-row-index";
+    public static readonly string BocListCellIndex = "data-boclist-cell-index";
+    public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";
+    public static readonly string BocListCellContents = "data-boclist-cell-contents";
   }
 }

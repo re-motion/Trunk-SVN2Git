@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
 
       _renderingContext =
-          new BocColumnRenderingContext<BocDropDownMenuColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+          new BocColumnRenderingContext<BocDropDownMenuColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]

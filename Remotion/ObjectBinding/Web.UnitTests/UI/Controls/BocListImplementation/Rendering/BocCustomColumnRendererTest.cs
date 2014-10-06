@@ -64,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       List.Stub (mock => mock.CustomColumns).Return (customColumns);
 
       _renderingContext =
-          new BocColumnRenderingContext<BocCustomColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+          new BocColumnRenderingContext<BocCustomColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]

@@ -51,6 +51,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public bool IsBrowserCapableOfScripting { get; set; }
     public bool IsClientSideSortingEnabled { get; set; }
     public bool HasSortingKeys { get; set; }
+    public bool IsIndexEnabled { get; set; }
+    public bool IsSelectionEnabled { get; set; }
     public ICollection<BocListSortingOrderEntry> SortingOrder { get; set; }
     
     public BocColumnRenderer[] CreateColumnRenderers ()
@@ -62,6 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       
       var firstValueColumnRendered = false;
       var bocColumnRenderers = new List<BocColumnRenderer> (_columnDefinitions.Length);
+      var visibleColumnIndex = GetInitialVisibleColumnIndex();
       for (int columnIndex = 0; columnIndex < _columnDefinitions.Length; columnIndex++)
       {
         var columnDefinition = _columnDefinitions[columnIndex];
@@ -75,10 +78,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         if (IsColumnVisible (columnDefinition))
         {
           var columnRenderer = columnDefinition.GetRenderer (_serviceLocator);
-          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, columnIndex, showIcon, sortingDirection, orderIndex));
+          bocColumnRenderers.Add (new BocColumnRenderer (columnRenderer, columnDefinition, columnIndex, visibleColumnIndex, showIcon, sortingDirection, orderIndex));
+          
+          visibleColumnIndex++;
         }
         else
-          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, columnIndex, false, sortingDirection, orderIndex));
+          bocColumnRenderers.Add (new BocColumnRenderer (new NullColumnRenderer(), columnDefinition, columnIndex, -1, false, sortingDirection, orderIndex));
 
         if (columnDefinition is BocValueColumnDefinition)
           firstValueColumnRendered = true;
@@ -100,6 +105,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           }
         }
       }
+    }
+
+    private int GetInitialVisibleColumnIndex()
+    {
+      var visibleColumnIndex = 0;
+
+      if (IsIndexEnabled)
+        ++visibleColumnIndex;
+      if (IsSelectionEnabled)
+        ++visibleColumnIndex;
+
+      return visibleColumnIndex;
     }
 
     private bool IsColumnVisible (BocColumnDefinition column)

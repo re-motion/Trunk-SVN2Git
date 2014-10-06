@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UnitTests.UI.Controls.BocListImpleme
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();
 
       _renderingContext =
-          new BocColumnRenderingContext<BocDropDownMenuColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0));
+          new BocColumnRenderingContext<BocDropDownMenuColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]

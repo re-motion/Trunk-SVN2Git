@@ -104,6 +104,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (!string.IsNullOrEmpty (renderingContext.ColumnDefinition.CssClass))
         cssClassTitleCell += " " + renderingContext.ColumnDefinition.CssClass;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTitleCell);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellIndex, oneBasedCellIndex.ToString());
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
 
       RenderTitleCellMarkers (renderingContext);
@@ -279,6 +284,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (!string.IsNullOrEmpty (renderingContext.ColumnDefinition.CssClass))
         cssClassTableCell += " " + renderingContext.ColumnDefinition.CssClass;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellIndex, oneBasedCellIndex.ToString());
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
       RenderCellContents (renderingContext, dataRowRenderEventArgs, rowIndex, showIcon);

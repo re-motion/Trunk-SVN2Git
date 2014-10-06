@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web;
 using System.Web.UI;
@@ -28,9 +29,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private readonly IBocList _control;
     private readonly BocColumnDefinition _columnDefinition;
     private readonly int _columnIndex;
+    private readonly int _visibleColumnIndex;
 
     public BocColumnRenderingContext (
-        HttpContextBase httpContext, HtmlTextWriter writer, IBocList control, BocColumnDefinition columnDefinition, int columnIndex)
+        HttpContextBase httpContext,
+        HtmlTextWriter writer,
+        IBocList control,
+        BocColumnDefinition columnDefinition,
+        int columnIndex,
+        int visibleColumnIndex)
     {
       ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("writer", writer);
@@ -42,6 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       _control = control;
       _columnDefinition = columnDefinition;
       _columnIndex = columnIndex;
+      _visibleColumnIndex = visibleColumnIndex;
     }
 
     public HttpContextBase HttpContext
@@ -67,6 +75,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public int ColumnIndex
     {
       get { return _columnIndex; }
+    }
+
+    public int VisibleColumnIndex
+    {
+      get { return _visibleColumnIndex; }
     }
   }
 }

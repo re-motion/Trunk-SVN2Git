@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
       _bocListStub = MockRepository.GenerateStub<IBocList> ();
       _renderingContext = new BocColumnRenderingContext<StubColumnDefinition> (
-          new BocColumnRenderingContext(_httpContextStub, _htmlTextWriterMock, _bocListStub, _columnDefinition, 0));
+          new BocColumnRenderingContext(_httpContextStub, _htmlTextWriterMock, _bocListStub, _columnDefinition, 0, 0));
     }
 
     [Test]
