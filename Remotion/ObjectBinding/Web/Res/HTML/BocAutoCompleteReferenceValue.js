@@ -146,10 +146,10 @@ BocAutoCompleteReferenceValue.Initialize = function (
         if (item.DisplayName.toLowerCase() == _itemBackUp.DisplayName.toLowerCase()
             && (item.UniqueIdentifier == _itemBackUp.UniqueIdentifier || item.UniqueIdentifier == nullValueString))
         {
-          if (item.UniqueIdentifier == nullValueString)
-            textbox.val(_itemBackUp.DisplayName); // keep the latest user input to preservce current casing
+          if (item.UniqueIdentifier == nullValueString && _itemBackUp.UniqueIdentifier != nullValueString)
+            textbox.val(_itemBackUp.DisplayName); // fall back to the last confirmed user input to preserve correct casing
           else
-            textbox.val(actualItem.DisplayName); // fall back to the last confirmed user input to preserve correct casing
+            textbox.val(item.DisplayName); // keep the latest user input to preservce current casing
           actualItem = _itemBackUp;
         }
 
