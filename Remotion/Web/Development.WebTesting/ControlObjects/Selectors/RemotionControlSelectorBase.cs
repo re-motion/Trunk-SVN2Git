@@ -62,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public TControlObject SelectPerLocalID (TestObjectContext context, string localID)
     {
-      var scope = context.Scope.FindIdEndingWith (localID);
+      var scope = context.Scope.FindIdEndingWith ("_" + localID);
       return CreateControlObject (context, scope);
     }
 
