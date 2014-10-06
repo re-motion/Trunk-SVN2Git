@@ -94,27 +94,27 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
       return _enumSerializer ?? base.CreateEnumSerializer();
     }
 
-    public override TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public override IScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _tableBuilder ?? base.CreateTableBuilder(storageProviderDefinition);
     }
 
-    public override ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public override IScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _viewBuilder ?? base.CreateViewBuilder(storageProviderDefinition);
     }
 
-    public override ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public override IScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _constraintBuilder ?? base.CreateConstraintBuilder(storageProviderDefinition);
     }
 
-    public override IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public override IScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _indexBuilder ?? base.CreateIndexBuilder(storageProviderDefinition);
     }
 
-    public override SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public override IScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _synonymBuilder ?? base.CreateSynonymBuilder(storageProviderDefinition);
     }

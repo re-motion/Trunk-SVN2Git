@@ -417,7 +417,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
     {
       var result = _sqlProviderFactory.CreateTableBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result.ElementFactory, Is.TypeOf (typeof (SqlTableScriptElementFactory)));
+      Assert.That (result, Is.TypeOf<TableScriptBuilder>());
+
+      var tableScriptBuilder = (TableScriptBuilder) result;
+      Assert.That (tableScriptBuilder.ElementFactory, Is.TypeOf (typeof (SqlTableScriptElementFactory)));
     }
 
     [Test]
@@ -425,10 +428,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
     {
       var result = _sqlProviderFactory.CreateViewBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result.TableViewElementFactory, Is.TypeOf (typeof (SqlTableViewScriptElementFactory)));
-      Assert.That (result.UnionViewElementFactory, Is.TypeOf (typeof (SqlUnionViewScriptElementFactory)));
-      Assert.That (result.FilterViewElementFactory, Is.TypeOf (typeof (SqlFilterViewScriptElementFactory)));
-      Assert.That (result.EmptyViewElementFactory, Is.TypeOf (typeof (SqlEmptyViewScriptElementFactory)));
+      Assert.That (result, Is.TypeOf<ViewScriptBuilder>());
+
+      var viewScriptBuilder = (ViewScriptBuilder) result;
+      Assert.That (viewScriptBuilder.TableViewElementFactory, Is.TypeOf (typeof (SqlTableViewScriptElementFactory)));
+      Assert.That (viewScriptBuilder.UnionViewElementFactory, Is.TypeOf (typeof (SqlUnionViewScriptElementFactory)));
+      Assert.That (viewScriptBuilder.FilterViewElementFactory, Is.TypeOf (typeof (SqlFilterViewScriptElementFactory)));
+      Assert.That (viewScriptBuilder.EmptyViewElementFactory, Is.TypeOf (typeof (SqlEmptyViewScriptElementFactory)));
     }
 
     [Test]
@@ -436,7 +442,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
     {
       var result = _sqlProviderFactory.CreateConstraintBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result.ForeignKeyConstraintElementFactory, Is.TypeOf (typeof (SqlForeignKeyConstraintScriptElementFactory)));
+      Assert.That (result, Is.TypeOf<ForeignKeyConstraintScriptBuilder>());
+
+      var foreignKeyConstraintScriptBuilder = (ForeignKeyConstraintScriptBuilder) result;
+      Assert.That (
+          foreignKeyConstraintScriptBuilder.ForeignKeyConstraintElementFactory,
+          Is.TypeOf (typeof (SqlForeignKeyConstraintScriptElementFactory)));
     }
 
     [Test]
@@ -444,7 +455,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
     {
       var result = _sqlProviderFactory.CreateIndexBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result.IndexScriptElementFactory, Is.TypeOf (typeof (SqlIndexScriptElementFactory)));
+      Assert.That (result, Is.TypeOf<IndexScriptBuilder>());
+
+      var indexScriptBuilder = (IndexScriptBuilder) result;
+      Assert.That (indexScriptBuilder.IndexScriptElementFactory, Is.TypeOf (typeof (SqlIndexScriptElementFactory)));
     }
 
     [Test]

@@ -111,27 +111,27 @@ namespace Remotion.Data.DomainObjects.UnitTests
       throw new NotImplementedException();
     }
 
-    public TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public IScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
 
-    public ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public IScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
 
-    public ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public IScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
 
-    public IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public IScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
 
-    public SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    public IScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }

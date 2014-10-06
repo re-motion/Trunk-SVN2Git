@@ -55,11 +55,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     IStorageProviderSerializer CreateStorageProviderSerializer (IEnumSerializer enumSerializer);
 
     IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition);
-    TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition);
-    ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition);
-    ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition);
-    IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition);
-    SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition);
     IEnumSerializer CreateEnumSerializer ();
   }
 }
