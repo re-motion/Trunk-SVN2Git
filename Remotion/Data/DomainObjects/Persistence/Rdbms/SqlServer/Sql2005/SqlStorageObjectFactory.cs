@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Linq;
@@ -338,13 +339,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var compositeScriptBuilder = new CompositeScriptBuilder (
           storageProviderDefinition,
-          CreateTableBuilder (storageProviderDefinition),
-          CreateConstraintBuilder (storageProviderDefinition),
-          CreateViewBuilder (storageProviderDefinition),
-          CreateIndexBuilder (storageProviderDefinition),
-          CreateSynonymBuilder (storageProviderDefinition));
+          CreateScriptBuildersForSchemaScriptBuilder (storageProviderDefinition));
 
       return new SqlDatabaseSelectionScriptElementBuilder (compositeScriptBuilder, storageProviderDefinition.ConnectionString);
+    }
+
+    protected virtual IEnumerable<IScriptBuilder> CreateScriptBuildersForSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      yield return CreateTableBuilder (storageProviderDefinition);
+      yield return CreateConstraintBuilder (storageProviderDefinition);
+      yield return CreateViewBuilder (storageProviderDefinition);
+      yield return CreateIndexBuilder (storageProviderDefinition);
+      yield return CreateSynonymBuilder (storageProviderDefinition);
     }
 
     public virtual IScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
@@ -27,16 +28,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// </summary>
   public class CompositeScriptBuilder : IScriptBuilder
   {
-    private readonly IScriptBuilder[] _scriptBuilders;
+    private readonly IReadOnlyList<IScriptBuilder> _scriptBuilders;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
 
-    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, params IScriptBuilder[] scriptBuilders)
+    public CompositeScriptBuilder (RdbmsProviderDefinition rdbmsProviderDefinition, IEnumerable<IScriptBuilder> scriptBuilders)
     {
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
       ArgumentUtility.CheckNotNull ("scriptBuilders", scriptBuilders);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      _scriptBuilders = scriptBuilders;
+      _scriptBuilders = scriptBuilders.ToList().AsReadOnly();
     }
 
     public RdbmsProviderDefinition RdbmsProviderDefinition
@@ -44,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _rdbmsProviderDefinition; }
     }
 
-    public IScriptBuilder[] ScriptBuilders
+    public IReadOnlyList<IScriptBuilder> ScriptBuilders
     {
       get { return _scriptBuilders; }
     }

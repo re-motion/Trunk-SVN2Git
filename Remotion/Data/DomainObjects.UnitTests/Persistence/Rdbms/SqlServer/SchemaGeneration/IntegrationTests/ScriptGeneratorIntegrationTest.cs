@@ -47,14 +47,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sche
 
       _extendedScriptGenerator = new ScriptGenerator (
           pd => new SqlDatabaseSelectionScriptElementBuilder (
-                    new CompositeScriptBuilder (
-                        SchemaGenerationThirdStorageProviderDefinition,
-                        CreateTableBuilder(),
-                        CreateConstraintBuilder(),
-                        CreateExtendedViewBuilder(),
-                        CreateIndexBuilder(),
-                        CreateSynonymBuilder()),
-                    SchemaGenerationThirdStorageProviderDefinition.ConnectionString),
+              new CompositeScriptBuilder (
+                  SchemaGenerationThirdStorageProviderDefinition,
+                  new IScriptBuilder[]
+                  {
+                      CreateTableBuilder(),
+                      CreateConstraintBuilder(),
+                      CreateExtendedViewBuilder(),
+                      CreateIndexBuilder(),
+                      CreateSynonymBuilder()
+                  }),
+              SchemaGenerationThirdStorageProviderDefinition.ConnectionString),
           new RdbmsStorageExtendedEntityDefinitionProvider(),
           new ScriptToStringConverter());
 

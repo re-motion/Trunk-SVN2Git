@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
       _builder1Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _builder2Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
 
-      _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, _builder1Mock, _builder2Mock);
+      _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, new[] { _builder1Mock, _builder2Mock });
 
       _fakeStatement1 = new ScriptStatement ("Fake1");
       _fakeStatement2 = new ScriptStatement ("Fake2");
