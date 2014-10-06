@@ -64,6 +64,8 @@
     <Content Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </Content>
+    <Content Include="Images\SampleIcon.gif" />
+    <Content Include="ListMenuTest.aspx" />
     <Content Include="Layout.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -86,6 +88,14 @@
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
+    </Compile>
+    <Compile Include="ListMenuTestFunction.cs" />
+    <Compile Include="ListMenuTest.aspx.cs">
+      <DependentUpon>ListMenuTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ListMenuTest.aspx.designer.cs">
+      <DependentUpon>ListMenuTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Layout.Master.cs">
       <DependentUpon>Layout.Master</DependentUpon>
