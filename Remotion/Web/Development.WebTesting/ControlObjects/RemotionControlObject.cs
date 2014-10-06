@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using OpenQA.Selenium.Support.UI;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
@@ -43,27 +44,38 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Returns the waiting strategy to be used.
+    /// Returns the waiting strategy to be used when acting on the control object's scope.
     /// </summary>
     /// <param name="userDefinedWaitingStrategy">User-provided waiting strategy.</param>
     /// <returns>Waiting strategy to be used.</returns>
     protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy userDefinedWaitingStrategy)
+    {
+      return GetActualWaitingStrategy (Scope, userDefinedWaitingStrategy);
+    }
+
+    /// <summary>
+    /// Returns the waiting strategy to be used.
+    /// </summary>
+    /// <param name="scope">Scope which is to be acted on.</param>
+    /// <param name="userDefinedWaitingStrategy">User-provided waiting strategy.</param>
+    /// <returns>Waiting strategy to be used.</returns>
+    protected IWaitingStrategy GetActualWaitingStrategy ([NotNull] ElementScope scope, [CanBeNull] IWaitingStrategy userDefinedWaitingStrategy)
     {
       if (userDefinedWaitingStrategy != null)
         return userDefinedWaitingStrategy;
 
       // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
 
-      if (Scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
+      if (scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
       {
-        var hasAutoPostBack = bool.Parse (Scope[DiagnosticMetadataAttributes.TriggersPostBack]);
+        var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
           return WaitFor.WxePostBack;
       }
 
-      if (Scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
+      if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
-        var triggersNavigation = bool.Parse (Scope[DiagnosticMetadataAttributes.TriggersNavigation]);
+        var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
           return WaitFor.WxeReset;
       }

@@ -39,5 +39,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       return new FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> (host, new HtmlAnchorSelector());
     }
+
+    public static FluentControlSelector<ListMenuSelector, ListMenuControlObject> GetListMenu (this IControlHost host)
+    {
+      return new FluentControlSelector<ListMenuSelector, ListMenuControlObject> (host, new ListMenuSelector());
+    }
   }
 }

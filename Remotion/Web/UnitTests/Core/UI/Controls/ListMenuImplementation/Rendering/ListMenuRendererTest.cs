@@ -18,8 +18,10 @@ using System;
 using System.Web;
 using System.Xml;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.ServiceLocation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -37,6 +39,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     private IClientScriptManager _clientScriptManagerMock;
     private HttpContextBase _httpContextStub;
     private HtmlHelper _htmlHelper;
+    private ServiceLocatorScope _serviceLocatorScope;
 
     [SetUp]
     public void SetUp ()
@@ -62,6 +65,17 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       _control.Stub (stub => stub.Page).Return (pageStub);
 
       PopulateMenu();
+
+      var serviceLocator = DefaultServiceLocator.Create();
+      serviceLocator.RegisterSingle<IRenderingFeatures> (() => new WithDiagnosticMetadataRenderingFeatures());
+      _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+      if(_serviceLocatorScope != null)
+        _serviceLocatorScope.Dispose();
     }
 
     [Test]
@@ -146,13 +160,14 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private XmlNode GetAssertedTable ()
     {
-      var renderer = new ListMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
+      var renderer = new ListMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
       renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();
 
       var table = _htmlHelper.GetAssertedChildElement (document, "table", 0);
       table.AssertAttributeValueEquals ("id", _control.ClientID);
+      table.AssertAttributeValueEquals ("class", _control.CssClass);
       table.AssertAttributeValueEquals ("cellspacing", "0");
       table.AssertAttributeValueEquals ("cellpadding", "0");
       table.AssertAttributeValueEquals ("border", "0");
@@ -188,19 +203,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private void AssertIcon (int itemIndex, XmlNode parent, WebMenuItem item, int nodeIndex)
     {
-      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex);
+      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex, item.ItemID);
       AssertIcon (a);
     }
 
     private void AssertText (int itemIndex, XmlNode parent, WebMenuItem item, int nodeIndex)
     {
-      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex);
+      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex, item.ItemID);
       a.AssertTextNode (item.Text, 0);
     }
 
     private void AssertIconAndText (int itemIndex, XmlNode td, WebMenuItem item, int nodeIndex)
     {
-      XmlNode a = GetAssertedItemLink (td, itemIndex, nodeIndex);
+      XmlNode a = GetAssertedItemLink (td, itemIndex, nodeIndex, item.ItemID);
       AssertIcon(a);
 
       a.AssertTextNode (HtmlHelper.WhiteSpace + item.Text, 1);
@@ -212,10 +227,11 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       img.AssertAttributeValueContains ("src", "/Images/ClassicBlue/NullIcon.gif");
     }
 
-    private XmlNode GetAssertedItemLink (XmlNode td, int itemIndex, int nodeIndex)
+    private XmlNode GetAssertedItemLink (XmlNode td, int itemIndex, int nodeIndex, string itemID)
     {
       var span = td.GetAssertedChildElement ("span", nodeIndex);
       span.AssertAttributeValueEquals ("id", _control.ClientID + "_" + itemIndex);
+      span.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ItemID, itemID);
       span.AssertChildElementCount (1);
 
       return span.GetAssertedChildElement ("a", 0);

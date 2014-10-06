@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -38,6 +39,11 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService, IRenderingFeatures renderingFeatures)
         : base (resourceUrlFactory, globalizationService, renderingFeatures)
     {
+    }
+
+    public string CssClassListMenu
+    {
+      get { return "listMenu"; }
     }
 
     public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
@@ -65,6 +71,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellspacing, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassListMenu);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
       var groupedMenuItems = GetVisibleMenuItemsInGroups (renderingContext);
@@ -140,6 +147,8 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetMenuItemClientID (renderingContext, index));
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
+      if(RenderingFeatures.EnableDiagnosticMetadata)
+        RenderDiagnosticMetadataAttributesForListMenuItem(renderingContext, menuItem);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       var command = !menuItem.IsDisabled ? menuItem.Command : new Command (CommandType.None) { OwnerControl = menuItem.OwnerControl };
@@ -164,6 +173,11 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
         renderingContext.Writer.Write (menuItem.Text); // Do not HTML encode.
       command.RenderEnd (renderingContext.Writer);
       renderingContext.Writer.RenderEndTag();
+    }
+
+    private void RenderDiagnosticMetadataAttributesForListMenuItem (ListMenuRenderingContext renderingContext, WebMenuItem menuItem)
+    {
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, menuItem.ItemID);
     }
 
     private void RegisterMenuItems (ListMenuRenderingContext renderingContext)

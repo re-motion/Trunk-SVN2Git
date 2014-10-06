@@ -97,10 +97,12 @@
     <Compile Include="ControlObjects\HtmlAnchorControlObject.cs" />
     <Compile Include="ControlObjects\HtmlControlObject.cs" />
     <Compile Include="ControlObjects\IClickableControlObject.cs" />
+    <Compile Include="ControlObjects\IClickableItemsControlObject.cs" />
     <Compile Include="ControlObjects\ITabStripControlObject.cs" />
     <Compile Include="ControlObjects\ListMenuControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlAnchorSelector.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlControlSelectorBase.cs" />
+    <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\WebButtonSelector.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
