@@ -466,10 +466,11 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Sql2
     {
       var result = _sqlProviderFactory.CreateSynonymBuilder (_rdbmsProviderDefinition);
 
-      Assert.That (result.TableViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
-      Assert.That (result.UnionViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
-      Assert.That (result.FilterViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
-      Assert.That (result.EmptyViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
+      var synonymScriptBuilder = (SynonymScriptBuilder) result;
+      Assert.That (synonymScriptBuilder.TableViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
+      Assert.That (synonymScriptBuilder.UnionViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
+      Assert.That (synonymScriptBuilder.FilterViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
+      Assert.That (synonymScriptBuilder.EmptyViewElementFactory, Is.TypeOf (typeof (SqlSynonymScriptElementFactory)));
     }
 
     [Test]
