@@ -28,7 +28,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
   {
     private IScriptBuilder _builder1Mock;
     private IScriptBuilder _builder2Mock;
-    private CompositeScriptBuilder _builder;
     private ScriptElementCollection _fakeResultCollection1;
     private ScriptElementCollection _fakeResultCollection2;
     private ScriptStatement _fakeStatement1;
@@ -41,8 +40,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
 
       _builder1Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
       _builder2Mock = MockRepository.GenerateStrictMock<IScriptBuilder>();
-
-      _builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, new[] { _builder1Mock, _builder2Mock });
 
       _fakeStatement1 = new ScriptStatement ("Fake1");
       _fakeStatement2 = new ScriptStatement ("Fake2");
@@ -59,8 +56,32 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
     [Test]
     public void Initialization ()
     {
-      Assert.That (_builder.RdbmsProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
-      Assert.That (_builder.ScriptBuilders, Is.EqualTo(new[]{_builder1Mock, _builder2Mock}));
+      var builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, new[] { _builder1Mock, _builder2Mock });
+      Assert.That (builder.RdbmsProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
+      Assert.That (builder.ScriptBuilders, Is.EqualTo(new[]{_builder1Mock, _builder2Mock}));
+    }
+
+    [Test]
+    public void Initialization_WithNestedCompositeScriptBuilder_InlinesNestedScriptBuilder ()
+    {
+      var builder = new CompositeScriptBuilder (
+          SchemaGenerationFirstStorageProviderDefinition,
+          new[] { new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, new[] { _builder1Mock }), _builder2Mock });
+
+      Assert.That (builder.RdbmsProviderDefinition, Is.SameAs (SchemaGenerationFirstStorageProviderDefinition));
+      Assert.That (builder.ScriptBuilders, Is.EqualTo (new[] { _builder1Mock, _builder2Mock }));
+    }
+
+    [Test]
+    public void Initialization_WithNestedCompositeScriptBuilderHavingMismatchedStorageProviderDefinitions_ThrowsArgumentException ()
+    {
+      Assert.That (
+          () => new CompositeScriptBuilder (
+              SchemaGenerationFirstStorageProviderDefinition,
+              new[] { new CompositeScriptBuilder (SchemaGenerationSecondStorageProviderDefinition, new[] { _builder1Mock }), _builder2Mock }),
+          Throws.ArgumentException.With.Message.StringStarting (
+              "The scriptBuilder sequence contains a CompositeScriptBuilder that references a different RdbmsProviderDefinition "
+              + "('SchemaGenerationSecondStorageProvider') than the current CompositeScriptBuilder ('SchemaGenerationFirstStorageProvider')."));
     }
 
     [Test]
@@ -79,10 +100,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
       _builder2Mock.Expect (mock => mock.GetCreateScript ()).Return (_fakeResultCollection2);
       _builder2Mock.Replay ();
 
-      _builder.AddEntityDefinition (entityDefinition1);
-      _builder.AddEntityDefinition (entityDefinition2);
+      var builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, new[] { _builder1Mock, _builder2Mock });
 
-      var result = (ScriptElementCollection) _builder.GetCreateScript ();
+      builder.AddEntityDefinition (entityDefinition1);
+      builder.AddEntityDefinition (entityDefinition2);
+
+      var result = (ScriptElementCollection) builder.GetCreateScript ();
 
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();
@@ -108,10 +131,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
       _builder2Mock.Expect (mock => mock.GetDropScript ()).Return (_fakeResultCollection2);
       _builder2Mock.Replay ();
 
-      _builder.AddEntityDefinition (entityDefinition1);
-      _builder.AddEntityDefinition (entityDefinition2);
+      var builder = new CompositeScriptBuilder (SchemaGenerationFirstStorageProviderDefinition, new[] { _builder1Mock, _builder2Mock });
 
-      var result = (ScriptElementCollection) _builder.GetDropScript ();
+      builder.AddEntityDefinition (entityDefinition1);
+      builder.AddEntityDefinition (entityDefinition2);
+
+      var result = (ScriptElementCollection) builder.GetDropScript ();
 
       _builder1Mock.VerifyAllExpectations ();
       _builder2Mock.VerifyAllExpectations ();

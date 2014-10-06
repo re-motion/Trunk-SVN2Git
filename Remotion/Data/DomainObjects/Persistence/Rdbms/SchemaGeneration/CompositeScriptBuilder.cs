@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration.ScriptElements;
 using Remotion.Utilities;
@@ -26,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
   /// <summary>
   /// <see cref="CompositeScriptBuilder"/> contains database-independent code to generate database-scripts for a relational database.
   /// </summary>
-  public class CompositeScriptBuilder : IScriptBuilder
+  public sealed class CompositeScriptBuilder : IScriptBuilder
   {
     private readonly IReadOnlyList<IScriptBuilder> _scriptBuilders;
     private readonly RdbmsProviderDefinition _rdbmsProviderDefinition;
@@ -37,7 +38,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       ArgumentUtility.CheckNotNull ("scriptBuilders", scriptBuilders);
 
       _rdbmsProviderDefinition = rdbmsProviderDefinition;
-      _scriptBuilders = scriptBuilders.ToList().AsReadOnly();
+
+      _scriptBuilders = CreateFlattenedScriptBuilderList (scriptBuilders).AsReadOnly();
     }
 
     public RdbmsProviderDefinition RdbmsProviderDefinition
@@ -50,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       get { return _scriptBuilders; }
     }
 
-    public virtual void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
+    public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);
 
@@ -58,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
         scriptBuilder.AddEntityDefinition (entityDefinition);
     }
 
-    public virtual IScriptElement GetCreateScript ()
+    public IScriptElement GetCreateScript ()
     {
       var scriptElementCollection = new ScriptElementCollection ();
       foreach (var scriptBuilder in _scriptBuilders)
@@ -66,12 +68,39 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       return scriptElementCollection;
     }
 
-    public virtual IScriptElement GetDropScript ()
+    public IScriptElement GetDropScript ()
     {
       var scriptElementCollection = new ScriptElementCollection ();
       foreach (var scriptBuilder in _scriptBuilders.Reverse ())
         scriptElementCollection.AddElement (scriptBuilder.GetDropScript ());
       return scriptElementCollection;
+    }
+
+    private List<IScriptBuilder> CreateFlattenedScriptBuilderList (IEnumerable<IScriptBuilder> scriptBuilders)
+    {
+      var scriptBuilderList = new List<IScriptBuilder>();
+      foreach (var scriptBuilder in scriptBuilders)
+      {
+        var compositeScriptBuilder = scriptBuilder as CompositeScriptBuilder;
+        if (compositeScriptBuilder == null)
+        {
+          scriptBuilderList.Add (scriptBuilder);
+        }
+        else
+        {
+          if (!ReferenceEquals (compositeScriptBuilder.RdbmsProviderDefinition, _rdbmsProviderDefinition))
+          {
+            throw new ArgumentException (
+                string.Format (
+                    "The scriptBuilder sequence contains a CompositeScriptBuilder that references a different RdbmsProviderDefinition ('{0}') than the current CompositeScriptBuilder ('{1}').",
+                    compositeScriptBuilder.RdbmsProviderDefinition.Name,
+                    _rdbmsProviderDefinition.Name),
+                "scriptBuilders");
+          }
+          scriptBuilderList.AddRange (compositeScriptBuilder.ScriptBuilders);
+        }
+      }
+      return scriptBuilderList;
     }
   }
 }
