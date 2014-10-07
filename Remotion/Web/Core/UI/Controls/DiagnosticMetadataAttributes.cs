@@ -25,5 +25,7 @@ namespace Remotion.Web.UI.Controls
     public static readonly string BocListCellIndex = "data-boclist-cell-index";
     public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";
     public static readonly string BocListCellContents = "data-boclist-cell-contents";
+    public static readonly string BocListWellKnownEditCell = "data-boclist-wellknown-cell-edit";
+    public static readonly string BocListWellKnownRowDropDownMenuCell = "data-boclist-wellknown-cell-dropdownmenu";
   }
 }

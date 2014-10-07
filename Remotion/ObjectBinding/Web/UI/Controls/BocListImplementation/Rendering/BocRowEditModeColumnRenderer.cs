@@ -75,6 +75,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         renderingContext.Writer.Write (c_whiteSpace);
     }
 
+    protected override void AddDiagnosticMetadataAttributes (BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListWellKnownEditCell, "true");
+    }
+
     private void RenderEditableRowCellContents (
         BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext,
         int originalRowIndex,
@@ -142,17 +149,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNull ("icon", icon);
 
-      if (!renderingContext.Control.IsReadOnly && renderingContext.Control.HasClientScript)
-      {
-        string argument = renderingContext.Control.GetRowEditCommandArgument (new BocListRow (originalRowIndex, businessObject), command);
-        string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);
-      }
-      var commandID = renderingContext.Control.ClientID + "_Column_" + renderingContext.ColumnIndex + "_RowEditCommand_" + command + "_Row_" + originalRowIndex;
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, commandID);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
+      string argument = renderingContext.Control.GetRowEditCommandArgument (new BocListRow (originalRowIndex, businessObject), command);
+      string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
+      var commandItemID = "Column_" + renderingContext.ColumnIndex + "_RowEditCommand_" + command + "_Row_" + originalRowIndex;
 
+      Command c;
+      if (!renderingContext.Control.IsReadOnly && renderingContext.Control.HasClientScript)
+        c = new Command (CommandType.Event) { EventCommand = new Command.EventCommandInfo() };
+      else
+        c = new Command (CommandType.None);
+
+      c.ItemID = commandItemID;
+      c.OwnerControl = renderingContext.Control;
+      
+      c.RenderBegin (renderingContext.Writer, RenderingFeatures, postBackEvent, new string[0], c_onCommandClickScript, null);
+      
       bool hasIcon = icon.HasRenderingInformation;
       bool hasText = !string.IsNullOrEmpty (text);
 
@@ -172,7 +183,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (hasText)
         renderingContext.Writer.Write (text); // Do not HTML encode.
 
-      renderingContext.Writer.RenderEndTag();
+      c.RenderEnd(renderingContext.Writer);
     }
   }
 }

@@ -55,7 +55,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           invocation => ((HtmlTextWriter) invocation.Arguments[0]).Write ("mocked dropdown menu"));
 
       _renderingContext =
-          new BocColumnRenderingContext<BocDropDownMenuColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
+          new BocColumnRenderingContext<BocDropDownMenuColumnDefinition> (
+              new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 0));
     }
 
     [Test]
@@ -74,7 +75,10 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
               false,
               new Command()));
 
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.Default,
+          _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -93,7 +97,10 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       InitializeRowMenus();
 
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.Default,
+          _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
       var document = Html.GetResultDocument();
@@ -105,6 +112,22 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertAttribute (div, "onclick", "BocList_OnCommandClick();");
 
       Html.AssertTextNode (div, "mocked dropdown menu", 0);
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRendering ()
+    {
+      InitializeRowMenus();
+
+      IBocColumnRenderer renderer = new BocDropDownMenuColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+
+      var document = Html.GetResultDocument();
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      Html.AssertAttribute (td, DiagnosticMetadataAttributes.BocListWellKnownRowDropDownMenuCell, "true");
     }
 
     private void InitializeRowMenus ()

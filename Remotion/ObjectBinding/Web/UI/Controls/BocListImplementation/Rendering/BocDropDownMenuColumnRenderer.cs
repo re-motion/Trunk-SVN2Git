@@ -83,5 +83,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       renderingContext.Writer.RenderEndTag(); // End div
     }
+
+    protected override void AddDiagnosticMetadataAttributes (BocColumnRenderingContext<BocDropDownMenuColumnDefinition> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListWellKnownRowDropDownMenuCell, "true");
+    }
   }
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -30,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   /// <typeparam name="TBocColumnDefinition">The column definition class which the deriving class can handle.</typeparam>
   public abstract class BocColumnRendererBase<TBocColumnDefinition> : IBocColumnRenderer
-      where TBocColumnDefinition: BocColumnDefinition
+      where TBocColumnDefinition : BocColumnDefinition
   {
     /// <summary>Filename of the image used to indicate an ascending sort order of the column in its title cell.</summary>
     protected const string c_sortAscendingIcon = "SortAscending.gif";
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
       ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
-      
+
       _resourceUrlFactory = resourceUrlFactory;
       _renderingFeatures = renderingFeatures;
       _cssClasses = cssClasses;
@@ -90,13 +91,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     void IBocColumnRenderer.RenderTitleCell (BocColumnRenderingContext renderingContext, SortingDirection sortingDirection, int orderIndex)
     {
       RenderTitleCell (
-          new BocColumnRenderingContext<TBocColumnDefinition>(renderingContext),
+          new BocColumnRenderingContext<TBocColumnDefinition> (renderingContext),
           sortingDirection,
           orderIndex);
     }
 
     protected virtual void RenderTitleCell (
-        BocColumnRenderingContext<TBocColumnDefinition> renderingContext, SortingDirection sortingDirection, int orderIndex)
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext,
+        SortingDirection sortingDirection,
+        int orderIndex)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
@@ -123,7 +126,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     void IBocColumnRenderer.RenderDataColumnDeclaration (BocColumnRenderingContext renderingContext, bool isTextXml)
     {
-      RenderDataColumnDeclaration (new BocColumnRenderingContext<TBocColumnDefinition>(renderingContext), isTextXml);
+      RenderDataColumnDeclaration (new BocColumnRenderingContext<TBocColumnDefinition> (renderingContext), isTextXml);
     }
 
     protected virtual void RenderDataColumnDeclaration (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, bool isTextXml)
@@ -150,7 +153,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private void RenderTitleCellMarkers (BocColumnRenderingContext<TBocColumnDefinition> renderingContext)
     {
       renderingContext.Control.EditModeController.RenderTitleCellMarkers (
-          renderingContext.Writer, renderingContext.ColumnDefinition, renderingContext.ColumnIndex);
+          renderingContext.Writer,
+          renderingContext.ColumnDefinition,
+          renderingContext.ColumnIndex);
     }
 
     private void RenderBeginTagTitleCellSortCommand (BocColumnRenderingContext<TBocColumnDefinition> renderingContext)
@@ -172,7 +177,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument);
           postBackEvent += "; return false;";
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent);
-          
+
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
 
           renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
@@ -196,7 +201,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     }
 
     private void RenderTitleCellSortingButton (
-        BocColumnRenderingContext<TBocColumnDefinition> renderingContext, SortingDirection sortingDirection, int orderIndex)
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext,
+        SortingDirection sortingDirection,
+        int orderIndex)
     {
       if (sortingDirection == SortingDirection.None)
         return;
@@ -252,7 +259,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       RenderDataCell (
-          new BocColumnRenderingContext<TBocColumnDefinition>(renderingContext),
+          new BocColumnRenderingContext<TBocColumnDefinition> (renderingContext),
           rowIndex,
           showIcon,
           dataRowRenderEventArgs);
@@ -285,15 +292,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         cssClassTableCell += " " + renderingContext.ColumnDefinition.CssClass;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
       if (_renderingFeatures.EnableDiagnosticMetadata)
-      {
-        var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellIndex, oneBasedCellIndex.ToString());
-      }
+        AddDiagnosticMetadataAttributes (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
 
       RenderCellContents (renderingContext, dataRowRenderEventArgs, rowIndex, showIcon);
 
       renderingContext.Writer.RenderEndTag();
+    }
+
+    /// <summary>
+    /// Allows to render additional diagnostic metadata attributes. The base implementation renders the
+    /// <see cref="BocColumnRenderingContext.VisibleColumnIndex"/> as <see cref="DiagnosticMetadataAttributes.BocListCellIndex"/> attribute.
+    /// </summary>
+    /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocCOlumnDefinition}"/>.</param>
+    protected virtual void AddDiagnosticMetadataAttributes (BocColumnRenderingContext<TBocColumnDefinition> renderingContext)
+    {
+      var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellIndex, oneBasedCellIndex.ToString());
     }
 
     /// <summary>
@@ -308,6 +323,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         BocListDataRowRenderEventArgs dataRowRenderEventArgs,
         int rowIndex,
         bool showIcon);
-    
   }
 }
