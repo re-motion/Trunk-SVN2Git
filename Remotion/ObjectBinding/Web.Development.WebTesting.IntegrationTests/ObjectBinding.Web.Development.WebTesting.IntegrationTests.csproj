@@ -63,6 +63,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="BocTextControlObjectTest.cs" />
     <Compile Include="BocListControlObjectTest.cs" />
     <Compile Include="BocAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="FluentControlSelectorExtensionsForIntegrationTests.cs" />
