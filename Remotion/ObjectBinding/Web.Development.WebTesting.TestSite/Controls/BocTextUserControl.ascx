@@ -1,0 +1,59 @@
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="BocTextUserControl.ascx.cs" Inherits="Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.BocTextUserControl" %>
+<remotion:FormGridManager ID="FormGridManager" runat="server" />
+<remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
+<table id="FormGrid" runat="server">
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocTextValue
+        ID="LastNameField_Normal"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="LastName"
+        TextBoxStyle-AutoPostBack="true"
+        ValueType="String"
+        runat="server"/>
+    </td>
+    <td>(normal)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocTextValue
+        ID="LastNameField_ReadOnly"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="LastName"
+        TextBoxStyle-AutoPostBack="true"
+        ReadOnly="true"
+        ValueType="String"
+        runat="server"/>
+    </td>
+    <td>(read-only)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocTextValue
+        ID="LastNameField_Disabled"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="LastName"
+        TextBoxStyle-AutoPostBack="true"
+        Enabled="false"
+        ValueType="String"
+        runat="server"/>
+    </td>
+    <td>(disabled)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocTextValue
+        ID="LastNameField_NoAutoPostBack"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="LastName"
+        TextBoxStyle-AutoPostBack="false"
+        ValueType="String"
+        runat="server"/>
+    </td>
+    <td>(no auto postback)</td>
+  </tr>
+</table>
