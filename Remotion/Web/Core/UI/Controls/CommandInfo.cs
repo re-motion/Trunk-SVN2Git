@@ -122,6 +122,7 @@ namespace Remotion.Web.UI.Controls
 
     private void AddDiagnosticMetadataAttributes (HtmlTextWriter writer)
     {
+      writer.AddAttribute ("class", "command");
       writer.AddAttribute (DiagnosticMetadataAttributes.TriggersNavigation, IsTriggeringNavigation().ToString().ToLower());
       writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, IsTriggeringPostBack().ToString().ToLower());
     }
