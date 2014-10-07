@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestText ()
+    public void TestGetText ()
     {
       var home = Start();
 

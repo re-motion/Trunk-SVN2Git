@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
@@ -9,7 +10,7 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>.
+  /// Control object representing the <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
   public class BocAutoCompleteReferenceValueControlObject : BocControlObject
   {
@@ -23,11 +24,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public string GetText()
+    public string GetText ()
     {
-      if(Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
         return FindChild ("Label").Text;
-        
+
       return FindChild ("TextValue").Value;
     }
 

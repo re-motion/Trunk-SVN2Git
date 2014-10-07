@@ -15,7 +15,7 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing the <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
+  /// Control object representing the <see cref="BocList"/>.
   /// </summary>
   public class BocListControlObject : BocControlObject
   {
