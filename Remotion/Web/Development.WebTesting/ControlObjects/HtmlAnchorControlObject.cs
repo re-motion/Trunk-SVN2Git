@@ -39,7 +39,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private bool IsPostBackLink ()
     {
-      return Scope["href"].Contains ("__doPostBack");
+      const string doPostBackScript = "__doPostBack";
+
+      return Scope["href"].Contains (doPostBackScript)
+             || (Scope["href"].Equals ("#") && Scope["onclick"] != null && Scope["onclick"].Contains (doPostBackScript));
     }
   }
 }
