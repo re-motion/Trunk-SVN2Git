@@ -4,13 +4,13 @@ using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public int GetNumberOfPages ()
     {
       var navigatorDivScope = Scope.FindCss (".bocListNavigator"); // Todo RM-6297: render directly on bocList root element?
-      return int.Parse (navigatorDivScope[DiagnosticMetadataAttributes.BocListNumberOfPages]);
+      return int.Parse (navigatorDivScope[DiagnosticMetadataAttributesForObjectBinding.BocListNumberOfPages]);
     }
 
     public void GoToSpecificPage (int page)
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
-          DiagnosticMetadataAttributes.BocListRowIndex,
+          DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex,
           index);
       var rowScope = Scope.FindCss (cssSelector);
       rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
@@ -115,11 +115,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var index = GetHeaderLabelIndex (headerLabel);
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
-          DiagnosticMetadataAttributes.BocListCellIndex,
+          DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
           index,
-          DiagnosticMetadataAttributes.BocListCellContents,
+          DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
           containsText);
-      var cellScope = Scope.FindCss (cssSelector).FindXPath("../..");
+      var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
       cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var index = GetHeaderLabelIndex (headerLabel);
 
-      var cssSelector = string.Format (".bocListFakeTableHead th[{0}='{1}'] a", DiagnosticMetadataAttributes.BocListCellIndex, index);
+      var cssSelector = string.Format (".bocListFakeTableHead th[{0}='{1}'] a", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index);
       var sortColumnLinkScope = Scope.FindCss (cssSelector);
 
       sortColumnLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
@@ -179,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public BocListRowControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributes.BocListRowIndex]);
+      _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
     }
 
     public void ClickSelectCheckbox ()
@@ -191,7 +191,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocListEditableRowControlObject Edit ()
     {
-      var editCommandScope = Scope.FindCss (string.Format ("td[{0}='{1}'] a", DiagnosticMetadataAttributes.BocListWellKnownEditCell, "true"));
+      var editCommandScope =
+          Scope.FindCss (string.Format ("td[{0}='{1}'] a", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true"));
       editCommandScope.ClickAndWait (Context, WaitFor.WxePostBack);
 
       return new BocListEditableRowControlObject (ID, Context);
@@ -199,7 +200,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocListCellControlObject GetCell (int index)
     {
-      var cssSelector = string.Format ("td[{0}='{1}']", DiagnosticMetadataAttributes.BocListCellIndex, index);
+      var cssSelector = string.Format ("td[{0}='{1}']", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index);
       var cellScope = Scope.FindCss (cssSelector);
       cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
 
@@ -208,7 +209,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public DropDownMenuControlObject GetRowDropDownMenu ()
     {
-      var cssSelector = string.Format ("td[{0}='{1}'] span.DropDownMenuContainer", DiagnosticMetadataAttributes.BocListWellKnownRowDropDownMenuCell, "true");
+      var cssSelector = string.Format (
+          "td[{0}='{1}'] span.DropDownMenuContainer",
+          DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell,
+          "true");
       var rowDropDownMenuScope = Scope.FindCss (cssSelector);
       return new DropDownMenuControlObject (rowDropDownMenuScope.Id, Context.CloneForScope (rowDropDownMenuScope));
     }
@@ -246,7 +250,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocListEditableCellControlObject GetCell (int index)
     {
-      var cssSelector = string.Format ("td[{0}='{1}']", DiagnosticMetadataAttributes.BocListCellIndex, index);
+      var cssSelector = string.Format ("td[{0}='{1}']", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index);
       var cellScope = Scope.FindCss (cssSelector);
       cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
 
@@ -255,7 +259,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private BocListEditableCellControlObject GetWellKnownEditCell ()
     {
-      var editCellScope = Scope.FindCss (string.Format ("td[{0}='{1}']", DiagnosticMetadataAttributes.BocListWellKnownEditCell, "true"));
+      var editCellScope =
+          Scope.FindCss (string.Format ("td[{0}='{1}']", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true"));
       editCellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
 
       return new BocListEditableCellControlObject (ID, Context.CloneForScope (editCellScope));

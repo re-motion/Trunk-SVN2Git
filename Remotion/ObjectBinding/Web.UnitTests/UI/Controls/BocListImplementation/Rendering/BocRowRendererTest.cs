@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       _columnRenderers = new[]
                          {
                              new BocColumnRenderer (
-                                 new StubColumnRenderer (new FakeResourceUrlFactory ()),
+                                 new StubColumnRenderer (new FakeResourceUrlFactory()),
                                  stubColumnDefinition,
                                  0,
                                  0,
@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers),
           new BocListRowRenderingContext (new BocListRow (0, BusinessObject), 1, false),
           0);
-      
+
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderEmptyListDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers));
-      
+
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
@@ -186,7 +186,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void TestDiagnosticMetadataRendering()
+    public void TestDiagnosticMetadataRendering ()
     {
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
@@ -197,11 +197,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
           new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers),
           new BocListRowRenderingContext (new BocListRow (0, BusinessObject), 1, false),
           0);
-      
+
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
-      Html.AssertAttribute (tr, DiagnosticMetadataAttributes.BocListRowIndex, 1.ToString());
+      Html.AssertAttribute (tr, DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex, 1.ToString());
     }
   }
 }

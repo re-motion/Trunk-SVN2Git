@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, DiagnosticMetadataAttributes.BocListWellKnownEditCell, "true");
+      Html.AssertAttribute (td, DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
     }
   }
 }

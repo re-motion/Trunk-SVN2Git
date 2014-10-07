@@ -24,6 +24,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
+using DiagnosticMetadataAttributesForObjectBinding = Remotion.ObjectBinding.Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
 {
@@ -223,7 +224,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
 
       var div = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (div, DiagnosticMetadataAttributes.BocListNumberOfPages, totalPageCount.ToString());
+      Html.AssertAttribute (div, DiagnosticMetadataAttributesForObjectBinding.BocListNumberOfPages, totalPageCount.ToString());
     }
 
     private void AssertManualInputArea (XmlNode manualInputArea, int currentPageIndex, int totalPageCount)

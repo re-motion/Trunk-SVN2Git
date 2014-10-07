@@ -237,6 +237,7 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\DiagnosticMetadataAttributesForObjectBinding.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocCheckBox.cs">

@@ -104,9 +104,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       var control = document.DocumentElement;
       control.AssertNoAttribute (DiagnosticMetadataAttributes.DisplayName);
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, "true");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "false");
-      control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundType);
-      control.AssertNoAttribute (DiagnosticMetadataAttributes.BoundProperty);
+      control.AssertAttributeValueEquals (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.IsBound, "false");
+      control.AssertNoAttribute (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.BoundType);
+      control.AssertNoAttribute (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.BoundProperty);
     }
 
     [Test]
@@ -132,11 +132,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       var control = document.DocumentElement;
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.DisplayName, "ReferenceValue");
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsReadOnly, "false");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
+      control.AssertAttributeValueEquals (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.IsBound, "true");
       control.AssertAttributeValueEquals (
-          DiagnosticMetadataAttributes.BoundType,
+          Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.BoundType,
           "Remotion.ObjectBinding.Web.UnitTests.Domain.TypeWithReference, Remotion.ObjectBinding.Web.UnitTests");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundProperty, "ReferenceValue");
+      control.AssertAttributeValueEquals (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.BoundProperty, "ReferenceValue");
     }
 
     [Test]
@@ -159,11 +159,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 
       var document = Html.GetResultDocument();
       var control = document.DocumentElement;
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.IsBound, "true");
+      control.AssertAttributeValueEquals (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.IsBound, "true");
       control.AssertAttributeValueEquals (
-          DiagnosticMetadataAttributes.BoundType,
+          Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.BoundType,
           "Remotion.ObjectBinding.Web.UnitTests.Domain.TypeWithReference, Remotion.ObjectBinding.Web.UnitTests");
-      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.BoundProperty, "ReferenceValue");
+      control.AssertAttributeValueEquals (Web.UI.Controls.DiagnosticMetadataAttributesForObjectBinding.BoundProperty, "ReferenceValue");
     }
 
     private RenderingContext<TestableBocControl> CreateRenderingContext ()

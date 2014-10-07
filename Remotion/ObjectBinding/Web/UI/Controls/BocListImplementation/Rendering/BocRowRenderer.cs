@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using Remotion.Globalization;
@@ -72,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       foreach (var columnRenderer in renderingContext.ColumnRenderers)
         columnRenderer.RenderTitleCell (renderingContext);
-      
+
       if (ControlHelper.IsDesignMode (renderingContext.Control) && renderingContext.ColumnRenderers.Length == 0)
       {
         for (int i = 0; i < DesignModeDummyColumnCount; i++)
@@ -148,7 +149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (_renderingFeatures.EnableDiagnosticMetadata)
       {
         var oneBasedRowIndex = rowIndex + 1;
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListRowIndex, oneBasedRowIndex.ToString());
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex, oneBasedRowIndex.ToString());
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
@@ -176,7 +177,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         columnRenderer.RenderDataCell (renderingContext, rowIndex, dataRowRenderEventArgs);
     }
 
-    private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
+    private string GetCssClassTableRow (
+        BocListRenderingContext renderingContext,
+        bool isChecked,
+        BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       string cssClassTableRow = CssClasses.DataRow;
 

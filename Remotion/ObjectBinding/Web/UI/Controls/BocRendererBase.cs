@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -29,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class BocRendererBase<TControl> : RendererBase<TControl>
-      where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
+      where TControl : IBocRenderableControl, IBusinessObjectBoundEditableWebControl
   {
     protected BocRendererBase (
         IResourceUrlFactory resourceUrlFactory,
@@ -44,13 +45,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   <para> Class: <c>bocTextValue</c>. </para>
     ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
     /// </remarks>
-    public abstract string GetCssClassBase (TControl control); 
+    public abstract string GetCssClassBase (TControl control);
 
     protected void RegisterBrowserCompatibilityScript (HtmlHeadAppender htmlHeadAppender)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
     }
 
     /// <summary>
@@ -94,29 +95,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsReadOnly, control.IsReadOnly.ToString().ToLower());
 
       var isBound = IsBound (control);
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsBound, isBound.ToString().ToLower());
-      
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.IsBound, isBound.ToString().ToLower());
+
       if (isBound)
       {
         var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier (control);
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundType, businessObjectClassIdentifier);
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BoundProperty, control.Property.Identifier);
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundType, businessObjectClassIdentifier);
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundProperty, control.Property.Identifier);
       }
     }
 
-    private bool IsBound(TControl control)
+    private bool IsBound (TControl control)
     {
       return control.Property != null && control.DataSource != null
              && (control.DataSource.BusinessObject != null || control.DataSource.BusinessObjectClass != null);
     }
 
-    private string GetBusinessObjectClassIdentifier(TControl control)
+    private string GetBusinessObjectClassIdentifier (TControl control)
     {
       // Try dynamic bound type first, afterwards static bound type. Order due to behavioral uniformity.
 
       if (control.DataSource.BusinessObject != null)
         return control.DataSource.BusinessObject.BusinessObjectClass.Identifier;
-      
+
       if (control.DataSource.BusinessObjectClass != null)
         return control.DataSource.BusinessObjectClass.Identifier;
 
@@ -156,7 +157,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
 
       if (!hasCssClass && !hasClassAttribute)
-        renderingContext.Control.CssClass = GetCssClassBase(renderingContext.Control) + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+      {
+        renderingContext.Control.CssClass = GetCssClassBase (renderingContext.Control)
+                                            + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+      }
     }
 
     private void RestoreClass (RenderingContext<TControl> renderingContext, string backUpCssClass, string backUpAttributeCssClass)

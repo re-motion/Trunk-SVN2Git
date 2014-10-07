@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.Security;
 using Remotion.Utilities;
@@ -32,9 +32,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   /// </summary>
   /// <typeparam name="TBocColumnDefinition">The column definition class which the deriving class can handle.</typeparam>
   public abstract class BocCommandEnabledColumnRendererBase<TBocColumnDefinition> : BocColumnRendererBase<TBocColumnDefinition>
-      where TBocColumnDefinition: BocCommandEnabledColumnDefinition
+      where TBocColumnDefinition : BocCommandEnabledColumnDefinition
   {
-    protected BocCommandEnabledColumnRendererBase (IResourceUrlFactory resourceUrlFactory, IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
+    protected BocCommandEnabledColumnRendererBase (
+        IResourceUrlFactory resourceUrlFactory,
+        IRenderingFeatures renderingFeatures,
+        BocListCssClassDefinition cssClasses)
         : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
@@ -58,8 +61,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       renderingContext.Writer.AddAttribute ("class", CssClasses.CommandText);
-      if(RenderingFeatures.EnableDiagnosticMetadata)
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellContents, contents);
+      if (RenderingFeatures.EnableDiagnosticMetadata)
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, contents);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       if (string.IsNullOrWhiteSpace (contents))
@@ -71,7 +74,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     }
 
     protected bool RenderBeginTagDataCellCommand (
-        BocColumnRenderingContext<TBocColumnDefinition> renderingContext, IBusinessObject businessObject, int originalRowIndex)
+        BocColumnRenderingContext<TBocColumnDefinition> renderingContext,
+        IBusinessObject businessObject,
+        int originalRowIndex)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
@@ -111,7 +116,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         try
         {
           command.ItemID = command.ItemID + "_Row_" + originalRowIndex;
-          command.RenderBegin (renderingContext.Writer, RenderingFeatures, postBackEvent, onClick, originalRowIndex, objectID, businessObject as ISecurableObject);
+          command.RenderBegin (
+              renderingContext.Writer,
+              RenderingFeatures,
+              postBackEvent,
+              onClick,
+              originalRowIndex,
+              objectID,
+              businessObject as ISecurableObject);
         }
         finally
         {

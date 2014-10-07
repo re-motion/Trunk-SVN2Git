@@ -2,6 +2,7 @@
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
@@ -39,13 +40,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
             string.Format (
                 "{0}[{1}='{2}'][{3}='{4}']",
                 _rootTag,
-                DiagnosticMetadataAttributes.BoundType,
+                DiagnosticMetadataAttributesForObjectBinding.BoundType,
                 domainClass,
-                DiagnosticMetadataAttributes.BoundProperty,
+                DiagnosticMetadataAttributesForObjectBinding.BoundProperty,
                 domainProperty));
       }
       else
-        scope = context.Scope.FindCss (string.Format ("{0}[{1}='{2}']", _rootTag, DiagnosticMetadataAttributes.BoundProperty, domainProperty));
+      {
+        scope = context.Scope.FindCss (
+            string.Format ("{0}[{1}='{2}']", _rootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty));
+      }
 
       return CreateControlObject (context, scope);
     }

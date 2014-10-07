@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -91,10 +92,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       /// <summary> Move to first page. </summary>
       First,
+
       /// <summary> Move to last page. </summary>
       Last,
+
       /// <summary> Move to previous page. </summary>
       Previous,
+
       /// <summary> Move to next page. </summary>
       Next
     }
@@ -133,8 +137,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
-      if(RenderingFeatures.EnableDiagnosticMetadata)
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListNumberOfPages, renderingContext.Control.PageCount.ToString());
+      if (RenderingFeatures.EnableDiagnosticMetadata)
+      {
+        renderingContext.Writer.AddAttribute (
+            DiagnosticMetadataAttributesForObjectBinding.BocListNumberOfPages,
+            renderingContext.Control.PageCount.ToString());
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
       if (renderingContext.Control.HasClientScript)
@@ -158,9 +166,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           RenderValueField (renderingContext);
       }
       else
-      {
-        RenderPageInformationReadOnly(renderingContext);
-      }
+        RenderPageInformationReadOnly (renderingContext);
 
       renderingContext.Writer.RenderEndTag();
     }
@@ -173,7 +179,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var currentPageNumber = (renderingContext.Control.CurrentPageIndex + 1).ToString (CultureInfo.InvariantCulture);
       var totalPageCount = renderingContext.Control.PageCount.ToString (CultureInfo.InvariantCulture);
       var currentPageNumberMaxLength = totalPageCount.Length.ToString (CultureInfo.InvariantCulture);
-      var currentPageNumberTextBoxID = GetCurrentPageNumberControlID(renderingContext);
+      var currentPageNumberTextBoxID = GetCurrentPageNumberControlID (renderingContext);
       var totalPageCountText = GetResourceManager (renderingContext).GetString (ResourceIdentifier.TotalPageCountText);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.For, currentPageNumberTextBoxID);
@@ -200,7 +206,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           currentPageNumberTextBoxID,
           GetCurrentPageIndexControlID (renderingContext));
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-          renderingContext.Control, typeof (BocListNavigationBlockRenderer), "Initialize_" + renderingContext.Control.ClientID, script);
+          renderingContext.Control,
+          typeof (BocListNavigationBlockRenderer),
+          "Initialize_" + renderingContext.Control.ClientID,
+          script);
     }
 
     private void RenderPageInformationReadOnly (BocListRenderingContext renderingContext)
@@ -281,7 +290,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private IResourceUrl GetResolvedImageUrl (string imageUrl)
     {
-      return ResourceUrlFactory.CreateThemedResourceUrl(typeof (BocListNavigationBlockRenderer), ResourceType.Image, imageUrl);
+      return ResourceUrlFactory.CreateThemedResourceUrl (typeof (BocListNavigationBlockRenderer), ResourceType.Image, imageUrl);
     }
 
     private string GetCurrentPageNumberControlID (BocListRenderingContext renderingContext)

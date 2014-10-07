@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (_renderingFeatures.EnableDiagnosticMetadata)
       {
         var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellIndex, oneBasedCellIndex.ToString());
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
 
@@ -302,13 +302,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     /// <summary>
     /// Allows to render additional diagnostic metadata attributes. The base implementation renders the
-    /// <see cref="BocColumnRenderingContext.VisibleColumnIndex"/> as <see cref="DiagnosticMetadataAttributes.BocListCellIndex"/> attribute.
+    /// <see cref="BocColumnRenderingContext.VisibleColumnIndex"/> as <see cref="DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex"/>
+    /// attribute.
     /// </summary>
     /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocCOlumnDefinition}"/>.</param>
     protected virtual void AddDiagnosticMetadataAttributes (BocColumnRenderingContext<TBocColumnDefinition> renderingContext)
     {
       var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListCellIndex, oneBasedCellIndex.ToString());
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
     }
 
     /// <summary>

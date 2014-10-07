@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
-using Remotion.ServiceLocation;
 using Remotion.Globalization;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -38,7 +39,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// This class should not be instantiated directly by clients. Instead, a <see cref="BocRowRenderer"/> should use a
     /// factory to obtain instances of this class.
     /// </remarks>
-    public BocRowEditModeColumnRenderer (IResourceUrlFactory resourceUrlFactory, IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
+    public BocRowEditModeColumnRenderer (
+        IResourceUrlFactory resourceUrlFactory,
+        IRenderingFeatures renderingFeatures,
+        BocListCssClassDefinition cssClasses)
         : base (resourceUrlFactory, renderingFeatures, cssClasses)
     {
     }
@@ -79,7 +83,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     {
       base.AddDiagnosticMetadataAttributes (renderingContext);
 
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.BocListWellKnownEditCell, "true");
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
     }
 
     private void RenderEditableRowCellContents (
@@ -161,9 +165,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       c.ItemID = commandItemID;
       c.OwnerControl = renderingContext.Control;
-      
+
       c.RenderBegin (renderingContext.Writer, RenderingFeatures, postBackEvent, new string[0], c_onCommandClickScript, null);
-      
+
       bool hasIcon = icon.HasRenderingInformation;
       bool hasText = !string.IsNullOrEmpty (text);
 
@@ -183,7 +187,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (hasText)
         renderingContext.Writer.Write (text); // Do not HTML encode.
 
-      c.RenderEnd(renderingContext.Writer);
+      c.RenderEnd (renderingContext.Writer);
     }
   }
 }
