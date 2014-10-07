@@ -46,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting
         TestObjectContext context,
         IWaitingStrategy waitingStrategy)
     {
-      PerformActionUsingWaitStrategy (scope, s => s.FocusClick(), context, waitingStrategy);
+      scope.PerformActionUsingWaitStrategy (s => s.FocusClick(), context, waitingStrategy);
     }
 
     public static void FillWithAndWait (
@@ -62,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting
         thenAction (s);
       };
 
-      PerformActionUsingWaitStrategy (scope, action, context, waitingStrategy);
+      scope.PerformActionUsingWaitStrategy (action, context, waitingStrategy);
     }
   }
 }
