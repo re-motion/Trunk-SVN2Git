@@ -63,6 +63,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="CommandControlObjectTest.cs" />
     <Compile Include="FluentControlSelectorExtensionsForIntegrationTests.cs" />
     <Compile Include="SingleViewControlObjectTest.cs" />
     <Compile Include="FormGridControlObjectTest.cs" />

@@ -64,6 +64,7 @@
     <Content Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </Content>
+    <Content Include="CommandTest.aspx" />
     <Content Include="Images\SampleIcon.gif" />
     <Content Include="ListMenuTest.aspx" />
     <Content Include="Layout.Master" />
@@ -89,6 +90,14 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="CommandTest.aspx.cs">
+      <DependentUpon>CommandTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CommandTest.aspx.designer.cs">
+      <DependentUpon>CommandTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="CommandTestFunction.cs" />
     <Compile Include="ListMenuTestFunction.cs" />
     <Compile Include="ListMenuTest.aspx.cs">
       <DependentUpon>ListMenuTest.aspx</DependentUpon>
@@ -112,6 +121,7 @@
       <DependentUpon>HtmlAnchorTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="HtmlAnchorTestFunction.cs" />
+    <Compile Include="TestCommand.cs" />
     <Compile Include="WebButtonTestFunction.cs" />
     <Compile Include="WebButtonTest.aspx.cs">
       <DependentUpon>WebButtonTest.aspx</DependentUpon>
@@ -167,6 +177,10 @@
     <ProjectReference Include="..\..\Development\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
+      <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
+      <Name>Security.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Web.Core.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>

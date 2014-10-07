@@ -100,6 +100,7 @@
     <Compile Include="ControlObjects\IClickableItemsControlObject.cs" />
     <Compile Include="ControlObjects\ITabStripControlObject.cs" />
     <Compile Include="ControlObjects\ListMenuControlObject.cs" />
+    <Compile Include="ControlObjects\Selectors\CommandSelector.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlAnchorSelector.cs" />
     <Compile Include="ControlObjects\Selectors\HtmlControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />

@@ -5,8 +5,6 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
-  // Todo RM-6297: Integration tests? HowTo? Only in combination with "real" controls I guess?!
-
   /// <summary>
   /// Control object representing a <see cref="Command"/>.
   /// </summary>
