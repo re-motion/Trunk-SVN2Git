@@ -325,7 +325,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("CellCommandClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("|Command")); // Todo RM-6297: ItemID?
     }
-
+    
     [Test]
     [Ignore ("Ignored until BocText has been implemented.")]
     public void TestEditableCellGetControl ()

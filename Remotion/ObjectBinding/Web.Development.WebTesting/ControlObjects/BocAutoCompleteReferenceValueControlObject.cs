@@ -23,9 +23,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    /// <summary>
-    /// Todo RM-6297: Docs
-    /// </summary>
     public string GetText()
     {
       if(Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
@@ -34,9 +31,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FindChild ("TextValue").Value;
     }
 
-    /// <summary>
-    /// Todo RM-6297: Docs
-    /// </summary>
     public UnspecifiedPageObject FillWith ([NotNull] string text, [CanBeNull] IWaitingStrategy waitingStrategy = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
@@ -44,9 +38,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FillWith (text, Then.TabAway, waitingStrategy);
     }
 
-    /// <summary>
-    /// Todo RM-6297: Docs
-    /// </summary>
     public UnspecifiedPageObject FillWith ([NotNull] string text, [NotNull] ThenAction then, [CanBeNull] IWaitingStrategy waitingStrategy = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
@@ -57,9 +48,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    /// <summary>
-    /// Todo RM-6297: Docs
-    /// </summary>
     public CommandControlObject GetCommand ()
     {
       var commandScope = FindChild ("Command");
@@ -67,17 +55,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (commandScope.Id, context);
     }
 
-    /// <summary>
-    /// Todo RM-6297: Docs
-    /// </summary>
     public UnspecifiedPageObject ExecuteCommand ([CanBeNull] IWaitingStrategy waitingStrategy = null)
     {
       return GetCommand().Click (waitingStrategy);
     }
 
-    /// <summary>
-    /// Todo RM-6297: Docs
-    /// </summary>
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = FindChild ("Boc_OptionsMenu");

@@ -7,10 +7,8 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   public static class DiagnosticMetadataAttributes
   {
-    // TODO RM-6297: When would title be needed, i.e. title is usally an attribute
     public static readonly string CommandName = "data-commandname";
     public static readonly string DisplayName = "data-displayname";
-    public static readonly string Title = "data-title";
     public static readonly string ItemID = "data-item-id";
     public static readonly string TriggersPostBack = "data-triggers-pb";
     public static readonly string TriggersNavigation = "data-triggers-nav";
