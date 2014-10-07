@@ -76,6 +76,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rend
       renderingContext.Writer.RenderEndTag ();
     }
 
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<T> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+      
+      var hasAutoPostBack = renderingContext.Control.TextBoxStyle.AutoPostBack.HasValue && renderingContext.Control.TextBoxStyle.AutoPostBack.Value;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
+    }
+
     /// <summary>
     /// Creates a <see cref="TextBox"/> control to use for rendering the <see cref="BocTextValueBase"/> control in edit mode.
     /// </summary>

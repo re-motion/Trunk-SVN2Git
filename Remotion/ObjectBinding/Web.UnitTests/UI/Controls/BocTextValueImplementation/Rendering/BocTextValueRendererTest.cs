@@ -191,33 +191,49 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
     {
       RenderPasswordEditable (true, true);
     }
-    
+
     [Test]
     public void RenderPasswordNoRenderEditable ()
     {
       RenderPasswordEditable (false, false);
     }
-    
+
     [Test]
     public void RenderPasswordMaskedReadonly ()
     {
       RenderPasswordReadonly (true);
     }
-        
+
     [Test]
     public void RenderPasswordNoRenderReadonly ()
     {
       RenderPasswordReadonly (false);
     }
 
-    private void RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
+    [Test]
+    public void TestDiagnosticMetadataRenderingWithAutoPostBack ()
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      var span = RenderSingleLineEditable (true, true, true, true);
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.TriggersPostBack, "true");
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRenderingWithoutAutoPostBack ()
+    {
+      _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      var span = RenderSingleLineEditable (true, true, true, false);
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.TriggersPostBack, "false");
+    }
+
+    private XmlNode RenderSingleLineEditable (bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
+    {
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, autoPostBack);
 
-      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
-      
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue));
+
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
@@ -233,7 +249,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
       Html.AssertAttribute (input, "id", c_valueName);
       Html.AssertAttribute (input, "name", c_valueName);
       Html.AssertAttribute (input, "type", "text");
-      Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      Html.AssertAttribute (input, "value", c_firstLineText);
       Assert.That (TextValue.TextBoxStyle.AutoPostBack, Is.EqualTo (autoPostBack));
       if (autoPostBack)
         Html.AssertAttribute (input, "onchange", string.Format ("javascript:__doPostBack('{0}','')", c_valueName));
@@ -241,16 +257,18 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
         Html.AssertNoAttribute (input, "onchange");
 
       CheckStyle (withStyle, span, input);
+
+      return span;
     }
 
     private void RenderSingleLineDisabled (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.Enabled).Return (false);
-      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue));
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
@@ -267,20 +285,20 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
       var input = Html.GetAssertedChildElement (content, "input", 0);
       Html.AssertAttribute (input, "disabled", "disabled");
       Html.AssertAttribute (input, "readonly", "readonly");
-      Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      Html.AssertAttribute (input, "value", c_firstLineText);
 
       CheckStyle (withStyle, span, input);
     }
 
     private void RenderSingleLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
-      
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue));
+
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
@@ -295,7 +313,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
 
       var labelSpan = Html.GetAssertedChildElement (content, "span", 0);
       Html.AssertAttribute (labelSpan, "id", c_valueName);
-      Html.AssertTextNode (labelSpan, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
+      Html.AssertTextNode (labelSpan, c_firstLineText, 0);
 
       CheckStyle (withStyle, span, labelSpan);
     }
@@ -303,14 +321,14 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
     private void RenderMultiLineReadonly (bool withStyle, bool withCssClass, bool inStandardProperties)
     {
       TextValue.Stub (mock => mock.Text).Return (
-          BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText + Environment.NewLine
-          + BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText);
+          c_firstLineText + Environment.NewLine
+          + c_secondLineText);
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
 
       SetStyle (withStyle, withCssClass, inStandardProperties, false);
       TextValue.TextBoxStyle.TextMode = BocTextBoxMode.MultiLine;
 
-      _renderer.Render(new BocTextValueRenderingContext(MockRepository.GenerateMock<HttpContextBase>(),  Html.Writer, TextValue));
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue));
 
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
@@ -327,9 +345,9 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
 
       var labelSpan = Html.GetAssertedChildElement (content, "span", 0);
 
-      Html.AssertTextNode (labelSpan, BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, 0);
+      Html.AssertTextNode (labelSpan, c_firstLineText, 0);
       Html.GetAssertedChildElement (labelSpan, "br", 1);
-      Html.AssertTextNode (labelSpan, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText, 2);
+      Html.AssertTextNode (labelSpan, c_secondLineText, 2);
       Html.AssertChildElementCount (labelSpan, 1);
 
       CheckStyle (withStyle, span, labelSpan);
@@ -337,7 +355,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
 
     private void RenderPasswordEditable (bool renderPassword, bool autoPostBack)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
       SetStyle (false, false, false, autoPostBack);
       TextValue.TextBoxStyle.TextMode = renderPassword ? BocTextBoxMode.PasswordRenderMasked : BocTextBoxMode.PasswordNoRender;
@@ -357,7 +375,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
       var input = Html.GetAssertedChildElement (content, "input", 0);
       Html.AssertAttribute (input, "type", "password");
       if (renderPassword)
-        Html.AssertAttribute (input, "value", BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+        Html.AssertAttribute (input, "value", c_firstLineText);
       else
         Html.AssertNoAttribute (input, "value");
 
@@ -370,14 +388,14 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
 
     private void RenderPasswordReadonly (bool renderPassword)
     {
-      TextValue.Stub (mock => mock.Text).Return (BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText);
+      TextValue.Stub (mock => mock.Text).Return (c_firstLineText);
 
       SetStyle (false, false, false, false);
       TextValue.TextBoxStyle.TextMode = renderPassword ? BocTextBoxMode.PasswordRenderMasked : BocTextBoxMode.PasswordNoRender;
 
       TextValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase> (), Html.Writer, TextValue));
-      
+      _renderer.Render (new BocTextValueRenderingContext (MockRepository.GenerateMock<HttpContextBase>(), Html.Writer, TextValue));
+
       var document = Html.GetResultDocument();
       Html.AssertChildElementCount (document.DocumentElement, 1);
 
