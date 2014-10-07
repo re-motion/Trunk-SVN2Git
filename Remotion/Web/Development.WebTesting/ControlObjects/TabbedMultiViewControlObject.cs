@@ -34,18 +34,28 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
     }
 
-    public UnspecifiedPageObject SwitchTo (string localID)
+    public UnspecifiedPageObject SwitchTo (string itemID)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return GetTabStrip().SwitchTo (localID + "_Tab");
+      return GetTabStrip().SwitchTo (itemID + "_Tab");
     }
 
-    public UnspecifiedPageObject SwitchToByLabel (string label)
+    public UnspecifiedPageObject SwitchTo (int index)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("label", label);
+      return GetTabStrip().SwitchTo (index);
+    }
 
-      return GetTabStrip().SwitchToByLabel (label);
+    public UnspecifiedPageObject SwitchToByHtmlID (string htmlID)
+    {
+      return GetTabStrip().SwitchToByHtmlID (htmlID);
+    }
+
+    public UnspecifiedPageObject SwitchToByText (string text)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
+      return GetTabStrip().SwitchToByText (text);
     }
 
     private TabStripControlObject GetTabStrip ()
