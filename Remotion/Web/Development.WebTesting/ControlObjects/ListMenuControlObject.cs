@@ -34,9 +34,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (item, waitingStrategy);
     }
     
-    public UnspecifiedPageObject ClickItemByLabel (string label, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null)
     {
-      var item = Scope.FindXPath (string.Format ("tbody/tr/td/span[contains(a,'{0}')]", label));
+      var item = Scope.FindXPath (string.Format ("tbody/tr/td/span[contains(a,'{0}')]", text));
       return ClickItem (item, waitingStrategy);
     }
 

@@ -25,8 +25,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IWaitingStrategy waitingStrategy = null);
 
     /// <summary>
-    /// Click the item given by its <paramref name="label"/>.
+    /// Click the item given by its <paramref name="text"/>.
     /// </summary>
-    UnspecifiedPageObject ClickItemByLabel (string label, IWaitingStrategy waitingStrategy = null);
+    UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null);
   }
 }

@@ -37,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, waitingStrategy);
     }
 
-    public UnspecifiedPageObject ClickItemByLabel (string text, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindCss (string.Format ("li.DropDownMenuItem[{0}='{1}']", DiagnosticMetadataAttributes.Text, text));

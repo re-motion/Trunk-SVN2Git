@@ -80,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       listMenu.ClickItemByHtmlID ("body_MyListMenu_3");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID4|WxeFunction"));
 
-      listMenu.ClickItemByLabel ("EventItem");
+      listMenu.ClickItemByText ("EventItem");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
     }
   }
