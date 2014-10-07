@@ -10,11 +10,11 @@ namespace Remotion.Web.Development.WebTesting.TestSite
     {
       base.OnInit (e);
 
-      MyListMenu.EventCommandClick += MyListMenuOnEventCommandClick;
-      MyListMenu.WxeFunctionCommandClick += MyListMenuOnEventCommandClick;
+      MyListMenu.EventCommandClick += MyListMenuOnCommandClick;
+      MyListMenu.WxeFunctionCommandClick += MyListMenuOnCommandClick;
     }
 
-    private void MyListMenuOnEventCommandClick (object sender, WebMenuItemClickEventArgs webMenuItemClickEventArgs)
+    private void MyListMenuOnCommandClick (object sender, WebMenuItemClickEventArgs webMenuItemClickEventArgs)
     {
       ((Layout) Master).SetTestOutput (webMenuItemClickEventArgs.Item.ItemID + "|" + webMenuItemClickEventArgs.Command.Type);
     }
