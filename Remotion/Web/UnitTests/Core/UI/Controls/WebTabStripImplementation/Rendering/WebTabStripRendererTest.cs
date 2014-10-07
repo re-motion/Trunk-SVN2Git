@@ -225,6 +225,32 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       AssertControl (false, true, true, 4, renderingContext);
     }
 
+    [Test]
+    public void TestDiagnosticMetadataRendering ()
+    {
+      PopulateTabStrip();
+      var renderingContext = new WebTabStripRenderingContext (
+          _httpContextStub,
+          _htmlHelper.Writer,
+          _webTabStrip,
+          new[]
+          {
+              new WebTabRendererAdapter (CreateWebTabRenderer(RenderingFeatures.WithDiagnosticMetadata), _tab0, true, true, _style), 
+          });
+
+      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
+      _renderer.Render (renderingContext);
+
+      var document = _htmlHelper.GetResultDocument();
+      var outerDiv = document.GetAssertedChildElement ("div", 0);
+      var innerDiv = outerDiv.GetAssertedChildElement ("div", 0);
+      var list = innerDiv.GetAssertedChildElement ("ul", 0);
+      var item = list.GetAssertedChildElement ("li", 0);
+      var wrapper = item.GetAssertedChildElement ("span", 0);
+      var tab = wrapper.GetAssertedChildElement ("span", 1);
+      tab.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ItemID, _tab0.ItemID);
+    }
+
     private void PopulateTabStrip ()
     {
       _tab0 = MockRepository.GenerateStub<IMenuTab>();
@@ -409,7 +435,12 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
     private WebTabRenderer CreateWebTabRenderer ()
     {
-      return new WebTabRenderer(new NoneHotkeyFormatter(), RenderingFeatures.Default);
+      return CreateWebTabRenderer (RenderingFeatures.Default);
+    }
+
+    private WebTabRenderer CreateWebTabRenderer (IRenderingFeatures renderingFeatures)
+    {
+      return new WebTabRenderer (new NoneHotkeyFormatter(), renderingFeatures);
     }
   }
 }
