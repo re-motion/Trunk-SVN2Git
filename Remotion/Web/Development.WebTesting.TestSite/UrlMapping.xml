@@ -22,6 +22,7 @@
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 
   <add id="CommandTest" type="Remotion.Web.Development.WebTesting.TestSite::CommandTestFunction" resource="~/CommandTest.wxe"/>
+  <add id="DropDownMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::DropDownMenuTestFunction" resource="~/DropDownMenuTest.wxe"/>
   <add id="HtmlAnchorTest" type="Remotion.Web.Development.WebTesting.TestSite::HtmlAnchorTestFunction" resource="~/HtmlAnchorTest.wxe"/>
   <add id="ListMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::ListMenuTestFunction" resource="~/ListMenuTest.wxe"/>
   <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe"/>

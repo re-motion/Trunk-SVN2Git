@@ -19,25 +19,29 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
-      throw new NotImplementedException();
+      var scope = dropDownMenuScope.FindCss (string.Format ("li.DropDownMenuItem[{0}='{1}']", DiagnosticMetadataAttributes.ItemID, itemID));
+      return ClickItem (scope, waitingStrategy);
     }
 
     public UnspecifiedPageObject ClickItem (int index, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
-      throw new NotImplementedException();
+      var scope = dropDownMenuScope.FindXPath (string.Format ("li[{0}]", index));
+      return ClickItem (scope, waitingStrategy);
     }
 
     public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
-      throw new NotImplementedException();
+      var scope = dropDownMenuScope.FindId (htmlID);
+      return ClickItem (scope, waitingStrategy);
     }
 
-    public UnspecifiedPageObject ClickItemByLabel (string label, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByLabel (string text, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
-      throw new NotImplementedException();
+      var scope = dropDownMenuScope.FindCss (string.Format ("li.DropDownMenuItem[{0}='{1}']", DiagnosticMetadataAttributes.Text, text));
+      return ClickItem (scope, waitingStrategy);
     }
 
     private ElementScope GetDropDownMenuScope ()
@@ -51,9 +55,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private UnspecifiedPageObject ClickItem (ElementScope item, IWaitingStrategy waitingStrategy = null)
     {
-      var anchorScope = item.FindCss ("a");
+      var actualWaitingStrategy = GetActualWaitingStrategy (item, waitingStrategy);
 
-      var actualWaitingStrategy = GetActualWaitingStrategy (anchorScope, waitingStrategy);
+      var anchorScope = item.FindCss ("a");
       anchorScope.ClickAndWait (Context, actualWaitingStrategy);
       return UnspecifiedPage();
     }
