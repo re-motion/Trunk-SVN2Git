@@ -265,6 +265,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       string target = "null";
 
       bool isCommandEnabled = true;
+      var diagnosticMetadataTriggersNavigation = false;
+      var diagnosticMetadataTriggersPostBack = false;
       if (menuItem.Command != null)
       {
         bool isActive = menuItem.Command.Show == CommandShow.Always
@@ -283,12 +285,16 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
             href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, argument);
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
+
+            diagnosticMetadataTriggersPostBack = true;
           }
           else if (menuItem.Command.Type == CommandType.Href)
           {
             href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
             href = "'" + renderingContext.Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
+
+            diagnosticMetadataTriggersNavigation = true;
           }
         }
       }
@@ -299,10 +305,29 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       string icon = GetIconUrl (renderingContext, menuItem, showIcon);
       string disabledIcon = GetDisabledIconUrl (renderingContext, menuItem, showIcon);
       string text = showText ? "'" + menuItem.Text + "'" : "null";
+      string diagnosticMetadataText = showText ? menuItem.Text : "";
+
+      var diagnosticMetadataJson = "null";
+      if (RenderingFeatures.EnableDiagnosticMetadata)
+      {
+        var htmlID = renderingContext.Control.ClientID + "_" + menuItemIndex;
+        diagnosticMetadataJson = string.Format (
+            "{{\"{0}\":\"{1}\", \"{2}\":\"{3}\", \"{4}\":\"{5}\", \"{6}\":\"{7}\", \"{8}\":\"{9}\"}}",
+            HtmlTextWriterAttribute.Id,
+            htmlID,
+            DiagnosticMetadataAttributes.TriggersNavigation,
+            diagnosticMetadataTriggersNavigation.ToString().ToLower(),
+            DiagnosticMetadataAttributes.TriggersPostBack,
+            diagnosticMetadataTriggersPostBack.ToString().ToLower(),
+            DiagnosticMetadataAttributes.ItemID,
+            menuItem.ItemID,
+            DiagnosticMetadataAttributes.Text,
+            diagnosticMetadataText);
+      }
 
       bool isDisabled = !menuItem.EvaluateEnabled () || !isCommandEnabled;
       stringBuilder.AppendFormat (
-          "\t\tnew DropDownMenu_ItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",
+          "\t\tnew DropDownMenu_ItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})",
           menuItemIndex,
           menuItem.Category,
           text,
@@ -311,7 +336,8 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           (int) menuItem.RequiredSelection,
           isDisabled ? "true" : "false",
           href,
-          target);
+          target,
+          diagnosticMetadataJson);
     }
 
     protected virtual string GetIconUrl (DropDownMenuRenderingContext renderingContext, WebMenuItem menuItem, bool showIcon)

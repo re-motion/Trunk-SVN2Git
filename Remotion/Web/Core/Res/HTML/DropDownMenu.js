@@ -58,7 +58,7 @@ function DropDownMenu_BindOpenEvent(node, menuID, eventType, getSelectionCount, 
   $(node).bind(eventType, function (evt) { DropDownMenu_OnClick (node, menuID, getSelectionCount, moveToMousePosition ? evt : null); });
 }
 
-function DropDownMenu_ItemInfo(id, category, text, icon, iconDisabled, requiredSelection, isDisabled, href, target)
+function DropDownMenu_ItemInfo(id, category, text, icon, iconDisabled, requiredSelection, isDisabled, href, target, diagnosticMetadata)
 {
   this.ID = id;
   this.Category = category;
@@ -69,6 +69,7 @@ function DropDownMenu_ItemInfo(id, category, text, icon, iconDisabled, requiredS
   this.IsDisabled = isDisabled;
   this.Href = href;
   this.Target = target;
+  this.DiagnosticMetadata = diagnosticMetadata;
 }
 
 function DropDownMenu_OnClick(context, menuID, getSelectionCount, evt)
@@ -289,6 +290,9 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount)
     iconPlaceholder.className = _dropDownMenu_itemIconClassName;
     anchor.appendChild(iconPlaceholder);
   }
+
+  if (itemInfo.DiagnosticMetadata)
+    $(item).attr(itemInfo.DiagnosticMetadata);
 
   var span = document.createElement('span');
   span.innerHTML = itemInfo.Text;

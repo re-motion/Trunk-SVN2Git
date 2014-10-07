@@ -11,6 +11,7 @@ namespace Remotion.Web.UI.Controls
     public static readonly string DisplayName = "data-displayname";
     public static readonly string IsReadOnly = "data-is-readonly";
     public static readonly string ItemID = "data-item-id";
+    public static readonly string Text = "data-text";
     public static readonly string TriggersNavigation = "data-triggers-nav";
     public static readonly string TriggersPostBack = "data-triggers-pb";
   }
