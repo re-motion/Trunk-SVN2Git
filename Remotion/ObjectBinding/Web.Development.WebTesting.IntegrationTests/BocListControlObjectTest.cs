@@ -180,6 +180,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
     [Test]
     [Ignore ("Ignored until BocListControlObject.ChangeViewTo(itemID) has been implemented.")]
+    // Todo RM-6297: enable test as soon as BocListControlObject.ChangeViewTo(itemID) has been implemented.
     public void TestChangeViewTo ()
     {
       var home = Start();
@@ -194,7 +195,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Ignore ("Ignored until DropDownMenuControlObject has been implemented.")]
     public void TestGetDropDownMenu ()
     {
       var home = Start();
@@ -239,7 +239,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Ignore ("Ignored until DropDownMenuControlObject has been implemented.")]
     public void TestRowGetRowDropDownMenu ()
     {
       var home = Start();
@@ -328,6 +327,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     
     [Test]
     [Ignore ("Ignored until BocText has been implemented.")]
+    // Todo RM-6297: enable test as soon as BocText has been implemented.
     public void TestEditableCellGetControl ()
     {
       var home = Start();
