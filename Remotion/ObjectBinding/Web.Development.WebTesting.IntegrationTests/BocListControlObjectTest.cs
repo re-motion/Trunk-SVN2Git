@@ -1,7 +1,10 @@
 ﻿using System;
 using Coypu;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
@@ -326,8 +329,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
     
     [Test]
-    [Ignore ("Ignored until BocText has been implemented.")]
-    // Todo RM-6297: enable test as soon as BocText has been implemented.
     public void TestEditableCellGetControl ()
     {
       var home = Start();
@@ -336,8 +337,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var editableRow = bocList.GetRow (2).Edit();
       var editableCell = editableRow.GetCell (6);
 
-      //var bocText = editableCell.GetControl (new FirstControlSelectionCommand<BocText>(new BocTextSelector()));
-      //bocText.SetText ("NewTitle");
+      var bocText = editableCell.GetControl (new FirstControlSelectionCommand<BocTextControlObject>(new BocTextSelector()));
+      bocText.FillWith ("NewTitle");
 
       editableRow.Save();
       Assert.That (bocList.GetCellWhere ("Title", "NewTitle").GetText(), Is.EqualTo ("NewTitle"));
