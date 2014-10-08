@@ -65,6 +65,8 @@
       <Link>remotion.snk</Link>
     </Content>
     <Content Include="Controls\AutoCompleteService.asmx" />
+    <Content Include="Controls\BocTreeViewUserControlTestOutput.ascx" />
+    <Content Include="Controls\BocTreeViewUserControl.ascx" />
     <Content Include="Controls\BocTextUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTextUserControl.ascx" />
     <Content Include="Controls\BocListUserControlTestOutput.ascx" />
@@ -96,6 +98,20 @@
     <Compile Include="Controls\AutoCompleteService.asmx.cs">
       <DependentUpon>AutoCompleteService.asmx</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\BocTreeViewUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocTreeViewUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocTreeViewUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocTreeViewUserControlTestOutput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocTreeViewUserControl.ascx.cs">
+      <DependentUpon>BocTreeViewUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocTreeViewUserControl.ascx.designer.cs">
+      <DependentUpon>BocTreeViewUserControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\BocTextUserControlTestOutput.ascx.cs">
       <DependentUpon>BocTextUserControlTestOutput.ascx</DependentUpon>
@@ -144,6 +160,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\TestBocListWithRowMenuItems.cs" />
+    <Compile Include="Controls\TestBocTreeViewContextMenu.cs" />
     <Compile Include="ControlTestForm.aspx.cs">
       <DependentUpon>ControlTestForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
