@@ -7,14 +7,16 @@ using Remotion.Web.UI.Controls;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="DropDownMenu"/>.
+  /// Base class for all control objects representing a <see cref="DropDownMenu"/>.
   /// </summary>
-  public class DropDownMenuControlObject : RemotionControlObject, IClickableItemsControlObject
+  public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IClickableItemsControlObject
   {
-    public DropDownMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    protected DropDownMenuControlObjectBase (string id, TestObjectContext context)
         : base (id, context)
     {
     }
+
+    protected abstract void OpenDropDownMenu ();
 
     public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
     {
@@ -46,8 +48,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private ElementScope GetDropDownMenuScope ()
     {
-      var dropDownMenuButtonScope = Scope.FindCss ("a.DropDownMenuButton");
-      dropDownMenuButtonScope.Click();
+      OpenDropDownMenu();
 
       var dropDownMenuOptionsScope = Context.RootElement.FindCss ("ul.DropDownMenuOptions");
       return dropDownMenuOptionsScope;
@@ -60,6 +61,39 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var anchorScope = item.FindCss ("a");
       anchorScope.ClickAndWait (Context, actualWaitingStrategy);
       return UnspecifiedPage();
+    }
+  }
+
+  /// <summary>
+  /// Control object for the default <see cref="DropDownMenu"/>.
+  /// </summary>
+  public class DropDownMenuControlObject : DropDownMenuControlObjectBase
+  {
+    public DropDownMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+        : base (id, context)
+    {
+    }
+
+    protected override void OpenDropDownMenu ()
+    {
+      var dropDownMenuButtonScope = Scope.FindCss ("a.DropDownMenuButton");
+      dropDownMenuButtonScope.Click();
+    }
+  }
+
+  /// <summary>
+  /// Control object for a context menu based on <see cref="DropDownMenu"/>.
+  /// </summary>
+  public class ContextMenuControlObject : DropDownMenuControlObjectBase
+  {
+    public ContextMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+        : base (id, context)
+    {
+    }
+
+    protected override void OpenDropDownMenu ()
+    {
+      Scope.ContextClick (Context);
     }
   }
 }
