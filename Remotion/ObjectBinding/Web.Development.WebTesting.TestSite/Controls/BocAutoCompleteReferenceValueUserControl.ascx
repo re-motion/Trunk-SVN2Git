@@ -13,20 +13,20 @@
         </PersistedCommand>
 
         <OptionsMenuItems>
-          <remotion:BocMenuItem Text="My menu command">
+          <remotion:BocMenuItem ItemID="OptCmd1" Text="My menu command">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 2">
+          <remotion:BocMenuItem ItemID="OptCmd2" Text="My menu command 2">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 3">
+          <remotion:BocMenuItem ItemID="OptCmd3" Text="My menu command 3">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
         </OptionsMenuItems>
       </remotion:BocAutoCompleteReferenceValue>
@@ -44,20 +44,20 @@
         </PersistedCommand>
 
         <OptionsMenuItems>
-          <remotion:BocMenuItem Text="My menu command">
+          <remotion:BocMenuItem ItemID="OptCmd1" Text="My menu command">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 2">
+          <remotion:BocMenuItem ItemID="OptCmd2" Text="My menu command 2">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 3">
+          <remotion:BocMenuItem ItemID="OptCmd3" Text="My menu command 3">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
         </OptionsMenuItems>
       </remotion:BocAutoCompleteReferenceValue>
@@ -75,20 +75,20 @@
         </PersistedCommand>
 
         <OptionsMenuItems>
-          <remotion:BocMenuItem Text="My menu command">
+          <remotion:BocMenuItem ItemID="OptCmd1" Text="My menu command">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 2">
+          <remotion:BocMenuItem ItemID="OptCmd2" Text="My menu command 2">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 3">
+          <remotion:BocMenuItem ItemID="OptCmd3" Text="My menu command 3">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
         </OptionsMenuItems>
       </remotion:BocAutoCompleteReferenceValue>
@@ -106,20 +106,20 @@
         </PersistedCommand>
 
         <OptionsMenuItems>
-          <remotion:BocMenuItem Text="My menu command">
+          <remotion:BocMenuItem ItemID="OptCmd1" Text="My menu command">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 2">
+          <remotion:BocMenuItem ItemID="OptCmd2" Text="My menu command 2">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 3">
+          <remotion:BocMenuItem ItemID="OptCmd3" Text="My menu command 3">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
         </OptionsMenuItems>
       </remotion:BocAutoCompleteReferenceValue>
@@ -137,20 +137,20 @@
         </PersistedCommand>
 
         <OptionsMenuItems>
-          <remotion:BocMenuItem Text="My menu command">
+          <remotion:BocMenuItem ItemID="OptCmd1" Text="My menu command">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 2">
+          <remotion:BocMenuItem ItemID="OptCmd2" Text="My menu command 2">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 3">
+          <remotion:BocMenuItem ItemID="OptCmd3" Text="My menu command 3">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
         </OptionsMenuItems>
       </remotion:BocAutoCompleteReferenceValue>
@@ -168,20 +168,20 @@
         </PersistedCommand>
 
         <OptionsMenuItems>
-          <remotion:BocMenuItem Text="My menu command">
+          <remotion:BocMenuItem ItemID="OptCmd1" Text="My menu command">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 2">
+          <remotion:BocMenuItem ItemID="OptCmd2" Text="My menu command 2">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
-          <remotion:BocMenuItem Text="My menu command 3">
+          <remotion:BocMenuItem ItemID="OptCmd3" Text="My menu command 3">
             <PersistedCommand>
-            <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
-          </PersistedCommand>
+              <remotion:BocMenuItemCommand Type="Event"></remotion:BocMenuItemCommand>
+            </PersistedCommand>
           </remotion:BocMenuItem>
         </OptionsMenuItems>
       </remotion:BocAutoCompleteReferenceValue>

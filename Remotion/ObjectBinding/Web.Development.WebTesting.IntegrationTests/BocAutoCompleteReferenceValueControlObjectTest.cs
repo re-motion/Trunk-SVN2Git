@@ -159,6 +159,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.Empty);
     }
 
+    [Test]
+    public void TestGetDropDownMenu ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      var dropDownMenu = bocAutoComplete.GetDropDownMenu();
+      dropDownMenu.ClickItem ("OptCmd2");
+
+      Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal"));
+      Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
+      Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
+    }
+
     private RemotionPageObject Start()
     {
       return Start ("BocAutoCompleteReferenceValue");

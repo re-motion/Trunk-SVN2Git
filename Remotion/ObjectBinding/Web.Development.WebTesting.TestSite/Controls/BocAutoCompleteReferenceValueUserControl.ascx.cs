@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 
     private void MenuItemClickHandler (object sender, WebMenuItemClickEventArgs e)
     {
-      TestOutput.SetActionPerformed ("MenuItemClick", e.Item.Text, e.Command.OwnerControl.ID);
+      TestOutput.SetActionPerformed ("MenuItemClick", e.Item.ItemID + "|" + e.Item.Text, e.Command.OwnerControl.ID);
     }
 
     private void SetTestOutput ()
