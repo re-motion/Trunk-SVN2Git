@@ -292,7 +292,16 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount)
   }
 
   if (itemInfo.DiagnosticMetadata)
-    $(item).attr(itemInfo.DiagnosticMetadata);
+  {
+    // Do not render empty diagnostic metadata attributes
+    $.each(itemInfo.DiagnosticMetadata, function (key, value) {
+      if (value === "" || value === null) {
+        delete itemInfo.DiagnosticMetadata[key];
+      }
+    });
+
+    $ (item).attr (itemInfo.DiagnosticMetadata);
+  }
 
   var span = document.createElement('span');
   span.innerHTML = itemInfo.Text;

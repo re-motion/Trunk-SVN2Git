@@ -562,8 +562,10 @@ namespace Remotion.Web.UI.Controls
 
         if(_renderingFeatures.EnableDiagnosticMetadata)
         {
-          writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, node.ItemID);
-          writer.AddAttribute (DiagnosticMetadataAttributes.Text, node.Text);
+          if (!string.IsNullOrEmpty (node.ItemID))
+            writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, node.ItemID);
+          if (!string.IsNullOrEmpty (node.Text))
+            writer.AddAttribute (DiagnosticMetadataAttributes.Text, node.Text);
           writer.AddAttribute (DiagnosticMetadataAttributes.IndexInCollection, (i + 1).ToString());
         }
 

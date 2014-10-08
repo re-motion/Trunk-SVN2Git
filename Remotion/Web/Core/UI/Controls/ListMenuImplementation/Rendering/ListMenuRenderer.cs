@@ -177,7 +177,8 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
     private void RenderDiagnosticMetadataAttributesForListMenuItem (ListMenuRenderingContext renderingContext, WebMenuItem menuItem)
     {
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, menuItem.ItemID);
+      if (!string.IsNullOrEmpty (menuItem.ItemID))
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, menuItem.ItemID);
     }
 
     private void RegisterMenuItems (ListMenuRenderingContext renderingContext)

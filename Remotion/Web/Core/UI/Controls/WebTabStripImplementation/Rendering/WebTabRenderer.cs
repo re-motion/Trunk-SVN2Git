@@ -101,7 +101,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
         cssClass += " " + CssClassDisabled;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
-      if (RenderingFeatures.EnableDiagnosticMetadata)
+      if (RenderingFeatures.EnableDiagnosticMetadata && !string.IsNullOrEmpty (tab.ItemID))
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, tab.ItemID);
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span

@@ -219,7 +219,8 @@ namespace Remotion.Web.UI.Controls
       if (!_renderingFeatures.EnableDiagnosticMetadata)
         return;
 
-      writer.AddAttribute (DiagnosticMetadataAttributes.Text, Text);
+      if (!string.IsNullOrEmpty (Text))
+        writer.AddAttribute (DiagnosticMetadataAttributes.Text, Text);
       
       if(!string.IsNullOrEmpty(CommandName))
         writer.AddAttribute (DiagnosticMetadataAttributes.CommandName, CommandName);
