@@ -122,6 +122,8 @@ namespace Remotion.Web.UI.Controls
     private bool _hasTreeNodeMenusCreated;
     private int _menuCounter;
 
+    private readonly IRenderingFeatures _renderingFeatures;
+
     /// <summary>
     ///   The delegate called before a node with <see cref="WebTreeNode.IsEvaluated"/> set to <see langword="false"/>
     ///   is expanded.
@@ -141,6 +143,7 @@ namespace Remotion.Web.UI.Controls
       _nodes = new WebTreeNodeCollection (ownerControl);
       _nodes.SetParent (this, null);
       _menuPlaceHolder = new PlaceHolder();
+      _renderingFeatures = SafeServiceLocator.Current.GetInstance<IRenderingFeatures>();
     }
 
     /// <summary> Initalizes a new instance. </summary>
@@ -557,6 +560,13 @@ namespace Remotion.Web.UI.Controls
         bool isFirstNode = i == 0;
         bool isLastNode = i + 1 == nodes.Count;
 
+        if(_renderingFeatures.EnableDiagnosticMetadata)
+        {
+          writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, node.ItemID);
+          writer.AddAttribute (DiagnosticMetadataAttributes.Text, node.Text);
+          writer.AddAttribute (DiagnosticMetadataAttributes.IndexInCollection, (i + 1).ToString());
+        }
+
         writer.RenderBeginTag (HtmlTextWriterTag.Li); // Begin node block
 
         bool hasExpander = !isTopLevel || _enableTopLevelExpander;
@@ -633,6 +643,14 @@ namespace Remotion.Web.UI.Controls
         string postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, argument);
         writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEventReference);
         writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+        if (_renderingFeatures.EnableDiagnosticMetadata)
+        {
+          writer.AddAttribute (
+              DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
+              !node.IsExpanded
+                  ? DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor
+                  : DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
+        }
         writer.RenderBeginTag (HtmlTextWriterTag.A);
       }
 
@@ -657,6 +675,12 @@ namespace Remotion.Web.UI.Controls
       string postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, argument);
       writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEventReference);
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        writer.AddAttribute (
+            DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
+            DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);
+      }
       writer.RenderBeginTag (HtmlTextWriterTag.A);
       if (_treeNodeRenderMethod == null)
       {
