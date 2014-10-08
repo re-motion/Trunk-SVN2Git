@@ -102,6 +102,10 @@
     <Compile Include="SampleTests\SetUpFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Remotion\ObjectBinding\Web.Development.WebTesting\ObjectBinding.Web.Development.WebTesting.csproj">
+      <Project>{78086B10-9951-4680-A060-2395E1990F8A}</Project>
+      <Name>ObjectBinding.Web.Development.WebTesting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Remotion\Web\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5B5EC73A-B796-4D2D-A781-E889EE9EC4DF}</Project>
       <Name>Web.Development.WebTesting</Name>
