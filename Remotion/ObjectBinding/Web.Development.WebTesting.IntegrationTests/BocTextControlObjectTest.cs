@@ -108,8 +108,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Ignore ("Ignored until FillWith problem has been diagnosed.")]
-    // Todo RM-6297: enable test as soon as FillWith problem has been diagnosed.
     public void TestFillWith ()
     {
       var home = Start();

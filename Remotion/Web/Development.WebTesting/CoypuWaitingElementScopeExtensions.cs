@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using log4net;
+using OpenQA.Selenium;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
@@ -58,7 +59,9 @@ namespace Remotion.Web.Development.WebTesting
     {
       Action<ElementScope> action = s =>
       {
-        s.FillInWith (value);
+        // HACK: We cannot use s.FillInWith(value) here, as it internally calls s.Clear() which unfortunately triggers a post back.
+        // See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
+        s.SendKeys (Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete + value);
         thenAction (s);
       };
 
