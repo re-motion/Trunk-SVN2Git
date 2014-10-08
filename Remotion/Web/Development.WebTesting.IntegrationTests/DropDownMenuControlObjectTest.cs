@@ -3,9 +3,13 @@ using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
+  /// <remarks>
+  /// Note that the <see cref="DropDownMenu.Mode"/>=<see cref="MenuMode.ContextMenu"/> option is tested indirectly by the BocTreeViewControlObjectTest.
+  /// </remarks>
   [TestFixture]
   public class DropDownMenuControlObjectTest : IntegrationTest
   {
@@ -65,7 +69,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestClickItemOnDropDownMenu ()
+    public void TestClickItem ()
     {
       var home = Start ("DropDownMenuTest.wxe");
 
@@ -81,19 +85,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID4|WxeFunction"));
 
       dropDownMenu.ClickItemByText ("EventItem");
-      Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
-    }
-
-    [Test]
-    [Ignore ("Ignored until DropDownMenuTest.aspx features a DropDownMenu with correctly configured ContextMenu.")]
-    // Todo RM-6297: enable test as soon as DropDownMenuTest.aspx features a DropDownMenu with correctly configured ContextMenu.
-    public void TestClickItemOnContextMenu ()
-    {
-      var home = Start ("DropDownMenuTest.wxe");
-
-      var dropDownMenu = home.GetDropDownMenu().ByLocalID ("MyDropDownMenu2");
-
-      dropDownMenu.ClickItem ("ItemID1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
     }
   }

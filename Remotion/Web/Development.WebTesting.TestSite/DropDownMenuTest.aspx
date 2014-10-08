@@ -30,7 +30,7 @@
       </remotion:DropDownMenu>
       <div id="scope">
         <h3>DropDownMenu2</h3>
-        <remotion:DropDownMenu ID="MyDropDownMenu2" Mode="ContextMenu" runat="server">
+        <remotion:DropDownMenu ID="MyDropDownMenu2" runat="server">
           <MenuItems>
             <remotion:WebMenuItem Category="Category1" ItemID="ItemID1" Text="Item"/>
           </MenuItems>
