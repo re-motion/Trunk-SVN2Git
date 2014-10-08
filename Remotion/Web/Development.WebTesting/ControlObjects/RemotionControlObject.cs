@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// The control's ID.
     /// </summary>
-    protected string ID
+    public string ID
     {
       get { return _id; }
     }
