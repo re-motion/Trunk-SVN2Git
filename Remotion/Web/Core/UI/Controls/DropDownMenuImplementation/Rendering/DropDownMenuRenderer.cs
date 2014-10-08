@@ -308,7 +308,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       string diagnosticMetadataText = showText ? menuItem.Text : "";
 
       var diagnosticMetadataJson = "null";
-      if (RenderingFeatures.EnableDiagnosticMetadata)
+      if (IsDiagnosticMetadataRenderingEnabled)
       {
         var htmlID = renderingContext.Control.ClientID + "_" + menuItemIndex;
         diagnosticMetadataJson = string.Format (

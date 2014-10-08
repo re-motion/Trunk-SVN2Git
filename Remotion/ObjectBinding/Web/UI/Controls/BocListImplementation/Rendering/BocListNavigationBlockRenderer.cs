@@ -137,7 +137,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.Navigator);
-      if (RenderingFeatures.EnableDiagnosticMetadata)
+      if (IsDiagnosticMetadataRenderingEnabled)
       {
         renderingContext.Writer.AddAttribute (
             DiagnosticMetadataAttributesForObjectBinding.BocListNumberOfPages,

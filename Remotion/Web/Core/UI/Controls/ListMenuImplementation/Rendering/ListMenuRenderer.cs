@@ -147,7 +147,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetMenuItemClientID (renderingContext, index));
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
-      if(RenderingFeatures.EnableDiagnosticMetadata)
+      if(IsDiagnosticMetadataRenderingEnabled)
         RenderDiagnosticMetadataAttributesForListMenuItem(renderingContext, menuItem);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 

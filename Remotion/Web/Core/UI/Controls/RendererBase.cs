@@ -73,7 +73,7 @@ namespace Remotion.Web.UI.Controls
     /// Returns whether the diagnostic metadata rendering feature is enabled and thereby whether a specific control renderer should render such
     /// information as additional data attributes.
     /// </summary>
-    private bool IsDiagnosticMetadataRenderingEnabled
+    protected bool IsDiagnosticMetadataRenderingEnabled
     {
       get { return _renderingFeatures.EnableDiagnosticMetadata; }
     }
