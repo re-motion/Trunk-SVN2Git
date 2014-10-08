@@ -214,6 +214,25 @@
                   Platforms=$(Platforms);
                   DatabaseSystems=$(DatabaseSystems)"/>
   </Target>
+  
+  <Target Name="QuickBuildDebugOnly" DependsOnTargets="CleanFolders">
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="BuildReleaseProjects;AssembleBuildOutput"
+             Properties="
+                  ConfigurationID=Debug;
+                  SolutionKeyFile=$(SolutionKeyFile);
+                  SolutionDirectory=$(SolutionDirectory);
+                  OutputDirectory=$(OutputDirectory);
+                  TempDirectory=$(TempDirectory);
+                  LogDirectory=$(LogDirectory);
+                  Version=$(Version);
+                  ArchiveDirectory=$(ArchiveDirectory);
+                  ReleaseType=$(ReleaseType);
+                  AdditionalBuildMetadata=$(AdditionalBuildMetadata);
+                  Platforms=$(Platforms);
+                  DatabaseSystems=$(DatabaseSystems)"/>
+  </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"

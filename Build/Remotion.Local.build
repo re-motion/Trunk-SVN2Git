@@ -42,9 +42,17 @@
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
     </PropertyGroup>
   </Target>
+  
+  <Target Name="QuickBuild_Configuration">
+    <PropertyGroup>
+      <Platforms>x86</Platforms>
+      <DatabaseSystems>SqlServerDefault</DatabaseSystems>
+    </PropertyGroup>
+  </Target>
  
   <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;TestBuildAllConfigurations" />
+  <Target Name="QuickBuild" DependsOnTargets="QuickBuild_Configuration;QuickBuildDebugOnly" />
   
   <Target Name="DocumentationTestBuild">
     <MSBuild Projects="$(SolutionBuildFile)"
