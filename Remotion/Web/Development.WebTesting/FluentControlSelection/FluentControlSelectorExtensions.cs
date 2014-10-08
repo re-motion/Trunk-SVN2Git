@@ -110,5 +110,20 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 
       return fluentControlSelector.GetControl (new PerCommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (commandName));
     }
+
+    /// <summary>
+    /// Extension method for selecting a control by text (using the
+    /// <see cref="PerTextControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// </summary>
+    public static TControlObject ByText<TControlSelector, TControlObject> (
+        [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
+        [NotNull] string text)
+        where TControlSelector : IPerTextControlSelector<TControlObject> where TControlObject : ControlObject
+    {
+      ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
+      return fluentControlSelector.GetControl (new PerTextControlSelectionCommandBuilder<TControlSelector, TControlObject> (text));
+    }
   }
 }
