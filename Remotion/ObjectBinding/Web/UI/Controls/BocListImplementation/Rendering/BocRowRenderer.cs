@@ -148,6 +148,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       if (_renderingFeatures.EnableDiagnosticMetadata)
       {
+        // Todo RM-6297: Talk to MK if this cast is okay. If not, fix unit test as well!
+        var businessObjectWithIdentity = rowRenderingContext.Row.BusinessObject as IBusinessObjectWithIdentity;
+        if (businessObjectWithIdentity != null)
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, businessObjectWithIdentity.UniqueIdentifier);
+
         var oneBasedRowIndex = rowIndex + 1;
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex, oneBasedRowIndex.ToString());
       }
