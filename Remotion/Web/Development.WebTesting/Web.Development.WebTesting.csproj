@@ -110,6 +110,7 @@
     <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\WebButtonSelector.cs" />
+    <Compile Include="ControlObjects\WebTreeViewControlObject.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\IControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\IControlSelectorForControlHostingControlObjects.cs" />
