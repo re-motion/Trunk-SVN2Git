@@ -105,6 +105,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    // Todo RM-6297: Ask MK if it is okay to put BusinessObjectBoundWebControl.IsBound() and .GetBusinessObjectClassIdentifier() into the interface
+    // and replace the following two methods with control.IsBound() and control.GetBusinessObjectClassIdentifier().
     private bool IsBound (TControl control)
     {
       return control.Property != null && control.DataSource != null

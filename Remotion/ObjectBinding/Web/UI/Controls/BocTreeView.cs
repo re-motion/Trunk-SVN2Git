@@ -21,6 +21,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -53,10 +54,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private Pair[] _nodesControlState;
     private bool _isRebuildRequired = false;
 
+    private readonly IRenderingFeatures _renderingFeatures;
+
     // construction and destruction
     public BocTreeView ()
     {
       _treeView = new WebTreeView (this);
+      _renderingFeatures = SafeServiceLocator.Current.GetInstance<IRenderingFeatures>();
     }
 
     // methods and properties
@@ -181,6 +185,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       base.AddAttributesToRender (writer);
       if (string.IsNullOrEmpty (CssClass) && string.IsNullOrEmpty (Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        if (!string.IsNullOrEmpty (DisplayName))
+          writer.AddAttribute (DiagnosticMetadataAttributes.DisplayName, DisplayName);
+        
+        var isBound = IsBound ();
+        writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.IsBound, isBound.ToString().ToLower());
+
+        if (isBound)
+        {
+          var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier ();
+          writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundType, businessObjectClassIdentifier);
+          writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundProperty, Property.Identifier);
+        }
+      }
     }
 
     private void InitializeRootWebTreeNodes ()

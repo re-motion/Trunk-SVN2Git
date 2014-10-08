@@ -403,6 +403,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return (Property != null) ? Property.DisplayName : null; }
     }
 
+    /// <summary>
+    /// Returns whether the web control is currently bound to a business object property.
+    /// </summary>
+    protected bool IsBound ()
+    {
+      return Property != null && DataSource != null && (DataSource.BusinessObject != null || DataSource.BusinessObjectClass != null);
+    }
+
+    /// <summary>
+    /// Returns the business object class' identfier of the dynamically bound type (i.e. of the business object), if not available, it returns the
+    /// business object class' identifier of the statically bound type (i.e. of the data source).
+    /// </summary>
+    /// <exception cref="NotSupportedException">In case <c>DataSource.BusinessObject</c> AND <c>DataSource.BusinessObjectClass</c> are null.</exception>
+    protected string GetBusinessObjectClassIdentifier ()
+    {
+      // Try dynamic bound type first, afterwards static bound type. Order due to behavioral uniformity.
+
+      if (DataSource.BusinessObject != null)
+        return DataSource.BusinessObject.BusinessObjectClass.Identifier;
+
+      if (DataSource.BusinessObjectClass != null)
+        return DataSource.BusinessObjectClass.Identifier;
+
+      throw new NotSupportedException ("Cannot determine BusinessObjectClass.Identifier for unbound control.");
+    }
+
     /// <summary>Regsiteres stylesheet and script files with the <see cref="HtmlHeadAppender"/>.</summary>
     public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
