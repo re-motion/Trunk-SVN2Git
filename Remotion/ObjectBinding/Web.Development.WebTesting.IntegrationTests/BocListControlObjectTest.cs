@@ -142,8 +142,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow (1);
 
+      var row = bocList.GetRow ("0ba19f5c-f2a2-4c9f-83c9-e6d25b461d98");
+      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
+
+      row = bocList.GetRow (1);
       Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("Programmer"));
     }
 

@@ -11,6 +11,7 @@ using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -91,6 +92,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       lastPageLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
     }
 
+    public BocListRowControlObject GetRow (string itemID)
+    {
+      var cssSelector = string.Format (
+          ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
+          DiagnosticMetadataAttributes.ItemID,
+          itemID);
+      var rowScope = Scope.FindCss (cssSelector);
+      rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
+      return new BocListRowControlObject (ID, Context.CloneForScope (rowScope));
+    }
+
     public BocListRowControlObject GetRow (int index)
     {
       var cssSelector = string.Format (
@@ -100,6 +112,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var rowScope = Scope.FindCss (cssSelector);
       rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new BocListRowControlObject (ID, Context.CloneForScope (rowScope));
+    }
+
+    public BocListRowControlObject GetRowByHtmlID (string htmlID)
+    {
+      throw new NotSupportedException ("BocList rows cannot be selected using the full HTML ID.");
     }
 
     public BocListRowControlObject GetRowWhere (string headerLabel, string containsText)
