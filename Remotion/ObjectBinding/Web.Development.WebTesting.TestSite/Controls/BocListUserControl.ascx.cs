@@ -54,8 +54,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      TestOutput.SetInfoForNormalBocList (JobList_Normal);
-      TestOutput.SetInfoForNoItemIDsBocList (JobList_NoItemIDs);
+      SetTestOutput();
     }
 
     private void MenuItemClickHandler (object sender, WebMenuItemClickEventArgs e)
@@ -106,6 +105,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       var bocList = (BocList) sender;
       var cell = bocCustomCellClickEventArgs.Column.ItemID + "|" + bocCustomCellClickEventArgs.Column.ColumnTitleDisplayValue;
       TestOutput.SetActionPerformed (bocList.ID, -1, "CustomCellClick", cell);
+    }
+
+    private void SetTestOutput ()
+    {
+      TestOutput.SetInfoForNormalBocList (JobList_Normal);
+      TestOutput.SetInfoForNoItemIDsBocList (JobList_NoItemIDs);
     }
 
     private BocListUserControlTestOutput TestOutput

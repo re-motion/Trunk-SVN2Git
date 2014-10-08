@@ -31,12 +31,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       PartnerField_NoCommandNoMenu.MenuItemClick += MenuItemClickHandler;
     }
 
-    protected override void OnLoad (EventArgs e)
+    protected override void OnPreRender (EventArgs e)
     {
-      base.OnLoad (e);
-
-      TestOutput.SetBOUINormal (PartnerField_Normal.BusinessObjectUniqueIdentifier);
-      TestOutput.SetBOUINoAutoPostBack (PartnerField_NoAutoPostBack.BusinessObjectUniqueIdentifier);
+      base.OnPreRender (e);
+      SetTestOutput();
     }
 
     private void PartnerField_CommandClick (object sender, BocCommandClickEventArgs e)
@@ -47,6 +45,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     private void MenuItemClickHandler (object sender, WebMenuItemClickEventArgs e)
     {
       TestOutput.SetActionPerformed ("MenuItemClick", e.Item.Text, e.Command.OwnerControl.ID);
+    }
+
+    private void SetTestOutput ()
+    {
+      TestOutput.SetBOUINormal (PartnerField_Normal.BusinessObjectUniqueIdentifier);
+      TestOutput.SetBOUINoAutoPostBack (PartnerField_NoAutoPostBack.BusinessObjectUniqueIdentifier);
     }
 
     private BocAutoCompleteReferenceValueUserControlTestOutput TestOutput

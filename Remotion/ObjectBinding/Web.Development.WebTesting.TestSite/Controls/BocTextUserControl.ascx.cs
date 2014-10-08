@@ -10,10 +10,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       get { return CurrentObject; }
     }
 
-    protected override void OnLoad (EventArgs e)
+    protected override void OnPreRender (EventArgs e)
     {
-      base.OnLoad (e);
+      base.OnPreRender (e);
+      SetTestOutput();
+    }
 
+    private void SetTestOutput ()
+    {
       TestOutput.SetCurrentValueNormal ((string) LastNameField_Normal.Value);
       TestOutput.SetCurrentValueNoAutoPostBack ((string) LastNameField_NoAutoPostBack.Value);
     }
