@@ -1,8 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.ControlSelection
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
   /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given display name

@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       var control = renderingContext.Control;
       if (!string.IsNullOrEmpty (control.DisplayName))
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.DisplayName, control.DisplayName);
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.DisplayName, control.DisplayName);
 
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsReadOnly, control.IsReadOnly.ToString().ToLower());
 

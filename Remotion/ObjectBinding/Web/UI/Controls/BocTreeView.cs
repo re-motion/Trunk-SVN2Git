@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_renderingFeatures.EnableDiagnosticMetadata)
       {
         if (!string.IsNullOrEmpty (DisplayName))
-          writer.AddAttribute (DiagnosticMetadataAttributes.DisplayName, DisplayName);
+          writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.DisplayName, DisplayName);
         
         var isBound = IsBound ();
         writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.IsBound, isBound.ToString().ToLower());

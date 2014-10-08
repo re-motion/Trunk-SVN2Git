@@ -65,14 +65,14 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       }
     }
 
-    [Test]
-    public void TestSelection_DisplayName ()
-    {
-      var home = Start ("WebButtonTest.wxe");
+    //[Test]
+    //public void TestSelection_DisplayName ()
+    //{
+    //  var home = Start ("WebButtonTest.wxe");
 
-      var webButton = home.GetWebButton().ByDisplayName ("AsyncButton");
-      Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
-    }
+    //  var webButton = home.GetWebButton().ByDisplayName ("AsyncButton");
+    //  Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
+    //}
 
     [Test]
     public void TestSelection_CommandName ()
@@ -96,9 +96,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home = asyncWebButton.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Async"));
 
-      var hrefWebButton = home.GetWebButton().ByDisplayName ("HrefButton");
-      home = hrefWebButton.Click().Expect<RemotionPageObject>();
-      Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
+      //var hrefWebButton = home.GetWebButton().ByDisplayName ("HrefButton");
+      //home = hrefWebButton.Click().Expect<RemotionPageObject>();
+      //Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
     }
   }
 }

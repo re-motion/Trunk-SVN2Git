@@ -5,8 +5,6 @@ using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
-using Remotion.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors
 {
@@ -26,7 +24,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
 
     public TControlObject SelectPerDisplayName (TestObjectContext context, string displayName)
     {
-      var scope = context.Scope.FindCss (string.Format ("{0}[{1}='{2}']", _rootTag, DiagnosticMetadataAttributes.DisplayName, displayName));
+      var scope =
+          context.Scope.FindCss (string.Format ("{0}[{1}='{2}']", _rootTag, DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName));
       return CreateControlObject (context, scope);
     }
 

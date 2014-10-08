@@ -36,7 +36,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 
       var renderedText = RenderControl (webButton);
 
-      Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.DisplayName + "=\"" + webButton.Text + "\""));
+      Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.Text + "=\"" + webButton.Text + "\""));
       Assert.That (renderedText, Is.Not.StringContaining (DiagnosticMetadataAttributes.CommandName));
       Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"true\""));
     }

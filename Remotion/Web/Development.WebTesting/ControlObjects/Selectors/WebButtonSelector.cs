@@ -9,7 +9,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// </summary>
   public class WebButtonSelector
       : RemotionControlSelectorBase<WebButtonControlObject>,
-          IPerDisplayNameControlSelector<WebButtonControlObject>,
+          //IPerDisplayNameControlSelector<WebButtonControlObject>,
           IPerCommandNameControlSelector<WebButtonControlObject>
   {
     public WebButtonSelector ()
@@ -19,7 +19,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public WebButtonControlObject SelectPerDisplayName (TestObjectContext context, string displayName)
     {
-      var scope = context.Scope.FindCss (string.Format ("button[{0}='{1}']", DiagnosticMetadataAttributes.DisplayName, displayName));
+      var scope = context.Scope.FindCss (string.Format ("button[{0}='{1}']", DiagnosticMetadataAttributes.Text, displayName));
       return CreateControlObject (context, scope);
     }
 

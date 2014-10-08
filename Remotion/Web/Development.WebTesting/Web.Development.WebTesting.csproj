@@ -130,14 +130,12 @@
     <Compile Include="ControlObjects\WebButtonControlObject.cs" />
     <Compile Include="ControlSelection\IControlSelector.cs" />
     <Compile Include="ControlSelection\IPerCommandNameControlSelector.cs" />
-    <Compile Include="ControlSelection\IPerDisplayNameControlSelector.cs" />
     <Compile Include="ControlSelection\IPerHtmlIDControlSelector.cs" />
     <Compile Include="ControlSelection\IPerIndexControlSelector.cs" />
     <Compile Include="ControlSelection\IPerLocalIDControlSelector.cs" />
     <Compile Include="ControlSelection\IPerTitleControlSelector.cs" />
     <Compile Include="ControlSelection\ISingleControlSelector.cs" />
     <Compile Include="ControlSelection\PerCommandNameControlSelectionCommand.cs" />
-    <Compile Include="ControlSelection\PerDisplayNameControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\PerLocalIDControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\PerHtmlIDControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\PerIndexControlSelectionCommand.cs" />
@@ -152,7 +150,6 @@
     <Compile Include="FluentControlSelection\PerIndexControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\IControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerHtmlIDControlSelectionCommandBuilder.cs" />
-    <Compile Include="FluentControlSelection\PerDisplayNameControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
     <Compile Include="IHostingStrategy.cs" />

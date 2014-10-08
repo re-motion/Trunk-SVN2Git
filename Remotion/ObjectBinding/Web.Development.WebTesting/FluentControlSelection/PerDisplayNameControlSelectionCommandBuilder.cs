@@ -1,9 +1,12 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Development.WebTesting.FluentControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.FluentControlSelection
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
   /// Selection command builder, preparing a <see cref="PerDisplayNameControlSelectionCommand{TControlObject}"/>.

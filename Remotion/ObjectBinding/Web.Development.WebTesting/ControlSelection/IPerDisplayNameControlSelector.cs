@@ -1,7 +1,10 @@
-﻿using Coypu;
+﻿using System;
+using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.ControlSelection
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
   /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported

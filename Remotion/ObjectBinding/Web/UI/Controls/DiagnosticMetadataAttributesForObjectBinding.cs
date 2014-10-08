@@ -7,6 +7,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </summary>
   public static class DiagnosticMetadataAttributesForObjectBinding
   {
+    public static readonly string DisplayName = "data-displayname";
     public static readonly string IsBound = "data-is-bound";
     public static readonly string BoundType = "data-bound-type";
     public static readonly string BoundProperty = "data-bound-property";
