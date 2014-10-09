@@ -1534,6 +1534,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         IBusinessObjectProperty property = properties[i];
         BocSimpleColumnDefinition column = new BocSimpleColumnDefinition();
+        column.ItemID = property.Identifier;
         column.ColumnTitle = property.DisplayName;
         column.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new[] { property }));
         column.OwnerControl = this;
