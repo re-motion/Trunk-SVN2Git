@@ -78,6 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="HtmlAnchorTest.aspx" />
+    <Content Include="MultiWindowTest\Window.aspx" />
+    <Content Include="MultiWindowTest\Main.aspx" />
+    <Content Include="MultiWindowTest\Frame.aspx" />
     <Content Include="WebButtonTest.aspx" />
     <Content Include="TabStripTest.aspx" />
     <Content Include="TabbedMultiViewTest.aspx" />
@@ -130,6 +133,30 @@
       <DependentUpon>HtmlAnchorTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="HtmlAnchorTestFunction.cs" />
+    <Compile Include="MultiWindowTest\Window.aspx.cs">
+      <DependentUpon>Window.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MultiWindowTest\Window.aspx.designer.cs">
+      <DependentUpon>Window.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MultiWindowTest\WindowFunction.cs" />
+    <Compile Include="MultiWindowTest\FrameFunction.cs" />
+    <Compile Include="MultiWindowTest\MainFunction.cs" />
+    <Compile Include="MultiWindowTest\Main.aspx.cs">
+      <DependentUpon>Main.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MultiWindowTest\Main.aspx.designer.cs">
+      <DependentUpon>Main.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="MultiWindowTest\Frame.aspx.cs">
+      <DependentUpon>Frame.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MultiWindowTest\Frame.aspx.designer.cs">
+      <DependentUpon>Frame.aspx</DependentUpon>
+    </Compile>
     <Compile Include="TestCommand.cs" />
     <Compile Include="WebButtonTestFunction.cs" />
     <Compile Include="WebButtonTest.aspx.cs">
