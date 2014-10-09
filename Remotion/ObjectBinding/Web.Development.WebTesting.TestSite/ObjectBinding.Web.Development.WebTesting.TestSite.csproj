@@ -75,7 +75,7 @@
     <Content Include="Controls\BocAutoCompleteReferenceValueUserControl.ascx" />
     <Content Include="Controls\IconService.asmx" />
     <Content Include="ControlTestForm.aspx" />
-    <Content Include="ControlTestStartForm.aspx" />
+    <Content Include="Default.aspx" />
     <Content Include="Images\SampleIcon.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Job.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Person.gif" />
