@@ -20,11 +20,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListControlObject : BocControlObject
   {
+    // Todo RM-6297: Add Header helper class.
+    private readonly List<string> _headerItemIDs;
     private readonly List<string> _headerLabels;
 
     public BocListControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      _headerItemIDs =
+        new RetryUntilTimeout<List<string>> (
+              () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s[DiagnosticMetadataAttributes.ItemID]).ToList(),
+              Context.Configuration.SearchTimeout,
+              Context.Configuration.RetryInterval).Run();
       _headerLabels =
           new RetryUntilTimeout<List<string>> (
               () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s.Text).ToList(),
@@ -98,9 +105,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
           DiagnosticMetadataAttributes.ItemID,
           itemID);
-      var rowScope = Scope.FindCss (cssSelector);
-      rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
-      return new BocListRowControlObject (ID, Context.CloneForScope (rowScope));
+      return GetRowByCssSelector (cssSelector);
     }
 
     public BocListRowControlObject GetRow (int index)
@@ -109,41 +114,76 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
           DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex,
           index);
-      var rowScope = Scope.FindCss (cssSelector);
-      rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
-      return new BocListRowControlObject (ID, Context.CloneForScope (rowScope));
+      return GetRowByCssSelector (cssSelector);
     }
 
     public BocListRowControlObject GetRowByHtmlID (string htmlID)
     {
-      throw new NotSupportedException ("BocList rows cannot be selected using the full HTML ID.");
+      throw new NotSupportedException ("BocList rows cannot be selected using a full HTML ID.");
     }
 
-    public BocListRowControlObject GetRowWhere (string headerLabel, string containsText)
+    private BocListRowControlObject GetRowByCssSelector(string cssSelector)
     {
-      var cell = GetCellWhere (headerLabel, containsText);
+      var rowScope = Scope.FindCss (cssSelector);
+      rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
+      return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
+    }
+
+    // Todo RM-6297: In general: rename headerItemID to columnItemID?
+    public BocListRowControlObject GetRowWhere (string headerItemID, string containsCellText)
+    {
+      var cell = GetCellWhere (headerItemID, containsCellText);
+      return GetRowFromCell (cell);
+    }
+
+    public BocListRowControlObject GetRowWhere (int headerIndex, string containsCellText)
+    {
+      var cell = GetCellWhere (headerIndex, containsCellText);
+      return GetRowFromCell (cell);
+    }
+
+    // Todo RM-6297: In general: rename headerText to columnHeaderText?
+    public BocListRowControlObject GetRowWhereByText (string headerText, string containsCellText)
+    {
+      var cell = GetCellWhereByText (headerText, containsCellText);
+      return GetRowFromCell (cell);
+    }
+
+    private BocListRowControlObject GetRowFromCell (BocListCellControlObject cell)
+    {
       var rowScope = cell.Scope.FindXPath ("..");
       rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
-      return new BocListRowControlObject (ID, Context.CloneForScope (rowScope));
+      return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
-    public BocListCellControlObject GetCellWhere (string headerLabel, string containsText)
+    public BocListCellControlObject GetCellWhere (string headerItemID, string containsCellText)
     {
-      var index = GetHeaderLabelIndex (headerLabel);
+      var index = GetHeaderLabelIndex (headerItemID);
+      return GetCellWhere (index, containsCellText);
+    }
+
+    public BocListCellControlObject GetCellWhere (int index, string containsCellText)
+    {
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
           index,
           DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
-          containsText);
+          containsCellText);
       var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
       cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
+    public BocListCellControlObject GetCellWhereByText (string headerText, string containsCellText)
+    {
+      var index = GetHeaderLabelIndexByText (headerText);
+      return GetCellWhere (index, containsCellText);
+    }
+
     public void ClickOnSortColumn (string headerLabel)
     {
-      var index = GetHeaderLabelIndex (headerLabel);
+      var index = GetHeaderLabelIndexByText (headerLabel);
 
       var cssSelector = string.Format (".bocListFakeTableHead th[{0}='{1}'] a", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index);
       var sortColumnLinkScope = Scope.FindCss (cssSelector);
@@ -174,9 +214,22 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new ListMenuControlObject (listMenuScope.Id, Context.CloneForScope (listMenuScope));
     }
 
-    private int GetHeaderLabelIndex (string headerLabel)
+    internal int GetHeaderLabelIndex (string headerItemID)
     {
-      return _headerLabels.IndexOf (headerLabel) + 1;
+      var indexOf = _headerItemIDs.IndexOf(headerItemID);
+      if (indexOf == -1)
+        throw new ArgumentOutOfRangeException ("headerItemID", headerItemID, "Header item ID does not exist."); // Todo RM-6297: Better exception type.
+
+      return indexOf + 1;
+    }
+
+    private int GetHeaderLabelIndexByText (string headerText)
+    {
+       var indexOf = _headerLabels.IndexOf(headerText);
+      if (indexOf == -1)
+        throw new ArgumentOutOfRangeException ("headerText", headerText, "Header text does not exist."); // Todo RM-6297: Better exception type.
+
+      return indexOf + 1;
     }
 
     private ElementScope GetCurrentPageTextInputScope ()
@@ -191,11 +244,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListRowControlObject : BocControlObject
   {
+    private readonly BocListControlObject _bocList;
     private readonly int _rowIndex;
 
-    public BocListRowControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    public BocListRowControlObject (BocListControlObject bocList, [NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      _bocList = bocList;
       _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
     }
 
@@ -212,7 +267,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           Scope.FindCss (string.Format ("td[{0}='{1}'] a", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true"));
       editCommandScope.ClickAndWait (Context, WaitFor.WxePostBack);
 
-      return new BocListEditableRowControlObject (ID, Context);
+      return new BocListEditableRowControlObject (_bocList, ID, Context);
+    }
+
+    public BocListCellControlObject GetCell (string headerItemID)
+    {
+      var index = _bocList.GetHeaderLabelIndex (headerItemID);
+      return GetCell (index);
     }
 
     public BocListCellControlObject GetCell (int index)
@@ -222,6 +283,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
 
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
+    }
+
+    public BocListCellControlObject GetCellByHtmlID (string htmlID)
+    {
+      throw new NotSupportedException ("BocList cells cannot be selected using a full HTML ID.");
     }
 
     public DropDownMenuControlObject GetRowDropDownMenu ()
@@ -240,9 +306,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListEditableRowControlObject : BocControlObject
   {
-    public BocListEditableRowControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    private readonly BocListControlObject _bocList;
+
+    public BocListEditableRowControlObject (BocListControlObject bocList, [NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      _bocList = bocList;
     }
 
     public BocListRowControlObject Save ()
@@ -252,7 +321,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var save = editCell.GetControl (new PerIndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 1));
       save.Click();
 
-      return new BocListRowControlObject (ID, Context);
+      return new BocListRowControlObject (_bocList, ID, Context);
     }
 
     public BocListRowControlObject Cancel ()
@@ -262,7 +331,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var cancel = editCell.GetControl (new PerIndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 2));
       cancel.Click();
 
-      return new BocListRowControlObject (ID, Context);
+      return new BocListRowControlObject (_bocList, ID, Context);
+    }
+
+    public BocListEditableCellControlObject GetCell (string headerItemID)
+    {
+      var index = _bocList.GetHeaderLabelIndex (headerItemID);
+      return GetCell (index);
     }
 
     public BocListEditableCellControlObject GetCell (int index)
@@ -272,6 +347,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
 
       return new BocListEditableCellControlObject (ID, Context.CloneForScope (cellScope));
+    }
+
+    public BocListEditableCellControlObject GetCellByHtmlID (string htmlID)
+    {
+      throw new NotSupportedException ("BocList cells cannot be selected using a full HTML ID.");
     }
 
     private BocListEditableCellControlObject GetWellKnownEditCell ()
