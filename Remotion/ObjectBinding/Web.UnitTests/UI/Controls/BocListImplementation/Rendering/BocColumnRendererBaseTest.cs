@@ -130,6 +130,27 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertAttribute (td, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 7.ToString());
     }
 
+    [Test]
+    public void TestDiagnosticMetadataRenderingInTitle ()
+    {
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition);
+
+      Column.ItemID = "TestItemID";
+
+      _renderingContext =
+          new BocColumnRenderingContext<BocSimpleColumnDefinition> (new BocColumnRenderingContext (HttpContext, Html.Writer, List, Column, 0, 6));
+
+      renderer.RenderTitleCell (_renderingContext, SortingDirection.None, 0);
+
+      var document = Html.GetResultDocument();
+      var th = Html.GetAssertedChildElement (document, "th", 0);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.ItemID, Column.ItemID);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 7.ToString());
+    }
+
     private void RenderTitleCell (
         SortingDirection sortDirection,
         int sortIndex,
