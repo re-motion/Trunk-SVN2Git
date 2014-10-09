@@ -28,4 +28,8 @@
   <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe"/>
   <add id="TabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::TabStripTestFunction" resource="~/TabStripTest.wxe"/>
   <add id="WebButtonTest" type="Remotion.Web.Development.WebTesting.TestSite::WebButtonTestFunction" resource="~/WebButtonTest.wxe"/>
+
+  <add id="MultiWindowTest_Main" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.MainFunction" resource="~/MultiWindowTest/Main.wxe"/>
+  <add id="MultiWindowTest_Frame" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.FrameFunction" resource="~/MultiWindowTest/Frame.wxe"/>
+  <add id="MultiWindowTest_Window" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.WindowFunction" resource="~/MultiWindowTest/Window.wxe"/>
 </urlMapping>
