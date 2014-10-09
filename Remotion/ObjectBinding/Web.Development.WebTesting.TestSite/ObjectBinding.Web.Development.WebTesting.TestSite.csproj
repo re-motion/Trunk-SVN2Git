@@ -75,6 +75,7 @@
     <Content Include="Controls\BocAutoCompleteReferenceValueUserControl.ascx" />
     <Content Include="Controls\IconService.asmx" />
     <Content Include="ControlTestForm.aspx" />
+    <Content Include="ControlTestStartForm.aspx" />
     <Content Include="Images\SampleIcon.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Job.gif" />
     <Content Include="Images\Remotion.ObjectBinding.Sample.Person.gif" />
@@ -89,7 +90,9 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="UrlMapping.xml" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\AssemblyInfoShared.cs">

@@ -34,9 +34,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
     // Steps
     private void Step1 ()
     {
-      if (string.IsNullOrEmpty (UserControl))
-        UserControl = "Controls/BocAutoCompleteReferenceValueUserControl.ascx";
-
       ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
     }
 

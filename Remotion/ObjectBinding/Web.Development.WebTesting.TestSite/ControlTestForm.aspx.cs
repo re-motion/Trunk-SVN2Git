@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.ExecutionEngine;
 
@@ -19,6 +18,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       base.OnInit (e);
 
       LoadUserControl();
+      LoadTestOutputUserControl();
     }
 
     protected override void OnLoad (EventArgs e)
@@ -28,18 +28,22 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       PopulateDataSources();
       LoadValues (IsPostBack);
     }
-
+    
     private void LoadUserControl ()
     {
-      var loadControl = LoadControl (CurrentFunction.UserControl);
-      _dataEditControl = (IDataEditControl) loadControl;
-      if (_dataEditControl == null)
-        throw new InvalidOperationException (string.Format ("IDataEditControl '{0}' could not be loaded.", CurrentFunction.UserControl));
+      var control = LoadControl (CurrentFunction.UserControl);
+      _dataEditControl = (IDataEditControl) control;
       _dataEditControl.ID = "DataEditControl";
-      ControlPlaceHolder.Controls.Add ((Control) _dataEditControl);
 
-      var loadTestOutputControl = LoadControl (CurrentFunction.UserControl.Replace (".ascx", "TestOutput.ascx"));
-      TestOutputControlPlaceHolder.Controls.Add (loadTestOutputControl);
+      ControlPlaceHolder.Controls.Add (control);
+    }
+
+    private void LoadTestOutputUserControl ()
+    {
+      var testOutputControlPath = CurrentFunction.UserControl.Replace (".ascx", "TestOutput.ascx");
+      var testOutputControl = LoadControl (testOutputControlPath);
+      
+      TestOutputControlPlaceHolder.Controls.Add (testOutputControl);
     }
 
     private void PopulateDataSources ()
@@ -65,6 +69,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
     private bool ValidateDataSources ()
     {
       PrepareValidation();
+
+      if (_dataEditControl == null)
+        return true;
+
       return _dataEditControl.Validate();
     }
   }
