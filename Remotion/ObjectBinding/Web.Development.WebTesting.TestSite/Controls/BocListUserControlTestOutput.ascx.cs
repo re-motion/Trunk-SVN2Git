@@ -13,13 +13,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       EditModeLabel.Text = bocList.IsRowEditModeActive.ToString();
     }
 
-    public void SetInfoForNoItemIDsBocList (BocList bocList)
-    {
-      SelectedIndicesNoItemIDsLabel.Text = GetSelectedRowIndicesAsString (bocList);
-      SelectedViewNoItemIDsLabel.Text = bocList.SelectedView.ItemID;
-      EditModeNoItemIDsLabel.Text = bocList.IsRowEditModeActive.ToString();
-    }
-
     private string GetSelectedRowIndicesAsString (BocList bocList)
     {
       var selectedRows = string.Join (", ", bocList.GetSelectedRows());

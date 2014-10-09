@@ -56,14 +56,5 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.TestBocListWithRowMenuItems JobList_ReadOnly;
-        
-        /// <summary>
-        /// JobList_NoItemIDs control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.TestBocListWithRowMenuItems JobList_NoItemIDs;
     }
 }

@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var userControlUrl = string.Format ("Controls/{0}UserControl.ascx", userControl);
 
-      var url = string.Format ("{0}?UserControl={1}", _webTestHelper.Configuration.WebApplicationRoot, userControlUrl);
+      var url = string.Format ("{0}ControlTest.wxe?UserControl={1}", _webTestHelper.Configuration.WebApplicationRoot, userControlUrl);
       _webTestHelper.MainBrowserSession.Visit (url);
       AcceptPossibleModalDialog();
 

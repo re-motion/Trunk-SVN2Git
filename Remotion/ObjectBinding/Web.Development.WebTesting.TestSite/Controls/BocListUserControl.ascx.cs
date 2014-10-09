@@ -22,33 +22,23 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       JobList_Normal.SelectedView = view2;
       JobList_ReadOnly.AvailableViews.AddRange (view1, view2);
 
-      var view1noItemId = new BocListView { Title = "View 1" };
-      var view2noItemId = new BocListView { Title = "View 2" };
-      JobList_NoItemIDs.AvailableViews.AddRange (view1noItemId, view2noItemId);
-
       JobList_Normal.MenuItemClick += MenuItemClickHandler;
       JobList_ReadOnly.MenuItemClick += MenuItemClickHandler;
-      JobList_NoItemIDs.MenuItemClick += MenuItemClickHandler;
 
       JobList_Normal.SortingOrderChanged += SortingOrderChangedHandler;
       JobList_ReadOnly.SortingOrderChanged += SortingOrderChangedHandler;
-      JobList_NoItemIDs.SortingOrderChanged += SortingOrderChangedHandler;
 
       JobList_Normal.EditableRowChangesSaved += EditableRowChangedSavedHandler;
       JobList_ReadOnly.EditableRowChangesSaved += EditableRowChangedSavedHandler;
-      JobList_NoItemIDs.EditableRowChangesSaved += EditableRowChangedSavedHandler;
 
       JobList_Normal.EditableRowChangesCanceled += EditableRowChangesCanceledHandler;
       JobList_ReadOnly.EditableRowChangesCanceled += EditableRowChangesCanceledHandler;
-      JobList_NoItemIDs.EditableRowChangesCanceled += EditableRowChangesCanceledHandler;
 
       JobList_Normal.ListItemCommandClick += ListItemCommandClickHandler;
       JobList_ReadOnly.ListItemCommandClick += ListItemCommandClickHandler;
-      JobList_NoItemIDs.ListItemCommandClick += ListItemCommandClickHandler;
 
       JobList_Normal.CustomCellClick += CustomCellClickHandler;
       JobList_ReadOnly.CustomCellClick += CustomCellClickHandler;
-      JobList_NoItemIDs.CustomCellClick += CustomCellClickHandler;
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -110,7 +100,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     private void SetTestOutput ()
     {
       TestOutput.SetInfoForNormalBocList (JobList_Normal);
-      TestOutput.SetInfoForNoItemIDsBocList (JobList_NoItemIDs);
     }
 
     private BocListUserControlTestOutput TestOutput
