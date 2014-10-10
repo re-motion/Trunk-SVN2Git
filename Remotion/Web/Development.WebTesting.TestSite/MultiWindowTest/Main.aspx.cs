@@ -13,6 +13,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
       base.OnInit (e);
 
       LoadFrameFunctionInFrame.Click += LoadFrameFunctionInFrameOnClick;
+      LoadFrameFunctionAsSubInFrame.Click += LoadFrameFunctionAsSubInFrameOnClick;
       LoadWindowFunctionInFrame.Click += LoadWindowFunctionInFrameOnClick;
       LoadMainAutoRefreshingFrameFunctionInFrame.Click += LoadMainAutoRefreshingFrameFunctionInFrameOnClick;
       LoadWindowFunctionInNewWindow.Click += LoadWindowFunctionInNewWindowOnClick;
@@ -35,17 +36,23 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
       LoadFunctionInFrame (function);
     }
 
+    private void LoadFrameFunctionAsSubInFrameOnClick (object sender, EventArgs e)
+    {
+      var function = new FrameFunction (false);
+      LoadFunctionInFrame (function, true);
+    }
+
     private void LoadWindowFunctionInFrameOnClick (object sender, EventArgs e)
     {
       var function = new WindowFunction();
       LoadFunctionInFrame (function);
     }
 
-    private void LoadFunctionInFrame (WxeFunction function)
+    private void LoadFunctionInFrame (WxeFunction function, bool asSub = false)
     {
       var variableKey = "WxeFunctionToOpen_" + Guid.NewGuid();
       Variables[variableKey] = function;
-      ExecuteCommandOnClient_InFrame ("frame", ExecuteFunctionCommand, true, CurrentFunction.FunctionToken, variableKey);
+      ExecuteCommandOnClient_InFrame ("frame", ExecuteFunctionCommand, true, CurrentFunction.FunctionToken, variableKey, asSub.ToString());
     }
 
     private void LoadMainAutoRefreshingFrameFunctionInFrameOnClick (object sender, EventArgs e)

@@ -12,6 +12,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
       base.OnInit (e);
 
       SimplePostBack.Click += SimplePostBackOnClick;
+      NextStep.Click += NextStepOnClick;
       LoadWindowFunctionInNewWindow.Click += LoadWindowFunctionInNewWindowOnClick;
       RefreshMainUpdatePanel.Click += RefreshMainUpdatePanelOnClick;
     }
@@ -32,6 +33,11 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
       var frameFunction = ((FrameFunction) CurrentFunction);
       if (frameFunction.AlwaysRefreshMain)
         RefreshMainFrame();
+    }
+
+    private void NextStepOnClick (object sender, EventArgs eventArgs)
+    {
+      ExecuteNextStep();
     }
 
     private void LoadWindowFunctionInNewWindowOnClick (object sender, EventArgs eventArgs)

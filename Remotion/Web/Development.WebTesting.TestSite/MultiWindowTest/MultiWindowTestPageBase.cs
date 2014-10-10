@@ -101,17 +101,36 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
         case ExecuteFunctionCommand:
           var sourceFunctionToken = arguments[0];
           var variablesKey = arguments[1];
+          var shouldExecuteAsSubFunction = bool.Parse (arguments[2]);
 
           var sourceFunction = WxeFunctionStateManager.Current.GetItem (sourceFunctionToken).Function.ExecutingStep.ParentFunction;
           var sourceFunctionVariables = sourceFunction.Variables;
           var function = sourceFunctionVariables[variablesKey] as WxeFunction;
           sourceFunctionVariables.Remove (variablesKey);
-          ExecuteFunction (function, new WxeCallArguments ((Control) sender, new WxeCallOptions()));
+          ExecuteWxeFunction(function, sender, shouldExecuteAsSubFunction);
           break;
 
         case RefreshCommand:
           // All UpdatePanels are set to UpdateMode=Always, nothing to do.
           break;
+      }
+    }
+
+    private void ExecuteWxeFunction (WxeFunction function, object sender, bool shouldExecuteAsSubFunction)
+    {
+      if (shouldExecuteAsSubFunction)
+        ExecuteFunction (function, new WxeCallArguments ((Control) sender, new WxeCallOptions()));
+      else
+      {
+        try
+        {
+          ExecuteFunction (function, new WxeCallArguments ((Control) sender, new WxeCallOptionsExternal ("_self")));
+        }
+        catch (WxeCallExternalException)
+        {
+          // ReSharper disable once RedundantJumpStatement
+          return;
+        }
       }
     }
 

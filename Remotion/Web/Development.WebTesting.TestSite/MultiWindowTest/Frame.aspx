@@ -12,7 +12,8 @@
           <ContentTemplate>
             <p>Frame.aspx running in FrameFunction</p>
             <p><asp:Label ID="FrameSmartLabel" Text="FrameSmartLabel" ViewStateMode="Disabled" runat="server" /></p>
-            <p><remotion:WebButton ID="SimplePostBack" Text="SimplePostBack" runat="server"/></p>
+            <p><remotion:WebButton ID="SimplePostBack" Text="Simple PostBack" runat="server"/></p>
+            <p><remotion:WebButton ID="NextStep" Text="Next step (= finish function => destroys frame!)" runat="server"/></p>
             <p><remotion:WebButton ID="LoadWindowFunctionInNewWindow" Text="Load WindowFunction in new Window" runat="server"/></p>
             <p><remotion:WebButton ID="RefreshMainUpdatePanel" Text="Refresh Main UpdatePanel" runat="server"/></p>
           </ContentTemplate>

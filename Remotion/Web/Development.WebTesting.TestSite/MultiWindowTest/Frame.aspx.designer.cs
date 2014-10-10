@@ -58,6 +58,15 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         protected global::Remotion.Web.UI.Controls.WebButton SimplePostBack;
         
         /// <summary>
+        /// NextStep control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebButton NextStep;
+        
+        /// <summary>
         /// LoadWindowFunctionInNewWindow control.
         /// </summary>
         /// <remarks>

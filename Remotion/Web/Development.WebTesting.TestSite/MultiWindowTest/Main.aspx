@@ -14,6 +14,7 @@
             <p><asp:Label ID="MainSmartLabel" Text="MainSmartLabel" ViewStateMode="Disabled" runat="server" /></p>
             <p><remotion:WebButton ID="SimplePostBack" Text="Simple PostBack" runat="server"/></p>
             <p><remotion:WebButton ID="LoadFrameFunctionInFrame" Text="Load FrameFunction in Frame" runat="server"/></p>
+            <p><remotion:WebButton ID="LoadFrameFunctionAsSubInFrame" Text="Load FrameFunction (as sub function) in Frame" runat="server"/></p>
             <p><remotion:WebButton ID="LoadWindowFunctionInFrame" Text="Load WindowFunction in Frame" runat="server"/></p>
             <p><remotion:WebButton ID="LoadMainAutoRefreshingFrameFunctionInFrame" Text="Load Main-auto-refreshing FrameFunction in Frame" runat="server"/></p>
             <p><remotion:WebButton ID="LoadWindowFunctionInNewWindow" Text="Load WindowFunction in new Window" runat="server"/></p>
