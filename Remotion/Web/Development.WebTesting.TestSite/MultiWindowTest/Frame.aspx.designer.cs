@@ -22,39 +22,57 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
+        /// ScriptManager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager ScriptManager;
+        
+        /// <summary>
+        /// UpdatePanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel;
+        
+        /// <summary>
         /// FrameSmartLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.SmartLabel FrameSmartLabel;
+        protected global::System.Web.UI.WebControls.Label FrameSmartLabel;
         
         /// <summary>
-        /// OpenNewWindowFromFrame control.
+        /// SimplePostBack control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton OpenNewWindowFromFrame;
+        protected global::Remotion.Web.UI.Controls.WebButton SimplePostBack;
         
         /// <summary>
-        /// OpenNewWindowAndFunctionFromFrame control.
+        /// LoadWindowFunctionInNewWindow control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton OpenNewWindowAndFunctionFromFrame;
+        protected global::Remotion.Web.UI.Controls.WebButton LoadWindowFunctionInNewWindow;
         
         /// <summary>
-        /// RefreshMainAsWell control.
+        /// RefreshMainUpdatePanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton RefreshMainAsWell;
+        protected global::Remotion.Web.UI.Controls.WebButton RefreshMainUpdatePanel;
     }
 }

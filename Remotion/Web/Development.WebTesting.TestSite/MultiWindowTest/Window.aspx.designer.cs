@@ -28,16 +28,16 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.SmartLabel WindowSmartLabel;
+        protected global::System.Web.UI.WebControls.Label WindowSmartLabel;
         
         /// <summary>
-        /// DoSomething control.
+        /// SimplePostBack control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton DoSomething;
+        protected global::Remotion.Web.UI.Controls.WebButton SimplePostBack;
         
         /// <summary>
         /// Close control.
@@ -49,12 +49,12 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         protected global::Remotion.Web.UI.Controls.WebButton Close;
         
         /// <summary>
-        /// CloseAndRefreshParentAsWell control.
+        /// CloseAndRefreshMainAsWell control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Remotion.Web.UI.Controls.WebButton CloseAndRefreshParentAsWell;
+        protected global::Remotion.Web.UI.Controls.WebButton CloseAndRefreshMainAsWell;
     }
 }

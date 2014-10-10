@@ -10,7 +10,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
         : base (new NoneTransactionMode())
     {
     }
-    
+
     // Steps
     private void Step1 ()
     {

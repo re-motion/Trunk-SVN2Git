@@ -133,6 +133,9 @@
       <DependentUpon>HtmlAnchorTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="HtmlAnchorTestFunction.cs" />
+    <Compile Include="MultiWindowTest\MultiWindowTestPageBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="MultiWindowTest\Window.aspx.cs">
       <DependentUpon>Window.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

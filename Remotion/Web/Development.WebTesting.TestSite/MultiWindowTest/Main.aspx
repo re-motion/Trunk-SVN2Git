@@ -6,17 +6,23 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-      <p>Main.aspx running in MainFunction</p>
-      <p><remotion:SmartLabel ID="MainSmartLabel" Text="MainSmartLabel" runat="server" /></p>
-      <p><remotion:WebButton ID="LoadFrameFunction" Text="LoadFrameFunction" runat="server"/></p>
-      <p><remotion:WebButton ID="LoadAutoMainRefreshingFrameFunction" Text="LoadAutoMainRefreshingFrameFunction" runat="server"/></p>
-      <p><remotion:WebButton ID="OpenNewWindowFromMain" Text="OpenNewWindowFromMain" runat="server"/></p>
-      <p><remotion:WebButton ID="OpenNewWindowAndFunctionFromMain" Text="OpenNewWindowAndFunctionFromMain" runat="server"/></p>
-      <div style="border: 1px solid black">
-        <iframe src="Frame.wxe" height="500" width="500"></iframe>
+      <asp:ScriptManager ID="ScriptManager" EnablePartialRendering="true" AsyncPostBackTimeout="3600" runat="server" />
+      <div>
+        <asp:UpdatePanel ID="UpdatePanel" UpdateMode="Always" runat="server">
+          <ContentTemplate>
+            <p>Main.aspx running in MainFunction</p>
+            <p><asp:Label ID="MainSmartLabel" Text="MainSmartLabel" ViewStateMode="Disabled" runat="server" /></p>
+            <p><remotion:WebButton ID="SimplePostBack" Text="Simple PostBack" runat="server"/></p>
+            <p><remotion:WebButton ID="LoadFrameFunctionInFrame" Text="Load FrameFunction in Frame" runat="server"/></p>
+            <p><remotion:WebButton ID="LoadWindowFunctionInFrame" Text="Load WindowFunction in Frame" runat="server"/></p>
+            <p><remotion:WebButton ID="LoadMainAutoRefreshingFrameFunctionInFrame" Text="Load Main-auto-refreshing FrameFunction in Frame" runat="server"/></p>
+            <p><remotion:WebButton ID="LoadWindowFunctionInNewWindow" Text="Load WindowFunction in new Window" runat="server"/></p>
+          </ContentTemplate>
+        </asp:UpdatePanel>
+        <div style="border: 1px solid black">
+          <iframe name="frame" src="Frame.wxe?AlwaysRefreshMain=False" height="500" width="1000"></iframe>
+        </div>
       </div>
-    </div>
     </form>
 </body>
 </html>

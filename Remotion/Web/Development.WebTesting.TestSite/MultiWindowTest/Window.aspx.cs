@@ -1,29 +1,38 @@
 ﻿using System;
-using System.Web.UI;
+using Remotion.Web.UI.Controls.PostBackTargets;
 
 namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
 {
-  public partial class Window : Page
+  public partial class Window : MultiWindowTestPageBase
   {
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
 
-      DoSomething.Click += DoSomethingOnClick;
       Close.Click += CloseOnClick;
-      CloseAndRefreshParentAsWell.Click += CloseAndRefreshParentAsWellOnClick;
+      CloseAndRefreshMainAsWell.Click += CloseAndRefreshMainAsWellOnClick;
     }
 
-    private void DoSomethingOnClick (object sender, EventArgs eventArgs)
+    protected override void OnPreRender (EventArgs e)
     {
+      base.OnPreRender (e);
+      SetTestOutput (WindowSmartLabel);
+    }
+
+    protected override void AddPostBackEventHandlerToPage (PostBackEventHandler postBackEventHandler)
+    {
+      Controls.Add (postBackEventHandler);
     }
 
     private void CloseOnClick (object sender, EventArgs eventArgs)
     {
+      ExecuteNextStep();
     }
 
-    private void CloseAndRefreshParentAsWellOnClick (object sender, EventArgs eventArgs)
+    private void CloseAndRefreshMainAsWellOnClick (object sender, EventArgs eventArgs)
     {
+      ExecuteNextStep();
+      Variables["Refresh"] = true;
     }
   }
 }

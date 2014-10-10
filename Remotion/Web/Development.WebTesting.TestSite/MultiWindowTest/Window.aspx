@@ -6,13 +6,13 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-      <p>Window.aspx running in WindowFunction</p>
-      <p><remotion:SmartLabel ID="WindowSmartLabel" Text="WindowSmartLabel" runat="server" /></p>
-      <p><remotion:WebButton ID="DoSomething" Text="DoSomething" runat="server"/></p>
-      <p><remotion:WebButton ID="Close" Text="Close" runat="server"/></p>
-      <p><remotion:WebButton ID="CloseAndRefreshParentAsWell" Text="CloseAndRefreshParentAsWell" runat="server"/></p>
-    </div>
+      <div>
+        <p>Window.aspx running in WindowFunction</p>
+        <p><asp:Label ID="WindowSmartLabel" Text="WindowSmartLabel" runat="server" /></p>
+        <p><remotion:WebButton ID="SimplePostBack" Text="SimplePostBack" runat="server"/></p>
+        <p><remotion:WebButton ID="Close" Text="Close" runat="server"/></p>
+        <p><remotion:WebButton ID="CloseAndRefreshMainAsWell" Text="Close (and refresh Main even if started from Frame)" runat="server"/></p>
+      </div>
     </form>
 </body>
 </html>
