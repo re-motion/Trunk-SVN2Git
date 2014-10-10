@@ -14,20 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Remotion.Web.Test
+namespace Remotion.Web.UI.Controls.PostBackTargets
 {
-  public class PostBackEventHandler : WebControl, IPostBackEventHandler
+  /// <summary>
+  /// A postback target with no visual representation on the page. Users may register for the <see cref="PostBack"/> event and retrieve postbacks
+  /// started via JavaScript calls. This control should be used in favor of any kind of hidden "dummy" <see cref="Button"/>.
+  /// </summary>
+  /// <remarks>
+  /// If you intend to use the PostBackEventHandler to send asynchronous postbacks, do not forget to register the <see cref="PostBackEventHandler"/>
+  /// with the <see cref="ScriptManager"/> using <see cref="ScriptManager.RegisterAsyncPostBackControl"/>.
+  /// </remarks>
+  public class PostBackEventHandler : Control, IPostBackEventHandler
   {
-    public event EventHandler<IDEventArgs> PostBack;
+    public event EventHandler<PostBackEventHandlerEventArgs> PostBack;
 
     public void RaisePostBackEvent (string eventArgument)
     {
       if (PostBack != null)
-        PostBack (this, new IDEventArgs (eventArgument));
+        PostBack (this, new PostBackEventHandlerEventArgs (eventArgument));
     }
   }
 }

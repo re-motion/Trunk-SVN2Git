@@ -19,6 +19,7 @@ using System.Threading;
 using System.Web.UI;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.PostBackTargets;
 
 namespace Remotion.Web.Test.UpdatePanelTests
 {

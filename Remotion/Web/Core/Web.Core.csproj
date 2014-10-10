@@ -221,6 +221,8 @@
     <Compile Include="UI\Controls\IRenderingFeatures.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
+    <Compile Include="UI\Controls\PostBackTargets\PostBackEventHandler.cs" />
+    <Compile Include="UI\Controls\PostBackTargets\PostBackEventHandlerEventArgs.cs" />
     <Compile Include="UI\Controls\PostBackTargets\ScalarLoadPostDataTarget.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\RenderingFeatures.cs" />

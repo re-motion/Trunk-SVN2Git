@@ -21,6 +21,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.PostBackTargets;
 
 namespace Remotion.Web.Test.MultiplePostBackCatching
 {
@@ -83,7 +84,7 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       sutTable.ID = "SutTable";
       sutTable.EnableViewState = false;
       _testControlGenerator = new TestControlGenerator (_sutPage, _postBackEventHandler);
-      _testControlGenerator.Click += HandlePostBack;
+      _testControlGenerator.Click += TestControlGeneratorOnClick;
       foreach (Control initialControl in _testControlGenerator.GetTestControls (null))
           sutTable.Rows.Add (CreateRow (initialControl));
       controls.Add (sutTable);
@@ -91,10 +92,20 @@ namespace Remotion.Web.Test.MultiplePostBackCatching
       return controls.ToArray();
     }
 
-    private void HandlePostBack (object sender, IDEventArgs e)
+    private void TestControlGeneratorOnClick (object sender, IDEventArgs idEventArgs)
     {
-      _label.Text = "Test Result: " + e.ID;
-      ScriptManager.RegisterHiddenField (_sutPage, LastClickFieldID, e.ID);
+      HandlePostBack (idEventArgs.ID);
+    }
+
+    private void HandlePostBack (object sender, PostBackEventHandlerEventArgs e)
+    {
+      HandlePostBack (e.EventArgument);
+    }
+
+    private void HandlePostBack(string result)
+    {
+      _label.Text = "Test Result: " + result;
+      ScriptManager.RegisterHiddenField (_sutPage, LastClickFieldID, result);
       System.Threading.Thread.Sleep (_serverDelay);
     }
 

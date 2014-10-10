@@ -331,7 +331,6 @@
     <Compile Include="MultiplePostBackCatching\UpdatePanelSutForm.aspx.designer.cs">
       <DependentUpon>UpdatePanelSutForm.aspx</DependentUpon>
     </Compile>
-    <Compile Include="PostBackEventHandler.cs" />
     <Compile Include="MultiplePostBackCatching\SutGenerator.cs" />
     <Compile Include="MultiplePostBackCatching\TestExpectationsGenerator.cs" />
     <Compile Include="MultiplePostBackCatching\TestSuiteGenerator.cs" />
