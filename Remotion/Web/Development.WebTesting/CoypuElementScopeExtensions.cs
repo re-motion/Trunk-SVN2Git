@@ -1,7 +1,9 @@
 ﻿using System;
 using Coypu;
+using JetBrains.Annotations;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -11,11 +13,36 @@ namespace Remotion.Web.Development.WebTesting
   public static class CoypuElementScopeExtensions
   {
     /// <summary>
+    /// Find an element with the given <paramref name="tagSelector"/> bearing a given diagnostic metadata attribute name/value combination.
+    /// </summary>
+    /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
+    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the diagnostic metadata attributes.</param>
+    /// <param name="diagnosticMetadataAttributeName">The diagnostic metadata attribute name.</param>
+    /// <param name="diagnosticMetadataAttributeValue">The diagnostic metadata attribute value.</param>
+    /// <returns>The <see cref="ElementScope"/> of the found element.</returns>
+    public static ElementScope FindDMA (
+        [NotNull] this ElementScope scope,
+        [NotNull] string tagSelector,
+        [NotNull] string diagnosticMetadataAttributeName,
+        [NotNull] string diagnosticMetadataAttributeValue)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNullOrEmpty ("tagSelector", tagSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeName", diagnosticMetadataAttributeName);
+      ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeValue", diagnosticMetadataAttributeValue);
+
+      var cssSelector = string.Format ("{0}[{1}='{2}']", tagSelector, diagnosticMetadataAttributeName, diagnosticMetadataAttributeValue);
+      return scope.FindCss (cssSelector);
+    }
+
+    /// <summary>
     /// Focuses a link before actually clicking it.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
-    public static void FocusClick (this ElementScope scope)
+    public static void FocusClick ([NotNull] this ElementScope scope)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
       scope.FocusLink();
       scope.Click();
     }
@@ -24,8 +51,10 @@ namespace Remotion.Web.Development.WebTesting
     /// Focuses a link.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
-    private static void FocusLink (this ElementScope scope)
+    private static void FocusLink ([NotNull] this ElementScope scope)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
       scope.SendKeys ("");
     }
 
@@ -34,8 +63,11 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="context">The corresponding control object's context.</param>
-    public static void ContextClick (this ElementScope scope, TestObjectContext context)
+    public static void ContextClick ([NotNull] this ElementScope scope, [NotNull] TestObjectContext context)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("context", context);
+
       // Hack: Coypu does not directly support the Actions interface, therefore we need to fall back to using Selenium.
       var webDriver = (IWebDriver) context.Browser.Native;
       var nativeScope = (IWebElement) scope.Native;

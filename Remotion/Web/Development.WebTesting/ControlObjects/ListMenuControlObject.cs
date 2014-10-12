@@ -18,7 +18,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
     {
-      var item = Scope.FindCss (string.Format ("span[{0}='{1}'][{2}='{3}']", "class", "listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID));
+      var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (item);
     }
 

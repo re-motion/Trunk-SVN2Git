@@ -19,7 +19,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject SwitchTo (string itemID)
     {
-      var itemScope = Scope.FindCss (string.Format ("span.tabStripTab[{0}='{1}']", DiagnosticMetadataAttributes.ItemID, itemID));
+      var itemScope = Scope.FindDMA ("span.tabStripTab", DiagnosticMetadataAttributes.ItemID, itemID);
       return SwitchToUsingCommandScope (itemScope);
     }
 

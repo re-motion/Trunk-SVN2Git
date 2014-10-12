@@ -21,7 +21,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
-      var scope = dropDownMenuScope.FindCss (string.Format ("li.DropDownMenuItem[{0}='{1}']", DiagnosticMetadataAttributes.ItemID, itemID));
+      var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (scope, waitingStrategy);
     }
 
@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
-      var scope = dropDownMenuScope.FindCss (string.Format ("li.DropDownMenuItem[{0}='{1}']", DiagnosticMetadataAttributes.Text, text));
+      var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Text, text);
       return ClickItem (scope, waitingStrategy);
     }
 

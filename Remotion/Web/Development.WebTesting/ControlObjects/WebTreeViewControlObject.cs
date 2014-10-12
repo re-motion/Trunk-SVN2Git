@@ -60,14 +60,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
-      var nodeScope = Scope.FindCss (string.Format ("ul li[{0}='{1}']", DiagnosticMetadataAttributes.ItemID, itemID));
+      var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
       nodeScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
 
     public WebTreeViewNodeControlObject GetNode (int index)
     {
-      var nodeScope = Scope.FindCss (string.Format ("ul li[{0}='{1}']", DiagnosticMetadataAttributes.IndexInCollection, index));
+      var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
       nodeScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
@@ -79,29 +79,27 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNodeByText (string text)
     {
-      var nodeScope = Scope.FindCss (string.Format ("ul li[{0}='{1}']", DiagnosticMetadataAttributes.Text, text));
+      var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.Text, text);
       nodeScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
 
     public WebTreeViewNodeControlObject Expand ()
     {
-      var cssSelector = string.Format (
-          "span a[{0}='{1}']",
+      var expandAnchorScope = Scope.FindDMA (
+          "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      var expandAnchorScope = Scope.FindCss (cssSelector);
       expandAnchorScope.ClickAndWait (Context, WaitFor.WxePostBack);
       return this;
     }
 
     public WebTreeViewNodeControlObject Collapse ()
     {
-      var cssSelector = string.Format (
-          "span a[{0}='{1}']",
+      var collapseAnchorScope = Scope.FindDMA (
+          "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      var collapseAnchorScope = Scope.FindCss (cssSelector);
       collapseAnchorScope.ClickAndWait (Context, WaitFor.WxePostBack);
       return this;
     }
@@ -121,11 +119,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private ElementScope GetWellKnownSelectAnchorScope ()
     {
-      var cssSelector = string.Format (
-          "span a[{0}='{1}']",
+      return Scope.FindDMA (
+          "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);
-      return Scope.FindCss (cssSelector);
     }
   }
 

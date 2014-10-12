@@ -19,13 +19,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public WebButtonControlObject SelectPerText (TestObjectContext context, string displayName)
     {
-      var scope = context.Scope.FindCss (string.Format ("button[{0}='{1}']", DiagnosticMetadataAttributes.Text, displayName));
+      var scope = context.Scope.FindDMA ("button", DiagnosticMetadataAttributes.Text, displayName);
       return CreateControlObject (context, scope);
     }
 
     public WebButtonControlObject SelectPerCommandName (TestObjectContext context, string commandName)
     {
-      var scope = context.Scope.FindCss (string.Format ("button[{0}='{1}']", DiagnosticMetadataAttributes.CommandName, commandName));
+      var scope = context.Scope.FindDMA ("button", DiagnosticMetadataAttributes.CommandName, commandName);
       return CreateControlObject (context, scope);
     }
   }

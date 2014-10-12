@@ -24,8 +24,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
 
     public TControlObject SelectPerDisplayName (TestObjectContext context, string displayName)
     {
-      var scope =
-          context.Scope.FindCss (string.Format ("{0}[{1}='{2}']", RootTag, DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName));
+      var scope = context.Scope.FindDMA (RootTag, DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName);
       return CreateControlObject (context, scope);
     }
 
@@ -35,6 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
 
       if (domainClass != null)
       {
+        // Todo RM-6297: Extend ElementScope.FindDMA() extension method to support multiple DMAs?
         scope = context.Scope.FindCss (
             string.Format (
                 "{0}[{1}='{2}'][{3}='{4}']",
@@ -46,9 +46,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       }
       else
       {
-        scope =
-            context.Scope.FindCss (
-                string.Format ("{0}[{1}='{2}']", RootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty));
+        scope = context.Scope.FindDMA (RootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty);
       }
 
       return CreateControlObject (context, scope);
