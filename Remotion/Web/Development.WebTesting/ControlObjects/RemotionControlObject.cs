@@ -1,7 +1,6 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
-using OpenQA.Selenium.Support.UI;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;

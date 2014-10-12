@@ -117,6 +117,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
+      <Project>{d641e4e2-23f3-4454-8074-1327ef07baa1}</Project>
+      <Name>Mixins.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Project>{df8ba786-9679-4879-8757-16ae2709d83a}</Project>
       <Name>Web.Core</Name>

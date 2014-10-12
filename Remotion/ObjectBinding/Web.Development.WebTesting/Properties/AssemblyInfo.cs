@@ -32,4 +32,4 @@ using System.Web.UI;
 [assembly: AssemblyTitle("Remotion BusinessObjectControls Library WebTesting Framework Integration")]
 [assembly: AssemblyDescription ("WebTesting framework integration for business object web controls.")]
 [assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(false)]
+[assembly: CLSCompliant(true)]

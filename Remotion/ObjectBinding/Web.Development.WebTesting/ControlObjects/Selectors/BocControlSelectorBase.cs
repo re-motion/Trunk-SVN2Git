@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     public TControlObject SelectPerDisplayName (TestObjectContext context, string displayName)
     {
       var scope =
-          context.Scope.FindCss (string.Format ("{0}[{1}='{2}']", _rootTag, DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName));
+          context.Scope.FindCss (string.Format ("{0}[{1}='{2}']", RootTag, DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName));
       return CreateControlObject (context, scope);
     }
 
@@ -38,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
         scope = context.Scope.FindCss (
             string.Format (
                 "{0}[{1}='{2}'][{3}='{4}']",
-                _rootTag,
+                RootTag,
                 DiagnosticMetadataAttributesForObjectBinding.BoundType,
                 domainClass,
                 DiagnosticMetadataAttributesForObjectBinding.BoundProperty,
@@ -46,8 +46,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       }
       else
       {
-        scope = context.Scope.FindCss (
-            string.Format ("{0}[{1}='{2}']", _rootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty));
+        scope =
+            context.Scope.FindCss (
+                string.Format ("{0}[{1}='{2}']", RootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty));
       }
 
       return CreateControlObject (context, scope);

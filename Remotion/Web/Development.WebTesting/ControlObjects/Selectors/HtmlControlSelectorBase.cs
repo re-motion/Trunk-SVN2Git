@@ -18,7 +18,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           ISingleControlSelector<TControlObject>
       where TControlObject : HtmlControlObject
   {
-    protected readonly string _rootTag;
+    private readonly string _rootTag;
 
     /// <summary>
     /// Constructor.
@@ -29,6 +29,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNullOrEmpty ("rootTag", rootTag);
 
       _rootTag = rootTag;
+    }
+
+    protected string RootTag
+    {
+      get { return _rootTag; }
     }
 
     public TControlObject SelectFirst (TestObjectContext context)

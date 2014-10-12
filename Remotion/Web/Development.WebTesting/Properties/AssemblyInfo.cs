@@ -32,4 +32,4 @@ using System.Web.UI;
 [assembly: AssemblyTitle("Remotion WebTesting Framework")]
 [assembly: AssemblyDescription("WebTesting framework for Remotion applications.")]
 [assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(false)]
+[assembly: CLSCompliant(true)]

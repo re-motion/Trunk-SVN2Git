@@ -19,7 +19,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           ISingleControlSelector<TControlObject>
       where TControlObject : RemotionControlObject
   {
-    protected readonly string _rootTag;
+    private readonly string _rootTag;
     private readonly string _cssClass;
 
     /// <summary>
@@ -34,6 +34,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
       _rootTag = rootTag;
       _cssClass = cssClass;
+    }
+
+    protected string RootTag
+    {
+      get { return _rootTag; }
     }
 
     public TControlObject SelectFirst (TestObjectContext context)
