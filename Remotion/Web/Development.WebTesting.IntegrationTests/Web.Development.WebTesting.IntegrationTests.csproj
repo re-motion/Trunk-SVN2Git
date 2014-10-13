@@ -70,6 +70,7 @@
     <Compile Include="FluentControlSelectorExtensionsForIntegrationTests.cs" />
     <Compile Include="DropDownMenuControlObjectTest.cs" />
     <Compile Include="LabelControlObjectTest.cs" />
+    <Compile Include="MultiWindowTest.cs" />
     <Compile Include="SingleViewControlObjectTest.cs" />
     <Compile Include="FormGridControlObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
