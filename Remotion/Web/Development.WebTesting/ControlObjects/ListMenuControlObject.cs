@@ -16,36 +16,36 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItem (string itemID, IActionBehavior actionBehavior = null)
     {
       var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (item);
     }
 
-    public UnspecifiedPageObject ClickItem (int index, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItem (int index, IActionBehavior actionBehavior = null)
     {
       var item = FindChild ((index - 1).ToString());
-      return ClickItem (item, waitingStrategy);
+      return ClickItem (item, actionBehavior);
     }
 
-    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IActionBehavior actionBehavior = null)
     {
       var item = Scope.FindId (htmlID);
-      return ClickItem (item, waitingStrategy);
+      return ClickItem (item, actionBehavior);
     }
 
-    public UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByText (string text, IActionBehavior actionBehavior = null)
     {
       var item = Scope.FindXPath (string.Format ("tbody/tr/td/span[contains(a,'{0}')]", text));
-      return ClickItem (item, waitingStrategy);
+      return ClickItem (item, actionBehavior);
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope item, IWaitingStrategy waitingStrategy = null)
+    private UnspecifiedPageObject ClickItem (ElementScope item, IActionBehavior actionBehavior = null)
     {
       var anchorScope = item.FindLink();
 
-      var actualWaitingStrategy = GetActualWaitingStrategy (anchorScope, waitingStrategy);
-      anchorScope.ClickAndWait (Context, actualWaitingStrategy);
+      var actualActionBehavior = GetActualActionBehavior (anchorScope, actionBehavior);
+      anchorScope.ClickAndWait (Context, actualActionBehavior);
       return UnspecifiedPage();
     }
   }

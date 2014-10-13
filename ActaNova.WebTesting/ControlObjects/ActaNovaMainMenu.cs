@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Utilities;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -28,12 +28,15 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="Select(string[])"/>, however, a <paramref name="waitingStrategy"/> may be given which is used instead of the default one.
+    /// See <see cref="Select(string[])"/>, however, a <paramref name="actionBehavior"/> may be given which is used instead of the default one.
     /// </summary>
-    public UnspecifiedPageObject Select (IEnumerable<string> menuItems, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject Select (IEnumerable<string> menuItems, IActionBehavior actionBehavior = null)
     {
-      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
-      var waitingStrategyState = actualWaitingStrategy.OnBeforeActionPerformed (Context);
+      var actualActionBehavior = GetActualActionBehavior (actionBehavior) as IActionBehaviorInternal;
+      if (actualActionBehavior == null)
+        Assertion.IsNotNull (actualActionBehavior, "");
+
+      var waitingStrategyState = actualActionBehavior.BeforeAction (Context);
 
       // HACK: Use Selenium directly, Coypu does not support Actions API yet.
       var webDriver = (IWebDriver) Context.Browser.Native;
@@ -43,7 +46,7 @@ namespace ActaNova.WebTesting.ControlObjects
       var timeout = Context.Configuration.SearchTimeout;
 
       var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
-      AddClickOnLastMenuItemAction (actions, nativeLastMenuItemScope, actualWaitingStrategy, waitingStrategyState, timeout);
+      AddClickOnLastMenuItemAction (actions, nativeLastMenuItemScope, actualActionBehavior, waitingStrategyState, timeout);
 
       actions.Perform();
 
@@ -71,7 +74,7 @@ namespace ActaNova.WebTesting.ControlObjects
     private void AddClickOnLastMenuItemAction (
         ActionsWithWaitSupport actions,
         IWebElement nativeLastMenuItemScope,
-        IWaitingStrategy actualWaitingStrategy,
+        IActionBehaviorInternal actionBehavior,
         object waitingStrategyState,
         TimeSpan timeout)
     {
@@ -80,7 +83,7 @@ namespace ActaNova.WebTesting.ControlObjects
           nativeLastMenuItemScope,
           _ =>
           {
-            actualWaitingStrategy.PerformWaitAfterActionPerformed (Context, waitingStrategyState);
+            actionBehavior.AfterAction (Context, waitingStrategyState);
             return true;
           },
           timeout);

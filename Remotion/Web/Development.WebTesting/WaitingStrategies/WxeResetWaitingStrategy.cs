@@ -15,7 +15,7 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
     public void PerformWaitAfterActionPerformed (TestObjectContext context, object state)
     {
       const int expectedWxePostBackSequenceNumber = 2;
-      WaitForWxePostBackSequenceNumber (context, expectedWxePostBackSequenceNumber);
+      WaitForWxePostBackSequenceNumber (context, context.FrameRootElement, expectedWxePostBackSequenceNumber);
     }
   }
 }

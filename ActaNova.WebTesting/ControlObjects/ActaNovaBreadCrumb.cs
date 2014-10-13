@@ -2,7 +2,6 @@
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -18,10 +17,10 @@ namespace ActaNova.WebTesting.ControlObjects
       get { return Scope.FindCss ("span.breadCrumbElementText").Text; }
     }
 
-    public UnspecifiedPageObject Click (IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject Click (IActionBehavior actionBehavior = null)
     {
-      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
-      Scope.ClickAndWait (Context, actualWaitingStrategy);
+      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      Scope.ClickAndWait (Context, actualActionBehavior);
       return UnspecifiedPage();
     }
   }

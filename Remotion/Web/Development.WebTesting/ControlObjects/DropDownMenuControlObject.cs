@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using OpenQA.Selenium.Interactions;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
@@ -18,32 +19,32 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     protected abstract void OpenDropDownMenu ();
 
-    public UnspecifiedPageObject ClickItem (string itemID, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItem (string itemID, IActionBehavior actionBehavior = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
-      return ClickItem (scope, waitingStrategy);
+      return ClickItem (scope, actionBehavior);
     }
 
-    public UnspecifiedPageObject ClickItem (int index, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItem (int index, IActionBehavior actionBehavior = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindXPath (string.Format ("li[{0}]", index));
-      return ClickItem (scope, waitingStrategy);
+      return ClickItem (scope, actionBehavior);
     }
 
-    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IActionBehavior actionBehavior = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindId (htmlID);
-      return ClickItem (scope, waitingStrategy);
+      return ClickItem (scope, actionBehavior);
     }
 
-    public UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ClickItemByText (string text, IActionBehavior actionBehavior = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Text, text);
-      return ClickItem (scope, waitingStrategy);
+      return ClickItem (scope, actionBehavior);
     }
 
     private ElementScope GetDropDownMenuScope ()
@@ -54,9 +55,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return dropDownMenuOptionsScope;
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope item, IWaitingStrategy waitingStrategy = null)
+    private UnspecifiedPageObject ClickItem (ElementScope item, IActionBehavior actionBehavior = null)
     {
-      var actualWaitingStrategy = GetActualWaitingStrategy (item, waitingStrategy);
+      var actualWaitingStrategy = GetActualActionBehavior (item, actionBehavior);
 
       var anchorScope = item.FindLink();
       anchorScope.ClickAndWait (Context, actualWaitingStrategy);

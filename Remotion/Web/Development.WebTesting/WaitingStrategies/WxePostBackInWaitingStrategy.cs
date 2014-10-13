@@ -1,22 +1,29 @@
 ﻿using System;
+using Coypu;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 {
   /// <summary>
   /// Todo RM-6297: Docs
   /// </summary>
-  public class WxePostBackWaitingStrategy : WxeWaitingStrategyBase, IWaitingStrategy
+  public class WxePostBackInWaitingStrategy : WxeWaitingStrategyBase, IWaitingStrategy
   {
+    private readonly ElementScope _scope;
     private readonly int _expectedWxePostBackSequenceNumberIncrease;
 
-    public WxePostBackWaitingStrategy (int expectedWxePostBackSequenceNumberIncrease)
+    public WxePostBackInWaitingStrategy ([NotNull] ElementScope scope, int expectedWxePostBackSequenceNumberIncrease)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      _scope = scope;
       _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
     }
 
     public object OnBeforeActionPerformed (TestObjectContext context)
     {
-      var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber (context.FrameRootElement);
+      var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber (_scope);
       return wxePostBackSequenceNumber;
     }
 
@@ -25,7 +32,7 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
       var oldWxePostBackSequenceNumber = (int) state;
       var expectedWxePostBackSequenceNumber = oldWxePostBackSequenceNumber + _expectedWxePostBackSequenceNumberIncrease;
 
-      WaitForWxePostBackSequenceNumber (context, context.FrameRootElement, expectedWxePostBackSequenceNumber);
+      WaitForWxePostBackSequenceNumber (context, _scope, expectedWxePostBackSequenceNumber);
     }
   }
 }

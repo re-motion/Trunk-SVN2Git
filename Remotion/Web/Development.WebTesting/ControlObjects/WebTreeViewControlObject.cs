@@ -90,7 +90,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      expandAnchorScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      expandAnchorScope.ClickAndWait (Context, Behavior.WaitFor(WaitFor.WxePostBack));
       return this;
     }
 
@@ -100,14 +100,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      collapseAnchorScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      collapseAnchorScope.ClickAndWait (Context, Behavior.WaitFor(WaitFor.WxePostBack));
       return this;
     }
 
     public WebTreeViewNodeControlObject Select ()
     {
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      selectAnchorScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      selectAnchorScope.ClickAndWait (Context, Behavior.WaitFor(WaitFor.WxePostBack));
       return this;
     }
 

@@ -14,27 +14,27 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject Click (IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject Click (IActionBehavior actionBehavior = null)
     {
-      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
-      Scope.ClickAndWait (Context, actualWaitingStrategy);
+      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      Scope.ClickAndWait (Context, actualActionBehavior);
       return UnspecifiedPage();
     }
 
     /// <summary>
-    /// Returns the waiting strategy to be used.
+    /// Returns the actual <see cref="IActionBehavior"/> to be used.
     /// </summary>
-    /// <param name="waitingStrategy">User-provided waiting strategy.</param>
-    /// <returns>Waiting strategy to be used.</returns>
-    private IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy waitingStrategy)
+    /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
+    /// <returns><see cref="IActionBehavior"/> to be used.</returns>
+    private IActionBehavior GetActualActionBehavior ([CanBeNull] IActionBehavior userDefinedActionBehavior)
     {
-      if (waitingStrategy != null)
-        return waitingStrategy;
+      if (userDefinedActionBehavior != null)
+        return userDefinedActionBehavior;
 
       if (IsPostBackLink())
-        return WaitFor.WxePostBack;
+        return Behavior.WaitFor (WaitFor.WxePostBack);
 
-      return WaitFor.WxeReset;
+      return Behavior.WaitFor (WaitFor.WxeReset);
     }
 
     private bool IsPostBackLink ()

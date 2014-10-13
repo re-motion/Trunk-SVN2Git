@@ -51,7 +51,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
       var commandContext = Context.CloneForScope (commandScope);
       var command = new CommandControlObject (commandScope.Id, commandContext);
-      return command.Click (WaitFor.WxePostBack);
+      return command.Click (Behavior.WaitFor(WaitFor.WxePostBack));
     }
   }
 }

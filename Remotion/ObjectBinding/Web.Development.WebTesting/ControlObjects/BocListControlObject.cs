@@ -72,31 +72,31 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         s.SendKeys (Keys.Backspace + page); // JS prevents clearing, so FillWith is not possible
         Then.PressEnter (s);
       };
-      currentPageTextInputScope.PerformActionUsingWaitStrategy (fillAction, Context, WaitFor.WxePostBack);
+      currentPageTextInputScope.PerformAction (fillAction, Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = FindChild ("Navigation_First");
-      firstPageLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      firstPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = FindChild ("Navigation_Previous");
-      previousPageLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      previousPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void GoToNextPage ()
     {
       var nextPageLinkScope = FindChild ("Navigation_Next");
-      nextPageLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      nextPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void GoToLastPage ()
     {
       var lastPageLinkScope = FindChild ("Navigation_Last");
-      lastPageLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      lastPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public BocListRowControlObject GetRow (string itemID)
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       var sortColumnLinkScope = sortColumnScope.FindLink();
 
-      sortColumnLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      sortColumnLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void ChangeViewTo (string itemID)
@@ -203,7 +203,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void ChangeViewToByLabel (string label)
     {
       var availableViewsScope = FindChild ("Boc_AvailableViewsList");
-      availableViewsScope.PerformActionUsingWaitStrategy (scope => scope.SelectOption (label), Context, WaitFor.WxePostBack);
+      availableViewsScope.PerformAction (scope => scope.SelectOption (label), Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()
@@ -224,7 +224,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (indexOf == -1)
       {
         throw new ArgumentOutOfRangeException ("headerItemID", headerItemID, "Header item ID does not exist.");
-            // Todo RM-6297: Better exception type.
+        // Todo RM-6297: Better exception type.
       }
 
       return indexOf + 1;
@@ -272,7 +272,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var editCommandScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
       var editCommandLinkScope = editCommandScope.FindLink();
-      editCommandLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
+      editCommandLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
 
       return new BocListEditableRowControlObject (_bocList, ID, Context);
     }
@@ -386,9 +386,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Performs the cell's command.
     /// </summary>
-    public UnspecifiedPageObject PerformCommand (IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject PerformCommand (IActionBehavior actionBehavior = null)
     {
-      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
+      var actualWaitingStrategy = GetActualActionBehavior (actionBehavior);
 
       var commandScope = Scope.FindLink();
       commandScope.ClickAndWait (Context, actualWaitingStrategy);

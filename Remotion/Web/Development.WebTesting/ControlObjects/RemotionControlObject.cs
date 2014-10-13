@@ -43,25 +43,25 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Returns the waiting strategy to be used when acting on the control object's scope.
+    /// Returns the actual <see cref="IActionBehavior"/> to be used when acting on the control object's scope.
     /// </summary>
-    /// <param name="userDefinedWaitingStrategy">User-provided waiting strategy.</param>
-    /// <returns>Waiting strategy to be used.</returns>
-    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy userDefinedWaitingStrategy)
+    /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
+    /// <returns><see cref="IActionBehavior"/> to be used.</returns>
+    protected IActionBehavior GetActualActionBehavior ([CanBeNull] IActionBehavior userDefinedActionBehavior)
     {
-      return GetActualWaitingStrategy (Scope, userDefinedWaitingStrategy);
+      return GetActualActionBehavior (Scope, userDefinedActionBehavior);
     }
 
     /// <summary>
-    /// Returns the waiting strategy to be used.
+    /// Returns the actual <see cref="IActionBehavior"/> to be used.
     /// </summary>
     /// <param name="scope">Scope which is to be acted on.</param>
-    /// <param name="userDefinedWaitingStrategy">User-provided waiting strategy.</param>
-    /// <returns>Waiting strategy to be used.</returns>
-    protected IWaitingStrategy GetActualWaitingStrategy ([NotNull] ElementScope scope, [CanBeNull] IWaitingStrategy userDefinedWaitingStrategy)
+    /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
+    /// <returns><see cref="IActionBehavior"/> to be used.</returns>
+    protected IActionBehavior GetActualActionBehavior ([NotNull] ElementScope scope, [CanBeNull] IActionBehavior userDefinedActionBehavior)
     {
-      if (userDefinedWaitingStrategy != null)
-        return userDefinedWaitingStrategy;
+      if (userDefinedActionBehavior != null)
+        return userDefinedActionBehavior;
 
       // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
 
@@ -69,17 +69,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
-          return WaitFor.WxePostBack;
+          return Behavior.WaitFor (WaitFor.WxePostBack);
       }
 
       if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return WaitFor.WxeReset;
+          return Behavior.WaitFor (WaitFor.WxeReset);
       }
 
-      return WaitFor.Nothing;
+      return Behavior.WaitFor (WaitFor.Nothing);
     }
   }
 }

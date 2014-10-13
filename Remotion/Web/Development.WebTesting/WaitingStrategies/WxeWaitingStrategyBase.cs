@@ -1,4 +1,5 @@
 ﻿using System;
+using Coypu;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
@@ -10,16 +11,16 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
   {
     private const string c_wxePostBackSequenceNumberFieldId = "wxePostBackSequenceNumberField";
 
-    protected int GetWxePostBackSequenceNumber (TestObjectContext context)
+    protected int GetWxePostBackSequenceNumber (ElementScope scope)
     {
       // Todo RM-6297: make exception safe.
-      return Int32.Parse (context.RootElement.FindId (c_wxePostBackSequenceNumberFieldId).Value);
+      return Int32.Parse (scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
     }
 
-    protected void WaitForWxePostBackSequenceNumber (TestObjectContext context, int expectedWxePostBackSequenceNumber)
+    protected void WaitForWxePostBackSequenceNumber (TestObjectContext context, ElementScope scope, int expectedWxePostBackSequenceNumber)
     {
       var newWxePostBackSequenceNumber = context.Window.Query (
-          () => GetWxePostBackSequenceNumber (context),
+          () => GetWxePostBackSequenceNumber (scope),
           expectedWxePostBackSequenceNumber);
 
       Assertion.IsTrue (

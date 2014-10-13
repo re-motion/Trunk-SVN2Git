@@ -2,6 +2,7 @@
 using Coypu;
 using log4net;
 using OpenQA.Selenium;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
@@ -16,46 +17,59 @@ namespace Remotion.Web.Development.WebTesting
 
     /// <summary>
     /// Performs an <paramref name="action"/> on a DOM element (given by <paramref name="scope"/>), which is part of a control object (represented by
-    /// its <paramref name="context"/>) using the given <paramref name="waitingStrategy"/>.
+    /// its <paramref name="context"/>) using the given <paramref name="actionBehavior"/>.
     /// </summary>
     /// <param name="scope">The DOM element.</param>
     /// /// <param name="action">Action to be performed on the DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
-    /// <param name="waitingStrategy">Wait strategy for proper waiting.</param>
-    public static void PerformActionUsingWaitStrategy (
+    /// <param name="actionBehavior"><see cref="IActionBehavior"/> for this action.</param>
+    public static void PerformAction (
         this ElementScope scope,
         Action<ElementScope> action,
         TestObjectContext context,
-        IWaitingStrategy waitingStrategy)
+        IActionBehavior actionBehavior)
     {
-      s_log.DebugFormat ("Perform action using wait strategy '{0}'.", waitingStrategy.GetType().Name);
+      s_log.DebugFormat ("Perform action using wait strategy '{0}'.", actionBehavior.GetType().Name);
 
-      var state = waitingStrategy.OnBeforeActionPerformed (context);
+      var actionBehaviorInternal = actionBehavior as IActionBehaviorInternal;
+      Assertion.IsNotNull (actionBehaviorInternal, "IActionBehavior must also - explicitly - implement IActionBehaviorInternal.");
+
+      var state = actionBehaviorInternal.BeforeAction (context);
       action (scope);
-      waitingStrategy.PerformWaitAfterActionPerformed (context, state);
+      actionBehaviorInternal.AfterAction (context, state);
     }
 
     /// <summary>
     /// Performs a click on a DOM element (given by <paramref name="scope"/>), which is part of a control object (represented by its
-    /// <paramref name="context"/>) using the given <paramref name="waitingStrategy"/>.
+    /// <paramref name="context"/>) using the given <paramref name="actionBehavior"/>.
     /// </summary>
     /// <param name="scope">The DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
-    /// <param name="waitingStrategy">Wait strategy for proper waiting.</param>
+    /// <param name="actionBehavior"><see cref="IActionBehavior"/> for this action.</param>
     public static void ClickAndWait (
         this ElementScope scope,
         TestObjectContext context,
-        IWaitingStrategy waitingStrategy)
+        IActionBehavior actionBehavior)
     {
-      scope.PerformActionUsingWaitStrategy (s => s.FocusClick(), context, waitingStrategy);
+      scope.PerformAction (s => s.FocusClick(), context, actionBehavior);
     }
 
+    /// <summary>
+    /// Fills the given DOM input element (given by <paramref name="scope"/>), which is part of a control object (represented by its
+    /// <paramref name="context"/>) with the given <paramref name="value"/> using the given <paramref name="thenAction"/> and
+    /// <paramref name="actionBehavior"/>.
+    /// </summary>
+    /// <param name="scope">The DOM input element.</param>
+    /// <param name="value">The value to fill in.</param>
+    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
+    /// <param name="context">The corresponding control object's context.</param>
+    /// <param name="actionBehavior"><see cref="IActionBehavior"/> for this action.</param>
     public static void FillWithAndWait (
         this ElementScope scope,
         string value,
         ThenAction thenAction,
         TestObjectContext context,
-        IWaitingStrategy waitingStrategy)
+        IActionBehavior actionBehavior)
     {
       Action<ElementScope> action = s =>
       {
@@ -65,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting
         thenAction (s);
       };
 
-      scope.PerformActionUsingWaitStrategy (action, context, waitingStrategy);
+      scope.PerformAction (action, context, actionBehavior);
     }
   }
 }

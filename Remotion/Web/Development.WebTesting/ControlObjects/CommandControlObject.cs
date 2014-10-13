@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -15,9 +14,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject Click (IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject Click (IActionBehavior actionBehavior = null)
     {
-      var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
+      var actualWaitingStrategy = GetActualActionBehavior (actionBehavior);
       Scope.ClickAndWait (Context, actualWaitingStrategy);
       return UnspecifiedPage();
     }

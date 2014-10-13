@@ -4,7 +4,6 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
@@ -12,7 +11,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
-  public class BocAutoCompleteReferenceValueControlObject : BocControlObject
+  public class BocAutoCompleteReferenceValueControlObject : BocControlObject, IFillableControlObject
   {
     /// <summary>
     /// Initializes the control object.
@@ -32,20 +31,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FindChild ("TextValue").Value;
     }
 
-    public UnspecifiedPageObject FillWith ([NotNull] string text, [CanBeNull] IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject FillWith ([NotNull] string text, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, waitingStrategy);
+      return FillWith (text, Then.TabAway, actionBehavior);
     }
 
-    public UnspecifiedPageObject FillWith ([NotNull] string text, [NotNull] ThenAction then, [CanBeNull] IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject FillWith ([NotNull] string text, [NotNull] ThenAction then, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);
 
-      var actualWaitStrategy = GetActualWaitingStrategy (waitingStrategy);
-      FindChild ("TextValue").FillWithAndWait (text, then, Context, actualWaitStrategy);
+      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      FindChild ("TextValue").FillWithAndWait (text, then, Context, actualActionBehavior);
       return UnspecifiedPage();
     }
 
@@ -56,9 +55,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (commandScope.Id, context);
     }
 
-    public UnspecifiedPageObject ExecuteCommand ([CanBeNull] IWaitingStrategy waitingStrategy = null)
+    public UnspecifiedPageObject ExecuteCommand ([CanBeNull] IActionBehavior actionBehavior = null)
     {
-      return GetCommand().Click (waitingStrategy);
+      return GetCommand().Click (actionBehavior);
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()

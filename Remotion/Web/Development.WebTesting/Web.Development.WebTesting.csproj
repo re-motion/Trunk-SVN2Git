@@ -70,6 +70,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="ActionBehavior.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="ControlObjects\HtmlControlObject.cs" />
     <Compile Include="ControlObjects\IClickableControlObject.cs" />
     <Compile Include="ControlObjects\IClickableItemsControlObject.cs" />
+    <Compile Include="ControlObjects\IFillableControlObject.cs" />
     <Compile Include="ControlObjects\ITabStripControlObject.cs" />
     <Compile Include="ControlObjects\LabelControlObject.cs" />
     <Compile Include="ControlObjects\ListMenuControlObject.cs" />
@@ -170,8 +172,10 @@
     <Compile Include="IControlHost.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
     <Compile Include="Then.cs" />
+    <Compile Include="Behavior.cs" />
     <Compile Include="WaitingStrategies\WaitFor.cs" />
     <Compile Include="WaitingStrategies\NullWaitingStrategy.cs" />
+    <Compile Include="WaitingStrategies\WxePostBackInWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\WxePostBackWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\IWaitingStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />

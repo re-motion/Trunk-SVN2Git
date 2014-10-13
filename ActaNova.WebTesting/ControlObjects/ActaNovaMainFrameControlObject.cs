@@ -2,7 +2,6 @@
 using ActaNova.WebTesting.Infrastructure;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -13,12 +12,12 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    protected IWaitingStrategy GetActualWaitingStrategy ([CanBeNull] IWaitingStrategy waitingStrategy)
+    protected IActionBehavior GetActualActionBehavior ([CanBeNull] IActionBehavior usedDefinedActionBehavior)
     {
-      if (waitingStrategy != null)
-        return waitingStrategy;
+      if (usedDefinedActionBehavior != null)
+        return usedDefinedActionBehavior;
 
-      return WaitForActaNova.OuterInnerOuterUpdate;
+      return ActaNovaBehavior.WaitForOuterInnerOuterUpdate;
     }
   }
 }

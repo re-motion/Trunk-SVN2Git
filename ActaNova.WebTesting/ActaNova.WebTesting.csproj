@@ -65,6 +65,7 @@
     <Compile Include="ControlObjects\ActaNovaMainFrameControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaMainMenu.cs" />
     <Compile Include="ControlObjects\ActaNovaTree.cs" />
+    <Compile Include="Infrastructure\ActaNovaBehavior.cs" />
     <Compile Include="Infrastructure\WaitForActaNova.cs" />
     <Compile Include="PageObjects\ActaNovaMainPageObject.cs" />
     <Compile Include="PageObjects\ActaNovaPageObject.cs" />
@@ -102,6 +103,10 @@
     <Compile Include="SampleTests\SetUpFixture.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Remotion\Core\Core\Core.Core.csproj">
+      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
+      <Name>Core.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Remotion\ObjectBinding\Web.Development.WebTesting\ObjectBinding.Web.Development.WebTesting.csproj">
       <Project>{78086B10-9951-4680-A060-2395E1990F8A}</Project>
       <Name>ObjectBinding.Web.Development.WebTesting</Name>
