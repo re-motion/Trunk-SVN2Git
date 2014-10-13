@@ -65,6 +65,7 @@
       <Link>remotion.snk</Link>
     </Content>
     <Content Include="CommandTest.aspx" />
+    <Content Include="Default.aspx" />
     <Content Include="Images\SampleIcon.gif" />
     <Content Include="DropDownMenuTest.aspx" />
     <Content Include="ListMenuTest.aspx" />
@@ -137,6 +138,7 @@
     <Compile Include="MultiWindowTest\MultiWindowTestPageBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="TestEditableTextBox.cs" />
     <Compile Include="MultiWindowTest\Window.aspx.cs">
       <DependentUpon>Window.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
