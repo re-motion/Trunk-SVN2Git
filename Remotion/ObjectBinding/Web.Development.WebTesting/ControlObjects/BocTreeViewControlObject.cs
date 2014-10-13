@@ -1,13 +1,12 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing the <see cref="BocTreeView"/>.
+  /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
   public class BocTreeViewControlObject : BocControlObject, IBocTreeViewNodeNavigator
   {
@@ -51,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object representing a node within a <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
+  /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
   public class BocTreeViewNodeControlObject : BocControlObject, IBocTreeViewNodeNavigator
   {
