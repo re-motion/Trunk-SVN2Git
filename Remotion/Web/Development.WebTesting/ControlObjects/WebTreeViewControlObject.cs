@@ -9,11 +9,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="WebTreeView"/>.
   /// </summary>
-  /// <remarks>
-  /// Functionality is integartion tested via BocTreeViewControlObject in BocTreeViewControlObjectTest.
-  /// </remarks>
   public class WebTreeViewControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
   {
+    // Note: Functionality is integartion tested via BocTreeViewControlObject in BocTreeViewControlObjectTest.
+
     private readonly WebTreeViewNodeControlObject _metaRootNode;
 
     public WebTreeViewControlObject (string id, TestObjectContext context)
@@ -90,7 +89,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      expandAnchorScope.ClickAndWait (Context, Behavior.WaitFor(WaitFor.WxePostBack));
+      expandAnchorScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
       return this;
     }
 
@@ -100,21 +99,21 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      collapseAnchorScope.ClickAndWait (Context, Behavior.WaitFor(WaitFor.WxePostBack));
+      collapseAnchorScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
       return this;
     }
 
     public WebTreeViewNodeControlObject Select ()
     {
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      selectAnchorScope.ClickAndWait (Context, Behavior.WaitFor(WaitFor.WxePostBack));
+      selectAnchorScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
       return this;
     }
 
     public ContextMenuControlObject OpenContextMenu ()
     {
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      return new ContextMenuControlObject (ID, Context.CloneForScope(selectAnchorScope));
+      return new ContextMenuControlObject (ID, Context.CloneForScope (selectAnchorScope));
     }
 
     private ElementScope GetWellKnownSelectAnchorScope ()

@@ -13,8 +13,6 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class CoypuWaitingElementScopeExtensions
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (CoypuWaitingElementScopeExtensions));
-
     /// <summary>
     /// Performs an <paramref name="action"/> on a DOM element (given by <paramref name="scope"/>), which is part of a control object (represented by
     /// its <paramref name="context"/>) using the given <paramref name="actionBehavior"/>.
@@ -29,8 +27,6 @@ namespace Remotion.Web.Development.WebTesting
         TestObjectContext context,
         IActionBehavior actionBehavior)
     {
-      s_log.DebugFormat ("Perform action using wait strategy '{0}'.", actionBehavior.GetType().Name);
-
       var actionBehaviorInternal = actionBehavior as IActionBehaviorInternal;
       Assertion.IsNotNull (actionBehaviorInternal, "IActionBehavior must also - explicitly - implement IActionBehaviorInternal.");
 

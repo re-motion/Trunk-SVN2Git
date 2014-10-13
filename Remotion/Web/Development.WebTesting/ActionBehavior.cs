@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using log4net;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
@@ -54,22 +55,37 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class ActionBehavior : IActionBehavior, IActionBehaviorInternal
   {
+    private static class ActionBehaviorCounter
+    {
+      public static int Counter = 1;
+    }
+
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ActionBehavior));
+
     private readonly List<Action<TestObjectContext>> _afterClickActions = new List<Action<TestObjectContext>>();
     private readonly List<IWaitingStrategy> _waitingStrategies = new List<IWaitingStrategy>();
-    
-#pragma warning disable 0414
     private bool _closesWindow = false;
-#pragma warning restore 0414
+    private int _id = ActionBehaviorCounter.Counter++;
 
     public IActionBehavior AcceptModalDialog ()
     {
-      _afterClickActions.Add (ctx => ctx.Window.AcceptModalDialog());
+      _afterClickActions.Add (
+          ctx =>
+          {
+            s_log.DebugFormat ("Action {0}: Accepting modal dialog.", _id);
+            ctx.Window.AcceptModalDialog();
+          });
       return this;
     }
 
     public IActionBehavior CancelModalDialog ()
     {
-      _afterClickActions.Add (ctx => ctx.Window.CancelModalDialog());
+      _afterClickActions.Add (
+          ctx =>
+          {
+            s_log.DebugFormat ("Action {0}: Canceling modal dialog.", _id);
+            ctx.Window.CancelModalDialog();
+          });
       return this;
     }
 
@@ -92,6 +108,8 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
+      s_log.DebugFormat ("Action {0} started.", _id);
+
       return _waitingStrategies
           .Select (waitingStrategy => waitingStrategy.OnBeforeActionPerformed (context))
           .ToList();
@@ -103,13 +121,32 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("behaviorState", behaviorState);
 
       ExecuteAfterClickActions(context);
+      
+      var newContext = GetNewTestObjectContext(context);
+      newContext.EnsureWindowIsActive ();
 
       var states = (List<object>) behaviorState;
       for (var i = 0; i < _waitingStrategies.Count; ++i)
       {
+        s_log.DebugFormat (
+            "Action {0}: Performing wait '{1}' on context '{2}'.",
+            _id,
+            _waitingStrategies[i].GetType().Name,
+            newContext.FrameRootElement.FindCss ("title").InnerHTML);
+
         var stateForWaitingStrategy = states[i];
-        _waitingStrategies[i].PerformWaitAfterActionPerformed (context, stateForWaitingStrategy);
+        _waitingStrategies[i].PerformWaitAfterActionPerformed (newContext, stateForWaitingStrategy);
       }
+
+      s_log.DebugFormat ("Action {0} finished.", _id);
+    }
+
+    private TestObjectContext GetNewTestObjectContext (TestObjectContext context)
+    {
+      if (_closesWindow)
+        return context.CloneForParentWindow();
+
+      return context;
     }
 
     private void ExecuteAfterClickActions (TestObjectContext context)

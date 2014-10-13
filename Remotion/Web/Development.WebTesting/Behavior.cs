@@ -12,5 +12,6 @@ namespace Remotion.Web.Development.WebTesting
     public static readonly IActionBehavior WaitForWxePostBack = new ActionBehavior().WaitFor (WaitFor.WxePostBack);
     public static readonly Func<PageObject, IActionBehavior> WaitForWxePostBackIn = po => new ActionBehavior().WaitFor(WaitFor.WxePostBackIn(po));
     public static readonly IActionBehavior WaitForWxeReset = new ActionBehavior().WaitFor(WaitFor.WxeReset);
+    public static readonly Func<PageObject, IActionBehavior> WaitForWxeResetIn = po => new ActionBehavior().WaitFor(WaitFor.WxeResetIn(po));
   }
 }

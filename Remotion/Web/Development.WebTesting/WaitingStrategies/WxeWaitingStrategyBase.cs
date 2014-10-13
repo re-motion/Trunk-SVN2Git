@@ -1,5 +1,6 @@
 ﻿using System;
 using Coypu;
+using log4net;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
@@ -9,6 +10,8 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
   /// </summary>
   public abstract class WxeWaitingStrategyBase
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeWaitingStrategyBase));
+
     private const string c_wxePostBackSequenceNumberFieldId = "wxePostBackSequenceNumberField";
 
     protected int GetWxePostBackSequenceNumber (ElementScope scope)
@@ -19,6 +22,8 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 
     protected void WaitForWxePostBackSequenceNumber (TestObjectContext context, ElementScope scope, int expectedWxePostBackSequenceNumber)
     {
+      s_log.DebugFormat ("Performing actual wait on window '{0}' and scope '{1}'.", context.Window.Title, scope.FindCss ("title").InnerHTML);
+
       var newWxePostBackSequenceNumber = context.Window.Query (
           () => GetWxePostBackSequenceNumber (scope),
           expectedWxePostBackSequenceNumber);
