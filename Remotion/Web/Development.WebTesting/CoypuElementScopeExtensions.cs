@@ -48,6 +48,26 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// ASP.NET WebForms-ready version for Selenium's Clear + SendKeys combo. 
+    /// </summary>
+    /// <remarks>
+    /// We cannot use Coypu's <c>s.FillInWith(value)</c> here, as it internally calls <c>s.Clear()</c> which unfortunately triggers a post back.
+    /// See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
+    /// </remarks>
+    /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
+    /// <param name="value">The value to fill in.</param>
+    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
+    public static void FillWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] ThenAction thenAction)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("thenAction", thenAction);
+
+      scope.SendKeys (Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete + value);
+      thenAction (scope);
+    }
+
+    /// <summary>
     /// Focuses a link before actually clicking it.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
