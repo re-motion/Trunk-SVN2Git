@@ -180,6 +180,7 @@
     <Compile Include="WaitingStrategies\IWaitingStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
+    <Compile Include="WaitingStrategies\WxeResetInWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\WxeResetWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\WxeWaitingStrategyBase.cs" />
     <Compile Include="WebTestHelper.cs" />
