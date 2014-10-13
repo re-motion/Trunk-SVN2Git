@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
@@ -9,7 +8,7 @@ using Remotion.Web.Development.WebTesting.ControlObjects;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing the <see cref="BocTextValue"/>.
+  /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue"/>.
   /// </summary>
   public class BocTextControlObject : BocControlObject, IFillableControlObject
   {

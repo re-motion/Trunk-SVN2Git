@@ -251,6 +251,10 @@
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Web.Contract.DiagnosticMetadata\ObjectBinding.Web.Contract.DiagnosticMetadata.csproj">
+      <Project>{AD7D0683-130E-4064-8EB7-D9981DCB22BC}</Project>
+      <Name>ObjectBinding.Web.Contract.DiagnosticMetadata</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Web\ObjectBinding.Web.csproj">
       <Project>{390FBB93-A757-47A7-B769-A64A7465FF84}</Project>
       <Name>ObjectBinding.Web</Name>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
 {
   /// <summary>
   /// Diagnostic metadata attribute names used by various renderers.

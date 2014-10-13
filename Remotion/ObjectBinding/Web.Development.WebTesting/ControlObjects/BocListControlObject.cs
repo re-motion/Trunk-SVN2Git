@@ -4,7 +4,7 @@ using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
@@ -16,7 +16,7 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing the <see cref="BocList"/>.
+  /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListControlObject : BocControlObject
   {
@@ -247,7 +247,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
 
   /// <summary>
-  /// Control object representing a row within a <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
+  /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListRowControlObject : BocControlObject
   {
@@ -305,7 +305,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object representing a row in edit-mode within a <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
+  /// Control object representing a row in edit-mode within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListEditableRowControlObject : BocControlObject
   {
@@ -366,7 +366,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object representing a cell within a <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
+  /// Control object representing a cell within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListCellControlObject : BocControlObject
   {
@@ -397,7 +397,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object representing a cell in edit-mode within a <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
+  /// Control object representing a cell in edit-mode within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListEditableCellControlObject : BocControlObject, IControlHost
   {

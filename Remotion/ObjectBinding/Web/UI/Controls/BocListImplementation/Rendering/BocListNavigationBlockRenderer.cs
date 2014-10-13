@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Web.UI;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;

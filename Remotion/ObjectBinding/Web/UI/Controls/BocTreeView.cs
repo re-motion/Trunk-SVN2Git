@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections;
 using System.ComponentModel;
@@ -21,6 +22,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -28,7 +30,6 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-
   /// <summary> Object bound tree view. </summary>
   /// <include file='..\..\doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/Class/*' />
   [DefaultEvent ("Click")]
@@ -39,17 +40,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     // types
 
     // static members
-    private static readonly Type[] s_supportedPropertyInterfaces = new Type[] { 
-      typeof (IBusinessObjectReferenceProperty) };
+    private static readonly Type[] s_supportedPropertyInterfaces = new Type[]
+                                                                   {
+                                                                       typeof (IBusinessObjectReferenceProperty)
+                                                                   };
 
-    private static readonly object s_clickEvent = new object ();
-    private static readonly object s_selectionChangedEvent = new object ();
+    private static readonly object s_clickEvent = new object();
+    private static readonly object s_selectionChangedEvent = new object();
 
     // member fields
     private WebTreeView _treeView;
 
     /// <summary> The <see cref="IBusinessObject"/> displayed by the <see cref="BocTreeView"/>. </summary>
     private IList _value = null;
+
     private bool _enableTreeNodeCaching = true;
     private Pair[] _nodesControlState;
     private bool _isRebuildRequired = false;
@@ -132,13 +136,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <exception cref="WcagException"> Thrown if the control does not conform to the required WAI level. </exception>
     protected virtual void EvaluateWaiConformity ()
     {
-      if (WcagHelper.Instance.IsWcagDebuggingEnabled () && WcagHelper.Instance.IsWaiConformanceLevelARequired ())
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
         WcagHelper.Instance.HandleError (1, this);
     }
 
     protected override void OnPreRender (EventArgs e)
     {
-      EnsureChildControls ();
+      EnsureChildControls();
       base.OnPreRender (e);
       _treeView.Width = Width;
       _treeView.Height = Height;
@@ -146,7 +150,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
-      EvaluateWaiConformity ();
+      EvaluateWaiConformity();
 
       base.Render (writer);
     }
@@ -165,8 +169,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       BocTreeNode selectedNode = (BocTreeNode) _treeView.SelectedNode;
       string selectedNodePath = selectedNodePath = _treeView.FormatNodePath (selectedNode);
 
-      InvalidateTreeNodes ();
-      InitializeRootWebTreeNodes ();
+      InvalidateTreeNodes();
+      InitializeRootWebTreeNodes();
 
       if (!string.IsNullOrEmpty (selectedNodePath))
       {
@@ -190,13 +194,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (!string.IsNullOrEmpty (DisplayName))
           writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.DisplayName, DisplayName);
-        
-        var isBound = IsBound ();
+
+        var isBound = IsBound();
         writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.IsBound, isBound.ToString().ToLower());
 
         if (isBound)
         {
-          var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier ();
+          var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier();
           writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundType, businessObjectClassIdentifier);
           writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundProperty, Property.Identifier);
         }
@@ -206,13 +210,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void InitializeRootWebTreeNodes ()
     {
       if (!_enableTreeNodeCaching || !ControlExistedInPreviousRequest)
-      {
-        CreateRootTreeNodes ();
-      }
+        CreateRootTreeNodes();
       else
       {
         if (_isRebuildRequired)
-          RebuildTreeNodes ();
+          RebuildTreeNodes();
         else
           LoadNodesControlStateRecursive (_nodesControlState, _treeView.Nodes);
       }
@@ -230,15 +232,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (EnableTopLevelExpander)
           {
             if (EnableLookAheadEvaluation)
-              node.Evaluate ();
+              node.Evaluate();
             else
               node.IsEvaluated = false;
           }
           else // Top-Level nodes are expanded
           {
-            node.EvaluateExpand ();
+            node.EvaluateExpand();
             if (EnableLookAheadEvaluation)
-              node.EvaluateChildren ();
+              node.EvaluateChildren();
           }
         }
       }
@@ -249,8 +251,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!_enableTreeNodeCaching)
         return;
 
-      _treeView.ResetNodes ();
-      CreateRootTreeNodes ();
+      _treeView.ResetNodes();
+      CreateRootTreeNodes();
       ApplyNodesControlStateRecursive (_nodesControlState, _treeView.Nodes);
     }
 
@@ -268,7 +270,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           {
             bool isEvaluated = (bool) values[2];
             if (isEvaluated)
-              node.EvaluateExpand ();
+              node.EvaluateExpand();
           }
           if (node.IsEvaluated)
           {
@@ -369,13 +371,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     private BusinessObjectTreeNode CreateBusinessObjectNode (
-      IBusinessObjectReferenceProperty property,
-      IBusinessObjectWithIdentity businessObject)
+        IBusinessObjectReferenceProperty property,
+        IBusinessObjectWithIdentity businessObject)
     {
       string id = businessObject.UniqueIdentifier;
       string text = GetText (businessObject);
       string toolTip = GetToolTip (businessObject);
-      IconInfo icon = BusinessObjectBoundWebControl.GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
+      IconInfo icon = GetIcon (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
       BusinessObjectTreeNode node = new BusinessObjectTreeNode (id, text, toolTip, icon, property, businessObject);
       node.IsEvaluated = false;
       return node;
@@ -390,7 +392,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected virtual string GetToolTip (IBusinessObjectWithIdentity businessObject)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-      return BusinessObjectBoundWebControl.GetToolTip (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
+      return GetToolTip (businessObject, businessObject.BusinessObjectClass.BusinessObjectProvider);
     }
 
     [NotNull]
@@ -419,8 +421,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("parentBusinessObject", parentBusinessObject);
       if (Property == null)
       {
-        ArrayList referenceListPropertyInfos = new ArrayList ();
-        IBusinessObjectProperty[] properties = parentBusinessObject.BusinessObjectClass.GetPropertyDefinitions ();
+        ArrayList referenceListPropertyInfos = new ArrayList();
+        IBusinessObjectProperty[] properties = parentBusinessObject.BusinessObjectClass.GetPropertyDefinitions();
         for (int i = 0; i < properties.Length; i++)
         {
           IBusinessObjectReferenceProperty referenceProperty = properties[i] as IBusinessObjectReferenceProperty;
@@ -428,14 +430,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
               && referenceProperty.IsList
               && referenceProperty.ReferenceClass is IBusinessObjectClassWithIdentity
               && referenceProperty.IsAccessible (parentBusinessObject))
-          {
             referenceListPropertyInfos.Add (new BusinessObjectPropertyTreeNodeInfo (referenceProperty));
-          }
         }
         return (BusinessObjectPropertyTreeNodeInfo[]) referenceListPropertyInfos.ToArray (typeof (BusinessObjectPropertyTreeNodeInfo));
       }
 
-      return new [] { new BusinessObjectPropertyTreeNodeInfo (Property) };
+      return new[] { new BusinessObjectPropertyTreeNodeInfo (Property) };
     }
 
 
@@ -497,7 +497,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       object[] values = new object[2];
 
-      values[0] = base.SaveControlState ();
+      values[0] = base.SaveControlState();
       if (_enableTreeNodeCaching)
         values[1] = SaveNodesStateRecursive (_treeView.Nodes);
 
@@ -529,9 +529,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           ((BusinessObjectTreeNode) node).PropertyIdentifier = propertyIdentifier;
         }
         else
-        {
           node = new BusinessObjectPropertyTreeNode (itemID, text, toolTip, icon, null);
-        }
         node.IsExpanded = isExpanded;
         node.IsEvaluated = isEvaluated;
         if (isSelected)
@@ -550,7 +548,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       for (int i = 0; i < nodes.Count; i++)
       {
         WebTreeNode node = (WebTreeNode) nodes[i];
-        Pair nodeState = new Pair ();
+        Pair nodeState = new Pair();
         object[] values = new object[10];
         values[0] = node.ItemID;
         values[1] = node.IsExpanded;
@@ -566,9 +564,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           values[9] = true;
         }
         else
-        {
           values[9] = false;
-        }
         nodeState.First = values;
         nodeState.Second = SaveNodesStateRecursive (node.Children);
         nodesState[i] = nodeState;
@@ -576,13 +572,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return nodesState;
     }
 
-  public override bool SupportsProperty (IBusinessObjectProperty property)
-  {
-    ArgumentUtility.CheckNotNull ("property", property);
-    if (!base.SupportsProperty (property))
-      return false;
-    return ((IBusinessObjectReferenceProperty) property).ReferenceClass is IBusinessObjectClassWithIdentity;
-  }
+    public override bool SupportsProperty (IBusinessObjectProperty property)
+    {
+      ArgumentUtility.CheckNotNull ("property", property);
+      if (!base.SupportsProperty (property))
+        return false;
+      return ((IBusinessObjectReferenceProperty) property).ReferenceClass is IBusinessObjectClassWithIdentity;
+    }
 
     /// <summary> The <see cref="BocTreeView"/> supports only list properties. </summary>
     /// <returns> <see langword="true"/> if <paramref name="isList"/> is <see langword="true"/>. </returns>
@@ -662,7 +658,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else if (value is IList)
           Value = (IList) value;
         else
-          Value = new [] { (IBusinessObjectWithIdentity) value };
+          Value = new[] { (IBusinessObjectWithIdentity) value };
       }
     }
 
@@ -814,15 +810,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public BocTreeViewMenuItemProvider MenuItemProvider
     {
-      get
-      {
-        return (BocTreeViewMenuItemProvider) _treeView.MenuItemProvider;
-      }
+      get { return (BocTreeViewMenuItemProvider) _treeView.MenuItemProvider; }
       set
       {
         if (_treeView.MenuItemProvider != null)
           ((BocTreeViewMenuItemProvider) _treeView.MenuItemProvider).OwnerControl = null;
-        
+
         _treeView.MenuItemProvider = value;
 
         if (_treeView.MenuItemProvider != null)
@@ -841,13 +834,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     //  }
 
     #region protected virtual string CssClass...
+
     /// <summary> Gets the CSS-Class applied to the <see cref="BocTreeView"/> itself. </summary>
     /// <remarks> 
     ///   <para> Class: <c>bocTreeView</c>. </para>
     ///   <para> Applied only if the <see cref="WebControl.CssClass"/> is not set. </para>
     /// </remarks>
     protected virtual string CssClassBase
-    { get { return "bocTreeView"; } }
+    {
+      get { return "bocTreeView"; }
+    }
+
     #endregion
   }
 
@@ -903,7 +900,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _property; }
       set { _property = value; }
     }
-
   }
 
   /// <summary> Represents the method that handles the <c>Click</c> event raised when clicking on a tree node. </summary>
@@ -915,13 +911,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string[] _path;
 
     public BocTreeNodeClickEventArgs (BusinessObjectTreeNode node, string[] path)
-      : base (node)
+        : base (node)
     {
       _path = path;
     }
 
     public BocTreeNodeClickEventArgs (BusinessObjectPropertyTreeNode node, string[] path)
-      : base (node)
+        : base (node)
     {
       _path = path;
     }
@@ -940,12 +936,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocTreeNodeEventArgs : WebTreeNodeEventArgs
   {
     public BocTreeNodeEventArgs (BusinessObjectTreeNode node)
-      : base (node)
+        : base (node)
     {
     }
 
     public BocTreeNodeEventArgs (BusinessObjectPropertyTreeNode node)
-      : base (node)
+        : base (node)
     {
     }
 
@@ -964,5 +960,4 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return Node as BusinessObjectPropertyTreeNode; }
     }
   }
-
 }

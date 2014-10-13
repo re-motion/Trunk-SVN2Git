@@ -1,8 +1,8 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
-using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 
@@ -45,9 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
                 domainProperty));
       }
       else
-      {
         scope = context.Scope.FindDMA (RootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty);
-      }
 
       return CreateControlObject (context, scope);
     }
