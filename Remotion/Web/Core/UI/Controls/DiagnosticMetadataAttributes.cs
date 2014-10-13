@@ -12,8 +12,8 @@ namespace Remotion.Web.UI.Controls
     public static readonly string IsReadOnly = "data-is-readonly";
     public static readonly string ItemID = "data-item-id";
     public static readonly string Text = "data-text";
-    public static readonly string TriggersNavigation = "data-triggers-nav";
-    public static readonly string TriggersPostBack = "data-triggers-pb";
+    public static readonly string TriggersNavigation = "data-triggers-navigation";
+    public static readonly string TriggersPostBack = "data-triggers-postback";
 
     public static readonly string WebTreeViewWellKnownAnchor = "data-webtreeview-wellknown-anchor";
   }
