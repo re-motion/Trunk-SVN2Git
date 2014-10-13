@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Contract.DiagnosticMetadata;
 
 namespace Remotion.Web.UI.Controls
 {

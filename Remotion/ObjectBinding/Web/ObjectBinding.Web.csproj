@@ -155,6 +155,10 @@
       <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>
       <Name>TypePipe.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Web\Contract.DiagnosticMetadata\Web.Contract.DiagnosticMetadata.csproj">
+      <Project>{B119DB72-9073-401B-8EC9-C8885A2D4800}</Project>
+      <Name>Web.Contract.DiagnosticMetadata</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Name>Web.Core</Name>
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>

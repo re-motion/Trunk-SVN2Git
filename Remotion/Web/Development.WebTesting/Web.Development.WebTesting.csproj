@@ -210,9 +210,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Web.Core.csproj">
-      <Project>{df8ba786-9679-4879-8757-16ae2709d83a}</Project>
-      <Name>Web.Core</Name>
+    <ProjectReference Include="..\Contract.DiagnosticMetadata\Web.Contract.DiagnosticMetadata.csproj">
+      <Project>{B119DB72-9073-401B-8EC9-C8885A2D4800}</Project>
+      <Name>Web.Contract.DiagnosticMetadata</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

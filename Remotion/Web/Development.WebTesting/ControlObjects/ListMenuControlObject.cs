@@ -1,13 +1,12 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.Contract.DiagnosticMetadata;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="ListMenu"/>.
+  /// Control object for <see cref="T:Remotion.Web.UI.Controls.ListMenu"/>.
   /// </summary>
   public class ListMenuControlObject : RemotionControlObject, IClickableItemsControlObject
   {

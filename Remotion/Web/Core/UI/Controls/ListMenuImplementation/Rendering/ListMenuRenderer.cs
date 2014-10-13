@@ -19,10 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering

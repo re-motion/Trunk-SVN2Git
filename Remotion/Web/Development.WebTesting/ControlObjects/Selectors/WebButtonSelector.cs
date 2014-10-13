@@ -1,6 +1,6 @@
 ﻿using System;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 {

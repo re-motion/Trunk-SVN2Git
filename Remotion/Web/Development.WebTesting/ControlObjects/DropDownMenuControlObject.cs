@@ -1,14 +1,12 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
-using OpenQA.Selenium.Interactions;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
-using Remotion.Web.UI.Controls;
+using Remotion.Web.Contract.DiagnosticMetadata;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Base class for all control objects representing a <see cref="DropDownMenu"/>.
+  /// Base class for all control objects representing a <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/>.
   /// </summary>
   public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IClickableItemsControlObject
   {
@@ -66,7 +64,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object for the default <see cref="DropDownMenu"/>.
+  /// Control object for the default <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/>.
   /// </summary>
   public class DropDownMenuControlObject : DropDownMenuControlObjectBase
   {
@@ -83,7 +81,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object for a context menu based on <see cref="DropDownMenu"/>.
+  /// Control object for a context menu based on <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/>.
   /// </summary>
   public class ContextMenuControlObject : DropDownMenuControlObjectBase
   {

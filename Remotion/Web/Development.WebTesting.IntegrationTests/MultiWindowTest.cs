@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -8,23 +7,6 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
-  public class MultiWindowTestPageObject : RemotionPageObject
-  {
-    public MultiWindowTestPageObject ([NotNull] TestObjectContext context)
-        : base (context)
-    {
-    }
-
-    public RemotionPageObject Frame
-    {
-      get
-      {
-        var frameScope = Scope.FindFrame ("frame");
-        return new RemotionPageObject (Context.CloneForFrame (frameScope));
-      }
-    }
-  }
-
   [TestFixture]
   public class MultiWindowTest : IntegrationTest
   {

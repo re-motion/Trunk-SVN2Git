@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="Label"/> and all its derivatives (e.g. <see cref="SmartLabel"/>).
+  /// Control object for <see cref="Label"/> and all its derivatives (e.g. <see cref="T:Remotion.Web.UI.Controls.SmartLabel"/>).
   /// </summary>
   public class LabelControlObject : RemotionControlObject
   {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.Contract.DiagnosticMetadata
 {
   /// <summary>
   /// Diagnostic metadata attribute names used by various renderers.

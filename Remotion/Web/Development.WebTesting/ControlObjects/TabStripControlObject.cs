@@ -1,14 +1,14 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for form grids created with <see cref="WebTabStrip"/>.
+  /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.WebTabStrip"/>.
   /// </summary>
   public class TabStripControlObject : RemotionControlObject, ITabStripControlObject
   {
@@ -51,7 +51,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
       var commandContext = Context.CloneForScope (commandScope);
       var command = new CommandControlObject (commandScope.Id, commandContext);
-      return command.Click (Behavior.WaitFor(WaitFor.WxePostBack));
+      return command.Click (Behavior.WaitFor (WaitFor.WxePostBack));
     }
   }
 }

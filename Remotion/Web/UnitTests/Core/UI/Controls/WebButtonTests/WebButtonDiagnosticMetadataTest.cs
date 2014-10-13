@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ServiceLocation;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests

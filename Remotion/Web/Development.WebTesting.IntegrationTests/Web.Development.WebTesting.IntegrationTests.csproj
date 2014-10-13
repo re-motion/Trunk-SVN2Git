@@ -71,6 +71,7 @@
     <Compile Include="DropDownMenuControlObjectTest.cs" />
     <Compile Include="LabelControlObjectTest.cs" />
     <Compile Include="MultiWindowTest.cs" />
+    <Compile Include="MultiWindowTestPageObject.cs" />
     <Compile Include="SingleViewControlObjectTest.cs" />
     <Compile Include="FormGridControlObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,14 +89,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
-      <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
-      <Name>Core.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core\Web.Core.csproj">
-      <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
-      <Name>Web.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5b5ec73a-b796-4d2d-a781-e889ee9ec4df}</Project>
       <Name>Web.Development.WebTesting</Name>

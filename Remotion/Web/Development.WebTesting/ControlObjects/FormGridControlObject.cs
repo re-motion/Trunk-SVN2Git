@@ -2,12 +2,11 @@
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for form grids created with <see cref="FormGridManager"/>.
+  /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.FormGridManager"/>.
   /// </summary>
   public class FormGridControlObject : RemotionControlObject, IControlHost
   {

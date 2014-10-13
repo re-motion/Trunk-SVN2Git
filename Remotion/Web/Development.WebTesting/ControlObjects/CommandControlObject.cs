@@ -1,11 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing a <see cref="Command"/>.
+  /// Control object representing a <see cref="T:Remotion.Web.UI.Controls.Command"/>.
   /// </summary>
   public class CommandControlObject : RemotionControlObject, IClickableControlObject
   {

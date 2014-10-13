@@ -1,10 +1,9 @@
 ﻿using System;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 {
   /// <summary>
-  /// Control object selector for <see cref="WebTabStrip"/>.
+  /// Control object selector for <see cref="T:Remotion.Web.UI.Controls.WebTabStrip"/>.
   /// </summary>
   public class TabStripSelector : RemotionControlSelectorBase<TabStripControlObject>
   {

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web;
 using System.Xml;
@@ -22,6 +23,7 @@ using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ServiceLocation;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -44,8 +46,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     [SetUp]
     public void SetUp ()
     {
-      _htmlHelper = new HtmlHelper ();
-      _httpContextStub = MockRepository.GenerateStub<HttpContextBase> ();
+      _htmlHelper = new HtmlHelper();
+      _httpContextStub = MockRepository.GenerateStub<HttpContextBase>();
 
       _control = MockRepository.GenerateStub<IListMenu>();
       _control.Stub (stub => stub.UniqueID).Return ("MyListMenu");
@@ -72,9 +74,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     }
 
     [TearDown]
-    public void TearDown()
+    public void TearDown ()
     {
-      if(_serviceLocatorScope != null)
+      if (_serviceLocatorScope != null)
         _serviceLocatorScope.Dispose();
     }
 
@@ -94,7 +96,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
       var renderer = new ListMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
       renderer.Render (new ListMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
-      _clientScriptManagerMock.VerifyAllExpectations ();
+      _clientScriptManagerMock.VerifyAllExpectations();
     }
 
 
@@ -108,7 +110,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
       for (int itemIndex = 0; itemIndex < 5; itemIndex++)
       {
-        if( itemIndex == 3)
+        if (itemIndex == 3)
           continue;
 
         var tr = table.GetAssertedChildElement ("tr", itemIndex < 3 ? itemIndex : itemIndex - 1);
@@ -153,9 +155,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
       var td = GetAssertedCell (tr, 0, 4);
       for (int iColumn = 0; iColumn < 4; iColumn++)
-      {
         AssertMenuItem (td, iColumn < 3 ? iColumn : iColumn + 1, iColumn);
-      }
     }
 
     private XmlNode GetAssertedTable ()
@@ -176,7 +176,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private void AssertMenuItem (XmlNode parentCell, int itemIndex, int nodeIndex)
     {
-      var item = (WebMenuItem)_control.MenuItems[itemIndex];
+      var item = (WebMenuItem) _control.MenuItems[itemIndex];
 
       switch (item.Style)
       {
@@ -216,7 +216,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     private void AssertIconAndText (int itemIndex, XmlNode td, WebMenuItem item, int nodeIndex)
     {
       XmlNode a = GetAssertedItemLink (td, itemIndex, nodeIndex, item.ItemID);
-      AssertIcon(a);
+      AssertIcon (a);
 
       a.AssertTextNode (HtmlHelper.WhiteSpace + item.Text, 1);
     }
@@ -254,11 +254,17 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
     {
       _clientScriptManagerMock.Expect (mock => mock.GetPostBackClientHyperlink (_control, "0")).Return ("PostBackLink: 0");
       _clientScriptManagerMock.Expect (mock => mock.GetPostBackClientHyperlink (_control, "1")).Return ("PostBackLink: 1");
-      if( withHrefItem )
+      if (withHrefItem)
         _clientScriptManagerMock.Expect (mock => mock.GetPostBackClientHyperlink (_control, "2")).Return ("PostBackLink: 2");
     }
 
-    private void AddMenuItem (string itemID, string category, string text, WebMenuItemStyle style, RequiredSelection selection, CommandType commandType)
+    private void AddMenuItem (
+        string itemID,
+        string category,
+        string text,
+        WebMenuItemStyle style,
+        RequiredSelection selection,
+        CommandType commandType)
     {
       WebMenuItem item = new WebMenuItem (
           itemID,
@@ -284,13 +290,13 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
       if (menuItem.Command.Type == CommandType.Href)
       {
-        href = menuItem.Command.HrefCommand.FormatHref (itemIndex.ToString (), menuItem.ItemID);
+        href = menuItem.Command.HrefCommand.FormatHref (itemIndex.ToString(), menuItem.ItemID);
         href = "'" + href + "'";
         target = "'" + menuItem.Command.HrefCommand.Target + "'";
       }
       else
       {
-        string argument = itemIndex.ToString ();
+        string argument = itemIndex.ToString();
         href = _control.Page.ClientScript.GetPostBackClientHyperlink (_control, argument) + ";";
         href = ScriptUtility.EscapeClientScript (href);
         href = "'" + href + "'";
@@ -300,11 +306,11 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
           itemTemplate,
           _control.ClientID + "_" + itemIndex,
           menuItem.Category,
-          menuItem.Style!=WebMenuItemStyle.Icon ? "'" + menuItem.Text + "'" : "null",
+          menuItem.Style != WebMenuItemStyle.Icon ? "'" + menuItem.Text + "'" : "null",
           menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.Icon.Url.TrimStart ('~') + "'" : "null",
           menuItem.Style != WebMenuItemStyle.Text ? "'" + menuItem.DisabledIcon.Url.TrimStart ('~') + "'" : "null",
           (int) menuItem.RequiredSelection,
-          (itemIndex==4) ? "true" : "false",
+          (itemIndex == 4) ? "true" : "false",
           href,
           target);
     }

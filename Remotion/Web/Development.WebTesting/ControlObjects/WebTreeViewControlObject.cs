@@ -1,13 +1,13 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing the <see cref="WebTreeView"/>.
+  /// Control object representing the <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
   public class WebTreeViewControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
   {
@@ -48,7 +48,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Control object representing a node within a <see cref="WebTreeView"/>.
+  /// Control object representing a node within a <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
   public class WebTreeViewNodeControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
   {
@@ -126,7 +126,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   }
 
   /// <summary>
-  /// Interface which must be supported by all control objects holding <see cref="WebTreeView"/> nodes.
+  /// Interface which must be supported by all control objects holding <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/> nodes.
   /// </summary>
   public interface IWebTreeViewNodeNavigator
   {

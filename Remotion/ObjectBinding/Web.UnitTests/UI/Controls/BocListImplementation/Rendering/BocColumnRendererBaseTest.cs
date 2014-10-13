@@ -24,6 +24,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 

@@ -207,8 +207,6 @@
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRenderer.cs" />
     <Compile Include="UI\Controls\DefaultRenderingFeatures.cs" />
-    <Compile Include="UI\Controls\DiagnosticMetadataAttributes.cs" />
-    <Compile Include="UI\Controls\DiagnosticMetadataAttributeValues.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\FormGridManagerImplementation\FormGridCellNamingContainer.cs" />
@@ -950,6 +948,10 @@
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contract.DiagnosticMetadata\Web.Contract.DiagnosticMetadata.csproj">
+      <Project>{B119DB72-9073-401B-8EC9-C8885A2D4800}</Project>
+      <Name>Web.Contract.DiagnosticMetadata</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

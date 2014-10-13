@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.IO;
 using System.Web.UI;
 using NUnit.Framework;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
@@ -144,15 +146,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle\"Space'", null, "Url", "TheTarget", "ClickHandler");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("title=\"TheTitle&quot;Space&#39;\""));
     }
@@ -162,15 +164,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle\"Space'", "\'", "Url", "TheTarget", "ClickHandler");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("accesskey=\"&#39;"));
     }
@@ -180,15 +182,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "Url", "TheTarget", "ClickHandler\"Space'");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("onclick=\"ClickHandler&quot;Space&#39;\""));
     }
@@ -198,15 +200,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "Url\"Space'", "TheTarget", "ClickHandler");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("href=\"Url&quot;Space&#39;\""));
     }
@@ -216,15 +218,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "Url", "TheTarget\"Space'", "ClickHandler");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
 
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.Default);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("target=\"TheTarget\"Space'\""));
     }
@@ -234,14 +236,14 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "http://localhost/My.wxe", "TheTarget", "javascript:Foo();");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.WithDiagnosticMetadata);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("class" + "=\"command\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"false\""));
@@ -253,14 +255,14 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "#", "TheTarget", "FrontGarbage__doPostBackBackGarbage");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.WithDiagnosticMetadata);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("class" + "=\"command\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"true\""));
@@ -272,14 +274,14 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
     {
       var commandInfo = CommandInfo.CreateForLink ("TheTitle", null, "#", "TheTarget", "javascript:Foo();");
 
-      var stringWriter = new StringWriter ();
+      var stringWriter = new StringWriter();
       var htmlTextWriter = new HtmlTextWriter (stringWriter);
       commandInfo.AddAttributesToRender (htmlTextWriter, RenderingFeatures.WithDiagnosticMetadata);
 
       htmlTextWriter.RenderBeginTag (HtmlTextWriterTag.A);
-      htmlTextWriter.RenderEndTag ();
+      htmlTextWriter.RenderEndTag();
 
-      var result = stringWriter.ToString ();
+      var result = stringWriter.ToString();
 
       Assert.That (result, Is.StringContaining ("class" + "=\"command\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"false\""));
