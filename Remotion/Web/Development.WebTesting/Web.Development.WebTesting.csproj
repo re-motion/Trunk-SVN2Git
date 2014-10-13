@@ -182,6 +182,7 @@
     <Compile Include="UnspecifiedPageObject.cs" />
     <Compile Include="WaitingStrategies\WxeResetInWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\WxeResetWaitingStrategy.cs" />
+    <Compile Include="WaitingStrategies\WxeResetWaitingStrategyBase.cs" />
     <Compile Include="WaitingStrategies\WxeWaitingStrategyBase.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="WebTestConfiguration.cs" />

@@ -8,7 +8,7 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
   /// <summary>
   /// Todo RM-6297: Docs
   /// </summary>
-  public class WxeResetInWaitingStrategy : WxeWaitingStrategyBase, IWaitingStrategy
+  public class WxeResetInWaitingStrategy : WxeResetWaitingStrategyBase, IWaitingStrategy
   {
     private readonly ElementScope _scope;
 
@@ -21,11 +21,15 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 
     public object OnBeforeActionPerformed (TestObjectContext context)
     {
-      return null;
+      var wxeFunctionToken = GetWxeFunctionToken (_scope);
+      return wxeFunctionToken;
     }
 
     public void PerformWaitAfterActionPerformed (TestObjectContext context, object state)
     {
+      var oldWxeFunctionToken = (string) state;
+      WaitForWxeFunctionTokenToBeDifferent (context, _scope, oldWxeFunctionToken);
+
       const int expectedWxePostBackSequenceNumber = 2;
       WaitForWxePostBackSequenceNumber (context, _scope, expectedWxePostBackSequenceNumber);
     }
