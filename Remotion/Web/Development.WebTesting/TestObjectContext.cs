@@ -79,6 +79,14 @@ namespace Remotion.Web.Development.WebTesting
     public TestObjectContext ParentContext { get; private set; }
 
     /// <summary>
+    /// Some WebDriver implementations hang, when trying to query within an <see cref="ElementScope"/> which is not on the "active" window.
+    /// </summary>
+    public void EnsureWindowIsActive ()
+    {
+      var temp = Window.Title;
+    }
+
+    /// <summary>
     /// Returns a new root <see cref="TestObjectContext"/> for a <see cref="TestObject"/> without a parent.
     /// </summary>
     /// <param name="configuration">The active <see cref="WebTestConfiguration"/>.</param>
