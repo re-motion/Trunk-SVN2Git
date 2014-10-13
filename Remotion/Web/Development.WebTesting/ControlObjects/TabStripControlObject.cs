@@ -25,7 +25,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject SwitchTo (int index)
     {
-      var xPathSelector = string.Format ("(.//span{0})[{1}]", XPathUtils.CreateContainsOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"), index);
+      var xPathSelector = string.Format (
+          "(.//span{0})[{1}]",
+          XPathUtils.CreateContainsOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"),
+          index);
       var itemScope = Scope.FindXPath (xPathSelector);
       return SwitchToUsingCommandScope (itemScope);
     }
@@ -42,9 +45,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchToUsingCommandScope (itemScope);
     }
 
-    private UnspecifiedPageObject SwitchToUsingCommandScope(ElementScope tabScope)
+    private UnspecifiedPageObject SwitchToUsingCommandScope (ElementScope tabScope)
     {
-      var commandScope = tabScope.FindCss ("a");
+      var commandScope = tabScope.FindLink();
 
       var commandContext = Context.CloneForScope (commandScope);
       var command = new CommandControlObject (commandScope.Id, commandContext);

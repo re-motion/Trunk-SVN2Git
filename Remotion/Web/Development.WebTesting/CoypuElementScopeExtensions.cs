@@ -36,6 +36,18 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// Finds the first &lt;a&gt; element within the given <paramref name="scope"/>.
+    /// </summary>
+    /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
+    /// <returns>The <see cref="ElementScope"/> of the found element.</returns>
+    public static ElementScope FindLink ([NotNull] this ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      return scope.FindCss ("a");
+    }
+
+    /// <summary>
     /// Focuses a link before actually clicking it.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>

@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         : base (id, context)
     {
       _headerItemIDs =
-        new RetryUntilTimeout<List<string>> (
+          new RetryUntilTimeout<List<string>> (
               () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s[DiagnosticMetadataAttributes.ItemID]).ToList(),
               Context.Configuration.SearchTimeout,
               Context.Configuration.RetryInterval).Run();
@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       throw new NotSupportedException ("BocList rows cannot be selected using a full HTML ID.");
     }
 
-    private BocListRowControlObject GetRowByCssSelector(string cssSelector)
+    private BocListRowControlObject GetRowByCssSelector (string cssSelector)
     {
       var rowScope = Scope.FindCss (cssSelector);
       rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
@@ -190,7 +190,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
           index.ToString());
 
-      var sortColumnLinkScope = sortColumnScope.FindCss ("a");
+      var sortColumnLinkScope = sortColumnScope.FindLink();
 
       sortColumnLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
     }
@@ -220,16 +220,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     internal int GetHeaderLabelIndex (string headerItemID)
     {
-      var indexOf = _headerItemIDs.IndexOf(headerItemID);
+      var indexOf = _headerItemIDs.IndexOf (headerItemID);
       if (indexOf == -1)
-        throw new ArgumentOutOfRangeException ("headerItemID", headerItemID, "Header item ID does not exist."); // Todo RM-6297: Better exception type.
+      {
+        throw new ArgumentOutOfRangeException ("headerItemID", headerItemID, "Header item ID does not exist.");
+            // Todo RM-6297: Better exception type.
+      }
 
       return indexOf + 1;
     }
 
     private int GetHeaderLabelIndexByText (string headerText)
     {
-       var indexOf = _headerLabels.IndexOf(headerText);
+      var indexOf = _headerLabels.IndexOf (headerText);
       if (indexOf == -1)
         throw new ArgumentOutOfRangeException ("headerText", headerText, "Header text does not exist."); // Todo RM-6297: Better exception type.
 
@@ -268,7 +271,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public BocListEditableRowControlObject Edit ()
     {
       var editCommandScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
-      var editCommandLinkScope = editCommandScope.FindCss ("a");
+      var editCommandLinkScope = editCommandScope.FindLink();
       editCommandLinkScope.ClickAndWait (Context, WaitFor.WxePostBack);
 
       return new BocListEditableRowControlObject (_bocList, ID, Context);
@@ -387,7 +390,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var actualWaitingStrategy = GetActualWaitingStrategy (waitingStrategy);
 
-      var commandScope = Scope.FindCss ("a");
+      var commandScope = Scope.FindLink();
       commandScope.ClickAndWait (Context, actualWaitingStrategy);
       return UnspecifiedPage();
     }

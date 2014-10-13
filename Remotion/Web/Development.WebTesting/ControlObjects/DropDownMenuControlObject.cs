@@ -58,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var actualWaitingStrategy = GetActualWaitingStrategy (item, waitingStrategy);
 
-      var anchorScope = item.FindCss ("a");
+      var anchorScope = item.FindLink();
       anchorScope.ClickAndWait (Context, actualWaitingStrategy);
       return UnspecifiedPage();
     }

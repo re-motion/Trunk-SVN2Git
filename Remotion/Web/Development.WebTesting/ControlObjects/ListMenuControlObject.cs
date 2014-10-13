@@ -33,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var item = Scope.FindId (htmlID);
       return ClickItem (item, waitingStrategy);
     }
-    
+
     public UnspecifiedPageObject ClickItemByText (string text, IWaitingStrategy waitingStrategy = null)
     {
       var item = Scope.FindXPath (string.Format ("tbody/tr/td/span[contains(a,'{0}')]", text));
@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private UnspecifiedPageObject ClickItem (ElementScope item, IWaitingStrategy waitingStrategy = null)
     {
-      var anchorScope = item.FindCss ("a");
+      var anchorScope = item.FindLink();
 
       var actualWaitingStrategy = GetActualWaitingStrategy (anchorScope, waitingStrategy);
       anchorScope.ClickAndWait (Context, actualWaitingStrategy);
