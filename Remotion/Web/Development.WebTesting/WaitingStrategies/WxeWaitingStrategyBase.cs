@@ -5,6 +5,8 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 {
+  // Todo RM-6297: Improve class design + remove stateful Wxe*InWaitingStrategy implementations.
+
   /// <summary>
   /// Base class for all WXE-based (sequence counter based) waiting strategies.
   /// </summary>

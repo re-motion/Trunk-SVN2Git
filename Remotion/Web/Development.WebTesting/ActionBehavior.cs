@@ -8,6 +8,8 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
 {
+  // Todo RM-6297: Improve class design.
+
   /// <summary>
   /// Todo RM-6297
   /// </summary>
