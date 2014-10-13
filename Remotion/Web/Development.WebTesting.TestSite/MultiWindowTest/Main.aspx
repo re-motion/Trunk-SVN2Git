@@ -18,6 +18,7 @@
             <p><remotion:WebButton ID="LoadWindowFunctionInFrame" Text="Load WindowFunction in Frame" runat="server"/></p>
             <p><remotion:WebButton ID="LoadMainAutoRefreshingFrameFunctionInFrame" Text="Load Main-auto-refreshing FrameFunction in Frame" runat="server"/></p>
             <p><remotion:WebButton ID="LoadWindowFunctionInNewWindow" Text="Load WindowFunction in new Window" runat="server"/></p>
+            <p><asp:HyperLink ID="NavigateAway" Text="Navigate Away" NavigateUrl="~/Default.aspx" runat="server"/></p>
           </ContentTemplate>
         </asp:UpdatePanel>
         <div style="border: 1px solid black">

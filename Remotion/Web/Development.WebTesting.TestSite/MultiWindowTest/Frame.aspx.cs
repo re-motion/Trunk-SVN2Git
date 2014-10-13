@@ -15,6 +15,8 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
       NextStep.Click += NextStepOnClick;
       LoadWindowFunctionInNewWindow.Click += LoadWindowFunctionInNewWindowOnClick;
       RefreshMainUpdatePanel.Click += RefreshMainUpdatePanelOnClick;
+
+      RegisterControlForDirtyStateTracking (MyTextBox);
     }
 
     protected override void OnPreRender (EventArgs e)

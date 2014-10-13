@@ -101,5 +101,14 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.Web.UI.Controls.WebButton LoadWindowFunctionInNewWindow;
+        
+        /// <summary>
+        /// NavigateAway control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink NavigateAway;
     }
 }

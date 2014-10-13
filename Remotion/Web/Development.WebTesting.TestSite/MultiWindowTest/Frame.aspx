@@ -16,6 +16,7 @@
             <p><remotion:WebButton ID="NextStep" Text="Next step (= finish function => destroys frame!)" runat="server"/></p>
             <p><remotion:WebButton ID="LoadWindowFunctionInNewWindow" Text="Load WindowFunction in new Window" runat="server"/></p>
             <p><remotion:WebButton ID="RefreshMainUpdatePanel" Text="Refresh Main UpdatePanel" runat="server"/></p>
+            <p><testsite:TestEditableTextBox ID="MyTextBox" runat="server"></testsite:TestEditableTextBox></p>
           </ContentTemplate>
         </asp:UpdatePanel>
       </div>
