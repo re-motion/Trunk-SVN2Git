@@ -3,6 +3,7 @@ using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting.PageObjects;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
@@ -16,7 +17,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByHtmlID ()
     {
-      var home = Start ("DropDownMenuTest.wxe");
+      var home = Start();
 
       var dropDownMenu = home.GetDropDownMenu().ByID ("body_MyDropDownMenu");
       Assert.That (dropDownMenu.Scope.Id, Is.EqualTo ("body_MyDropDownMenu"));
@@ -25,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByIndex ()
     {
-      var home = Start ("DropDownMenuTest.wxe");
+      var home = Start();
 
       var dropDownMenu = home.GetDropDownMenu().ByIndex (2);
       Assert.That (dropDownMenu.Scope.Id, Is.EqualTo ("body_MyDropDownMenu2"));
@@ -34,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByLocalID ()
     {
-      var home = Start ("DropDownMenuTest.wxe");
+      var home = Start();
 
       var dropDownMenu = home.GetDropDownMenu().ByLocalID ("MyDropDownMenu");
       Assert.That (dropDownMenu.Scope.Id, Is.EqualTo ("body_MyDropDownMenu"));
@@ -43,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_First ()
     {
-      var home = Start ("DropDownMenuTest.wxe");
+      var home = Start();
 
       var dropDownMenu = home.GetDropDownMenu().First();
       Assert.That (dropDownMenu.Scope.Id, Is.EqualTo ("body_MyDropDownMenu"));
@@ -52,7 +53,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Single ()
     {
-      var home = Start ("DropDownMenuTest.wxe");
+      var home = Start();
       var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
 
       var dropDownMenu = scope.GetDropDownMenu().Single();
@@ -71,7 +72,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestClickItem ()
     {
-      var home = Start ("DropDownMenuTest.wxe");
+      var home = Start();
 
       var dropDownMenu = home.GetDropDownMenu().ByLocalID ("MyDropDownMenu");
 
@@ -86,6 +87,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       dropDownMenu.ClickItemByText ("EventItem");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
+    }
+
+    private RemotionPageObject Start ()
+    {
+      return Start ("DropDownMenuTest.wxe");
     }
   }
 }

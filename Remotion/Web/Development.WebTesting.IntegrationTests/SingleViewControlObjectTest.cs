@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -10,7 +11,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByHtmlID ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -22,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByIndex ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -34,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByLocalID ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -46,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_First ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -58,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Single ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -70,7 +71,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSubScope_TopControls ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       var singleView = home.GetSingleView().Single();
 
@@ -82,7 +83,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSubScope_View ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       var singleView = home.GetSingleView().Single();
 
@@ -95,13 +96,18 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSubScope_BottomControls ()
     {
-      var home = Start ("SingleViewTest.aspx");
+      var home = Start();
 
       var singleView = home.GetSingleView().Single();
 
       var bottomControls = singleView.GetBottomControls();
       Assert.That (bottomControls.Scope.Text, Is.StringContaining ("BottomControls"));
       Assert.That (bottomControls.Scope.Text, Is.Not.StringContaining ("Content"));
+    }
+
+    private RemotionPageObject Start ()
+    {
+      return Start ("SingleViewTest.aspx");
     }
   }
 }

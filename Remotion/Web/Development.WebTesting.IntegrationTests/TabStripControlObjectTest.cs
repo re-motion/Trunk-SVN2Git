@@ -13,7 +13,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByHtmlID ()
     {
-      var home = Start ("TabStripTest.wxe");
+      var home = Start();
 
       var tabStrip = home.GetTabStrip().ByID ("body_MyTabStrip1");
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip1"));
@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByIndex ()
     {
-      var home = Start ("TabStripTest.wxe");
+      var home = Start();
 
       var tabStrip = home.GetTabStrip().ByIndex (2);
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip2"));
@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByLocalID ()
     {
-      var home = Start ("TabStripTest.wxe");
+      var home = Start();
 
       var tabStrip = home.GetTabStrip().ByLocalID ("MyTabStrip1");
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip1"));
@@ -40,7 +40,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_First ()
     {
-      var home = Start ("TabStripTest.wxe");
+      var home = Start();
 
       var tabStrip = home.GetTabStrip().First();
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip1"));
@@ -49,7 +49,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Single ()
     {
-      var home = Start ("TabStripTest.wxe");
+      var home = Start();
       var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
 
       var tabStrip = scope.GetTabStrip().Single();
@@ -68,7 +68,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSwitchTo ()
     {
-      var home = Start ("TabStripTest.wxe");
+      var home = Start();
 
       var tabStrip1 = home.GetTabStrip().First();
       var tabStrip2 = home.GetTabStrip().ByIndex (2);
@@ -84,6 +84,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       home = tabStrip2.SwitchToByHtmlID ("body_MyTabStrip2_Tab1").Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip2/Tab1"));
+    }
+
+    private RemotionPageObject Start ()
+    {
+      return Start("TabStripTest.wxe");
     }
   }
 }

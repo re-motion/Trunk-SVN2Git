@@ -13,7 +13,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByHtmlID ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton1Sync"));
@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByIndex ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var webButton = home.GetWebButton().ByIndex (2);
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByLocalID ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var webButton = home.GetWebButton().ByLocalID ("MyWebButton3Href");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton3Href"));
@@ -40,7 +40,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_First ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var webButton = home.GetWebButton().First();
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton1Sync"));
@@ -49,7 +49,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Single ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
       var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
 
       var webButton = scope.GetWebButton().Single();
@@ -68,7 +68,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Text ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var webButton = home.GetWebButton().ByText ("AsyncButton");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
@@ -77,7 +77,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_CommandName ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var webButton = home.GetWebButton().ByCommandName ("Sync");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton1Sync"));
@@ -86,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestClick ()
     {
-      var home = Start ("WebButtonTest.wxe");
+      var home = Start();
 
       var syncWebButton = home.GetWebButton().ByCommandName ("Sync");
       home = syncWebButton.Click().Expect<RemotionPageObject>();
@@ -99,6 +99,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var hrefWebButton = home.GetWebButton().ByText ("HrefButton");
       home = hrefWebButton.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
+    }
+
+    private RemotionPageObject Start ()
+    {
+      return Start("WebButtonTest.wxe");
     }
   }
 }

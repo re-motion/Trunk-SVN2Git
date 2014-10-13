@@ -13,7 +13,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByHtmlID ()
     {
-      var home = Start ("HtmlAnchorTest.wxe");
+      var home = Start();
 
       var webButton = home.GetHtmlAnchor().ByID ("body_MyHtmlAnchor");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor"));
@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByIndex ()
     {
-      var home = Start ("HtmlAnchorTest.wxe");
+      var home = Start();
 
       var webButton = home.GetHtmlAnchor().ByIndex (2);
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor2"));
@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByLocalID ()
     {
-      var home = Start ("HtmlAnchorTest.wxe");
+      var home = Start();
 
       var webButton = home.GetHtmlAnchor().ByLocalID ("MyHtmlAnchor2");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor2"));
@@ -40,7 +40,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_First ()
     {
-      var home = Start ("HtmlAnchorTest.wxe");
+      var home = Start();
 
       var webButton = home.GetHtmlAnchor().First();
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor"));
@@ -49,7 +49,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Single ()
     {
-      var home = Start ("HtmlAnchorTest.wxe");
+      var home = Start();
       var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
 
       var webButton = scope.GetHtmlAnchor().Single();
@@ -68,7 +68,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestClick ()
     {
-      var home = Start ("HtmlAnchorTest.wxe");
+      var home = Start();
 
       var hyperLink = home.GetHtmlAnchor().ByLocalID ("MyHtmlAnchor");
       home = hyperLink.Click().Expect<RemotionPageObject>();
@@ -77,6 +77,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var hyperLink2 = home.GetHtmlAnchor().ByLocalID ("MyHtmlAnchor2");
       home = hyperLink2.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
+    }
+
+    private RemotionPageObject Start ()
+    {
+      return Start ("HtmlAnchorTest.wxe");
     }
   }
 }

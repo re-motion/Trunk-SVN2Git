@@ -10,9 +10,34 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   /// </summary>
   public static class FluentControlSelectorExtensionsForIntegrationTests
   {
+    public static FluentControlSelector<CommandSelector, CommandControlObject> GetCommand (this IControlHost host)
+    {
+      return new FluentControlSelector<CommandSelector, CommandControlObject> (host, new CommandSelector());
+    }
+
+    public static FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> GetDropDownMenu (this IControlHost host)
+    {
+      return new FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> (host, new DropDownMenuSelector());
+    }
+
     public static FluentControlSelector<FormGridSelector, FormGridControlObject> GetFormGrid (this IControlHost host)
     {
       return new FluentControlSelector<FormGridSelector, FormGridControlObject> (host, new FormGridSelector());
+    }
+
+    public static FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> GetHtmlAnchor (this IControlHost host)
+    {
+      return new FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> (host, new HtmlAnchorSelector());
+    }
+
+    public static FluentControlSelector<LabelSelector, LabelControlObject> GetLabel (this IControlHost host)
+    {
+      return new FluentControlSelector<LabelSelector, LabelControlObject> (host, new LabelSelector());
+    }
+
+    public static FluentControlSelector<ListMenuSelector, ListMenuControlObject> GetListMenu (this IControlHost host)
+    {
+      return new FluentControlSelector<ListMenuSelector, ListMenuControlObject> (host, new ListMenuSelector());
     }
 
     public static FluentControlSelector<SingleViewSelector, SingleViewControlObject> GetSingleView (this IControlHost host)
@@ -33,26 +58,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public static FluentControlSelector<WebButtonSelector, WebButtonControlObject> GetWebButton (this IControlHost host)
     {
       return new FluentControlSelector<WebButtonSelector, WebButtonControlObject> (host, new WebButtonSelector());
-    }
-
-    public static FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> GetHtmlAnchor (this IControlHost host)
-    {
-      return new FluentControlSelector<HtmlAnchorSelector, HtmlAnchorControlObject> (host, new HtmlAnchorSelector());
-    }
-
-    public static FluentControlSelector<ListMenuSelector, ListMenuControlObject> GetListMenu (this IControlHost host)
-    {
-      return new FluentControlSelector<ListMenuSelector, ListMenuControlObject> (host, new ListMenuSelector());
-    }
-
-    public static FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> GetDropDownMenu (this IControlHost host)
-    {
-      return new FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> (host, new DropDownMenuSelector());
-    }
-
-    public static FluentControlSelector<CommandSelector, CommandControlObject> GetCommand (this IControlHost host)
-    {
-      return new FluentControlSelector<CommandSelector, CommandControlObject> (host, new CommandSelector());
     }
   }
 }

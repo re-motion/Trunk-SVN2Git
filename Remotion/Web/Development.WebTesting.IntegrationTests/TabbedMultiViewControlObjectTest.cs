@@ -11,7 +11,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByHtmlID ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByIndex ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_ByLocalID ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_First ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -59,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelection_Single ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       Assert.That (home.Scope.Text, Is.StringContaining ("DoNotFindMe"));
 
@@ -71,7 +71,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSubScope_TopControls ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       var tabbedMultiView = home.GetTabbedMultiView().Single();
 
@@ -83,7 +83,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSubScope_View ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       var tabbedMultiView = home.GetTabbedMultiView().Single();
 
@@ -96,7 +96,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSubScope_BottomControls ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       var tabbedMultiView = home.GetTabbedMultiView().Single();
 
@@ -108,7 +108,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSwitchTo ()
     {
-      var home = Start ("TabbedMultiViewTest.wxe");
+      var home = Start();
 
       var tabbedMultiView = home.GetTabbedMultiView().Single();
 
@@ -127,10 +127,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content2"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content1"));
 
-      home = tabbedMultiView.SwitchToByHtmlID("body_MyTabbedMultiView_TabStrip_Tab1_Tab").Expect<RemotionPageObject>();
+      home = tabbedMultiView.SwitchToByHtmlID ("body_MyTabbedMultiView_TabStrip_Tab1_Tab").Expect<RemotionPageObject>();
       tabbedMultiView = home.GetTabbedMultiView().Single();
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content1"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content2"));
+    }
+
+    private RemotionPageObject Start ()
+    {
+      return Start ("TabbedMultiViewTest.wxe");
     }
   }
 }
