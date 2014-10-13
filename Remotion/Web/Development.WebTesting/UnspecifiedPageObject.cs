@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <returns>A page object of the expected type.</returns>
     public TPageObject Expect<TPageObject> () where TPageObject : PageObject
     {
-      return Expect<TPageObject> (ctx => true);
+      return Expect<TPageObject> (po => true);
     }
 
     /// <summary>
@@ -45,6 +45,21 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new window with title <paramref name="windowLocator"/>. It is implicitly
+    /// assumed that the actual page matches the expected page on that window.
+    /// </summary>
+    /// <typeparam name="TPageObject">Expected page type.</typeparam>
+    /// <param name="windowLocator">Title of the new window.</param>
+    /// <returns>A page object of the expected type.</returns>
+    public TPageObject ExpectNewWindow<TPageObject> ([NotNull] string windowLocator)
+        where TPageObject : PageObject
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
+      
+      return ExpectNewWindow<TPageObject> (windowLocator, po => true);
+    }
+
+    /// <summary>
     /// Expects a page of type <typeparamref name="TPageObject"/> - on a new window with title <paramref name="windowLocator"/>. A conditon given by
     /// <paramref name="pageIsShownAssertion"/> may check whether the actual page matches the expected page.
     /// </summary>
@@ -52,13 +67,28 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="windowLocator">Title of the new window.</param>
     /// <param name="pageIsShownAssertion">Condition which asserts whether the correct page is shown.</param>
     /// <returns>A page object of the expected type.</returns>
-    public TPageObject ExpectOnNewWindow<TPageObject> (string windowLocator, [NotNull] Func<TPageObject, bool> pageIsShownAssertion)
+    public TPageObject ExpectNewWindow<TPageObject> ([NotNull] string windowLocator, [NotNull] Func<TPageObject, bool> pageIsShownAssertion)
         where TPageObject : PageObject
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
       ArgumentUtility.CheckNotNull ("pageIsShownAssertion", pageIsShownAssertion);
 
       var newContext = Context.CloneForNewWindow (windowLocator);
       return AssertPageIsShownAndReturnNewPageObject (newContext, pageIsShownAssertion);
+    }
+
+    /// <summary>
+    /// Expects a page of type <typeparamref name="TPageObject"/> - on a new popup window with title <paramref name="windowLocator"/>. It is
+    /// implicitly assumed that the actual page matches the expected page on that window.
+    /// </summary>
+    /// <typeparam name="TPageObject">Expected page type.</typeparam>
+    /// <param name="windowLocator">Title of the new popup window.</param>
+    /// <returns>A page object of the expected type.</returns>
+    public TPageObject ExpectNewPopupWindow<TPageObject> ([NotNull] string windowLocator) where TPageObject : PageObject
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
+
+      return ExpectNewPopupWindow<TPageObject> (windowLocator, po => true);
     }
 
     /// <summary>
@@ -69,9 +99,10 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="windowLocator">Title of the new popup window.</param>
     /// <param name="pageIsShownAssertion">Condition which asserts whether the correct page is shown.</param>
     /// <returns>A page object of the expected type.</returns>
-    public TPageObject ExpectOnNewPopupWindow<TPageObject> (string windowLocator, [NotNull] Func<TPageObject, bool> pageIsShownAssertion)
+    public TPageObject ExpectNewPopupWindow<TPageObject> ([NotNull] string windowLocator, [NotNull] Func<TPageObject, bool> pageIsShownAssertion)
         where TPageObject : PageObject
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
       ArgumentUtility.CheckNotNull ("pageIsShownAssertion", pageIsShownAssertion);
 
       var newContext = Context.CloneForNewPopupWindow (windowLocator);
