@@ -81,6 +81,7 @@
     <Content Include="MultiWindowTest\Window.aspx" />
     <Content Include="MultiWindowTest\Main.aspx" />
     <Content Include="MultiWindowTest\Frame.aspx" />
+    <Content Include="LabelTest.aspx" />
     <Content Include="WebButtonTest.aspx" />
     <Content Include="TabStripTest.aspx" />
     <Content Include="TabbedMultiViewTest.aspx" />
@@ -159,6 +160,13 @@
     </Compile>
     <Compile Include="MultiWindowTest\Frame.aspx.designer.cs">
       <DependentUpon>Frame.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LabelTest.aspx.cs">
+      <DependentUpon>LabelTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LabelTest.aspx.designer.cs">
+      <DependentUpon>LabelTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="TestCommand.cs" />
     <Compile Include="WebButtonTestFunction.cs" />
