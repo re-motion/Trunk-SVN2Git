@@ -4,16 +4,14 @@ using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
-  /// <remarks>
-  /// Note that the <see cref="DropDownMenu.Mode"/>=<see cref="MenuMode.ContextMenu"/> option is tested indirectly by the BocTreeViewControlObjectTest.
-  /// </remarks>
   [TestFixture]
   public class DropDownMenuControlObjectTest : IntegrationTest
   {
+    // Note that the <see cref="T:DropDownMenu.Mode"/>=<see cref="T:MenuMode.ContextMenu"/> option is tested indirectly by the BocTreeViewControlObjectTest.
+
     [Test]
     public void TestSelection_ByHtmlID ()
     {
