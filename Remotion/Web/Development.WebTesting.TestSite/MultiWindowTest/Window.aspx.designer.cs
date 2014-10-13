@@ -22,13 +22,13 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
         
         /// <summary>
-        /// WindowSmartLabel control.
+        /// WindowLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label WindowSmartLabel;
+        protected global::System.Web.UI.WebControls.Label WindowLabel;
         
         /// <summary>
         /// SimplePostBack control.

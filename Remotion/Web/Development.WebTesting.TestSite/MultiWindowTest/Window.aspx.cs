@@ -16,7 +16,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
     protected override void OnPreRender (EventArgs e)
     {
       base.OnPreRender (e);
-      SetTestOutput (WindowSmartLabel);
+      SetTestOutput (WindowLabel);
     }
 
     protected override void AddPostBackEventHandlerToPage (PostBackEventHandler postBackEventHandler)

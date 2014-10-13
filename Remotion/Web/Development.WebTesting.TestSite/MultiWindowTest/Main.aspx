@@ -11,7 +11,7 @@
         <asp:UpdatePanel ID="UpdatePanel" UpdateMode="Always" runat="server">
           <ContentTemplate>
             <p>Main.aspx running in MainFunction</p>
-            <p><asp:Label ID="MainSmartLabel" Text="MainSmartLabel" ViewStateMode="Disabled" runat="server" /></p>
+            <p><asp:Label ID="MainLabel" Text="MainLabel" ViewStateMode="Disabled" runat="server" /></p>
             <p><remotion:WebButton ID="SimplePostBack" Text="Simple PostBack" runat="server"/></p>
             <p><remotion:WebButton ID="LoadFrameFunctionInFrame" Text="Load FrameFunction in Frame" runat="server"/></p>
             <p><remotion:WebButton ID="LoadFrameFunctionAsSubInFrame" Text="Load FrameFunction (as sub function) in Frame" runat="server"/></p>

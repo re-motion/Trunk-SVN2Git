@@ -8,7 +8,7 @@
     <form id="form1" runat="server">
       <div>
         <p>Window.aspx running in WindowFunction</p>
-        <p><asp:Label ID="WindowSmartLabel" Text="WindowSmartLabel" runat="server" /></p>
+        <p><asp:Label ID="WindowLabel" Text="WindowLabel" runat="server" /></p>
         <p><remotion:WebButton ID="SimplePostBack" Text="Simple PostBack" runat="server"/></p>
         <p><remotion:WebButton ID="Close" Text="Close" runat="server"/></p>
         <p><remotion:WebButton ID="CloseAndRefreshMainAsWell" Text="Close (and refresh Main even if started from Frame)" runat="server"/></p>

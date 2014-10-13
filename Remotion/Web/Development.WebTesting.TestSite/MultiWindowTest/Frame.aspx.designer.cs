@@ -40,13 +40,13 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest {
         protected global::System.Web.UI.UpdatePanel UpdatePanel;
         
         /// <summary>
-        /// FrameSmartLabel control.
+        /// FrameLabel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label FrameSmartLabel;
+        protected global::System.Web.UI.WebControls.Label FrameLabel;
         
         /// <summary>
         /// SimplePostBack control.
