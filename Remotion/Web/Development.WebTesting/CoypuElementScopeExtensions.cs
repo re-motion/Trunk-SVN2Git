@@ -53,7 +53,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// ASP.NET WebForms-ready & IE-compatible version for Selenium's <c>scope.FillInWith(value)</c> method.
+    /// ASP.NET WebForms-ready &amp; IE-compatible version for Selenium's <see cref="ElementScope.FillInWith"/> method.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="context">The corresponding control object's context.</param>
@@ -79,8 +79,8 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// We cannot use Coypu's <c>scope.FillInWith(value)</c> here, as it internally calls <c>scope.Clear()</c> which unfortunately triggers a
-    /// post back. See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
+    /// We cannot use Coypu's <see cref="ElementScope.FillInWith"/> here, as it internally calls Selenium's <see cref="IWebElement.Clear"/> which
+    /// unfortunately triggers a post back. See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
     /// </summary>
     private static void FillInWithFixedNormalBrowser ([NotNull] this ElementScope scope, [NotNull] string value)
     {
@@ -103,7 +103,7 @@ namespace Remotion.Web.Development.WebTesting
       SendKeys.SendWait (clearTextBox + PrepareValueForSendKeysAPI (value));
     }
 
-    private static string PrepareValueForSendKeysAPI(string value)
+    private static string PrepareValueForSendKeysAPI (string value)
     {
       var charactersToEncloseForSendKeys = new[] { "+", "^", "%", "~", "(", ")", "'", "[", "]", "{", "}" };
       var charactersToEncloseForRegex = new[] { '.', '$', '^', '{', '[', '(', '|', ')', '*', '+', '?', '\\' };

@@ -53,10 +53,10 @@ namespace Remotion.Web.Development.WebTesting
     public IActionBehavior AcceptModalDialog ()
     {
       _afterClickActions.Add (
-          ctx =>
+          context =>
           {
             s_log.DebugFormat ("Action {0}: Accepting modal browser dialog.", _debugOutputID);
-            ctx.Window.AcceptModalDialog();
+            context.Browser.AcceptModalDialogFixed (context);
           });
 
       return this;
@@ -65,10 +65,10 @@ namespace Remotion.Web.Development.WebTesting
     public IActionBehavior CancelModalDialog ()
     {
       _afterClickActions.Add (
-          ctx =>
+          context =>
           {
             s_log.DebugFormat ("Action {0}: Canceling modal browser dialog.", _debugOutputID);
-            ctx.Window.CancelModalDialog();
+            context.Browser.CancelModalDialogFixed (context);
           });
 
       return this;
@@ -96,10 +96,10 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);
 
+      ExecuteAfterClickActions (context);
+
       var newContext = GetNewTestObjectContext (context);
       newContext.EnsureWindowIsActive();
-
-      ExecuteAfterClickActions (context);
 
       var states = (List<object>) state;
       for (var i = 0; i < _waitingStrategies.Count; ++i)
