@@ -69,6 +69,7 @@
     <Compile Include="CommandControlObjectTest.cs" />
     <Compile Include="FluentControlSelectorExtensionsForIntegrationTests.cs" />
     <Compile Include="DropDownMenuControlObjectTest.cs" />
+    <Compile Include="InfrastructureTests.cs" />
     <Compile Include="LabelControlObjectTest.cs" />
     <Compile Include="MultiWindowTest.cs" />
     <Compile Include="MultiWindowTestPageObject.cs" />
