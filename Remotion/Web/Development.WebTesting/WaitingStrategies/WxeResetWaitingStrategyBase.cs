@@ -5,7 +5,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 {
   /// <summary>
-  /// Base class for all WXE-reset-bsed (new root WXE function execution) waiting strategies.
+  /// Base class for all WXE-based waiting strategies which wait for a new root WXE function to execute.
   /// </summary>
   public abstract class WxeResetWaitingStrategyBase : WxeWaitingStrategyBase
   {

@@ -111,7 +111,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Todo RM-6297: Docs
+    /// Returns a new immutable <see cref="TestObjectContext"/> for the given sub <paramref name="scope"/>.
     /// </summary>
     public TestObjectContext CloneForScope ([NotNull] ElementScope scope)
     {
@@ -121,7 +121,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Todo RM-6297: Docs
+    /// Returns a new immutable <see cref="TestObjectContext"/> for the given sub <paramref name="frameScope"/>.
     /// </summary>
     public TestObjectContext CloneForFrame ([NotNull] ElementScope frameScope)
     {
@@ -132,7 +132,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Todo RM-6297: Docs
+    /// Returns a new immutable <see cref="TestObjectContext"/> for a new page on the window.
     /// </summary>
     public TestObjectContext CloneForNewPage ()
     {
@@ -141,7 +141,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Todo RM-6297: Docs
+    /// Returns a new immutable <see cref="TestObjectContext"/> for a new sub window, specfied by <paramref name="windowLocator"/>.
     /// </summary>
     public TestObjectContext CloneForNewWindow ([NotNull] string windowLocator)
     {
@@ -153,7 +153,8 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Todo RM-6297: Docs
+    /// Returns a new immutable <see cref="TestObjectContext"/> for a new sub popup window, specified by <paramref name="windowLocator"/>. In
+    /// contrast to <see cref="CloneForNewWindow"/>, the popup window is not maximized.
     /// </summary>
     public TestObjectContext CloneForNewPopupWindow ([NotNull] string windowLocator)
     {
@@ -172,7 +173,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Todo RM-6297: Docs
+    /// Returns a new immutable <see cref="TestObjectContext"/> for the context's parent root scope.
     /// </summary>
     public TestObjectContext CloneForParentWindow ()
     {

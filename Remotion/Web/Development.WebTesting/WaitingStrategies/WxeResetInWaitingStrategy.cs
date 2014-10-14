@@ -6,7 +6,9 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 {
   /// <summary>
-  /// Todo RM-6297: Docs
+  /// Waits for the execution of a new WXE function and the reset of the corresponding WXE sequence number. In contrast to
+  /// <see cref="WxeResetWaitingStrategy"/> it inspects the WXE function and the WXE sequence number on a specified scope, instead of the given
+  /// context.
   /// </summary>
   public class WxeResetInWaitingStrategy : WxeResetWaitingStrategyBase, IWaitingStrategy
   {

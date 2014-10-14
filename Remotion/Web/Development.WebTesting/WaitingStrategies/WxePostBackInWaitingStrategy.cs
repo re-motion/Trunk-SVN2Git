@@ -6,7 +6,8 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 {
   /// <summary>
-  /// Todo RM-6297: Docs
+  /// Waits for the WXE sequence number to increase by a given amount. In contrast to <see cref="WxePostBackWaitingStrategy"/> it inspects the
+  /// sequence number on a specified scope, instead of the given context.
   /// </summary>
   public class WxePostBackInWaitingStrategy : WxeWaitingStrategyBase, IWaitingStrategy
   {

@@ -3,7 +3,7 @@
 namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 {
   /// <summary>
-  /// Todo RM-6297: Docs
+  /// Waits for the WXE sequence number to increase by a given amount.
   /// </summary>
   public class WxePostBackWaitingStrategy : WxeWaitingStrategyBase, IWaitingStrategy
   {
