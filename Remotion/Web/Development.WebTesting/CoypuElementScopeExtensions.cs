@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using Coypu;
+using Coypu.Drivers;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using Remotion.Utilities;
+using Keys = OpenQA.Selenium.Keys;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -48,23 +53,86 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// ASP.NET WebForms-ready version for Selenium's Clear + SendKeys combo. 
+    /// ASP.NET WebForms-ready, IE-compatible version for Selenium's <c>scope.FillInWith(value)</c> method.
     /// </summary>
-    /// <remarks>
-    /// We cannot use Coypu's <c>s.FillInWith(value)</c> here, as it internally calls <c>s.Clear()</c> which unfortunately triggers a post back.
-    /// See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
-    /// </remarks>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
+    /// <param name="context">The corresponding control object's context.</param>
     /// <param name="value">The value to fill in.</param>
     /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
-    public static void FillWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] ThenAction thenAction)
+    public static void FillWithFixed (
+        [NotNull] this ElementScope scope,
+        [NotNull] TestObjectContext context,
+        [NotNull] string value,
+        [NotNull] ThenAction thenAction)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("thenAction", thenAction);
 
-      scope.SendKeys (Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete + value);
+      if (context.Configuration.Browser != Browser.InternetExplorer)
+        scope.FillWithFixedNormalBrowser (value);
+      else
+        scope.FillWithFixedInternetExplorer (value);
+
       thenAction (scope);
+    }
+
+    /// <summary>
+    /// We cannot use Coypu's <c>scope.FillInWith(value)</c> here, as it internally calls <c>scope.Clear()</c> which unfortunately triggers a
+    /// post back. See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
+    /// </summary>
+    private static void FillWithFixedNormalBrowser ([NotNull] this ElementScope scope, [NotNull] string value)
+    {
+      var clearTextBox = Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete;
+      scope.SendKeys (clearTextBox + value);
+    }
+
+    /// <summary>
+    /// Unfortunately, Selenium's Internet Explorer driver (with native events enabled) does not send required modifier keys when sending keyboard
+    /// input (e.g. "@!" would result in "q1"). Therefore we must use <see cref="SendKeys.SendWait"/> instead.
+    /// </summary>
+    private static void FillWithFixedInternetExplorer (
+        [NotNull] this ElementScope scope,
+        [NotNull] string value)
+    {
+      const string clearTextBox = "{END}+{HOME}{DEL}";
+
+      scope.Focus();
+      Console.WriteLine (PrepareValueForSendKeysAPI (value));
+      SendKeys.SendWait (clearTextBox + PrepareValueForSendKeysAPI (value));
+    }
+
+    private static string PrepareValueForSendKeysAPI(string value)
+    {
+      var charactersToEncloseForSendKeys = new[] { "+", "^", "%", "~", "(", ")", "'", "[", "]", "{", "}" };
+      var charactersToEncloseForRegex = new[] { '.', '$', '^', '{', '[', '(', '|', ')', '*', '+', '?', '\\' };
+
+      for (var i = 0; i < charactersToEncloseForSendKeys.Length; ++i)
+      {
+        var c = charactersToEncloseForSendKeys[i][0];
+        if (charactersToEncloseForRegex.Contains (c))
+          charactersToEncloseForSendKeys[i] = "\\" + charactersToEncloseForSendKeys[i];
+      }
+
+      var charactersToEncloseForSendKeysPattern = string.Join ("|", charactersToEncloseForSendKeys);
+      return Regex.Replace (value, charactersToEncloseForSendKeysPattern, match => "{" + match.Value + "}");
+    }
+
+    /// <summary>
+    /// Focuses an element.
+    /// </summary>
+    /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
+    public static void Focus ([NotNull] this ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      var webElement = (IWebElement) scope.Native;
+
+      if (webElement.TagName == "input" || webElement.TagName == "textarea")
+        webElement.Click();
+      else
+        webElement.SendKeys ("");
     }
 
     /// <summary>
@@ -75,19 +143,8 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      scope.FocusLink();
+      scope.Focus();
       scope.Click();
-    }
-
-    /// <summary>
-    /// Focuses a link.
-    /// </summary>
-    /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
-    private static void FocusLink ([NotNull] this ElementScope scope)
-    {
-      ArgumentUtility.CheckNotNull ("scope", scope);
-
-      scope.SendKeys ("");
     }
 
     /// <summary>
