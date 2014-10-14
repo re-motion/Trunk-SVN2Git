@@ -79,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting
     /// Absolute or relative path to the screenshot directory. The web testing framework automatically takes two screenshots (one of the whole desktop
     /// and one of the browser window) in case a web test failed.
     /// </summary>
-    [ConfigurationProperty ("screenshotDirectory", IsRequired = true)]
+    [ConfigurationProperty ("screenshotDirectory", IsRequired = false)]
     public string ScreenshotDirectory
     {
       get { return (string) this["screenshotDirectory"]; }

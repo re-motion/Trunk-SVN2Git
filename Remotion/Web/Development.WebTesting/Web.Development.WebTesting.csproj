@@ -169,6 +169,7 @@
     <Compile Include="NullHostingStrategy.cs" />
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
     <Compile Include="Utilities\RetryUntilTimeout.cs" />
+    <Compile Include="Utilities\ScreenshotCapturer.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />
     <Compile Include="CoypuWaitingElementScopeExtensions.cs" />

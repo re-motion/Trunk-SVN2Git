@@ -7,6 +7,7 @@ using Coypu;
 using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -53,12 +54,12 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// SetUp method for each web test fixture.
     /// </summary>
-    public void OnFixtureSetUp()
+    public void OnFixtureSetUp ()
     {
       // Note: otherwise the Selenium web driver may get confused when searching for windows.
       EnsureAllBrowserWindowsAreClosed();
 
-      MainBrowserSession = CreateNewBrowserSession(_webTestConfiguration.WebApplicationRoot);
+      MainBrowserSession = CreateNewBrowserSession (_webTestConfiguration.WebApplicationRoot);
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
@@ -96,16 +97,27 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="hasSucceeded">Specifies whether the test has been successful.</param>
     public void OnTearDown (bool hasSucceeded)
     {
-      if (!hasSucceeded)
+      if (!hasSucceeded && ShouldTakeScreenshots())
       {
-        // Todo: take screenshots.
+        var screenshotCapturer = new ScreenshotCapturer (_webTestConfiguration.ScreenshotDirectory);
+
+        var desktopScreenshotFileName = string.Format ("{0}_Desktop", _testName);
+        screenshotCapturer.TakeDesktopScreenshot (desktopScreenshotFileName);
+
+        var browserScreenshotFileName = string.Format ("{0}_Browser", _testName);
+        screenshotCapturer.TakeBrowserScreenshot (browserScreenshotFileName, MainBrowserSession);
       }
+    }
+
+    private bool ShouldTakeScreenshots ()
+    {
+      return !string.IsNullOrEmpty (_webTestConfiguration.ScreenshotDirectory);
     }
 
     /// <summary>
     /// TearDown method for each web test fixture.
     /// </summary>
-    public void OnFixtureTearDown()
+    public void OnFixtureTearDown ()
     {
       if (MainBrowserSession != null)
         MainBrowserSession.Dispose();
