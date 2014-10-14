@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -28,12 +27,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       var loadFrameFunctionAsSubInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionAsSubInFrame");
-      loadFrameFunctionAsSubInFrameButton.Click (Behavior.WaitForWxePostBackIn (home.Frame));
+      loadFrameFunctionAsSubInFrameButton.Click (Behavior.WaitFor (WaitFor.WxePostBackIn (home.Frame)));
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 3);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Behavior.WaitForWxeResetIn (home.Frame));
+      loadFrameFunctionInFrameButton.Click (Behavior.WaitFor (WaitFor.WxeResetIn (home.Frame)));
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 4);
 
@@ -43,12 +42,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 4);
 
       var refreshMainUpdatePanelButton = home.Frame.GetWebButton().ByID ("RefreshMainUpdatePanel");
-      refreshMainUpdatePanelButton.Click (Behavior.WaitForWxePostBackIn (home));
+      refreshMainUpdatePanelButton.Click (Behavior.WaitFor (WaitFor.WxePostBackIn (home)));
       AssertPostBackSequenceNumber (frameLabel, 3);
       AssertPostBackSequenceNumber (mainLabel, 5);
 
       var loadMainAutoRefreshingFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadMainAutoRefreshingFrameFunctionInFrame");
-      loadMainAutoRefreshingFrameFunctionInFrameButton.Click (Behavior.WaitForWxeResetIn (home.Frame));
+      loadMainAutoRefreshingFrameFunctionInFrameButton.Click (Behavior.WaitFor (WaitFor.WxeResetIn (home.Frame)));
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 6);
 
@@ -82,7 +81,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       var closeButton = window.GetWebButton().ByID ("Close");
-      closeButton.Click (Behavior.WaitForWxePostBackIn (home).ClosesWindow());
+      closeButton.Click (Behavior.WaitFor (WaitFor.WxePostBackIn (home)).ClosesWindow());
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 3);
 
@@ -114,7 +113,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.Scope.FindId ("MyTextBox").FillWithFixed ("MyText", Then.DoNothing);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Behavior.WaitForWxeResetIn (home.Frame).AcceptModalDialog());
+      loadFrameFunctionInFrameButton.Click (Behavior.WaitFor (WaitFor.WxeResetIn (home.Frame)).AcceptModalDialog());
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
@@ -139,13 +138,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.Scope.FindId ("MyTextBox").FillWithFixed ("MyText", Then.DoNothing);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Behavior.WaitForWxePostBackIn (home.Frame).CancelModalDialog());
+      loadFrameFunctionInFrameButton.Click (Behavior.WaitFor (WaitFor.WxePostBackIn (home.Frame)).CancelModalDialog());
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       // Ensure that page can still be used
       var navigatieAwayButton = home.GetWebButton().ByID ("NavigateAway");
-      var defaultPage = navigatieAwayButton.Click(new ActionBehavior().AcceptModalDialog()).Expect<RemotionPageObject>();
+      var defaultPage = navigatieAwayButton.Click (new ActionBehavior().AcceptModalDialog()).Expect<RemotionPageObject>();
       Assert.That (defaultPage.GetTitle(), Is.EqualTo ("Web.Development.WebTesting.TestSite"));
     }
 

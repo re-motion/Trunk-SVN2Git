@@ -15,12 +15,12 @@ namespace Remotion.Web.Development.WebTesting
     {
     }
 
-    // Todo RM-6297: Property which returns a new object...for better readability.
     /// <summary>
     /// Returns a new <see cref="IActionBehavior"/> object.
     /// </summary>
     public IActionBehavior Behavior
     {
+      // Todo RM-6297: Property which returns a new object...for better readability.
       get { return new ActionBehavior(); }
     }
   }

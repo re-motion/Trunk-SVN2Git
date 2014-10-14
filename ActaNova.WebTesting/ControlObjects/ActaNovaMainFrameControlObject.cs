@@ -17,7 +17,7 @@ namespace ActaNova.WebTesting.ControlObjects
       if (usedDefinedActionBehavior != null)
         return usedDefinedActionBehavior;
 
-      return ActaNovaBehavior.WaitForOuterInnerOuterUpdate;
+      return Behavior.WaitFor (WaitForActaNova.OuterInnerOuterUpdate);
     }
   }
 }

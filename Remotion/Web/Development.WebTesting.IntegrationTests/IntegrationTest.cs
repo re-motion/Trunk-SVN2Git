@@ -12,7 +12,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     private readonly WebTestHelper _webTestHelper = new WebTestHelper();
 
     [TestFixtureSetUp]
-    public void IntegrationTestTestFixtureSetUp()
+    public void IntegrationTestTestFixtureSetUp ()
     {
       _webTestHelper.OnFixtureSetUp();
     }
@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [TestFixtureTearDown]
-    public void IntegrationTestTestFixtureTearDown()
+    public void IntegrationTestTestFixtureTearDown ()
     {
       _webTestHelper.OnFixtureTearDown();
     }
@@ -43,6 +43,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var context = TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
+    }
+
+    protected IActionBehavior Behavior
+    {
+      // Todo RM-6297: Property which returns a new object...for better readability.
+      get { return new ActionBehavior(); }
     }
   }
 }

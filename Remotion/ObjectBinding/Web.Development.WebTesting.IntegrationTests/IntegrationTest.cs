@@ -51,6 +51,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
 
+    protected IActionBehavior Behavior
+    {
+      // Todo RM-6297: Property which returns a new object...for better readability.
+      get { return new ActionBehavior(); }
+    }
+
     private void AcceptPossibleModalDialog ()
     {
       try

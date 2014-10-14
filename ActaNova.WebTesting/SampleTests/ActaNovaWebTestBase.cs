@@ -45,5 +45,11 @@ namespace ActaNova.WebTesting.SampleTests
       var context = TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
       return new UnspecifiedPageObject (context).Expect<ActaNovaMainPageObject>();
     }
+
+    public IActionBehavior Behavior
+    {
+      // Todo RM-6297: Property which returns a new object...for better readability.
+      get { return new ActionBehavior(); }
+    }
   }
 }

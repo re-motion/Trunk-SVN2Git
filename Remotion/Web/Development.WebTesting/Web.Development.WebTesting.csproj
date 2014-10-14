@@ -172,7 +172,6 @@
     <Compile Include="IControlHost.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
     <Compile Include="Then.cs" />
-    <Compile Include="Behavior.cs" />
     <Compile Include="WaitingStrategies\WaitFor.cs" />
     <Compile Include="WaitingStrategies\NullWaitingStrategy.cs" />
     <Compile Include="WaitingStrategies\WxePostBackInWaitingStrategy.cs" />
