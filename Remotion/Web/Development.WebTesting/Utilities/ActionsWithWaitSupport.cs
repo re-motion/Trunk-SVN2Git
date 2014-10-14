@@ -40,7 +40,6 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     /// <summary>
     /// Adds a WaitFor predicate after the last added action.
-    /// // TODO RM-6297: Refactor predicate to DSL in order to be more along the style of Coypu?
     /// </summary>
     /// <param name="webElement">The web element we want to pass to the predicate.</param>
     /// <param name="predicate">The wait condition.</param>
@@ -51,6 +50,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// check of the condition is retried.</exception>
     public ActionsWithWaitSupport WaitFor (IWebElement webElement, Func<IWebElement, bool> predicate, TimeSpan timeout)
     {
+      // TODO RM-6297: Refactor predicate parameter to DSL in order to be more along the style of Coypu?
+
       AddAction (
           new ActionAdapter (
               () =>
