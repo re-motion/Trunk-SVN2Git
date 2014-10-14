@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using log4net;
 using log4net.Config;
 using Remotion.Utilities;
 
@@ -12,14 +11,12 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class WebTestSetUpFixtureHelper
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestSetUpFixtureHelper));
-
     private readonly IHostingStrategy _hostingStrategy;
 
-    public WebTestSetUpFixtureHelper([NotNull] IHostingStrategy hostingStrategy)
+    public WebTestSetUpFixtureHelper ([NotNull] IHostingStrategy hostingStrategy)
     {
       ArgumentUtility.CheckNotNull ("hostingStrategy", hostingStrategy);
-      
+
       _hostingStrategy = hostingStrategy;
     }
 
@@ -29,8 +26,6 @@ namespace Remotion.Web.Development.WebTesting
     public void OnSetUp ()
     {
       SetUpLog4net();
-      EnsureScreenshotDirectoryExists();
-      DetermineScreenSizeForScreenshots();
       HostWebApplication();
     }
 
@@ -45,16 +40,6 @@ namespace Remotion.Web.Development.WebTesting
     private void SetUpLog4net ()
     {
       XmlConfigurator.Configure();
-    }
-
-    private void EnsureScreenshotDirectoryExists ()
-    {
-      // Todo RM-6297: EnsureScreenshotDirectoryExists.
-    }
-
-    private void DetermineScreenSizeForScreenshots ()
-    {
-      // Todo RM-6297: DetermineScreenSizeForScreenshots.
     }
 
     private void HostWebApplication ()
