@@ -22,21 +22,48 @@ namespace Remotion.Web.Development.WebTesting.TestSite {
         protected global::System.Web.UI.UpdatePanel UpdatePanel;
         
         /// <summary>
+        /// MyWebLinkButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.WebLinkButton MyWebLinkButton;
+        
+        /// <summary>
+        /// MySmartHyperLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.Web.UI.Controls.SmartHyperLink MySmartHyperLink;
+        
+        /// <summary>
+        /// MyAspLinkButton control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton MyAspLinkButton;
+        
+        /// <summary>
+        /// MyAspHyperLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink MyAspHyperLink;
+        
+        /// <summary>
         /// MyHtmlAnchor control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton MyHtmlAnchor;
-        
-        /// <summary>
-        /// MyHtmlAnchor2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink MyHtmlAnchor2;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor MyHtmlAnchor;
     }
 }

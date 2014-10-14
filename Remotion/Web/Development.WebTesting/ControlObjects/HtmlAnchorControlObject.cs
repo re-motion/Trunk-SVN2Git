@@ -40,10 +40,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private bool IsPostBackLink ()
     {
-      const string doPostBackScript = "__doPostBack";
+      const string remotionDoPostBackScript = "DoPostBackWithOptions";
+      const string aspNetDoPostBackScript = "__doPostBack";
 
-      return Scope["href"].Contains (doPostBackScript)
-             || (Scope["href"].Equals ("#") && Scope["onclick"] != null && Scope["onclick"].Contains (doPostBackScript));
+      return Scope["href"].Contains (remotionDoPostBackScript) ||
+             Scope["href"].Contains (aspNetDoPostBackScript) ||
+             (Scope["href"].Equals ("#") && Scope["onclick"] != null && Scope["onclick"].Contains (aspNetDoPostBackScript));
     }
   }
 }

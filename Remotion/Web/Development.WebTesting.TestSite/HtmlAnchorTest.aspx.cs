@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.ExecutionEngine;
 
@@ -10,12 +11,19 @@ namespace Remotion.Web.Development.WebTesting.TestSite
     {
       base.OnInit (e);
 
-      MyHtmlAnchor.Command += Command;
+      MyWebLinkButton.Command += Command;
+      MyAspLinkButton.Command += Command;
+      MyHtmlAnchor.ServerClick += ServerClick;
     }
 
     private void Command (object sender, CommandEventArgs e)
     {
-      ((Layout) Master).SetTestOutput (e.CommandName);
+      ((Layout) Master).SetTestOutput (((Control) sender).ID + "|" + e.CommandName);
+    }
+
+    private void ServerClick (object sender, EventArgs eventArgs)
+    {
+      ((Layout) Master).SetTestOutput (((Control) sender).ID);
     }
   }
 }
