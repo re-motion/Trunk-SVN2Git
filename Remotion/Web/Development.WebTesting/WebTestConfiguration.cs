@@ -60,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting
     /// Port to be used for hosting the web application given by <see cref="WebApplicationPath"/>.
     /// </summary>
     [ConfigurationProperty ("webApplicationPort", IsRequired = false)]
-    //[IntegerValidator(MinValue = 49152, MaxValue = 65534)] // Todo RM-6297: does not work?
+    //[IntegerValidator(MinValue = 49152, MaxValue = 65534)] // Todo RM-6297 @ MK: Why doesn't that work as expected?
     public int WebApplicationPort
     {
       get { return (int) this["webApplicationPort"]; }

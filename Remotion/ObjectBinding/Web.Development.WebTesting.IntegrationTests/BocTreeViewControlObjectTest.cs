@@ -210,7 +210,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       node.OpenContextMenu().ClickItem ("MenuItem");
 
-      // Todo RM-6297: Is this a bug? Shouldn't the sender be the BocTreeView and not the underlying WebTreeView?
+      // Todo RM-6297 @ MK: Is this a bug? Shouldn't the sender be the BocTreeView and not the underlying WebTreeView?
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("Normal_Boc_TreeView"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("NodeContextMenuClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("c8ace752-55f6-4074-8890-130276ea6cd1|B, A"));

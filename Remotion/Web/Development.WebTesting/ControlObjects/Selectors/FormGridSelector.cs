@@ -18,6 +18,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public FormGridControlObject SelectPerTitle (TestObjectContext context, string title)
     {
       // Todo RM-6297 Later: Replace with CSS-based search as soon as FormGridManager is able to render the data-title attribute.
+      // Note: That is not that easy, as we do not know the content of the title row on the server...it is just a design transformator.
       //var scope = context.Scope.FindCss (string.Format ("table[{0}='{1}']", DiagnosticMetadataAttributes.FormGridTitle, title));
 
       // Note: This implementation assumes that the title cell has the CSS class formGridTitleCell.

@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
     protected IActionBehavior Behavior
     {
-      // Todo RM-6297: Property which returns a new object...for better readability.
+      // Todo RM-6297 @ MK: Property which returns a new object ... okay for better readability?
       get { return new ActionBehavior(); }
     }
 

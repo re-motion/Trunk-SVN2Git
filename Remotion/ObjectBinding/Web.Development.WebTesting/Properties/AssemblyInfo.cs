@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Resources;
 using System.Web.UI;
 
-// Todo RM-6297: Are the following assembly attributes necessary?
+// Todo RM-6297 @ MK: Are the following assembly attributes necessary?
 [assembly: TagPrefix ("Remotion.ObjectBinding.Web.Development.WebTesting", "remotion")]
 
 [assembly: NeutralResourcesLanguage ("en")]
