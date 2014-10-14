@@ -25,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<FormGridSelector, FormGridControlObject> (host, new FormGridSelector());
     }
 
-    public static FluentControlSelector<AnchorSelector, AnchorControlObject> GetHtmlAnchor (this IControlHost host)
+    public static FluentControlSelector<AnchorSelector, AnchorControlObject> GetAnchor (this IControlHost host)
     {
       return new FluentControlSelector<AnchorSelector, AnchorControlObject> (host, new AnchorSelector());
     }
@@ -53,6 +53,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public static FluentControlSelector<TabStripSelector, TabStripControlObject> GetTabStrip (this IControlHost host)
     {
       return new FluentControlSelector<TabStripSelector, TabStripControlObject> (host, new TabStripSelector());
+    }
+
+    public static FluentControlSelector<TextBoxSelector, TextBoxControlObject> GetTextBox (this IControlHost host)
+    {
+      return new FluentControlSelector<TextBoxSelector, TextBoxControlObject> (host, new TextBoxSelector());
     }
 
     public static FluentControlSelector<WebButtonSelector, WebButtonControlObject> GetWebButton (this IControlHost host)
