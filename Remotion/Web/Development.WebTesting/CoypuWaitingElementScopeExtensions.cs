@@ -65,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting
         TestObjectContext context,
         IActionBehavior actionBehavior)
     {
-      scope.PerformAction (s => s.FillWithFixed (context, value, thenAction), context, actionBehavior);
+      scope.PerformAction (s => s.FillInWithFixed (context, value, thenAction), context, actionBehavior);
     }
   }
 }

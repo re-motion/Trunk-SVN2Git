@@ -53,13 +53,13 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// ASP.NET WebForms-ready, IE-compatible version for Selenium's <c>scope.FillInWith(value)</c> method.
+    /// ASP.NET WebForms-ready & IE-compatible version for Selenium's <c>scope.FillInWith(value)</c> method.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="value">The value to fill in.</param>
     /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
-    public static void FillWithFixed (
+    public static void FillInWithFixed (
         [NotNull] this ElementScope scope,
         [NotNull] TestObjectContext context,
         [NotNull] string value,
@@ -71,9 +71,9 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("thenAction", thenAction);
 
       if (context.Configuration.Browser != Browser.InternetExplorer)
-        scope.FillWithFixedNormalBrowser (value);
+        scope.FillInWithFixedNormalBrowser (value);
       else
-        scope.FillWithFixedInternetExplorer (value);
+        scope.FillInWithFixedInternetExplorer (value);
 
       thenAction (scope);
     }
@@ -82,7 +82,7 @@ namespace Remotion.Web.Development.WebTesting
     /// We cannot use Coypu's <c>scope.FillInWith(value)</c> here, as it internally calls <c>scope.Clear()</c> which unfortunately triggers a
     /// post back. See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
     /// </summary>
-    private static void FillWithFixedNormalBrowser ([NotNull] this ElementScope scope, [NotNull] string value)
+    private static void FillInWithFixedNormalBrowser ([NotNull] this ElementScope scope, [NotNull] string value)
     {
       var clearTextBox = Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete;
       scope.SendKeys (clearTextBox + value);
@@ -92,7 +92,7 @@ namespace Remotion.Web.Development.WebTesting
     /// Unfortunately, Selenium's Internet Explorer driver (with native events enabled) does not send required modifier keys when sending keyboard
     /// input (e.g. "@!" would result in "q1"). Therefore we must use <see cref="SendKeys.SendWait"/> instead.
     /// </summary>
-    private static void FillWithFixedInternetExplorer (
+    private static void FillInWithFixedInternetExplorer (
         [NotNull] this ElementScope scope,
         [NotNull] string value)
     {
