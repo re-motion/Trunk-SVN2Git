@@ -109,8 +109,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var frameLabel = home.Frame.GetLabel().ByID ("FrameLabel");
       AssertPostBackSequenceNumber (frameLabel, 1);
 
-      // Todo RM-6297: Replace with TextBox (HtmlInputTextControlObject or TextBoxControlObject?) control as soon as implemented.
-      home.Frame.Scope.FindId ("MyTextBox").FillInWithFixed (home.Context, "MyText", Then.DoNothing);
+      home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", Then.DoNothing);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
       loadFrameFunctionInFrameButton.Click (Behavior.WaitFor (WaitFor.WxeResetIn (home.Frame)).AcceptModalDialog());
@@ -134,8 +133,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var frameLabel = home.Frame.GetLabel().ByID ("FrameLabel");
       AssertPostBackSequenceNumber (frameLabel, 1);
 
-      // Todo RM-6297: Replace with TextBox (HtmlInputTextControlObject or TextBoxControlObject?) control as soon as implemented.
-      home.Frame.Scope.FindId ("MyTextBox").FillInWithFixed (home.Context, "MyText", Then.DoNothing);
+      home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", Then.DoNothing);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
       loadFrameFunctionInFrameButton.Click (Behavior.WaitFor (WaitFor.WxePostBackIn (home.Frame)).CancelModalDialog());

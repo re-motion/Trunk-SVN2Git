@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
+using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -17,13 +17,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      // Todo RM-6297: Replace with TextBox (HtmlInputTextControlObject or TextBoxControlObject?) control as soon as implemented.
-      var textBox = home.Scope.FindId ("body_MyTextBox");
+      var textBox = home.GetTextBox().ByLocalID("MyTextBox");
 
-      textBox.FillWithAndWait (input, Then.TabAway, home.Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      textBox.FillWith (input, Then.TabAway);
 
-      Assert.That (textBox.Value, Is.EqualTo (input));
       Assert.That (home.Scope.FindId ("wxePostBackSequenceNumberField").Value, Is.EqualTo ("3"));
+      Assert.That (textBox.GetText(), Is.EqualTo (input));
     }
 
     private RemotionPageObject Start ()
