@@ -126,7 +126,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListRowControlObject GetRowByCssSelector (string cssSelector)
     {
       var rowScope = Scope.FindCss (cssSelector);
-      rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
@@ -153,7 +152,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListRowControlObject GetRowFromCell (BocListCellControlObject cell)
     {
       var rowScope = cell.Scope.FindXPath ("..");
-      rowScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
@@ -172,7 +170,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
           containsCellText);
       var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
-      cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
@@ -287,8 +284,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public BocListCellControlObject GetCell (int index)
     {
       var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
-      cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
-
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
@@ -347,8 +342,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public BocListEditableCellControlObject GetCell (int index)
     {
       var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
-      cellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
-
       return new BocListEditableCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
@@ -360,8 +353,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListEditableCellControlObject GetWellKnownEditCell ()
     {
       var editCellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
-      editCellScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
-
       return new BocListEditableCellControlObject (ID, Context.CloneForScope (editCellScope));
     }
   }

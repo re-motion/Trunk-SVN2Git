@@ -60,14 +60,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
-      nodeScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
 
     public WebTreeViewNodeControlObject GetNode (int index)
     {
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
-      nodeScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
 
@@ -79,7 +77,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public WebTreeViewNodeControlObject GetNodeByText (string text)
     {
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.Text, text);
-      nodeScope.Now(); // Todo RM-6297: Change CloneForScope to ensure .Now()?
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
 

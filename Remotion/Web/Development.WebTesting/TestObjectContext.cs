@@ -117,6 +117,8 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
+      EnsureScopeIsExistent (scope);
+
       return new TestObjectContext (Configuration, Browser, Window, RootElement, FrameRootElement, scope, ParentContext);
     }
 
@@ -128,6 +130,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("frameScope", frameScope);
 
       var frameRootElement = frameScope.FindCss ("html");
+      EnsureScopeIsExistent (frameRootElement);
       return new TestObjectContext (Configuration, Browser, Window, RootElement, frameRootElement, frameRootElement, ParentContext);
     }
 
@@ -137,6 +140,7 @@ namespace Remotion.Web.Development.WebTesting
     public TestObjectContext CloneForNewPage ()
     {
       var rootElement = Window.FindCss ("html");
+      EnsureScopeIsExistent (rootElement);
       return new TestObjectContext (Configuration, Browser, Window, rootElement, rootElement, rootElement, ParentContext);
     }
 
@@ -169,6 +173,7 @@ namespace Remotion.Web.Development.WebTesting
 
       var window = Browser.FindWindow (windowLocator);
       var rootElement = window.FindCss ("html");
+      EnsureScopeIsExistent (rootElement);
       return new TestObjectContext (Configuration, Browser, window, rootElement, rootElement, rootElement, this);
     }
 
@@ -187,6 +192,21 @@ namespace Remotion.Web.Development.WebTesting
           ParentContext.RootElement,
           ParentContext.RootElement,
           ParentContext.ParentContext);
+    }
+
+    /// <summary>
+    /// This method reduces performance a little bit (<see cref="TestObjectContext"/>s which are never actually accessed by the web test are also
+    /// resolved). However, it ensures that any <see cref="MissingHtmlException"/> is thrown when the <see cref="TestObjectContext"/> is created,
+    /// which is always near the corresponding <c>parentScope.Find*()</c> method call. Otherwise, the <see cref="MissingHtmlException"/> would be
+    /// thrown when the context's <see cref="Scope"/> is actually used for the first time, which may be quite some time later and the exception would
+    /// provide a stack trace where the <c>parentScope.Find*()</c> could not be found.
+    /// </summary>
+    /// <param name="scope">The <see cref="ElementScope"/> which is asserted to exist.</param>
+    private void EnsureScopeIsExistent ([NotNull] ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      scope.Now();
     }
   }
 }
