@@ -6,8 +6,8 @@ namespace ActaNova.WebTesting.ControlObjects
 {
   public class ActaNovaControlObject : ControlObject
   {
-    public ActaNovaControlObject ([NotNull] TestObjectContext context)
-        : base (context)
+    public ActaNovaControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+        : base (id, context)
     {
     }
   }

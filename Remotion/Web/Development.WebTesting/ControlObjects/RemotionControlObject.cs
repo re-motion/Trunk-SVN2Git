@@ -1,7 +1,6 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
@@ -12,25 +11,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class RemotionControlObject : ControlObject
   {
-    private readonly string _id;
-
     /// <summary>
     /// Initializes the control object with the given <paramref name="context"/> and <paramref name="id"/>.
     /// </summary>
     protected RemotionControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (context)
+        : base (id, context)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-
-      _id = id;
-    }
-
-    /// <summary>
-    /// The control's ID.
-    /// </summary>
-    public string ID
-    {
-      get { return _id; }
     }
 
     /// <summary>

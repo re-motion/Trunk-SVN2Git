@@ -7,8 +7,8 @@ namespace ActaNova.WebTesting.ControlObjects
 {
   public class ActaNovaBreadCrumb : ActaNovaMainFrameControlObject, IClickableControlObject
   {
-    public ActaNovaBreadCrumb ([NotNull] TestObjectContext context)
-        : base (context)
+    public ActaNovaBreadCrumb ([NotNull] string id, [NotNull] TestObjectContext context)
+        : base (id, context)
     {
     }
 

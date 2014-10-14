@@ -3,7 +3,8 @@ using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
-using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.SampleTests
 {
@@ -18,11 +19,15 @@ namespace ActaNova.WebTesting.SampleTests
       var newCitizenConcernPage = home.MainMenu.Select ("New", "Citizen concern").Expect<ActaNovaMainPageObject>();
 
       newCitizenConcernPage.DetailsArea.GetControl (
-          new PerDomainPropertyControlSelectionCommand<BocAutoCompleteReferenceValueControlObject> (
+          new PerHtmlIDControlSelectionCommand<BocAutoCompleteReferenceValueControlObject> (
               new BocAutoCompleteReferenceValueSelector(),
-              "ApplicationContext")).FillWith ("BA - Bürgeranliegen");
+              "CitizenConcernFormPage_view_LazyContainer_ctl01_ObjectFormPageDataSource_ApplicationContext"))
+          .FillWith ("BA - Bürgeranliegen", Behavior.WaitFor (WaitFor.WxePostBackIn (home)));
 
-
+      //newCitizenConcernPage.DetailsArea.GetControl (
+      //    new PerDomainPropertyControlSelectionCommand<BocAutoCompleteReferenceValueControlObject> (
+      //        new BocAutoCompleteReferenceValueSelector(),
+      //        "ApplicationContext")).FillWith ("BA - Bürgeranliegen", Behavior.WaitFor(WaitFor.WxePostBackIn(home)));
     }
   }
 }

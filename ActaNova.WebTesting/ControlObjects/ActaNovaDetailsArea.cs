@@ -7,8 +7,8 @@ namespace ActaNova.WebTesting.ControlObjects
 {
   public class ActaNovaDetailsArea : ActaNovaControlObject, IControlHost
   {
-    public ActaNovaDetailsArea ([NotNull] TestObjectContext context)
-        : base (context)
+    public ActaNovaDetailsArea ([NotNull] string id, [NotNull] TestObjectContext context)
+        : base (id, context)
     {
     }
 

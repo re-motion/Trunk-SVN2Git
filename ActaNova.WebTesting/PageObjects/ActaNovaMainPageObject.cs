@@ -22,7 +22,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var headerScope = Scope.FindId ("HeaderPanel");
-        return new ActaNovaHeader (Context.CloneForScope (headerScope));
+        return new ActaNovaHeader (headerScope.Id, Context.CloneForScope (headerScope));
       }
     }
 
@@ -31,7 +31,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var mainMenuScope = Scope.FindId ("MainMenu");
-        return new ActaNovaMainMenu (Context.CloneForScope (mainMenuScope));
+        return new ActaNovaMainMenu (mainMenuScope.Id, Context.CloneForScope (mainMenuScope));
       }
     }
 
@@ -40,7 +40,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var treeScope = Scope.FindId ("MainTreeView");
-        return new ActaNovaTree (Context.CloneForScope (treeScope));
+        return new ActaNovaTree (treeScope.Id, Context.CloneForScope (treeScope));
       }
     }
 
@@ -49,7 +49,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsArea (Context.CloneForFrame (detailsAreaScope));
+        return new ActaNovaDetailsArea (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

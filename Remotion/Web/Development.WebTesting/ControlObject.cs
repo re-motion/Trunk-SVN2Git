@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -10,15 +11,28 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public abstract class ControlObject : TestObject
   {
-    protected ControlObject ([NotNull] TestObjectContext context)
+    private readonly string _id;
+
+    protected ControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (context)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+
+      _id = id;
+    }
+
+    /// <summary>
+    /// The control's ID.
+    /// </summary>
+    public string ID
+    {
+      get { return _id; }
     }
 
     /// <summary>
     /// Returns a new <see cref="IActionBehavior"/> object.
     /// </summary>
-    public IActionBehavior Behavior
+    protected IActionBehavior Behavior
     {
       // Todo RM-6297 @ MK: Property which returns a new object ... okay for better readability?
       get { return new ActionBehavior(); }

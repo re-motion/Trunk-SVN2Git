@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -9,22 +8,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class HtmlControlObject : ControlObject
   {
-    private readonly string _id;
-
     protected HtmlControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (context)
+        : base (id, context)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-
-      _id = id;
-    }
-
-    /// <summary>
-    /// The control's ID.
-    /// </summary>
-    public string ID
-    {
-      get { return _id; }
     }
   }
 }
