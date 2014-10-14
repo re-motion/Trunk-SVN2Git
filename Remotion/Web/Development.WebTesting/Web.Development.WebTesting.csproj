@@ -160,6 +160,8 @@
     <Compile Include="FluentControlSelection\PerHtmlIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
+    <Compile Include="IActionBehavior.cs" />
+    <Compile Include="IActionBehaviorInternal.cs" />
     <Compile Include="IHostingStrategy.cs" />
     <Compile Include="IisExpressAppConfigConfiguredHostingStrategy.cs" />
     <Compile Include="IisExpressHostingStrategy.cs" />

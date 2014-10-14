@@ -1,100 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using System.Threading;
 using log4net;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
 {
-  // Todo RM-6297: Improve class design.
-
   /// <summary>
-  /// Todo RM-6297
-  /// </summary>
-  public interface IActionBehavior
-  {
-    /// <summary>
-    /// Todo RM-6297
-    /// </summary>
-    IActionBehavior AcceptModalDialog ();
-
-    /// <summary>
-    /// Todo RM-6297
-    /// </summary>
-    IActionBehavior CancelModalDialog ();
-
-    /// <summary>
-    /// Todo RM-6297
-    /// </summary>
-    IActionBehavior ClosesWindow ();
-
-    /// <summary>
-    /// Todo RM-6297
-    /// </summary>
-    IActionBehavior WaitFor ([NotNull] IWaitingStrategy waitingStrategy);
-  }
-
-  /// <summary>
-  /// Todo RM-6297
-  /// </summary>
-  public interface IActionBehaviorInternal
-  {
-    /// <summary>
-    /// Todo RM-6297
-    /// </summary>
-    object BeforeAction ([NotNull] TestObjectContext context);
-
-    /// <summary>
-    /// Todo RM-6297
-    /// </summary>
-    void AfterAction ([NotNull] TestObjectContext context, [NotNull] object behaviorState);
-  }
-
-  /// <summary>
-  /// Todo RM-6297
+  /// Implementation class for <see cref="IActionBehavior"/> and <see cref="IActionBehaviorInternal"/>.
   /// </summary>
   public class ActionBehavior : IActionBehavior, IActionBehaviorInternal
   {
+    /// <summary>
+    /// Returns a unique ID for an <see cref="ActionBehavior"/> (used for debug output purposes).
+    /// </summary>
     private static class ActionBehaviorCounter
     {
-      public static int Counter = 1;
+      private static int s_counter = 0;
+
+      public static int GetNextID ()
+      {
+        return Interlocked.Increment (ref s_counter);
+      }
     }
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ActionBehavior));
 
-    private readonly List<Action<TestObjectContext>> _afterClickActions = new List<Action<TestObjectContext>>();
-    private readonly List<IWaitingStrategy> _waitingStrategies = new List<IWaitingStrategy>();
-    private bool _closesWindow = false;
-    private int _id = ActionBehaviorCounter.Counter++;
+    private readonly int _debugOutputID;
+    private readonly List<IWaitingStrategy> _waitingStrategies;
+    private readonly List<Action<TestObjectContext>> _afterClickActions;
+    private bool _closesWindow;
 
-    public IActionBehavior AcceptModalDialog ()
+    public ActionBehavior ()
     {
-      _afterClickActions.Add (
-          ctx =>
-          {
-            s_log.DebugFormat ("Action {0}: Accepting modal dialog.", _id);
-            ctx.Window.AcceptModalDialog();
-          });
-      return this;
-    }
-
-    public IActionBehavior CancelModalDialog ()
-    {
-      _afterClickActions.Add (
-          ctx =>
-          {
-            s_log.DebugFormat ("Action {0}: Canceling modal dialog.", _id);
-            ctx.Window.CancelModalDialog();
-          });
-      return this;
-    }
-
-    public IActionBehavior ClosesWindow ()
-    {
-      _closesWindow = true;
-      return this;
+      _debugOutputID = ActionBehaviorCounter.GetNextID();
+      _waitingStrategies = new List<IWaitingStrategy>();
+      _afterClickActions = new List<Action<TestObjectContext>>();
+      _closesWindow = false;
     }
 
     public IActionBehavior WaitFor (IWaitingStrategy waitingStrategy)
@@ -106,47 +50,80 @@ namespace Remotion.Web.Development.WebTesting
       return this;
     }
 
+    public IActionBehavior AcceptModalDialog ()
+    {
+      _afterClickActions.Add (
+          ctx =>
+          {
+            s_log.DebugFormat ("Action {0}: Accepting modal browser dialog.", _debugOutputID);
+            ctx.Window.AcceptModalDialog();
+          });
+
+      return this;
+    }
+
+    public IActionBehavior CancelModalDialog ()
+    {
+      _afterClickActions.Add (
+          ctx =>
+          {
+            s_log.DebugFormat ("Action {0}: Canceling modal browser dialog.", _debugOutputID);
+            ctx.Window.CancelModalDialog();
+          });
+
+      return this;
+    }
+
+    public IActionBehavior ClosesWindow ()
+    {
+      _closesWindow = true;
+      return this;
+    }
+
     object IActionBehaviorInternal.BeforeAction (TestObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      s_log.DebugFormat ("Action {0} started.", _id);
+      s_log.DebugFormat ("Action {0} started.", _debugOutputID);
 
       return _waitingStrategies
           .Select (waitingStrategy => waitingStrategy.OnBeforeActionPerformed (context))
           .ToList();
     }
 
-    void IActionBehaviorInternal.AfterAction (TestObjectContext context, object behaviorState)
+    void IActionBehaviorInternal.AfterAction (TestObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("behaviorState", behaviorState);
+      ArgumentUtility.CheckNotNull ("state", state);
 
-      ExecuteAfterClickActions(context);
-      
-      var newContext = GetNewTestObjectContext(context);
-      newContext.EnsureWindowIsActive ();
+      var newContext = GetNewTestObjectContext (context);
+      newContext.EnsureWindowIsActive();
 
-      var states = (List<object>) behaviorState;
+      ExecuteAfterClickActions (context);
+
+      var states = (List<object>) state;
       for (var i = 0; i < _waitingStrategies.Count; ++i)
       {
         s_log.DebugFormat (
-            "Action {0}: Performing wait '{1}' on context '{2}'.",
-            _id,
+            "Action {0}: Wait using '{1}' on context '{2}'.",
+            _debugOutputID,
             _waitingStrategies[i].GetType().Name,
-            newContext.FrameRootElement.FindCss ("title").InnerHTML);
+            newContext.ToDebugString());
 
         var stateForWaitingStrategy = states[i];
         _waitingStrategies[i].PerformWaitAfterActionPerformed (newContext, stateForWaitingStrategy);
       }
 
-      s_log.DebugFormat ("Action {0} finished.", _id);
+      s_log.DebugFormat ("Action {0} finished.", _debugOutputID);
     }
 
     private TestObjectContext GetNewTestObjectContext (TestObjectContext context)
     {
       if (_closesWindow)
+      {
+        s_log.DebugFormat ("Action {0}: Cloning for parent window.", _debugOutputID);
         return context.CloneForParentWindow();
+      }
 
       return context;
     }
@@ -159,17 +136,4 @@ namespace Remotion.Web.Development.WebTesting
         afterClickAction (context);
     }
   }
-
-  //Click(); // SimplePostBack
-  //Click(WaitFor.WxeResetIn(home.Frame)); // LoadFrameFunctionInFrame, LoadWindowFunctionInFrame, LoadMainAutoRefreshingFrameFunctionInFrame
-  //// WXE RESET must check for new function token!!
-
-  //Click(WaitFor.WxePostBackIn(home.Frame)); // Load FrameFunction as sub function in Frame
-  //Click().ExpectNewWindow("MultiWindowTest"); // Load WindowFunction in new Window
-  //Click(WaitFor.WxePostBackIn(home)); // RefreshMainUpdatePanel
-
-  //Click(WaitFor.WxePostBackInParent()); // wenn opened from main, or when opened from frame (see following line)
-  //Click(WaitFor.WxePostBackIn(home.Frame)); // Window: Close & refresh only frame
-
-  //Click(WaitFor.WxePostBackIn(home)); // Window: Close & refresh main
 }

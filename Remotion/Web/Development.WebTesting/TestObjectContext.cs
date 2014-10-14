@@ -87,6 +87,14 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// Tries to return a suitable debug string using the <see cref="FrameRootElement"/>'s &lt;title&gt;.
+    /// </summary>
+    public string ToDebugString ()
+    {
+      return FrameRootElement.FindCss ("title").InnerHTML;
+    }
+
+    /// <summary>
     /// Returns a new root <see cref="TestObjectContext"/> for a <see cref="TestObject"/> without a parent.
     /// </summary>
     /// <param name="configuration">The active <see cref="WebTestConfiguration"/>.</param>
@@ -156,7 +164,7 @@ namespace Remotion.Web.Development.WebTesting
     private TestObjectContext CloneForNewWindowInternal ([NotNull] string windowLocator)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
-      
+
       var window = Browser.FindWindow (windowLocator);
       var rootElement = window.FindCss ("html");
       return new TestObjectContext (Configuration, Browser, window, rootElement, rootElement, rootElement, this);
