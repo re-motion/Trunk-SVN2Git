@@ -5,7 +5,7 @@ using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class HtmlAnchorTest : WxePage
+  public partial class AnchorTest : WxePage
   {
     protected override void OnInit (EventArgs e)
     {

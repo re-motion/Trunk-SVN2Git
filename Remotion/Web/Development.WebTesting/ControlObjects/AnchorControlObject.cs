@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Web.UI.WebControls;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Represents a simple HTML anchor &lt;a&gt; control within a re-motion applicaiton.
+  /// Control object for <see cref="LinkButton"/>, <see cref="HyperLink"/> and all their derivatives (e.g.
+  /// <see cref="T:Remotion.Web.UI.Controls.WebLinkButton"/> or <see cref="T:Remotion.Web.UI.Controls.SmartHyperLink"/>). Also represents a simple
+  /// HTML anchor &lt;a&gt; control within a re-motion applicaiton.
   /// </summary>
   [UsedImplicitly]
-  public class HtmlAnchorControlObject : HtmlControlObject, IClickableControlObject
+  public class AnchorControlObject : ControlObject, IClickableControlObject
   {
-    public HtmlAnchorControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    public AnchorControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

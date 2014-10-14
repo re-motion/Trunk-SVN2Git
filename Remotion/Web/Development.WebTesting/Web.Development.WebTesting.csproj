@@ -98,8 +98,7 @@
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
-    <Compile Include="ControlObjects\HtmlAnchorControlObject.cs" />
-    <Compile Include="ControlObjects\HtmlControlObject.cs" />
+    <Compile Include="ControlObjects\AnchorControlObject.cs" />
     <Compile Include="ControlObjects\IClickableControlObject.cs" />
     <Compile Include="ControlObjects\IClickableItemsControlObject.cs" />
     <Compile Include="ControlObjects\IFillableControlObject.cs" />
@@ -109,8 +108,7 @@
     <Compile Include="ControlObjects\Selectors\CommandSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\DropDownMenuSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\HtmlAnchorSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\HtmlControlSelectorBase.cs" />
+    <Compile Include="ControlObjects\Selectors\AnchorSelector.cs" />
     <Compile Include="ControlObjects\Selectors\LabelSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />

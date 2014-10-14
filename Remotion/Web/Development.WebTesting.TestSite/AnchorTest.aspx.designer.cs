@@ -10,7 +10,7 @@
 namespace Remotion.Web.Development.WebTesting.TestSite {
     
     
-    public partial class HtmlAnchorTest {
+    public partial class AnchorTest {
         
         /// <summary>
         /// UpdatePanel control.

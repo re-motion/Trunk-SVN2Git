@@ -8,7 +8,7 @@ using Remotion.Web.Development.WebTesting.PageObjects;
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class HtmlAnchorControlObjectTest : IntegrationTest
+  public class AnchorControlObjectTest : IntegrationTest
   {
     [Test]
     public void TestSelection_ByHtmlID ()
@@ -117,7 +117,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private RemotionPageObject Start ()
     {
-      return Start ("HtmlAnchorTest.wxe");
+      return Start ("AnchorTest.wxe");
     }
   }
 }

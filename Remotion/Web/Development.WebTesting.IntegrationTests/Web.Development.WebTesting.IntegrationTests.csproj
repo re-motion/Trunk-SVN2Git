@@ -80,7 +80,7 @@
     <Compile Include="IntegrationTest.cs" />
     <Compile Include="TabbedMultiViewControlObjectTest.cs" />
     <Compile Include="TabStripControlObjectTest.cs" />
-    <Compile Include="HtmlAnchorControlObjectTest.cs" />
+    <Compile Include="AnchorControlObjectTest.cs" />
     <Compile Include="ListMenuControlObjectTest.cs" />
     <Compile Include="WebButtonControlObjectTest.cs" />
   </ItemGroup>

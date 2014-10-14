@@ -6,9 +6,9 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
   [UsedImplicitly]
-  public class HtmlAnchorTestFunction : WxeFunction
+  public class AnchorTestFunction : WxeFunction
   {
-    public HtmlAnchorTestFunction ()
+    public AnchorTestFunction ()
         : base (new NoneTransactionMode())
     {
     }
@@ -19,6 +19,6 @@ namespace Remotion.Web.Development.WebTesting.TestSite
       ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
     }
 
-    private WxeStep Step2 = new WxePageStep ("HtmlAnchorTest.aspx");
+    private WxeStep Step2 = new WxePageStep ("AnchorTest.aspx");
   }
 }
