@@ -83,6 +83,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     public void EnsureWindowIsActive ()
     {
+      // ReSharper disable once UnusedVariable
       var temp = Window.Title;
     }
 

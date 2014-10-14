@@ -10,6 +10,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue"/>.
   /// </summary>
+  [UsedImplicitly]
   public class BocTextControlObject : BocControlObject, IFillableControlObject
   {
     /// <summary>
@@ -32,14 +33,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return valueScope.Value;
     }
 
-    public UnspecifiedPageObject FillWith ([NotNull] string text, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       return FillWith (text, Then.TabAway, actionBehavior);
     }
 
-    public UnspecifiedPageObject FillWith ([NotNull] string text, [NotNull] ThenAction then, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ThenAction then, IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);

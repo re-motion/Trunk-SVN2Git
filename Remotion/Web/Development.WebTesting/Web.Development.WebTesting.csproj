@@ -118,7 +118,6 @@
     <Compile Include="ControlObjects\WebTreeViewControlObject.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\IControlSelectionCommand.cs" />
-    <Compile Include="ControlSelection\IControlSelectorForControlHostingControlObjects.cs" />
     <Compile Include="ControlSelection\IFirstControlSelector.cs" />
     <Compile Include="ControlObjects\CommandControlObject.cs" />
     <Compile Include="ControlObjects\DropDownMenuControlObject.cs" />

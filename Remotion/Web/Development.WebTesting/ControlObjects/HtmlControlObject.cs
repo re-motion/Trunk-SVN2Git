@@ -1,7 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -12,7 +11,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   {
     private readonly string _id;
 
-    public HtmlControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    protected HtmlControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (context)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
@@ -23,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// The control's ID.
     /// </summary>
-    protected string ID
+    public string ID
     {
       get { return _id; }
     }

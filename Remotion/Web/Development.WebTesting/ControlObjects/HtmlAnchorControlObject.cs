@@ -7,6 +7,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Represents a simple HTML anchor &lt;a&gt; control within a re-motion applicaiton.
   /// </summary>
+  [UsedImplicitly]
   public class HtmlAnchorControlObject : HtmlControlObject, IClickableControlObject
   {
     public HtmlAnchorControlObject ([NotNull] string id, [NotNull] TestObjectContext context)

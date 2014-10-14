@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
-using log4net;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Utilities;
 
@@ -17,8 +16,6 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class WebTestHelper
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestHelper));
-
     /// <summary>
     /// Web test configuration.
     /// </summary>

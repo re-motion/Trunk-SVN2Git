@@ -18,6 +18,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
+  [UsedImplicitly]
   public class BocListControlObject : BocControlObject
   {
     // Todo RM-6297: Add Header helper class.

@@ -12,7 +12,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite
     {
       base.OnInit (e);
 
-      this.TextChanged += OnTextChanged;
+      TextChanged += OnTextChanged;
     }
 
     private void OnTextChanged (object sender, EventArgs eventArgs)

@@ -2,7 +2,6 @@
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
-using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;

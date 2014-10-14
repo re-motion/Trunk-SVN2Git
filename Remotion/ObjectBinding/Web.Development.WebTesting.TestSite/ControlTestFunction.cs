@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Remotion.ObjectBinding.Sample;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
@@ -6,6 +7,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
 {
+  [UsedImplicitly]
   public class ControlTestFunction : WxeFunction
   {
     private Person _person;

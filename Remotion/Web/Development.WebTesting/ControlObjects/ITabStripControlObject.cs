@@ -1,5 +1,5 @@
-﻿using Coypu;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
+﻿using System;
+using Coypu;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {

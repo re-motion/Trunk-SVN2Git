@@ -8,6 +8,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
+  [UsedImplicitly]
   public class BocTreeViewControlObject : BocControlObject, IBocTreeViewNodeNavigator
   {
     private readonly WebTreeViewControlObject _webTreeView;
@@ -56,6 +57,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly WebTreeViewNodeControlObject _webTreeViewNode;
 
+    [UsedImplicitly]
     public BocTreeViewNodeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
