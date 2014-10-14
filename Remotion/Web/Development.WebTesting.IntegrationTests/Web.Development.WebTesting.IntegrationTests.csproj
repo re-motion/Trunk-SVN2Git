@@ -82,6 +82,7 @@
     <Compile Include="TabStripControlObjectTest.cs" />
     <Compile Include="AnchorControlObjectTest.cs" />
     <Compile Include="ListMenuControlObjectTest.cs" />
+    <Compile Include="TextBoxControlObjectTest.cs" />
     <Compile Include="WebButtonControlObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>

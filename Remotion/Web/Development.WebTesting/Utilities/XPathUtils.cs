@@ -9,6 +9,17 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   public static class XPathUtils
   {
     /// <summary>
+    /// Creates an XPath predicate, checking that a given <paramref name="attribtueName"/> has the given <paramref name="attributeValue"/>.
+    /// </summary>
+    /// <param name="attribtueName">The name of the attribute to check.</param>
+    /// <param name="attributeValue">The value, the attribute should have.</param>
+    /// <returns>The XPath predicate.</returns>
+    public static string CreateContainsAttributeCheck (string attribtueName, string attributeValue)
+    {
+      return string.Format ("[@{0}='{1}']", attribtueName, attributeValue);
+    }
+
+    /// <summary>
     /// Creates an XPath predicate, checking for a specific CSS class.
     /// </summary>
     /// <param name="cssClass">The CSS class to check for.</param>
