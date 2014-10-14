@@ -2,8 +2,8 @@
 <asp:Content ContentPlaceHolderID="body" runat="server">
   <h3>Label1</h3>
   <remotion:SmartLabel ID="MySmartLabel" Text="MySmartLabelContent" runat="server"/>
-  <div id="scope">
-    <h3>Label2</h3>
-    <remotion:SmartLabel ID="MySmartLabel2" Text="MySmartLabelContent2" runat="server"/>
-  </div>
+  <h3>Label2</h3>
+  <asp:Label ID="MyAspLabel" Text="MyAspLabelContent" runat="server"/>
+  <h3>Label3</h3>
+  <span id="MyHtmlLabel" runat="server">MyHtmlLabelContent</span>
 </asp:Content>

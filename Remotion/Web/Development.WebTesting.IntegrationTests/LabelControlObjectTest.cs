@@ -1,33 +1,26 @@
 ﻿using System;
-using Coypu;
 using NUnit.Framework;
-using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class LabelControlObjectTes : IntegrationTest
+  public class LabelControlObjectTest : IntegrationTest
   {
     [Test]
     public void TestSelection_ByHtmlID ()
     {
       var home = Start();
 
-      var label = home.GetLabel().ByID ("body_MySmartLabel");
-      Assert.That (label.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
-    }
+      var smartLabel = home.GetLabel().ByID ("body_MySmartLabel");
+      Assert.That (smartLabel.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
 
-    [Test]
-    [Ignore ("Ignored until labels have a CSS class - is this ever possible?")]
-    // Todo RM-6297: enable test as soon as labels have a CSS class - is this ever possible?
-    public void TestSelection_ByIndex ()
-    {
-      var home = Start();
+      var aspLabel = home.GetLabel().ByID ("body_MyAspLabel");
+      Assert.That (aspLabel.Scope.Id, Is.EqualTo ("body_MyAspLabel"));
 
-      var label = home.GetLabel().ByIndex (2);
-      Assert.That (label.Scope.Id, Is.EqualTo ("body_MySmartLabel2"));
+      var htmlLabel = home.GetLabel().ByID ("body_MyHtmlLabel");
+      Assert.That (htmlLabel.Scope.Id, Is.EqualTo ("body_MyHtmlLabel"));
     }
 
     [Test]
@@ -35,40 +28,14 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var label = home.GetLabel().ByLocalID ("MySmartLabel");
-      Assert.That (label.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
-    }
+      var smartLabel = home.GetLabel().ByLocalID ("MySmartLabel");
+      Assert.That (smartLabel.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
 
-    [Test]
-    [Ignore ("Ignored until labels have a CSS class - is this ever possible?")]
-    // Todo RM-6297: enable test as soon as labels have a CSS class - is this ever possible?
-    public void TestSelection_First ()
-    {
-      var home = Start();
+      var aspLabel = home.GetLabel().ByLocalID ("MyAspLabel");
+      Assert.That (aspLabel.Scope.Id, Is.EqualTo ("body_MyAspLabel"));
 
-      var label = home.GetLabel().First();
-      Assert.That (label.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
-    }
-
-    [Test]
-    [Ignore ("Ignored until labels have a CSS class - is this ever possible?")]
-    // Todo RM-6297: enable test as soon as labels have a CSS class - is this ever possible?
-    public void TestSelection_Single ()
-    {
-      var home = Start();
-      var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
-
-      var label = scope.GetLabel().Single();
-      Assert.That (label.Scope.Id, Is.EqualTo ("body_MySmartLabel2"));
-
-      try
-      {
-        home.GetLabel().Single();
-        Assert.Fail ("Should not be able to unambigously find a label.");
-      }
-      catch (AmbiguousException)
-      {
-      }
+      var htmlLabel = home.GetLabel().ByLocalID ("MyHtmlLabel");
+      Assert.That (htmlLabel.Scope.Id, Is.EqualTo ("body_MyHtmlLabel"));
     }
 
     [Test]
@@ -76,8 +43,14 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var label = home.GetLabel().ByLocalID ("MySmartLabel");
-      Assert.That (label.GetText(), Is.EqualTo ("MySmartLabelContent"));
+      var smartLabel = home.GetLabel().ByLocalID ("MySmartLabel");
+      Assert.That (smartLabel.GetText(), Is.EqualTo ("MySmartLabelContent"));
+
+      var aspLabel = home.GetLabel().ByLocalID ("MyAspLabel");
+      Assert.That (aspLabel.GetText(), Is.EqualTo ("MyAspLabelContent"));
+
+      var htmlLabel = home.GetLabel().ByLocalID ("MyHtmlLabel");
+      Assert.That (htmlLabel.GetText(), Is.EqualTo ("MyHtmlLabelContent"));
     }
 
     private RemotionPageObject Start ()
