@@ -1,5 +1,6 @@
 ﻿using System;
 using Coypu;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
@@ -20,11 +21,16 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="actionBehavior"><see cref="IActionBehavior"/> for this action.</param>
     public static void PerformAction (
-        this ElementScope scope,
-        Action<ElementScope> action,
-        TestObjectContext context,
-        IActionBehavior actionBehavior)
+        [NotNull] this ElementScope scope,
+        [NotNull] Action<ElementScope> action,
+        [NotNull] TestObjectContext context,
+        [NotNull] IActionBehavior actionBehavior)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("action", action);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("actionBehavior", actionBehavior);
+
       var actionBehaviorInternal = actionBehavior as IActionBehaviorInternal;
       Assertion.IsNotNull (actionBehaviorInternal, "IActionBehavior must also - explicitly - implement IActionBehaviorInternal.");
 
@@ -41,10 +47,14 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="actionBehavior"><see cref="IActionBehavior"/> for this action.</param>
     public static void ClickAndWait (
-        this ElementScope scope,
-        TestObjectContext context,
-        IActionBehavior actionBehavior)
+        [NotNull] this ElementScope scope,
+        [NotNull] TestObjectContext context,
+        [NotNull] IActionBehavior actionBehavior)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("actionBehavior", actionBehavior);
+
       scope.PerformAction (s => s.FocusClick(), context, actionBehavior);
     }
 
@@ -59,12 +69,18 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="actionBehavior"><see cref="IActionBehavior"/> for this action.</param>
     public static void FillWithAndWait (
-        this ElementScope scope,
-        string value,
-        ThenAction thenAction,
-        TestObjectContext context,
-        IActionBehavior actionBehavior)
+        [NotNull] this ElementScope scope,
+        [NotNull] string value,
+        [NotNull] ThenAction thenAction,
+        [NotNull] TestObjectContext context,
+        [NotNull] IActionBehavior actionBehavior)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("thenAction", thenAction);
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("actionBehavior", actionBehavior);
+
       scope.PerformAction (s => s.FillInWithFixed (context, value, thenAction), context, actionBehavior);
     }
   }
