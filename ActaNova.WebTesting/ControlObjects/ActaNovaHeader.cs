@@ -7,6 +7,9 @@ using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
+  /// <summary>
+  /// Control object representing the ActaNova header area.
+  /// </summary>
   public class ActaNovaHeader : ActaNovaMainFrameControlObject
   {
     public ActaNovaHeader ([NotNull] string id, [NotNull] TestObjectContext context)
@@ -14,16 +17,29 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the current ActaNova application context or <see langword="null" /> if no application context is active.
+    /// </summary>
+    /// <remarks>
+    /// ActaNova currently displays the application context as "(Verfahrensbereich BA)", this property returns only "Verfahrensbereich BA".
+    /// </remarks>
     public string CurrentApplicationContext
     {
       get
       {
-        // TODO RM-6297: Parse label text?
         var applicationContextScope = Scope.FindId ("CurrentAppContextLabel");
-        return applicationContextScope.Text;
+        var currentApplicationContext = applicationContextScope.Text.Trim();
+
+        if (!currentApplicationContext.StartsWith ("("))
+          return null;
+
+        return currentApplicationContext.Substring (1, currentApplicationContext.Length - 2);
       }
     }
 
+    /// <summary>
+    /// Returns the list of currently displayed ActaNova bread crumbs.
+    /// </summary>
     public IReadOnlyList<ActaNovaBreadCrumb> BreadCrumbs
     {
       get
@@ -31,7 +47,7 @@ namespace ActaNova.WebTesting.ControlObjects
         var breadCrumbsScope = Scope.FindId ("BreadCrumbsLabel");
         return new RetryUntilTimeout<IReadOnlyList<ActaNovaBreadCrumb>> (
             () => breadCrumbsScope.FindAllCss (".breadCrumbLink")
-                .Select (s => new ActaNovaBreadCrumb (s.Id, Context.CloneForScope (s)))
+                .Select (s => new ActaNovaBreadCrumb (ID, Context.CloneForScope (s)))
                 .ToList(),
             Context.Configuration.SearchTimeout,
             Context.Configuration.RetryInterval).Run();
