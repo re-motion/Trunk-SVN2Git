@@ -16,6 +16,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var smartLabel = home.GetLabel().ByID ("body_MySmartLabel");
       Assert.That (smartLabel.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
 
+      var formGridLabel = home.GetLabel().ByID ("body_MyFormGridLabel");
+      Assert.That (formGridLabel.Scope.Id, Is.EqualTo ("body_MyFormGridLabel"));
+
       var aspLabel = home.GetLabel().ByID ("body_MyAspLabel");
       Assert.That (aspLabel.Scope.Id, Is.EqualTo ("body_MyAspLabel"));
 
@@ -31,6 +34,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var smartLabel = home.GetLabel().ByLocalID ("MySmartLabel");
       Assert.That (smartLabel.Scope.Id, Is.EqualTo ("body_MySmartLabel"));
 
+      var formGridLabel = home.GetLabel().ByLocalID ("MyFormGridLabel");
+      Assert.That (formGridLabel.Scope.Id, Is.EqualTo ("body_MyFormGridLabel"));
+
       var aspLabel = home.GetLabel().ByLocalID ("MyAspLabel");
       Assert.That (aspLabel.Scope.Id, Is.EqualTo ("body_MyAspLabel"));
 
@@ -45,6 +51,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var smartLabel = home.GetLabel().ByLocalID ("MySmartLabel");
       Assert.That (smartLabel.GetText(), Is.EqualTo ("MySmartLabelContent"));
+
+      var formGridLabel = home.GetLabel().ByLocalID ("MyFormGridLabel");
+      Assert.That (formGridLabel.GetText(), Is.EqualTo ("MyFormGridLabelContent"));
 
       var aspLabel = home.GetLabel().ByLocalID ("MyAspLabel");
       Assert.That (aspLabel.GetText(), Is.EqualTo ("MyAspLabelContent"));
