@@ -312,8 +312,9 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (IsDiagnosticMetadataRenderingEnabled)
       {
         var htmlID = renderingContext.Control.ClientID + "_" + menuItemIndex;
+        // Note: the output of diagnosticMetadataText is enclosed by single quotes, as it may contain double quotes.
         diagnosticMetadataJson = string.Format (
-            "{{\"{0}\":\"{1}\", \"{2}\":\"{3}\", \"{4}\":\"{5}\", \"{6}\":\"{7}\", \"{8}\":\"{9}\"}}",
+            "{{\"{0}\":\"{1}\", \"{2}\":\"{3}\", \"{4}\":\"{5}\", \"{6}\":\"{7}\", \"{8}\":'{9}'}}",
             HtmlTextWriterAttribute.Id,
             htmlID,
             DiagnosticMetadataAttributes.TriggersNavigation,
