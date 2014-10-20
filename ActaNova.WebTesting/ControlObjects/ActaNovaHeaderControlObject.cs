@@ -10,9 +10,9 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the ActaNova header area.
   /// </summary>
-  public class ActaNovaHeader : ActaNovaMainFrameControlObject
+  public class ActaNovaHeaderControlObject : ActaNovaMainFrameControlObject
   {
-    public ActaNovaHeader ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ActaNovaHeaderControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }
@@ -40,14 +40,14 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Returns the list of currently displayed ActaNova bread crumbs.
     /// </summary>
-    public IReadOnlyList<ActaNovaBreadCrumb> BreadCrumbs
+    public IReadOnlyList<ActaNovaBreadCrumbControlObject> BreadCrumbs
     {
       get
       {
         var breadCrumbsScope = Scope.FindId ("BreadCrumbsLabel");
-        return new RetryUntilTimeout<IReadOnlyList<ActaNovaBreadCrumb>> (
+        return new RetryUntilTimeout<IReadOnlyList<ActaNovaBreadCrumbControlObject>> (
             () => breadCrumbsScope.FindAllCss (".breadCrumbLink")
-                .Select (s => new ActaNovaBreadCrumb (ID, Context.CloneForScope (s)))
+                .Select (s => new ActaNovaBreadCrumbControlObject (ID, Context.CloneForScope (s)))
                 .ToList(),
             Context.Configuration.SearchTimeout,
             Context.Configuration.RetryInterval).Run();

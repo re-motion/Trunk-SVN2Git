@@ -8,9 +8,9 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova bread crumb.
   /// </summary>
-  public class ActaNovaBreadCrumb : ActaNovaMainFrameControlObject, IClickableControlObject
+  public class ActaNovaBreadCrumbControlObject : ActaNovaMainFrameControlObject, IClickableControlObject
   {
-    public ActaNovaBreadCrumb ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ActaNovaBreadCrumbControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

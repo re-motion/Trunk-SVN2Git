@@ -8,9 +8,9 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaDetailsArea : ActaNovaControlObject, IControlHost
+  public class ActaNovaDetailsAreaControlObject : ActaNovaControlObject, IControlHost
   {
-    public ActaNovaDetailsArea ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ActaNovaDetailsAreaControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

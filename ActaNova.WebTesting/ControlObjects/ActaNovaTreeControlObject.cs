@@ -4,11 +4,11 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaTree : ActaNovaControlObject
+  public class ActaNovaTreeControlObject : ActaNovaControlObject
   {
     // TODO RM-6297: Implement using BocTreeView. Use a different waiting strategy - wait for second increase of main wxePostSequenceCounter!
 
-    public ActaNovaTree ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ActaNovaTreeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

@@ -4,9 +4,9 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.PageObjects
 {
-  public class ActaNovaPopupWindow : ActaNovaPageObject
+  public class ActaNovaPopupWindowPageObject : ActaNovaPageObject
   {
-    public ActaNovaPopupWindow ([NotNull] TestObjectContext context)
+    public ActaNovaPopupWindowPageObject ([NotNull] TestObjectContext context)
         : base (context)
     {
     }

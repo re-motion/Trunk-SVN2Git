@@ -9,9 +9,9 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova message box.
   /// </summary>
-  public class ActaNovaMessageBox : ActaNovaControlObject
+  public class ActaNovaMessageBoxControlObject : ActaNovaControlObject
   {
-    public ActaNovaMessageBox ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ActaNovaMessageBoxControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

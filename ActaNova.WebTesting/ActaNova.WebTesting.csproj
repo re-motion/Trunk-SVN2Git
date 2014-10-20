@@ -60,13 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
-    <Compile Include="ControlObjects\ActaNovaBreadCrumb.cs" />
-    <Compile Include="ControlObjects\ActaNovaDetailsArea.cs" />
-    <Compile Include="ControlObjects\ActaNovaHeader.cs" />
+    <Compile Include="ControlObjects\ActaNovaBreadCrumbControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaDetailsAreaControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaHeaderControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaMainFrameControlObject.cs" />
-    <Compile Include="ControlObjects\ActaNovaMainMenu.cs" />
-    <Compile Include="ControlObjects\ActaNovaMessageBox.cs" />
-    <Compile Include="ControlObjects\ActaNovaTree.cs" />
+    <Compile Include="ControlObjects\ActaNovaMainMenuControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaMessageBoxControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaTreeControlObject.cs" />
     <Compile Include="Infrastructure\WaitForActaNova.cs" />
     <Compile Include="PageObjects\ActaNovaMainPageObject.cs" />
     <Compile Include="PageObjects\ActaNovaMessageBoxPageObject.cs" />
@@ -97,8 +97,8 @@
     <Compile Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.25.23.0\ArgumentUtility.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="ControlObjects\ActaNovaControlObject.cs" />
-    <Compile Include="PageObjects\ActaNovaPopupWindow.cs" />
-    <Compile Include="PageObjects\ActaNovaWindow.cs" />
+    <Compile Include="PageObjects\ActaNovaPopupWindowPageObject.cs" />
+    <Compile Include="PageObjects\ActaNovaWindowPageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleTests\ActaNovaWebTestBase.cs" />
     <Compile Include="SampleTests\SampleTest.cs" />

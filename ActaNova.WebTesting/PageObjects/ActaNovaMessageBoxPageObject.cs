@@ -16,18 +16,18 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var context = DetailsArea.Context;
       var messageBoxScope = context.FrameRootElement.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      var actaNovaMessageBox = new ActaNovaMessageBox (messageBoxScope.Id, context.CloneForScope (messageBoxScope));
+      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (messageBoxScope.Id, context.CloneForScope (messageBoxScope));
       actaNovaMessageBox.Okay();
       return UnspecifiedPage();
     }
 
     // Todo RM-6297: Code duplication with ANMainPageObject.
-    private ActaNovaDetailsArea DetailsArea
+    private ActaNovaDetailsAreaControlObject DetailsArea
     {
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsArea (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
+        return new ActaNovaDetailsAreaControlObject (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

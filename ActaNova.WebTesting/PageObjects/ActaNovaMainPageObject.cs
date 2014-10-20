@@ -17,39 +17,39 @@ namespace ActaNova.WebTesting.PageObjects
       return DetailsArea.FormPageTitle;
     }
 
-    public ActaNovaHeader Header
+    public ActaNovaHeaderControlObject Header
     {
       get
       {
         var headerScope = Scope.FindId ("HeaderPanel");
-        return new ActaNovaHeader (headerScope.Id, Context.CloneForScope (headerScope));
+        return new ActaNovaHeaderControlObject (headerScope.Id, Context.CloneForScope (headerScope));
       }
     }
 
-    public ActaNovaMainMenu MainMenu
+    public ActaNovaMainMenuControlObject MainMenu
     {
       get
       {
         var mainMenuScope = Scope.FindId ("MainMenu");
-        return new ActaNovaMainMenu (mainMenuScope.Id, Context.CloneForScope (mainMenuScope));
+        return new ActaNovaMainMenuControlObject (mainMenuScope.Id, Context.CloneForScope (mainMenuScope));
       }
     }
 
-    public ActaNovaTree Tree
+    public ActaNovaTreeControlObject Tree
     {
       get
       {
         var treeScope = Scope.FindId ("MainTreeView");
-        return new ActaNovaTree (treeScope.Id, Context.CloneForScope (treeScope));
+        return new ActaNovaTreeControlObject (treeScope.Id, Context.CloneForScope (treeScope));
       }
     }
 
-    public ActaNovaDetailsArea DetailsArea
+    public ActaNovaDetailsAreaControlObject DetailsArea
     {
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsArea (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
+        return new ActaNovaDetailsAreaControlObject (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

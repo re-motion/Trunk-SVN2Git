@@ -12,9 +12,9 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Represents the ActaNova main menu.
   /// </summary>
-  public class ActaNovaMainMenu : ActaNovaMainFrameControlObject
+  public class ActaNovaMainMenuControlObject : ActaNovaMainFrameControlObject
   {
-    public ActaNovaMainMenu ([NotNull] string id, [NotNull] TestObjectContext context)
+    public ActaNovaMainMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

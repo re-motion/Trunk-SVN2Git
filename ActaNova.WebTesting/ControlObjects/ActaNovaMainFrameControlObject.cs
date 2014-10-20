@@ -5,9 +5,9 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaMainFrameControlObject : ActaNovaControlObject
+  public abstract class ActaNovaMainFrameControlObject : ActaNovaControlObject
   {
-    public ActaNovaMainFrameControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    protected ActaNovaMainFrameControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }
