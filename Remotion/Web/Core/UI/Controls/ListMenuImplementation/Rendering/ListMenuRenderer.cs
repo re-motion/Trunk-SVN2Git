@@ -179,6 +179,9 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     {
       if (!string.IsNullOrEmpty (menuItem.ItemID))
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, menuItem.ItemID);
+
+      if (!string.IsNullOrEmpty (menuItem.Text))
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, menuItem.Text);
     }
 
     private void RegisterMenuItems (ListMenuRenderingContext renderingContext)

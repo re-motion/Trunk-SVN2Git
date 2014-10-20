@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject ClickItemByText (string text, IActionBehavior actionBehavior = null)
     {
-      var item = Scope.FindXPath (string.Format ("tbody/tr/td/span[contains(a,'{0}')]", text));
+      var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
       return ClickItem (item, actionBehavior);
     }
 

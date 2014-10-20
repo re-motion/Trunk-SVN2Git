@@ -48,7 +48,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      var itemScope = Scope.FindXPath (string.Format ("div/ul/li/span/span[contains(a/span,'{0}')]", text));
+      var itemScope = Scope.FindDMA ("span.tabStripTab", DiagnosticMetadataAttributes.Text, text);
       return SwitchTo (itemScope);
     }
 

@@ -203,19 +203,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
 
     private void AssertIcon (int itemIndex, XmlNode parent, WebMenuItem item, int nodeIndex)
     {
-      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex, item.ItemID);
+      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex, item.ItemID, item.Text);
       AssertIcon (a);
     }
 
     private void AssertText (int itemIndex, XmlNode parent, WebMenuItem item, int nodeIndex)
     {
-      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex, item.ItemID);
+      XmlNode a = GetAssertedItemLink (parent, itemIndex, nodeIndex, item.ItemID, item.Text);
       a.AssertTextNode (item.Text, 0);
     }
 
     private void AssertIconAndText (int itemIndex, XmlNode td, WebMenuItem item, int nodeIndex)
     {
-      XmlNode a = GetAssertedItemLink (td, itemIndex, nodeIndex, item.ItemID);
+      XmlNode a = GetAssertedItemLink (td, itemIndex, nodeIndex, item.ItemID, item.Text);
       AssertIcon (a);
 
       a.AssertTextNode (HtmlHelper.WhiteSpace + item.Text, 1);
@@ -227,11 +227,12 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       img.AssertAttributeValueContains ("src", "/Images/ClassicBlue/NullIcon.gif");
     }
 
-    private XmlNode GetAssertedItemLink (XmlNode td, int itemIndex, int nodeIndex, string itemID)
+    private XmlNode GetAssertedItemLink (XmlNode td, int itemIndex, int nodeIndex, string itemID, string text)
     {
       var span = td.GetAssertedChildElement ("span", nodeIndex);
       span.AssertAttributeValueEquals ("id", _control.ClientID + "_" + itemIndex);
       span.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ItemID, itemID);
+      span.AssertAttributeValueEquals (DiagnosticMetadataAttributes.Text, text);
       span.AssertChildElementCount (1);
 
       return span.GetAssertedChildElement ("a", 0);
