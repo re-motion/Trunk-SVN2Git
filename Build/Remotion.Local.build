@@ -33,6 +33,7 @@
     <PropertyGroup>
       <Platforms>x86</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
+      <Browsers></Browsers>
     </PropertyGroup>
   </Target>
   
@@ -40,25 +41,19 @@
     <PropertyGroup>
       <Platforms>x86+x64</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
-    </PropertyGroup>
-  </Target>
-  
-  <Target Name="QuickBuild_Configuration">
-    <PropertyGroup>
-      <Platforms>x86</Platforms>
-      <DatabaseSystems>SqlServerDefault</DatabaseSystems>
+      <Browsers>Chrome+InternetExplorer</Browsers>
     </PropertyGroup>
   </Target>
  
   <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;TestBuildAllConfigurations" />
-  <Target Name="QuickBuild" DependsOnTargets="QuickBuild_Configuration;QuickBuildDebugOnly" />
+  <Target Name="QuickBuild" DependsOnTargets="QuickBuildDebugOnly" />
   
   <Target Name="DocumentationTestBuild">
     <MSBuild Projects="$(SolutionBuildFile)"
              BuildInParallel="false"
              Targets="DocumentationTestBuild"
-             Properties="Platforms=x86;DatabaseSystems=SqlServerDefault"/>
+             Properties="Platforms=x86;DatabaseSystems=SqlServerDefault;Browsers="/>
   </Target>
   
   <Target Name="ZipPackageAll">

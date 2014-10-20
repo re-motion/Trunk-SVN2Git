@@ -43,6 +43,10 @@
       <DatabaseSystemsList Include="$(DatabaseSystems.Split('+'))" />
     </ItemGroup>
 
+    <ItemGroup>
+      <BrowsersList Include="$(Browsers.Split('+'))" />
+    </ItemGroup>
+
     
     <ItemGroup>
       <AllPlatforms Include="x86" Condition="'%(PlatformsList.Identity)' == 'x86'">
@@ -84,6 +88,11 @@
         <DataSource>localhost\MSSQL2014</DataSource>
         <DatabaseDirectory>C:\Databases\MsSql2014</DatabaseDirectory>
       </AllDatabaseSystems>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AllBrowsers Include="Chrome" Condition="'%(BrowsersList.Identity)' == 'Chrome'" />
+      <AllBrowsers Include="InternetExplorer" Condition="'%(BrowsersList.Identity)' == 'InternetExplorer'" />
     </ItemGroup>
   
   </Target>

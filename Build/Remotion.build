@@ -193,7 +193,8 @@
                   ReleaseType=$(ReleaseType);
                   AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                   Platforms=$(Platforms);
-                  DatabaseSystems=$(DatabaseSystems)"/>
+                  DatabaseSystems=$(DatabaseSystems);
+                  Browsers=$(Browsers)"/>
   </Target>
   
   <Target Name="TestBuildAllConfigurations" DependsOnTargets="CleanFolders">
@@ -212,7 +213,8 @@
                   ReleaseType=$(ReleaseType);
                   AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                   Platforms=$(Platforms);
-                  DatabaseSystems=$(DatabaseSystems)"/>
+                  DatabaseSystems=$(DatabaseSystems);
+                  Browsers=$(Browsers)"/>
   </Target>
   
   <Target Name="QuickBuildDebugOnly" DependsOnTargets="CleanFolders">
@@ -231,7 +233,8 @@
                   ReleaseType=$(ReleaseType);
                   AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                   Platforms=$(Platforms);
-                  DatabaseSystems=$(DatabaseSystems)"/>
+                  DatabaseSystems=$(DatabaseSystems);
+                  Browsers=$(Browsers)"/>
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
