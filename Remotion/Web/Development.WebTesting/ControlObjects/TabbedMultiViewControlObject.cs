@@ -66,7 +66,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new TabStripControlObject (scope.Id, Context.CloneForScope (scope));
     }
 
-    // Todo RM-6297: ControlHostingRemotionControlObject to remove code duplication with other IControlHost implementations?
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {
