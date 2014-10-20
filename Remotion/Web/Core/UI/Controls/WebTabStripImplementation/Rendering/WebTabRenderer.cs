@@ -102,8 +102,14 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
         cssClass += " " + CssClassDisabled;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
-      if (RenderingFeatures.EnableDiagnosticMetadata && !string.IsNullOrEmpty (tab.ItemID))
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, tab.ItemID);
+      if (RenderingFeatures.EnableDiagnosticMetadata)
+      {
+        if (!string.IsNullOrEmpty (tab.ItemID))
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, tab.ItemID);
+
+        if (!string.IsNullOrEmpty (tab.Text))
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, tab.Text);
+      }
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
     }
