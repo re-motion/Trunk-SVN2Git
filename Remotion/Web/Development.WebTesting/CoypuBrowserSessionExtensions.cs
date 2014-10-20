@@ -64,16 +64,14 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      new RetryUntilTimeout<object> (
+      RetryUntilTimeout.Run (
           () =>
           {
             var webDriver = (IWebDriver) browser.Native;
             webDriver.SwitchTo().Alert().Accept();
-            return null;
           },
           context.Configuration.SearchTimeout,
-          context.Configuration.RetryInterval)
-          .Run();
+          context.Configuration.RetryInterval);
     }
 
     /// <summary>
@@ -85,16 +83,14 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      new RetryUntilTimeout<object> (
+      RetryUntilTimeout.Run (
           () =>
           {
             var webDriver = (IWebDriver) browser.Native;
             webDriver.SwitchTo().Alert().Dismiss();
-            return null;
           },
           context.Configuration.SearchTimeout,
-          context.Configuration.RetryInterval)
-          .Run();
+          context.Configuration.RetryInterval);
     }
   }
 }

@@ -45,12 +45,12 @@ namespace ActaNova.WebTesting.ControlObjects
       get
       {
         var breadCrumbsScope = Scope.FindId ("BreadCrumbsLabel");
-        return new RetryUntilTimeout<IReadOnlyList<ActaNovaBreadCrumbControlObject>> (
+        return RetryUntilTimeout.Run (
             () => breadCrumbsScope.FindAllCss (".breadCrumbLink")
                 .Select (s => new ActaNovaBreadCrumbControlObject (ID, Context.CloneForScope (s)))
                 .ToList(),
             Context.Configuration.SearchTimeout,
-            Context.Configuration.RetryInterval).Run();
+            Context.Configuration.RetryInterval);
       }
     }
   }

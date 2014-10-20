@@ -1,14 +1,68 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using JetBrains.Annotations;
 using log4net;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Utilities
 {
   /// <summary>
+  /// Executes a given <see cref="Action"/> repeatedly (using the given retry interval) until no exception is thrown during execution or until the
+  /// given timeout has been reached (in which case the final exception is rethrown).
+  /// </summary>
+  /// <remarks>
+  /// This utility shall be used whenever JavaScript scripts may alter the DOM during the <see cref="Action"/> is executed.
+  /// </remarks>
+  public class RetryUntilTimeout
+  {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (RetryUntilTimeout));
+
+    private readonly RetryUntilTimeout<object> _retryUntilTimeout;
+
+    public RetryUntilTimeout ([NotNull] Action action, TimeSpan timeout, TimeSpan retryInterval)
+    {
+      ArgumentUtility.CheckNotNull ("action", action);
+
+      _retryUntilTimeout = new RetryUntilTimeout<object> (
+          () =>
+          {
+            action();
+            return null;
+          },
+          timeout,
+          retryInterval);
+    }
+
+    public void Run ()
+    {
+      _retryUntilTimeout.Run();
+    }
+
+    public static void Run ([NotNull] Action action, TimeSpan timeout, TimeSpan retryInterval)
+    {
+      ArgumentUtility.CheckNotNull ("action", action);
+
+      var retryUntilTimeout = new RetryUntilTimeout (action, timeout, retryInterval);
+      retryUntilTimeout.Run();
+    }
+
+    public static TReturnType Run<TReturnType> ([NotNull] Func<TReturnType> func, TimeSpan timeout, TimeSpan retryInterval)
+    {
+      ArgumentUtility.CheckNotNull ("func", func);
+
+      var retryUntilTimeout = new RetryUntilTimeout<TReturnType> (func, timeout, retryInterval);
+      return retryUntilTimeout.Run();
+    }
+  }
+
+  /// <summary>
   /// Executes a given <see cref="Func{TReturnType}"/> repeatedly (using the given retry interval) until no exception is thrown during execution or
   /// until the given timeout has been reached (in which case the final exception is rethrown).
   /// </summary>
+  /// <remarks>
+  /// This utility shall be used whenever JavaScript scripts may alter the DOM during the <see cref="Func{TReturnType}"/> is executed.
+  /// </remarks>
   public class RetryUntilTimeout<TReturnType>
   {
     // Todo RM-6297: Find out why DriverScope.RetryUntilTimeout is so slow.
@@ -19,8 +73,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     private readonly TimeSpan _timeout;
     private readonly TimeSpan _retryInterval;
 
-    public RetryUntilTimeout (Func<TReturnType> func, TimeSpan timeout, TimeSpan retryInterval)
+    public RetryUntilTimeout ([NotNull] Func<TReturnType> func, TimeSpan timeout, TimeSpan retryInterval)
     {
+      ArgumentUtility.CheckNotNull ("func", func);
+
       _func = func;
       _timeout = timeout;
       _retryInterval = retryInterval;

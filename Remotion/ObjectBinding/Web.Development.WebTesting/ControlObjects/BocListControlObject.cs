@@ -28,16 +28,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public BocListControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _headerItemIDs =
-          new RetryUntilTimeout<List<string>> (
-              () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s[DiagnosticMetadataAttributes.ItemID]).ToList(),
-              Context.Configuration.SearchTimeout,
-              Context.Configuration.RetryInterval).Run();
-      _headerLabels =
-          new RetryUntilTimeout<List<string>> (
-              () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s.Text).ToList(),
-              Context.Configuration.SearchTimeout,
-              Context.Configuration.RetryInterval).Run();
+      _headerItemIDs = RetryUntilTimeout.Run (
+          () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s[DiagnosticMetadataAttributes.ItemID]).ToList(),
+          Context.Configuration.SearchTimeout,
+          Context.Configuration.RetryInterval);
+      _headerLabels = RetryUntilTimeout.Run (
+          () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s.Text).ToList(),
+          Context.Configuration.SearchTimeout,
+          Context.Configuration.RetryInterval);
     }
 
     public IReadOnlyCollection<string> GetHeaderLabels ()
@@ -47,10 +45,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public int GetRowCount ()
     {
-      return new RetryUntilTimeout<int> (
+      return RetryUntilTimeout.Run (
           () => Scope.FindAllCss (".bocListTable .bocListTableBody tr").Count(),
           Context.Configuration.SearchTimeout,
-          Context.Configuration.RetryInterval).Run();
+          Context.Configuration.RetryInterval);
     }
 
     public int GetCurrentPage ()
