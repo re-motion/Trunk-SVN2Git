@@ -17,7 +17,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public string GetText ()
     {
-      return Scope.Text;
+      return Scope.Text.Trim();
     }
   }
 }

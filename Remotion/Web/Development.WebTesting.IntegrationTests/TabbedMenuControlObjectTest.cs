@@ -69,6 +69,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestStatusText ()
+    {
+      var home = Start();
+
+      var tabbedMenu = home.GetTabbedMenu().Single();
+      Assert.That (tabbedMenu.StatusText, Is.EqualTo ("MyStatusText"));
+    }
+
+    [Test]
     public void TestSelectMenuItem ()
     {
       var home = Start();

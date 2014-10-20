@@ -28,9 +28,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var valueScope = FindChild ("Value");
 
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-        return valueScope.Text;
+        return valueScope.Text; // do not trim
 
-      return valueScope.Value;
+      return valueScope.Value; // do not trim
     }
 
     public UnspecifiedPageObject FillWith (string text, IActionBehavior actionBehavior = null)

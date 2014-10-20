@@ -19,7 +19,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public string GetText ()
     {
-      return Scope.Value;
+      return Scope.Value; // do not trim
     }
 
     public UnspecifiedPageObject FillWith (string text, IActionBehavior actionBehavior = null)
