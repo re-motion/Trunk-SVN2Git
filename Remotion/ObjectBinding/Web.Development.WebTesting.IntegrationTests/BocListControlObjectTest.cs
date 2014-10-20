@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       Assert.That (
-          bocList.GetHeaderLabels(),
+          bocList.GetColumnTitles(),
           Is.EquivalentTo (new[] { "I_ndex", "", " ", "Command", "Menu", "Title", "StartDate", "EndDate", "DisplayName", "TitleWithCmd" }));
     }
 
@@ -160,7 +160,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       row = bocList.GetRowWhere (6, "CEO");
       Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
 
-      row = bocList.GetRowWhereByText ("Title", "CEO");
+      row = bocList.GetRowWhereByColumnTitle ("Title", "CEO");
       Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       cell = bocList.GetCellWhere (6, "CEO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
 
-      cell = bocList.GetCellWhereByText ("Title", "CEO");
+      cell = bocList.GetCellWhereByColumnTitle ("Title", "CEO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -187,15 +187,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      
       bocList.ClickOnSortColumn ("StartDate");
       bocList.ClickOnSortColumn ("Title");
-
       Assert.That (bocList.GetRow (2).GetCell (6).GetText(), Is.EqualTo ("Programmer"));
+
+      bocList.ClickOnSortColumn (6);
+      Assert.That (bocList.GetRow (2).GetCell (6).GetText(), Is.EqualTo ("Clerk"));
+
+      bocList.ClickOnSortColumnByTitle ("Title");
+      bocList.ClickOnSortColumnByTitle ("StartDate");
+      Assert.That (bocList.GetRow (2).GetCell (6).GetText(), Is.EqualTo ("Developer"));
     }
 
     [Test]
-    [Ignore ("Ignored until BocListControlObject.ChangeViewTo(itemID) has been implemented.")]
-    // Todo RM-6297: enable test as soon as BocListControlObject.ChangeViewTo(itemID) has been implemented.
     public void TestChangeViewTo ()
     {
       var home = Start();
@@ -205,8 +210,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       bocList.ChangeViewToByLabel ("View 1");
       Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd1"));
 
-      bocList.ChangeViewTo ("ViewCmd2");
-      Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd2"));
+      // Todo RM-6297: enable test as soon as BocListControlObject.ChangeViewTo(itemID) has been implemented.
+      //bocList.ChangeViewTo ("ViewCmd2");
+      //Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd2"));
+
+      // Todo RM-6297: enable test as soon as BocListControlObject.ChangeViewTo(index) has been implemented.
+      //bocList.ChangeViewTo (1);
+      //Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd1"));
     }
 
     [Test]

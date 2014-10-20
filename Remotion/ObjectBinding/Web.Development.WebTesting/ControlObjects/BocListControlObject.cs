@@ -21,26 +21,44 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocListControlObject : BocControlObject
   {
-    // Todo RM-6297: Add Header helper class.
-    private readonly List<string> _headerItemIDs;
-    private readonly List<string> _headerLabels;
+    private class ColumnDefinition
+    {
+      private readonly string _itemID;
+      private readonly string _title;
+
+      public ColumnDefinition (string itemID, string title)
+      {
+        _itemID = itemID;
+        _title = title;
+      }
+
+      public string ItemID
+      {
+        get { return _itemID; }
+      }
+
+      public string Title
+      {
+        get { return _title; }
+      }
+    }
+
+    private readonly List<ColumnDefinition> _columns;
 
     public BocListControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _headerItemIDs = RetryUntilTimeout.Run (
-          () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s[DiagnosticMetadataAttributes.ItemID]).ToList(),
-          Context.Configuration.SearchTimeout,
-          Context.Configuration.RetryInterval);
-      _headerLabels = RetryUntilTimeout.Run (
-          () => Scope.FindAllCss (".bocListFakeTableHead th").Select (s => s.Text).ToList(),
+      _columns = RetryUntilTimeout.Run (
+          () => Scope.FindAllCss (".bocListFakeTableHead th")
+              .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s.Text))
+              .ToList(),
           Context.Configuration.SearchTimeout,
           Context.Configuration.RetryInterval);
     }
 
-    public IReadOnlyCollection<string> GetHeaderLabels ()
+    public IReadOnlyCollection<string> GetColumnTitles ()
     {
-      return _headerLabels;
+      return _columns.Select (cd => cd.Title).ToList();
     }
 
     public int GetRowCount ()
@@ -127,23 +145,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
-    // Todo RM-6297: In general: rename headerItemID to columnItemID?
-    public BocListRowControlObject GetRowWhere (string headerItemID, string containsCellText)
+    public BocListRowControlObject GetRowWhere (string columnItemID, string containsCellText)
     {
-      var cell = GetCellWhere (headerItemID, containsCellText);
+      var cell = GetCellWhere (columnItemID, containsCellText);
       return GetRowFromCell (cell);
     }
 
-    public BocListRowControlObject GetRowWhere (int headerIndex, string containsCellText)
+    public BocListRowControlObject GetRowWhere (int columnIndex, string containsCellText)
     {
-      var cell = GetCellWhere (headerIndex, containsCellText);
+      var cell = GetCellWhere (columnIndex, containsCellText);
       return GetRowFromCell (cell);
     }
 
-    // Todo RM-6297: In general: rename headerText to columnHeaderText?
-    public BocListRowControlObject GetRowWhereByText (string headerText, string containsCellText)
+    public BocListRowControlObject GetRowWhereByColumnTitle (string columnTitle, string containsCellText)
     {
-      var cell = GetCellWhereByText (headerText, containsCellText);
+      var cell = GetCellWhereByColumnTitle (columnTitle, containsCellText);
       return GetRowFromCell (cell);
     }
 
@@ -153,53 +169,74 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
-    public BocListCellControlObject GetCellWhere (string headerItemID, string containsCellText)
+    public BocListCellControlObject GetCellWhere (string columnItemID, string containsCellText)
     {
-      var index = GetHeaderLabelIndex (headerItemID);
+      var index = GetColumnIndex (columnItemID);
       return GetCellWhere (index, containsCellText);
     }
 
-    public BocListCellControlObject GetCellWhere (int index, string containsCellText)
+    public BocListCellControlObject GetCellWhere (int columnIndex, string containsCellText)
     {
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
-          index,
+          columnIndex,
           DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
           containsCellText);
       var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
-    public BocListCellControlObject GetCellWhereByText (string headerText, string containsCellText)
+    public BocListCellControlObject GetCellWhereByColumnTitle (string columnTitle, string containsCellText)
     {
-      var index = GetHeaderLabelIndexByText (headerText);
+      var index = GetColumnIndexByTitle (columnTitle);
       return GetCellWhere (index, containsCellText);
     }
 
-    public void ClickOnSortColumn (string headerLabel)
+    public void ClickOnSortColumn (string columnItemID)
     {
-      var index = GetHeaderLabelIndexByText (headerLabel);
+      var index = GetColumnIndex (columnItemID);
+      ClickOnSortColumn (index);
+    }
 
+    public void ClickOnSortColumn (int columnIndex)
+    {
       var sortColumnScope = Scope.FindDMA (
           ".bocListFakeTableHead th",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
-          index.ToString());
+          columnIndex.ToString());
 
       var sortColumnLinkScope = sortColumnScope.FindLink();
-
       sortColumnLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+    }
+
+    public void ClickOnSortColumnByTitle (string columnTitle)
+    {
+      var index = GetColumnIndexByTitle (columnTitle);
+      ClickOnSortColumn (index);
     }
 
     public void ChangeViewTo (string itemID)
     {
-      // Todo RM-6297: think about implementation...
+      // Todo RM-6297: think about implementation...extend Coypu? ItemID rendering?
+    }
+
+    public void ChangeViewTo (int index)
+    {
+      // Todo RM-6297: think about implementation...extend Coypu?
+      //var availableViewsScope = GetAvailableViewsScope();
+      //availableViewsScope.PerformAction (scope => scope.SelectOption (index), Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void ChangeViewToByLabel (string label)
     {
-      var availableViewsScope = FindChild ("Boc_AvailableViewsList");
+      var availableViewsScope = GetAvailableViewsScope();
       availableViewsScope.PerformAction (scope => scope.SelectOption (label), Context, Behavior.WaitFor (WaitFor.WxePostBack));
+    }
+
+    private ElementScope GetAvailableViewsScope ()
+    {
+      return FindChild ("Boc_AvailableViewsList");
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()
@@ -214,23 +251,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new ListMenuControlObject (listMenuScope.Id, Context.CloneForScope (listMenuScope));
     }
 
-    internal int GetHeaderLabelIndex (string headerItemID)
+    internal int GetColumnIndex (string columnItemID)
     {
-      var indexOf = _headerItemIDs.IndexOf (headerItemID);
+      var indexOf = _columns.IndexOf (cd => cd.ItemID == columnItemID);
       if (indexOf == -1)
-      {
-        throw new ArgumentOutOfRangeException ("headerItemID", headerItemID, "Header item ID does not exist.");
-        // Todo RM-6297: Better exception type.
-      }
+        throw new ArgumentOutOfRangeException ("columnItemID", columnItemID, "Column item ID does not exist."); // Todo RM-6297: Exception type.
 
       return indexOf + 1;
     }
 
-    private int GetHeaderLabelIndexByText (string headerText)
+    private int GetColumnIndexByTitle (string columnTitle)
     {
-      var indexOf = _headerLabels.IndexOf (headerText);
+      var indexOf = _columns.IndexOf (cd => cd.Title == columnTitle);
       if (indexOf == -1)
-        throw new ArgumentOutOfRangeException ("headerText", headerText, "Header text does not exist."); // Todo RM-6297: Better exception type.
+        throw new ArgumentOutOfRangeException ("columnTitle", columnTitle, "Colum title does not exist."); // Todo RM-6297: Better exception type.
 
       return indexOf + 1;
     }
@@ -273,9 +307,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListEditableRowControlObject (_bocList, ID, Context);
     }
 
-    public BocListCellControlObject GetCell (string headerItemID)
+    public BocListCellControlObject GetCell (string columnItemID)
     {
-      var index = _bocList.GetHeaderLabelIndex (headerItemID);
+      var index = _bocList.GetColumnIndex (columnItemID);
       return GetCell (index);
     }
 
@@ -331,9 +365,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListRowControlObject (_bocList, ID, Context);
     }
 
-    public BocListEditableCellControlObject GetCell (string headerItemID)
+    public BocListEditableCellControlObject GetCell (string columnItemID)
     {
-      var index = _bocList.GetHeaderLabelIndex (headerItemID);
+      var index = _bocList.GetColumnIndex (columnItemID);
       return GetCell (index);
     }
 
