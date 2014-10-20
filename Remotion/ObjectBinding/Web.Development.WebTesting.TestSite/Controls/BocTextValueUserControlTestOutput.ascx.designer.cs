@@ -10,7 +10,7 @@
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
     
     
-    public partial class BocTextUserControlTestOutput {
+    public partial class BocTextValueUserControlTestOutput {
         
         /// <summary>
         /// NormalCurrentValueLabel control.

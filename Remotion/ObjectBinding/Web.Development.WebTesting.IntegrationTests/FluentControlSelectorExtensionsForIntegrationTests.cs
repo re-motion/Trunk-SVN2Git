@@ -24,9 +24,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<BocListSelector, BocListControlObject> (host, new BocListSelector());
     }
 
-    public static FluentControlSelector<BocTextSelector, BocTextControlObject> GetText (this IControlHost host)
+    public static FluentControlSelector<BocTextValueSelector, BocTextValueControlObject> GetTextValue (this IControlHost host)
     {
-      return new FluentControlSelector<BocTextSelector, BocTextControlObject> (host, new BocTextSelector());
+      return new FluentControlSelector<BocTextValueSelector, BocTextValueControlObject> (host, new BocTextValueSelector());
     }
 
     public static FluentControlSelector<BocTreeViewSelector, BocTreeViewControlObject> GetTreeView (this IControlHost host)

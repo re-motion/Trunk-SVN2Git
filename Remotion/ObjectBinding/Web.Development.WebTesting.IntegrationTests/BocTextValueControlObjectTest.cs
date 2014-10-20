@@ -9,14 +9,14 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class BocTextControlObjectTest : IntegrationTest
+  public class BocTextValueControlObjectTest : IntegrationTest
   {
     [Test]
     public void TestSelection_ByHtmlID ()
     {
       var home = Start();
 
-      var bocText = home.GetText().ByID ("body_DataEditControl_LastNameField_Normal");
+      var bocText = home.GetTextValue().ByID ("body_DataEditControl_LastNameField_Normal");
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_Normal"));
     }
 
@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByIndex (2);
+      var bocText = home.GetTextValue().ByIndex (2);
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_ReadOnly"));
     }
 
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByLocalID ("LastNameField_Normal");
+      var bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_Normal"));
     }
 
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().First();
+      var bocText = home.GetTextValue().First();
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_Normal"));
     }
 
@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       try
       {
-        home.GetText().Single();
+        home.GetTextValue().Single();
         Assert.Fail ("Should not be able to unambigously find a BOC text.");
       }
       catch (AmbiguousException)
@@ -67,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByDisplayName ("LastName");
+      var bocText = home.GetTextValue().ByDisplayName ("LastName");
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_Normal"));
     }
 
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByDomainProperty ("LastName");
+      var bocText = home.GetTextValue().ByDomainProperty ("LastName");
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_Normal"));
     }
 
@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByDomainProperty ("LastName", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
+      var bocText = home.GetTextValue().ByDomainProperty ("LastName", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
       Assert.That (bocText.Scope.Id, Is.EqualTo ("body_DataEditControl_LastNameField_Normal"));
     }
 
@@ -94,16 +94,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByLocalID ("LastNameField_Normal");
+      var bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
       Assert.That (bocText.GetText(), Is.EqualTo ("Doe"));
 
-      bocText = home.GetText().ByLocalID ("LastNameField_ReadOnly");
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_ReadOnly");
       Assert.That (bocText.GetText(), Is.EqualTo ("Doe"));
 
-      bocText = home.GetText().ByLocalID ("LastNameField_Disabled");
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_Disabled");
       Assert.That (bocText.GetText(), Is.EqualTo ("Doe"));
 
-      bocText = home.GetText().ByLocalID ("LastNameField_NoAutoPostBack");
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_NoAutoPostBack");
       Assert.That (bocText.GetText(), Is.EqualTo ("Doe"));
     }
 
@@ -112,19 +112,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocText = home.GetText().ByLocalID ("LastNameField_Normal");
+      var bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
       bocText.FillWith ("Blubba");
       Assert.That (home.Scope.FindIdEndingWith ("NormalCurrentValueLabel").Text, Is.EqualTo ("Blubba"));
 
-      bocText = home.GetText().ByLocalID ("LastNameField_NoAutoPostBack");
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_NoAutoPostBack");
       bocText.FillWith ("Blubba"); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("Doe"));
 
-      bocText = home.GetText().ByLocalID ("LastNameField_Normal");
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
       bocText.FillWith ("Blubba", Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("Doe"));
 
-      bocText = home.GetText().ByLocalID ("LastNameField_Normal");
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
       bocText.FillWith ("Doe");
       Assert.That (home.Scope.FindIdEndingWith ("NormalCurrentValueLabel").Text, Is.EqualTo ("Doe"));
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("Blubba"));
@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
     private RemotionPageObject Start ()
     {
-      return Start ("BocText");
+      return Start ("BocTextValue");
     }
   }
 }

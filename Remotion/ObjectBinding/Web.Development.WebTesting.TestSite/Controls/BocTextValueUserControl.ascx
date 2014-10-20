@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="BocTextUserControl.ascx.cs" Inherits="Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.BocTextUserControl" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="BocTextValueUserControl.ascx.cs" Inherits="Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.BocTextValueUserControl" %>
 <remotion:FormGridManager ID="FormGridManager" runat="server" />
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
 <table id="FormGrid" runat="server">

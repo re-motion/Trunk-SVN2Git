@@ -10,7 +10,7 @@
         <table>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocAutoCompleteReferenceValueUserControl.ascx">BocAutoCompleteReferenceValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocListUserControl.ascx">BocList</a></td></tr>
-          <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocTextUserControl.ascx">BocTextValue</a></td></tr>
+          <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocTextValueUserControl.ascx">BocTextValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocTreeViewUserControl.ascx">BocTreeView</a></td></tr>
         </table>
       </div>

@@ -12,14 +12,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocTextControlObject : BocControlObject, IFillableControlObject
+  public class BocTextValueControlObject : BocControlObject, IFillableControlObject
   {
     /// <summary>
     /// Initializes the control object.
     /// </summary>
     /// <param name="id">The control object's ID.</param>
     /// <param name="context">The control object's context.</param>
-    public BocTextControlObject (string id, TestObjectContext context)
+    public BocTextValueControlObject (string id, TestObjectContext context)
         : base (id, context)
     {
     }

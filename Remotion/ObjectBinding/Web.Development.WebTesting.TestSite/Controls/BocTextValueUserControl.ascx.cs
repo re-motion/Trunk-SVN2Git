@@ -3,7 +3,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 {
-  public partial class BocTextUserControl : DataEditUserControl
+  public partial class BocTextValueUserControl : DataEditUserControl
   {
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -22,9 +22,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       TestOutput.SetCurrentValueNoAutoPostBack ((string) LastNameField_NoAutoPostBack.Value);
     }
 
-    private BocTextUserControlTestOutput TestOutput
+    private BocTextValueUserControlTestOutput TestOutput
     {
-      get { return ((Layout) Page.Master).GetTestOutputControl<BocTextUserControlTestOutput>(); }
+      get { return ((Layout) Page.Master).GetTestOutputControl<BocTextValueUserControlTestOutput>(); }
     }
   }
 }

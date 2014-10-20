@@ -10,7 +10,7 @@
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
     
     
-    public partial class BocTextUserControl {
+    public partial class BocTextValueUserControl {
         
         /// <summary>
         /// FormGridManager control.

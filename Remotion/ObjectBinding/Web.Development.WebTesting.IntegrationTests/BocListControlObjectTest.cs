@@ -347,10 +347,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var editableRow = bocList.GetRow (2).Edit();
 
       var cell = editableRow.GetCell ("Title");
-      Assert.That (cell.GetText().First().GetText(), Is.EqualTo ("CEO"));
+      Assert.That (cell.GetTextValue().First().GetText(), Is.EqualTo ("CEO"));
 
       cell = editableRow.GetCell (6);
-      Assert.That (cell.GetText().First().GetText(), Is.EqualTo ("CEO"));
+      Assert.That (cell.GetTextValue().First().GetText(), Is.EqualTo ("CEO"));
     }
 
     [Test]
@@ -389,7 +389,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var editableRow = bocList.GetRow (2).Edit();
       var editableCell = editableRow.GetCell (6);
 
-      var bocText = editableCell.GetText().First();
+      var bocText = editableCell.GetTextValue().First();
       bocText.FillWith ("NewTitle");
 
       editableRow.Save();

@@ -3,7 +3,7 @@ using System.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 {
-  public partial class BocTextUserControlTestOutput : UserControl
+  public partial class BocTextValueUserControlTestOutput : UserControl
   {
     public void SetCurrentValueNormal (string value)
     {
