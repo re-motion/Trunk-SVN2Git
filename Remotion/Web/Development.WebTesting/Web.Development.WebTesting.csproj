@@ -134,6 +134,7 @@
     <Compile Include="ControlObjects\Selectors\TabStripSelector.cs" />
     <Compile Include="ControlObjects\WebButtonControlObject.cs" />
     <Compile Include="ControlSelection\IControlSelector.cs" />
+    <Compile Include="ControlSelection\IPerItemIDControlSelector.cs" />
     <Compile Include="ControlSelection\IPerCommandNameControlSelector.cs" />
     <Compile Include="ControlSelection\IPerTextControlSelector.cs" />
     <Compile Include="ControlSelection\IPerHtmlIDControlSelector.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="ControlSelection\IPerLocalIDControlSelector.cs" />
     <Compile Include="ControlSelection\IPerTitleControlSelector.cs" />
     <Compile Include="ControlSelection\ISingleControlSelector.cs" />
+    <Compile Include="ControlSelection\PerItemIDControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\PerCommandNameControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\PerTextControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\PerLocalIDControlSelectionCommand.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="FluentControlSelection\FirstControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelector.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelectorExtensions.cs" />
+    <Compile Include="FluentControlSelection\PerItemIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerCommandNameControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerTextControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerLocalIDControlSelectionCommandBuilder.cs" />

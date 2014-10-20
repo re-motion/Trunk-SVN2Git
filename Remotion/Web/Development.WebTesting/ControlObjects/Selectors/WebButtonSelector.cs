@@ -10,7 +10,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public class WebButtonSelector
       : RemotionControlSelectorBase<WebButtonControlObject>,
           IPerTextControlSelector<WebButtonControlObject>,
-          IPerCommandNameControlSelector<WebButtonControlObject>
+          IPerCommandNameControlSelector<WebButtonControlObject>,
+          IPerItemIDControlSelector<WebButtonControlObject>
   {
     public WebButtonSelector ()
         : base ("button", "webButton")
@@ -26,6 +27,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public WebButtonControlObject SelectPerCommandName (TestObjectContext context, string commandName)
     {
       var scope = context.Scope.FindDMA ("button", DiagnosticMetadataAttributes.CommandName, commandName);
+      return CreateControlObject (context, scope);
+    }
+
+    public WebButtonControlObject SelectPerItemID (TestObjectContext context, string itemID)
+    {
+      var scope = context.Scope.FindDMA ("button", DiagnosticMetadataAttributes.ItemID, itemID);
       return CreateControlObject (context, scope);
     }
   }

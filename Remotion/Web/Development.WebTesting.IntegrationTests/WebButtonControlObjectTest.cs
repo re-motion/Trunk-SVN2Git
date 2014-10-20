@@ -84,6 +84,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestSelection_ItemID ()
+    {
+      var home = Start();
+
+      var webButton = home.GetWebButton().ByItemID ("MyWebButton2Async");
+      Assert.That(webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
+    }
+
+    [Test]
     public void TestClick ()
     {
       var home = Start();

@@ -112,6 +112,21 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     }
 
     /// <summary>
+    /// Extension method for selecting a control by item ID (using the
+    /// <see cref="PerItemIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// </summary>
+    public static TControlObject ByItemID<TControlSelector, TControlObject> (
+        [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
+        [NotNull] string itemID)
+        where TControlSelector : IPerItemIDControlSelector<TControlObject> where TControlObject : ControlObject
+    {
+      ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return fluentControlSelector.GetControl (new PerItemIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (itemID));
+    }
+
+    /// <summary>
     /// Extension method for selecting a control by text (using the
     /// <see cref="PerTextControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
