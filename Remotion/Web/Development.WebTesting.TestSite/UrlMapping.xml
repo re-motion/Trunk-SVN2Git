@@ -26,6 +26,7 @@
   <add id="DropDownMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::DropDownMenuTestFunction" resource="~/DropDownMenuTest.wxe"/>
   <add id="InfrastructureTests" type="Remotion.Web.Development.WebTesting.TestSite::InfrastructureTestsFunction" resource="~/InfrastructureTests.wxe"/>
   <add id="ListMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::ListMenuTestFunction" resource="~/ListMenuTest.wxe"/>
+  <add id="TabbedMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMenuTestFunction" resource="~/TabbedMenuTest.wxe"/>
   <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe"/>
   <add id="TabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::TabStripTestFunction" resource="~/TabStripTest.wxe"/>
   <add id="TextBoxTest" type="Remotion.Web.Development.WebTesting.TestSite::TextBoxTestFunction" resource="~/TextBoxTest.wxe"/>

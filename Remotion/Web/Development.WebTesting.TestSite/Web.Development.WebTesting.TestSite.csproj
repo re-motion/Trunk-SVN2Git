@@ -69,6 +69,7 @@
     <Content Include="InfrastructureTests.aspx" />
     <Content Include="Images\SampleIcon.gif" />
     <Content Include="DropDownMenuTest.aspx" />
+    <Content Include="TabbedMenuTest.aspx" />
     <Content Include="TextBoxTest.aspx" />
     <Content Include="ListMenuTest.aspx" />
     <Content Include="Layout.Master" />
@@ -98,6 +99,14 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="TabbedMenuTest.aspx.cs">
+      <DependentUpon>TabbedMenuTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="TabbedMenuTest.aspx.designer.cs">
+      <DependentUpon>TabbedMenuTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="TabbedMenuTestFunction.cs" />
     <Compile Include="TextBoxTestFunction.cs" />
     <Compile Include="CommandTest.aspx.cs">
       <DependentUpon>CommandTest.aspx</DependentUpon>

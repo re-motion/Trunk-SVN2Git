@@ -45,6 +45,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<SingleViewSelector, SingleViewControlObject> (host, new SingleViewSelector());
     }
 
+    public static FluentControlSelector<TabbedMenuSelector, TabbedMenuControlObject> GetTabbedMenu (this IControlHost host)
+    {
+      return new FluentControlSelector<TabbedMenuSelector, TabbedMenuControlObject> (host, new TabbedMenuSelector());
+    }
+
     public static FluentControlSelector<TabbedMultiViewSelector, TabbedMultiViewControlObject> GetTabbedMultiView (this IControlHost host)
     {
       return new FluentControlSelector<TabbedMultiViewSelector, TabbedMultiViewControlObject> (host, new TabbedMultiViewSelector());

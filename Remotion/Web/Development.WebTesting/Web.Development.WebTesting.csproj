@@ -109,12 +109,14 @@
     <Compile Include="ControlObjects\Selectors\ControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\DropDownMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\AnchorSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\TabbedMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TextBoxSelector.cs" />
     <Compile Include="ControlObjects\Selectors\LabelSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\WebButtonSelector.cs" />
     <Compile Include="ControlObjects\Selectors\WebTreeViewSelector.cs" />
+    <Compile Include="ControlObjects\TabbedMenuControlObject.cs" />
     <Compile Include="ControlObjects\TextBoxControlObject.cs" />
     <Compile Include="ControlObjects\WebTreeViewControlObject.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
