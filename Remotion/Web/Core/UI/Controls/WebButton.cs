@@ -226,6 +226,10 @@ namespace Remotion.Web.UI.Controls
       if(!string.IsNullOrEmpty(CommandName))
         writer.AddAttribute (DiagnosticMetadataAttributes.CommandName, CommandName);
 
+      if (!string.IsNullOrEmpty (ID))
+        writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, ID);
+      
+
       writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, true.ToString().ToLower());
     }
 
