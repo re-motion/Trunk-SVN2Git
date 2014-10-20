@@ -48,6 +48,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject SwitchToByHtmlID (string htmlID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       return GetTabStrip().SwitchToByHtmlID (htmlID);
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
@@ -19,6 +20,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject SwitchTo (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       var itemScope = Scope.FindDMA ("span.tabStripTab", DiagnosticMetadataAttributes.ItemID, itemID);
       return SwitchTo (itemScope);
     }
@@ -35,12 +38,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject SwitchToByHtmlID (string htmlID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       var itemScope = Scope.FindId (htmlID);
       return SwitchTo (itemScope);
     }
 
     public UnspecifiedPageObject SwitchToByText (string text)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
       var itemScope = Scope.FindXPath (string.Format ("div/ul/li/span/span[contains(a/span,'{0}')]", text));
       return SwitchTo (itemScope);
     }

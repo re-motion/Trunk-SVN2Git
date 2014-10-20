@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -10,7 +11,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IClickableItemsControlObject
   {
-    protected DropDownMenuControlObjectBase (string id, TestObjectContext context)
+    protected DropDownMenuControlObjectBase ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }
@@ -19,6 +20,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject ClickItem (string itemID, IActionBehavior actionBehavior = null)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (scope, actionBehavior);
@@ -33,6 +36,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IActionBehavior actionBehavior = null)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindId (htmlID);
       return ClickItem (scope, actionBehavior);
@@ -40,6 +45,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject ClickItemByText (string text, IActionBehavior actionBehavior = null)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Text, text);
       return ClickItem (scope, actionBehavior);

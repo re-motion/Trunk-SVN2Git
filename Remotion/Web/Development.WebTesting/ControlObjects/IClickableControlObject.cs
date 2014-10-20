@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -12,6 +13,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     /// <param name="actionBehavior">Required <see cref="IActionBehavior"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
     /// <returns>An unspecified page object, may be used in case a new page is expected after clicking the control object.</returns>
-    UnspecifiedPageObject Click (IActionBehavior actionBehavior = null);
+    UnspecifiedPageObject Click ([CanBeNull] IActionBehavior actionBehavior = null);
   }
 }

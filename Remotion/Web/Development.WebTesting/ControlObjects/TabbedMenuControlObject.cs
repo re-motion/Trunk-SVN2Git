@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       get { return Scope.FindCss ("td.tabbedMenuStatusCell").Text.Trim(); }
     }
 
-    public UnspecifiedPageObject SelectMenuItem ([NotNull] string itemID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectMenuItem ([NotNull] string itemID, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -30,13 +30,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectMenuItem (int index, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectMenuItem (int index, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       var menuItemScope = GetMainMenuScope().FindXPath (string.Format ("(.//li/span/span[2])[{0}]", index));
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectMenuItemByHtmlID ([NotNull] string htmlID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectMenuItemByHtmlID ([NotNull] string htmlID, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -44,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectMenuItemByText ([NotNull] string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectMenuItemByText ([NotNull] string text, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
@@ -52,7 +52,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItem ([NotNull] string itemID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectSubMenuItem ([NotNull] string itemID, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -60,13 +60,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItem (int index, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectSubMenuItem (int index, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       var menuItemScope = GetSubMenuScope().FindXPath (string.Format ("(.//li/span/span[2])[{0}]", index));
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItemByHtmlID ([NotNull] string htmlID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectSubMenuItemByHtmlID ([NotNull] string htmlID, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -74,7 +74,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, actionBehavior);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItemByText ([NotNull] string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectSubMenuItemByText ([NotNull] string text, [CanBeNull] IActionBehavior actionBehavior = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 

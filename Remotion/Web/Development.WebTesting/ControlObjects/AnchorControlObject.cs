@@ -30,7 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
     /// <returns><see cref="IActionBehavior"/> to be used.</returns>
-    private IActionBehavior GetActualActionBehavior ([CanBeNull] IActionBehavior userDefinedActionBehavior)
+    private IActionBehavior GetActualActionBehavior (IActionBehavior userDefinedActionBehavior)
     {
       if (userDefinedActionBehavior != null)
         return userDefinedActionBehavior;

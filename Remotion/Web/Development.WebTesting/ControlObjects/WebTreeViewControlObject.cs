@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
@@ -59,6 +60,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
@@ -71,11 +74,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNodeByHtmlID (string htmlID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       throw new NotSupportedException ("BocTreeView nodes cannot be selected using the full HTML ID.");
     }
 
     public WebTreeViewNodeControlObject GetNodeByText (string text)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.Text, text);
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
@@ -127,9 +134,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public interface IWebTreeViewNodeNavigator
   {
-    WebTreeViewNodeControlObject GetNode (string itemID);
+    WebTreeViewNodeControlObject GetNode ([NotNull] string itemID);
     WebTreeViewNodeControlObject GetNode (int index);
-    WebTreeViewNodeControlObject GetNodeByHtmlID (string htmlID);
-    WebTreeViewNodeControlObject GetNodeByText (string text);
+    WebTreeViewNodeControlObject GetNodeByHtmlID ([NotNull] string htmlID);
+    WebTreeViewNodeControlObject GetNodeByText ([NotNull] string text);
   }
 }

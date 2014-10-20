@@ -1,6 +1,7 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
@@ -22,8 +23,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns a child element of the control, specified by an <paramref name="idSuffix"/> parameter.
     /// </summary>
-    protected ElementScope FindChild (string idSuffix)
+    protected ElementScope FindChild ([NotNull] string idSuffix)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("idSuffix", idSuffix);
+
       var fullId = string.Format ("{0}_{1}", ID, idSuffix);
       return Scope.FindId (fullId);
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Coypu;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -14,7 +15,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <returns>An unspecified page object, it may be used in case a new page is expected after switching the tab.</returns>
     /// <exception cref="AmbiguousException">If multiple tabs with the given <paramref name="itemID"/> are found.</exception>
     /// <exception cref="MissingHtmlException">If the tab cannot be found.</exception>
-    UnspecifiedPageObject SwitchTo (string itemID);
+    UnspecifiedPageObject SwitchTo ([NotNull] string itemID);
 
     /// <summary>
     /// Switch to the nth tab, specified by the <paramref name="index"/> parameter.
@@ -29,7 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     /// <returns>An unspecified page object, it may be used in case a new page is expected after switching the tab.</returns>
     /// <exception cref="MissingHtmlException">If the tab cannot be found.</exception>
-    UnspecifiedPageObject SwitchToByHtmlID (string htmlID);
+    UnspecifiedPageObject SwitchToByHtmlID ([NotNull] string htmlID);
 
     /// <summary>
     /// Switch to another tab using the tab's <paramref name="text"/>.
@@ -37,6 +38,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <returns>An unspecified page object, it may be used in case a new page is expected after switching the tab.</returns>
     /// <exception cref="AmbiguousException">If multiple tabs with the given <paramref name="text"/> are found.</exception>
     /// <exception cref="MissingHtmlException">If the tab cannot be found.</exception>
-    UnspecifiedPageObject SwitchToByText (string text);
+    UnspecifiedPageObject SwitchToByText ([NotNull] string text);
   }
 }
