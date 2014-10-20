@@ -5,7 +5,7 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 {
   /// <summary>
-  /// Default implementation for <see cref="ControlObject"/> selector implementations.
+  /// Base implementation for <see cref="ControlObject"/> selector implementations.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
   public abstract class ControlSelectorBase<TControlObject> : IPerHtmlIDControlSelector<TControlObject>, IPerLocalIDControlSelector<TControlObject>
@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
-    protected TControlObject CreateControlObject (TestObjectContext context, ElementScope scope)
+    private TControlObject CreateControlObject (TestObjectContext context, ElementScope scope)
     {
       var id = scope.Id;
       var newContext = context.CloneForScope (scope);
