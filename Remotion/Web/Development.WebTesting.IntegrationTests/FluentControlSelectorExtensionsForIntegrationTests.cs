@@ -10,6 +10,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   /// </summary>
   public static class FluentControlSelectorExtensionsForIntegrationTests
   {
+    public static FluentControlSelector<AnchorSelector, AnchorControlObject> GetAnchor (this IControlHost host)
+    {
+      return new FluentControlSelector<AnchorSelector, AnchorControlObject> (host, new AnchorSelector());
+    }
+
     public static FluentControlSelector<CommandSelector, CommandControlObject> GetCommand (this IControlHost host)
     {
       return new FluentControlSelector<CommandSelector, CommandControlObject> (host, new CommandSelector());
@@ -24,12 +29,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       return new FluentControlSelector<FormGridSelector, FormGridControlObject> (host, new FormGridSelector());
     }
-
-    public static FluentControlSelector<AnchorSelector, AnchorControlObject> GetAnchor (this IControlHost host)
-    {
-      return new FluentControlSelector<AnchorSelector, AnchorControlObject> (host, new AnchorSelector());
-    }
-
+    
     public static FluentControlSelector<LabelSelector, LabelControlObject> GetLabel (this IControlHost host)
     {
       return new FluentControlSelector<LabelSelector, LabelControlObject> (host, new LabelSelector());
@@ -55,7 +55,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<TabbedMultiViewSelector, TabbedMultiViewControlObject> (host, new TabbedMultiViewSelector());
     }
 
-    public static FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> GetTabStrip (this IControlHost host)
+    public static FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> GetWebTabStrip (this IControlHost host)
     {
       return new FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> (host, new WebTabStripSelector());
     }

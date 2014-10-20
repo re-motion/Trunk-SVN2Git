@@ -15,7 +15,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var tabStrip = home.GetTabStrip().ByID ("body_MyTabStrip1");
+      var tabStrip = home.GetWebTabStrip().ByID ("body_MyTabStrip1");
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip1"));
     }
 
@@ -24,7 +24,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var tabStrip = home.GetTabStrip().ByIndex (2);
+      var tabStrip = home.GetWebTabStrip().ByIndex (2);
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip2"));
     }
 
@@ -33,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var tabStrip = home.GetTabStrip().ByLocalID ("MyTabStrip1");
+      var tabStrip = home.GetWebTabStrip().ByLocalID ("MyTabStrip1");
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip1"));
     }
 
@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var tabStrip = home.GetTabStrip().First();
+      var tabStrip = home.GetWebTabStrip().First();
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip1"));
     }
 
@@ -52,12 +52,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
       var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
 
-      var tabStrip = scope.GetTabStrip().Single();
+      var tabStrip = scope.GetWebTabStrip().Single();
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip2"));
 
       try
       {
-        home.GetTabStrip().Single();
+        home.GetWebTabStrip().Single();
         Assert.Fail ("Should not be able to unambigously find a tab strip.");
       }
       catch (AmbiguousException)
@@ -70,8 +70,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var tabStrip1 = home.GetTabStrip().First();
-      var tabStrip2 = home.GetTabStrip().ByIndex (2);
+      var tabStrip1 = home.GetWebTabStrip().First();
+      var tabStrip2 = home.GetWebTabStrip().ByIndex (2);
 
       home = tabStrip1.SwitchTo ("Tab2").Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip1/Tab2"));
