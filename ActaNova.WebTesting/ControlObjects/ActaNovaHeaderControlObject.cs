@@ -38,6 +38,34 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <summary>
+    /// Returns the current ActaNova user name.
+    /// </summary>
+    public string CurrentUser
+    {
+      get
+      {
+        // Todo RM-6297: Implement as soon as BocReferenceValueControlObject is implemented.
+        throw new NotImplementedException ("Not implemented yet.");
+      }
+    }
+
+    /// <summary>
+    /// Returns the current ActaNova group name.
+    /// </summary>
+    public string CurrentGroup
+    {
+      get
+      {
+        // Todo RM-6297: Implement as soon as BocReferenceValueControlObject is implemented.
+        throw new NotImplementedException ("Not implemented yet.");
+      }
+    }
+
+    // Todo RM-6297: Implement "BocReferenceValue GetDefaultGroupControl()" as soon as BocReferenceValueControlObject is implemented.
+    // Todo RM-6297: Implement "BocReferenceValue GetCurrentTenantControl()" as soon as BocReferenceValueControlObject is implemented.
+    // Todo RM-6297: Probably make ActaNovaHeaderControlObject an IControlHost? Or use ActaNovaMainPage as entry point?
+
+    /// <summary>
     /// Returns the list of currently displayed ActaNova bread crumbs.
     /// </summary>
     public IReadOnlyList<ActaNovaBreadCrumbControlObject> BreadCrumbs
