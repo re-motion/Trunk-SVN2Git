@@ -20,7 +20,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public UnspecifiedPageObject SwitchTo (string itemID)
     {
       var itemScope = Scope.FindDMA ("span.tabStripTab", DiagnosticMetadataAttributes.ItemID, itemID);
-      return SwitchToUsingCommandScope (itemScope);
+      return SwitchTo (itemScope);
     }
 
     public UnspecifiedPageObject SwitchTo (int index)
@@ -30,22 +30,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           XPathUtils.CreateContainsOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"),
           index);
       var itemScope = Scope.FindXPath (xPathSelector);
-      return SwitchToUsingCommandScope (itemScope);
+      return SwitchTo (itemScope);
     }
 
     public UnspecifiedPageObject SwitchToByHtmlID (string htmlID)
     {
       var itemScope = Scope.FindId (htmlID);
-      return SwitchToUsingCommandScope (itemScope);
+      return SwitchTo (itemScope);
     }
 
     public UnspecifiedPageObject SwitchToByText (string text)
     {
       var itemScope = Scope.FindXPath (string.Format ("div/ul/li/span/span[contains(a/span,'{0}')]", text));
-      return SwitchToUsingCommandScope (itemScope);
+      return SwitchTo (itemScope);
     }
 
-    private UnspecifiedPageObject SwitchToUsingCommandScope (ElementScope tabScope)
+    private UnspecifiedPageObject SwitchTo (ElementScope tabScope)
     {
       var commandScope = tabScope.FindLink();
 
