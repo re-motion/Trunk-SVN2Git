@@ -12,11 +12,6 @@ namespace Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest
     }
 
     // Steps
-    private void Step1 ()
-    {
-      ExceptionHandler.AppendCatchExceptionTypes (typeof (WxeUserCancelException));
-    }
-
-    private WxeStep Step2 = new WxePageStep ("MultiWindowTest/Window.aspx");
+    private WxeStep Step1 = new WxePageStep ("MultiWindowTest/Window.aspx");
   }
 }
