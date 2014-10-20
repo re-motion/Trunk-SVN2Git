@@ -4,6 +4,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -45,9 +46,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);
 
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      var actualActionBehavior = GetActualActionBehavior (then, actionBehavior);
       FindChild ("Value").FillWithAndWait (text, then, Context, actualActionBehavior);
       return UnspecifiedPage();
+    }
+
+    private IActionBehavior GetActualActionBehavior (ThenAction then, IActionBehavior userDefinedActionBehavior)
+    {
+      return then == Then.DoNothing && userDefinedActionBehavior == null
+          ? Behavior.WaitFor (WaitFor.Nothing)
+          : GetActualActionBehavior (userDefinedActionBehavior);
     }
   }
 }

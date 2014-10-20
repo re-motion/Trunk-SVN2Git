@@ -37,11 +37,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);
 
-      if (actionBehavior == null)
-        actionBehavior = Behavior.WaitFor (WaitFor.WxePostBack);
-
-      Scope.FillWithAndWait (text, then, Context, actionBehavior);
+      var actualActionBehavior = GetActualActionBehavior (then, actionBehavior);
+      Scope.FillWithAndWait (text, then, Context, actualActionBehavior);
       return UnspecifiedPage();
+    }
+
+    private IActionBehavior GetActualActionBehavior (ThenAction then, IActionBehavior userDefinedActionBehavior)
+    {
+      if (userDefinedActionBehavior != null)
+        return userDefinedActionBehavior;
+
+      return Behavior.WaitFor (then != Then.DoNothing ? WaitFor.WxePostBack : WaitFor.Nothing);
     }
   }
 }
