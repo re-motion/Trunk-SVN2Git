@@ -136,8 +136,8 @@
     <Compile Include="ControlObjects\SingleViewControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\SingleViewSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TabbedMultiViewSelector.cs" />
-    <Compile Include="ControlObjects\TabStripControlObject.cs" />
-    <Compile Include="ControlObjects\Selectors\TabStripSelector.cs" />
+    <Compile Include="ControlObjects\WebTabStripControlObject.cs" />
+    <Compile Include="ControlObjects\Selectors\WebTabStripSelector.cs" />
     <Compile Include="ControlObjects\WebButtonControlObject.cs" />
     <Compile Include="ControlSelection\IControlSelector.cs" />
     <Compile Include="ControlSelection\IPerItemIDControlSelector.cs" />

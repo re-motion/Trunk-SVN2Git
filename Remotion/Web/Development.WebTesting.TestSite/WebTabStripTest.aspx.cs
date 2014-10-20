@@ -4,7 +4,7 @@ using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  public partial class TabStripTest : WxePage
+  public partial class WebTabStripTest : WxePage
   {
     protected override void OnInit (EventArgs e)
     {

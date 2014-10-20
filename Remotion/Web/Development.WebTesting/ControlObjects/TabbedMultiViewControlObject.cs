@@ -60,10 +60,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetTabStrip().SwitchToByText (text);
     }
 
-    private TabStripControlObject GetTabStrip ()
+    private WebTabStripControlObject GetTabStrip ()
     {
       var scope = FindChild ("TabStrip");
-      return new TabStripControlObject (scope.Id, Context.CloneForScope (scope));
+      return new WebTabStripControlObject (scope.Id, Context.CloneForScope (scope));
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

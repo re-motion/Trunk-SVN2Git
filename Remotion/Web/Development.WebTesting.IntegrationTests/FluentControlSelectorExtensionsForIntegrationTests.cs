@@ -55,9 +55,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<TabbedMultiViewSelector, TabbedMultiViewControlObject> (host, new TabbedMultiViewSelector());
     }
 
-    public static FluentControlSelector<TabStripSelector, TabStripControlObject> GetTabStrip (this IControlHost host)
+    public static FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> GetTabStrip (this IControlHost host)
     {
-      return new FluentControlSelector<TabStripSelector, TabStripControlObject> (host, new TabStripSelector());
+      return new FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> (host, new WebTabStripSelector());
     }
 
     public static FluentControlSelector<TextBoxSelector, TextBoxControlObject> GetTextBox (this IControlHost host)

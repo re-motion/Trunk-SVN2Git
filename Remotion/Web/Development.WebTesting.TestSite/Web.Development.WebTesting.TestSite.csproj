@@ -87,7 +87,7 @@
     <Content Include="MultiWindowTest\Frame.aspx" />
     <Content Include="LabelTest.aspx" />
     <Content Include="WebButtonTest.aspx" />
-    <Content Include="TabStripTest.aspx" />
+    <Content Include="WebTabStripTest.aspx" />
     <Content Include="TabbedMultiViewTest.aspx" />
     <Content Include="SingleViewTest.aspx" />
     <Content Include="FormGridTest.aspx" />
@@ -206,13 +206,13 @@
     <Compile Include="WebButtonTest.aspx.designer.cs">
       <DependentUpon>WebButtonTest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="TabStripTestFunction.cs" />
-    <Compile Include="TabStripTest.aspx.cs">
-      <DependentUpon>TabStripTest.aspx</DependentUpon>
+    <Compile Include="WebTabStripTestFunction.cs" />
+    <Compile Include="WebTabStripTest.aspx.cs">
+      <DependentUpon>WebTabStripTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="TabStripTest.aspx.designer.cs">
-      <DependentUpon>TabStripTest.aspx</DependentUpon>
+    <Compile Include="WebTabStripTest.aspx.designer.cs">
+      <DependentUpon>WebTabStripTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="TabbedMultiViewTestFunction.cs" />
     <Compile Include="TabbedMultiViewTest.aspx.cs">

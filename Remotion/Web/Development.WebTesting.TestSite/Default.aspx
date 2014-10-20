@@ -18,9 +18,9 @@
           <tr><td><a href="SingleViewTest.aspx">SingleViewTest</a></td></tr>
           <tr><td><a href="TabbedMenuTest.wxe">TabbedMenuTest</a></td></tr>
           <tr><td><a href="TabbedMultiViewTest.wxe">TabbedMultiViewTest</a></td></tr>
-          <tr><td><a href="TabStripTest.wxe">TabStripTest</a></td></tr>
           <tr><td><a href="TextBoxTest.wxe">TextBoxTest</a></td></tr>
           <tr><td><a href="WebButtonTest.wxe">WebButtonTest</a></td></tr>
+          <tr><td><a href="WebTabStripTest.wxe">WebTabStripTest</a></td></tr>
           <tr><td><a href="MultiWindowTest/Main.wxe">MultiWindowTest</a></td></tr>
         </table>
       </div>

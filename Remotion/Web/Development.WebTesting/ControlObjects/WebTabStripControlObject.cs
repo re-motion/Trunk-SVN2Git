@@ -11,9 +11,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.WebTabStrip"/>.
   /// </summary>
-  public class TabStripControlObject : RemotionControlObject, ITabStripControlObject
+  public class WebTabStripControlObject : RemotionControlObject, ITabStripControlObject
   {
-    public TabStripControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    public WebTabStripControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
     }

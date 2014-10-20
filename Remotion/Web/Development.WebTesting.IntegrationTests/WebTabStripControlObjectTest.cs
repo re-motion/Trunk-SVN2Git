@@ -8,7 +8,7 @@ using Remotion.Web.Development.WebTesting.PageObjects;
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class TabStripControlObjectTest : IntegrationTest
+  public class WebTabStripControlObjectTest : IntegrationTest
   {
     [Test]
     public void TestSelection_ByHtmlID ()
@@ -88,7 +88,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private RemotionPageObject Start ()
     {
-      return Start("TabStripTest.wxe");
+      return Start("WebTabStripTest.wxe");
     }
   }
 }

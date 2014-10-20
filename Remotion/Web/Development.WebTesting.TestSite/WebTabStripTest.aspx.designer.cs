@@ -10,7 +10,7 @@
 namespace Remotion.Web.Development.WebTesting.TestSite {
     
     
-    public partial class TabStripTest {
+    public partial class WebTabStripTest {
         
         /// <summary>
         /// MyTabStrip1 control.
