@@ -177,6 +177,7 @@
     <Compile Include="IisExpressHostingStrategy.cs" />
     <Compile Include="NullHostingStrategy.cs" />
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
+    <Compile Include="Utilities\EnumerableExtensions.cs" />
     <Compile Include="Utilities\RetryUntilTimeout.cs" />
     <Compile Include="Utilities\ScreenshotCapturer.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
