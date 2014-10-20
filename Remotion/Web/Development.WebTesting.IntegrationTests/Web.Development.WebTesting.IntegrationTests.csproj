@@ -92,6 +92,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Development.WebTesting.TestSite\Web.Development.WebTesting.TestSite.csproj">
+      <Project>{e660cf09-930b-4381-9ac6-7a349e899d3b}</Project>
+      <Name>Web.Development.WebTesting.TestSite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5b5ec73a-b796-4d2d-a781-e889ee9ec4df}</Project>
       <Name>Web.Development.WebTesting</Name>
