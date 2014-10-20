@@ -45,7 +45,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
                 domainProperty));
       }
       else
+      {
         scope = context.Scope.FindDMA (RootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty);
+      }
 
       return CreateControlObject (context, scope);
     }

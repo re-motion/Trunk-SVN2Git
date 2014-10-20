@@ -28,7 +28,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       // This alterantive implementation assumes that the title cell is the very first row and column.
       // var scope = context.Scope.FindXPath (string.Format (".//table[contains(tbody/tr[1]/td[1],'{0}')]", title));
 
-      return new FormGridControlObject (scope.Id, context.CloneForScope (scope));
+      return CreateControlObject (context, scope);
     }
   }
 }

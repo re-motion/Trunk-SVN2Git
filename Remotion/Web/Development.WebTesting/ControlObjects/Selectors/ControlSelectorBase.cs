@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
-    private TControlObject CreateControlObject (TestObjectContext context, ElementScope scope)
+    protected TControlObject CreateControlObject (TestObjectContext context, ElementScope scope)
     {
       var id = scope.Id;
       var newContext = context.CloneForScope (scope);
