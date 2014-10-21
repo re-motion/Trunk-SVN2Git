@@ -101,6 +101,7 @@
     <Compile Include="ControlObjects\AnchorControlObject.cs" />
     <Compile Include="ControlObjects\ContextMenuControlObject.cs" />
     <Compile Include="ControlObjects\DropDownMenuControlObjectBase.cs" />
+    <Compile Include="ControlObjects\ISelectableControlObject.cs" />
     <Compile Include="ControlObjects\IClickableControlObject.cs" />
     <Compile Include="ControlObjects\IClickableItemsControlObject.cs" />
     <Compile Include="ControlObjects\IFillableControlObject.cs" />
@@ -157,6 +158,7 @@
     <Compile Include="ControlSelection\PerTitleControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\SingleControlSelectionCommand.cs" />
     <Compile Include="CoypuBrowserSessionExtensions.cs" />
+    <Compile Include="CoypuElementScopeSelectExtensions.cs" />
     <Compile Include="CoypuElementScopeClickAndFocusExtensions.cs" />
     <Compile Include="CoypuElementScopeFillInWithAndSendKeysExtensions.cs" />
     <Compile Include="CustomInternetExplorerDriver.cs" />
