@@ -30,6 +30,19 @@ namespace ActaNova.WebTesting.SampleTests
       Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Akt \"OE/1\" bearbeiten"));
     }
 
+
+    [Test]
+    public void TestRefresh()
+    {
+      // Todo RM-6297: Find a better way to test the button...
+
+      var home = Start();
+
+      home = home.Refresh().Expect<ActaNovaMainPageObject>();
+
+      Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
+    }
+
     [Test]
     public void MySampleTest ()
     {

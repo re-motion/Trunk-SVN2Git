@@ -29,6 +29,15 @@ namespace Remotion.Web.Development.WebTesting
       return Context.Window.Title;
     }
 
+    /// <summary>
+    /// Returns a new <see cref="IActionBehavior"/> object.
+    /// </summary>
+    protected IActionBehavior Behavior
+    {
+      // Todo RM-6297 @ MK: Property which returns a new object ... okay for better readability?
+      get { return new ActionBehavior(); }
+    }
+
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

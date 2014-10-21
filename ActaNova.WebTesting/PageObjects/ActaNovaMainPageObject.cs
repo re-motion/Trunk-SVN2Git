@@ -1,7 +1,11 @@
 ﻿using System;
 using ActaNova.WebTesting.ControlObjects;
+using ActaNova.WebTesting.Infrastructure;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace ActaNova.WebTesting.PageObjects
 {
@@ -15,6 +19,16 @@ namespace ActaNova.WebTesting.PageObjects
     public override string GetTitle ()
     {
       return DetailsArea.FormPageTitle;
+    }
+
+    public UnspecifiedPageObject Refresh (IActionBehavior actionBehavior = null)
+    {
+      var actualActionBehavior = actionBehavior ?? Behavior.WaitFor (WaitForActaNova.OuterInnerOuterUpdate);
+
+      var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "RefreshButton"));
+      webButton.Click (actualActionBehavior);
+
+      return UnspecifiedPage();
     }
 
     public ActaNovaHeaderControlObject Header
