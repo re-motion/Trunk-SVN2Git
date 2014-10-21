@@ -50,7 +50,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       _columns = RetryUntilTimeout.Run (
           () => Scope.FindAllCss (".bocListFakeTableHead th")
-              .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s.Text))
+              .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s[DiagnosticMetadataAttributes.Text]))
               .ToList(),
           Context.Configuration.SearchTimeout,
           Context.Configuration.RetryInterval);

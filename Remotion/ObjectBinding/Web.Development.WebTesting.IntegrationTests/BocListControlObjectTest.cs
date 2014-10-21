@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       Assert.That (
           bocList.GetColumnTitles(),
-          Is.EquivalentTo (new[] { "I_ndex", "", " ", "Command", "Menu", "Title", "StartDate", "EndDate", "DisplayName", "TitleWithCmd" }));
+          Is.EquivalentTo (new[] { "I_ndex", null, null, "Command", "Menu", "Title", "StartDate", "EndDate", "DisplayName", "TitleWithCmd" }));
     }
 
     [Test]
