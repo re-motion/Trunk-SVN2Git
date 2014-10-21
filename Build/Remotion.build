@@ -174,7 +174,8 @@
                          ReleaseType=$(ReleaseType);
                          AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                          Platforms=$(Platforms);
-                         DatabaseSystems=$(DatabaseSystems)"/>
+                         DatabaseSystems=$(DatabaseSystems);
+                         Browsers=$(Browsers)"/>
   </Target>
   
   <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders">
