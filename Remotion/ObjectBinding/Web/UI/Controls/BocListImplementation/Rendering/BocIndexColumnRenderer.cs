@@ -19,6 +19,8 @@ using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -28,12 +30,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   [ImplementationFor (typeof (IBocIndexColumnRenderer), Lifetime = LifetimeKind.Singleton)]
   public class BocIndexColumnRenderer : IBocIndexColumnRenderer
   {
+    private readonly IRenderingFeatures _renderingFeatures;
     private readonly BocListCssClassDefinition _cssClasses;
 
-    public BocIndexColumnRenderer (BocListCssClassDefinition cssClasses)
+    public BocIndexColumnRenderer (IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
     {
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
+      _renderingFeatures = renderingFeatures;
       _cssClasses = cssClasses;
     }
 
@@ -70,6 +74,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       string cssClass = CssClasses.TitleCell + " " + CssClasses.TitleCellIndex;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        var columnTitle = renderingContext.Control.IndexColumnTitle;
+        if (!string.IsNullOrEmpty (columnTitle))
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, columnTitle);
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string indexColumnTitle = renderingContext.Control.IndexColumnTitle;

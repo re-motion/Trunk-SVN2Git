@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderTitlesRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers));
@@ -83,7 +83,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderTitlesRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers));
@@ -107,7 +107,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderTitlesRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers));
@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderDataRow (
@@ -148,7 +148,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderDataRow (
@@ -175,7 +175,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.Default);
       renderer.RenderEmptyListDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers));
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
-          new BocIndexColumnRenderer (_bocListCssClassDefinition),
+          new BocIndexColumnRenderer (RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition),
           RenderingFeatures.WithDiagnosticMetadata);
       renderer.RenderDataRow (

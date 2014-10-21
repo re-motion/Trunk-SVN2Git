@@ -17,9 +17,13 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
@@ -44,7 +48,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     {
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
 
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (_bocListCssClassDefinition);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
 
       var document = Html.GetResultDocument();
@@ -74,9 +78,23 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       RenderIndexDataCell (2);
     }
 
+    [Test]
+    public void TestDiagnosticMetadataRenderingInTitle ()
+    {
+      List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
+      List.Stub (mock => mock.IndexColumnTitle).Return ("My_IndexColumn");
+
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
+      renderer.RenderTitleCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+
+      var document = Html.GetResultDocument();
+      var th = Html.GetAssertedChildElement (document, "th", 0);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Text, "My_IndexColumn");
+    }
+
     private void RenderIndexDataCell (int indexOffset)
     {
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (_bocListCssClassDefinition);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
       const string cssClassTableCell = "bocListTableCell";
       renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, 0, cssClassTableCell);
 

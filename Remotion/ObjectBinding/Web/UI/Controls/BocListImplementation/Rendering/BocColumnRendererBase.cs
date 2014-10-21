@@ -111,9 +111,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTitleCell);
       if (_renderingFeatures.EnableDiagnosticMetadata)
       {
-        var headerItemID = renderingContext.ColumnDefinition.ItemID;
-        if (!string.IsNullOrEmpty (headerItemID))
-          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, headerItemID);
+        var columnItemID = renderingContext.ColumnDefinition.ItemID;
+        if (!string.IsNullOrEmpty (columnItemID))
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, columnItemID);
+
+        var columnTitle = renderingContext.ColumnDefinition.ColumnTitle;
+        if (!string.IsNullOrEmpty (columnTitle))
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, columnTitle);
 
         var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
