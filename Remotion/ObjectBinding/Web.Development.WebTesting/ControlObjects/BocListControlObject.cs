@@ -5,6 +5,7 @@ using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
@@ -77,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      currentPageTextInputScope.FillWithAndWait(Keys.Backspace + page, Then.TabAway, Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      currentPageTextInputScope.FillWithAndWait (Keys.Backspace + page, Then.TabAway, Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void GoToFirstPage ()
@@ -206,20 +207,25 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public void ChangeViewTo (string itemID)
     {
-      // Todo RM-6297: think about implementation...extend Coypu? ItemID rendering?
+      throw new NotSupportedException ("Currently it is not possible to change the view using the itemID.");
     }
 
     public void ChangeViewTo (int index)
     {
-      // Todo RM-6297: think about implementation...extend Coypu?
-      //var availableViewsScope = GetAvailableViewsScope();
-      //availableViewsScope.PerformAction (scope => scope.SelectOption (index), Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      ChangeViewTo (scope => scope.SelectOptionByIndex (index));
     }
 
     public void ChangeViewToByLabel (string label)
     {
+      ChangeViewTo (scope => scope.SelectOption (label));
+    }
+
+    private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction)
+    {
+      ArgumentUtility.CheckNotNull ("selectAction", selectAction);
+
       var availableViewsScope = GetAvailableViewsScope();
-      availableViewsScope.PerformAction (scope => scope.SelectOption (label), Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      availableViewsScope.PerformAction (selectAction, Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     private ElementScope GetAvailableViewsScope ()

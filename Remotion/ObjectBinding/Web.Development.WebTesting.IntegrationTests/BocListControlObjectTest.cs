@@ -214,9 +214,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       //bocList.ChangeViewTo ("ViewCmd2");
       //Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd2"));
 
-      // Todo RM-6297: enable test as soon as BocListControlObject.ChangeViewTo(index) has been implemented.
-      //bocList.ChangeViewTo (1);
-      //Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd1"));
+      bocList.ChangeViewTo (1);
+      Assert.That (home.Scope.FindIdEndingWith ("SelectedViewLabel").Text, Is.EqualTo ("ViewCmd1"));
     }
 
     [Test]
