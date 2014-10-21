@@ -34,10 +34,16 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Initializes the helper.
     /// </summary>
+    /// <remarks>
+    /// This constructor implicitly sets the <see cref="WebTestConfiguration.Current"/> static field.
+    /// </remarks>
     public WebTestHelper ()
     {
       _webTestConfiguration = (WebTestConfiguration) ConfigurationManager.GetSection ("webTestConfiguration");
       Assertion.IsNotNull (_webTestConfiguration, "Configuration section 'webTestConfiguration' missing.");
+
+      // Todo RM-6297: Is there a better way to set the global WebTestConfiguration.Current field?
+      WebTestConfiguration.Current = _webTestConfiguration;
     }
 
     /// <summary>
@@ -86,6 +92,14 @@ namespace Remotion.Web.Development.WebTesting
         browser.MaximiseWindow();
       browser.Visit (url);
       return browser;
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="TestObjectContext"/> for the <see cref="MainBrowserSession"/>.
+    /// </summary>
+    public TestObjectContext CreateNewTestObjectContext ()
+    {
+      return TestObjectContext.New (MainBrowserSession);
     }
 
     /// <summary>

@@ -46,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.MainBrowserSession.Visit (url);
       AcceptPossibleModalDialog();
 
-      var context = CreateTestObjectContext();
+      var context = _webTestHelper.CreateNewTestObjectContext();
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
 
@@ -60,18 +60,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       try
       {
-        var context = CreateTestObjectContext();
+        var context = _webTestHelper.CreateNewTestObjectContext();
         _webTestHelper.MainBrowserSession.AcceptModalDialogImmediatelyFixed (context);
       }
       catch (NoAlertPresentException)
       {
         // It's okay.
       }
-    }
-
-    private TestObjectContext CreateTestObjectContext ()
-    {
-      return TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
     }
   }
 }

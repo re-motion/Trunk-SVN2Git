@@ -1,6 +1,5 @@
 ﻿using System;
 using Coypu;
-using Coypu.Drivers;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
@@ -27,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (context.Configuration.Browser != Browser.InternetExplorer)
+      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog();
       else
         browser.AcceptModalDialogFixedInternetExplorer (context);
@@ -41,7 +40,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (context.Configuration.Browser != Browser.InternetExplorer)
+      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog (Options.NoWait);
       else
         browser.AcceptModalDialogImmediatelyFixedInternetExplorer();
@@ -63,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (context.Configuration.Browser != Browser.InternetExplorer)
+      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
         browser.CancelModalDialog();
       else
         browser.CancelModalDialogFixedInternetExplorer (context);
@@ -78,10 +77,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      RetryUntilTimeout.Run (
-          browser.AcceptModalDialogImmediatelyFixedInternetExplorer,
-          context.Configuration.SearchTimeout,
-          context.Configuration.RetryInterval);
+      RetryUntilTimeout.Run (browser.AcceptModalDialogImmediatelyFixedInternetExplorer);
     }
 
     private static void AcceptModalDialogImmediatelyFixedInternetExplorer([NotNull] this BrowserSession browser)
@@ -99,10 +95,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      RetryUntilTimeout.Run (
-          browser.CancelModalDialogImmediatelyFixedInternetExplorer,
-          context.Configuration.SearchTimeout,
-          context.Configuration.RetryInterval);
+      RetryUntilTimeout.Run (browser.CancelModalDialogImmediatelyFixedInternetExplorer);
     }
 
     private static void CancelModalDialogImmediatelyFixedInternetExplorer([NotNull] this BrowserSession browser)

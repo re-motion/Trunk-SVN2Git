@@ -12,6 +12,11 @@ namespace Remotion.Web.Development.WebTesting
   public class WebTestConfiguration : ConfigurationSection
   {
     /// <summary>
+    /// Returns the <see cref="WebTestConfiguration"/> loaded by <see cref="WebTestHelper"/>.
+    /// </summary>
+    public static WebTestConfiguration Current { get; internal set; }
+
+    /// <summary>
     /// Browser in which the web tests are run.
     /// </summary>
     [ConfigurationProperty ("browser", IsRequired = true)]
@@ -26,6 +31,14 @@ namespace Remotion.Web.Development.WebTesting
     public Browser Browser
     {
       get { return Browser.Parse (BrowserName); }
+    }
+
+    /// <summary>
+    /// Returns whether the <see cref="Browser"/> is set to <see cref="Coypu.Drivers.Browser.InternetExplorer"/>.
+    /// </summary>
+    public bool BrowserIsInternetExplorer ()
+    {
+      return Browser == Browser.InternetExplorer;
     }
 
     /// <summary>

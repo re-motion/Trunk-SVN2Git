@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Coypu;
-using Coypu.Drivers;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
@@ -53,27 +53,54 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// ASP.NET WebForms-ready &amp; IE-compatible version for Selenium's <see cref="ElementScope.FillInWith"/> method.
+    /// ASP.NET WebForms-ready &amp; IE-compatiable version for Coypu's <see cref="ElementScope.SendKeys"/> method.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
-    /// <param name="context">The corresponding control object's context.</param>
     /// <param name="value">The value to fill in.</param>
-    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
-    public static void FillInWithFixed (
-        [NotNull] this ElementScope scope,
-        [NotNull] TestObjectContext context,
-        [NotNull] string value,
-        [NotNull] ThenAction thenAction)
+    public static void SendKeysFixed ([NotNull] this ElementScope scope, [NotNull] string value)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
-      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("value", value);
+
+      const bool clearValue = false;
+      scope.FillInWithFixed (value, Then.DoNothing, clearValue);
+    }
+
+    /// <summary>
+    /// ASP.NET WebForms-ready &amp; IE-compatible version for Coypu's <see cref="ElementScope.FillInWith"/> method.
+    /// </summary>
+    /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
+    /// <param name="value">The value to fill in.</param>
+    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
+    public static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] ThenAction thenAction)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("thenAction", thenAction);
 
-      if (context.Configuration.Browser != Browser.InternetExplorer)
-        scope.FillInWithFixedNormalBrowser (value);
+      const bool clearValue = true;
+      scope.FillInWithFixed (value, thenAction, clearValue);
+    }
+
+    /// <summary>
+    /// ASP.NET WebForms-ready &amp; IE-compatible version for Coypu's <see cref="ElementScope.FillInWith"/> method.
+    /// </summary>
+    /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
+    /// <param name="value">The value to fill in.</param>
+    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
+    /// <param name="clearValue">Determines whether the old content should be cleared before filling in the new value.</param>
+    private static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] ThenAction thenAction, bool clearValue)
+    {
+      // Todo RM-6297: ugly boolean flag in method parameters.
+
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("value", value);
+      ArgumentUtility.CheckNotNull ("thenAction", thenAction);
+
+      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
+        scope.FillInWithFixedForNormalBrowsers (value, clearValue);
       else
-        scope.FillInWithFixedInternetExplorer (value);
+        scope.FillInWithFixedForInternetExplorer (value, clearValue);
 
       thenAction (scope);
     }
@@ -82,28 +109,43 @@ namespace Remotion.Web.Development.WebTesting
     /// We cannot use Coypu's <see cref="ElementScope.FillInWith"/> here, as it internally calls Selenium's <see cref="IWebElement.Clear"/> which
     /// unfortunately triggers a post back. See https://groups.google.com/forum/#!topic/selenium-users/fBWLmL8iEzA for more information.
     /// </summary>
-    private static void FillInWithFixedNormalBrowser ([NotNull] this ElementScope scope, [NotNull] string value)
+    private static void FillInWithFixedForNormalBrowsers ([NotNull] this ElementScope scope, [NotNull] string value, bool clearValue)
     {
-      var clearTextBox = Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete;
-      scope.SendKeys (clearTextBox + value);
+      if (clearValue)
+      {
+        var clearTextBox = Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete;
+        value = clearTextBox + value;
+      }
+
+      scope.SendKeys (value);
     }
 
     /// <summary>
     /// Unfortunately, Selenium's Internet Explorer driver (with native events enabled) does not send required modifier keys when sending keyboard
     /// input (e.g. "@!" would result in "q1"). Therefore we must use <see cref="SendKeys.SendWait"/> instead.
     /// </summary>
-    private static void FillInWithFixedInternetExplorer (
-        [NotNull] this ElementScope scope,
-        [NotNull] string value)
+    private static void FillInWithFixedForInternetExplorer ([NotNull] this ElementScope scope, [NotNull] string value, bool clearValue)
     {
-      const string clearTextBox = "{END}+{HOME}{DEL}";
+      value = PrepareValueForSendKeysAPI (value);
+
+      if (clearValue)
+      {
+        const string clearTextBox = "{END}+{HOME}{DEL}";
+        value = clearTextBox + value;
+      }
 
       scope.Focus();
-      Console.WriteLine (PrepareValueForSendKeysAPI (value));
-      SendKeys.SendWait (clearTextBox + PrepareValueForSendKeysAPI (value));
+      SendKeys.SendWait (value);
     }
 
     private static string PrepareValueForSendKeysAPI (string value)
+    {
+      value = EncloseSpecialCharacters (value);
+      value = ReplaceSeleniumKeysWithSendKeysKeys (value);
+      return value;
+    }
+
+    private static string EncloseSpecialCharacters (string value)
     {
       var charactersToEncloseForSendKeys = new[] { "+", "^", "%", "~", "(", ")", "'", "[", "]", "{", "}" };
       var charactersToEncloseForRegex = new[] { '.', '$', '^', '{', '[', '(', '|', ')', '*', '+', '?', '\\' };
@@ -117,6 +159,26 @@ namespace Remotion.Web.Development.WebTesting
 
       var charactersToEncloseForSendKeysPattern = string.Join ("|", charactersToEncloseForSendKeys);
       return Regex.Replace (value, charactersToEncloseForSendKeysPattern, match => "{" + match.Value + "}");
+    }
+
+    private static string ReplaceSeleniumKeysWithSendKeysKeys (string value)
+    {
+      // Todo RM-6297: this is only a prototype implementation, should probably be extended to be complete (ctrl, alt, shift support!).
+
+      var replacementDictionary = new Dictionary<string, string>
+                           {
+                               { Keys.Enter, "{ENTER}" },
+                               { Keys.Tab, "{TAB}" },
+                               { Keys.Home, "{HOME}" },
+                               { Keys.End, "{END}"},
+                               { Keys.Delete, "{DEL}"},
+                               { Keys.Backspace, "{BS}"}
+                           };
+
+      foreach(var replacement in replacementDictionary)
+        value = value.Replace (replacement.Key, replacement.Value);
+
+      return value;
     }
 
     /// <summary>

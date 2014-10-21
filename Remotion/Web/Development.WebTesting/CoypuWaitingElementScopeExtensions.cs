@@ -81,7 +81,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("actionBehavior", actionBehavior);
 
-      scope.PerformAction (s => s.FillInWithFixed (context, value, thenAction), context, actionBehavior);
+      scope.PerformAction (s => s.FillInWithFixed (value, thenAction), context, actionBehavior);
     }
   }
 }

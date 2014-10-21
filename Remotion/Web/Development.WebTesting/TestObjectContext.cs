@@ -16,7 +16,6 @@ namespace Remotion.Web.Development.WebTesting
     /// Private constructor, use <see cref="New"/> to create a new root <see cref="TestObjectContext"/>.
     /// </summary>
     private TestObjectContext (
-        [NotNull] WebTestConfiguration configuration,
         [NotNull] BrowserSession browser,
         [NotNull] BrowserWindow window,
         [NotNull] ElementScope rootElement,
@@ -24,14 +23,12 @@ namespace Remotion.Web.Development.WebTesting
         [NotNull] ElementScope scope,
         [CanBeNull] TestObjectContext parentContext)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("window", window);
       ArgumentUtility.CheckNotNull ("rootElement", rootElement);
       ArgumentUtility.CheckNotNull ("frameRootElement", frameRootElement);
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      Configuration = configuration;
       Browser = browser;
       Window = window;
       RootElement = rootElement;
@@ -39,11 +36,6 @@ namespace Remotion.Web.Development.WebTesting
       Scope = scope;
       ParentContext = parentContext;
     }
-
-    /// <summary>
-    /// Web test configuration.
-    /// </summary>
-    public WebTestConfiguration Configuration { get; private set; }
 
     /// <summary>
     /// The test object's corresponding browser session.
@@ -98,16 +90,14 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Returns a new root <see cref="TestObjectContext"/> for a <see cref="TestObject"/> without a parent.
     /// </summary>
-    /// <param name="configuration">The active <see cref="WebTestConfiguration"/>.</param>
     /// <param name="browser">The browser session (and at the same time the browser window) on which the test object resides.</param>
     /// <returns>A new root test object context.</returns>
-    public static TestObjectContext New ([NotNull] WebTestConfiguration configuration, [NotNull] BrowserSession browser)
+    public static TestObjectContext New ([NotNull] BrowserSession browser)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
       var rootElement = browser.FindCss ("html");
-      return new TestObjectContext (configuration, browser, browser, rootElement, rootElement, rootElement, null);
+      return new TestObjectContext (browser, browser, rootElement, rootElement, rootElement, null);
     }
 
     /// <summary>
@@ -118,8 +108,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       EnsureScopeIsExistent (scope);
-
-      return new TestObjectContext (Configuration, Browser, Window, RootElement, FrameRootElement, scope, ParentContext);
+      return new TestObjectContext (Browser, Window, RootElement, FrameRootElement, scope, ParentContext);
     }
 
     /// <summary>
@@ -131,7 +120,7 @@ namespace Remotion.Web.Development.WebTesting
 
       var frameRootElement = frameScope.FindCss ("html");
       EnsureScopeIsExistent (frameRootElement);
-      return new TestObjectContext (Configuration, Browser, Window, RootElement, frameRootElement, frameRootElement, ParentContext);
+      return new TestObjectContext (Browser, Window, RootElement, frameRootElement, frameRootElement, ParentContext);
     }
 
     /// <summary>
@@ -141,7 +130,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       var rootElement = Window.FindCss ("html");
       EnsureScopeIsExistent (rootElement);
-      return new TestObjectContext (Configuration, Browser, Window, rootElement, rootElement, rootElement, ParentContext);
+      return new TestObjectContext (Browser, Window, rootElement, rootElement, rootElement, ParentContext);
     }
 
     /// <summary>
@@ -174,7 +163,7 @@ namespace Remotion.Web.Development.WebTesting
       var window = Browser.FindWindow (windowLocator);
       var rootElement = window.FindCss ("html");
       EnsureScopeIsExistent (rootElement);
-      return new TestObjectContext (Configuration, Browser, window, rootElement, rootElement, rootElement, this);
+      return new TestObjectContext (Browser, window, rootElement, rootElement, rootElement, this);
     }
 
     /// <summary>
@@ -185,7 +174,6 @@ namespace Remotion.Web.Development.WebTesting
       Assertion.IsNotNull (ParentContext, "No parent context available.");
 
       return new TestObjectContext (
-          Configuration,
           Browser,
           ParentContext.Window,
           ParentContext.RootElement,
@@ -199,7 +187,7 @@ namespace Remotion.Web.Development.WebTesting
     /// resolved). However, it ensures that any <see cref="MissingHtmlException"/> is thrown when the <see cref="TestObjectContext"/> is created,
     /// which is always near the corresponding <c>parentScope.Find*()</c> method call. Otherwise, the <see cref="MissingHtmlException"/> would be
     /// thrown when the context's <see cref="Scope"/> is actually used for the first time, which may be quite some time later and the exception would
-    /// provide a stack trace where the <c>parentScope.Find*()</c> could not be found.
+    /// provide a stack trace where the <c>parentScope.Find*()</c> call could not be found.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> which is asserted to exist.</param>
     private void EnsureScopeIsExistent ([NotNull] ElementScope scope)

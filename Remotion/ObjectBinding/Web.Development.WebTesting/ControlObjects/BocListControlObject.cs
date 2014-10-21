@@ -49,9 +49,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _columns = RetryUntilTimeout.Run (
           () => Scope.FindAllCss (".bocListFakeTableHead th")
               .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s[DiagnosticMetadataAttributes.Text]))
-              .ToList(),
-          Context.Configuration.SearchTimeout,
-          Context.Configuration.RetryInterval);
+              .ToList());
     }
 
     public IReadOnlyCollection<string> GetColumnTitles ()
@@ -61,10 +59,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public int GetRowCount ()
     {
-      return RetryUntilTimeout.Run (
-          () => Scope.FindAllCss (".bocListTable .bocListTableBody tr").Count(),
-          Context.Configuration.SearchTimeout,
-          Context.Configuration.RetryInterval);
+      return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody tr").Count());
     }
 
     public int GetCurrentPage ()
@@ -82,12 +77,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      Action<ElementScope> fillAction = s =>
-      {
-        s.SendKeys (Keys.Backspace + page); // JS prevents clearing, so FillWith is not possible
-        Then.PressEnter (s);
-      };
-      currentPageTextInputScope.PerformAction (fillAction, Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      currentPageTextInputScope.FillWithAndWait(Keys.Backspace + page, Then.TabAway, Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
     public void GoToFirstPage ()
