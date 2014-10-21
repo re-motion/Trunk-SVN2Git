@@ -96,6 +96,8 @@
     <Compile Include="ControlObjects\BocTextValueControlObject.cs" />
     <Compile Include="ControlObjects\BocAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\BocListControlObject.cs" />
+    <Compile Include="ControlObjects\BocTreeViewNodeControlObject.cs" />
+    <Compile Include="ControlObjects\IBocTreeViewNodeNavigator.cs" />
     <Compile Include="ControlObjects\Selectors\BocTreeViewSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocTextValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocListSelector.cs" />

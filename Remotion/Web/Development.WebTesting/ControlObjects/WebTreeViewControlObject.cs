@@ -1,10 +1,13 @@
 ﻿using System;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
+  [UsedImplicitly]
   public class WebTreeViewControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
   {
     // Note: Functionality is integartion tested via BocTreeViewControlObject in BocTreeViewControlObjectTest.
@@ -24,6 +27,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       return _metaRootNode.GetNode (itemID);
     }
 
@@ -34,11 +39,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNodeByHtmlID (string htmlID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       return _metaRootNode.GetNode (htmlID);
     }
 
     public WebTreeViewNodeControlObject GetNodeByText (string text)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
       return _metaRootNode.GetNodeByText (text);
     }
   }
