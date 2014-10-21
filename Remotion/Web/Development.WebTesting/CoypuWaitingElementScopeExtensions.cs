@@ -2,13 +2,12 @@
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
   /// Various extension methods for Coypu's <see cref="ElementScope"/> class, which - after the action has been performed on the DOM element - wait
-  /// using a given <see cref="IWaitingStrategy"/>.
+  /// using a given <see cref="IActionBehavior"/>.
   /// </summary>
   public static class CoypuWaitingElementScopeExtensions
   {

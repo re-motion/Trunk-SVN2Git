@@ -157,6 +157,8 @@
     <Compile Include="ControlSelection\PerTitleControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\SingleControlSelectionCommand.cs" />
     <Compile Include="CoypuBrowserSessionExtensions.cs" />
+    <Compile Include="CoypuElementScopeClickAndFocusExtensions.cs" />
+    <Compile Include="CoypuElementScopeFillInWithAndSendKeysExtensions.cs" />
     <Compile Include="CustomInternetExplorerDriver.cs" />
     <Compile Include="FluentControlSelection\IFluentControlSelector.cs" />
     <Compile Include="FluentControlSelection\FirstControlSelectionCommandBuilder.cs" />
@@ -181,8 +183,9 @@
     <Compile Include="Utilities\EnumerableExtensions.cs" />
     <Compile Include="Utilities\RetryUntilTimeout.cs" />
     <Compile Include="Utilities\ScreenshotCapturer.cs" />
+    <Compile Include="Utilities\SeleniumSendKeysToWindowsFormsSendKeysTransformer.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
-    <Compile Include="CoypuElementScopeExtensions.cs" />
+    <Compile Include="CoypuElementScopeFindExtensions.cs" />
     <Compile Include="CoypuWaitingElementScopeExtensions.cs" />
     <Compile Include="IControlHost.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
