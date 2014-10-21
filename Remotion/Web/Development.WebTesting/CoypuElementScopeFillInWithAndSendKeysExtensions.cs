@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
+using log4net;
 using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Utilities;
@@ -15,6 +16,8 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class CoypuElementScopeFillInWithAndSendKeysExtensions
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (CoypuElementScopeFillInWithAndSendKeysExtensions));
+
     /// <summary>
     /// ASP.NET WebForms-ready &amp; IE-compatiable version for Coypu's <see cref="ElementScope.SendKeys"/> method.
     /// </summary>
@@ -80,6 +83,8 @@ namespace Remotion.Web.Development.WebTesting
         value = clearTextBox + value;
       }
 
+      s_log.DebugFormat ("FillInWith for normal browsers: '{0}'.", value);
+
       scope.SendKeys (value);
     }
 
@@ -96,6 +101,8 @@ namespace Remotion.Web.Development.WebTesting
         const string clearTextBox = "{END}+{HOME}{DEL}";
         value = clearTextBox + value;
       }
+
+      s_log.DebugFormat ("FillInWith for InternetExplorer: '{0}'.", value);
 
       scope.Focus();
       SendKeys.SendWait (value);
