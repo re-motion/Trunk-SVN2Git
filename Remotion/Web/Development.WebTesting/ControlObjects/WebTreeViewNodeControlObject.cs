@@ -17,6 +17,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    public string Text
+    {
+      get { return Scope[DiagnosticMetadataAttributes.Text]; }
+    }
+
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);

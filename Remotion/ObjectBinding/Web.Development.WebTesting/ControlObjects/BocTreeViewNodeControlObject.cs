@@ -26,6 +26,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _webTreeViewNode = webTreeViewNode;
     }
 
+    public string Text
+    {
+      get { return _webTreeViewNode.Text; }
+    }
+
     public BocTreeViewNodeControlObject GetNode (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);

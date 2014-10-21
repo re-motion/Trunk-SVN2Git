@@ -12,6 +12,25 @@ namespace ActaNova.WebTesting.SampleTests
   public class SampleTest : ActaNovaWebTestBase
   {
     [Test]
+    public void TestActaNovaTree ()
+    {
+      var home = Start();
+
+      var eigenerAv = home.Tree.GetNode (1);
+      Assert.That (eigenerAv.Text, Is.EqualTo ("Eigener AV"));
+
+      home = home.Tree.GetNode (2).Expand().GetNodeByText ("egora Gemeinde").Select().Expect<ActaNovaMainPageObject>();
+      Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("egora Gemeinde AV"));
+
+      var geschaeftsfall = home.Tree.GetNodeByText ("Favoriten").Expand().Collapse().Expand().GetNode (2);
+      home = geschaeftsfall.Select().Expect<ActaNovaMainPageObject>();
+      Assert.That(home.DetailsArea.FormPageTitle, Is.EqualTo("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
+
+      home = geschaeftsfall.GetNode ("Files").Expand().GetNode (1).Expand().GetNode ("WrappedDocumentsHierarchy").Expand().Select().Expect<ActaNovaMainPageObject>();
+      Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Akt \"OE/1\" bearbeiten"));
+    }
+
+    [Test]
     public void MySampleTest ()
     {
       var home = Start();
@@ -50,7 +69,7 @@ namespace ActaNova.WebTesting.SampleTests
       var confirmPage = newCitizenConcernPage.Header.BreadCrumbs[0].Click (Behavior.WaitFor (WaitFor.WxePostBack))
           .Expect<ActaNovaMessageBoxPageObject>();
       home = confirmPage.Confirm().Expect<ActaNovaMainPageObject>();
-      
+
       Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (1));
     }
   }
