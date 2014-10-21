@@ -34,6 +34,20 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestConfiguration.SearchTimeout"/> and
+    /// <see cref="WebTestConfiguration.RetryInterval"/> do not apply.
+    /// </summary>
+    public static void AcceptModalDialogImmediatelyFixed([NotNull] this BrowserSession browser, [NotNull] TestObjectContext context)
+    {
+      ArgumentUtility.CheckNotNull ("browser", browser);
+
+      if (context.Configuration.Browser != Browser.InternetExplorer)
+        browser.AcceptModalDialog (Options.NoWait);
+      else
+        browser.AcceptModalDialogImmediatelyFixedInternetExplorer();
+    }
+
+    /// <summary>
     /// IE-compatible version for Selenium's <see cref="BrowserWindow.CancelModalDialog"/> method.
     /// </summary>
     /// <remarks>
@@ -65,13 +79,15 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
 
       RetryUntilTimeout.Run (
-          () =>
-          {
-            var webDriver = (IWebDriver) browser.Native;
-            webDriver.SwitchTo().Alert().Accept();
-          },
+          browser.AcceptModalDialogImmediatelyFixedInternetExplorer,
           context.Configuration.SearchTimeout,
           context.Configuration.RetryInterval);
+    }
+
+    private static void AcceptModalDialogImmediatelyFixedInternetExplorer([NotNull] this BrowserSession browser)
+    {
+      var webDriver = (IWebDriver) browser.Native;
+      webDriver.SwitchTo().Alert().Accept();
     }
 
     /// <summary>
@@ -84,13 +100,15 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
 
       RetryUntilTimeout.Run (
-          () =>
-          {
-            var webDriver = (IWebDriver) browser.Native;
-            webDriver.SwitchTo().Alert().Dismiss();
-          },
+          browser.CancelModalDialogImmediatelyFixedInternetExplorer,
           context.Configuration.SearchTimeout,
           context.Configuration.RetryInterval);
+    }
+
+    private static void CancelModalDialogImmediatelyFixedInternetExplorer([NotNull] this BrowserSession browser)
+    {
+      var webDriver = (IWebDriver) browser.Native;
+      webDriver.SwitchTo().Alert().Dismiss();
     }
   }
 }

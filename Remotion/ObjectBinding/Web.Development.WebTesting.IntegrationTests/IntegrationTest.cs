@@ -1,5 +1,4 @@
 ﻿using System;
-using Coypu;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using Remotion.Web.Development.WebTesting;
@@ -15,7 +14,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     private readonly WebTestHelper _webTestHelper = new WebTestHelper();
 
     [TestFixtureSetUp]
-    public void IntegrationTestTestFixtureSetUp()
+    public void IntegrationTestTestFixtureSetUp ()
     {
       _webTestHelper.OnFixtureSetUp();
     }
@@ -34,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [TestFixtureTearDown]
-    public void IntegrationTestTestFixtureTearDown()
+    public void IntegrationTestTestFixtureTearDown ()
     {
       _webTestHelper.OnFixtureTearDown();
     }
@@ -47,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.MainBrowserSession.Visit (url);
       AcceptPossibleModalDialog();
 
-      var context = TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
+      var context = CreateTestObjectContext();
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
 
@@ -61,12 +60,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       try
       {
-        _webTestHelper.MainBrowserSession.AcceptModalDialog (Options.NoWait);
+        var context = CreateTestObjectContext();
+        _webTestHelper.MainBrowserSession.AcceptModalDialogImmediatelyFixed (context);
       }
       catch (NoAlertPresentException)
       {
         // It's okay.
       }
+    }
+
+    private TestObjectContext CreateTestObjectContext ()
+    {
+      return TestObjectContext.New (_webTestHelper.Configuration, _webTestHelper.MainBrowserSession);
     }
   }
 }
