@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestGetHeaderLabels ()
+    public void TestGetColumnTitles ()
     {
       var home = Start();
 
