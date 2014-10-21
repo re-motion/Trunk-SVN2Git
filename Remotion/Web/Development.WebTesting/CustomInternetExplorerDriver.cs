@@ -30,8 +30,7 @@ namespace Remotion.Web.Development.WebTesting
               {
                   EnableNativeEvents = true,
                   RequireWindowFocus = true,
-                  EnablePersistentHover = false,
-                  IntroduceInstabilityByIgnoringProtectedModeSettings = true
+                  EnablePersistentHover = false
               });
     }
   }
