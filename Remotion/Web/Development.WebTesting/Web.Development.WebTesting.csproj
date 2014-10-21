@@ -157,6 +157,7 @@
     <Compile Include="ControlSelection\PerTitleControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\SingleControlSelectionCommand.cs" />
     <Compile Include="CoypuBrowserSessionExtensions.cs" />
+    <Compile Include="CustomInternetExplorerDriver.cs" />
     <Compile Include="FluentControlSelection\IFluentControlSelector.cs" />
     <Compile Include="FluentControlSelection\FirstControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelector.cs" />
