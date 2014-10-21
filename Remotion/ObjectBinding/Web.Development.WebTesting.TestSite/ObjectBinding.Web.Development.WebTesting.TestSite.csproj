@@ -65,6 +65,8 @@
       <Link>remotion.snk</Link>
     </Content>
     <Content Include="Controls\AutoCompleteService.asmx" />
+    <Content Include="Controls\BocReferenceValueUserControl.ascx" />
+    <Content Include="Controls\BocReferenceValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTreeViewUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTreeViewUserControl.ascx" />
     <Content Include="Controls\BocTextValueUserControlTestOutput.ascx" />
@@ -121,6 +123,20 @@
     <Compile Include="Controls\AutoCompleteService.asmx.cs">
       <DependentUpon>AutoCompleteService.asmx</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\BocReferenceValueUserControl.ascx.cs">
+      <DependentUpon>BocReferenceValueUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocReferenceValueUserControl.ascx.designer.cs">
+      <DependentUpon>BocReferenceValueUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocReferenceValueUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocReferenceValueUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocReferenceValueUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocReferenceValueUserControlTestOutput.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\BocTreeViewUserControlTestOutput.ascx.cs">
       <DependentUpon>BocTreeViewUserControlTestOutput.ascx</DependentUpon>
