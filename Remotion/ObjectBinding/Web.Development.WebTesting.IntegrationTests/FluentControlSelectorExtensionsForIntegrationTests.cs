@@ -24,6 +24,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<BocBooleanValueSelector, BocBooleanValueControlObject> (host, new BocBooleanValueSelector());
     }
 
+    public static FluentControlSelector<BocCheckBoxSelector, BocCheckBoxControlObject> GetCheckBox (this IControlHost host)
+    {
+      return new FluentControlSelector<BocCheckBoxSelector, BocCheckBoxControlObject> (host, new BocCheckBoxSelector());
+    }
+
     public static FluentControlSelector<BocListSelector, BocListControlObject> GetList (this IControlHost host)
     {
       return new FluentControlSelector<BocListSelector, BocListControlObject> (host, new BocListSelector());

@@ -65,6 +65,8 @@
       <Link>remotion.snk</Link>
     </Content>
     <Content Include="Controls\AutoCompleteService.asmx" />
+    <Content Include="Controls\BocCheckBoxUserControl.ascx" />
+    <Content Include="Controls\BocCheckBoxUserControlTestOutput.ascx" />
     <Content Include="Controls\BocReferenceValueUserControl.ascx" />
     <Content Include="Controls\BocReferenceValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocBooleanValueUserControl.ascx" />
@@ -125,6 +127,20 @@
     <Compile Include="Controls\AutoCompleteService.asmx.cs">
       <DependentUpon>AutoCompleteService.asmx</DependentUpon>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\BocCheckBoxUserControl.ascx.cs">
+      <DependentUpon>BocCheckBoxUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocCheckBoxUserControl.ascx.designer.cs">
+      <DependentUpon>BocCheckBoxUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocCheckBoxUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocCheckBoxUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocCheckBoxUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocCheckBoxUserControlTestOutput.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\BocReferenceValueUserControl.ascx.cs">
       <DependentUpon>BocReferenceValueUserControl.ascx</DependentUpon>
