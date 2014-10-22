@@ -40,6 +40,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       get { return _rootTag; }
     }
 
+    protected string CssClass
+    {
+      get { return _cssClass; }
+    }
+
     public TControlObject SelectFirst (TestObjectContext context)
     {
       var scope = context.Scope.FindCss ("." + _cssClass);

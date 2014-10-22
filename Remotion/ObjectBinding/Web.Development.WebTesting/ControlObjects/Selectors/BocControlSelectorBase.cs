@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
@@ -34,15 +35,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
 
       if (domainClass != null)
       {
-        // Todo RM-6297: Extend ElementScope.FindDMA() extension method to support multiple DMAs?
-        scope = context.Scope.FindCss (
-            string.Format (
-                "{0}[{1}='{2}'][{3}='{4}']",
-                RootTag,
-                DiagnosticMetadataAttributesForObjectBinding.BoundType,
-                domainClass,
-                DiagnosticMetadataAttributesForObjectBinding.BoundProperty,
-                domainProperty));
+        scope = context.Scope.FindDMA (
+            new[] { RootTag },
+            new Dictionary<string, string>
+            {
+                { DiagnosticMetadataAttributesForObjectBinding.BoundType, domainClass },
+                { DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty }
+            });
       }
       else
       {
