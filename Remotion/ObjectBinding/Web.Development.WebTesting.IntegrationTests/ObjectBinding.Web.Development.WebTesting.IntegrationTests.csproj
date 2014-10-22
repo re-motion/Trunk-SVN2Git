@@ -67,6 +67,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="BocReferenceValueControlObjectTest.cs" />
+    <Compile Include="BocBooleanValueControlObjectTest.cs" />
     <Compile Include="BocTreeViewControlObjectTest.cs" />
     <Compile Include="BocTextValueControlObjectTest.cs" />
     <Compile Include="BocListControlObjectTest.cs" />

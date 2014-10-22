@@ -19,6 +19,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
           new BocAutoCompleteReferenceValueSelector());
     }
 
+    public static FluentControlSelector<BocBooleanValueSelector, BocBooleanValueControlObject> GetBooleanValue (this IControlHost host)
+    {
+      return new FluentControlSelector<BocBooleanValueSelector, BocBooleanValueControlObject> (host, new BocBooleanValueSelector());
+    }
+
     public static FluentControlSelector<BocListSelector, BocListControlObject> GetList (this IControlHost host)
     {
       return new FluentControlSelector<BocListSelector, BocListControlObject> (host, new BocListSelector());

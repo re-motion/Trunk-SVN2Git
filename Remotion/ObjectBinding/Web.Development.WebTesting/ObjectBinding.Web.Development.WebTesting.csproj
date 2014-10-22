@@ -97,6 +97,7 @@
     <Compile Include="ControlObjects\BocListEditableCellControlObject.cs" />
     <Compile Include="ControlObjects\BocListEditableRowControlObject.cs" />
     <Compile Include="ControlObjects\BocListRowControlObject.cs" />
+    <Compile Include="ControlObjects\BocBooleanValueControlObject.cs" />
     <Compile Include="ControlObjects\BocTreeViewControlObject.cs" />
     <Compile Include="ControlObjects\BocTextValueControlObject.cs" />
     <Compile Include="ControlObjects\BocAutoCompleteReferenceValueControlObject.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="ControlObjects\BocTreeViewNodeControlObject.cs" />
     <Compile Include="ControlObjects\IBocTreeViewNodeNavigator.cs" />
     <Compile Include="ControlObjects\Selectors\BocReferenceValueSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\BocBooleanValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocTreeViewSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocTextValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocListSelector.cs" />

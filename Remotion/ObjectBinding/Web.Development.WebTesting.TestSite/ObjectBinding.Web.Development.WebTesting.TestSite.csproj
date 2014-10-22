@@ -67,6 +67,8 @@
     <Content Include="Controls\AutoCompleteService.asmx" />
     <Content Include="Controls\BocReferenceValueUserControl.ascx" />
     <Content Include="Controls\BocReferenceValueUserControlTestOutput.ascx" />
+    <Content Include="Controls\BocBooleanValueUserControl.ascx" />
+    <Content Include="Controls\BocBooleanValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTreeViewUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTreeViewUserControl.ascx" />
     <Content Include="Controls\BocTextValueUserControlTestOutput.ascx" />
@@ -137,6 +139,20 @@
     </Compile>
     <Compile Include="Controls\BocReferenceValueUserControlTestOutput.ascx.designer.cs">
       <DependentUpon>BocReferenceValueUserControlTestOutput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocBooleanValueUserControl.ascx.cs">
+      <DependentUpon>BocBooleanValueUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocBooleanValueUserControl.ascx.designer.cs">
+      <DependentUpon>BocBooleanValueUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocBooleanValueUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocBooleanValueUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocBooleanValueUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocBooleanValueUserControlTestOutput.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\BocTreeViewUserControlTestOutput.ascx.cs">
       <DependentUpon>BocTreeViewUserControlTestOutput.ascx</DependentUpon>
