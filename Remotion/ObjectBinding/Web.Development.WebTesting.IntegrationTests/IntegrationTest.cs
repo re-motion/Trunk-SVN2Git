@@ -22,7 +22,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     [SetUp]
     public void IntegrationTestSetUp ()
     {
-      _webTestHelper.OnSetUp (TestContext.CurrentContext.Test.Name);
+      _webTestHelper.OnSetUp (GetType().Name + "_" + TestContext.CurrentContext.Test.Name);
     }
 
     [TearDown]
