@@ -12,7 +12,9 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
     public static readonly string BoundType = "data-bound-type";
     public static readonly string BoundProperty = "data-bound-property";
 
-    public static readonly string BocBooleanValueIsTriState = "data-is-tristate";
+    public static readonly string BocBooleanValueIsTriState = "data-bocbooleanvalue-is-tristate";
+
+    public static readonly string BocEnumValueStyle = "data-bocenumvalue-style";
 
     public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";
     public static readonly string BocListRowIndex = "data-boclist-row-index";

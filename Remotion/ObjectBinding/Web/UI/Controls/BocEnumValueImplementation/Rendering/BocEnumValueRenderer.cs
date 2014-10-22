@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -100,6 +101,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       innerControl.RenderControl (renderingContext.Writer);
 
       renderingContext.Writer.RenderEndTag ();
+    }
+
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<IBocEnumValue> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      renderingContext.Writer.AddAttribute (
+          DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle,
+          renderingContext.Control.ListControlStyle.ControlType.ToString());
     }
 
     private ListControl GetListControl (BocEnumValueRenderingContext renderingContext)

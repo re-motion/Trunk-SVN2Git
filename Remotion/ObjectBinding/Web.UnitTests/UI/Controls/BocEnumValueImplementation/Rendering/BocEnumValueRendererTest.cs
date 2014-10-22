@@ -26,6 +26,7 @@ using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
@@ -332,6 +333,23 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
 
       AssertLabel (TestEnum.First, false);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      _enumValue.ListControlStyle.ControlType = ListControlType.ListBox;
+      
+      var resourceUrlFactory = new FakeResourceUrlFactory();
+      var renderer = new BocEnumValueRenderer (
+          resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata);
+      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
+      
+      var document = Html.GetResultDocument();
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "ListBox");
     }
 
     private void AssertLabel (TestEnum? value, bool withStyle)
