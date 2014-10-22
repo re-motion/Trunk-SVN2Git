@@ -40,10 +40,7 @@ namespace ActaNova.WebTesting.SampleTests
     protected ActaNovaMainPageObject Start ()
     {
       var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
-      var mainPage = new UnspecifiedPageObject (context).Expect<ActaNovaMainPageObject>();
-      //// Todo RM-6297: Improve this code (use a waiting strategy somehow?)
-      //context.Browser.Query (() => int.Parse (mainPage.Scope.FindId ("wxePostBackSequenceNumberField").Value) == 2, true);
-      return mainPage;
+      return new UnspecifiedPageObject (context).Expect<ActaNovaMainPageObject>();
     }
 
     public IActionBehavior Behavior
