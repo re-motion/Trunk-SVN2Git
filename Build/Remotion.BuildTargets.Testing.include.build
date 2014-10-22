@@ -145,7 +145,9 @@
     <!-- Run tests -->
     
     <PropertyGroup>
-      <_testName>$(_testAssemblyFileName).$(ActiveConfigurationName).$(_platform).$(_databaseSystem).$(_browser)</_testName>
+      <_testName>$(_testAssemblyFileName).$(ActiveConfigurationName).$(_platform)</_testName>
+      <_testName Condition="'$(_databaseSystem)' != '$(NoDatabaseRequired)'">$(_testName).$(_databaseSystem)</_testName>
+      <_testName Condition="'$(_browser)' != '$(NoBrowserRequired)'">$(_testName).$(_browser)</_testName>
       <_testResultFile>$(LogDirectory)$(_testName).xml</_testResultFile>
     </PropertyGroup>
 
