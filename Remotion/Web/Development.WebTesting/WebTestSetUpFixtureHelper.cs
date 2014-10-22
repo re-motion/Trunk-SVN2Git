@@ -1,7 +1,9 @@
 ﻿using System;
 using JetBrains.Annotations;
+using log4net;
 using log4net.Config;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -11,6 +13,8 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class WebTestSetUpFixtureHelper
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestSetUpFixtureHelper));
+
     private readonly IHostingStrategy _hostingStrategy;
 
     public WebTestSetUpFixtureHelper ([NotNull] IHostingStrategy hostingStrategy)
@@ -44,7 +48,10 @@ namespace Remotion.Web.Development.WebTesting
 
     private void HostWebApplication ()
     {
-      _hostingStrategy.DeployAndStartWebApplication();
+      using (new PerformanceTimer (s_log, "Hosted web application."))
+      {
+        _hostingStrategy.DeployAndStartWebApplication();
+      }
     }
 
     private void UnhostWebApplication ()

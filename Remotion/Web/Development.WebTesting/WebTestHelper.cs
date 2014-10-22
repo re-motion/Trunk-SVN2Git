@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
+using log4net;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Utilities;
 
@@ -17,6 +18,8 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class WebTestHelper
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestHelper));
+
     /// <summary>
     /// Web test configuration.
     /// </summary>
@@ -78,6 +81,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNullOrEmpty ("testName", testName);
 
       _testName = testName;
+      s_log.DebugFormat ("Executing test: {0}.", _testName);
     }
 
     /// <summary>
@@ -88,11 +92,14 @@ namespace Remotion.Web.Development.WebTesting
     /// <returns>The new browser session.</returns>
     public BrowserSession CreateNewBrowserSession (string url, bool maximiseWindow = true)
     {
-      var browser = BrowserFactory.CreateBrowser (_webTestConfiguration);
-      if (maximiseWindow)
-        browser.MaximiseWindow();
-      browser.Visit (url);
-      return browser;
+      using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _webTestConfiguration.BrowserName)))
+      {
+        var browser = BrowserFactory.CreateBrowser (_webTestConfiguration);
+        if (maximiseWindow)
+          browser.MaximiseWindow();
+        browser.Visit (url);
+        return browser;
+      }
     }
 
     /// <summary>
@@ -126,8 +133,8 @@ namespace Remotion.Web.Development.WebTesting
     // Todo RM-6297: SRP: move somewhere...
     private string SanitizeFileName (string fileName)
     {
-      foreach(var c in Path.GetInvalidFileNameChars())
-        fileName = fileName.Replace(c, '_');
+      foreach (var c in Path.GetInvalidFileNameChars())
+        fileName = fileName.Replace (c, '_');
 
       return fileName;
     }

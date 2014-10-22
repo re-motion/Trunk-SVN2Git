@@ -24,7 +24,7 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 
     protected void WaitForWxePostBackSequenceNumber (TestObjectContext context, ElementScope scope, int expectedWxePostBackSequenceNumber)
     {
-      s_log.DebugFormat ("Performing actual wait on window '{0}' and scope '{1}'.", context.Window.Title, scope.FindCss ("title").InnerHTML);
+      s_log.DebugFormat ("Performing actual wait on window '{0}' and scope '{1}'.", context.Window.Title, scope.FindCss ("title").InnerHTML.Trim());
 
       var newWxePostBackSequenceNumber = context.Window.Query (
           () => GetWxePostBackSequenceNumber (scope),
