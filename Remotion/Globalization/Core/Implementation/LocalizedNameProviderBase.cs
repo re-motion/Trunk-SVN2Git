@@ -49,8 +49,7 @@ namespace Remotion.Globalization.Implementation
     [NotNull]
     protected abstract string GetContextForExceptionMessage ([NotNull] TReflectionObject reflectionObject);
 
-    [CanBeNull]
-    public bool TryGetLocalizedNameForCurrentUICulture ([NotNull] TReflectionObject reflectionObject, out string result)
+    public bool TryGetLocalizedNameForCurrentUICulture ([NotNull] TReflectionObject reflectionObject, [CanBeNull] out string result)
     {
       ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
 

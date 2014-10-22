@@ -38,6 +38,6 @@ namespace Remotion.Globalization
     ///   The human-readable localized representation of the <paramref name="value"/> or <see langword="null" /> if no localization could be found.
     /// </param>
     /// <returns><see langword="true" /> if a resource could be found.</returns>
-    bool TryGetEnumerationValueDisplayName ([NotNull] Enum value, out string result);
+    bool TryGetEnumerationValueDisplayName ([NotNull] Enum value, [CanBeNull] out string result);
   }
 }
