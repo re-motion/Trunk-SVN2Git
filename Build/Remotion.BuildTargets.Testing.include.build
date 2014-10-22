@@ -133,6 +133,10 @@
         <Key>browser</Key>
         <Value>$(_browser)</Value>
       </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/webTestConfiguration">
+        <Key>screenshotDirectory</Key>
+        <Value>.\screenshots\$(_browser)_$(_platform)</Value>
+      </_appConfigAttributes>
     </ItemGroup>
     
     <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="UpdateAttribute"
