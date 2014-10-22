@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
@@ -256,6 +257,25 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       _booleanValue.Stub (mock => mock.IsAutoPostBackEnabled).Return (true);
       _clickScript = _clickScript.Insert (_clickScript.IndexOf ("return false;"), c_postbackEventReference + ";");
       CheckRendering (true.ToString(), "TrueIconUrl", _booleanValue.TrueDescription);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      _booleanValue.Stub (mock => mock.IsRequired).Return (false);
+      _booleanValue.Value = true;
+
+      var resourceUrlFactory = new FakeResourceUrlFactory();
+      _renderer = new BocBooleanValueRenderer (
+          resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata,
+          new BocBooleanValueResourceSetFactory (resourceUrlFactory));
+      _renderer.Render (new BocBooleanValueRenderingContext(HttpContext, Html.Writer, _booleanValue));
+      
+      var document = Html.GetResultDocument();
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocBooleanValueIsTriState, "true");
     }
 
     private void CheckRendering (string value, string iconUrl, string description)
