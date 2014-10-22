@@ -94,7 +94,28 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     private string GetFullScreenshotFilePath (string fileName)
     {
       var filePath = Path.Combine (_screenshotDirectory, fileName + ".png");
-      return Path.GetFullPath (filePath);
+
+      try
+      {
+        return Path.GetFullPath (filePath);
+      }
+      catch (PathTooLongException)
+      {
+        filePath = ShortenFilePathHeuristically (filePath);
+        return Path.GetFullPath (filePath);
+      }
+    }
+
+    /// <summary>
+    /// Executes some heuristics to shorten the file path.
+    /// </summary>
+    /// <param name="filePath">File path which is too long.</param>
+    /// <returns>Probably a shorter file path...guarantee: not longer than before.</returns>
+    private string ShortenFilePathHeuristically (string filePath)
+    {
+      // Remove NUnit test parameters from file name...
+      var beginOfTestParametersIndex = filePath.IndexOf ('(');
+      return filePath.Substring (0, beginOfTestParametersIndex);
     }
   }
 }
