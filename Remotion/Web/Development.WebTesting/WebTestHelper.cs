@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
@@ -112,12 +113,23 @@ namespace Remotion.Web.Development.WebTesting
       {
         var screenshotCapturer = new ScreenshotCapturer (_webTestConfiguration.ScreenshotDirectory);
 
-        var desktopScreenshotFileName = string.Format ("{0}_Desktop", _testName);
+        var baseFileName = SanitizeFileName (_testName);
+
+        var desktopScreenshotFileName = string.Format ("{0}_Desktop", baseFileName);
         screenshotCapturer.TakeDesktopScreenshot (desktopScreenshotFileName);
 
-        var browserScreenshotFileName = string.Format ("{0}_Browser", _testName);
+        var browserScreenshotFileName = string.Format ("{0}_Browser", baseFileName);
         screenshotCapturer.TakeBrowserScreenshot (browserScreenshotFileName, MainBrowserSession);
       }
+    }
+
+    // Todo RM-6297: SRP: move somewhere...
+    private string SanitizeFileName (string fileName)
+    {
+      foreach(var c in Path.GetInvalidFileNameChars())
+        fileName = fileName.Replace(c, '_');
+
+      return fileName;
     }
 
     private bool ShouldTakeScreenshots ()
