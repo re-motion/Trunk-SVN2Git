@@ -260,11 +260,11 @@
       <Output ItemName="_testOutputFiles8" TaskParameter="Include"/>
     </CreateItem>
     
-    <!-- Step 9: _testOutputFiles = _testOutputFiles7 + _testOutputFiles8 -->
+    <!-- Step 9: _testOutputFiles = _testOutputFiles8 + _testOutputFiles7 (so that web tests are executed in the end) -->
     <ItemGroup>
       <_testOutputFiles Remove="@(_testOutputFiles)"/>
-      <_testOutputFiles Include="@(_testOutputFiles7)"/>
       <_testOutputFiles Include="@(_testOutputFiles8)"/>
+      <_testOutputFiles Include="@(_testOutputFiles7)"/>
     </ItemGroup>
 
     <!-- Print all created configurations -->
