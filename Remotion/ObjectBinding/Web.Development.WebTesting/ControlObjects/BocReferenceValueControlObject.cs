@@ -1,8 +1,6 @@
 ﻿using System;
 using Coypu;
 using JetBrains.Annotations;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
