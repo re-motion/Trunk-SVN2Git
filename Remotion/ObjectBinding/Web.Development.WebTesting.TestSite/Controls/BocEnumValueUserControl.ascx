@@ -82,6 +82,8 @@
         PropertyIdentifier="MarriageStatus"
         UndefinedItemText="Is_So_Undefined"
         
+        ListControlStyle-ListBoxRows="2"
+
         Enabled="true"
         ListControlStyle-AutoPostBack="true"
         ListControlStyle-ControlType="ListBox"
@@ -100,6 +102,8 @@
         PropertyIdentifier="MarriageStatus"
         UndefinedItemText="Is_So_Undefined"
         
+        ListControlStyle-ListBoxRows="2"
+
         Enabled="true"
         ListControlStyle-AutoPostBack="true"
         ListControlStyle-ControlType="ListBox"
@@ -118,6 +122,8 @@
         PropertyIdentifier="MarriageStatus"
         UndefinedItemText="Is_So_Undefined"
         
+        ListControlStyle-ListBoxRows="2"
+
         Enabled="false"
         ListControlStyle-AutoPostBack="true"
         ListControlStyle-ControlType="ListBox"
@@ -136,6 +142,8 @@
         PropertyIdentifier="MarriageStatus"
         UndefinedItemText="Is_So_Undefined"
         
+        ListControlStyle-ListBoxRows="2"
+
         Enabled="true"
         ListControlStyle-AutoPostBack="false"
         ListControlStyle-ControlType="ListBox"
@@ -153,12 +161,16 @@
         DataSourceControl="CurrentObject"
         PropertyIdentifier="MarriageStatus"
         UndefinedItemText="Is_So_Undefined"
-        
+
         Enabled="true"
         ListControlStyle-AutoPostBack="true"
         ListControlStyle-ControlType="RadioButtonList"
         ReadOnly="false"
         Required="false"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="Table"
         
         runat="server"/>
     </td>
@@ -178,6 +190,10 @@
         ReadOnly="true"
         Required="true"
         
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="Table"
+        
         runat="server"/>
     </td>
     <td>(RadioButtonList, read-only)</td>
@@ -195,6 +211,10 @@
         ListControlStyle-ControlType="RadioButtonList"
         ReadOnly="false"
         Required="true"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="Table"
         
         runat="server"/>
     </td>
@@ -214,8 +234,122 @@
         ReadOnly="false"
         Required="true"
         
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="Table"
+        
         runat="server"/>
     </td>
     <td>(RadioButtonList, no auto postback)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListMultiColumn"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="MarriageStatus"
+        UndefinedItemText="Is_So_Undefined"
+
+        Enabled="true"
+        ListControlStyle-AutoPostBack="true"
+        ListControlStyle-ControlType="RadioButtonList"
+        ReadOnly="false"
+        Required="false"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="2"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="Table"
+        
+        runat="server"/>
+    </td>
+    <td>(RadioButtonList, multi-column)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListFlow"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="MarriageStatus"
+        UndefinedItemText="Is_So_Undefined"
+
+        Enabled="true"
+        ListControlStyle-AutoPostBack="true"
+        ListControlStyle-ControlType="RadioButtonList"
+        ReadOnly="false"
+        Required="false"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="2"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="Flow"
+        
+        runat="server"/>
+    </td>
+    <td>(RadioButtonList, flow, multi-column)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListOrderedList"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="MarriageStatus"
+        UndefinedItemText="Is_So_Undefined"
+
+        Enabled="true"
+        ListControlStyle-AutoPostBack="true"
+        ListControlStyle-ControlType="RadioButtonList"
+        ReadOnly="false"
+        Required="false"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="OrderedList"
+        
+        runat="server"/>
+    </td>
+    <td>(RadioButtonList, ordered list)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListUnorderedList"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="MarriageStatus"
+        UndefinedItemText="Is_So_Undefined"
+
+        Enabled="true"
+        ListControlStyle-AutoPostBack="true"
+        ListControlStyle-ControlType="RadioButtonList"
+        ReadOnly="false"
+        Required="false"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Right"
+        ListControlStyle-RadionButtonListRepeatLayout="UnorderedList"
+        
+        runat="server"/>
+    </td>
+    <td>(RadioButtonList, unordered list)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListLabelLeft"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="MarriageStatus"
+        UndefinedItemText="Is_So_Undefined"
+
+        Enabled="true"
+        ListControlStyle-AutoPostBack="true"
+        ListControlStyle-ControlType="RadioButtonList"
+        ReadOnly="false"
+        Required="false"
+        
+        ListControlStyle-RadioButtonListRepeatColumns="1"
+        ListControlStyle-RadioButtonListTextAlign="Left"
+        ListControlStyle-RadionButtonListRepeatLayout="Table"
+        
+        runat="server"/>
+    </td>
+    <td>(RadioButtonList, label left)</td>
   </tr>
 </table>

@@ -146,5 +146,50 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue MarriageStatusField_RadioButtonListNoAutoPostBack;
+        
+        /// <summary>
+        /// MarriageStatusField_RadioButtonListMultiColumn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue MarriageStatusField_RadioButtonListMultiColumn;
+        
+        /// <summary>
+        /// MarriageStatusField_RadioButtonListFlow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue MarriageStatusField_RadioButtonListFlow;
+        
+        /// <summary>
+        /// MarriageStatusField_RadioButtonListOrderedList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue MarriageStatusField_RadioButtonListOrderedList;
+        
+        /// <summary>
+        /// MarriageStatusField_RadioButtonListUnorderedList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue MarriageStatusField_RadioButtonListUnorderedList;
+        
+        /// <summary>
+        /// MarriageStatusField_RadioButtonListLabelLeft control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue MarriageStatusField_RadioButtonListLabelLeft;
     }
 }

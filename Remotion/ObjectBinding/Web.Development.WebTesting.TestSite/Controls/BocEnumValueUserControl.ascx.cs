@@ -29,6 +29,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       TestOutput.SetCurrentValueRadioButtonListNormal (
           MarriageStatusField_RadioButtonListNormal.Value != null ? MarriageStatusField_RadioButtonListNormal.Value.ToString() : "");
       TestOutput.SetCurrentValueRadioButtonListNoAutoPostBack (MarriageStatusField_RadioButtonListNoAutoPostBack.Value.ToString());
+      TestOutput.SetCurrentValueRadioButtonListMultiColumn (
+          MarriageStatusField_RadioButtonListMultiColumn.Value != null ? MarriageStatusField_RadioButtonListMultiColumn.Value.ToString() : "");
+      TestOutput.SetCurrentValueRadioButtonListFlow (
+          MarriageStatusField_RadioButtonListFlow.Value != null ? MarriageStatusField_RadioButtonListFlow.Value.ToString() : "");
+      TestOutput.SetCurrentValueRadioButtonListOrderedList (
+          MarriageStatusField_RadioButtonListOrderedList.Value != null ? MarriageStatusField_RadioButtonListOrderedList.Value.ToString() : "");
+      TestOutput.SetCurrentValueRadioButtonListUnorderedList (
+          MarriageStatusField_RadioButtonListUnorderedList.Value != null ? MarriageStatusField_RadioButtonListUnorderedList.Value.ToString() : "");
+      TestOutput.SetCurrentValueRadioButtonListLabelLeft (
+          MarriageStatusField_RadioButtonListLabelLeft.Value != null ? MarriageStatusField_RadioButtonListLabelLeft.Value.ToString() : "");
     }
 
     private BocEnumValueUserControlTestOutput TestOutput

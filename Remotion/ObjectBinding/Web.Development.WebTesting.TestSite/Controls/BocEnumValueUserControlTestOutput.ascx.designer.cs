@@ -65,5 +65,50 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label RadioButtonListNoAutoPostBackCurrentValueLabel;
+        
+        /// <summary>
+        /// RadioButtonListMultiColumnCurrentValueLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RadioButtonListMultiColumnCurrentValueLabel;
+        
+        /// <summary>
+        /// RadioButtonListFlowCurrentValueLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RadioButtonListFlowCurrentValueLabel;
+        
+        /// <summary>
+        /// RadioButtonListOrderedListCurrentValueLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RadioButtonListOrderedListCurrentValueLabel;
+        
+        /// <summary>
+        /// RadioButtonListUnorderedListCurrentValueLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RadioButtonListUnorderedListCurrentValueLabel;
+        
+        /// <summary>
+        /// RadioButtonListLabelLeftCurrentValueLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label RadioButtonListLabelLeftCurrentValueLabel;
     }
 }

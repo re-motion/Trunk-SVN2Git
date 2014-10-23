@@ -34,5 +34,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     {
       RadioButtonListNoAutoPostBackCurrentValueLabel.Text = value;
     }
+
+    public void SetCurrentValueRadioButtonListMultiColumn (string value)
+    {
+      RadioButtonListMultiColumnCurrentValueLabel.Text = value;
+    }
+
+    public void SetCurrentValueRadioButtonListFlow (string value)
+    {
+      RadioButtonListFlowCurrentValueLabel.Text = value;
+    }
+
+    public void SetCurrentValueRadioButtonListOrderedList (string value)
+    {
+      RadioButtonListOrderedListCurrentValueLabel.Text = value;
+    }
+
+    public void SetCurrentValueRadioButtonListUnorderedList (string value)
+    {
+      RadioButtonListUnorderedListCurrentValueLabel.Text = value;
+    }
+
+    public void SetCurrentValueRadioButtonListLabelLeft (string value)
+    {
+      RadioButtonListLabelLeftCurrentValueLabel.Text = value;
+    }
   }
 }
