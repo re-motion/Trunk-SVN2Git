@@ -14,6 +14,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   /// </summary>
   public static class SeleniumSendKeysToWindowsFormsSendKeysTransformer
   {
+    // Todo RM-6297: Add excessive unit testing!
+
     /// <summary>
     /// Converts a Selenium <see cref="IWebElement.SendKeys"/> text parameter to a <see cref="SendKeys.SendWait"/> keys parameter.
     /// </summary>
