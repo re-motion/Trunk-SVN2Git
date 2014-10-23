@@ -70,6 +70,7 @@
     <Compile Include="BocCheckBoxControlObjectTest.cs" />
     <Compile Include="BocReferenceValueControlObjectTest.cs" />
     <Compile Include="BocBooleanValueControlObjectTest.cs" />
+    <Compile Include="BocMultilineTextValueControlObjectTest.cs" />
     <Compile Include="BocTreeViewControlObjectTest.cs" />
     <Compile Include="BocTextValueControlObjectTest.cs" />
     <Compile Include="BocListControlObjectTest.cs" />

@@ -39,6 +39,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<BocListSelector, BocListControlObject> (host, new BocListSelector());
     }
 
+    public static FluentControlSelector<BocMultilineTextValueSelector, BocMultilineTextValueControlObject> GetMultilineTextValue (
+        this IControlHost host)
+    {
+      return new FluentControlSelector<BocMultilineTextValueSelector, BocMultilineTextValueControlObject> (host, new BocMultilineTextValueSelector());
+    }
+
     public static FluentControlSelector<BocReferenceValueSelector, BocReferenceValueControlObject> GetReferenceValue (this IControlHost host)
     {
       return new FluentControlSelector<BocReferenceValueSelector, BocReferenceValueControlObject> (host, new BocReferenceValueSelector());
