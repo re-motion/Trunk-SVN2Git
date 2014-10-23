@@ -9,8 +9,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   public class InfrastructureTests : IntegrationTest
   {
     [Test]
-    [TestCase ("! \" § $ % & / ( ) = ? ² ³ { [ ] } \\ + * ~ ' # @ A Z a z 0 1 8 9")]
-    [TestCase ("! \" § $ % & / ( ) = ? ² ³ { [ ] } \\ + * ~ ' # @ A Z a z 0 1 8 9! \" § $ % & / ( ) =  ? ² ³ { [ ] } \\ + * ~ ' # @ A Z a z 0 1 8 9")]
+    [TestCase ("! \" § $ % & / ( ) = ? ² ³ { [ ] } \\ + * ~ ' # @ < > | A Z a z 0 1 8 9")]
+    [TestCase ("! \" § $ % & / ( ) = ? ² ³ { [ ] } \\ + * ~ ' # @ < > | A Z a z 0 1 8 9! \" § $ % & / ( ) =  ? ² ³ { [ ] } \\ + * ~ ' # @ < > | A Z a z 0 1 8 9")]
     //[TestCase("°")] // Todo RM-6297: Does not work in Chrome with de_AT keyboard, see https://code.google.com/p/chromedriver/issues/detail?id=932
     //[TestCase("^")] // Todo RM-6297: Does not work in IE with de_AT keyboard, see http://stackoverflow.com/questions/26357191/
     public void TestFillWithAndWait_FromCoypuWaitingElementScopeExtensions (string input)
