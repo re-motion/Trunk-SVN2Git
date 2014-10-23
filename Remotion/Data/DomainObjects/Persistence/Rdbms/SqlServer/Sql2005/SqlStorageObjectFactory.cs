@@ -489,8 +489,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
 
       var generator = new UniqueIdentifierGenerator ();
-      var resolver = new MappingResolver (
-          new StorageSpecificExpressionResolver (persistenceModelProvider));
+      var resolver = CreateMappingResolver(storageProviderDefinition, persistenceModelProvider);
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
@@ -499,6 +498,15 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
     }
 
+    protected virtual IMappingResolver CreateMappingResolver (
+        RdbmsProviderDefinition storageProviderDefinition,
+        IRdbmsPersistenceModelProvider persistenceModelProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("persistenceModelProvider", persistenceModelProvider);
+
+      return new MappingResolver (new StorageSpecificExpressionResolver (persistenceModelProvider));
+    }
 
     protected virtual IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (
         RdbmsProviderDefinition storageProviderDefinition, 
