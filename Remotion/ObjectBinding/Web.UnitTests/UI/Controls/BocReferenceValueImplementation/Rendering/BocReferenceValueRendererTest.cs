@@ -29,6 +29,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Remotion.Web;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -456,6 +457,19 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       var select = document.GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 0).GetAssertedChildElement ("span", 1).GetAssertedChildElement ("select", 0);
       select.AssertAttributeValueEquals ("id", c_valueName);
       select.AssertAttributeValueEquals ("name", c_valueName);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes()
+    {
+      Control.DropDownListStyle.AutoPostBack = true;
+
+      var renderer = new BocReferenceValueRenderer (_resourceUrlFactoryStub, GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      renderer.Render (CreateRenderingContext ());
+
+      var document = Html.GetResultDocument();
+      var control = document.DocumentElement;
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
 
     private void AssertReadOnlyContent (XmlNode parent)

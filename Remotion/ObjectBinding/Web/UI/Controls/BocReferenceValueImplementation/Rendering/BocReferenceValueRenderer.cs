@@ -23,6 +23,7 @@ using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -90,6 +91,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       base.Render (renderingContext);
 
       RegisterInitializationScript (renderingContext);
+    }
+
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<IBocReferenceValue> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      var hasAutoPostBack = renderingContext.Control.DropDownListStyle.AutoPostBack.HasValue
+                            && renderingContext.Control.DropDownListStyle.AutoPostBack.Value;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
     }
 
     protected override void RegisterJavaScriptFiles (HtmlHeadAppender htmlHeadAppender)

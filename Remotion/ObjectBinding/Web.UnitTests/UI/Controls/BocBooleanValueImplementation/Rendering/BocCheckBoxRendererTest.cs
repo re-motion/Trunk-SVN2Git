@@ -25,6 +25,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -222,6 +223,24 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
     {
       _checkbox.Attributes["class"] = c_cssClass;
       CheckRender (false, _checkbox.FalseDescription);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      _checkbox.Stub (mock => mock.IsAutoPostBackEnabled).Return(true);
+      _checkbox.Value = true;
+
+      var resourceUrlFactory = new FakeResourceUrlFactory();
+      _renderer = new BocCheckBoxRenderer (
+          resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata);
+      _renderer.Render (new BocCheckBoxRenderingContext(HttpContext, Html.Writer, _checkbox));
+      
+      var document = Html.GetResultDocument();
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
 
     private void CheckRender (bool value, string spanText)

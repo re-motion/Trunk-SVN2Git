@@ -25,6 +25,7 @@ using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.Factories;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -263,6 +264,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
     public void RenderDiagnosticMetadataAttributes ()
     {
       _booleanValue.Stub (mock => mock.IsRequired).Return (false);
+      _booleanValue.Stub (mock => mock.IsAutoPostBackEnabled).Return(true);
       _booleanValue.Value = true;
 
       var resourceUrlFactory = new FakeResourceUrlFactory();
@@ -275,6 +277,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "true");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocBooleanValueIsTriState, "true");
     }
 

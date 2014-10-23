@@ -22,6 +22,7 @@ using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -108,6 +109,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
       }
 
       renderingContext.Writer.RenderEndTag ();
+    }
+
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<IBocCheckBox> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      var hasAutoPostBack = renderingContext.Control.IsAutoPostBackEnabled;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
     }
 
     private bool DetermineClientScriptLevel (BocCheckBoxRenderingContext renderingContext)

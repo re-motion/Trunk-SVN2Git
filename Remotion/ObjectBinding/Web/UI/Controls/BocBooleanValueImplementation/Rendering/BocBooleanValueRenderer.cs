@@ -128,6 +128,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.R
     {
       base.AddDiagnosticMetadataAttributes (renderingContext);
 
+      var hasAutoPostBack = renderingContext.Control.IsAutoPostBackEnabled;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
+
       var isTriState = !renderingContext.Control.IsRequired;
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocBooleanValueIsTriState, isTriState.ToString().ToLower());
     }
