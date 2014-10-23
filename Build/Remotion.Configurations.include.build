@@ -18,16 +18,16 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <AllConfigurations Include="Release">
-      <Name>Release</Name>
-      <Framework>net-4.5</Framework>
-      <OutputDirectory>net-4.5\bin\release\</OutputDirectory>
-    </AllConfigurations>
-
     <AllConfigurations Include="Debug">
       <Name>Debug</Name>
       <Framework>net-4.5</Framework>
       <OutputDirectory>net-4.5\bin\debug\</OutputDirectory>
+    </AllConfigurations>
+    
+    <AllConfigurations Include="Release">
+      <Name>Release</Name>
+      <Framework>net-4.5</Framework>
+      <OutputDirectory>net-4.5\bin\release\</OutputDirectory>
     </AllConfigurations>
   </ItemGroup>
     
