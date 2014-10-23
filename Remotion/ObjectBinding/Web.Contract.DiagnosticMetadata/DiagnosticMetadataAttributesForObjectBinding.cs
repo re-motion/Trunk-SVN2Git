@@ -15,6 +15,7 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
     public static readonly string BocBooleanValueIsTriState = "data-bocbooleanvalue-is-tristate";
 
     public static readonly string BocEnumValueStyle = "data-bocenumvalue-style";
+    public static readonly string BocEnumValueLabelRight = "data-bocenumvalue-labelright";
 
     public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";
     public static readonly string BocListRowIndex = "data-boclist-row-index";

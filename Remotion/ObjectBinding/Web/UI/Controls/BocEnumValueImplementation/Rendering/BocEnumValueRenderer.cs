@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 
@@ -107,9 +108,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     {
       base.AddDiagnosticMetadataAttributes (renderingContext);
 
+      var hasAutoPostBack = renderingContext.Control.ListControlStyle.AutoPostBack.HasValue
+                            && renderingContext.Control.ListControlStyle.AutoPostBack.Value;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, hasAutoPostBack.ToString().ToLower());
+
       renderingContext.Writer.AddAttribute (
           DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle,
           renderingContext.Control.ListControlStyle.ControlType.ToString());
+
+      if (renderingContext.Control.ListControlStyle.ControlType == ListControlType.RadioButtonList)
+      {
+        var hasLabelRight = renderingContext.Control.ListControlStyle.RadioButtonListTextAlign == TextAlign.Right;
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocEnumValueLabelRight, hasLabelRight.ToString().ToLower());
+      }
     }
 
     private ListControl GetListControl (BocEnumValueRenderingContext renderingContext)

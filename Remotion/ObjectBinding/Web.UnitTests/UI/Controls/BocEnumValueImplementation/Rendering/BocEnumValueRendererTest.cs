@@ -33,6 +33,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Renderin
 using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -339,6 +340,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
     public void RenderDiagnosticMetadataAttributes ()
     {
       _enumValue.ListControlStyle.ControlType = ListControlType.ListBox;
+      _enumValue.ListControlStyle.AutoPostBack = true;
       
       var resourceUrlFactory = new FakeResourceUrlFactory();
       var renderer = new BocEnumValueRenderer (
@@ -349,7 +351,30 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "true");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "ListBox");
+    }
+
+    [Test]
+    [Ignore("Ignored until MK fixed it :-)")]
+    public void RenderDiagnosticMetadataAttributesLabelLeft ()
+    {
+      // Todo RM-6297 @ MK: What do I have to do in order to run this test successfully? Do we need a data source?
+
+      _enumValue.ListControlStyle.ControlType = ListControlType.RadioButtonList;
+      _enumValue.ListControlStyle.RadioButtonListTextAlign = TextAlign.Left;
+      
+      var resourceUrlFactory = new FakeResourceUrlFactory();
+      var renderer = new BocEnumValueRenderer (
+          resourceUrlFactory,
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata);
+      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
+      
+      var document = Html.GetResultDocument();
+      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueLabelRight, "false");
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "RadioButtonList");
     }
 
     private void AssertLabel (TestEnum? value, bool withStyle)
