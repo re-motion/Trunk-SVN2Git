@@ -15,6 +15,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     //[TestCase("^")] // Todo RM-6297: Does not work in IE with de_AT keyboard, see http://stackoverflow.com/questions/26357191/
     public void TestFillWithAndWait_FromCoypuWaitingElementScopeExtensions (string input)
     {
+      // Todo RM-6297: Fix problems on TeamCity with FillWithFixed.
+      if (WebTestConfiguration.Current.BrowserIsInternetExplorer())
+        Assert.Ignore("Currently ignored until TeamCity-related probelms with FillWithFixed are fixed.");
+
       var home = Start();
 
       var textBox = home.GetTextBox().ByLocalID("MyTextBox");
