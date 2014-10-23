@@ -105,6 +105,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       bocText = home.GetTextValue().ByLocalID ("LastNameField_NoAutoPostBack");
       Assert.That (bocText.GetText(), Is.EqualTo ("Doe"));
+
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_PasswordNoRender");
+      Assert.That (bocText.GetText(), Is.Empty);
+
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_PasswordRenderMasked");
+      Assert.That (bocText.GetText(), Is.EqualTo ("Doe"));
     }
 
     [Test]

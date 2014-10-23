@@ -56,4 +56,32 @@
     </td>
     <td>(no auto postback)</td>
   </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocTextValue
+        ID="LastNameField_PasswordRenderMasked"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="LastName"
+        TextBoxStyle-AutoPostBack="true"
+        TextBoxStyle-TextMode="PasswordRenderMasked"
+        ValueType="String"
+        runat="server"/>
+    </td>
+    <td>(password, render masked)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <remotion:BocTextValue
+        ID="LastNameField_PasswordNoRender"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="LastName"
+        TextBoxStyle-AutoPostBack="true"
+        TextBoxStyle-TextMode="PasswordNoRender"
+        ValueType="String"
+        runat="server"/>
+    </td>
+    <td>(password, no render)</td>
+  </tr>
 </table>
