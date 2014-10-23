@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var url = string.Format ("{0}ControlTest.wxe?UserControl={1}", _webTestHelper.Configuration.WebApplicationRoot, userControlUrl);
       _webTestHelper.MainBrowserSession.Visit (url);
-      AcceptPossibleModalDialog();
+      _webTestHelper.AcceptPossibleModalDialog();
 
       var context = _webTestHelper.CreateNewTestObjectContext();
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
@@ -54,19 +54,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       // Todo RM-6297 @ MK: Property which returns a new object ... okay for better readability?
       get { return new ActionBehavior(); }
-    }
-
-    private void AcceptPossibleModalDialog ()
-    {
-      try
-      {
-        var context = _webTestHelper.CreateNewTestObjectContext();
-        _webTestHelper.MainBrowserSession.AcceptModalDialogImmediatelyFixed (context);
-      }
-      catch (NoAlertPresentException)
-      {
-        // It's okay.
-      }
     }
   }
 }

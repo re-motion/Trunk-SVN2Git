@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
 using log4net;
+using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Utilities;
 
@@ -108,6 +109,22 @@ namespace Remotion.Web.Development.WebTesting
     public TestObjectContext CreateNewTestObjectContext ()
     {
       return TestObjectContext.New (MainBrowserSession);
+    }
+
+    /// <summary>
+    /// Accepts a, possibly existent, modal dialog.
+    /// </summary>
+    public void AcceptPossibleModalDialog ()
+    {
+      try
+      {
+        var context = CreateNewTestObjectContext();
+        MainBrowserSession.AcceptModalDialogImmediatelyFixed (context);
+      }
+      catch (NoAlertPresentException)
+      {
+        // It's okay.
+      }
     }
 
     /// <summary>
