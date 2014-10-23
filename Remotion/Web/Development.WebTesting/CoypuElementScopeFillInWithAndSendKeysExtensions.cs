@@ -79,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       if (clearValue)
       {
-        var clearTextBox = Keys.End + Keys.Shift + Keys.Home + Keys.Shift + Keys.Delete;
+        var clearTextBox = Keys.Control + "a" + Keys.Control + Keys.Delete;
         value = clearTextBox + value;
       }
 
@@ -98,7 +98,7 @@ namespace Remotion.Web.Development.WebTesting
 
       if (clearValue)
       {
-        const string clearTextBox = "{END}+{HOME}{DEL}";
+        const string clearTextBox = "^a{DEL}";
         value = clearTextBox + value;
       }
 
