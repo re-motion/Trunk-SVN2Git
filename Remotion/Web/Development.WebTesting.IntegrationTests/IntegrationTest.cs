@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     protected RemotionPageObject Start (string page)
     {
-      var url = _webTestHelper.Configuration.WebApplicationRoot + page;
+      var url = WebTestConfiguration.Current.WebApplicationRoot + page;
       _webTestHelper.MainBrowserSession.Visit (url);
 
       var context = _webTestHelper.CreateNewTestObjectContext();

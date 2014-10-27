@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -39,24 +38,9 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Initializes the helper.
     /// </summary>
-    /// <remarks>
-    /// This constructor implicitly sets the <see cref="WebTestConfiguration.Current"/> static field.
-    /// </remarks>
     public WebTestHelper ()
     {
-      _webTestConfiguration = (WebTestConfiguration) ConfigurationManager.GetSection ("webTestConfiguration");
-      Assertion.IsNotNull (_webTestConfiguration, "Configuration section 'webTestConfiguration' missing.");
-
-      // Todo RM-6297: Is there a better way to set the global WebTestConfiguration.Current field?
-      WebTestConfiguration.Current = _webTestConfiguration;
-    }
-
-    /// <summary>
-    /// Access to the <see cref="WebTestConfiguration"/>.
-    /// </summary>
-    public WebTestConfiguration Configuration
-    {
-      get { return _webTestConfiguration; }
+      _webTestConfiguration = WebTestConfiguration.Current;
     }
 
     /// <summary>

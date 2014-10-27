@@ -2,6 +2,7 @@
 using System.Configuration;
 using Coypu.Drivers;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -11,10 +12,26 @@ namespace Remotion.Web.Development.WebTesting
   [UsedImplicitly]
   public class WebTestConfiguration : ConfigurationSection
   {
+    private static readonly Lazy<WebTestConfiguration> s_current;
+
+    static WebTestConfiguration ()
+    {
+      s_current = new Lazy<WebTestConfiguration> (
+          () =>
+          {
+            var configuration = (WebTestConfiguration) ConfigurationManager.GetSection ("remotion.webTestConfiguration");
+            Assertion.IsNotNull (configuration, "Configuration section 'remotion.webTestConfiguration' missing.");
+            return configuration;
+          });
+    }
+
     /// <summary>
-    /// Returns the <see cref="WebTestConfiguration"/> loaded by <see cref="WebTestHelper"/>.
+    /// Returns the current <see cref="WebTestConfiguration"/>.
     /// </summary>
-    public static WebTestConfiguration Current { get; internal set; }
+    public static WebTestConfiguration Current
+    {
+      get { return s_current.Value; }
+    }
 
     /// <summary>
     /// Browser in which the web tests are run.
@@ -31,6 +48,20 @@ namespace Remotion.Web.Development.WebTesting
     public Browser Browser
     {
       get { return Browser.Parse (BrowserName); }
+    }
+
+    /// <summary>
+    /// Returns the process name of the configured browser.
+    /// </summary>
+    /// <returns>The process name without the file extension.</returns>
+    public string GetBrowserExecutableName ()
+    {
+      if (Browser == Browser.InternetExplorer)
+        return "iexplore";
+      if (Browser == Browser.Chrome)
+        return "chrome";
+
+      throw new NotSupportedException (string.Format ("Only browsers '{0}' and '{1}' are supported.", Browser.Chrome, Browser.InternetExplorer));
     }
 
     /// <summary>
@@ -107,20 +138,6 @@ namespace Remotion.Web.Development.WebTesting
     public bool CloseBrowserWindowsOnSetUpAndTearDown
     {
       get { return (bool) this["closeBrowserWindowsOnSetUpAndTearDown"]; }
-    }
-
-    /// <summary>
-    /// Returns the process name of the configured browser.
-    /// </summary>
-    /// <returns>The process name without the file extension.</returns>
-    public string GetBrowserExecutableName ()
-    {
-      if (Browser == Browser.InternetExplorer)
-        return "iexplore";
-      if (Browser == Browser.Chrome)
-        return "chrome";
-
-      throw new NotSupportedException ("Only Chrome and InternetExplorer are supported browsers.");
     }
   }
 }
