@@ -22,6 +22,7 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -109,6 +110,20 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
 
       XmlNode containerDiv = GetAssertedContainerSpan ();
       AssertTitleSpan (containerDiv, false, false);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      _control.Stub (stub => stub.TitleText).Return (c_MenuTitle);
+      PopulateMenu();
+
+      var renderer = new DropDownMenuRenderer (_resourceUrlFactory, GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      renderer.Render (new DropDownMenuRenderingContext (_httpContextStub, _htmlHelper.Writer, _control));
+      
+      var document = _htmlHelper.GetResultDocument();
+      var containerDiv = document.GetAssertedChildElement ("span", 0);
+      containerDiv.AssertAttributeValueEquals (DiagnosticMetadataAttributes.Text, c_MenuTitle);
     }
 
     private void AssertTitleSpan (XmlNode containerDiv, bool withTitle, bool withIcon)

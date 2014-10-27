@@ -191,6 +191,13 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       }
     }
 
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<IDropDownMenu> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, renderingContext.Control.TitleText);
+    }
+
     private void RegisterEventHandlerScripts (DropDownMenuRenderingContext renderingContext)
     {
       if (!renderingContext.Control.Enabled)
