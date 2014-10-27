@@ -36,6 +36,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -1228,6 +1229,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           BocListView columnDefinitionCollection = _availableViews[i];
 
           ListItem item = new ListItem (columnDefinitionCollection.Title, i.ToString());
+          item.Attributes[DiagnosticMetadataAttributes.ItemID] = columnDefinitionCollection.ItemID;
           availableViewsList.Items.Add (item);
           if (_selectedViewIndex != null && _selectedViewIndex == i)
             item.Selected = true;
