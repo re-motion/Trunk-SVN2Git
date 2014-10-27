@@ -77,6 +77,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocTreeView = home.GetTreeView().ByDomainProperty ("Children");
       Assert.That (bocTreeView.Scope.Id, Is.EqualTo ("body_DataEditControl_Normal"));
+
+      bocTreeView = home.GetTreeView().ByDomainProperty ("null");
+      Assert.That (bocTreeView.Scope.Id, Is.EqualTo ("body_DataEditControl_NoPropertyIdentifier"));
     }
 
     [Test]
@@ -86,6 +89,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocTreeView = home.GetTreeView().ByDomainProperty ("Children", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
       Assert.That (bocTreeView.Scope.Id, Is.EqualTo ("body_DataEditControl_Normal"));
+
+      bocTreeView = home.GetTreeView().ByDomainProperty ("null", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
+      Assert.That (bocTreeView.Scope.Id, Is.EqualTo ("body_DataEditControl_NoPropertyIdentifier"));
     }
 
     [Test]
@@ -221,7 +227,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       node.OpenContextMenu().ClickItem ("MenuItem");
 
-      // Todo RM-6297 @ MK: Is this a bug? Shouldn't the sender be the BocTreeView and not the underlying WebTreeView?
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("Normal_Boc_TreeView"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("NodeContextMenuClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("c8ace752-55f6-4074-8890-130276ea6cd1|B, A"));
