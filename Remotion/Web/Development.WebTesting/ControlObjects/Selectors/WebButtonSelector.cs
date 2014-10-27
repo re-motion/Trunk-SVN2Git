@@ -18,9 +18,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
     }
 
-    public WebButtonControlObject SelectPerText (TestObjectContext context, string displayName)
+    public WebButtonControlObject SelectPerText (TestObjectContext context, string text)
     {
-      var scope = context.Scope.FindDMA ("button", DiagnosticMetadataAttributes.Text, displayName);
+      var scope = context.Scope.FindDMA ("button", DiagnosticMetadataAttributes.Text, text);
       return CreateControlObject (context, scope);
     }
 
