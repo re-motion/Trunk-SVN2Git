@@ -1,6 +1,4 @@
 using System;
-using System.Configuration;
-using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -14,10 +12,9 @@ namespace Remotion.Web.Development.WebTesting
 
     public IisExpressAppConfigConfiguredHostingStrategy ()
     {
-      var webTestConfiguration = (WebTestConfiguration) ConfigurationManager.GetSection ("webTestConfiguration");
-      Assertion.IsNotNull (webTestConfiguration, "Configuration section 'webTestConfiguration' missing.");
-
-      _iisExpressHostingStrategy = new IisExpressHostingStrategy (webTestConfiguration.WebApplicationPath, webTestConfiguration.WebApplicationPort);
+      _iisExpressHostingStrategy = new IisExpressHostingStrategy (
+          WebTestConfiguration.Current.WebApplicationPath,
+          WebTestConfiguration.Current.WebApplicationPort);
     }
 
     public void DeployAndStartWebApplication ()
