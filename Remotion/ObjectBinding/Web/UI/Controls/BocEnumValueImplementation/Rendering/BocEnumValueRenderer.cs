@@ -115,12 +115,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       renderingContext.Writer.AddAttribute (
           DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle,
           renderingContext.Control.ListControlStyle.ControlType.ToString());
-
-      if (renderingContext.Control.ListControlStyle.ControlType == ListControlType.RadioButtonList)
-      {
-        var hasLabelRight = renderingContext.Control.ListControlStyle.RadioButtonListTextAlign == TextAlign.Right;
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocEnumValueLabelRight, hasLabelRight.ToString().ToLower());
-      }
     }
 
     private ListControl GetListControl (BocEnumValueRenderingContext renderingContext)
@@ -135,18 +129,39 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       listControl.ApplyStyle (renderingContext.Control.CommonStyle);
       renderingContext.Control.ListControlStyle.ApplyStyle (listControl);
 
+      var oneBasedIndex = 1;
+
       bool needsNullValueItem = (renderingContext.Control.Value == null) && (renderingContext.Control.ListControlStyle.ControlType != ListControlType.RadioButtonList);
       if (!renderingContext.Control.IsRequired || needsNullValueItem)
-        listControl.Items.Add (CreateNullItem(renderingContext));
+      {
+        var nullItem = CreateNullItem (renderingContext);
+        
+        if (IsDiagnosticMetadataRenderingEnabled)
+        {
+          nullItem.Attributes[DiagnosticMetadataAttributes.ItemID] = "==null==";
+          nullItem.Attributes[DiagnosticMetadataAttributes.IndexInCollection] = oneBasedIndex.ToString();
+          nullItem.Attributes[DiagnosticMetadataAttributes.Text] = renderingContext.Control.GetNullItemText();
+        }
+        
+        listControl.Items.Add (nullItem);
+        oneBasedIndex++;
+      }
 
       IEnumerationValueInfo[] valueInfos = renderingContext.Control.GetEnabledValues ();
 
-      for (int i = 0; i < valueInfos.Length; i++)
+      for (int i = 0; i < valueInfos.Length; i++, oneBasedIndex++)
       {
         IEnumerationValueInfo valueInfo = valueInfos[i];
         ListItem item = new ListItem (valueInfo.DisplayName, valueInfo.Identifier);
         if (valueInfo.Value.Equals (renderingContext.Control.Value))
           item.Selected = true;
+
+        if (IsDiagnosticMetadataRenderingEnabled)
+        {
+          item.Attributes[DiagnosticMetadataAttributes.ItemID] = valueInfo.Identifier;
+          item.Attributes[DiagnosticMetadataAttributes.IndexInCollection] = oneBasedIndex.ToString();
+          item.Attributes[DiagnosticMetadataAttributes.Text] = valueInfo.DisplayName;
+        }
 
         listControl.Items.Add (item);
       }

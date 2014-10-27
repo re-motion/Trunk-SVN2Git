@@ -376,7 +376,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueLabelRight, "false");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "RadioButtonList");
     }
 

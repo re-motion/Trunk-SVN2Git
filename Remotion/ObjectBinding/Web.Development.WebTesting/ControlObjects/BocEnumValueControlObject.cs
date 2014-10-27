@@ -167,15 +167,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
-        // Note: unfortunately we cannot render the itemID as DiagnosticMetadataAttribute, the underlying control is a standard ASP.NET control.
-        var scope = _controlObject.Scope.FindCss (string.Format ("input[value='{0}']", itemID));
+        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss("input");
         return CheckScope (scope, actionBehavior);
       }
 
       public UnspecifiedPageObject SelectOption (int index, IActionBehavior actionBehavior = null)
       {
-        // Note: unfortunately we cannot render the index as DiagnosticMetadataAttribute, the underlying control is a standard ASP.NET control.
-        var scope = _controlObject.Scope.FindXPath (string.Format (".//input[{0}]", index));
+        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss("input");
         return CheckScope (scope, actionBehavior);
       }
 
@@ -183,11 +181,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
-        // Note: unfortunately we cannot render the text as DiagnosticMetadataAttribute, the underlying control is a standard ASP.NET control.
-        var hasLabelRight = _controlObject.Scope[DiagnosticMetadataAttributesForObjectBinding.BocEnumValueLabelRight] == "true";
-        var xPathAxis = hasLabelRight ? "following-sibling" : "preceding-sibling";
-
-        var scope = _controlObject.Scope.FindXPath (string.Format (".//input[contains({0}::label, '{1}')]", xPathAxis, text));
+        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.Text, text).FindCss("input");
         return CheckScope (scope, actionBehavior);
       }
 
