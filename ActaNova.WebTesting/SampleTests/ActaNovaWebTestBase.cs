@@ -43,9 +43,9 @@ namespace ActaNova.WebTesting.SampleTests
       return new UnspecifiedPageObject (context).Expect<ActaNovaMainPageObject>();
     }
 
-    public IActionBehavior Behavior
+    protected IActionBehavior Behavior
     {
-      // Todo RM-6297 @ MK: Property which returns a new object ... okay for better readability?
+      // Note: property exists for "syntactical sugar" only, therefore returning a new object in the get accessor is okay.
       get { return new ActionBehavior(); }
     }
   }
