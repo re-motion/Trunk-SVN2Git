@@ -17,10 +17,6 @@
 using System;
 using System.Reflection;
 using System.Resources;
-using System.Web.UI;
-
-// Todo RM-6297 @ MK: Docs Are the following assembly attributes necessary?
-[assembly: TagPrefix ("Remotion.Web.Development.WebTesting", "remotion")]
 
 [assembly: NeutralResourcesLanguage ("en")]
 
