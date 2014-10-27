@@ -88,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public int GetNumberOfPages ()
     {
-      var navigatorDivScope = Scope.FindCss (".bocListNavigator"); // Todo RM-6297: render directly on bocList root element?
+      var navigatorDivScope = Scope.FindCss (".bocListNavigator");
       return int.Parse (navigatorDivScope[DiagnosticMetadataAttributesForObjectBinding.BocListNumberOfPages]);
     }
 

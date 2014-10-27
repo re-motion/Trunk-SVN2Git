@@ -21,8 +21,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
           IPerDisplayNameControlSelector<BocEnumValueControlObject>,
           IPerDomainPropertyControlSelector<BocEnumValueControlObject>
   {
-    // Todo RM-6297: due to the fact that BocEnumValue may have different root tags (uaghs), we have to re-implement some stuff here...
-
+    // Todo: derive from BocControlSelectorBase as soon as BocEnumValue rendering uses span as root tag in all rendering variations.
+    
     private const string c_cssClass = "bocEnumValue";
     private const string c_mainRootTag = "span";
     private const string c_alternativeRootTag = "div";

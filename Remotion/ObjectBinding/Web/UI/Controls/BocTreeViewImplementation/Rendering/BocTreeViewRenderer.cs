@@ -39,7 +39,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTreeViewImplementation.Rende
     /// </summary>
     protected override bool IsBoundToBusinessObject (IBocTreeView control)
     {
-      // Todo RM-6297: override for BocDropDownMenu as well?
       return control.DataSource != null && (control.DataSource.BusinessObject != null || control.DataSource.BusinessObjectClass != null);
     }
     

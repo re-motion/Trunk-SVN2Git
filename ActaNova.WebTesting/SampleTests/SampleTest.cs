@@ -24,20 +24,28 @@ namespace ActaNova.WebTesting.SampleTests
 
       var geschaeftsfall = home.Tree.GetNodeByText ("Favoriten").Expand().Collapse().Expand().GetNode (2);
       home = geschaeftsfall.Select().Expect<ActaNovaMainPageObject>();
-      Assert.That(home.DetailsArea.FormPageTitle, Is.EqualTo("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
+      Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
 
-      home = geschaeftsfall.GetNode ("Files").Expand().GetNode (1).Expand().GetNode ("WrappedDocumentsHierarchy").Expand().Select().Expect<ActaNovaMainPageObject>();
+      home =
+          geschaeftsfall.GetNode ("Files")
+              .Expand()
+              .GetNode (1)
+              .Expand()
+              .GetNode ("WrappedDocumentsHierarchy")
+              .Expand()
+              .Select()
+              .Expect<ActaNovaMainPageObject>();
       Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Akt \"OE/1\" bearbeiten"));
     }
 
 
     [Test]
-    public void TestRefresh()
+    public void TestRefresh ()
     {
-      // Todo RM-6297: Find a better way to test the button...
-
       var home = Start();
 
+      // Todo RM-6297: MainMenu.Select() should allow overridden IActionBehavior
+      home = home.MainMenu.Select ("Extras", "Benutzerprofil").Expect<ActaNovaMainPageObject>();
       home = home.Refresh().Expect<ActaNovaMainPageObject>();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));

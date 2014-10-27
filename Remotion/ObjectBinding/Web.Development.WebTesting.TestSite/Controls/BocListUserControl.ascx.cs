@@ -56,8 +56,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 
     private void SortingOrderChangedHandler (object sender, BocListSortingOrderChangeEventArgs bocListSortingOrderChangeEventArgs)
     {
-      // Todo RM-6297: render column title as well!
-
       var bocList = (BocList) sender;
       TestOutput.SetActionPerformed (
           bocList.ID,

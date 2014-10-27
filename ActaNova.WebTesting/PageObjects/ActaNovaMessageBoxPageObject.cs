@@ -21,7 +21,6 @@ namespace ActaNova.WebTesting.PageObjects
       return UnspecifiedPage();
     }
 
-    // Todo RM-6297: Code duplication with ANMainPageObject.
     private ActaNovaDetailsAreaControlObject DetailsArea
     {
       get
