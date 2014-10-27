@@ -10,7 +10,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class WebTreeViewControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
   {
-    // Note: Functionality is integartion tested via BocTreeViewControlObject in BocTreeViewControlObjectTest.
+    // Note: functionality is integration tested via BocTreeViewControlObject in BocTreeViewControlObjectTest.
 
     private readonly WebTreeViewNodeControlObject _metaRootNode;
 

@@ -10,7 +10,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   [TestFixture]
   public class DropDownMenuControlObjectTest : IntegrationTest
   {
-    // Note that the <see cref="T:DropDownMenu.Mode"/>=<see cref="T:MenuMode.ContextMenu"/> option is tested indirectly by the BocTreeViewControlObjectTest.
+    // Note: the <see cref="T:DropDownMenu.Mode"/>=<see cref="T:MenuMode.ContextMenu"/> option is tested indirectly by the BocTreeViewControlObjectTest.
 
     [Test]
     public void TestSelection_ByHtmlID ()
