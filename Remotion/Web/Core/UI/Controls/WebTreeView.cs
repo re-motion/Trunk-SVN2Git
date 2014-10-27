@@ -561,7 +561,7 @@ namespace Remotion.Web.UI.Controls
         bool isFirstNode = i == 0;
         bool isLastNode = i + 1 == nodes.Count;
 
-        if(_renderingFeatures.EnableDiagnosticMetadata)
+        if (_renderingFeatures.EnableDiagnosticMetadata)
         {
           if (!string.IsNullOrEmpty (node.ItemID))
             writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, node.ItemID);

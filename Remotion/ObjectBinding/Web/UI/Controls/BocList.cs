@@ -1234,7 +1234,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           BocListView columnDefinitionCollection = _availableViews[i];
 
           ListItem item = new ListItem (columnDefinitionCollection.Title, i.ToString());
-          if(_renderingFeatures.EnableDiagnosticMetadata)
+          if (_renderingFeatures.EnableDiagnosticMetadata)
             item.Attributes[DiagnosticMetadataAttributes.ItemID] = columnDefinitionCollection.ItemID;
           availableViewsList.Items.Add (item);
           if (_selectedViewIndex != null && _selectedViewIndex == i)
