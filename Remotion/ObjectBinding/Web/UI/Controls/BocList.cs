@@ -34,6 +34,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSu
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 using Remotion.ObjectBinding.Web.UI.Design;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -313,6 +314,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private bool? _isBrowserCapableOfSCripting;
     private ScalarLoadPostDataTarget _currentPagePostBackTarget;
 
+    private readonly IRenderingFeatures _renderingFeatures;
+
     // construction and disposing
 
     public BocList ()
@@ -324,6 +327,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _availableViews = new BocListViewCollection (this);
       _fixedColumns = new BocColumnDefinitionCollection (this);
       _fixedColumns.CollectionChanged += delegate { OnColumnsChanged(); };
+
+      _renderingFeatures = SafeServiceLocator.Current.GetInstance<IRenderingFeatures>();
     }
 
     // methods and properties
@@ -1229,7 +1234,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           BocListView columnDefinitionCollection = _availableViews[i];
 
           ListItem item = new ListItem (columnDefinitionCollection.Title, i.ToString());
-          item.Attributes[DiagnosticMetadataAttributes.ItemID] = columnDefinitionCollection.ItemID;
+          if(_renderingFeatures.EnableDiagnosticMetadata)
+            item.Attributes[DiagnosticMetadataAttributes.ItemID] = columnDefinitionCollection.ItemID;
           availableViewsList.Items.Add (item);
           if (_selectedViewIndex != null && _selectedViewIndex == i)
             item.Selected = true;
