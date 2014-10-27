@@ -253,7 +253,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      throw new NotSupportedException ("Currently it is not possible to change the view using the itemID.");
+      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID));
     }
 
     public void ChangeViewTo (int index)

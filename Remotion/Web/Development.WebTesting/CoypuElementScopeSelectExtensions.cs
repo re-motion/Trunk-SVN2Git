@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Remotion.Utilities;
+using Remotion.Web.Contract.DiagnosticMetadata;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -59,6 +60,33 @@ namespace Remotion.Web.Development.WebTesting
 
       var select = new SelectElement (webElement);
       select.SelectByValue (value);
+    }
+
+    /// <summary>
+    /// Selects an option of a &lt;select&gt; element by <see cref="DiagnosticMetadataAttributes"/> given by
+    /// <paramref name="diagnosticMetadataAttributeName"/> and <paramref name="diagnosticMetadataAttributeValue"/>.
+    /// </summary>
+    /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
+    /// <param name="diagnosticMetadataAttributeName">The diagnostic metadata attribute name.</param>
+    /// <param name="diagnosticMetadataAttributeValue">The diagnostic metadata attribute value.</param>
+    public static void SelectOptionByDMA (
+        [NotNull] this ElementScope scope,
+        [NotNull] string diagnosticMetadataAttributeName,
+        [NotNull] string diagnosticMetadataAttributeValue)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeName", diagnosticMetadataAttributeName);
+      ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeValue", diagnosticMetadataAttributeValue);
+      
+      // Hack: Coypu does not yet support SelectElement, use Selenium directly.
+      var webElement = (IWebElement) scope.Native;
+
+      var select = new SelectElement (webElement);
+      foreach(var option in select.Options)
+      {
+        if (option.GetAttribute (diagnosticMetadataAttributeName) == diagnosticMetadataAttributeValue)
+          select.SelectByValue (option.GetAttribute ("value"));
+      }
     }
   }
 }
