@@ -52,8 +52,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       if (userDefinedActionBehavior != null)
         return userDefinedActionBehavior;
 
-      // Todo RM-6297: Improve exception handling if attributes are not in the correct format.
-
       if (scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);

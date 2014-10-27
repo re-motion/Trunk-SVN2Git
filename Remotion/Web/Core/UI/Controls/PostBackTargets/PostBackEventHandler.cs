@@ -35,8 +35,12 @@ namespace Remotion.Web.UI.Controls.PostBackTargets
 
     public void RaisePostBackEvent (string eventArgument)
     {
-      if (PostBack != null)
-        PostBack (this, new PostBackEventHandlerEventArgs (eventArgument));
+      // Todo RM-6297 @ MK: No copy to local variable before - why? Also: add null check for eventArgument?
+
+      var eventHandler = PostBack;
+
+      if (eventHandler != null)
+        eventHandler (this, new PostBackEventHandlerEventArgs (eventArgument));
     }
   }
 }
