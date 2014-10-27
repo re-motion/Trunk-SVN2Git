@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
@@ -38,8 +39,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListEditableRowControlObject (_bocList, ID, Context);
     }
 
-    public BocListCellControlObject GetCell (string columnItemID)
+    public BocListCellControlObject GetCell ([NotNull] string columnItemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+
       var index = _bocList.GetColumnIndex (columnItemID);
       return GetCell (index);
     }
@@ -50,8 +53,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
-    public BocListCellControlObject GetCellByHtmlID (string htmlID)
+    [Obsolete ("BocList cells cannot be selected using a full HTML ID.", true)]
+    public BocListCellControlObject GetCellByHtmlID ([NotNull] string htmlID)
     {
+      // Method declaration exists for symmetry reasons only.
+
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       throw new NotSupportedException ("BocList cells cannot be selected using a full HTML ID.");
     }
 

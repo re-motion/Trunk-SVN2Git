@@ -105,8 +105,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       lastPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
-    public BocListRowControlObject GetRow (string itemID)
+    public BocListRowControlObject GetRow ([NotNull] string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
           DiagnosticMetadataAttributes.ItemID,
@@ -123,8 +125,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetRowByCssSelector (cssSelector);
     }
 
-    public BocListRowControlObject GetRowByHtmlID (string htmlID)
+    [Obsolete ("BocList rows cannot be selected using a full HTML ID.", true)]
+    public BocListRowControlObject GetRowByHtmlID ([NotNull] string htmlID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
+      // Method declaration exists for symmetry reasons only.
+
       throw new NotSupportedException ("BocList rows cannot be selected using a full HTML ID.");
     }
 
@@ -134,20 +141,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
-    public BocListRowControlObject GetRowWhere (string columnItemID, string containsCellText)
+    public BocListRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
       var cell = GetCellWhere (columnItemID, containsCellText);
       return GetRowFromCell (cell);
     }
 
-    public BocListRowControlObject GetRowWhere (int columnIndex, string containsCellText)
+    public BocListRowControlObject GetRowWhere (int columnIndex, [NotNull] string containsCellText)
     {
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
       var cell = GetCellWhere (columnIndex, containsCellText);
       return GetRowFromCell (cell);
     }
 
-    public BocListRowControlObject GetRowWhereByColumnTitle (string columnTitle, string containsCellText)
+    public BocListRowControlObject GetRowWhereByColumnTitle ([NotNull] string columnTitle, [NotNull] string containsCellText)
     {
+      ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
       var cell = GetCellWhereByColumnTitle (columnTitle, containsCellText);
       return GetRowFromCell (cell);
     }
@@ -158,14 +173,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
     }
 
-    public BocListCellControlObject GetCellWhere (string columnItemID, string containsCellText)
+    public BocListCellControlObject GetCellWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
       var index = GetColumnIndex (columnItemID);
       return GetCellWhere (index, containsCellText);
     }
 
-    public BocListCellControlObject GetCellWhere (int columnIndex, string containsCellText)
+    public BocListCellControlObject GetCellWhere (int columnIndex, [NotNull] string containsCellText)
     {
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
@@ -176,14 +196,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
     }
 
-    public BocListCellControlObject GetCellWhereByColumnTitle (string columnTitle, string containsCellText)
+    public BocListCellControlObject GetCellWhereByColumnTitle ([NotNull] string columnTitle, [NotNull] string containsCellText)
     {
+      ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
       var index = GetColumnIndexByTitle (columnTitle);
       return GetCellWhere (index, containsCellText);
     }
 
-    public void ClickOnSortColumn (string columnItemID)
+    public void ClickOnSortColumn ([NotNull] string columnItemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+
       var index = GetColumnIndex (columnItemID);
       ClickOnSortColumn (index);
     }
@@ -199,14 +224,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       sortColumnLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
-    public void ClickOnSortColumnByTitle (string columnTitle)
+    public void ClickOnSortColumnByTitle ([NotNull] string columnTitle)
     {
+      ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
+
       var index = GetColumnIndexByTitle (columnTitle);
       ClickOnSortColumn (index);
     }
 
-    public void ChangeViewTo (string itemID)
+    public void ChangeViewTo ([NotNull] string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       throw new NotSupportedException ("Currently it is not possible to change the view using the itemID.");
     }
 
@@ -215,8 +244,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ChangeViewTo (scope => scope.SelectOptionByIndex (index));
     }
 
-    public void ChangeViewToByLabel (string label)
+    public void ChangeViewToByLabel ([NotNull] string label)
     {
+      ArgumentUtility.CheckNotNull ("label", label);
+
       ChangeViewTo (scope => scope.SelectOption (label));
     }
 
@@ -249,7 +280,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var indexOf = _columns.IndexOf (cd => cd.ItemID == columnItemID);
       if (indexOf == -1)
-        throw new ArgumentOutOfRangeException ("columnItemID", columnItemID, "Column item ID does not exist."); // Todo RM-6297: Exception type.
+        throw new KeyNotFoundException (string.Format ("Column item ID '{0}' does not exist.", columnItemID));
 
       return indexOf + 1;
     }
@@ -258,7 +289,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var indexOf = _columns.IndexOf (cd => cd.Title == columnTitle);
       if (indexOf == -1)
-        throw new ArgumentOutOfRangeException ("columnTitle", columnTitle, "Colum title does not exist."); // Todo RM-6297: Better exception type.
+        throw new KeyNotFoundException (string.Format ("Column title '{0}' does not exist.", columnTitle));
 
       return indexOf + 1;
     }

@@ -29,8 +29,11 @@ namespace ActaNova.WebTesting.ControlObjects
       return _metaRootNode.GetNode (index);
     }
 
+    [Obsolete ("ActaNovaTree nodes cannot be selected using a full HTML ID.", true)]
     public ActaNovaTreeNodeControlObject GetNodeByHtmlID (string htmlID)
     {
+      // Method declaration exists for symmetry reasons only.
+
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       return _metaRootNode.GetNodeByHtmlID (htmlID);
