@@ -18,7 +18,6 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 
     protected int GetWxePostBackSequenceNumber (ElementScope scope)
     {
-      // Todo RM-6297: make exception safe.
       return Int32.Parse (scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
     }
 

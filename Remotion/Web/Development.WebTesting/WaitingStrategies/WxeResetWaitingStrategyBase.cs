@@ -13,7 +13,6 @@ namespace Remotion.Web.Development.WebTesting.WaitingStrategies
 
     protected string GetWxeFunctionToken (ElementScope scope)
     {
-      // Todo RM-6297: make exception safe.
       return scope.FindId (c_wxeFunktionTokenId).Value;
     }
 

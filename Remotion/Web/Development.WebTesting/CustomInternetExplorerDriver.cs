@@ -20,7 +20,7 @@ namespace Remotion.Web.Development.WebTesting
     private static IWebDriver CreateInternetExplorerDriver ()
     {
       var driverService = InternetExplorerDriverService.CreateDefaultService();
-      driverService.LogFile = "InternetExplorerDriverService.log"; // Todo RM-6297: obtain log path from App.config?
+      driverService.LogFile = "InternetExplorerDriverService.log";
       driverService.LoggingLevel = InternetExplorerDriverLogLevel.Info;
 
       return
