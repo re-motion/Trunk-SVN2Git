@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// Groups all arguments required for rendering a <see cref="IBocRenderableControl"/> and <see cref="IBusinessObjectBoundEditableWebControl"/>.
   /// </summary>
   public class BocRenderingContext<TControl> : RenderingContext<TControl>
-    where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
+    where TControl: IBocRenderableControl, IBusinessObjectBoundWebControl
   {
     public BocRenderingContext (HttpContextBase httpContext, HtmlTextWriter writer, TControl control)
         : base(httpContext, writer, control)

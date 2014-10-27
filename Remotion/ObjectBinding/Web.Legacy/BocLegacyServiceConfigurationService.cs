@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocEnumValueImplementation.R
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTreeViewImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.Factories;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
@@ -29,6 +30,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Renderin
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTreeViewImplementation.Rendering;
 using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.Legacy
@@ -108,6 +110,9 @@ namespace Remotion.ObjectBinding.Web.Legacy
 
       yield return new ServiceConfigurationEntry (
           typeof (IBocAutoCompleteReferenceValueRenderer), CreateSingletonImplementationInfo<BocAutoCompleteReferenceValueQuirksModeRenderer> ());
+
+      yield return new ServiceConfigurationEntry (
+          typeof (IBocTreeViewRenderer), CreateSingletonImplementationInfo<BocTreeViewQuirksModeRenderer> ());
     }
 
     private static ServiceImplementationInfo CreateSingletonImplementationInfo<T>() {

@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class BocQuirksModeRendererBase<TControl> : QuirksModeRendererBase<TControl>
-      where TControl: IBocRenderableControl, IBusinessObjectBoundEditableWebControl
+      where TControl: IBocRenderableControl, IBusinessObjectBoundWebControl
   {
     protected BocQuirksModeRendererBase (IResourceUrlFactory resourceUrlFactory) 
       :base(resourceUrlFactory)
@@ -116,15 +116,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       backUpCssClass = renderingContext.Control.CssClass;
       bool hasCssClass = !string.IsNullOrEmpty (backUpCssClass);
       if (hasCssClass)
-        renderingContext.Control.CssClass += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+        renderingContext.Control.CssClass += GetAdditionalCssClass (IsReadOnly(renderingContext.Control), !renderingContext.Control.Enabled);
 
       backUpAttributeCssClass = renderingContext.Control.Attributes["class"];
       bool hasClassAttribute = !string.IsNullOrEmpty (backUpAttributeCssClass);
       if (hasClassAttribute)
-        renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+        renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (IsReadOnly(renderingContext.Control), !renderingContext.Control.Enabled);
 
       if (!hasCssClass && !hasClassAttribute)
-        renderingContext.Control.CssClass = CssClassBase + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+        renderingContext.Control.CssClass = CssClassBase + GetAdditionalCssClass (IsReadOnly(renderingContext.Control), !renderingContext.Control.Enabled);
     }
 
     private void RestoreWidth (RenderingContext<TControl> renderingContext, string backUpStyleWidth, Unit backUpWidth)
@@ -147,6 +147,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls
       else if (isDisabled)
         additionalCssClass = " " + CssClassDisabled;
       return additionalCssClass;
+    }
+
+    private bool IsReadOnly (TControl control)
+    {
+      var editableControl = control as IBusinessObjectBoundEditableWebControl;
+      if (editableControl == null)
+        return true;
+
+      return editableControl.IsReadOnly;
     }
   }
 }

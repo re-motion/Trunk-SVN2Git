@@ -17,6 +17,7 @@
 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
@@ -32,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class BocRendererBase<TControl> : RendererBase<TControl>
-      where TControl : IBocRenderableControl, IBusinessObjectBoundEditableWebControl
+      where TControl : IBocRenderableControl, IBusinessObjectBoundWebControl
   {
     protected BocRendererBase (
         IResourceUrlFactory resourceUrlFactory,
@@ -94,22 +95,31 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!string.IsNullOrEmpty (control.DisplayName))
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.DisplayName, control.DisplayName);
 
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsReadOnly, control.IsReadOnly.ToString().ToLower());
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.IsReadOnly, IsReadOnly (control).ToString().ToLower());
 
-      var isBound = IsBound (control);
+      var isBound = IsBoundToBusinessObject (control);
       renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.IsBound, isBound.ToString().ToLower());
 
       if (isBound)
       {
         var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier (control);
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundType, businessObjectClassIdentifier);
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundProperty, control.Property.Identifier);
+
+        var boundProperty = Maybe.ForValue (control.Property).Select (p => p.Identifier).ValueOrDefault ("null");
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundProperty, boundProperty);
       }
     }
 
-    // Todo RM-6297 @ MK: How to prevent code duplication with BusinessObjectBoundWebControl.IsBound() and .GetBusinessObjectClassIdentifier()?
-    private bool IsBound (TControl control)
+    /// <summary>
+    /// Returns whether the control is bound to a business object. The default implementation checks whether the control is bound to a specific
+    /// property of a business object. Derived classes may override this behavior.
+    /// </summary>
+    /// <param name="control">The control which is checked.</param>
+    /// <returns>True if the control is bound to a business object, false otherwise.</returns>
+    protected virtual bool IsBoundToBusinessObject (TControl control)
     {
+      ArgumentUtility.CheckNotNull ("control", control);
+
       return control.Property != null && control.DataSource != null
              && (control.DataSource.BusinessObject != null || control.DataSource.BusinessObjectClass != null);
     }
@@ -152,18 +162,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       backUpCssClass = renderingContext.Control.CssClass;
       bool hasCssClass = !string.IsNullOrEmpty (backUpCssClass);
       if (hasCssClass)
-        renderingContext.Control.CssClass += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+        renderingContext.Control.CssClass += GetAdditionalCssClass (renderingContext.Control);
 
       backUpAttributeCssClass = renderingContext.Control.Attributes["class"];
       bool hasClassAttribute = !string.IsNullOrEmpty (backUpAttributeCssClass);
       if (hasClassAttribute)
-        renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
+        renderingContext.Control.Attributes["class"] += GetAdditionalCssClass (renderingContext.Control);
 
       if (!hasCssClass && !hasClassAttribute)
-      {
-        renderingContext.Control.CssClass = GetCssClassBase (renderingContext.Control)
-                                            + GetAdditionalCssClass (renderingContext.Control.IsReadOnly, !renderingContext.Control.Enabled);
-      }
+        renderingContext.Control.CssClass = GetCssClassBase (renderingContext.Control) + GetAdditionalCssClass (renderingContext.Control);
     }
 
     private void RestoreClass (RenderingContext<TControl> renderingContext, string backUpCssClass, string backUpAttributeCssClass)
@@ -172,14 +179,30 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       renderingContext.Control.Attributes["class"] = backUpAttributeCssClass;
     }
 
-    private string GetAdditionalCssClass (bool isReadOnly, bool isDisabled)
+    private string GetAdditionalCssClass (TControl control)
     {
-      string additionalCssClass = string.Empty;
+      var isReadOnly = IsReadOnly (control);
+      var isDisabled = !control.Enabled;
+
+      var additionalCssClass = string.Empty;
+
       if (isReadOnly)
         additionalCssClass = " " + CssClassReadOnly;
       else if (isDisabled)
         additionalCssClass = " " + CssClassDisabled;
+
       return additionalCssClass;
+    }
+
+    private bool IsReadOnly (TControl control)
+    {
+      // Note: returns always true for controls which are non-editable, effects to rendering are acceptable at the moment.
+
+      var editableControl = control as IBusinessObjectBoundEditableWebControl;
+      if (editableControl == null)
+        return true;
+
+      return editableControl.IsReadOnly;
     }
   }
 }

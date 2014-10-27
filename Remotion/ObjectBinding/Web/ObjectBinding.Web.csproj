@@ -245,6 +245,10 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\IBocTextValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocTreeViewImplementation\IBocTreeView.cs" />
+    <Compile Include="UI\Controls\BocTreeViewImplementation\Rendering\BocTreeViewRenderer.cs" />
+    <Compile Include="UI\Controls\BocTreeViewImplementation\Rendering\BocTreeViewRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocTreeViewImplementation\Rendering\IBocTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\Factories\BocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueResourceSetFactory.cs" />
     <Compile Include="UI\Controls\BocCheckBox.cs">

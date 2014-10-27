@@ -22,7 +22,8 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
-using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTreeViewImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocTreeViewImplementation.Rendering;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
@@ -33,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <summary> Object bound tree view. </summary>
   /// <include file='..\..\doc\include\UI\Controls\BocTreeView.xml' path='BocTreeView/Class/*' />
   [DefaultEvent ("Click")]
-  public class BocTreeView : BusinessObjectBoundWebControl
+  public class BocTreeView : BusinessObjectBoundWebControl, IBocRenderableControl, IBocTreeView
   {
     // constants
 
@@ -140,6 +141,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         WcagHelper.Instance.HandleError (1, this);
     }
 
+    bool IBocRenderableControl.IsDesignMode
+    {
+      get { return IsDesignMode; }
+    }
+
     protected override void OnPreRender (EventArgs e)
     {
       EnsureChildControls();
@@ -190,21 +196,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (string.IsNullOrEmpty (CssClass) && string.IsNullOrEmpty (Attributes["class"]))
         writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
 
-      if (_renderingFeatures.EnableDiagnosticMetadata)
-      {
-        if (!string.IsNullOrEmpty (DisplayName))
-          writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.DisplayName, DisplayName);
+      var renderer = CreateRenderer();
+      renderer.AddDiagnosticMetadataAttributes (CreateRenderingContext (writer));
+    }
 
-        var isBound = IsBound();
-        writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.IsBound, isBound.ToString().ToLower());
+    protected virtual IBocTreeViewRenderer CreateRenderer ()
+    {
+      return ServiceLocator.GetInstance<IBocTreeViewRenderer>();
+    }
 
-        if (isBound)
-        {
-          var businessObjectClassIdentifier = GetBusinessObjectClassIdentifier();
-          writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundType, businessObjectClassIdentifier);
-          writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BoundProperty, Property.Identifier);
-        }
-      }
+    protected virtual BocTreeViewRenderingContext CreateRenderingContext (HtmlTextWriter writer)
+    {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+
+      return new BocTreeViewRenderingContext (Context, writer, this);
     }
 
     private void InitializeRootWebTreeNodes ()
