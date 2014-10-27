@@ -42,11 +42,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
     }
 
+    private class BocListRowControlObjectHostAccessor : IBocListRowControlObjectHostAccessor
+    {
+      private readonly BocListControlObject _bocList;
+
+      public BocListRowControlObjectHostAccessor (BocListControlObject bocList)
+      {
+        _bocList = bocList;
+      }
+
+      public int GetColumnIndex (string columnItemID)
+      {
+        return _bocList.GetColumnIndex (columnItemID);
+      }
+    }
+
+    private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly List<ColumnDefinition> _columns;
 
     public BocListControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      _accessor = new BocListRowControlObjectHostAccessor (this);
       _columns = RetryUntilTimeout.Run (
           () => Scope.FindAllCss (".bocListFakeTableHead th")
               .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s[DiagnosticMetadataAttributes.Text]))
@@ -138,7 +155,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListRowControlObject GetRowByCssSelector (string cssSelector)
     {
       var rowScope = Scope.FindCss (cssSelector);
-      return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
+      return new BocListRowControlObject (_accessor, ID, Context.CloneForScope (rowScope));
     }
 
     public BocListRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
@@ -170,7 +187,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListRowControlObject GetRowFromCell (BocListCellControlObject cell)
     {
       var rowScope = cell.Scope.FindXPath ("..");
-      return new BocListRowControlObject (this, ID, Context.CloneForScope (rowScope));
+      return new BocListRowControlObject (_accessor, ID, Context.CloneForScope (rowScope));
     }
 
     public BocListCellControlObject GetCellWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
@@ -276,7 +293,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new ListMenuControlObject (listMenuScope.Id, Context.CloneForScope (listMenuScope));
     }
 
-    internal int GetColumnIndex (string columnItemID)
+    private int GetColumnIndex (string columnItemID)
     {
       var indexOf = _columns.IndexOf (cd => cd.ItemID == columnItemID);
       if (indexOf == -1)

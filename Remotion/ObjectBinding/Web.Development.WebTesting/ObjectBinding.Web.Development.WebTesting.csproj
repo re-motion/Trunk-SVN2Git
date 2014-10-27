@@ -106,6 +106,7 @@
     <Compile Include="ControlObjects\BocAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\BocListControlObject.cs" />
     <Compile Include="ControlObjects\BocTreeViewNodeControlObject.cs" />
+    <Compile Include="ControlObjects\IBocListRowControlObjectHostAccessor.cs" />
     <Compile Include="ControlObjects\IBocTreeViewNodeNavigator.cs" />
     <Compile Include="ControlObjects\Selectors\BocEnumValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocCheckBoxSelector.cs" />

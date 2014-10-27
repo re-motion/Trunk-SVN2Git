@@ -13,13 +13,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListRowControlObject : BocControlObject
   {
-    private readonly BocListControlObject _bocList;
+    private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly int _rowIndex;
 
-    public BocListRowControlObject (BocListControlObject bocList, [NotNull] string id, [NotNull] TestObjectContext context)
+    public BocListRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _bocList = bocList;
+      _accessor = accessor;
       _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
     }
 
@@ -36,14 +36,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var editCommandLinkScope = editCommandScope.FindLink();
       editCommandLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
 
-      return new BocListEditableRowControlObject (_bocList, ID, Context);
+      return new BocListEditableRowControlObject (_accessor, ID, Context);
     }
 
     public BocListCellControlObject GetCell ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      var index = _bocList.GetColumnIndex (columnItemID);
+      var index = _accessor.GetColumnIndex (columnItemID);
       return GetCell (index);
     }
 

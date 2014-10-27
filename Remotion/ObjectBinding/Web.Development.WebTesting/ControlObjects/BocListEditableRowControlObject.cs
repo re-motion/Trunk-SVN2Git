@@ -14,12 +14,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListEditableRowControlObject : BocControlObject
   {
-    private readonly BocListControlObject _bocList;
+    private readonly IBocListRowControlObjectHostAccessor _accessor;
 
-    public BocListEditableRowControlObject (BocListControlObject bocList, [NotNull] string id, [NotNull] TestObjectContext context)
+    public BocListEditableRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _bocList = bocList;
+      _accessor = accessor;
     }
 
     public BocListRowControlObject Save ()
@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var save = editCell.GetControl (new PerIndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 1));
       save.Click();
 
-      return new BocListRowControlObject (_bocList, ID, Context);
+      return new BocListRowControlObject (_accessor, ID, Context);
     }
 
     public BocListRowControlObject Cancel ()
@@ -39,14 +39,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var cancel = editCell.GetControl (new PerIndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 2));
       cancel.Click();
 
-      return new BocListRowControlObject (_bocList, ID, Context);
+      return new BocListRowControlObject (_accessor, ID, Context);
     }
 
     public BocListEditableCellControlObject GetCell ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      var index = _bocList.GetColumnIndex (columnItemID);
+      var index = _accessor.GetColumnIndex (columnItemID);
       return GetCell (index);
     }
 
