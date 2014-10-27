@@ -36,11 +36,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
     }
 
+    [Obsolete ("WebTreeView nodes cannot be selected using a full HTML ID.", true)]
     public WebTreeViewNodeControlObject GetNodeByHtmlID (string htmlID)
     {
+      // Method declaration exists for symmetry reasons only.
+
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
-      throw new NotSupportedException ("BocTreeView nodes cannot be selected using the full HTML ID.");
+      throw new NotSupportedException ("WebTreeView nodes cannot be selected using the full HTML ID.");
     }
 
     public WebTreeViewNodeControlObject GetNodeByText (string text)
