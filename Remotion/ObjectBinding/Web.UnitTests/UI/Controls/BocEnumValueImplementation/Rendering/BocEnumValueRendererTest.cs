@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -37,6 +38,7 @@ using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
+using AttributeCollection = System.Web.UI.AttributeCollection;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplementation.Rendering
 {
@@ -356,13 +358,14 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
     }
 
     [Test]
-    [Ignore("Ignored until MK fixed it :-)")]
     public void RenderDiagnosticMetadataAttributesLabelLeft ()
     {
-      // Todo RM-6297 @ MK: What do I have to do in order to run this test successfully? Do we need a data source?
-
       _enumValue.ListControlStyle.ControlType = ListControlType.RadioButtonList;
       _enumValue.ListControlStyle.RadioButtonListTextAlign = TextAlign.Left;
+
+      // Put control in DesignMode, otherweie System.Web.RadioButtonList throws when rendering (we are not able to give all necessary context in the test).
+      _enumValue.Page.WrappedInstance.Site = MockRepository.GenerateStub<ISite>();
+      _enumValue.Page.WrappedInstance.Site.Stub(stub => stub.DesignMode).Return(true);
       
       var resourceUrlFactory = new FakeResourceUrlFactory();
       var renderer = new BocEnumValueRenderer (
@@ -372,7 +375,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
       
       var document = Html.GetResultDocument();
-      var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      var outerSpan = Html.GetAssertedChildElement (document, "div", 0);
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueLabelRight, "false");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "RadioButtonList");
     }
