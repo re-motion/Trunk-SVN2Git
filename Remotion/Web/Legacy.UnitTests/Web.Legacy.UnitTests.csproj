@@ -66,6 +66,7 @@
     <Compile Include="UI\Controls\ListMenuQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\RendererTestBase.cs" />
     <Compile Include="SetUpFixture.cs" />
+    <Compile Include="UI\Controls\LegacyRenderingFeaturesTest.cs" />
     <Compile Include="UI\Controls\SingleViewQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\TabbedMultiViewQuirksModeRendererTest.cs" />
     <Compile Include="UI\Controls\WebTabStripQuirksModeRendererTest.cs" />

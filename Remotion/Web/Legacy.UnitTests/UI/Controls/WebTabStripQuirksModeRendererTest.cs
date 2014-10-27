@@ -25,6 +25,7 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.Legacy.UI.Controls;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -376,7 +377,7 @@ namespace Remotion.Web.Legacy.UnitTests.UI.Controls
 
     private WebTabRenderer CreateWebTabRenderer ()
     {
-      return new WebTabRenderer(new NoneHotkeyFormatter(), RenderingFeatures.ForLegacy);
+      return new WebTabRenderer(new NoneHotkeyFormatter(), LegacyRenderingFeatures.ForLegacy);
     }
   }
 }
