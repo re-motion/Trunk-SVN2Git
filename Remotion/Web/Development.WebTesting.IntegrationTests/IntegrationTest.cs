@@ -9,7 +9,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   /// </summary>
   public abstract class IntegrationTest
   {
-    private readonly WebTestHelper _webTestHelper = new WebTestHelper();
+    private readonly WebTestHelper _webTestHelper = new WebTestHelper (
+        WebTestingFrameworkConfiguration.Current,
+        WebTestingFrameworkConfiguration.Current,
+        WebTestingFrameworkConfiguration.Current);
 
     [TestFixtureSetUp]
     public void IntegrationTestTestFixtureSetUp ()
@@ -38,7 +41,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     protected RemotionPageObject Start (string page)
     {
-      var url = WebTestConfiguration.Current.WebApplicationRoot + page;
+      var url = WebTestingFrameworkConfiguration.Current.WebApplicationRoot + page;
       _webTestHelper.MainBrowserSession.Visit (url);
 
       var context = _webTestHelper.CreateNewTestObjectContext();

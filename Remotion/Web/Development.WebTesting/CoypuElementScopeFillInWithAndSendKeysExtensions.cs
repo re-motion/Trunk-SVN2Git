@@ -63,7 +63,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("thenAction", thenAction);
 
-      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
         scope.FillInWithFixedForNormalBrowsers (value, clearValue);
       else
         scope.FillInWithFixedForInternetExplorer (value, clearValue);

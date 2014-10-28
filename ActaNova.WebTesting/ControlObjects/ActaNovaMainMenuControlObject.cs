@@ -43,7 +43,7 @@ namespace ActaNova.WebTesting.ControlObjects
       var nativeMainMenuScope = (IWebElement) Scope.Native;
 
       var actions = new ActionsWithWaitSupport (webDriver);
-      var timeout = WebTestConfiguration.Current.SearchTimeout;
+      var timeout = WebTestingFrameworkConfiguration.Current.SearchTimeout;
 
       var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
       AddClickOnLastMenuItemAction (actions, nativeLastMenuItemScope, actualActionBehavior, waitingStrategyState, timeout);

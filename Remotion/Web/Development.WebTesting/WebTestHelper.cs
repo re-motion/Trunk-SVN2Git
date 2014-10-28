@@ -21,9 +21,19 @@ namespace Remotion.Web.Development.WebTesting
     private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestHelper));
 
     /// <summary>
+    /// Browser configuration.
+    /// </summary>
+    private readonly IBrowserConfiguration _browserConfiguration;
+
+    /// <summary>
+    /// Coypu configuration.
+    /// </summary>
+    private readonly ICoypuConfiguration _coypuConfiguration;
+
+    /// <summary>
     /// Web test configuration.
     /// </summary>
-    private readonly WebTestConfiguration _webTestConfiguration;
+    private readonly IWebTestConfiguration _webTestConfiguration;
 
     /// <summary>
     /// Name of the current web test.
@@ -38,9 +48,18 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Initializes the helper.
     /// </summary>
-    public WebTestHelper ()
+    public WebTestHelper (
+        [NotNull] IBrowserConfiguration browserConfiguration,
+        [NotNull] ICoypuConfiguration coypuConfiguration,
+        [NotNull] IWebTestConfiguration webTestConfiguration)
     {
-      _webTestConfiguration = WebTestConfiguration.Current;
+      ArgumentUtility.CheckNotNull ("browserConfiguration", browserConfiguration);
+      ArgumentUtility.CheckNotNull ("coypuConfiguration", coypuConfiguration);
+      ArgumentUtility.CheckNotNull ("webTestConfiguration", webTestConfiguration);
+
+      _browserConfiguration = browserConfiguration;
+      _coypuConfiguration = coypuConfiguration;
+      _webTestConfiguration = webTestConfiguration;
     }
 
     /// <summary>
@@ -77,9 +96,9 @@ namespace Remotion.Web.Development.WebTesting
     /// <returns>The new browser session.</returns>
     public BrowserSession CreateNewBrowserSession (string url, bool maximiseWindow = true)
     {
-      using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _webTestConfiguration.BrowserName)))
+      using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
-        var browser = BrowserFactory.CreateBrowser (_webTestConfiguration);
+        var browser = BrowserFactory.CreateBrowser (_browserConfiguration, _coypuConfiguration);
         if (maximiseWindow)
           browser.MaximiseWindow();
         browser.Visit (url);
@@ -159,10 +178,10 @@ namespace Remotion.Web.Development.WebTesting
 
     private void EnsureAllBrowserWindowsAreClosed ()
     {
-      if (!_webTestConfiguration.CloseBrowserWindowsOnSetUpAndTearDown)
+      if (!_browserConfiguration.CloseBrowserWindowsOnSetUpAndTearDown)
         return;
 
-      var browserProcessName = _webTestConfiguration.GetBrowserExecutableName();
+      var browserProcessName = _browserConfiguration.GetBrowserExecutableName();
       if (browserProcessName == null)
         return;
 

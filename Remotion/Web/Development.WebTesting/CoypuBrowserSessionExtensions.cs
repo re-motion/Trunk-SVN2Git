@@ -26,21 +26,21 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog();
       else
         browser.AcceptModalDialogFixedInternetExplorer (context);
     }
 
     /// <summary>
-    /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestConfiguration.SearchTimeout"/> and
-    /// <see cref="WebTestConfiguration.RetryInterval"/> do not apply.
+    /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestingFrameworkConfiguration.SearchTimeout"/> and
+    /// <see cref="WebTestingFrameworkConfiguration.RetryInterval"/> do not apply.
     /// </summary>
     public static void AcceptModalDialogImmediatelyFixed([NotNull] this BrowserSession browser, [NotNull] TestObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog (Options.NoWait);
       else
         browser.AcceptModalDialogImmediatelyFixedInternetExplorer();
@@ -62,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (!WebTestConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
         browser.CancelModalDialog();
       else
         browser.CancelModalDialogFixedInternetExplorer (context);

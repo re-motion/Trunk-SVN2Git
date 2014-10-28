@@ -8,24 +8,28 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Factory to create Coypu <see cref="BrowserSession"/> objects from a given <see cref="WebTestConfiguration"/>.
+  /// Factory to create Coypu <see cref="BrowserSession"/> objects from a given <see cref="WebTestingFrameworkConfiguration"/>.
   /// </summary>
   public static class BrowserFactory
   {
     /// <summary>
-    /// Creates a Coypu <see cref="BrowserSession"/> using the configuration given by <paramref name="configuration"/>.
+    /// Creates a Coypu <see cref="BrowserSession"/> using the configuration given by <paramref name="browserConfiguration"/>.
     /// </summary>
-    /// <param name="configuration">The configuration to use.</param>
+    /// <param name="browserConfiguration">The browser configuration to use.</param>
+    /// /// <param name="coypuConfiguration">The Coypu configuration to use.</param>
     /// <returns>A new Coypu <see cref="BrowserSession"/>.</returns>
-    public static BrowserSession CreateBrowser ([NotNull] WebTestConfiguration configuration)
+    public static BrowserSession CreateBrowser (
+        [NotNull] IBrowserConfiguration browserConfiguration,
+        [NotNull] ICoypuConfiguration coypuConfiguration)
     {
-      ArgumentUtility.CheckNotNull ("configuration", configuration);
+      ArgumentUtility.CheckNotNull ("browserConfiguration", browserConfiguration);
+      ArgumentUtility.CheckNotNull ("coypuConfiguration", coypuConfiguration);
 
       var sessionConfiguration = new SessionConfiguration
                                  {
-                                     Browser = configuration.Browser,
-                                     RetryInterval = configuration.RetryInterval,
-                                     Timeout = configuration.SearchTimeout,
+                                     Browser = browserConfiguration.Browser,
+                                     RetryInterval = coypuConfiguration.RetryInterval,
+                                     Timeout = coypuConfiguration.SearchTimeout,
                                      ConsiderInvisibleElements = true,
                                      Match = Match.First
                                  };

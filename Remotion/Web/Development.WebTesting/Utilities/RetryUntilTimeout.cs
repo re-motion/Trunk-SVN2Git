@@ -43,7 +43,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       ArgumentUtility.CheckNotNull ("action", action);
 
-      var retryUntilTimeout = new RetryUntilTimeout (action, WebTestConfiguration.Current.SearchTimeout, WebTestConfiguration.Current.RetryInterval);
+      var retryUntilTimeout = new RetryUntilTimeout (
+          action,
+          WebTestingFrameworkConfiguration.Current.SearchTimeout,
+          WebTestingFrameworkConfiguration.Current.RetryInterval);
       retryUntilTimeout.Run();
     }
 
@@ -53,8 +56,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       var retryUntilTimeout = new RetryUntilTimeout<TReturnType> (
           func,
-          WebTestConfiguration.Current.SearchTimeout,
-          WebTestConfiguration.Current.RetryInterval);
+          WebTestingFrameworkConfiguration.Current.SearchTimeout,
+          WebTestingFrameworkConfiguration.Current.RetryInterval);
       return retryUntilTimeout.Run();
     }
   }

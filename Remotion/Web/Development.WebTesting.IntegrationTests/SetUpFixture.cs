@@ -6,8 +6,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   [SetUpFixture]
   public class SetUpFixture
   {
-    private readonly WebTestSetUpFixtureHelper _setUpFixtureHelper = new WebTestSetUpFixtureHelper (
-        new IisExpressAppConfigConfiguredHostingStrategy());
+    private readonly WebTestSetUpFixtureHelper _setUpFixtureHelper = new WebTestSetUpFixtureHelper (WebTestingFrameworkConfiguration.Current.GetHostingStrategy());
 
     [SetUp]
     public void SetUp ()

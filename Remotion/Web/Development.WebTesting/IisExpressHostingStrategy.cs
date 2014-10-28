@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Threading;
 using JetBrains.Annotations;
@@ -21,6 +22,16 @@ namespace Remotion.Web.Development.WebTesting
 
       var absoluteWebApplicationPath = Path.GetFullPath (webApplicationPath);
       _webApplicationHost = new IisExpressProcessWrapper (absoluteWebApplicationPath, port);
+    }
+
+    /// <summary>
+    /// Constructor required for direct usage in <see cref="WebTestingFrameworkConfiguration"/>.
+    /// </summary>
+    /// <param name="properties">The configuration properties.</param>
+    [UsedImplicitly]
+    public IisExpressHostingStrategy (NameValueCollection properties)
+        : this (properties["path"], int.Parse (properties["port"]))
+    {
     }
 
     public void DeployAndStartWebApplication ()

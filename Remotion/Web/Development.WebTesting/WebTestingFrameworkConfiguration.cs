@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using Coypu.Drivers;
 using JetBrains.Annotations;
@@ -10,25 +11,28 @@ namespace Remotion.Web.Development.WebTesting
   /// Configures the web testing framework.
   /// </summary>
   [UsedImplicitly]
-  public class WebTestConfiguration : ConfigurationSection
+  public class WebTestingFrameworkConfiguration : ConfigurationSection, IBrowserConfiguration, ICoypuConfiguration, IWebTestConfiguration
   {
-    private static readonly Lazy<WebTestConfiguration> s_current;
+    private static readonly Lazy<WebTestingFrameworkConfiguration> s_current;
+    private static readonly Dictionary<string, Type> s_wellKnownHostingStrategyTypes;
 
-    static WebTestConfiguration ()
+    static WebTestingFrameworkConfiguration ()
     {
-      s_current = new Lazy<WebTestConfiguration> (
+      s_current = new Lazy<WebTestingFrameworkConfiguration> (
           () =>
           {
-            var configuration = (WebTestConfiguration) ConfigurationManager.GetSection ("remotion.webTestConfiguration");
-            Assertion.IsNotNull (configuration, "Configuration section 'remotion.webTestConfiguration' missing.");
+            var configuration = (WebTestingFrameworkConfiguration) ConfigurationManager.GetSection ("remotion.webTesting");
+            Assertion.IsNotNull (configuration, "Configuration section 'remotion.webTesting' missing.");
             return configuration;
           });
+
+      s_wellKnownHostingStrategyTypes = new Dictionary<string, Type> { { "IisExpress", typeof (IisExpressHostingStrategy) } };
     }
 
     /// <summary>
-    /// Returns the current <see cref="WebTestConfiguration"/>.
+    /// Returns the current <see cref="WebTestingFrameworkConfiguration"/>.
     /// </summary>
-    public static WebTestConfiguration Current
+    public static WebTestingFrameworkConfiguration Current
     {
       get { return s_current.Value; }
     }
@@ -92,25 +96,6 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Absolute file path to the web application under test. The framework will automatically host an IIS Express instance for this web application.
-    /// </summary>
-    [ConfigurationProperty ("webApplicationPath", IsRequired = false)]
-    public string WebApplicationPath
-    {
-      get { return (string) this["webApplicationPath"]; }
-    }
-
-    /// <summary>
-    /// Port to be used for hosting the web application given by <see cref="WebApplicationPath"/>.
-    /// </summary>
-    [ConfigurationProperty ("webApplicationPort", IsRequired = false, DefaultValue = 60401)]
-    [IntegerValidator(MinValue = 49152, MaxValue = 65534)]
-    public int WebApplicationPort
-    {
-      get { return (int) this["webApplicationPort"]; }
-    }
-
-    /// <summary>
     /// URL to which the web application under test has been published.
     /// </summary>
     [ConfigurationProperty ("webApplicationRoot", IsRequired = true)]
@@ -138,6 +123,36 @@ namespace Remotion.Web.Development.WebTesting
     public bool CloseBrowserWindowsOnSetUpAndTearDown
     {
       get { return (bool) this["closeBrowserWindowsOnSetUpAndTearDown"]; }
+    }
+
+    /// <summary>
+    /// Returns the configured hosting strategy or an instance of <see cref="NullHostingStrategy"/> if the user did not specify one.
+    /// </summary>
+    public IHostingStrategy GetHostingStrategy ()
+    {
+      if (string.IsNullOrEmpty (HostingProviderSettings.Type))
+        return new NullHostingStrategy();
+
+      var hostingStrategyTypeName = HostingProviderSettings.Type;
+      var hostingStrategyType = GetHostingStrategyType (hostingStrategyTypeName);
+      Assertion.IsNotNull (hostingStrategyType, string.Format ("Hosting strategy '{0}' could not be loaded.", hostingStrategyTypeName));
+
+      var hostingStrategy = (IHostingStrategy) Activator.CreateInstance (hostingStrategyType, new object[] { HostingProviderSettings.Parameters });
+      return hostingStrategy;
+    }
+
+    [ConfigurationProperty ("hosting", IsRequired = false)]
+    private ProviderSettings HostingProviderSettings
+    {
+      get { return (ProviderSettings) this["hosting"]; }
+    }
+
+    private static Type GetHostingStrategyType (string hostingStrategyTypeName)
+    {
+      if (s_wellKnownHostingStrategyTypes.ContainsKey (hostingStrategyTypeName))
+        return s_wellKnownHostingStrategyTypes[hostingStrategyTypeName];
+
+      return Type.GetType (hostingStrategyTypeName);
     }
   }
 }

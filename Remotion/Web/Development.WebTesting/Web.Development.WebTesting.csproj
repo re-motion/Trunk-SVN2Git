@@ -177,9 +177,11 @@
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
     <Compile Include="IActionBehavior.cs" />
     <Compile Include="IActionBehaviorInternal.cs" />
+    <Compile Include="IBrowserConfiguration.cs" />
+    <Compile Include="ICoypuConfiguration.cs" />
     <Compile Include="IHostingStrategy.cs" />
-    <Compile Include="IisExpressAppConfigConfiguredHostingStrategy.cs" />
     <Compile Include="IisExpressHostingStrategy.cs" />
+    <Compile Include="IWebTestConfiguration.cs" />
     <Compile Include="NullHostingStrategy.cs" />
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
     <Compile Include="Utilities\EnumerableExtensions.cs" />
@@ -205,7 +207,7 @@
     <Compile Include="WaitingStrategies\WxeResetWaitingStrategyBase.cs" />
     <Compile Include="WaitingStrategies\WxeWaitingStrategyBase.cs" />
     <Compile Include="WebTestHelper.cs" />
-    <Compile Include="WebTestConfiguration.cs" />
+    <Compile Include="WebTestingFrameworkConfiguration.cs" />
     <Compile Include="TestObject.cs" />
     <Compile Include="TestObjectContext.cs" />
     <Compile Include="ControlObject.cs" />
