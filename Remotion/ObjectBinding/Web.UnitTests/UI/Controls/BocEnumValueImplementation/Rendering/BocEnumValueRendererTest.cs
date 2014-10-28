@@ -359,30 +359,6 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "ListBox");
     }
 
-    [Test]
-    public void RenderDiagnosticMetadataAttributesLabelLeft ()
-    {
-      _enumValue.ListControlStyle.ControlType = ListControlType.RadioButtonList;
-      _enumValue.ListControlStyle.RadioButtonListTextAlign = TextAlign.Left;
-
-      // Put control in DesignMode, otherweie System.Web.RadioButtonList throws when rendering (we are not able to give all necessary context in the test).
-      _enumValue.Page.WrappedInstance.Site = MockRepository.GenerateStub<ISite>();
-      _enumValue.Page.WrappedInstance.Site.Stub(stub => stub.DesignMode).Return(true);
-      
-      var resourceUrlFactory = new FakeResourceUrlFactory();
-      var renderer = new BocEnumValueRenderer (
-          resourceUrlFactory,
-          GlobalizationService,
-          RenderingFeatures.WithDiagnosticMetadata);
-      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
-      
-      var document = Html.GetResultDocument();
-      var outerSpan = Html.GetAssertedChildElement (document, "div", 0);
-      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.ControlType, "BocEnumValue");
-      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "false");
-      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "RadioButtonList");
-    }
-
     private void AssertLabel (TestEnum? value, bool withStyle)
     {
       var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, RenderingFeatures.Default);
