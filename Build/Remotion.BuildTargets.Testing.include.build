@@ -129,7 +129,7 @@
     <!-- Adapt App.Config to use correct web testing framework settings (incl. corresponding log4net settings) -->
     <PropertyGroup>
       <_variantName>$(_browser)_$(_platform)_$(ConfigurationID)</_variantName>
-      <_logsDirectory>$(LogDirectory)\WebTesting\$(_variantName)\</_logsDirectory>
+      <_logsDirectory>$(LogDirectory)WebTesting\$(_variantName)\</_logsDirectory>
     </PropertyGroup>
     
     <ItemGroup>
