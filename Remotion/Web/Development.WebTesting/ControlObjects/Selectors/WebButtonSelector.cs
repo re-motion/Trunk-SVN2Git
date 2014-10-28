@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public WebButtonControlObject SelectPerText (TestObjectContext context, string text)
     {
       var scope = context.Scope.FindDMA (
-          new[] { "*" },
+          "*",
           new Dictionary<string, string>
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },
@@ -34,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public WebButtonControlObject SelectPerCommandName (TestObjectContext context, string commandName)
     {
       var scope = context.Scope.FindDMA (
-          new[] { "*" },
+          "*",
           new Dictionary<string, string>
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },
@@ -46,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public WebButtonControlObject SelectPerItemID (TestObjectContext context, string itemID)
     {
       var scope = context.Scope.FindDMA (
-          new[] { "*" },
+          "*",
           new Dictionary<string, string>
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },

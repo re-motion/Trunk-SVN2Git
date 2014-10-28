@@ -36,24 +36,24 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Find an element with one of the given <paramref name="tagSelectors"/> bearing a given diagnostic metadata attribute name/value combination.
+    /// Find an element with the given <paramref name="tagSelector"/> bearing one or more given diagnostic metadata attribute name/value combinations.
     /// </summary>
     /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
-    /// <param name="tagSelectors">The CSS selectors for the HTML tags to check for the diagnostic metadata attributes.</param>
+    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the diagnostic metadata attributes.</param>
     /// <param name="diagnosticMetadata">The diagnostic metadata attribute name/value pairs to check for.</param>
     /// <returns>The <see cref="ElementScope"/> of the found element.</returns>
     public static ElementScope FindDMA (
         [NotNull] this ElementScope scope,
-        [NotNull] ICollection<string> tagSelectors,
+        [NotNull] string tagSelector,
         [NotNull] IDictionary<string, string> diagnosticMetadata)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
-      ArgumentUtility.CheckNotNull ("tagSelectors", tagSelectors);
+      ArgumentUtility.CheckNotNull ("tagSelector", tagSelector);
       ArgumentUtility.CheckNotNull ("diagnosticMetadata", diagnosticMetadata);
 
       const string dmaCheckPattern = "[{0}='{1}']";
       var dmaCheck = string.Concat (diagnosticMetadata.Select (dm => string.Format (dmaCheckPattern, dm.Key, dm.Value)));
-      var cssSelector = string.Join (",", tagSelectors.Select (ts => ts + dmaCheck));
+      var cssSelector = tagSelector + dmaCheck;
       return scope.FindCss (cssSelector);
     }
 

@@ -18,7 +18,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public DropDownMenuControlObject SelectPerText (TestObjectContext context, string text)
     {
       var scope = context.Scope.FindDMA (
-          new[] { "*" },
+          "*",
           new Dictionary<string, string>
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },
