@@ -55,11 +55,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<TabbedMultiViewSelector, TabbedMultiViewControlObject> (host, new TabbedMultiViewSelector());
     }
 
-    public static FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> GetWebTabStrip (this IControlHost host)
-    {
-      return new FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> (host, new WebTabStripSelector());
-    }
-
     public static FluentControlSelector<TextBoxSelector, TextBoxControlObject> GetTextBox (this IControlHost host)
     {
       return new FluentControlSelector<TextBoxSelector, TextBoxControlObject> (host, new TextBoxSelector());
@@ -68,6 +63,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public static FluentControlSelector<WebButtonSelector, WebButtonControlObject> GetWebButton (this IControlHost host)
     {
       return new FluentControlSelector<WebButtonSelector, WebButtonControlObject> (host, new WebButtonSelector());
+    }
+
+    public static FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> GetWebTabStrip (this IControlHost host)
+    {
+      return new FluentControlSelector<WebTabStripSelector, WebTabStripControlObject> (host, new WebTabStripSelector());
+    }
+
+    public static FluentControlSelector<WebTreeViewSelector, WebTreeViewControlObject> GetWebTreeView (this IControlHost host)
+    {
+      return new FluentControlSelector<WebTreeViewSelector, WebTreeViewControlObject> (host, new WebTreeViewSelector());
     }
   }
 }

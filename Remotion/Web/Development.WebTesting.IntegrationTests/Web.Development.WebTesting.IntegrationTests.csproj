@@ -85,6 +85,7 @@
     <Compile Include="ListMenuControlObjectTest.cs" />
     <Compile Include="TextBoxControlObjectTest.cs" />
     <Compile Include="WebButtonControlObjectTest.cs" />
+    <Compile Include="WebTreeViewControlObjectTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\remotion.snk">

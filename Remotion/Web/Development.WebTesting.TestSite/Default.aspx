@@ -21,6 +21,7 @@
           <tr><td><a href="TextBoxTest.wxe">TextBoxTest</a></td></tr>
           <tr><td><a href="WebButtonTest.wxe">WebButtonTest</a></td></tr>
           <tr><td><a href="WebTabStripTest.wxe">WebTabStripTest</a></td></tr>
+          <tr><td><a href="WebTreeViewTest.aspx">WebTreeViewTest</a></td></tr>
           <tr><td><a href="MultiWindowTest/Main.wxe">MultiWindowTest</a></td></tr>
         </table>
       </div>
