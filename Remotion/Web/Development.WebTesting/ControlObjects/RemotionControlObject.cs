@@ -49,6 +49,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <returns><see cref="IActionBehavior"/> to be used.</returns>
     protected IActionBehavior GetActualActionBehavior ([NotNull] ElementScope scope, [CanBeNull] IActionBehavior userDefinedActionBehavior)
     {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
       if (userDefinedActionBehavior != null)
         return userDefinedActionBehavior;
 

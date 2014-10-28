@@ -80,8 +80,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     private void ListItemCommandClickHandler (object sender, BocListItemCommandClickEventArgs bocListItemCommandClickEventArgs)
     {
       var bocList = (BocList) sender;
-      // Todo RM-6297 @ MK: bocListItemCommandClickEventArgs.Command.ItemID does not contain ItemID of command (instead: string.Empty).
-      var cell = bocListItemCommandClickEventArgs.Command.ItemID + "|" + bocListItemCommandClickEventArgs.Column.ColumnTitle;
+      var cell = bocListItemCommandClickEventArgs.Column.ItemID;
       TestOutput.SetActionPerformed (
           bocList.ID,
           bocListItemCommandClickEventArgs.ListIndex,
