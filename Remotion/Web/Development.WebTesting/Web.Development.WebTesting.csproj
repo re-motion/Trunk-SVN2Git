@@ -117,7 +117,7 @@
     <Compile Include="ControlObjects\Selectors\TextBoxSelector.cs" />
     <Compile Include="ControlObjects\Selectors\LabelSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\RemotionControlSelectorBase.cs" />
+    <Compile Include="ControlObjects\Selectors\TypedControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\WebButtonSelector.cs" />
     <Compile Include="ControlObjects\Selectors\WebTreeViewSelector.cs" />
     <Compile Include="ControlObjects\TabbedMenuControlObject.cs" />

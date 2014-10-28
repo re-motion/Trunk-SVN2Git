@@ -4,6 +4,7 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 
@@ -12,42 +13,42 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// <summary>
   /// Control object selector base class for all business object controls.
   /// </summary>
-  public abstract class BocSelectorBase<TControlObject>
-      : RemotionControlSelectorBase<TControlObject>,
+  public abstract class BocControlSelectorBase<TControlObject>
+      : TypedControlSelectorBase<TControlObject>,
           IPerDisplayNameControlSelector<TControlObject>,
           IPerDomainPropertyControlSelector<TControlObject>
       where TControlObject : BocControlObject
   {
-    protected BocSelectorBase ([NotNull] string rootTag, [NotNull] string cssClass)
-        : base (rootTag, cssClass)
+    protected BocControlSelectorBase ([NotNull] string controlType)
+        : base (controlType)
     {
     }
 
     public TControlObject SelectPerDisplayName (TestObjectContext context, string displayName)
     {
-      var scope = context.Scope.FindDMA (RootTag, DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName);
+      var scope = context.Scope.FindDMA (
+          new[] { "*" },
+          new Dictionary<string, string>
+          {
+              { DiagnosticMetadataAttributes.ControlType, ControlType },
+              { DiagnosticMetadataAttributesForObjectBinding.DisplayName, displayName }
+          });
+
       return CreateControlObject (context, scope);
     }
 
     public TControlObject SelectPerDomainProperty (TestObjectContext context, string domainProperty, string domainClass)
     {
-      ElementScope scope;
-
-      if (domainClass != null)
-      {
-        scope = context.Scope.FindDMA (
-            new[] { RootTag },
-            new Dictionary<string, string>
+      var diagnosticMetadata = new Dictionary<string, string>
             {
-                { DiagnosticMetadataAttributesForObjectBinding.BoundType, domainClass },
+                { DiagnosticMetadataAttributes.ControlType, ControlType },
                 { DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty }
-            });
-      }
-      else
-      {
-        scope = context.Scope.FindDMA (RootTag, DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty);
-      }
+            };
+      
+      if (domainClass != null)
+        diagnosticMetadata.Add (DiagnosticMetadataAttributesForObjectBinding.BoundType, domainClass);
 
+      var scope = context.Scope.FindDMA (new[] { "*" }, diagnosticMetadata);
       return CreateControlObject (context, scope);
     }
   }

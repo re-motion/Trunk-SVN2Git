@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public TextBoxControlObject SelectPerIndex (TestObjectContext context, int index)
     {
-      var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_htmlTextBoxTag, XPathUtils.CreateContainsAttributeCheck ("type", "text"), index);
+      var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_htmlTextBoxTag, XPathUtils.CreateHasAttributeCheck ("type", "text"), index);
       var scope = context.Scope.FindXPath (xPathSelector);
       return CreateControlObject (context, scope);
     }

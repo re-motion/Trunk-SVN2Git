@@ -8,10 +8,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// Control object selector for <see cref="FormGridControlObject"/>.
   /// </summary>
   public class FormGridSelector
-      : RemotionControlSelectorBase<FormGridControlObject>, IPerTitleControlSelector<FormGridControlObject>
+      : TypedControlSelectorBase<FormGridControlObject>, IPerTitleControlSelector<FormGridControlObject>
   {
     public FormGridSelector ()
-        : base ("table", "formGridTable")
+        : base ("FormGrid")
     {
     }
 
@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
       // Note: this implementation assumes that the title cell has the CSS class formGridTitleCell.
       var scope = context.Scope.FindXPath (
-          string.Format (".//table[contains(tbody/tr/td{0},'{1}')]", XPathUtils.CreateContainsClassCheck ("formGridTitleCell"), title));
+          string.Format (".//table[contains(tbody/tr/td{0},'{1}')]", XPathUtils.CreateHasClassCheck ("formGridTitleCell"), title));
 
       // This alterantive implementation assumes that the title cell is the very first row and column.
       // var scope = context.Scope.FindXPath (string.Format (".//table[contains(tbody/tr[1]/td[1],'{0}')]", title));

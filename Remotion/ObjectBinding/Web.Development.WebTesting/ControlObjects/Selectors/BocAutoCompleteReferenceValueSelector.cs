@@ -5,10 +5,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// <summary>
   /// Control object selector for <see cref="BocAutoCompleteReferenceValueControlObject"/>.
   /// </summary>
-  public class BocAutoCompleteReferenceValueSelector : BocSelectorBase<BocAutoCompleteReferenceValueControlObject>
+  public class BocAutoCompleteReferenceValueSelector : BocControlSelectorBase<BocAutoCompleteReferenceValueControlObject>
   {
     public BocAutoCompleteReferenceValueSelector ()
-        : base ("span", "bocAutoCompleteReferenceValue")
+        : base ("BocAutoCompleteReferenceValue")
     {
     }
   }

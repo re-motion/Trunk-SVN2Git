@@ -5,10 +5,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// <summary>
   /// Control object selector for <see cref="BocCheckBoxControlObject"/>.
   /// </summary>
-  public class BocCheckBoxSelector : BocSelectorBase<BocCheckBoxControlObject>
+  public class BocCheckBoxSelector : BocControlSelectorBase<BocCheckBoxControlObject>
   {
     public BocCheckBoxSelector ()
-        : base ("span", "bocCheckBox")
+        : base ("BocCheckBox")
     {
     }
   }

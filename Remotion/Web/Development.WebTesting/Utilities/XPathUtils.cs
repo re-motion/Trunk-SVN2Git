@@ -14,7 +14,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// <param name="attribtueName">The name of the attribute to check.</param>
     /// <param name="attributeValue">The value, the attribute should have.</param>
     /// <returns>The XPath predicate.</returns>
-    public static string CreateContainsAttributeCheck (string attribtueName, string attributeValue)
+    public static string CreateHasAttributeCheck (string attribtueName, string attributeValue)
     {
       return string.Format ("[@{0}='{1}']", attribtueName, attributeValue);
     }
@@ -24,7 +24,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// </summary>
     /// <param name="cssClass">The CSS class to check for.</param>
     /// <returns>The XPath predicate.</returns>
-    public static string CreateContainsClassCheck (string cssClass)
+    public static string CreateHasClassCheck (string cssClass)
     {
       return string.Format ("[{0}]", CreateClassCheckClause (cssClass));
     }
@@ -34,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// </summary>
     /// <param name="cssClasses">The CSS classes to check for.</param>
     /// <returns>The XPath predicate.</returns>
-    public static string CreateContainsOneOfClassesCheck (params string[] cssClasses)
+    public static string CreateHasOneOfClassesCheck (params string[] cssClasses)
     {
       var checkClauses = cssClasses.Select (CreateClassCheckClause);
       return "[" + string.Join (" or ", checkClauses) + "]";

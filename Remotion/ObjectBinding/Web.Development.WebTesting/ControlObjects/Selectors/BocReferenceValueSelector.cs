@@ -5,10 +5,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// <summary>
   /// Control object selector for <see cref="BocReferenceValueControlObject"/>.
   /// </summary>
-  public class BocReferenceValueSelector : BocSelectorBase<BocReferenceValueControlObject>
+  public class BocReferenceValueSelector : BocControlSelectorBase<BocReferenceValueControlObject>
   {
     public BocReferenceValueSelector ()
-        : base ("span", "bocReferenceValue")
+        : base ("BocReferenceValue")
     {
     }
   }

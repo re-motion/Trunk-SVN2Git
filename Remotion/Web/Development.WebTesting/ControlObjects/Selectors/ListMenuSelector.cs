@@ -5,10 +5,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// <summary>
   /// Control object selector for <see cref="ListMenuControlObject"/>.
   /// </summary>
-  public class ListMenuSelector : RemotionControlSelectorBase<ListMenuControlObject>
+  public class ListMenuSelector : TypedControlSelectorBase<ListMenuControlObject>
   {
     public ListMenuSelector ()
-        : base ("table", "listMenu")
+        : base ("ListMenu")
     {
     }
   }

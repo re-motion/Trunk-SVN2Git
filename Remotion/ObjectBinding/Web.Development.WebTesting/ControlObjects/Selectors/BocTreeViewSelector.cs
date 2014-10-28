@@ -5,10 +5,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// <summary>
   /// Control object selector for <see cref="BocTreeViewControlObject"/>.
   /// </summary>
-  public class BocTreeViewSelector : BocSelectorBase<BocTreeViewControlObject>
+  public class BocTreeViewSelector : BocControlSelectorBase<BocTreeViewControlObject>
   {
     public BocTreeViewSelector ()
-        : base ("span", "bocTreeView")
+        : base ("BocTreeView")
     {
     }
   }

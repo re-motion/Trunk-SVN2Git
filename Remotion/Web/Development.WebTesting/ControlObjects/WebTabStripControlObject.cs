@@ -30,7 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var xPathSelector = string.Format (
           "(.//span{0})[{1}]",
-          XPathUtils.CreateContainsOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"),
+          XPathUtils.CreateHasOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"),
           index);
       var itemScope = Scope.FindXPath (xPathSelector);
       return SwitchTo (itemScope);

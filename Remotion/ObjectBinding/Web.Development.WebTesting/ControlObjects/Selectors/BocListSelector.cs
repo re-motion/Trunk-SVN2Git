@@ -5,10 +5,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// <summary>
   /// Control object selector for <see cref="BocListControlObject"/>.
   /// </summary>
-  public class BocListSelector : BocSelectorBase<BocListControlObject>
+  public class BocListSelector : BocControlSelectorBase<BocListControlObject>
   {
     public BocListSelector ()
-        : base ("div", "bocList")
+        : base ("BocList")
     {
     }
   }
