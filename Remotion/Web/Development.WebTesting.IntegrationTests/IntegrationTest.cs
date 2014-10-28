@@ -9,10 +9,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   /// </summary>
   public abstract class IntegrationTest
   {
-    private readonly WebTestHelper _webTestHelper = new WebTestHelper (
-        WebTestingFrameworkConfiguration.Current,
-        WebTestingFrameworkConfiguration.Current,
-        WebTestingFrameworkConfiguration.Current);
+    private readonly WebTestHelper _webTestHelper = WebTestHelper.CreateFromConfiguration();
 
     [TestFixtureSetUp]
     public void IntegrationTestTestFixtureSetUp ()

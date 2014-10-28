@@ -10,10 +10,7 @@ namespace ActaNova.WebTesting.SampleTests
   /// </summary>
   public abstract class ActaNovaWebTestBase
   {
-    private readonly WebTestHelper _webTestHelper = new WebTestHelper (
-        WebTestingFrameworkConfiguration.Current,
-        WebTestingFrameworkConfiguration.Current,
-        WebTestingFrameworkConfiguration.Current);
+    private readonly WebTestHelper _webTestHelper = WebTestHelper.CreateFromConfiguration();
 
     [TestFixtureSetUp]
     public void IntegrationTestTestFixtureSetUp ()

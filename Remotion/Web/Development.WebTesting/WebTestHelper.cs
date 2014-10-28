@@ -45,9 +45,6 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     public BrowserSession MainBrowserSession { get; private set; }
 
-    /// <summary>
-    /// Initializes the helper.
-    /// </summary>
     public WebTestHelper (
         [NotNull] IBrowserConfiguration browserConfiguration,
         [NotNull] ICoypuConfiguration coypuConfiguration,
@@ -60,6 +57,17 @@ namespace Remotion.Web.Development.WebTesting
       _browserConfiguration = browserConfiguration;
       _coypuConfiguration = coypuConfiguration;
       _webTestConfiguration = webTestConfiguration;
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="WebTestHelper"/> from <see cref="WebTestingFrameworkConfiguration.Current"/>.
+    /// </summary>
+    public static WebTestHelper CreateFromConfiguration ()
+    {
+      return new WebTestHelper (
+          WebTestingFrameworkConfiguration.Current,
+          WebTestingFrameworkConfiguration.Current,
+          WebTestingFrameworkConfiguration.Current);
     }
 
     /// <summary>

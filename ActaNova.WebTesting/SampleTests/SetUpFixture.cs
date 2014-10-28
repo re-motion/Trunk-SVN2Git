@@ -7,7 +7,7 @@ namespace ActaNova.WebTesting.SampleTests
   [SetUpFixture]
   public class SetUpFixture
   {
-    private readonly WebTestSetUpFixtureHelper _setUpFixtureHelper = new WebTestSetUpFixtureHelper (WebTestingFrameworkConfiguration.Current.GetHostingStrategy());
+    private readonly WebTestSetUpFixtureHelper _setUpFixtureHelper = WebTestSetUpFixtureHelper.CreateFromConfiguration();
 
     [SetUp]
     public void SetUp ()

@@ -21,6 +21,14 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// Creates a new <see cref="WebTestSetUpFixtureHelper"/> from <see cref="WebTestingFrameworkConfiguration.Current"/>.
+    /// </summary>
+    public static WebTestSetUpFixtureHelper CreateFromConfiguration ()
+    {
+      return new WebTestSetUpFixtureHelper (WebTestingFrameworkConfiguration.Current.GetHostingStrategy());
+    }
+
+    /// <summary>
     /// One-time SetUp method for all web tests.
     /// </summary>
     public void OnSetUp ()
