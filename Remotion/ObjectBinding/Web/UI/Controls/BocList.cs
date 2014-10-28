@@ -45,6 +45,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.PostBackTargets;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 using StringArrayConverter = Remotion.Web.UI.Design.StringArrayConverter;
@@ -3652,6 +3653,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocList.GetCurrentPageControlName ()
     {
       return _currentPagePostBackTarget.UniqueID;
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "BocList"; }
     }
   }
 

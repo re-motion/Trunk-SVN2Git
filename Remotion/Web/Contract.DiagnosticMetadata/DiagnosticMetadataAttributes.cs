@@ -8,6 +8,7 @@ namespace Remotion.Web.Contract.DiagnosticMetadata
   public static class DiagnosticMetadataAttributes
   {
     public static readonly string CommandName = "data-commandname";
+    public static readonly string ControlType = "data-control-type";
     public static readonly string IndexInCollection = "data-index";
     public static readonly string IsReadOnly = "data-is-readonly";
     public static readonly string ItemID = "data-item-id";

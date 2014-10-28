@@ -28,6 +28,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.Hotkey;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.WebButtonImplementation;
 using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 using Remotion.Web.UI.Globalization;
@@ -206,7 +207,8 @@ namespace Remotion.Web.UI.Controls
       ControlStyle.CssClass = computedCssClass;
 
       base.AddAttributesToRender (writer);
-      AddDiagnosticMetadataAttributes (writer);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+        AddDiagnosticMetadataAttributes (writer);
 
       ControlStyle.CssClass = cssClassBackup;
 
@@ -217,8 +219,8 @@ namespace Remotion.Web.UI.Controls
 
     private void AddDiagnosticMetadataAttributes (HtmlTextWriter writer)
     {
-      if (!_renderingFeatures.EnableDiagnosticMetadata)
-        return;
+      IControlWithDiagnosticMetadata controlWithDiagnosticMetadata = this;
+      writer.AddAttribute (DiagnosticMetadataAttributes.ControlType, controlWithDiagnosticMetadata.ControlType);
 
       if (!string.IsNullOrEmpty (Text))
         writer.AddAttribute (DiagnosticMetadataAttributes.Text, Text);
@@ -506,6 +508,11 @@ namespace Remotion.Web.UI.Controls
     private IWebSecurityAdapter WebSecurityAdapter
     {
       get { return UI.Controls.Command.GetWebSecurityAdapter(); }
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "WebButton"; }
     }
 
     #region protected virtual string CssClass...

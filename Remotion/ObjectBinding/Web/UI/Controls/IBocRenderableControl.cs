@@ -18,13 +18,14 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   /// <summary>
   /// Common interface for controls which exposes properties relevant to rendering.
   /// </summary>
-  public interface IBocRenderableControl : IStyledControl
+  public interface IBocRenderableControl : IStyledControl, IControlWithDiagnosticMetadata
   {
     /// <summary>Evalutes whether this control is in <b>Design Mode</b>.</summary>
     bool IsDesignMode { get; }

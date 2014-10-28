@@ -613,5 +613,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return false; }
     }
+
+    protected override string ControlType
+    {
+      get { return "BocReferenceValue"; }
+    }
   }
 }

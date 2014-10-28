@@ -22,6 +22,7 @@ using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -94,6 +95,11 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       return new DatePickerButtonRenderingContext (Page.Context, writer, this);
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "DatePickerButton"; }
     }
   }
 }

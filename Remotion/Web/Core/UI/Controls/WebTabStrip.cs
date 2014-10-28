@@ -28,6 +28,7 @@ using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.UI.Design;
@@ -537,6 +538,11 @@ namespace Remotion.Web.UI.Controls
     public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "WebTabStrip"; }
     }
 
     #region protected virtual string CssClass...

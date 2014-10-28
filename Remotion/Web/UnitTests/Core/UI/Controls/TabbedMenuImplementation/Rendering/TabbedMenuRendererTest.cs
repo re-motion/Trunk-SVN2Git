@@ -19,9 +19,11 @@ using System.Drawing;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
@@ -37,6 +39,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
     private ITabbedMenu _control;
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
+    private TabbedMenuRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -46,6 +49,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
 
       _control = MockRepository.GenerateStub<ITabbedMenu>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMenu");
+      _control.Stub (stub => stub.ControlType).Return ("TabbedMenu");
       _control.Stub (stub => stub.MainMenuTabStrip).Return (MockRepository.GenerateStub<IWebTabStrip>());
       _control.Stub (stub => stub.SubMenuTabStrip).Return (MockRepository.GenerateStub<IWebTabStrip> ());
 
@@ -59,6 +63,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
 
       IPage pageStub = MockRepository.GenerateStub<IPage>();
       _control.Stub (stub => stub.Page).Return (pageStub);
+
+      _renderer = new TabbedMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
     }
 
     [Test]
@@ -103,10 +109,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
       AssertControl (false, false, false);
     }
 
-    private void AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
     {
-      var renderer = new TabbedMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
-      renderer.Render (new TabbedMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
+      _renderer = new TabbedMenuRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+
+      var table = AssertControl (false, false, false);
+
+      table.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "TabbedMenu");
+    }
+
+    private XmlNode AssertControl (bool isDesignMode, bool hasStatusText, bool hasCssClass)
+    {
+      _renderer.Render (new TabbedMenuRenderingContext (_httpContext, _htmlHelper.Writer, _control));
       // _control.RenderControl (_htmlHelper.Writer);
 
       var document = _htmlHelper.GetResultDocument();
@@ -137,6 +152,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMenuImplementation.Rende
       tdMenuStatus.AssertAttributeValueEquals ("class", "tabbedMenuStatusCell");
       tdMenuStatus.AssertChildElementCount (0);
       tdMenuStatus.AssertTextNode (hasStatusText ? "Status" : "&nbsp;", 0);
+
+      return table;
     }
   }
 }

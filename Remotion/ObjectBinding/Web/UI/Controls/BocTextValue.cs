@@ -850,5 +850,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else
         throw new NotSupportedException ("BocTextValue does not support property type " + property.GetType());
     }
+
+    protected override string ControlType
+    {
+      get { return "BocTextValue"; }
+    }
   }
 }

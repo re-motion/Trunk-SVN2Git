@@ -22,6 +22,7 @@ using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -40,6 +41,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
     private ITabbedMultiView _control;
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
+    private TabbedMultiViewRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -49,6 +51,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
 
       _control = MockRepository.GenerateStub<ITabbedMultiView>();
       _control.Stub (stub => stub.ClientID).Return ("MyTabbedMultiView");
+      _control.Stub (stub => stub.ControlType).Return ("TabbedMultiView");
       _control.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "MyTabbedMultiView_TopControl" });
       _control.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "MyTabbedMultiView_BottomControl" });
 
@@ -82,6 +85,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptStub);
 
       _control.Stub (stub => stub.Page).Return (pageStub);
+
+      _renderer = new TabbedMultiViewRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
     }
 
     [Test]
@@ -176,6 +181,18 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
       AssertControl (true, false, true, false);
     }
 
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      PopulateControl();
+
+      _renderer = new TabbedMultiViewRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      
+      var div = AssertControl (false, false, false, false);
+
+      div.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "TabbedMultiView");
+    }
+
     private void PopulateControl ()
     {
       _control.TopControl.Controls.Add (new LiteralControl ("TopControls"));
@@ -187,19 +204,23 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
       _control.BottomControl.Controls.Add (new LiteralControl ("BottomControls"));
     }
 
-    private void AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
+    private XmlNode AssertControl (bool withCssClass, bool inAttributes, bool isDesignMode, bool isEmpty)
     {
-      var renderer = new TabbedMultiViewRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
-      renderer.Render (new TabbedMultiViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
+      _renderer.Render (new TabbedMultiViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
-      var container = GetAssertedContainerElement (withCssClass, inAttributes, isDesignMode, renderer);
-      AssertTopControls (container, withCssClass, isEmpty, renderer);
-      AssertTabStrip (container, renderer);
-      AssertView (container, withCssClass, isDesignMode, renderer);
-      AssertBottomControls (container, withCssClass, isEmpty, renderer);
+      var outerDiv = GetAssertedElement (withCssClass, inAttributes, isDesignMode, _renderer);
+      var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
+      contentDiv.AssertAttributeValueEquals ("class", _renderer.CssClassWrapper);
+
+      AssertTopControls (contentDiv, withCssClass, isEmpty, _renderer);
+      AssertTabStrip (contentDiv, _renderer);
+      AssertView (contentDiv, withCssClass, isDesignMode, _renderer);
+      AssertBottomControls (contentDiv, withCssClass, isEmpty, _renderer);
+
+      return outerDiv;
     }
 
-    private XmlNode GetAssertedContainerElement (bool withCssClass, bool inAttributes, bool isDesignMode, TabbedMultiViewRenderer renderer)
+    private XmlNode GetAssertedElement (bool withCssClass, bool inAttributes, bool isDesignMode, TabbedMultiViewRenderer renderer)
     {
       string cssClass = renderer.CssClassBase;
       if (withCssClass)
@@ -218,10 +239,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.TabbedMultiViewImplementation.
       }
       outerDiv.AssertChildElementCount (1);
 
-      var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
-      contentDiv.AssertAttributeValueEquals ("class", renderer.CssClassWrapper);
-
-      return contentDiv;
+      return outerDiv;
     }
 
     private void AssertBottomControls (XmlNode container, bool withCssClass, bool isEmpty, TabbedMultiViewRenderer renderer)

@@ -27,6 +27,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -746,6 +747,11 @@ namespace Remotion.Web.UI.Controls
     public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "TabbedMenu"; }
     }
 
     #region protected virtual string CssClass...

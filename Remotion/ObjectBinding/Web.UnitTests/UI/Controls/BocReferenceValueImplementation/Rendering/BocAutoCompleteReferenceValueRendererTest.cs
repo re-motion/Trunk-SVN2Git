@@ -84,6 +84,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
       Control = MockRepository.GenerateStub<IBocAutoCompleteReferenceValue>();
       Control.Stub (stub => stub.ClientID).Return (c_clientID);
+      Control.Stub (stub => stub.ControlType).Return ("BocAutoCompleteReferenceValue");
       Control.Stub (stub => stub.GetTextValueName()).Return (c_textValueName);
       Control.Stub (stub => stub.GetKeyValueName()).Return (c_keyValueName);
       Control.Stub (stub => stub.BusinessObjectUniqueIdentifier).Return (c_uniqueidentifier);
@@ -480,6 +481,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
       var document = Html.GetResultDocument();
       var control = document.DocumentElement.GetAssertedChildElement ("span", 0);
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "BocAutoCompleteReferenceValue");
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
     

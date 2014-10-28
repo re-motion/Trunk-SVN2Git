@@ -17,6 +17,7 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 
 namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation
@@ -24,7 +25,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation
   /// <summary>
   /// Exposes <see cref="TabbedMultiView"/> properties relevant to rendering.
   /// </summary>
-  public interface ITabbedMultiView : IStyledControl
+  public interface ITabbedMultiView : IStyledControl, IControlWithDiagnosticMetadata
   {
     bool IsDesignMode { get; }
     string ActiveViewClientID { get; }

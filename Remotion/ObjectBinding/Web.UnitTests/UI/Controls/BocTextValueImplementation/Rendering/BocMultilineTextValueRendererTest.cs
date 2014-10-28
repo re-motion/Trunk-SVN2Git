@@ -24,6 +24,7 @@ using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
@@ -49,6 +50,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
           new[] { BocTextValueRendererTestBase<IBocTextValue>.c_firstLineText, BocTextValueRendererTestBase<IBocTextValue>.c_secondLineText });
 
       TextValue.Stub (stub => stub.ClientID).Return ("MyTextValue");
+      TextValue.Stub (stub => stub.ControlType).Return ("BocMultilineTextValue");
       TextValue.Stub (stub => stub.GetValueName()).Return (c_textValueID);
 
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
@@ -144,7 +146,27 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
       RenderMultiLineEditable (true, true, false, true, false);
     }
 
-    private void RenderMultiLineEditable (bool isDisabled, bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
+    [Test]
+    public void TestDiagnosticMetadataRenderingWithAutoPostBack ()
+    {
+      _renderer = new BocMultilineTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      
+      var span = RenderMultiLineEditable (false, false, false, false, true);
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.ControlType, "BocMultilineTextValue");
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.TriggersPostBack, "true");
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRenderingWithoutAutoPostBack ()
+    {
+      _renderer = new BocMultilineTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      
+      var span = RenderMultiLineEditable (false, false, false, false, false);
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.ControlType, "BocMultilineTextValue");
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.TriggersPostBack, "false");
+    }
+
+    private XmlNode RenderMultiLineEditable (bool isDisabled, bool withStyle, bool withCssClass, bool inStandardProperties, bool autoPostBack)
     {
       SetStyle (withStyle, withCssClass, inStandardProperties, autoPostBack);
 
@@ -174,6 +196,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
       CheckTextAreaStyle (textarea, false, withStyle);
       Html.AssertTextNode (textarea, TextValue.Text, 0);
       Html.AssertChildElementCount (textarea, 0);
+
+      return span;
     }
 
     private void RenderMultiLineReadOnly (bool withStyle, bool withCssClass, bool inStandardProperties)

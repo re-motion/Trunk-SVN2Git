@@ -74,6 +74,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       List = MockRepository.GenerateMock<IBocList>();
 
       List.Stub (list => list.ClientID).Return ("MyList");
+      List.Stub (mock => mock.ControlType).Return ("BocList");
       List.Stub (list => list.HasClientScript).Return (true);
 
       List.Stub (list => list.DataSource).Return (MockRepository.GenerateStub<IBusinessObjectDataSource>());

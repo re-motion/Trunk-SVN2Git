@@ -28,6 +28,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Renderin
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -751,6 +752,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocEnumValue.GetNullItemText ()
     {
       return GetNullItemText();
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "BocEnumValue"; }
     }
   }
 }

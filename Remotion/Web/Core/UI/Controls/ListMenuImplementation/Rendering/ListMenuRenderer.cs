@@ -72,6 +72,8 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Cellpadding, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Border, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassListMenu);
+      if (IsDiagnosticMetadataRenderingEnabled)
+        AddDiagnosticMetadataAttributes (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table);
 
       var groupedMenuItems = GetVisibleMenuItemsInGroups (renderingContext);

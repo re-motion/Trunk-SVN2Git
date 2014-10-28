@@ -46,6 +46,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
       TextValue = MockRepository.GenerateMock<IBocTextValue>();
       _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
       TextValue.Stub (stub => stub.ClientID).Return (c_clientID);
+      TextValue.Stub (stub => stub.ControlType).Return ("BocTextValue");
       TextValue.Stub (stub => stub.GetValueName()).Return (c_valueName);
       TextValue.Stub (mock => mock.CssClass).PropertyBehavior();
 
@@ -216,6 +217,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
     {
       _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
       var span = RenderSingleLineEditable (true, true, true, true);
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.ControlType, "BocTextValue");
       Html.AssertAttribute (span, DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
 
@@ -224,6 +226,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocTextValueImplement
     {
       _renderer = new BocTextValueRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
       var span = RenderSingleLineEditable (true, true, true, false);
+      Html.AssertAttribute (span, DiagnosticMetadataAttributes.ControlType, "BocTextValue");
       Html.AssertAttribute (span, DiagnosticMetadataAttributes.TriggersPostBack, "false");
     }
 

@@ -17,6 +17,7 @@
 using System;
 using System.Drawing;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation
@@ -24,7 +25,7 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation
   /// <summary>
   /// Exposes <see cref="TabbedMenu"/> properties relevant to rendering.
   /// </summary>
-  public interface ITabbedMenu : IStyledControl
+  public interface ITabbedMenu : IStyledControl, IControlWithDiagnosticMetadata
   {
     IWebTabStrip MainMenuTabStrip { get; }
     IWebTabStrip SubMenuTabStrip { get; }

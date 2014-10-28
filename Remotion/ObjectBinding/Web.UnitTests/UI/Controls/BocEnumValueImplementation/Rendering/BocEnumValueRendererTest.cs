@@ -77,6 +77,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
 
       _enumValue.Property = property;
       _enumValue.Stub (stub => stub.ClientID).Return (c_clientID);
+      _enumValue.Stub (stub => stub.ControlType).Return ("BocEnumValue");
       _enumValue.Stub (mock => mock.IsDesignMode).Return (false);
 
       var pageStub = MockRepository.GenerateStub<IPage>();
@@ -353,6 +354,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.ControlType, "BocEnumValue");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "true");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "ListBox");
     }
@@ -376,6 +378,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.ControlType, "BocEnumValue");
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "false");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "RadioButtonList");
     }
 

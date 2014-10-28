@@ -14,6 +14,7 @@ using Remotion.ObjectBinding.Web.UnitTests.Domain;
 using Remotion.Web;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 {
@@ -74,6 +75,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
       public new bool IsDesignMode
       {
         get { return false; }
+      }
+
+      string IControlWithDiagnosticMetadata.ControlType
+      {
+        get { return "TestableBocControl"; }
       }
     }
 

@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.WebTreeViewImplementation
 {
-  public interface IWebTreeView : IStyledControl
+  public interface IWebTreeView : IStyledControl, IControlWithDiagnosticMetadata
   {
   }
 }

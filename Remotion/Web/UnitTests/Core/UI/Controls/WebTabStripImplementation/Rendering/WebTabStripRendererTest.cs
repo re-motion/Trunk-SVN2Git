@@ -54,6 +54,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
 
       _webTabStrip = MockRepository.GenerateStub<IWebTabStrip>();
       _webTabStrip.Stub (stub => stub.ClientID).Return ("WebTabStrip");
+      _webTabStrip.Stub (stub => stub.ControlType).Return ("WebTabStrip");
       _webTabStrip.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
 
       _pageStub = MockRepository.GenerateStub<IPage>();
@@ -239,12 +240,13 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
               new WebTabRendererAdapter (CreateWebTabRenderer(RenderingFeatures.WithDiagnosticMetadata), _tab0, true, true, _style), 
           });
 
-      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
+      _renderer = new WebTabStripRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
       _renderer.Render (renderingContext);
 
       var document = _htmlHelper.GetResultDocument();
       var outerDiv = document.GetAssertedChildElement ("div", 0);
       var innerDiv = outerDiv.GetAssertedChildElement ("div", 0);
+      outerDiv.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, _webTabStrip.ControlType);
       var list = innerDiv.GetAssertedChildElement ("ul", 0);
       var item = list.GetAssertedChildElement ("li", 0);
       var wrapper = item.GetAssertedChildElement ("span", 0);

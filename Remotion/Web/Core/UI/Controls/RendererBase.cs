@@ -16,11 +16,14 @@
 // 
 
 using System;
+using System.Reflection;
 using System.Text;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Utilities;
+using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls
@@ -30,7 +33,7 @@ namespace Remotion.Web.UI.Controls
   /// </summary>
   /// <typeparam name="TControl">The type of control that can be rendered.</typeparam>
   public abstract class RendererBase<TControl>
-      where TControl : IStyledControl
+      where TControl : IStyledControl, IControlWithDiagnosticMetadata
   {
     private readonly ICache<Tuple<Type, IResourceManager>, IResourceManager> _resourceManagerCache =
         CacheFactory.Create<Tuple<Type, IResourceManager>, IResourceManager>();
@@ -104,7 +107,7 @@ namespace Remotion.Web.UI.Controls
 
     protected virtual void AddDiagnosticMetadataAttributes (RenderingContext<TControl> renderingContext)
     {
-      // Nothing to do in RendererBase.
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ControlType, renderingContext.Control.ControlType);
     }
 
     protected void AppendStringValueOrNullToScript (StringBuilder scriptBuilder, string stringValue)

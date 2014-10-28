@@ -73,6 +73,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
       Control = MockRepository.GenerateStub<IBocReferenceValue>();
       Control.Stub (stub => stub.ClientID).Return (c_clientID);
+      Control.Stub (stub => stub.ControlType).Return ("BocReferenceValue");
       Control.Stub (stub => stub.Command).Return (new BocCommand());
       Control.Stub (stub => stub.BusinessObjectUniqueIdentifier).Return (c_uniqueIdentifier);
       Control.Command.Type = CommandType.Event;
@@ -469,6 +470,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
 
       var document = Html.GetResultDocument();
       var control = document.DocumentElement;
+      control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "BocReferenceValue");
       control.AssertAttributeValueEquals (DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
 

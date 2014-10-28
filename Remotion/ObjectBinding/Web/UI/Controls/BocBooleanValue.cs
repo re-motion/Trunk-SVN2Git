@@ -25,6 +25,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -457,6 +458,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BocBooleanValueResourceSet IBocBooleanValue.CreateResourceSet ()
     {
       return CreateResourceSet ();
+    }
+
+    protected override string ControlType
+    {
+      get { return "BocBooleanValue"; }
     }
   }
 }

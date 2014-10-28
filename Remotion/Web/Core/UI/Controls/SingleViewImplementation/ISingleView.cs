@@ -16,13 +16,14 @@
 // 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.SingleViewImplementation
 {
   /// <summary>
   /// Exposes <see cref="SingleView"/> properties that are relevant to rendering.
   /// </summary>
-  public interface ISingleView : IStyledControl
+  public interface ISingleView : IStyledControl, IControlWithDiagnosticMetadata
   {
     PlaceHolder TopControl { get; }
     PlaceHolder View { get; }

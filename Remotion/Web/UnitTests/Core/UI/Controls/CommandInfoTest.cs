@@ -245,7 +245,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       var result = stringWriter.ToString();
 
-      Assert.That (result, Is.StringContaining ("class" + "=\"command\""));
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.ControlType + "=\"Command\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"false\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersNavigation + "=\"true\""));
     }
@@ -264,7 +264,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       var result = stringWriter.ToString();
 
-      Assert.That (result, Is.StringContaining ("class" + "=\"command\""));
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.ControlType + "=\"Command\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"true\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersNavigation + "=\"false\""));
     }
@@ -283,7 +283,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
       var result = stringWriter.ToString();
 
-      Assert.That (result, Is.StringContaining ("class" + "=\"command\""));
+      Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.ControlType + "=\"Command\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"false\""));
       Assert.That (result, Is.StringContaining (DiagnosticMetadataAttributes.TriggersNavigation + "=\"false\""));
     }

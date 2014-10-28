@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.ListMenuImplementation
 {
   /// <summary>
   /// Exposes <see cref="ListMenu"/> properties relevant to rendering.
   /// </summary>
-  public interface IListMenu : IStyledControl
+  public interface IListMenu : IStyledControl, IControlWithDiagnosticMetadata
   {
     ListMenuLineBreaks LineBreaks { get; }
     WebMenuItemCollection MenuItems { get; }

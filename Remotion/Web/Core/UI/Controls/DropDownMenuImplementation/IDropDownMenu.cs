@@ -17,13 +17,14 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation
 {
   /// <summary>
   /// Exposes <see cref="DropDownMenu"/> properties relevant to rendering.
   /// </summary>
-  public interface IDropDownMenu : IStyledControl
+  public interface IDropDownMenu : IStyledControl, IControlWithDiagnosticMetadata
   {
     bool Enabled { get; }
     bool EnableGrouping { get; }

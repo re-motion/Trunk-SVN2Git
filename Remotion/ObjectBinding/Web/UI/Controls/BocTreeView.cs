@@ -28,6 +28,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -837,6 +838,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     //  {
     //    _treeView.EnsureTreeNodesCreated();
     //  }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "BocTreeView"; }
+    }
 
     #region protected virtual string CssClass...
 

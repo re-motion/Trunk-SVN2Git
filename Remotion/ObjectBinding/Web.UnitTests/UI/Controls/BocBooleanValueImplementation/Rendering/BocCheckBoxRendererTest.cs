@@ -55,6 +55,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       _checkbox = MockRepository.GenerateMock<IBocCheckBox>();
 
       _checkbox.Stub (mock => mock.ClientID).Return (c_clientID);
+      _checkbox.Stub (mock => mock.ControlType).Return ("BocCheckBox");
       _checkbox.Stub (mock => mock.GetValueName()).Return (c_valueName);
       
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
@@ -240,6 +241,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.ControlType, "BocCheckBox");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "true");
     }
 

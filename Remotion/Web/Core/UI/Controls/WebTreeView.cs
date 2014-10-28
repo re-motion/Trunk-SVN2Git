@@ -27,6 +27,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation;
 using Remotion.Web.UI.Controls.WebTreeViewImplementation.Rendering;
 using Remotion.Web.UI.Globalization;
@@ -533,6 +534,11 @@ namespace Remotion.Web.UI.Controls
       base.AddAttributesToRender (writer);
       if (_enableScrollBars)
         writer.AddStyleAttribute ("overflow", "auto");
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        IControlWithDiagnosticMetadata controlWithDiagnosticMetadata = this;
+        writer.AddAttribute (DiagnosticMetadataAttributes.ControlType, controlWithDiagnosticMetadata.ControlType);
+      }
     }
 
     /// <summary> Overrides the parent control's <c>RenderContents</c> method. </summary>
@@ -1208,6 +1214,11 @@ namespace Remotion.Web.UI.Controls
           return;
         }
       }
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "WebTreeView"; }
     }
 
     #region protected virtual string CssClass...

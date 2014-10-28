@@ -22,6 +22,7 @@ using System.Web.UI.WebControls;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.SingleViewImplementation;
 using Remotion.Web.UI.Controls.SingleViewImplementation.Rendering;
 using Remotion.Web.Utilities;
@@ -298,6 +299,11 @@ namespace Remotion.Web.UI.Controls
     public ControlCollection BottomControls
     {
       get { return _bottomControl.Controls; }
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "SingleView"; }
     }
 
     #region protected virtual string CssClass...

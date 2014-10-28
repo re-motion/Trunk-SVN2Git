@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.WebButtonImplementation
 {
-  public interface IWebButton : IStyledControl
+  public interface IWebButton : IStyledControl, IControlWithDiagnosticMetadata
   {
   }
 }

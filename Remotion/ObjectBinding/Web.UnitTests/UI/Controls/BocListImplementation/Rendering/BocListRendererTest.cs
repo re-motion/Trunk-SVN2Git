@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
 using Rhino.Mocks;
 
@@ -161,6 +162,25 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertChildElementCount (tableBlock, 2);
       Html.GetAssertedChildElement (tableBlock, "table", 0);
       Html.GetAssertedChildElement (tableBlock, "navigation", 1);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      var renderer = new BocListRenderer (
+          new FakeResourceUrlFactory(),
+          GlobalizationService,
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition,
+          new StubRenderer ("table"),
+          new StubRenderer ("navigation"),
+          new StubRenderer ("menu"));
+      renderer.Render (new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]));
+
+      var document = Html.GetResultDocument();
+
+      var div = Html.GetAssertedChildElement (document, "div", 0);
+      Html.AssertAttribute (div, DiagnosticMetadataAttributes.ControlType, "BocList");
     }
   }
 }

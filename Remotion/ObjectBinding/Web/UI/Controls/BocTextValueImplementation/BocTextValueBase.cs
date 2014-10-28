@@ -26,6 +26,7 @@ using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -314,6 +315,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation
     private new BaseValidator[] CreateValidators ()
     {
       throw new NotImplementedException ("Use CreateValidatorsImplementation() instead. (Version 1.15.21)");
+    }
+
+    protected abstract string ControlType { get; }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return ControlType; }
     }
   }
 }

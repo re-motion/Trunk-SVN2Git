@@ -60,6 +60,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
       _control.Stub (stub => stub.Enabled).Return (true);
       _control.Stub (stub => stub.UniqueID).Return ("DropDownMenu1");
       _control.Stub (stub => stub.ClientID).Return ("DropDownMenu1");
+      _control.Stub (stub => stub.ControlType).Return ("DropDownMenu");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
       _control.Stub (stub => stub.GetBindOpenEventScript (null, null, true)).IgnoreArguments().Return ("OpenDropDownMenuEventReference");
       _control.Stub (stub => stub.ResolveClientUrl (null)).IgnoreArguments().Do ((Func<string, string>) (url => url.TrimStart ('~')));
@@ -123,6 +124,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.DropDownMenuImplementation.Ren
       
       var document = _htmlHelper.GetResultDocument();
       var containerDiv = document.GetAssertedChildElement ("span", 0);
+      containerDiv.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "DropDownMenu");
       containerDiv.AssertAttributeValueEquals (DiagnosticMetadataAttributes.Text, c_MenuTitle);
     }
 

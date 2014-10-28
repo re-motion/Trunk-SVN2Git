@@ -18,9 +18,11 @@ using System;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -36,6 +38,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
     private ISingleView _control;
     private HttpContextBase _httpContext;
     private HtmlHelper _htmlHelper;
+    private SingleViewRenderer _renderer;
 
     [SetUp]
     public void SetUp ()
@@ -45,6 +48,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
 
       _control = MockRepository.GenerateStub<ISingleView>();
       _control.Stub (stub => stub.ClientID).Return ("MySingleView");
+      _control.Stub (stub => stub.ControlType).Return ("SingleView");
       _control.Stub (stub => stub.TopControl).Return (new PlaceHolder { ID = "TopControl" });
       _control.Stub (stub => stub.BottomControl).Return (new PlaceHolder { ID = "BottomControl" });
       _control.Stub (stub => stub.View).Return (new PlaceHolder { ID = "ViewControl" });
@@ -65,6 +69,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
       pageStub.Stub (stub => stub.ClientScript).Return (clientScriptStub);
 
       _control.Stub (stub => stub.Page).Return (pageStub);
+
+      _renderer = new SingleViewRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
     }
 
     [Test]
@@ -151,6 +157,17 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
       AssertRendering (true, true, true, true);
     }
 
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      _renderer = new SingleViewRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+
+      PopulateControl ();
+      var div = AssertRendering (false, false, false, false);
+
+      div.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "SingleView");
+    }
+
     private void PopulateControl ()
     {
       _control.TopControl.Controls.Add (new LiteralControl ("TopControl"));
@@ -158,17 +175,16 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
       _control.View.Controls.Add (new LiteralControl ("View"));
     }
 
-    private void AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
+    private XmlNode AssertRendering (bool isEmpty, bool withCssClasses, bool inAttributes, bool isDesignMode)
     {
-      var renderer = new SingleViewRenderer (new FakeResourceUrlFactory(), GlobalizationService, RenderingFeatures.Default);
-      renderer.Render (new SingleViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
+      _renderer.Render (new SingleViewRenderingContext (_httpContext, _htmlHelper.Writer, _control));
 
       var document = _htmlHelper.GetResultDocument();
       document.AssertChildElementCount (1);
 
       var outerDiv = document.GetAssertedChildElement ("div", 0);
       outerDiv.AssertAttributeValueEquals (
-          "class", withCssClasses ? (inAttributes ? _control.Attributes["class"] : _control.CssClass) : renderer.CssClassBase);
+          "class", withCssClasses ? (inAttributes ? _control.Attributes["class"] : _control.CssClass) : _renderer.CssClassBase);
 
       if (isDesignMode)
       {
@@ -177,33 +193,33 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
       }
 
       var contentDiv = outerDiv.GetAssertedChildElement ("div", 0);
-      contentDiv.AssertAttributeValueEquals ("class", renderer.CssClassWrapper);
+      contentDiv.AssertAttributeValueEquals ("class", _renderer.CssClassWrapper);
 
       var topControls = contentDiv.GetAssertedChildElement ("div", 0);
       topControls.AssertAttributeValueEquals ("id", _control.TopControl.ClientID);
-      topControls.AssertAttributeValueContains ("class", renderer.CssClassTopControls);
+      topControls.AssertAttributeValueContains ("class", _renderer.CssClassTopControls);
       if (isEmpty)
-        topControls.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
+        topControls.AssertAttributeValueContains ("class", _renderer.CssClassEmpty);
       var topContent = topControls.GetAssertedChildElement ("div", 0);
-      topContent.AssertAttributeValueContains ("class", renderer.CssClassContent);
+      topContent.AssertAttributeValueContains ("class", _renderer.CssClassContent);
 
       var bottomControls = contentDiv.GetAssertedChildElement ("div", 2);
       bottomControls.AssertAttributeValueEquals ("id", _control.BottomControl.ClientID);
-      bottomControls.AssertAttributeValueContains ("class", renderer.CssClassBottomControls);
+      bottomControls.AssertAttributeValueContains ("class", _renderer.CssClassBottomControls);
       if (isEmpty)
-        bottomControls.AssertAttributeValueContains ("class", renderer.CssClassEmpty);
+        bottomControls.AssertAttributeValueContains ("class", _renderer.CssClassEmpty);
       var bottomContent = bottomControls.GetAssertedChildElement ("div", 0);
-      bottomContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
+      bottomContent.AssertAttributeValueEquals ("class", _renderer.CssClassContent);
 
       var viewContainer = contentDiv.GetAssertedChildElement ("div", 1);
       viewContainer.AssertAttributeValueEquals ("id", _control.ViewClientID);
-      viewContainer.AssertAttributeValueEquals ("class", renderer.CssClassView);
+      viewContainer.AssertAttributeValueEquals ("class", _renderer.CssClassView);
 
       var viewContentBorder = viewContainer.GetAssertedChildElement ("div", 0);
-      viewContentBorder.AssertAttributeValueEquals ("class", renderer.CssClassContentBorder);
+      viewContentBorder.AssertAttributeValueEquals ("class", _renderer.CssClassContentBorder);
 
       var viewContent = viewContentBorder.GetAssertedChildElement ("div", 0);
-      viewContent.AssertAttributeValueEquals ("class", renderer.CssClassContent);
+      viewContent.AssertAttributeValueEquals ("class", _renderer.CssClassContent);
 
       if (!isEmpty)
       {
@@ -211,6 +227,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.SingleViewImplementation.Rende
         bottomContent.AssertTextNode ("BottomControl", 0);
         viewContent.AssertTextNode ("View", 0);
       }
+
+      return outerDiv;
     }
   }
 }

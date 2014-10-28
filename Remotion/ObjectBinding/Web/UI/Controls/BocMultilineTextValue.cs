@@ -422,5 +422,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       return isList;
     }
+
+    protected override string ControlType
+    {
+      get { return "BocMultilineTextValue"; }
+    }
   }
 }

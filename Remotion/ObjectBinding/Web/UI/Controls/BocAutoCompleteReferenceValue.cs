@@ -705,5 +705,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           InternalDisplayName = GetDisplayName (value);
       }
     }
+
+    protected override string ControlType
+    {
+      get { return "BocAutoCompleteReferenceValue"; }
+    }
   }
 }

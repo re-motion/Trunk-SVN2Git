@@ -22,6 +22,7 @@ using System.Web.UI.WebControls;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
@@ -542,6 +543,11 @@ namespace Remotion.Web.UI.Controls
     Control ITabbedMultiView.GetActiveView ()
     {
       return GetActiveView();
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "TabbedMultiView"; }
     }
   }
 }

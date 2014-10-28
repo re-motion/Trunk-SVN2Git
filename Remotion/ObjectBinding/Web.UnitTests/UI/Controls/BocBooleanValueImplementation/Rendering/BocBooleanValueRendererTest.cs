@@ -74,6 +74,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       var clientScriptManagerMock = MockRepository.GenerateMock<IClientScriptManager>();
 
       _booleanValue.Stub (mock => mock.ClientID).Return (c_clientID);
+      _booleanValue.Stub (stub => stub.ControlType).Return ("BocBooleanValue");
       _booleanValue.Stub (mock => mock.GetValueName ()).Return (c_keyValueName);
       _booleanValue.Stub (mock => mock.GetDisplayValueName()).Return (c_displayValueName);
       
@@ -277,6 +278,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocBooleanValueImplem
       
       var document = Html.GetResultDocument();
       var outerSpan = Html.GetAssertedChildElement (document, "span", 0);
+      Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.ControlType, "BocBooleanValue");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributes.TriggersPostBack, "true");
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocBooleanValueIsTriState, "true");
     }

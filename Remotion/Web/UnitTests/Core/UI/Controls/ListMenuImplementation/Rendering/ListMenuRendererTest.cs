@@ -52,6 +52,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       _control = MockRepository.GenerateStub<IListMenu>();
       _control.Stub (stub => stub.UniqueID).Return ("MyListMenu");
       _control.Stub (stub => stub.ClientID).Return ("MyListMenu");
+      _control.Stub (stub => stub.ControlType).Return ("ListMenu");
       _control.Stub (stub => stub.MenuItems).Return (new WebMenuItemCollection (_control));
 
       _control.Stub (stub => stub.Enabled).Return (true);
@@ -156,6 +157,15 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       var td = GetAssertedCell (tr, 0, 4);
       for (int iColumn = 0; iColumn < 4; iColumn++)
         AssertMenuItem (td, iColumn < 3 ? iColumn : iColumn + 1, iColumn);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      SetUpGetPostBackLinkExpectations (true);
+
+      var table = GetAssertedTable();
+      table.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ControlType, "ListMenu");
     }
 
     private XmlNode GetAssertedTable ()

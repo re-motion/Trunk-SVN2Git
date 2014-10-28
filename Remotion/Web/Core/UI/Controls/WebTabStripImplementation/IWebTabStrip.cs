@@ -18,13 +18,14 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation
 {
   /// <summary>
   /// Exposes <see cref="WebTabStrip"/> properties relevant to rendering.
   /// </summary>
-  public interface IWebTabStrip : IStyledControl
+  public interface IWebTabStrip : IStyledControl, IControlWithDiagnosticMetadata
   {
     IList<IWebTab> GetVisibleTabs ();
     bool IsDesignMode { get; }

@@ -21,6 +21,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Design;
 
 namespace Remotion.Web.UI.Controls
@@ -201,6 +202,11 @@ namespace Remotion.Web.UI.Controls
     {
       get { return _getSelectionCount; }
       set { _getSelectionCount = value; }
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "DropDownMenu"; }
     }
   }
 }

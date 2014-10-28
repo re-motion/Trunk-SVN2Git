@@ -29,9 +29,11 @@ using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.FormGridManagerImplementation;
 using Remotion.Web.UI.Controls.Hotkey;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -1025,6 +1027,7 @@ namespace Remotion.Web.UI.Controls
     private bool _formGridListPopulated = false;
     private IInfrastructureResourceUrlFactory _infrastructureResourceUrlFactory;
     private IResourceUrlFactory _resourceUrlFactory;
+    private IRenderingFeatures _renderingFeatures;
     
     // construction and disposing
 
@@ -1267,6 +1270,16 @@ namespace Remotion.Web.UI.Controls
         if (_infrastructureResourceUrlFactory == null)
           _infrastructureResourceUrlFactory = SafeServiceLocator.Current.GetInstance<IInfrastructureResourceUrlFactory>();
         return _infrastructureResourceUrlFactory;
+      }
+    }
+
+    private IRenderingFeatures RenderingFeatures
+    {
+      get
+      {
+        if (_renderingFeatures == null)
+          _renderingFeatures = SafeServiceLocator.Current.GetInstance<IRenderingFeatures>();
+        return _renderingFeatures;
       }
     }
 
@@ -1820,10 +1833,20 @@ namespace Remotion.Web.UI.Controls
       }
 
       FormatFormGrid (formGrid);
+      if (RenderingFeatures.EnableDiagnosticMetadata)
+        AddDiagnosticMetadataAttributes (formGrid);
 
       TransformationStep completedStep = TransformationStep.PostValidationTransformationCompleted;
       _completedTransformationStep[formGrid] = completedStep;
       return completedStep;
+    }
+
+    private void AddDiagnosticMetadataAttributes (FormGrid formGrid)
+    {
+      ArgumentUtility.CheckNotNull ("formGrid", formGrid);
+
+      if (formGrid.Table.Attributes[DiagnosticMetadataAttributes.ControlType] == null)
+        formGrid.Table.Attributes[DiagnosticMetadataAttributes.ControlType] = "FormGrid";
     }
 
     private TransformationStep TransformIntoFormGridRender (FormGrid formGrid)

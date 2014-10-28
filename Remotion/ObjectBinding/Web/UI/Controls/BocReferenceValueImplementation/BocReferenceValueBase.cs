@@ -34,6 +34,7 @@ using Remotion.Web.Infrastructure;
 using Remotion.Web.Services;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
 
@@ -1108,6 +1109,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public Style LabelStyle
     {
       get { return _labelStyle; }
+    }
+
+    protected abstract string ControlType { get; }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return ControlType; }
     }
   }
 }

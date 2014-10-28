@@ -20,6 +20,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation.Rendering;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls
 {
@@ -124,6 +125,11 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNullOrEmpty ("getSelectionCount", getSelectionCount);
       
       return string.Format ("ListMenu_Update (document.getElementById ('{0}'), {1});", ClientID, getSelectionCount);
+    }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return "ListMenu"; }
     }
   }
 }

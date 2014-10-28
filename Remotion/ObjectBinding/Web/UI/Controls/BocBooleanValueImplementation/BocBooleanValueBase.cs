@@ -21,6 +21,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
@@ -316,6 +317,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
+    }
+
+    protected abstract string ControlType { get; }
+
+    string IControlWithDiagnosticMetadata.ControlType
+    {
+      get { return ControlType; }
     }
   }
 }
