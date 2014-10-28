@@ -37,6 +37,7 @@ using Remotion.ServiceLocation;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 using AttributeCollection = System.Web.UI.AttributeCollection;
 

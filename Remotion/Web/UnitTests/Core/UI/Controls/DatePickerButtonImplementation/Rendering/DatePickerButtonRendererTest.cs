@@ -21,6 +21,7 @@ using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
+using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.DatePickerButtonImplementation.Rendering

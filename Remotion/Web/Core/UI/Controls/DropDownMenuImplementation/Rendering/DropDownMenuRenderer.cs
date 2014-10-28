@@ -21,6 +21,7 @@ using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering

@@ -1,7 +1,8 @@
 ﻿using System;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.Web.Legacy.UI.Controls
+namespace Remotion.Web.Legacy.UI.Controls.Rendering
 {
   /// <summary>
   /// <see cref="IRenderingFeatures"/> implementations for the legacy rendering infrastructure.

@@ -1,7 +1,7 @@
 ﻿using System;
 using Remotion.ServiceLocation;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.Rendering
 {
   /// <summary>
   /// Default <see cref="IRenderingFeatures"/> implementation.

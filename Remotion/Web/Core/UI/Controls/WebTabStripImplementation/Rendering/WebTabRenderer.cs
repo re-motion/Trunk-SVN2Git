@@ -22,6 +22,7 @@ using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls.Hotkey;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering

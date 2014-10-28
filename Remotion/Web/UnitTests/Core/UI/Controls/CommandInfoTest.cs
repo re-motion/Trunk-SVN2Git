@@ -21,6 +21,7 @@ using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls
 {

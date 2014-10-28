@@ -206,7 +206,7 @@
     <Compile Include="UI\Controls\ControlReplacing\StateReplacingStrategy.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\DatePickerButtonRenderingContext.cs" />
     <Compile Include="UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRenderer.cs" />
-    <Compile Include="UI\Controls\DefaultRenderingFeatures.cs" />
+    <Compile Include="UI\Controls\Rendering\DefaultRenderingFeatures.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\DropDownMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\FormGridManagerImplementation\FormGridCellNamingContainer.cs" />
@@ -216,14 +216,14 @@
     <Compile Include="UI\Controls\Hotkey\NoneHotkeyFormatter.cs" />
     <Compile Include="UI\Controls\Hotkey\TextWithHotkey.cs" />
     <Compile Include="UI\Controls\Hotkey\UnderscoreHotkeyFormatter.cs" />
-    <Compile Include="UI\Controls\IRenderingFeatures.cs" />
+    <Compile Include="UI\Controls\Rendering\IRenderingFeatures.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
     <Compile Include="UI\Controls\PostBackTargets\PostBackEventHandler.cs" />
     <Compile Include="UI\Controls\PostBackTargets\PostBackEventHandlerEventArgs.cs" />
     <Compile Include="UI\Controls\PostBackTargets\ScalarLoadPostDataTarget.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
-    <Compile Include="UI\Controls\RenderingFeatures.cs" />
+    <Compile Include="UI\Controls\Rendering\RenderingFeatures.cs" />
     <Compile Include="UI\Controls\Rendering\IControlWithDiagnosticMetadata.cs" />
     <Compile Include="UI\Controls\Rendering\RenderOnlyTextBox.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\ISingleViewRenderer.cs" />
@@ -289,7 +289,7 @@
     <Compile Include="UI\Controls\WebTreeViewImplementation\Rendering\WebTreeViewRenderer.cs" />
     <Compile Include="UI\Controls\WebUpdatePanelRenderMode.cs" />
     <Compile Include="Infrastructure\BuildManagerWrapper.cs" />
-    <Compile Include="UI\Controls\WithDiagnosticMetadataRenderingFeatures.cs" />
+    <Compile Include="UI\Controls\Rendering\WithDiagnosticMetadataRenderingFeatures.cs" />
     <Compile Include="UI\HtmlHeadAppenderExtensions.cs" />
     <Compile Include="UI\ISmartPageClientScriptManager.cs" />
     <Compile Include="UI\SmartPageClientScriptManager.cs" />

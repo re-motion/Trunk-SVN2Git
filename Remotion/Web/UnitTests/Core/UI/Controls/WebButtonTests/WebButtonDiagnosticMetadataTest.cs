@@ -7,6 +7,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ServiceLocation;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 {

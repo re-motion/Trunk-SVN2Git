@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Remotion.Web.UI.Controls
+namespace Remotion.Web.UI.Controls.Rendering
 {
   /// <summary>
   /// Allows to enable or disable certain control rendering features.

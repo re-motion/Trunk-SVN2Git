@@ -20,6 +20,7 @@ using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 
 namespace Remotion.Web.UnitTests.Core.UI.Controls.CommandTests

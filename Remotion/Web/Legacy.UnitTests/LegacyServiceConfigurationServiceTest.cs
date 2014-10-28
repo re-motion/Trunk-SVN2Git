@@ -26,6 +26,7 @@ using Remotion.Web.Resources;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Hotkey;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.Utilities;

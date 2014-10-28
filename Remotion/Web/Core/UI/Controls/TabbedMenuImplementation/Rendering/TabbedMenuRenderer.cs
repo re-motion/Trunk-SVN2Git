@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
 {

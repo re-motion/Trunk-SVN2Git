@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
-using Remotion.Web.Legacy.UI.Controls;
+using Remotion.Web.Legacy.UI.Controls.Rendering;
 
-namespace Remotion.Web.Legacy.UnitTests.UI.Controls
+namespace Remotion.Web.Legacy.UnitTests.UI.Controls.Rendering
 {
   [TestFixture]
   public class LegacyRenderingFeaturesTest

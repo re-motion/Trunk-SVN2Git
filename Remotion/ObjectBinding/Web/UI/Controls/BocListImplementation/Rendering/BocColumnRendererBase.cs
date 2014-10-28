@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {

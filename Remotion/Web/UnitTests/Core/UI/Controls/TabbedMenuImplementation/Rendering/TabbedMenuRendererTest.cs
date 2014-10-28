@@ -26,6 +26,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;

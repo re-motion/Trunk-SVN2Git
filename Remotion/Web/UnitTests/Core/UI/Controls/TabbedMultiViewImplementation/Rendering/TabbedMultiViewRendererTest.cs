@@ -26,6 +26,7 @@ using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation;
 using Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;

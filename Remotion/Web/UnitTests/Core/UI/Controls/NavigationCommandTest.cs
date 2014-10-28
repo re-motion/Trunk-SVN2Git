@@ -26,6 +26,7 @@ using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Remotion.Web.Utilities;
 

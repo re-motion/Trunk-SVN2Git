@@ -1,8 +1,9 @@
 ﻿using System;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls
+namespace Remotion.Web.UnitTests.Core.UI.Controls.Rendering
 {
   [TestFixture]
   public class RenderingFeaturesTest
