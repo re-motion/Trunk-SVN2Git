@@ -126,16 +126,33 @@
                                        Value="%(_appConfigAttributes.Value)"
                                        Condition="'$(_databaseSystem)' != '$(NoDatabaseRequired)'"/>
 
-    <!-- Adapt App.Config to use correct browser -->
+    <!-- Adapt App.Config to use correct web testing framework settings (incl. corresponding log4net settings) -->
+    <PropertyGroup>
+      <_variantName>$(_browser)_$(_platform)_$(ConfigurationID)</_variantName>
+      <_logsDirectory>$(LogDirectory)\WebTesting\$(_variantName)\</_logsDirectory>
+    </PropertyGroup>
+    
     <ItemGroup>
       <_appConfigAttributes Remove="@(_appConfigAttributes)"/>
-      <_appConfigAttributes Include="/configuration/webTestConfiguration">
+      <_appConfigAttributes Include="/configuration/remotion.webTesting">
         <Key>browser</Key>
         <Value>$(_browser)</Value>
       </_appConfigAttributes>
-      <_appConfigAttributes Include="/configuration/webTestConfiguration">
+      <_appConfigAttributes Include="/configuration/remotion.webTesting">
+        <Key>logsDirectory</Key>
+        <Value>$(_logsDirectory)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/remotion.webTesting">
         <Key>screenshotDirectory</Key>
-        <Value>.\screenshots\$(_browser)_$(_platform)</Value>
+        <Value>$(_logsDirectory)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/remotion.webTesting">
+        <Key>closeBrowserWindowsOnSetUpAndTearDown</Key>
+        <Value>true</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/log4net/appender[name='FileAppender']/file">
+        <Key>value</Key>
+        <Value>$(_logsDirectory)WebTestingFramework.log</Value>
       </_appConfigAttributes>
     </ItemGroup>
     
