@@ -19,6 +19,11 @@ namespace Remotion.Web.Development.WebTesting
     string BrowserName { get; }
 
     /// <summary>
+    /// Absolute or relative path to the logs directory. Some web driver implementations write log files for debugging reasons.
+    /// </summary>
+    string LogsDirectory { get; }
+
+    /// <summary>
     /// Some Selenium web driver implementations may become confused when searching for windows if there are other browser windows present. Typically
     /// you want to turn this auto-close option on when running web tests, on developer machines, however, this may unexpectedly close important
     /// browser windows, which is why the default value is set to <see langword="false" />.

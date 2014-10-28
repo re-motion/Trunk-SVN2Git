@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Coypu.Drivers;
 using Coypu.Drivers.Selenium;
 using OpenQA.Selenium;
@@ -20,7 +21,7 @@ namespace Remotion.Web.Development.WebTesting
     private static IWebDriver CreateInternetExplorerDriver ()
     {
       var driverService = InternetExplorerDriverService.CreateDefaultService();
-      driverService.LogFile = "InternetExplorerDriverService.log";
+      driverService.LogFile = Path.Combine (WebTestingFrameworkConfiguration.Current.LogsDirectory, "InternetExplorerDriver.log");
       driverService.LoggingLevel = InternetExplorerDriverLogLevel.Info;
 
       return
