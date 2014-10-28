@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     public void Dispose ()
     {
       _stopwatch.Stop();
-      _log.DebugFormat (_message + " [TOOK: {0}]", _stopwatch.Elapsed);
+      _log.DebugFormat (_message + " [took: {0}]", _stopwatch.Elapsed);
     }
   }
 }

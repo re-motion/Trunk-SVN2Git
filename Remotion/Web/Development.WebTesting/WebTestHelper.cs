@@ -85,7 +85,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNullOrEmpty ("testName", testName);
 
       _testName = testName;
-      s_log.DebugFormat ("Executing test: {0}.", _testName);
+      s_log.InfoFormat ("Executing test: {0}.", _testName);
     }
 
     /// <summary>
@@ -148,6 +148,8 @@ namespace Remotion.Web.Development.WebTesting
         var browserScreenshotFileName = string.Format ("{0}_Browser", baseFileName);
         screenshotCapturer.TakeBrowserScreenshot (browserScreenshotFileName, MainBrowserSession);
       }
+
+      s_log.InfoFormat ("Finished test: {0} [has succeeded: {1}].", _testName, hasSucceeded);
     }
 
     // Todo RM-6297: SRP: move somewhere...
