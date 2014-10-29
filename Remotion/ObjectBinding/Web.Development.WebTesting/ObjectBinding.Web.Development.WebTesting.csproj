@@ -95,6 +95,10 @@
     <Compile Include="ControlObjects\BocDateTimeValueControlObject.cs" />
     <Compile Include="ControlObjects\BocEnumValueControlObject.cs" />
     <Compile Include="ControlObjects\BocCheckBoxControlObject.cs" />
+    <Compile Include="ControlObjects\BocListAsGridCellControlObject.cs" />
+    <Compile Include="ControlObjects\BocListAsGridControlObject.cs" />
+    <Compile Include="ControlObjects\BocListAsGridRowControlObject.cs" />
+    <Compile Include="ControlObjects\BocListControlObjectBase.cs" />
     <Compile Include="ControlObjects\BocReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\BocListCellControlObject.cs" />
     <Compile Include="ControlObjects\BocListEditableCellControlObject.cs" />
@@ -112,6 +116,7 @@
     <Compile Include="ControlObjects\Selectors\BocDateTimeValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocEnumValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocCheckBoxSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\BocListAsGridSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocBooleanValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocMultilineTextValueSelector .cs" />

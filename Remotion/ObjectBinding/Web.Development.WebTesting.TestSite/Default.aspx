@@ -14,6 +14,7 @@
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocDateTimeValueUserControl.ascx">BocDateTimeValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocEnumValueUserControl.ascx">BocEnumValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocListUserControl.ascx">BocList</a></td></tr>
+          <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocListAsGridUserControl.ascx">BocList (as Grid)</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocMultilineTextValueUserControl.ascx">BocMultilineTextValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocReferenceValueUserControl.ascx">BocReferenceValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocTextValueUserControl.ascx">BocTextValue</a></td></tr>

@@ -69,6 +69,8 @@
     <Content Include="Controls\BocCheckBoxUserControl.ascx" />
     <Content Include="Controls\BocEnumValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocCheckBoxUserControlTestOutput.ascx" />
+    <Content Include="Controls\BocListAsGridUserControl.ascx" />
+    <Content Include="Controls\BocListAsGridUserControlTestOutput.ascx" />
     <Content Include="Controls\BocReferenceValueUserControl.ascx" />
     <Content Include="Controls\BocReferenceValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocBooleanValueUserControl.ascx" />
@@ -161,6 +163,20 @@
     </Compile>
     <Compile Include="Controls\BocCheckBoxUserControlTestOutput.ascx.designer.cs">
       <DependentUpon>BocCheckBoxUserControlTestOutput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocListAsGridUserControl.ascx.cs">
+      <DependentUpon>BocListAsGridUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocListAsGridUserControl.ascx.designer.cs">
+      <DependentUpon>BocListAsGridUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocListAsGridUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocListAsGridUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocListAsGridUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocListAsGridUserControlTestOutput.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\BocReferenceValueUserControl.ascx.cs">
       <DependentUpon>BocReferenceValueUserControl.ascx</DependentUpon>
@@ -274,6 +290,7 @@
     <Compile Include="Controls\BocAutoCompleteReferenceValueUserControl.ascx.designer.cs">
       <DependentUpon>BocAutoCompleteReferenceValueUserControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IBocListUserControlBaseTestOutput.cs" />
     <Compile Include="Controls\IconService.asmx.cs">
       <DependentUpon>IconService.asmx</DependentUpon>
       <SubType>Component</SubType>

@@ -23,9 +23,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       TestOutput.SetActionPerformed (ID, listIndex, "RowContextMenuClick", command);
     }
 
-    private BocListUserControlTestOutput TestOutput
+    private IBocListUserControlBaseTestOutput TestOutput
     {
-      get { return ((Layout) Page.Master).GetTestOutputControl<BocListUserControlTestOutput>(); }
+      get { return (IBocListUserControlBaseTestOutput) ((Layout) Page.Master).GetTestOutputControl(); }
     }
   }
 }

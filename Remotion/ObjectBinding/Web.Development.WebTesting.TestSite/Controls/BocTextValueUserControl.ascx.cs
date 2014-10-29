@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 
     private BocTextValueUserControlTestOutput TestOutput
     {
-      get { return ((Layout) Page.Master).GetTestOutputControl<BocTextValueUserControlTestOutput>(); }
+      get { return (BocTextValueUserControlTestOutput) ((Layout) Page.Master).GetTestOutputControl(); }
     }
   }
 }

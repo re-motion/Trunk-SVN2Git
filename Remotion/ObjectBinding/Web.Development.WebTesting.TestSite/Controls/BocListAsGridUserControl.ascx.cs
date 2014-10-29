@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 {
-  public partial class BocListUserControl : DataEditUserControl
+  public partial class BocListAsGridUserControl : DataEditUserControl
   {
     public override IBusinessObjectDataSourceControl DataSource
     {
@@ -20,25 +21,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       var view2 = new BocListView { ItemID = "ViewCmd2", Title = "View 2" };
       JobList_Normal.AvailableViews.AddRange (view1, view2);
       JobList_Normal.SelectedView = view2;
-      JobList_ReadOnly.AvailableViews.AddRange (view1, view2);
 
       JobList_Normal.MenuItemClick += MenuItemClickHandler;
-      JobList_ReadOnly.MenuItemClick += MenuItemClickHandler;
-
       JobList_Normal.SortingOrderChanged += SortingOrderChangedHandler;
-      JobList_ReadOnly.SortingOrderChanged += SortingOrderChangedHandler;
-
       JobList_Normal.EditableRowChangesSaved += EditableRowChangedSavedHandler;
-      JobList_ReadOnly.EditableRowChangesSaved += EditableRowChangedSavedHandler;
-
       JobList_Normal.EditableRowChangesCanceled += EditableRowChangesCanceledHandler;
-      JobList_ReadOnly.EditableRowChangesCanceled += EditableRowChangesCanceledHandler;
-
       JobList_Normal.ListItemCommandClick += ListItemCommandClickHandler;
-      JobList_ReadOnly.ListItemCommandClick += ListItemCommandClickHandler;
-
       JobList_Normal.CustomCellClick += CustomCellClickHandler;
-      JobList_ReadOnly.CustomCellClick += CustomCellClickHandler;
+    }
+
+    protected override void OnLoad (EventArgs e)
+    {
+      base.OnLoad (e);
+
+      JobList_Normal.SwitchListIntoEditMode();
     }
 
     protected override void OnPreRender (EventArgs e)
@@ -100,9 +96,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
       TestOutput.SetInfoForNormalBocList (JobList_Normal);
     }
 
-    private BocListUserControlTestOutput TestOutput
+    private BocListAsGridUserControlTestOutput TestOutput
     {
-      get { return (BocListUserControlTestOutput) ((Layout) Page.Master).GetTestOutputControl(); }
+      get { return (BocListAsGridUserControlTestOutput) ((Layout) Page.Master).GetTestOutputControl(); }
     }
   }
 }

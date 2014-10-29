@@ -44,6 +44,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<BocListSelector, BocListControlObject> (host, new BocListSelector());
     }
 
+    public static FluentControlSelector<BocListAsGridSelector, BocListAsGridControlObject> GetListAsGrid (this IControlHost host)
+    {
+      return new FluentControlSelector<BocListAsGridSelector, BocListAsGridControlObject> (host, new BocListAsGridSelector());
+    }
+
     public static FluentControlSelector<BocMultilineTextValueSelector, BocMultilineTextValueControlObject> GetMultilineTextValue (
         this IControlHost host)
     {

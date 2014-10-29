@@ -4,7 +4,7 @@ using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 {
-  public partial class BocListUserControlTestOutput : UserControl, IBocListUserControlBaseTestOutput
+  public partial class BocListAsGridUserControlTestOutput : UserControl, IBocListUserControlBaseTestOutput
   {
     public void SetInfoForNormalBocList (BocList bocList)
     {

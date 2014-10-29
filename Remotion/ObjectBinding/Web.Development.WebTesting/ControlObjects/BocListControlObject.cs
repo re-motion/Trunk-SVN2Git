@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
@@ -8,8 +6,6 @@ using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.ControlObjects;
-using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
@@ -18,66 +14,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocListControlObject : BocControlObject
+  public class BocListControlObject : BocListControlObjectBase<BocListRowControlObject, BocListCellControlObject>
   {
-    private class ColumnDefinition
-    {
-      private readonly string _itemID;
-      private readonly string _title;
-
-      public ColumnDefinition (string itemID, string title)
-      {
-        _itemID = itemID;
-        _title = title;
-      }
-
-      public string ItemID
-      {
-        get { return _itemID; }
-      }
-
-      public string Title
-      {
-        get { return _title; }
-      }
-    }
-
-    private class BocListRowControlObjectHostAccessor : IBocListRowControlObjectHostAccessor
-    {
-      private readonly BocListControlObject _bocList;
-
-      public BocListRowControlObjectHostAccessor (BocListControlObject bocList)
-      {
-        _bocList = bocList;
-      }
-
-      public int GetColumnIndex (string columnItemID)
-      {
-        return _bocList.GetColumnIndex (columnItemID);
-      }
-    }
-
-    private readonly IBocListRowControlObjectHostAccessor _accessor;
-    private readonly List<ColumnDefinition> _columns;
-
     public BocListControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _accessor = new BocListRowControlObjectHostAccessor (this);
-      _columns = RetryUntilTimeout.Run (
-          () => Scope.FindAllCss (".bocListFakeTableHead th")
-              .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s[DiagnosticMetadataAttributes.Text]))
-              .ToList());
-    }
-
-    public IReadOnlyCollection<string> GetColumnTitles ()
-    {
-      return _columns.Select (cd => cd.Title).ToList();
-    }
-
-    public int GetRowCount ()
-    {
-      return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody tr").Count());
     }
 
     public int GetCurrentPage ()
@@ -122,42 +63,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       lastPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
     }
 
-    public BocListRowControlObject GetRow ([NotNull] string itemID)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
-
-      var cssSelector = string.Format (
-          ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
-          DiagnosticMetadataAttributes.ItemID,
-          itemID);
-      return GetRowByCssSelector (cssSelector);
-    }
-
-    public BocListRowControlObject GetRow (int index)
-    {
-      var cssSelector = string.Format (
-          ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
-          DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex,
-          index);
-      return GetRowByCssSelector (cssSelector);
-    }
-
-    [Obsolete ("BocList rows cannot be selected using a full HTML ID.", true)]
-    public BocListRowControlObject GetRowByHtmlID ([NotNull] string htmlID)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      // Method declaration exists for symmetry reasons only.
-
-      throw new NotSupportedException ("BocList rows cannot be selected using a full HTML ID.");
-    }
-
-    private BocListRowControlObject GetRowByCssSelector (string cssSelector)
-    {
-      var rowScope = Scope.FindCss (cssSelector);
-      return new BocListRowControlObject (_accessor, ID, Context.CloneForScope (rowScope));
-    }
-
     public BocListRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -187,7 +92,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListRowControlObject GetRowFromCell (BocListCellControlObject cell)
     {
       var rowScope = cell.Scope.FindXPath ("..");
-      return new BocListRowControlObject (_accessor, ID, Context.CloneForScope (rowScope));
+      return CreateRowControlObject (ID, rowScope, Accessor);
     }
 
     public BocListCellControlObject GetCellWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
@@ -210,7 +115,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
           containsCellText);
       var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
-      return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
+      return CreateCellControlObject (ID, cellScope);
     }
 
     public BocListCellControlObject GetCellWhereByColumnTitle ([NotNull] string columnTitle, [NotNull] string containsCellText)
@@ -268,6 +173,26 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ChangeViewTo (scope => scope.SelectOption (label));
     }
 
+    protected override BocListRowControlObject CreateRowControlObject (
+        string id,
+        ElementScope rowScope,
+        IBocListRowControlObjectHostAccessor accessor)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("rowScope", rowScope);
+      ArgumentUtility.CheckNotNull ("accessor", accessor);
+
+      return new BocListRowControlObject (accessor, ID, Context.CloneForScope (rowScope));
+    }
+
+    protected override BocListCellControlObject CreateCellControlObject (string id, ElementScope cellScope)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("cellScope", cellScope);
+
+      return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
+    }
+
     private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
@@ -279,36 +204,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private ElementScope GetAvailableViewsScope ()
     {
       return FindChild ("Boc_AvailableViewsList");
-    }
-
-    public DropDownMenuControlObject GetDropDownMenu ()
-    {
-      var dropDownMenuScope = FindChild ("Boc_OptionsMenu");
-      return new DropDownMenuControlObject (dropDownMenuScope.Id, Context.CloneForScope (dropDownMenuScope));
-    }
-
-    public ListMenuControlObject GetListMenu ()
-    {
-      var listMenuScope = FindChild ("Boc_ListMenu");
-      return new ListMenuControlObject (listMenuScope.Id, Context.CloneForScope (listMenuScope));
-    }
-
-    private int GetColumnIndex (string columnItemID)
-    {
-      var indexOf = _columns.IndexOf (cd => cd.ItemID == columnItemID);
-      if (indexOf == -1)
-        throw new KeyNotFoundException (string.Format ("Column item ID '{0}' does not exist.", columnItemID));
-
-      return indexOf + 1;
-    }
-
-    private int GetColumnIndexByTitle (string columnTitle)
-    {
-      var indexOf = _columns.IndexOf (cd => cd.Title == columnTitle);
-      if (indexOf == -1)
-        throw new KeyNotFoundException (string.Format ("Column title '{0}' does not exist.", columnTitle));
-
-      return indexOf + 1;
     }
 
     private ElementScope GetCurrentPageTextInputScope ()
