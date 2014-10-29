@@ -181,7 +181,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
       var row = bocList.GetRow (2);
-      var dropDownMenu = row.GetRowDropDownMenu();
+      var dropDownMenu = row.GetDropDownMenu();
       dropDownMenu.ClickItem ("RowMenuItemCmd2");
 
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));

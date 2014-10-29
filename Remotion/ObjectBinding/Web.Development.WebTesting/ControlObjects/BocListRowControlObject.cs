@@ -11,7 +11,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  public class BocListRowControlObject : BocControlObject
+  public class BocListRowControlObject : BocControlObject, IDropDownMenuHost
   {
     private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly int _rowIndex;
@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       throw new NotSupportedException ("BocList cells cannot be selected using a full HTML ID.");
     }
 
-    public DropDownMenuControlObject GetRowDropDownMenu ()
+    public DropDownMenuControlObject GetDropDownMenu ()
     {
       var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
       var rowDropDownMenuScope = cellScope.FindCss ("span.DropDownMenuContainer");

@@ -10,7 +10,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/> in grid mode.
   /// </summary>
-  public class BocListAsGridRowControlObject : BocControlObject
+  public class BocListAsGridRowControlObject : BocControlObject, IDropDownMenuHost
   {
     // Todo RM-6297: Refactor code duplication with BocListRowControlObject and BocListEditableRowControlObject.
 
@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       throw new NotSupportedException ("BocList cells cannot be selected using a full HTML ID.");
     }
 
-    public DropDownMenuControlObject GetRowDropDownMenu ()
+    public DropDownMenuControlObject GetDropDownMenu ()
     {
       var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
       var rowDropDownMenuScope = cellScope.FindCss ("span.DropDownMenuContainer");

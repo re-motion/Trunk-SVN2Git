@@ -15,7 +15,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Common functionality of <see cref="BocListControlObject"/> and <see cref="BocListAsGridControlObject"/>.
   /// </summary>
-  public abstract class BocListControlObjectBase<TRowControlObject, TCellControlObject> : BocControlObject
+  public abstract class BocListControlObjectBase<TRowControlObject, TCellControlObject> : BocControlObject, IDropDownMenuHost
       where TRowControlObject : ControlObject
       where TCellControlObject : ControlObject
   {

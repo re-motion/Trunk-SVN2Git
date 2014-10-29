@@ -11,7 +11,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocAutoCompleteReferenceValueControlObject : BocControlObject, IFillableControlObject
+  public class BocAutoCompleteReferenceValueControlObject : BocControlObject, IFillableControlObject, IDropDownMenuHost
   {
     /// <summary>
     /// Initializes the control object.

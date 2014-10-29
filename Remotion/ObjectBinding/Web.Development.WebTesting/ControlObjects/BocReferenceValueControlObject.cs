@@ -12,7 +12,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocReferenceValueControlObject : BocControlObject, ISelectableControlObject
+  public class BocReferenceValueControlObject : BocControlObject, IDropDownMenuHost, ISelectableControlObject
   {
     /// <summary>
     /// Initializes the control object.
