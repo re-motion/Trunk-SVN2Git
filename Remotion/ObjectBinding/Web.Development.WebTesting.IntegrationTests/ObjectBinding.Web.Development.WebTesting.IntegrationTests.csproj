@@ -71,6 +71,7 @@
     <Compile Include="BocReferenceValueControlObjectTest.cs" />
     <Compile Include="BocBooleanValueControlObjectTest.cs" />
     <Compile Include="BocMultilineTextValueControlObjectTest.cs" />
+    <Compile Include="BocDateTimeValueControlObjectTest.cs" />
     <Compile Include="BocTreeViewControlObjectTest.cs" />
     <Compile Include="BocTextValueControlObjectTest.cs" />
     <Compile Include="BocListControlObjectTest.cs" />

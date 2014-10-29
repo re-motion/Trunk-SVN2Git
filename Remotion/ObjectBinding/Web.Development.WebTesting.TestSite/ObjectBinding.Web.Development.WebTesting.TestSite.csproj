@@ -75,6 +75,8 @@
     <Content Include="Controls\BocBooleanValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocMultilineTextValueUserControl.ascx" />
     <Content Include="Controls\BocMultilineTextValueUserControlTestOutput.ascx" />
+    <Content Include="Controls\BocDateTimeValueUserControl.ascx" />
+    <Content Include="Controls\BocDateTimeValueUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTreeViewUserControlTestOutput.ascx" />
     <Content Include="Controls\BocTreeViewUserControl.ascx" />
     <Content Include="Controls\BocTextValueUserControlTestOutput.ascx" />
@@ -201,6 +203,20 @@
     </Compile>
     <Compile Include="Controls\BocMultilineTextValueUserControlTestOutput.ascx.designer.cs">
       <DependentUpon>BocMultilineTextValueUserControlTestOutput.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocDateTimeValueUserControl.ascx.cs">
+      <DependentUpon>BocDateTimeValueUserControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocDateTimeValueUserControl.ascx.designer.cs">
+      <DependentUpon>BocDateTimeValueUserControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BocDateTimeValueUserControlTestOutput.ascx.cs">
+      <DependentUpon>BocDateTimeValueUserControlTestOutput.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\BocDateTimeValueUserControlTestOutput.ascx.designer.cs">
+      <DependentUpon>BocDateTimeValueUserControlTestOutput.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\BocTreeViewUserControlTestOutput.ascx.cs">
       <DependentUpon>BocTreeViewUserControlTestOutput.ascx</DependentUpon>

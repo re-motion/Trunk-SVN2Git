@@ -11,6 +11,7 @@
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocAutoCompleteReferenceValueUserControl.ascx">BocAutoCompleteReferenceValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocBooleanValueUserControl.ascx">BocBooleanValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocCheckBoxUserControl.ascx">BocCheckBox</a></td></tr>
+          <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocDateTimeValueUserControl.ascx">BocDateTimeValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocEnumValueUserControl.ascx">BocEnumValue</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocListUserControl.ascx">BocList</a></td></tr>
           <tr><td><a href="ControlTest.wxe?UserControl=Controls/BocMultilineTextValueUserControl.ascx">BocMultilineTextValue</a></td></tr>
