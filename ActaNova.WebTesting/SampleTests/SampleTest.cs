@@ -52,6 +52,54 @@ namespace ActaNova.WebTesting.SampleTests
     }
 
     [Test]
+    public void TestActaNovaHeader ()
+    {
+      var home = Start();
+
+      Assert.That (home.Header.CurrentUser, Is.EqualTo ("Muster Max, Ing."));
+      Assert.That (home.Header.CurrentGroup, Is.EqualTo ("EG/1"));
+      Assert.That (home.Header.CurrentApplicationContext, Is.Null);
+    }
+
+    [Test]
+    public void TestActaNovaHeaderOpenDefaultGroupControl ()
+    {
+      var home = Start();
+
+      var defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
+      Assert.That (defaultGroupControl.GetText(), Is.Empty);
+
+      defaultGroupControl.SelectOptionByText ("Kanzlei (Kanzlei)");
+
+      defaultGroupControl = home.Header.OpenDefaultGroupControl();
+      Assert.That (defaultGroupControl.GetText(), Is.EqualTo ("Kanzlei (Kanzlei)"));
+
+      defaultGroupControl.SelectOption (1);
+
+      defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
+      Assert.That (defaultGroupControl.GetText(), Is.Empty);
+    }
+
+    [Test]
+    public void TestActaNovaHeaderOpenCurrentTenantControl ()
+    {
+      var home = Start();
+
+      var currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
+
+      currentTenantControl.SelectOptionByText ("Acta Nova Ortsteil 1");
+
+      currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Ortsteil 1"));
+
+      currentTenantControl.SelectOption (1);
+
+      currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
+    }
+
+    [Test]
     public void MySampleTest ()
     {
       var home = Start();

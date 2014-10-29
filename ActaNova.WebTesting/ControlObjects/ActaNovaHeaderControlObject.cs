@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.ControlObjects
@@ -10,7 +12,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the ActaNova header area.
   /// </summary>
-  public class ActaNovaHeaderControlObject : ActaNovaMainFrameControlObject
+  public class ActaNovaHeaderControlObject : ActaNovaMainFrameControlObject, IControlHost
   {
     public ActaNovaHeaderControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
@@ -78,6 +80,14 @@ namespace ActaNova.WebTesting.ControlObjects
                 .Select (s => new ActaNovaBreadCrumbControlObject (ID, Context.CloneForScope (s)))
                 .ToList());
       }
+    }
+
+    public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
+        where TControlObject : ControlObject
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
+
+      return Children.GetControl (controlSelectionCommand);
     }
   }
 }

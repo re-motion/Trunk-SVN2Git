@@ -20,7 +20,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
 
-      return controlSelectionCommand.Select (Context);
+      return Children.GetControl (controlSelectionCommand);
     }
   }
 }
