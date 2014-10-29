@@ -108,7 +108,7 @@ namespace Remotion.Web.Development.WebTesting
             "Action {0}: Wait using '{1}' on context '{2}'.",
             _debugOutputID,
             _waitingStrategies[i].GetType().Name,
-            newContext.ToDebugString());
+            newContext.ToDebugString().Trim());
 
         var stateForWaitingStrategy = states[i];
         _waitingStrategies[i].PerformWaitAfterActionPerformed (newContext, stateForWaitingStrategy);
