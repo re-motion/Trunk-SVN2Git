@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -23,10 +24,14 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       // Hack: Coypu does not yet support SelectElement, use Selenium directly.
-      var webElement = (IWebElement) scope.Native;
+      return RetryUntilTimeout.Run (
+          () =>
+          {
+            var webElement = (IWebElement) scope.Native;
 
-      var select = new SelectElement (webElement);
-      return select.SelectedOption.Text;
+            var select = new SelectElement (webElement);
+            return select.SelectedOption.Text;
+          });
     }
 
     /// <summary>
@@ -39,10 +44,14 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       // Hack: Coypu does not yet support SelectElement, use Selenium directly.
-      var webElement = (IWebElement) scope.Native;
+      RetryUntilTimeout.Run (
+          () =>
+          {
+            var webElement = (IWebElement) scope.Native;
 
-      var select = new SelectElement (webElement);
-      select.SelectByIndex (index - 1);
+            var select = new SelectElement (webElement);
+            select.SelectByIndex (index - 1);
+          });
     }
 
     /// <summary>
@@ -56,10 +65,14 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("value", value);
 
       // Hack: Coypu does not yet support SelectElement, use Selenium directly.
-      var webElement = (IWebElement) scope.Native;
+      RetryUntilTimeout.Run (
+          () =>
+          {
+            var webElement = (IWebElement) scope.Native;
 
-      var select = new SelectElement (webElement);
-      select.SelectByValue (value);
+            var select = new SelectElement (webElement);
+            select.SelectByValue (value);
+          });
     }
 
     /// <summary>
@@ -79,14 +92,18 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeValue", diagnosticMetadataAttributeValue);
       
       // Hack: Coypu does not yet support SelectElement, use Selenium directly.
-      var webElement = (IWebElement) scope.Native;
+      RetryUntilTimeout.Run (
+          () =>
+          {
+            var webElement = (IWebElement) scope.Native;
 
-      var select = new SelectElement (webElement);
-      foreach(var option in select.Options)
-      {
-        if (option.GetAttribute (diagnosticMetadataAttributeName) == diagnosticMetadataAttributeValue)
-          select.SelectByValue (option.GetAttribute ("value"));
-      }
+            var select = new SelectElement (webElement);
+            foreach (var option in select.Options)
+            {
+              if (option.GetAttribute (diagnosticMetadataAttributeName) == diagnosticMetadataAttributeValue)
+                select.SelectByValue (option.GetAttribute ("value"));
+            }
+          });
     }
   }
 }

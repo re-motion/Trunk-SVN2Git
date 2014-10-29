@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -23,12 +24,16 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
 
       // Hack: Coypu does not directly support the Actions interface, therefore we need to fall back to using Selenium.
-      var webDriver = (IWebDriver) context.Browser.Native;
-      var nativeScope = (IWebElement) scope.Native;
+      RetryUntilTimeout.Run (
+          () =>
+          {
+            var webDriver = (IWebDriver) context.Browser.Native;
+            var nativeScope = (IWebElement) scope.Native;
 
-      var actions = new Actions (webDriver);
-      actions.ContextClick (nativeScope);
-      actions.Perform();
+            var actions = new Actions (webDriver);
+            actions.ContextClick (nativeScope);
+            actions.Perform();
+          });
     }
 
     /// <summary>
