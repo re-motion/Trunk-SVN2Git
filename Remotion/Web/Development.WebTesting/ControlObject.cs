@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -27,6 +28,14 @@ namespace Remotion.Web.Development.WebTesting
     public string ID
     {
       get { return _id; }
+    }
+
+    /// <summary>
+    /// Allows access to child controls of the control.
+    /// </summary>
+    public IControlHost Children
+    {
+      get { return new ControlHost (Context); }
     }
 
     /// <summary>
