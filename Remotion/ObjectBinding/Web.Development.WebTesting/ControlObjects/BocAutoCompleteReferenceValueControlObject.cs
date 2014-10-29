@@ -11,7 +11,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocAutoCompleteReferenceValueControlObject : BocControlObject, IFillableControlObject, IDropDownMenuHost
+  public class BocAutoCompleteReferenceValueControlObject : BocControlObject, IFillableControlObject, ICommandHost, IDropDownMenuHost
   {
     /// <summary>
     /// Initializes the control object.
@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (commandScope.Id, context);
     }
 
-    public UnspecifiedPageObject ExecuteCommand ([CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
     {
       return GetCommand().Click (actionBehavior);
     }

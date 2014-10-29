@@ -101,6 +101,8 @@
     <Compile Include="ControlObjects\AnchorControlObject.cs" />
     <Compile Include="ControlObjects\ContextMenuControlObject.cs" />
     <Compile Include="ControlObjects\DropDownMenuControlObjectBase.cs" />
+    <Compile Include="ControlObjects\ICommandHost.cs" />
+    <Compile Include="ControlObjects\IListMenuHost.cs" />
     <Compile Include="ControlObjects\IDropDownMenuHost.cs" />
     <Compile Include="ControlObjects\ISelectableControlObject.cs" />
     <Compile Include="ControlObjects\IClickableControlObject.cs" />

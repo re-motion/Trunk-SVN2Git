@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
@@ -8,7 +9,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a cell within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/> in grid mode.
   /// </summary>
-  public class BocListAsGridCellControlObject : BocControlObject, IControlHost
+  public class BocListAsGridCellControlObject : BocControlObject, IControlHost, ICommandHost
   {
     // Todo RM-6297: Refactor code duplication with BocListCellControlObject and BocListEditableCellControlObject.
 
@@ -25,16 +26,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return Scope.Text.Trim();
     }
 
-    /// <summary>
-    /// Performs the cell's command.
-    /// </summary>
-    public UnspecifiedPageObject PerformCommand (IActionBehavior actionBehavior = null)
+    public CommandControlObject GetCommand ()
     {
-      var actualWaitingStrategy = GetActualActionBehavior (actionBehavior);
-
       var commandScope = Scope.FindLink();
-      commandScope.ClickAndWait (Context, actualWaitingStrategy);
-      return UnspecifiedPage();
+      var context = Context.CloneForScope (commandScope);
+      return new CommandControlObject (commandScope.Id, context);
+    }
+
+    public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
+    {
+      return GetCommand().Click (actionBehavior);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

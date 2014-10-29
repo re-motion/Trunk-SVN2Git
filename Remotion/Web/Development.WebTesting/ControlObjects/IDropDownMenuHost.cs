@@ -6,7 +6,7 @@
   public interface IDropDownMenuHost
   {
     /// <summary>
-    /// Returns the <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/> instance.
+    /// Returns the <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/> control object.
     /// </summary>
     DropDownMenuControlObject GetDropDownMenu ();
   }
