@@ -227,9 +227,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
 
     public string GetPositioningCssClass (BocDateTimeValueRenderingContext renderingContext, DateTimeValuePart part)
     {
+      var hasTimeFieldWithSeconds = renderingContext.Control.ShowSeconds && renderingContext.Control.ActualValueType != BocDateTimeValueType.Date;
       var formatter = renderingContext.Control.DateTimeFormatter;
+
       return string.Format (
-          "boc{0}{1}Hours{2}", part, formatter.Is12HourTimeFormat() ? 12 : 24, renderingContext.Control.ShowSeconds ? "WithSeconds" : string.Empty);
+          "boc{0}{1}Hours{2}",
+          part,
+          formatter.Is12HourTimeFormat() ? 12 : 24,
+          hasTimeFieldWithSeconds ? "WithSeconds" : string.Empty);
     }
 
     private void Initialize (BocDateTimeValueRenderingContext renderingContext, TextBox textBox, SingleRowTextBoxStyle textBoxStyle, int maxLength)
