@@ -14,6 +14,11 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
 
     public static readonly string BocBooleanValueIsTriState = "data-bocbooleanvalue-is-tristate";
 
+    public static readonly string BocDateTimeValueHasTimeField = "data-bocdatetimevalue-has-timefield";
+    public static readonly string BocDateTimeValueDateField = "data-bocdatetimevalue-datefield";
+    public static readonly string BocDateTimeValueTimeField = "data-bocdatetimevalue-timefield";
+    public static readonly string BocDateTimeValueTimeFieldHasSeconds = "data-bocdatetimevalue-timefield-has-seconds";
+
     public static readonly string BocEnumValueStyle = "data-bocenumvalue-style";
 
     public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";

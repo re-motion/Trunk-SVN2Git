@@ -19,9 +19,11 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
@@ -93,6 +95,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       renderingContext.Writer.RenderEndTag();
     }
 
+    protected override void AddDiagnosticMetadataAttributes (RenderingContext<IBocDateTimeValue> renderingContext)
+    {
+      base.AddDiagnosticMetadataAttributes (renderingContext);
+
+      var hasTimeField = renderingContext.Control.ActualValueType != BocDateTimeValueType.Date;
+      renderingContext.Writer.AddAttribute (
+          DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueHasTimeField,
+          hasTimeField.ToString().ToLower());
+    }
+
     private void RenderEditModeControls (BocDateTimeValueRenderingContext renderingContext)
     {
       var formatter = renderingContext.Control.DateTimeFormatter;
@@ -122,6 +134,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
       var datePickerButton = renderingContext.Control.DatePickerButton;
       datePickerButton.AlternateText = renderingContext.Control.GetDatePickerText();
       datePickerButton.IsDesignMode = renderingContext.Control.IsDesignMode;
+
+      if(IsDiagnosticMetadataRenderingEnabled)
+      {
+        dateTextBox.Attributes[DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueDateField] = "true";
+        dateTextBox.Attributes[DiagnosticMetadataAttributes.TriggersPostBack] = dateTextBox.AutoPostBack.ToString().ToLower();
+
+        timeTextBox.Attributes[DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueTimeField] = "true";
+        var showSeconds = renderingContext.Control.ShowSeconds;
+        timeTextBox.Attributes[DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueTimeFieldHasSeconds] = showSeconds.ToString().ToLower();
+        timeTextBox.Attributes[DiagnosticMetadataAttributes.TriggersPostBack] = timeTextBox.AutoPostBack.ToString().ToLower();
+      }
 
       bool hasDateField = false;
       bool hasTimeField = false;

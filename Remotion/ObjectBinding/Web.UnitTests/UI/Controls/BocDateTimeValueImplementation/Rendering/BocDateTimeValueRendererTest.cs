@@ -23,13 +23,14 @@ using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImplementation.Rendering;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
@@ -63,6 +64,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImple
       Initialize();
       _control = MockRepository.GenerateStub<IBocDateTimeValue>();
       _control.Stub (stub => stub.ClientID).Return (c_dateValueID);
+      _control.Stub (stub => stub.ControlType).Return ("BocDateTimeValue");
       _control.Stub (stub => stub.GetDateValueName()).Return (c_dateValueName);
       _control.Stub (stub => stub.GetTimeValueName()).Return (c_timeValueName);
 
@@ -181,6 +183,34 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocDateTimeValueImple
       dateInput.AssertAttributeValueEquals ("name", c_dateValueName);
       timeInput.AssertAttributeValueEquals ("id", c_timeValueName);
       timeInput.AssertAttributeValueEquals ("name", c_timeValueName);
+    }
+
+    [Test]
+    public void RenderDiagnosticMetadataAttributes ()
+    {
+      _control.Stub (stub => stub.DateString).Return (c_dateString);
+      _control.Stub (stub => stub.TimeString).Return (c_timeString);
+      _control.Stub (stub => stub.ShowSeconds).Return (true);
+      _control.Stub (stub => stub.ActualValueType).Return (BocDateTimeValueType.DateTime);
+      _dateStyle.AutoPostBack = true;
+      _timeStyle.AutoPostBack = false;
+
+      var renderer = new BocDateTimeValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, RenderingFeatures.WithDiagnosticMetadata);
+      renderer.Render (new BocDateTimeValueRenderingContext (HttpContext, Html.Writer, _control));
+      
+      var document = Html.GetResultDocument();
+      var container = document.GetAssertedChildElement ("span", 0);
+      Html.AssertAttribute (container, DiagnosticMetadataAttributes.ControlType, "BocDateTimeValue");
+      Html.AssertAttribute (container, DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueHasTimeField, "true");
+
+      var dateInput = container.GetAssertedChildElement("span", 0).GetAssertedChildElement("input", 0);
+      Html.AssertAttribute (dateInput, DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueDateField, "true");
+      Html.AssertAttribute (dateInput, DiagnosticMetadataAttributes.TriggersPostBack, "true");
+
+      var timeInput = container.GetAssertedChildElement ("span", 2).GetAssertedChildElement ("input", 0);
+      Html.AssertAttribute (timeInput, DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueTimeField, "true");
+      Html.AssertAttribute (timeInput, DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueTimeFieldHasSeconds, "true");
+      Html.AssertAttribute (timeInput, DiagnosticMetadataAttributes.TriggersPostBack, "false");
     }
 
     private void AssertTime (XmlNode container, BocDateTimeValueRenderer renderer)
