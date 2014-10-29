@@ -95,16 +95,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocCheckBox = home.GetCheckBox().ByLocalID ("DeceasedField_Normal");
-      Assert.That (bocCheckBox.State, Is.EqualTo (false));
+      Assert.That (bocCheckBox.GetState(), Is.EqualTo (false));
 
       bocCheckBox = home.GetCheckBox().ByLocalID ("DeceasedField_ReadOnly");
-      Assert.That (bocCheckBox.State, Is.EqualTo (false));
+      Assert.That (bocCheckBox.GetState(), Is.EqualTo (false));
 
       bocCheckBox = home.GetCheckBox().ByLocalID ("DeceasedField_Disabled");
-      Assert.That (bocCheckBox.State, Is.EqualTo (false));
+      Assert.That (bocCheckBox.GetState(), Is.EqualTo (false));
 
       bocCheckBox = home.GetCheckBox().ByLocalID ("DeceasedField_NoAutoPostBack");
-      Assert.That (bocCheckBox.State, Is.EqualTo (false));
+      Assert.That (bocCheckBox.GetState(), Is.EqualTo (false));
     }
 
     [Test]

@@ -136,7 +136,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocTreeView = home.GetTreeView().ByLocalID ("Normal");
       var node = bocTreeView.GetRootNode();
 
-      Assert.That (node.Text, Is.EqualTo ("Doe, John"));
+      Assert.That (node.GetText(), Is.EqualTo ("Doe, John"));
     }
 
     [Test]

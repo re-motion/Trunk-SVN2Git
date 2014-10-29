@@ -17,9 +17,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public string Text
+    public string GetText ()
     {
-      get { return Scope[DiagnosticMetadataAttributes.Text]; }
+      return Scope[DiagnosticMetadataAttributes.Text];
     }
 
     public WebTreeViewNodeControlObject GetNode (string itemID)

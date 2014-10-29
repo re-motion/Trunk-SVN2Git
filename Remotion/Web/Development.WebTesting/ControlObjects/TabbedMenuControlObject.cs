@@ -17,9 +17,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public string StatusText
+    public string GetStatusText ()
     {
-      get { return Scope.FindCss ("td.tabbedMenuStatusCell").Text.Trim(); }
+      return Scope.FindCss ("td.tabbedMenuStatusCell").Text.Trim();
     }
 
     public UnspecifiedPageObject SelectMenuItem ([NotNull] string itemID, [CanBeNull] IActionBehavior actionBehavior = null)

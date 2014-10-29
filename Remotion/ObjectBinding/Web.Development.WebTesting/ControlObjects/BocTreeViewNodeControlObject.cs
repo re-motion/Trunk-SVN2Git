@@ -26,9 +26,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _webTreeViewNode = webTreeViewNode;
     }
 
-    public string Text
+    public string GetText ()
     {
-      get { return _webTreeViewNode.Text; }
+      return _webTreeViewNode.GetText();
     }
 
     public BocTreeViewNodeControlObject GetNode (string itemID)

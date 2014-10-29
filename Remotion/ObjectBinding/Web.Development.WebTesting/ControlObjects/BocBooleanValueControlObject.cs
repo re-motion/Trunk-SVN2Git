@@ -20,23 +20,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the current state of the boolean.
     /// </summary>
-    public bool? State
+    public bool? GetState ()
     {
-      get
-      {
-        if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-          return ParseState (FindChild ("Value")["data-value"]);
+      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+        return ParseState (FindChild ("Value")["data-value"]);
 
-        return ParseState (FindChild ("Value").Value);
-      }
+      return ParseState (FindChild ("Value").Value);
     }
 
     /// <summary>
     /// Returns whether this instance supports tri-state.
     /// </summary>
-    public bool IsTriState
+    public bool IsTriState ()
     {
-      get { return Scope[DiagnosticMetadataAttributesForObjectBinding.BocBooleanValueIsTriState] == "true"; }
+      return Scope[DiagnosticMetadataAttributesForObjectBinding.BocBooleanValueIsTriState] == "true";
     }
 
     /// <summary>
@@ -44,17 +41,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public UnspecifiedPageObject SetTo (bool? newState, IActionBehavior actionBehavior = null)
     {
-      if (!IsTriState && !newState.HasValue)
+      if (!IsTriState() && !newState.HasValue)
         throw new ArgumentException ("Must not be null for non-tri-state BocBooleanValue controls.", "newState");
 
-      if (State == newState)
+      if (GetState() == newState)
         return UnspecifiedPage();
 
-      if (!IsTriState)
+      if (!IsTriState())
         return Click (1, actionBehavior);
 
       var states = new bool?[] { false, null, true, false, null };
-      var numberOfClicks = Array.LastIndexOf (states, newState) - Array.IndexOf (states, State);
+      var numberOfClicks = Array.LastIndexOf (states, newState) - Array.IndexOf (states, GetState());
       return Click (numberOfClicks, actionBehavior);
     }
 

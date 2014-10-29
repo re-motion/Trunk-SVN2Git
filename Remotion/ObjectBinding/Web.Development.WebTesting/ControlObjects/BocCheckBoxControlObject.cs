@@ -19,15 +19,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the current state of the check box.
     /// </summary>
-    public bool State
+    public bool GetState ()
     {
-      get
-      {
-        if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-          return ParseState (FindChild ("Value")["data-value"]);
+      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+        return ParseState (FindChild ("Value")["data-value"]);
 
-        return FindChild ("Value")["checked"] != null;
-      }
+      return FindChild ("Value")["checked"] != null;
     }
 
     /// <summary>
@@ -35,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public UnspecifiedPageObject SetTo (bool newState, IActionBehavior actionBehavior = null)
     {
-      if (State == newState)
+      if (GetState() == newState)
         return UnspecifiedPage();
 
       var actualActionBehavior = GetActualActionBehavior (actionBehavior);

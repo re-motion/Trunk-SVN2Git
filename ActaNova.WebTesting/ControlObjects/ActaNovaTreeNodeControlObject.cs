@@ -28,9 +28,9 @@ namespace ActaNova.WebTesting.ControlObjects
       _bocTreeViewNode = bocTreeViewNode;
     }
 
-    public string Text
+    public string GetText ()
     {
-      get { return _bocTreeViewNode.Text; }
+      return _bocTreeViewNode.GetText();
     }
 
     public ActaNovaTreeNodeControlObject GetNode (string itemID)

@@ -95,19 +95,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_Normal");
-      Assert.That (bocBooleanValue.State, Is.EqualTo (false));
+      Assert.That (bocBooleanValue.GetState(), Is.EqualTo (false));
 
       bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_ReadOnly");
-      Assert.That (bocBooleanValue.State, Is.EqualTo (false));
+      Assert.That (bocBooleanValue.GetState(), Is.EqualTo (false));
 
       bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_Disabled");
-      Assert.That (bocBooleanValue.State, Is.EqualTo (false));
+      Assert.That (bocBooleanValue.GetState(), Is.EqualTo (false));
 
       bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_NoAutoPostBack");
-      Assert.That (bocBooleanValue.State, Is.EqualTo (false));
+      Assert.That (bocBooleanValue.GetState(), Is.EqualTo (false));
 
       bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_TriState");
-      Assert.That (bocBooleanValue.State, Is.EqualTo (false));
+      Assert.That (bocBooleanValue.GetState(), Is.EqualTo (false));
     }
 
     [Test]
@@ -116,10 +116,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_Normal");
-      Assert.That (bocBooleanValue.IsTriState, Is.EqualTo (false));
+      Assert.That (bocBooleanValue.IsTriState(), Is.EqualTo (false));
 
       bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_TriState");
-      Assert.That (bocBooleanValue.IsTriState, Is.EqualTo (true));
+      Assert.That (bocBooleanValue.IsTriState(), Is.EqualTo (true));
     }
 
     [Test]

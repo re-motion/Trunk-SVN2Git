@@ -17,7 +17,7 @@ namespace ActaNova.WebTesting.SampleTests
       var home = Start();
 
       var eigenerAv = home.Tree.GetNode (1);
-      Assert.That (eigenerAv.Text, Is.EqualTo ("Eigener AV"));
+      Assert.That (eigenerAv.GetText(), Is.EqualTo ("Eigener AV"));
 
       home = home.Tree.GetNode (2).Expand().GetNodeByText ("egora Gemeinde").Select().Expect<ActaNovaMainPageObject>();
       Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("egora Gemeinde AV"));

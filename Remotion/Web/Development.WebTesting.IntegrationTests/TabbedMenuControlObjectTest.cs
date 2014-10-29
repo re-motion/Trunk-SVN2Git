@@ -74,7 +74,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var tabbedMenu = home.GetTabbedMenu().Single();
-      Assert.That (tabbedMenu.StatusText, Is.EqualTo ("MyStatusText"));
+      Assert.That (tabbedMenu.GetStatusText(), Is.EqualTo ("MyStatusText"));
     }
 
     [Test]
