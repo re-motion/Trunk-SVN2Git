@@ -271,7 +271,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var row = bocList.GetRow (2);
 
       row.ClickSelectCheckbox();
-      row.GetCell (4).PerformCommand();
+      row.GetCell (4).ExecuteCommand();
 
       Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("1"));
     }
@@ -370,7 +370,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var cell = bocList.GetRow (2).GetCell (4);
 
-      cell.PerformCommand();
+      cell.ExecuteCommand();
 
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderRowLabel").Text, Is.EqualTo ("1"));
