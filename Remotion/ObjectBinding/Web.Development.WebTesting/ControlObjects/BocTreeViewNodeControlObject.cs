@@ -76,9 +76,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
-    public BocTreeViewNodeControlObject Select ([CanBeNull] IActionBehavior actionBehavior = null)
+    public BocTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
-      var webTreeViewNode = _webTreeViewNode.Select(actionBehavior);
+      var webTreeViewNode = _webTreeViewNode.Select(completionDetection);
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 

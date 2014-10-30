@@ -12,10 +12,10 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    protected IActionBehavior GetActualActionBehavior ([CanBeNull] IActionBehavior usedDefinedActionBehavior)
+    protected ICompletionDetection GetActualActionBehavior ([CanBeNull] ICompletionDetection usedDefinedCompletionDetection)
     {
-      if (usedDefinedActionBehavior != null)
-        return usedDefinedActionBehavior;
+      if (usedDefinedCompletionDetection != null)
+        return usedDefinedCompletionDetection;
 
       return Behavior.WaitFor (WaitForActaNova.OuterInnerOuterUpdate);
     }

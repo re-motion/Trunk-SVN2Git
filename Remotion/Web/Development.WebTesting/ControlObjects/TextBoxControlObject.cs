@@ -22,30 +22,30 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope.Value; // do not trim
     }
 
-    public UnspecifiedPageObject FillWith (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, actionBehavior);
+      return FillWith (text, Then.TabAway, completionDetection);
     }
 
     /// <remarks>
-    /// The default <see cref="IActionBehavior"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
+    /// The default <see cref="ICompletionDetection"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
     /// </remarks>
-    public UnspecifiedPageObject FillWith (string text, ThenAction then, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ThenAction then, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);
 
-      var actualActionBehavior = GetActualActionBehavior (then, actionBehavior);
-      Scope.FillWithAndWait (text, then, Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (then, completionDetection);
+      Scope.FillWithAndWait (text, then, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
-    private IActionBehavior GetActualActionBehavior (ThenAction then, IActionBehavior userDefinedActionBehavior)
+    private ICompletionDetection DetermineActualCompletionDetection (ThenAction then, ICompletionDetection userDefinedCompletionDetection)
     {
-      if (userDefinedActionBehavior != null)
-        return userDefinedActionBehavior;
+      if (userDefinedCompletionDetection != null)
+        return userDefinedCompletionDetection;
 
       return Behavior.WaitFor (then != Then.DoNothing ? WaitFor.WxePostBack : WaitFor.Nothing);
     }

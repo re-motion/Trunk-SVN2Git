@@ -21,14 +21,14 @@ namespace ActaNova.WebTesting.ControlObjects
       get { return Scope.FindCss (".formPageTitleLabel").Text; }
     }
 
-    public UnspecifiedPageObject Perform (string command, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject Perform (string command, ICompletionDetection completionDetection = null)
     {
-      if (actionBehavior == null)
-        actionBehavior = Behavior.WaitFor (WaitFor.WxePostBack);
+      if (completionDetection == null)
+        completionDetection = Behavior.WaitFor (WaitFor.WxePostBack);
 
       return GetControl (
           new PerHtmlIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), string.Format ("{0}Button", command)))
-          .Click (actionBehavior);
+          .Click (completionDetection);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

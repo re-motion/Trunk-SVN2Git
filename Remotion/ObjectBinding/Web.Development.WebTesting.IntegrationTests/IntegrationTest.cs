@@ -49,10 +49,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
     }
 
-    protected IActionBehavior Behavior
+    protected ICompletionDetection Behavior
     {
       // Note: property exists for "syntactical sugar" only, therefore returning a new object in the get accessor is okay.
-      get { return new ActionBehavior(); }
+      get { return new CompletionDetection(); }
     }
   }
 }

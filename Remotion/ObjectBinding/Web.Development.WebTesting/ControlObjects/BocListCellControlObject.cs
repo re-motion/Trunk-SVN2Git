@@ -31,9 +31,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.GetCommand();
     }
 
-    public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
     {
-      return _impl.ExecuteCommand (actionBehavior);
+      return _impl.ExecuteCommand (completionDetection);
     }
   }
 }

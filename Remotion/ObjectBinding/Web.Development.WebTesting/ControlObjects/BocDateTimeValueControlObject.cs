@@ -52,28 +52,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the date component of the control to <paramref name="newDate"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDate (DateTime newDate, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetDate (DateTime newDate, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       var newDateString = newDate.ToShortDateString();
-      return SetDate (newDateString, actionBehavior);
+      return SetDate (newDateString, completionDetection);
     }
 
     /// <summary>
     /// Sets the date component of the control to <paramref name="newDateString"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDate (string newDateString, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetDate (string newDateString, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       var dateScope = GetDateScope();
 
-      var actualActionBehavior = GetActualActionBehavior (dateScope, actionBehavior);
-      dateScope.FillWithAndWait (newDateString, Then.TabAway, Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (dateScope, completionDetection);
+      dateScope.FillWithAndWait (newDateString, Then.TabAway, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
     /// <summary>
     /// Sets the time component of the control to <paramref name="newTime"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTime (TimeSpan newTime, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetTime (TimeSpan newTime, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       var newTimeAsDateTime = DateTime.MinValue.Add (newTime);
 
@@ -85,29 +85,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       else
         newTimeString = newTimeAsDateTime.ToShortTimeString();
 
-      return SetTime (newTimeString, actionBehavior);
+      return SetTime (newTimeString, completionDetection);
     }
 
     /// <summary>
     /// Sets the time component of the control to <paramref name="newTimeString"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTime (string newTimeString, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetTime (string newTimeString, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       var timeScope = GetTimeScope();
 
-      var actualActionBehavior = GetActualActionBehavior (timeScope, actionBehavior);
-      timeScope.FillWithAndWait (newTimeString, Then.TabAway, Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (timeScope, completionDetection);
+      timeScope.FillWithAndWait (newTimeString, Then.TabAway, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
     /// <summary>
     /// Sets the date component and the time component of the control to <paramref name="newDateTime"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDateTime (DateTime newDateTime, [CanBeNull] IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetDateTime (DateTime newDateTime, [CanBeNull] ICompletionDetection completionDetection = null)
     {
-      SetDate (newDateTime, actionBehavior);
+      SetDate (newDateTime, completionDetection);
       if(_hasTimeField)
-        SetTime (newDateTime.TimeOfDay, actionBehavior);
+        SetTime (newDateTime.TimeOfDay, completionDetection);
       return UnspecifiedPage();
     }
 

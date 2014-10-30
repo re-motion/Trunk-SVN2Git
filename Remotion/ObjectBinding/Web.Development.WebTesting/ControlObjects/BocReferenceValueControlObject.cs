@@ -32,34 +32,34 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FindChild ("Value").GetSelectedOptionText();
     }
 
-    public UnspecifiedPageObject SelectOption (string itemID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
       Action<ElementScope> selectAction = s => s.SelectOptionByValue (itemID);
-      return SelectOption (selectAction, actionBehavior);
+      return SelectOption (selectAction, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOption (int index, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
     {
       Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
-      return SelectOption (selectAction, actionBehavior);
+      return SelectOption (selectAction, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOptionByText (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectOptionByText (string text, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       
       Action<ElementScope> selectAction = s => s.SelectOption(text);
-      return SelectOption (selectAction, actionBehavior);
+      return SelectOption (selectAction, completionDetection);
     }
 
-    private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, IActionBehavior actionBehavior = null)
+    private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
-      FindChild ("Value").PerformAction (selectAction, Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
+      FindChild ("Value").PerformAction (selectAction, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
@@ -70,9 +70,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (commandScope.Id, context);
     }
 
-    public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
     {
-      return GetCommand().Click (actionBehavior);
+      return GetCommand().Click (completionDetection);
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()

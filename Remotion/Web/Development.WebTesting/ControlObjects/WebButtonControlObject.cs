@@ -14,10 +14,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject Click (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
     {
-      var actualClickBehavior = GetActualActionBehavior (actionBehavior);
-      Scope.ClickAndWait (Context, actualClickBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
+      Scope.ClickAndWait (Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
   }

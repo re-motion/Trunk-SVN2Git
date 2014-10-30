@@ -70,7 +70,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="ActionBehavior.cs" />
+    <Compile Include="CompletionDetection.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
@@ -179,8 +179,8 @@
     <Compile Include="FluentControlSelection\PerHtmlIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
-    <Compile Include="IActionBehavior.cs" />
-    <Compile Include="IActionBehaviorInternal.cs" />
+    <Compile Include="ICompletionDetection.cs" />
+    <Compile Include="ICompletionDetectionInternal.cs" />
     <Compile Include="IBrowserConfiguration.cs" />
     <Compile Include="ICoypuConfiguration.cs" />
     <Compile Include="IHostingStrategy.cs" />

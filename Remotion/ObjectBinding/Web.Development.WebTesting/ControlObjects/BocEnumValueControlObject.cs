@@ -29,23 +29,23 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _variantImpl.GetSelectedOption();
     }
 
-    public UnspecifiedPageObject SelectOption (string itemID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return _variantImpl.SelectOption (itemID, actionBehavior);
+      return _variantImpl.SelectOption (itemID, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOption (int index, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
     {
-      return _variantImpl.SelectOption (index, actionBehavior);
+      return _variantImpl.SelectOption (index, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOptionByText (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SelectOptionByText (string text, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return _variantImpl.SelectOptionByText (text, actionBehavior);
+      return _variantImpl.SelectOptionByText (text, completionDetection);
     }
 
     // Todo RM-6297: CreateVariant factory method, IBocEnumValueControlObjectVariant interface and implementation classes can be moved outside ...
@@ -108,34 +108,34 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return _controlObject.FindChild ("Value").GetSelectedOptionText();
       }
 
-      public UnspecifiedPageObject SelectOption (string itemID, IActionBehavior actionBehavior = null)
+      public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
         Action<ElementScope> selectAction = s => s.SelectOptionByValue (itemID);
-        return SelectOption (selectAction, actionBehavior);
+        return SelectOption (selectAction, completionDetection);
       }
 
-      public UnspecifiedPageObject SelectOption (int index, IActionBehavior actionBehavior = null)
+      public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
       {
         Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
-        return SelectOption (selectAction, actionBehavior);
+        return SelectOption (selectAction, completionDetection);
       }
 
-      public UnspecifiedPageObject SelectOptionByText (string text, IActionBehavior actionBehavior = null)
+      public UnspecifiedPageObject SelectOptionByText (string text, ICompletionDetection completionDetection = null)
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
         Action<ElementScope> selectAction = s => s.SelectOption (text);
-        return SelectOption (selectAction, actionBehavior);
+        return SelectOption (selectAction, completionDetection);
       }
 
-      private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, IActionBehavior actionBehavior = null)
+      private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, ICompletionDetection completionDetection = null)
       {
         ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-        var actualActionBehavior = _controlObject.GetActualActionBehavior (actionBehavior);
-        _controlObject.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualActionBehavior);
+        var actualCompletionDetection = _controlObject.DetermineActualCompletionDetection (completionDetection);
+        _controlObject.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualCompletionDetection);
         return _controlObject.UnspecifiedPage();
       }
     }
@@ -163,34 +163,34 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return _controlObject.Scope.FindCss ("input[type='radio'][checked='checked']").Value;
       }
 
-      public UnspecifiedPageObject SelectOption (string itemID, IActionBehavior actionBehavior = null)
+      public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
         var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss("input");
-        return CheckScope (scope, actionBehavior);
+        return CheckScope (scope, completionDetection);
       }
 
-      public UnspecifiedPageObject SelectOption (int index, IActionBehavior actionBehavior = null)
+      public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
       {
         var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss("input");
-        return CheckScope (scope, actionBehavior);
+        return CheckScope (scope, completionDetection);
       }
 
-      public UnspecifiedPageObject SelectOptionByText (string text, IActionBehavior actionBehavior = null)
+      public UnspecifiedPageObject SelectOptionByText (string text, ICompletionDetection completionDetection = null)
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
         var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.Text, text).FindCss("input");
-        return CheckScope (scope, actionBehavior);
+        return CheckScope (scope, completionDetection);
       }
 
-      private UnspecifiedPageObject CheckScope ([NotNull] ElementScope scope, IActionBehavior actionBehavior = null)
+      private UnspecifiedPageObject CheckScope ([NotNull] ElementScope scope, ICompletionDetection completionDetection = null)
       {
         ArgumentUtility.CheckNotNull ("scope", scope);
 
-        var actualActionBehavior = _controlObject.GetActualActionBehavior (actionBehavior);
-        scope.PerformAction (s => s.Check(), _controlObject.Context, actualActionBehavior);
+        var actualCompletionDetection = _controlObject.DetermineActualCompletionDetection (completionDetection);
+        scope.PerformAction (s => s.Check(), _controlObject.Context, actualCompletionDetection);
         return _controlObject.UnspecifiedPage();
       }
     }

@@ -30,12 +30,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (bool newState, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetTo (bool newState, ICompletionDetection completionDetection = null)
     {
       if (GetState() == newState)
         return UnspecifiedPage();
 
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
       FindChild ("Value").PerformAction (
           s =>
           {
@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
               s.Uncheck();
           },
           Context,
-          actualActionBehavior);
+          actualCompletionDetection);
 
       return UnspecifiedPage();
     }

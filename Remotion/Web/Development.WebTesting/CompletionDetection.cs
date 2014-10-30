@@ -9,14 +9,14 @@ using Remotion.Web.Development.WebTesting.WaitingStrategies;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Implementation class for <see cref="IActionBehavior"/> and <see cref="IActionBehaviorInternal"/>.
+  /// Implementation class for <see cref="ICompletionDetection"/> and <see cref="ICompletionDetectionInternal"/>.
   /// </summary>
-  public class ActionBehavior : IActionBehavior, IActionBehaviorInternal
+  public class CompletionDetection : ICompletionDetection, ICompletionDetectionInternal
   {
     /// <summary>
-    /// Returns a unique ID for an <see cref="ActionBehavior"/> (used for debug output purposes).
+    /// Returns a unique ID for an <see cref="CompletionDetection"/> (used for debug output purposes).
     /// </summary>
-    private static class ActionBehaviorCounter
+    private static class CompletionDetectionCounter
     {
       private static int s_counter = 0;
 
@@ -26,22 +26,22 @@ namespace Remotion.Web.Development.WebTesting
       }
     }
 
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ActionBehavior));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (CompletionDetection));
 
     private readonly int _debugOutputID;
     private readonly List<IWaitingStrategy> _waitingStrategies;
     private readonly List<Action<TestObjectContext>> _afterClickActions;
     private bool _closesWindow;
 
-    public ActionBehavior ()
+    public CompletionDetection ()
     {
-      _debugOutputID = ActionBehaviorCounter.GetNextID();
+      _debugOutputID = CompletionDetectionCounter.GetNextID();
       _waitingStrategies = new List<IWaitingStrategy>();
       _afterClickActions = new List<Action<TestObjectContext>>();
       _closesWindow = false;
     }
 
-    public IActionBehavior WaitFor (IWaitingStrategy waitingStrategy)
+    public ICompletionDetection WaitFor (IWaitingStrategy waitingStrategy)
     {
       ArgumentUtility.CheckNotNull ("waitingStrategy", waitingStrategy);
 
@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting
       return this;
     }
 
-    public IActionBehavior AcceptModalDialog ()
+    public ICompletionDetection AcceptModalDialog ()
     {
       _afterClickActions.Add (
           context =>
@@ -62,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting
       return this;
     }
 
-    public IActionBehavior CancelModalDialog ()
+    public ICompletionDetection CancelModalDialog ()
     {
       _afterClickActions.Add (
           context =>
@@ -74,13 +74,13 @@ namespace Remotion.Web.Development.WebTesting
       return this;
     }
 
-    public IActionBehavior ClosesWindow ()
+    public ICompletionDetection ClosesWindow ()
     {
       _closesWindow = true;
       return this;
     }
 
-    object IActionBehaviorInternal.BeforeAction (TestObjectContext context)
+    object ICompletionDetectionInternal.BeforeAction (TestObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -91,7 +91,7 @@ namespace Remotion.Web.Development.WebTesting
           .ToList();
     }
 
-    void IActionBehaviorInternal.AfterAction (TestObjectContext context, object state)
+    void ICompletionDetectionInternal.AfterAction (TestObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);

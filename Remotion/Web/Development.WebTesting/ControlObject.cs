@@ -39,12 +39,12 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns a new <see cref="IActionBehavior"/> object.
+    /// Returns a new <see cref="ICompletionDetection"/> object.
     /// </summary>
-    protected IActionBehavior Behavior
+    protected ICompletionDetection Behavior
     {
       // Note: property exists for "syntactical sugar" only, therefore returning a new object in the get accessor is okay.
-      get { return new ActionBehavior(); }
+      get { return new CompletionDetection(); }
     }
   }
 }

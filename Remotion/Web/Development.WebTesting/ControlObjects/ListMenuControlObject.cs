@@ -15,36 +15,36 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject ClickItem (string itemID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItem (string itemID, ICompletionDetection completionDetection = null)
     {
       var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (item);
     }
 
-    public UnspecifiedPageObject ClickItem (int index, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItem (int index, ICompletionDetection completionDetection = null)
     {
       var item = FindChild ((index - 1).ToString());
-      return ClickItem (item, actionBehavior);
+      return ClickItem (item, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, ICompletionDetection completionDetection = null)
     {
       var item = Scope.FindId (htmlID);
-      return ClickItem (item, actionBehavior);
+      return ClickItem (item, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItemByText (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItemByText (string text, ICompletionDetection completionDetection = null)
     {
       var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
-      return ClickItem (item, actionBehavior);
+      return ClickItem (item, completionDetection);
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope item, IActionBehavior actionBehavior = null)
+    private UnspecifiedPageObject ClickItem (ElementScope item, ICompletionDetection completionDetection = null)
     {
       var anchorScope = item.FindLink();
 
-      var actualActionBehavior = GetActualActionBehavior (anchorScope, actionBehavior);
-      anchorScope.ClickAndWait (Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (anchorScope, completionDetection);
+      anchorScope.ClickAndWait (Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
   }

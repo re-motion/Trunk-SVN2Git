@@ -34,28 +34,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return valueScope.Value; // do not trim
     }
 
-    public UnspecifiedPageObject FillWith (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, actionBehavior);
+      return FillWith (text, Then.TabAway, completionDetection);
     }
 
-    public UnspecifiedPageObject FillWith (string text, ThenAction then, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ThenAction then, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);
 
-      var actualActionBehavior = GetActualActionBehavior (then, actionBehavior);
-      FindChild ("Value").FillWithAndWait (text, then, Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (then, completionDetection);
+      FindChild ("Value").FillWithAndWait (text, then, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
-    private IActionBehavior GetActualActionBehavior (ThenAction then, IActionBehavior userDefinedActionBehavior)
+    private ICompletionDetection DetermineActualCompletionDetection (ThenAction then, ICompletionDetection userDefinedCompletionDetection)
     {
-      return then == Then.DoNothing && userDefinedActionBehavior == null
+      return then == Then.DoNothing && userDefinedCompletionDetection == null
           ? Behavior.WaitFor (WaitFor.Nothing)
-          : GetActualActionBehavior (userDefinedActionBehavior);
+          : DetermineActualCompletionDetection (userDefinedCompletionDetection);
     }
   }
 }

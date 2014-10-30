@@ -31,20 +31,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FindChild ("TextValue").Value; // do not trim
     }
 
-    public UnspecifiedPageObject FillWith (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, actionBehavior);
+      return FillWith (text, Then.TabAway, completionDetection);
     }
 
-    public UnspecifiedPageObject FillWith (string text, ThenAction then, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject FillWith (string text, ThenAction then, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("then", then);
 
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
-      FindChild ("TextValue").FillWithAndWait (text, then, Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
+      FindChild ("TextValue").FillWithAndWait (text, then, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
@@ -55,9 +55,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (commandScope.Id, context);
     }
 
-    public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
     {
-      return GetCommand().Click (actionBehavior);
+      return GetCommand().Click (completionDetection);
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()

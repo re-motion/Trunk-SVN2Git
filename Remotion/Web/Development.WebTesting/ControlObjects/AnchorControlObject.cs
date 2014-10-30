@@ -18,22 +18,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject Click (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
-      Scope.ClickAndWait (Context, actualActionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
+      Scope.ClickAndWait (Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
     /// <summary>
-    /// Returns the actual <see cref="IActionBehavior"/> to be used.
+    /// Returns the actual <see cref="ICompletionDetection"/> to be used.
     /// </summary>
-    /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
-    /// <returns><see cref="IActionBehavior"/> to be used.</returns>
-    private IActionBehavior GetActualActionBehavior (IActionBehavior userDefinedActionBehavior)
+    /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
+    /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
+    private ICompletionDetection DetermineActualCompletionDetection (ICompletionDetection userDefinedCompletionDetection)
     {
-      if (userDefinedActionBehavior != null)
-        return userDefinedActionBehavior;
+      if (userDefinedCompletionDetection != null)
+        return userDefinedCompletionDetection;
 
       if (IsPostBackLink())
         return Behavior.WaitFor (WaitFor.WxePostBack);

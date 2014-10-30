@@ -18,38 +18,38 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     protected abstract void OpenDropDownMenu ();
 
-    public UnspecifiedPageObject ClickItem (string itemID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItem (string itemID, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
-      return ClickItem (scope, actionBehavior);
+      return ClickItem (scope, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItem (int index, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItem (int index, ICompletionDetection completionDetection = null)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindXPath (string.Format ("li[{0}]", index));
-      return ClickItem (scope, actionBehavior);
+      return ClickItem (scope, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindId (htmlID);
-      return ClickItem (scope, actionBehavior);
+      return ClickItem (scope, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItemByText (string text, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ClickItemByText (string text, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindDMA ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Text, text);
-      return ClickItem (scope, actionBehavior);
+      return ClickItem (scope, completionDetection);
     }
 
     private ElementScope GetDropDownMenuScope ()
@@ -60,12 +60,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return dropDownMenuOptionsScope;
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope item, IActionBehavior actionBehavior = null)
+    private UnspecifiedPageObject ClickItem (ElementScope item, ICompletionDetection completionDetection = null)
     {
-      var actualWaitingStrategy = GetActualActionBehavior (item, actionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (item, completionDetection);
 
       var anchorScope = item.FindLink();
-      anchorScope.ClickAndWait (Context, actualWaitingStrategy);
+      anchorScope.ClickAndWait (Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
   }

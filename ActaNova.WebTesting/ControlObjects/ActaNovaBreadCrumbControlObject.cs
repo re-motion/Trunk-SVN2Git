@@ -23,9 +23,9 @@ namespace ActaNova.WebTesting.ControlObjects
       get { return Scope.FindCss ("span.breadCrumbElementText").Text.Trim(); }
     }
 
-    public UnspecifiedPageObject Click (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      var actualActionBehavior = GetActualActionBehavior (completionDetection);
       Scope.ClickAndWait (Context, actualActionBehavior);
       return UnspecifiedPage();
     }

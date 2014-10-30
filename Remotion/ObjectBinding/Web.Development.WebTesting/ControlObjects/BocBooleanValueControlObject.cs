@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (bool? newState, IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject SetTo (bool? newState, ICompletionDetection completionDetection = null)
     {
       if (!IsTriState() && !newState.HasValue)
         throw new ArgumentException ("Must not be null for non-tri-state BocBooleanValue controls.", "newState");
@@ -48,21 +48,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return UnspecifiedPage();
 
       if (!IsTriState())
-        return Click (1, actionBehavior);
+        return Click (1, completionDetection);
 
       var states = new bool?[] { false, null, true, false, null };
       var numberOfClicks = Array.LastIndexOf (states, newState) - Array.IndexOf (states, GetState());
-      return Click (numberOfClicks, actionBehavior);
+      return Click (numberOfClicks, completionDetection);
     }
 
-    private UnspecifiedPageObject Click (int numberOfClicks, IActionBehavior actionBehavior)
+    private UnspecifiedPageObject Click (int numberOfClicks, ICompletionDetection completionDetection)
     {
-      var actualActionBehavior = GetActualActionBehavior (actionBehavior);
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
 
       var linkScope = FindChild ("DisplayValue");
 
       for (var i = 0; i < numberOfClicks; ++i)
-        linkScope.ClickAndWait (Context, actualActionBehavior);
+        linkScope.ClickAndWait (Context, actualCompletionDetection);
 
       return UnspecifiedPage();
     }

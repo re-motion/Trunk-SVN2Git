@@ -4,9 +4,9 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Internally used interface in order to execute an <see cref="IActionBehavior"/> properly.
+  /// Internally used interface in order to execute an <see cref="ICompletionDetection"/> properly.
   /// </summary>
-  public interface IActionBehaviorInternal
+  public interface ICompletionDetectionInternal
   {
     /// <summary>
     /// Called immediately before the action has been performed.

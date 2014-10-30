@@ -74,12 +74,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
-    public WebTreeViewNodeControlObject Select ([CanBeNull] IActionBehavior actionBehavior = null)
+    public WebTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = actionBehavior ?? Behavior.WaitFor (WaitFor.WxePostBack);
+      var actualCompletionDetection = completionDetection ?? Behavior.WaitFor (WaitFor.WxePostBack);
 
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      selectAnchorScope.ClickAndWait (Context, actualActionBehavior);
+      selectAnchorScope.ClickAndWait (Context, actualCompletionDetection);
       return this;
     }
 

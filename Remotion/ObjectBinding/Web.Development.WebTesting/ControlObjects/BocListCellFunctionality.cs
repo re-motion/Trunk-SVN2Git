@@ -34,9 +34,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (commandScope.Id, context);
     }
 
-    public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
     {
-      return GetCommand().Click (actionBehavior);
+      return GetCommand().Click (completionDetection);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

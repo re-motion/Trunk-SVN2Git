@@ -32,27 +32,27 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Returns the actual <see cref="IActionBehavior"/> to be used when acting on the control object's scope.
+    /// Returns the actual <see cref="ICompletionDetection"/> to be used when acting on the control object's scope.
     /// </summary>
-    /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
-    /// <returns><see cref="IActionBehavior"/> to be used.</returns>
-    protected IActionBehavior GetActualActionBehavior ([CanBeNull] IActionBehavior userDefinedActionBehavior)
+    /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
+    /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
+    protected ICompletionDetection DetermineActualCompletionDetection ([CanBeNull] ICompletionDetection userDefinedCompletionDetection)
     {
-      return GetActualActionBehavior (Scope, userDefinedActionBehavior);
+      return DetermineActualCompletionDetection (Scope, userDefinedCompletionDetection);
     }
 
     /// <summary>
-    /// Returns the actual <see cref="IActionBehavior"/> to be used.
+    /// Returns the actual <see cref="ICompletionDetection"/> to be used.
     /// </summary>
     /// <param name="scope">Scope which is to be acted on.</param>
-    /// <param name="userDefinedActionBehavior">User-provided <see cref="IActionBehavior"/>.</param>
-    /// <returns><see cref="IActionBehavior"/> to be used.</returns>
-    protected IActionBehavior GetActualActionBehavior ([NotNull] ElementScope scope, [CanBeNull] IActionBehavior userDefinedActionBehavior)
+    /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
+    /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
+    protected ICompletionDetection DetermineActualCompletionDetection ([NotNull] ElementScope scope, [CanBeNull] ICompletionDetection userDefinedCompletionDetection)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      if (userDefinedActionBehavior != null)
-        return userDefinedActionBehavior;
+      if (userDefinedCompletionDetection != null)
+        return userDefinedCompletionDetection;
 
       if (scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
       {
