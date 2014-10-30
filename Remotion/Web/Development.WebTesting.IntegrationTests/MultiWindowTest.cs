@@ -51,7 +51,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 6);
 
-      simplePostBackButtonInFrameButton.Click (new CompletionDetection().WaitFor (WaitFor.WxePostBack).WaitFor (WaitFor.WxePostBackIn (home)));
+      simplePostBackButtonInFrameButton.Click (new CompletionDetector().WaitFor (WaitFor.WxePostBack).WaitFor (WaitFor.WxePostBackIn (home)));
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 7);
     }
@@ -93,7 +93,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var closeAndRefreshMainAsWellButton = window.GetWebButton().ByID ("CloseAndRefreshMainAsWell");
       closeAndRefreshMainAsWellButton.Click (
-          new CompletionDetection().WaitFor (WaitFor.WxePostBackIn (home.Frame)).WaitFor (WaitFor.WxePostBackIn (home)).ClosesWindow());
+          new CompletionDetector().WaitFor (WaitFor.WxePostBackIn (home.Frame)).WaitFor (WaitFor.WxePostBackIn (home)).ClosesWindow());
       AssertPostBackSequenceNumber (frameLabel, 3);
       AssertPostBackSequenceNumber (mainLabel, 4);
     }
@@ -150,7 +150,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       // Ensure that page can still be used
       var navigatieAwayButton = home.GetWebButton().ByID ("NavigateAway");
-      var defaultPage = navigatieAwayButton.Click (new CompletionDetection().AcceptModalDialog()).Expect<RemotionPageObject>();
+      var defaultPage = navigatieAwayButton.Click (new CompletionDetector().AcceptModalDialog()).Expect<RemotionPageObject>();
       Assert.That (defaultPage.GetTitle(), Is.EqualTo ("Web.Development.WebTesting.TestSite"));
     }
 

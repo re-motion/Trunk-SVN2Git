@@ -11,10 +11,10 @@ namespace Remotion.Web.Development.WebTesting
   /// <summary>
   /// Implementation class for <see cref="ICompletionDetection"/> and <see cref="ICompletionDetectionInternal"/>.
   /// </summary>
-  public class CompletionDetection : ICompletionDetection, ICompletionDetectionInternal
+  public class CompletionDetector : ICompletionDetection, ICompletionDetectionInternal
   {
     /// <summary>
-    /// Returns a unique ID for an <see cref="CompletionDetection"/> (used for debug output purposes).
+    /// Returns a unique ID for an <see cref="CompletionDetector"/> (used for debug output purposes).
     /// </summary>
     private static class CompletionDetectionCounter
     {
@@ -26,14 +26,14 @@ namespace Remotion.Web.Development.WebTesting
       }
     }
 
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (CompletionDetection));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (CompletionDetector));
 
     private readonly int _debugOutputID;
     private readonly List<IWaitingStrategy> _waitingStrategies;
     private readonly List<Action<TestObjectContext>> _afterClickActions;
     private bool _closesWindow;
 
-    public CompletionDetection ()
+    public CompletionDetector ()
     {
       _debugOutputID = CompletionDetectionCounter.GetNextID();
       _waitingStrategies = new List<IWaitingStrategy>();

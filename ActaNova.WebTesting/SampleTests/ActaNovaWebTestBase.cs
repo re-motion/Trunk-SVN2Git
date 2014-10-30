@@ -46,7 +46,7 @@ namespace ActaNova.WebTesting.SampleTests
     protected ICompletionDetection Behavior
     {
       // Note: property exists for "syntactical sugar" only, therefore returning a new object in the get accessor is okay.
-      get { return new CompletionDetection(); }
+      get { return new CompletionDetector(); }
     }
   }
 }
