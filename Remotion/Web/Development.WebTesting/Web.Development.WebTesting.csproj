@@ -70,7 +70,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="CompletionDetector.cs" />
+    <Compile Include="CompletionDetectionImplementation\CompletionDetector.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
@@ -98,6 +98,7 @@
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionStrategyBase.cs" />
     <Compile Include="ControlObjects\AnchorControlObject.cs" />
     <Compile Include="ControlObjects\ContextMenuControlObject.cs" />
     <Compile Include="ControlObjects\ControlHost.cs" />
@@ -179,8 +180,8 @@
     <Compile Include="FluentControlSelection\PerHtmlIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
-    <Compile Include="ICompletionDetection.cs" />
-    <Compile Include="ICompletionDetectionInternal.cs" />
+    <Compile Include="CompletionDetectionBuilderFluentInterface.cs" />
+    <Compile Include="ICompletionDetector.cs" />
     <Compile Include="IBrowserConfiguration.cs" />
     <Compile Include="ICoypuConfiguration.cs" />
     <Compile Include="IHostingStrategy.cs" />
@@ -199,17 +200,15 @@
     <Compile Include="IControlHost.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
     <Compile Include="Then.cs" />
-    <Compile Include="WaitingStrategies\WaitFor.cs" />
-    <Compile Include="WaitingStrategies\NullWaitingStrategy.cs" />
-    <Compile Include="WaitingStrategies\WxePostBackInWaitingStrategy.cs" />
-    <Compile Include="WaitingStrategies\WxePostBackWaitingStrategy.cs" />
-    <Compile Include="WaitingStrategies\IWaitingStrategy.cs" />
+    <Compile Include="Wxe.cs" />
+    <Compile Include="CompletionDetectionImplementation\NullCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxePostBackInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxePostBackCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\ICompletionDetectionStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
-    <Compile Include="WaitingStrategies\WxeResetInWaitingStrategy.cs" />
-    <Compile Include="WaitingStrategies\WxeResetWaitingStrategy.cs" />
-    <Compile Include="WaitingStrategies\WxeResetWaitingStrategyBase.cs" />
-    <Compile Include="WaitingStrategies\WxeWaitingStrategyBase.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxeResetInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxeResetCompletionDetectionStrategy.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="WebTestingFrameworkConfiguration.cs" />
     <Compile Include="TestObject.cs" />

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -36,9 +35,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         return userDefinedCompletionDetection;
 
       if (IsPostBackLink())
-        return Behavior.WaitFor (WaitFor.WxePostBack);
+        return Continue.When (Wxe.PostBackCompleted);
 
-      return Behavior.WaitFor (WaitFor.WxeReset);
+      return Continue.When (Wxe.Reset);
     }
 
     private bool IsPostBackLink ()

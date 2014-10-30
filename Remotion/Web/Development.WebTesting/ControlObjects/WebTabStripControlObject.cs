@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.Utilities;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -58,7 +57,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
       var commandContext = Context.CloneForScope (commandScope);
       var command = new CommandControlObject (commandScope.Id, commandContext);
-      return command.Click (Behavior.WaitFor (WaitFor.WxePostBack));
+      return command.Click (Continue.When (Wxe.PostBackCompleted));
     }
   }
 }

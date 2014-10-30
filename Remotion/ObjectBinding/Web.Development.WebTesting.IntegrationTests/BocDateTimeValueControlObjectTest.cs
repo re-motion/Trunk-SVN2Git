@@ -2,9 +2,9 @@
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse(home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
-      bocDateTimeValue.SetDateTime (dateTime, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      bocDateTimeValue.SetDateTime (dateTime, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (DateTime.Parse(home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
@@ -172,7 +172,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse(home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
-      bocDateTimeValue.SetDate (dateTime, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      bocDateTimeValue.SetDate (dateTime, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (DateTime.Parse(home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
@@ -210,7 +210,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse(home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (setInitTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
-      bocDateTimeValue.SetTime (time, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      bocDateTimeValue.SetTime (time, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (DateTime.Parse(home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (setInitTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");

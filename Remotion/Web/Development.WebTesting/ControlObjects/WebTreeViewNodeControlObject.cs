@@ -3,7 +3,6 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -60,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      expandAnchorScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      expandAnchorScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
       return this;
     }
 
@@ -70,13 +69,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      collapseAnchorScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      collapseAnchorScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
       return this;
     }
 
     public WebTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
-      var actualCompletionDetection = completionDetection ?? Behavior.WaitFor (WaitFor.WxePostBack);
+      var actualCompletionDetection = completionDetection ?? Continue.When (Wxe.PostBackCompleted);
 
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
       selectAnchorScope.ClickAndWait (Context, actualCompletionDetection);

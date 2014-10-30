@@ -32,23 +32,25 @@ namespace ActaNova.WebTesting.ControlObjects
     /// </summary>
     public UnspecifiedPageObject Select (IEnumerable<string> menuItems, ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = GetActualActionBehavior (completionDetection) as ICompletionDetectionInternal;
-      if (actualActionBehavior == null)
-        Assertion.IsNotNull (actualActionBehavior, "");
+      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
 
-      var waitingStrategyState = actualActionBehavior.BeforeAction (Context);
+      Scope.PerformAction (
+          s =>
+          {
+            // HACK: Use Selenium directly, Coypu does not support Actions API yet.
+            var webDriver = (IWebDriver) Context.Browser.Native;
+            var nativeMainMenuScope = (IWebElement) s.Native;
 
-      // HACK: Use Selenium directly, Coypu does not support Actions API yet.
-      var webDriver = (IWebDriver) Context.Browser.Native;
-      var nativeMainMenuScope = (IWebElement) Scope.Native;
+            var actions = new ActionsWithWaitSupport (webDriver);
+            var timeout = WebTestingFrameworkConfiguration.Current.SearchTimeout;
 
-      var actions = new ActionsWithWaitSupport (webDriver);
-      var timeout = WebTestingFrameworkConfiguration.Current.SearchTimeout;
+            var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
+            actions.Click (nativeLastMenuItemScope);
 
-      var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
-      AddClickOnLastMenuItemAction (actions, nativeLastMenuItemScope, actualActionBehavior, waitingStrategyState, timeout);
-
-      actions.Perform();
+            actions.Perform();
+          },
+          Context,
+          actualCompletionDetection);
 
       return UnspecifiedPage();
     }
@@ -69,24 +71,6 @@ namespace ActaNova.WebTesting.ControlObjects
       }
 
       return nativeMenuItemScope;
-    }
-
-    private void AddClickOnLastMenuItemAction (
-        ActionsWithWaitSupport actions,
-        IWebElement nativeLastMenuItemScope,
-        ICompletionDetectionInternal completionDetection,
-        object waitingStrategyState,
-        TimeSpan timeout)
-    {
-      actions.Click (nativeLastMenuItemScope);
-      actions.WaitFor (
-          nativeLastMenuItemScope,
-          _ =>
-          {
-            completionDetection.AfterAction (Context, waitingStrategyState);
-            return true;
-          },
-          timeout);
     }
   }
 }

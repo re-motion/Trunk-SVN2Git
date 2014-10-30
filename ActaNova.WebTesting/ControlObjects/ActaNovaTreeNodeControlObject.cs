@@ -80,7 +80,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = completionDetection ?? Behavior.WaitFor (WaitForActaNova.OuterInnerOuterUpdate);
+      var actualActionBehavior = completionDetection ?? Continue.When (WaitForActaNova.OuterInnerOuterUpdate);
       _bocTreeViewNode.Select(actualActionBehavior);
 
       return UnspecifiedPage();

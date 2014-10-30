@@ -30,12 +30,11 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("completionDetection", completionDetection);
 
-      var completionDetectionInternal = completionDetection as ICompletionDetectionInternal;
-      Assertion.IsNotNull (completionDetectionInternal, "ICompletionDetection must also - explicitly - implement ICompletionDetectionInternal.");
+      var completionDetector = completionDetection.Build();
 
-      var state = completionDetectionInternal.BeforeAction (context);
+      completionDetector.PrepareWaitForCompletion (context);
       action (scope);
-      completionDetectionInternal.AfterAction (context, state);
+      completionDetector.WaitForCompletion (context);
     }
 
     /// <summary>

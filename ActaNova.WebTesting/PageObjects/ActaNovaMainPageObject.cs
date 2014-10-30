@@ -23,7 +23,7 @@ namespace ActaNova.WebTesting.PageObjects
 
     public UnspecifiedPageObject Refresh (ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = completionDetection ?? Behavior.WaitFor (WaitForActaNova.OuterInnerOuterUpdate);
+      var actualActionBehavior = completionDetection ?? Continue.When (WaitForActaNova.OuterInnerOuterUpdate);
 
       var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "RefreshButton"));
       webButton.Click (actualActionBehavior);

@@ -5,7 +5,6 @@ using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -24,7 +23,7 @@ namespace ActaNova.WebTesting.ControlObjects
     public UnspecifiedPageObject Perform (string command, ICompletionDetection completionDetection = null)
     {
       if (completionDetection == null)
-        completionDetection = Behavior.WaitFor (WaitFor.WxePostBack);
+        completionDetection = Continue.When (Wxe.PostBackCompleted);
 
       return GetControl (
           new PerHtmlIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), string.Format ("{0}Button", command)))

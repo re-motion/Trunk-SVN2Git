@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -101,7 +100,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       // Check WaitFor.Nothing once before default behavior usage...
 
       var aspTextBoxNoAutoPostback = home.GetTextBox().ByLocalID ("MyAspTextBoxNoAutoPostBack");
-      aspTextBoxNoAutoPostback.FillWith ("Blubba4", Behavior.WaitFor (WaitFor.Nothing));
+      aspTextBoxNoAutoPostback.FillWith ("Blubba4", Continue.Immediately());
       Assert.That (aspTextBoxNoAutoPostback.GetText(), Is.EqualTo ("Blubba4"));
 
       var editableTextBox = home.GetTextBox().ByLocalID ("MyEditableTextBox");
@@ -115,7 +114,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (aspTextBox.GetText(), Is.EqualTo ("Blubba2"));
 
       var htmlTextBox = home.GetTextBox().ByLocalID ("MyHtmlTextBox");
-      htmlTextBox.FillWith ("Blubba3", Behavior.WaitFor(WaitFor.Nothing));
+      htmlTextBox.FillWith ("Blubba3", Continue.Immediately());
       Assert.That (htmlTextBox.GetText(), Is.EqualTo ("Blubba3"));
     }
 

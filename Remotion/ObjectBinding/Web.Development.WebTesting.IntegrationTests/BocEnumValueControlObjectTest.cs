@@ -2,9 +2,9 @@
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -293,7 +293,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       noAutoPostBackDropDownListBocEnumValue.SelectOption (single); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("DropDownListNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
-      normalDropDownListBocEnumValue.SelectOption (single, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      normalDropDownListBocEnumValue.SelectOption (single, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("DropDownListNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
       normalDropDownListBocEnumValue.SelectOption (divorced);
@@ -312,7 +312,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       noAutoPostBackListBoxBocEnumValue.SelectOption (single); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("ListBoxNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
-      normalListBoxBocEnumValue.SelectOption (single, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      normalListBoxBocEnumValue.SelectOption (single, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("ListBoxNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
       normalListBoxBocEnumValue.SelectOption (divorced);
@@ -331,7 +331,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       noAutoPostBackRadioButtonListBocEnumValue.SelectOption (single); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
-      normalRadioButtonListBocEnumValue.SelectOption (single, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      normalRadioButtonListBocEnumValue.SelectOption (single, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
       normalRadioButtonListBocEnumValue.SelectOption (divorced);

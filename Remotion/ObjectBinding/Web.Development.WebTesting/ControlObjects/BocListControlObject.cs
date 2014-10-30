@@ -6,7 +6,6 @@ using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -36,31 +35,31 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      currentPageTextInputScope.FillWithAndWait (Keys.Backspace + page, Then.TabAway, Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      currentPageTextInputScope.FillWithAndWait (Keys.Backspace + page, Then.TabAway, Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = FindChild ("Navigation_First");
-      firstPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = FindChild ("Navigation_Previous");
-      previousPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     public void GoToNextPage ()
     {
       var nextPageLinkScope = FindChild ("Navigation_Next");
-      nextPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     public void GoToLastPage ()
     {
       var lastPageLinkScope = FindChild ("Navigation_Last");
-      lastPageLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     public BocListRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
@@ -143,7 +142,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           columnIndex.ToString());
 
       var sortColumnLinkScope = sortColumnScope.FindLink();
-      sortColumnLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     public void ClickOnSortColumnByTitle ([NotNull] string columnTitle)
@@ -198,7 +197,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
       var availableViewsScope = GetAvailableViewsScope();
-      availableViewsScope.PerformAction (selectAction, Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      availableViewsScope.PerformAction (selectAction, Context, Continue.When (Wxe.PostBackCompleted));
     }
 
     private ElementScope GetAvailableViewsScope ()

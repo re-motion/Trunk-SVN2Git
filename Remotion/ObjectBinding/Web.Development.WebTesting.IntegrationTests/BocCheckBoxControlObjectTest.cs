@@ -2,9 +2,9 @@
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       noAutoPostBackBocBooleanValue.SetTo (true);
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("False"));
 
-      normalBocBooleanValue.SetTo (true, Behavior.WaitFor(WaitFor.Nothing)); // same value, does not trigger post back
+      normalBocBooleanValue.SetTo (true, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("False"));
 
       normalBocBooleanValue.SetTo (false);

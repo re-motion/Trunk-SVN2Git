@@ -6,7 +6,6 @@ using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -59,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var editCommandScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
       var editCommandLinkScope = editCommandScope.FindLink();
-      editCommandLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
+      editCommandLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
 
       return new BocListEditableRowControlObject (_accessor, ID, Context);
     }

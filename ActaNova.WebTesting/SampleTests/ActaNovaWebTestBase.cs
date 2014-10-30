@@ -2,6 +2,7 @@
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 
 namespace ActaNova.WebTesting.SampleTests
 {
@@ -41,12 +42,6 @@ namespace ActaNova.WebTesting.SampleTests
     {
       var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
       return new UnspecifiedPageObject (context).Expect<ActaNovaMainPageObject>();
-    }
-
-    protected ICompletionDetection Behavior
-    {
-      // Note: property exists for "syntactical sugar" only, therefore returning a new object in the get accessor is okay.
-      get { return new CompletionDetector(); }
     }
   }
 }

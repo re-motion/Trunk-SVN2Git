@@ -25,7 +25,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = GetActualActionBehavior (completionDetection);
+      var actualActionBehavior = DetermineActualCompletionDetection (completionDetection);
       Scope.ClickAndWait (Context, actualActionBehavior);
       return UnspecifiedPage();
     }

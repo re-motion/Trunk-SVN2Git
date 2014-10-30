@@ -4,7 +4,6 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -54,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private ICompletionDetection DetermineActualCompletionDetection (ThenAction then, ICompletionDetection userDefinedCompletionDetection)
     {
       return then == Then.DoNothing && userDefinedCompletionDetection == null
-          ? Behavior.WaitFor (WaitFor.Nothing)
+          ? Continue.Immediately()
           : DetermineActualCompletionDetection (userDefinedCompletionDetection);
     }
   }

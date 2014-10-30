@@ -2,9 +2,9 @@
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (baLabel, Behavior.WaitFor (WaitFor.Nothing)); // same value, does not trigger post back
+      bocReferenceValue.SelectOption (baLabel, Continue.Immediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");

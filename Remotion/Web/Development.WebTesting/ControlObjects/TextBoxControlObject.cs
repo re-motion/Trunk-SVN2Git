@@ -2,7 +2,6 @@
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -47,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       if (userDefinedCompletionDetection != null)
         return userDefinedCompletionDetection;
 
-      return Behavior.WaitFor (then != Then.DoNothing ? WaitFor.WxePostBack : WaitFor.Nothing);
+      return then != Then.DoNothing ? Continue.When (Wxe.PostBackCompleted) : Continue.Immediately();
     }
   }
 }

@@ -4,7 +4,7 @@ using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
+using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.SampleTests
 {
@@ -63,15 +63,15 @@ namespace ActaNova.WebTesting.SampleTests
       //    new PerHtmlIDControlSelectionCommand<BocAutoCompleteReferenceValueControlObject> (
       //        new BocAutoCompleteReferenceValueSelector(),
       //        "CitizenConcernFormPage_view_LazyContainer_ctl01_ObjectFormPageDataSource_ApplicationContext"))
-      //    .FillWith ("BA - Bürgeranliegen", Behavior.WaitFor (WaitFor.WxePostBackIn (home)));
+      //    .FillWith ("BA - Bürgeranliegen", Continue.When (WaitFor.WxePostBackIn (home)));
 
       newCitizenConcernPage.DetailsArea.GetControl (
           new PerDomainPropertyControlSelectionCommand<BocAutoCompleteReferenceValueControlObject> (
               new BocAutoCompleteReferenceValueSelector(),
-              "ApplicationContext")).FillWith ("BA - Bürgeranliegen", Behavior.WaitFor (WaitFor.WxePostBackIn (home)));
+              "ApplicationContext")).FillWith ("BA - Bürgeranliegen", Continue.When (Wxe.PostBackCompletedIn (home)));
 
       home =
-          newCitizenConcernPage.DetailsArea.Perform ("Cancel", Behavior.AcceptModalDialog().WaitFor (WaitFor.WxePostBackIn (newCitizenConcernPage)))
+          newCitizenConcernPage.DetailsArea.Perform ("Cancel", Continue.When(Wxe.PostBackCompletedIn (newCitizenConcernPage)).AndAcceptModalDialog())
               .Expect<ActaNovaMainPageObject>();
 
       Assert.That (home.Header.CurrentApplicationContext, Is.EqualTo ("Verfahrensbereich BA"));
@@ -87,7 +87,7 @@ namespace ActaNova.WebTesting.SampleTests
 
       Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (2));
 
-      var confirmPage = newCitizenConcernPage.Header.BreadCrumbs[0].Click (Behavior.WaitFor (WaitFor.WxePostBack))
+      var confirmPage = newCitizenConcernPage.Header.BreadCrumbs[0].Click (Continue.When (Wxe.PostBackCompleted))
           .Expect<ActaNovaMessageBoxPageObject>();
       home = confirmPage.Confirm().Expect<ActaNovaMainPageObject>();
 

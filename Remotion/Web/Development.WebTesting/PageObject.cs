@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting

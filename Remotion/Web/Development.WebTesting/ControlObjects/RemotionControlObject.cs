@@ -3,7 +3,6 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -58,17 +57,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
-          return Behavior.WaitFor (WaitFor.WxePostBack);
+          return Continue.When (Wxe.PostBackCompleted);
       }
 
       if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return Behavior.WaitFor (WaitFor.WxeReset);
+          return Continue.When (Wxe.Reset);
       }
 
-      return Behavior.WaitFor (WaitFor.Nothing);
+      return Continue.Immediately();
     }
   }
 }

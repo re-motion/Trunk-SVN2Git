@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
@@ -47,12 +48,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var context = _webTestHelper.CreateNewTestObjectContext();
       return new UnspecifiedPageObject (context).Expect<RemotionPageObject>();
-    }
-
-    protected ICompletionDetection Behavior
-    {
-      // Note: property exists for "syntactical sugar" only, therefore returning a new object in the get accessor is okay.
-      get { return new CompletionDetector(); }
     }
   }
 }
