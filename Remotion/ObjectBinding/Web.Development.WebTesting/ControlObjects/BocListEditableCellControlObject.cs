@@ -11,9 +11,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListEditableCellControlObject : BocControlObject, IControlHost
   {
+    private readonly BocListCellFunctionality _impl;
+
     public BocListEditableCellControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      _impl = new BocListCellFunctionality (id, context);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
@@ -21,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
 
-      return Children.GetControl (controlSelectionCommand);
+      return _impl.GetControl (controlSelectionCommand);
     }
   }
 }

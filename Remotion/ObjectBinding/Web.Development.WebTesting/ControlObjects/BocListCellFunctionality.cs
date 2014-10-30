@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -8,16 +8,15 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing a cell within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/> in grid mode.
+  /// Common functionality of all control objects representing cells within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>. Specific
+  /// classes (<see cref="BocListCellControlObject"/>, <see cref="BocListEditableCellControlObject"/> and
+  /// <see cref="BocListAsGridCellControlObject"/>) serve only as different interfaces.
   /// </summary>
-  public class BocListAsGridCellControlObject : BocControlObject, IControlHost, ICommandHost
+  internal class BocListCellFunctionality : BocControlObject, ICommandHost, IControlHost
   {
-    private readonly BocListCellFunctionality _impl;
-
-    public BocListAsGridCellControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    public BocListCellFunctionality ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _impl = new BocListCellFunctionality (id, context);
     }
 
     /// <summary>
@@ -25,17 +24,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public string GetText ()
     {
-      return _impl.GetText();
+      return Scope.Text.Trim();
     }
 
     public CommandControlObject GetCommand ()
     {
-      return _impl.GetCommand();
+      var commandScope = Scope.FindLink();
+      var context = Context.CloneForScope (commandScope);
+      return new CommandControlObject (commandScope.Id, context);
     }
 
     public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
     {
-      return _impl.ExecuteCommand();
+      return GetCommand().Click (actionBehavior);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
@@ -43,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
 
-      return _impl.GetControl (controlSelectionCommand);
+      return Children.GetControl (controlSelectionCommand);
     }
   }
 }

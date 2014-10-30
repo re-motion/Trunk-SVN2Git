@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
@@ -12,37 +11,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListAsGridRowControlObject : BocControlObject, IDropDownMenuHost
   {
-    // Todo RM-6297: Refactor code duplication with BocListRowControlObject and BocListEditableRowControlObject.
-
-    private readonly IBocListRowControlObjectHostAccessor _accessor;
-    private readonly int _rowIndex;
+    private readonly BocListRowFunctionality _impl;
 
     public BocListAsGridRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _accessor = accessor;
-      _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
+      _impl = new BocListRowFunctionality (accessor, id, context);
     }
 
     public void ClickSelectCheckbox ()
     {
-      var zeroBasedRowIndex = _rowIndex - 1;
-      var rowSelectorCheckboxScope = FindChild (string.Format ("RowSelector_{0}", zeroBasedRowIndex));
-      rowSelectorCheckboxScope.Click();
+      _impl.ClickSelectCheckbox();
     }
 
     public BocListAsGridCellControlObject GetCell ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      var index = _accessor.GetColumnIndex (columnItemID);
-      return GetCell (index);
+      return _impl.GetCell<BocListAsGridCellControlObject> (columnItemID);
     }
 
     public BocListAsGridCellControlObject GetCell (int index)
     {
-      var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
-      return new BocListAsGridCellControlObject (ID, Context.CloneForScope (cellScope));
+      return _impl.GetCell<BocListAsGridCellControlObject> (index);
     }
 
     [Obsolete ("BocList cells cannot be selected using a full HTML ID.", true)]
@@ -57,9 +48,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public DropDownMenuControlObject GetDropDownMenu ()
     {
-      var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
-      var rowDropDownMenuScope = cellScope.FindCss ("span.DropDownMenuContainer");
-      return new DropDownMenuControlObject (rowDropDownMenuScope.Id, Context.CloneForScope (rowDropDownMenuScope));
+      return _impl.GetDropDownMenu();
     }
   }
 }

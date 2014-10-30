@@ -1,10 +1,8 @@
 using System;
 using JetBrains.Annotations;
-using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
-using Remotion.Web.Development.WebTesting.WaitingStrategies;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -13,44 +11,34 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListRowControlObject : BocControlObject, IDropDownMenuHost
   {
-    private readonly IBocListRowControlObjectHostAccessor _accessor;
-    private readonly int _rowIndex;
+    private readonly BocListRowFunctionality _impl;
 
     public BocListRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
-      _accessor = accessor;
-      _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
+      _impl = new BocListRowFunctionality (accessor, id, context);
     }
 
     public void ClickSelectCheckbox ()
     {
-      var zeroBasedRowIndex = _rowIndex - 1;
-      var rowSelectorCheckboxScope = FindChild (string.Format ("RowSelector_{0}", zeroBasedRowIndex));
-      rowSelectorCheckboxScope.Click();
+      _impl.ClickSelectCheckbox();
     }
 
     public BocListEditableRowControlObject Edit ()
     {
-      var editCommandScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
-      var editCommandLinkScope = editCommandScope.FindLink();
-      editCommandLinkScope.ClickAndWait (Context, Behavior.WaitFor (WaitFor.WxePostBack));
-
-      return new BocListEditableRowControlObject (_accessor, ID, Context);
+      return _impl.Edit();
     }
 
     public BocListCellControlObject GetCell ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      var index = _accessor.GetColumnIndex (columnItemID);
-      return GetCell (index);
+      return _impl.GetCell<BocListCellControlObject> (columnItemID);
     }
 
     public BocListCellControlObject GetCell (int index)
     {
-      var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
-      return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
+      return _impl.GetCell<BocListCellControlObject> (index);
     }
 
     [Obsolete ("BocList cells cannot be selected using a full HTML ID.", true)]
@@ -65,9 +53,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public DropDownMenuControlObject GetDropDownMenu ()
     {
-      var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
-      var rowDropDownMenuScope = cellScope.FindCss ("span.DropDownMenuContainer");
-      return new DropDownMenuControlObject (rowDropDownMenuScope.Id, Context.CloneForScope (rowDropDownMenuScope));
+      return _impl.GetDropDownMenu();
     }
   }
 }

@@ -98,7 +98,9 @@
     <Compile Include="ControlObjects\BocListAsGridCellControlObject.cs" />
     <Compile Include="ControlObjects\BocListAsGridControlObject.cs" />
     <Compile Include="ControlObjects\BocListAsGridRowControlObject.cs" />
+    <Compile Include="ControlObjects\BocListCellFunctionality.cs" />
     <Compile Include="ControlObjects\BocListControlObjectBase.cs" />
+    <Compile Include="ControlObjects\BocListRowFunctionality.cs" />
     <Compile Include="ControlObjects\BocReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\BocListCellControlObject.cs" />
     <Compile Include="ControlObjects\BocListEditableCellControlObject.cs" />

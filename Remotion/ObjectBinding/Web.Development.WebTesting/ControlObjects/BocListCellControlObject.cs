@@ -10,9 +10,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class BocListCellControlObject : BocControlObject, ICommandHost
   {
+    private readonly BocListCellFunctionality _impl;
+
     public BocListCellControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
         : base (id, context)
     {
+      _impl = new BocListCellFunctionality (id, context);
     }
 
     /// <summary>
@@ -20,19 +23,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public string GetText ()
     {
-      return Scope.Text.Trim();
+      return _impl.GetText();
     }
 
     public CommandControlObject GetCommand ()
     {
-      var commandScope = Scope.FindLink();
-      var context = Context.CloneForScope (commandScope);
-      return new CommandControlObject (commandScope.Id, context);
+      return _impl.GetCommand();
     }
 
     public UnspecifiedPageObject ExecuteCommand (IActionBehavior actionBehavior = null)
     {
-      return GetCommand().Click (actionBehavior);
+      return _impl.ExecuteCommand (actionBehavior);
     }
   }
 }
