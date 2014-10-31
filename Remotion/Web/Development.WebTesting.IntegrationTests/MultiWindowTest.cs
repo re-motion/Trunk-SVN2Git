@@ -112,7 +112,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var frameLabel = home.Frame.GetLabel().ByID ("FrameLabel");
       AssertPostBackSequenceNumber (frameLabel, 1);
 
-      home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", Then.DoNothing);
+      home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", FinishInput.Promptly);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
       loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)).AndModalDialogHasBeenAccepted());
@@ -140,7 +140,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var frameLabel = home.Frame.GetLabel().ByID ("FrameLabel");
       AssertPostBackSequenceNumber (frameLabel, 1);
 
-      home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", Then.DoNothing);
+      home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", FinishInput.Promptly);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
       loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)).AndModalDialogHasBeenCanceled());

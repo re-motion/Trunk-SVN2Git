@@ -37,22 +37,22 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, completionDetection);
+      return FillWith (text, FinishInput.WithTab, completionDetection);
     }
 
-    public UnspecifiedPageObject FillWith (string text, ThenAction then, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
-      ArgumentUtility.CheckNotNull ("then", then);
+      ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (then, completionDetection);
-      FindChild ("Value").FillWithAndWait (text, then, Context, actualCompletionDetection);
+      var actualCompletionDetection = DetermineActualCompletionDetection (finishInputWith, completionDetection);
+      FindChild ("Value").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
-    private ICompletionDetection DetermineActualCompletionDetection (ThenAction then, ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetection DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
     {
-      return then == Then.DoNothing && userDefinedCompletionDetection == null
+      return finishInputWith == FinishInput.Promptly && userDefinedCompletionDetection == null
           ? Continue.Immediately()
           : DetermineActualCompletionDetection (userDefinedCompletionDetection);
     }

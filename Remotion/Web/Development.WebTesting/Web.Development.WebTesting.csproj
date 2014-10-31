@@ -167,6 +167,7 @@
     <Compile Include="CoypuElementScopeClickAndFocusExtensions.cs" />
     <Compile Include="CoypuElementScopeFillInWithAndSendKeysExtensions.cs" />
     <Compile Include="CustomInternetExplorerDriver.cs" />
+    <Compile Include="FinishInputWithAction.cs" />
     <Compile Include="FluentControlSelection\IFluentControlSelector.cs" />
     <Compile Include="FluentControlSelection\FirstControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelector.cs" />
@@ -199,7 +200,7 @@
     <Compile Include="CoypuWaitingElementScopeExtensions.cs" />
     <Compile Include="IControlHost.cs" />
     <Compile Include="IisExpressProcessWrapper.cs" />
-    <Compile Include="Then.cs" />
+    <Compile Include="FinishInputWithFluentInterface.cs" />
     <Compile Include="Wxe.cs" />
     <Compile Include="CompletionDetectionImplementation\NullCompletionDetectionStrategy.cs" />
     <Compile Include="CompletionDetectionImplementation\WxePostBackInCompletionDetectionStrategy.cs" />

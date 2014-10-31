@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("value", value);
 
       const bool clearValue = false;
-      scope.FillInWithFixed (value, Then.DoNothing, clearValue);
+      scope.FillInWithFixed (value, FinishInput.Promptly, clearValue);
     }
 
     /// <summary>
@@ -37,15 +37,15 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="value">The value to fill in.</param>
-    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
-    public static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] ThenAction thenAction)
+    /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
+    public static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] FinishInputWithAction finishInputWithAction)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("thenAction", thenAction);
+      ArgumentUtility.CheckNotNull ("finishInputWithAction", finishInputWithAction);
 
       const bool clearValue = true;
-      scope.FillInWithFixed (value, thenAction, clearValue);
+      scope.FillInWithFixed (value, finishInputWithAction, clearValue);
     }
 
     /// <summary>
@@ -53,22 +53,22 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="value">The value to fill in.</param>
-    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
+    /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
     /// <param name="clearValue">Determines whether the old content should be cleared before filling in the new value.</param>
-    private static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] ThenAction thenAction, bool clearValue)
+    private static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] FinishInputWithAction finishInputWithAction, bool clearValue)
     {
       // Todo RM-6297: ugly boolean flag in method parameters.
 
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("thenAction", thenAction);
+      ArgumentUtility.CheckNotNull ("finishInputWithAction", finishInputWithAction);
 
       if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
         scope.FillInWithFixedForNormalBrowsers (value, clearValue);
       else
         scope.FillInWithFixedForInternetExplorer (value, clearValue);
 
-      thenAction (scope);
+      finishInputWithAction (scope);
     }
 
     /// <summary>

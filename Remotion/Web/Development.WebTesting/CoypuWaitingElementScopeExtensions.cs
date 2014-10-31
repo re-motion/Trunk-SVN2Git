@@ -58,28 +58,28 @@ namespace Remotion.Web.Development.WebTesting
 
     /// <summary>
     /// Fills the given DOM input element (given by <paramref name="scope"/>), which is part of a control object (represented by its
-    /// <paramref name="context"/>) with the given <paramref name="value"/> using the given <paramref name="thenAction"/> and
+    /// <paramref name="context"/>) with the given <paramref name="value"/> using the given <paramref name="finishInputWithAction"/> and
     /// <paramref name="completionDetection"/>.
     /// </summary>
     /// <param name="scope">The DOM input element.</param>
     /// <param name="value">The value to fill in.</param>
-    /// <param name="thenAction"><see cref="ThenAction"/> for this action.</param>
+    /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="completionDetection"><see cref="ICompletionDetection"/> for this action.</param>
     public static void FillWithAndWait (
         [NotNull] this ElementScope scope,
         [NotNull] string value,
-        [NotNull] ThenAction thenAction,
+        [NotNull] FinishInputWithAction finishInputWithAction,
         [NotNull] TestObjectContext context,
         [NotNull] ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("thenAction", thenAction);
+      ArgumentUtility.CheckNotNull ("finishInputWithAction", finishInputWithAction);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("completionDetection", completionDetection);
 
-      scope.PerformAction (s => s.FillInWithFixed (value, thenAction), context, completionDetection);
+      scope.PerformAction (s => s.FillInWithFixed (value, finishInputWithAction), context, completionDetection);
     }
   }
 }

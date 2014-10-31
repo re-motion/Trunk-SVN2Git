@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var textBox = home.GetTextBox().ByLocalID("MyTextBox");
 
-      textBox.FillWith (input, Then.TabAway);
+      textBox.FillWith (input, FinishInput.WithTab);
 
       Assert.That (home.Scope.FindId ("wxePostBackSequenceNumberField").Value, Is.EqualTo ("3"));
       Assert.That (textBox.GetText(), Is.EqualTo (input));

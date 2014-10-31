@@ -35,16 +35,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, completionDetection);
+      return FillWith (text, FinishInput.WithTab, completionDetection);
     }
 
-    public UnspecifiedPageObject FillWith (string text, ThenAction then, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
-      ArgumentUtility.CheckNotNull ("then", then);
+      ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
-      FindChild ("TextValue").FillWithAndWait (text, then, Context, actualCompletionDetection);
+      FindChild ("TextValue").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 

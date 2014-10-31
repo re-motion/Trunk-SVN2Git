@@ -25,28 +25,28 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return FillWith (text, Then.TabAway, completionDetection);
+      return FillWith (text, FinishInput.WithTab, completionDetection);
     }
 
     /// <remarks>
     /// The default <see cref="ICompletionDetection"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
     /// </remarks>
-    public UnspecifiedPageObject FillWith (string text, ThenAction then, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
-      ArgumentUtility.CheckNotNull ("then", then);
+      ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (then, completionDetection);
-      Scope.FillWithAndWait (text, then, Context, actualCompletionDetection);
+      var actualCompletionDetection = DetermineActualCompletionDetection (finishInputWith, completionDetection);
+      Scope.FillWithAndWait (text, finishInputWith, Context, actualCompletionDetection);
       return UnspecifiedPage();
     }
 
-    private ICompletionDetection DetermineActualCompletionDetection (ThenAction then, ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetection DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
     {
       if (userDefinedCompletionDetection != null)
         return userDefinedCompletionDetection;
 
-      return then != Then.DoNothing ? Continue.When (Wxe.PostBackCompleted) : Continue.Immediately();
+      return finishInputWith != FinishInput.Promptly ? Continue.When (Wxe.PostBackCompleted) : Continue.Immediately();
     }
   }
 }
