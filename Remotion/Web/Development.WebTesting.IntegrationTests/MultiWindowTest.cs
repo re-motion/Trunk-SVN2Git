@@ -115,7 +115,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", Then.DoNothing);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)).AndAcceptModalDialog());
+      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)).AndModalDialogHasBeenAccepted());
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
@@ -143,13 +143,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", Then.DoNothing);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)).AndCancelModalDialog());
+      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)).AndModalDialogHasBeenCanceled());
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       // Ensure that page can still be used
       var navigatieAwayButton = home.GetWebButton().ByID ("NavigateAway");
-      var defaultPage = navigatieAwayButton.Click (Continue.Immediately().AndAcceptModalDialog()).Expect<RemotionPageObject>();
+      var defaultPage = navigatieAwayButton.Click (Continue.Immediately().AndModalDialogHasBeenAccepted()).Expect<RemotionPageObject>();
       Assert.That (defaultPage.GetTitle(), Is.EqualTo ("Web.Development.WebTesting.TestSite"));
     }
 

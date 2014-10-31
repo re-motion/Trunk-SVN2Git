@@ -59,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return this;
     }
 
-    public IAdvancedCompletionDetection AndAcceptModalDialog ()
+    public IAdvancedCompletionDetection AndModalDialogHasBeenAccepted ()
     {
       _additionallyRequiredActions.Add (
           ctx =>
@@ -71,7 +71,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return this;
     }
 
-    public IAdvancedCompletionDetection AndCancelModalDialog ()
+    public IAdvancedCompletionDetection AndModalDialogHasBeenCanceled ()
     {
       _additionallyRequiredActions.Add (
           ctx =>

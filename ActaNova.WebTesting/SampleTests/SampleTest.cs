@@ -70,9 +70,9 @@ namespace ActaNova.WebTesting.SampleTests
               new BocAutoCompleteReferenceValueSelector(),
               "ApplicationContext")).FillWith ("BA - Bürgeranliegen", Continue.When (Wxe.PostBackCompletedIn (home)));
 
-      home =
-          newCitizenConcernPage.DetailsArea.Perform ("Cancel", Continue.When(Wxe.PostBackCompletedIn (newCitizenConcernPage)).AndAcceptModalDialog())
-              .Expect<ActaNovaMainPageObject>();
+      home = newCitizenConcernPage.DetailsArea.Perform (
+          "Cancel",
+          Continue.When (Wxe.PostBackCompletedIn (newCitizenConcernPage)).AndModalDialogHasBeenAccepted()).Expect<ActaNovaMainPageObject>();
 
       Assert.That (home.Header.CurrentApplicationContext, Is.EqualTo ("Verfahrensbereich BA"));
       Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (1));

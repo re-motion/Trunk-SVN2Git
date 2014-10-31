@@ -72,11 +72,11 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Accepts the modal browser dialog which is triggrered by the action.
     /// </summary>
-    IAdvancedCompletionDetection AndAcceptModalDialog ();
+    IAdvancedCompletionDetection AndModalDialogHasBeenAccepted ();
 
     /// <summary>
     /// Cancels the modal browser dialog which is triggered by the action.
     /// </summary>
-    IAdvancedCompletionDetection AndCancelModalDialog ();
+    IAdvancedCompletionDetection AndModalDialogHasBeenCanceled ();
   }
 }
