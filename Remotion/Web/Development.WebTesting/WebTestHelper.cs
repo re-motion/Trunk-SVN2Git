@@ -130,7 +130,7 @@ namespace Remotion.Web.Development.WebTesting
       try
       {
         var context = CreateNewTestObjectContext();
-        MainBrowserSession.AcceptModalDialogImmediatelyFixed (context);
+        MainBrowserSession.AcceptModalDialogImmediatelyFixed ();
       }
       catch (NoAlertPresentException)
       {

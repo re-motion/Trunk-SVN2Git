@@ -80,14 +80,6 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Tries to return a suitable debug string using the <see cref="FrameRootElement"/>'s &lt;title&gt;.
-    /// </summary>
-    public string ToDebugString ()
-    {
-      return FrameRootElement.FindCss ("title").InnerHTML;
-    }
-
-    /// <summary>
     /// Returns a new root <see cref="TestObjectContext"/> for a <see cref="TestObject"/> without a parent.
     /// </summary>
     /// <param name="browser">The browser session (and at the same time the browser window) on which the test object resides.</param>

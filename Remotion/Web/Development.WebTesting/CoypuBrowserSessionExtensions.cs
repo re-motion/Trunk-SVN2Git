@@ -30,7 +30,7 @@ namespace Remotion.Web.Development.WebTesting
     /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestingFrameworkConfiguration.SearchTimeout"/> and
     /// <see cref="WebTestingFrameworkConfiguration.RetryInterval"/> do not apply.
     /// </summary>
-    public static void AcceptModalDialogImmediatelyFixed([NotNull] this BrowserSession browser, [NotNull] TestObjectContext context)
+    public static void AcceptModalDialogImmediatelyFixed([NotNull] this BrowserSession browser)
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
