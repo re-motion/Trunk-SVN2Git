@@ -350,10 +350,17 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("functionState", functionState);
 
       ExecuteFunctionState (context, functionState, isNewFunction);
+
       //  This point is only reached after the WxeFunction has completed execution.
+
       string returnUrl = functionState.Function.ReturnUrl;
+      string executionCompletedScript = functionState.Function.ExecutionCompletedScript;
+
       CleanUpFunctionState (functionState);
-      if (! string.IsNullOrEmpty (returnUrl))
+
+      if (! string.IsNullOrEmpty (executionCompletedScript))
+        ProcessExecutionCompletedScript (context, executionCompletedScript);
+      else if (! string.IsNullOrEmpty (returnUrl))
         ProcessReturnUrl (context, returnUrl);
     }
 
@@ -407,18 +414,14 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNullOrEmpty ("returnUrl", returnUrl);
 
-      // Variables.Clear();
-      if (returnUrl.StartsWith ("javascript:"))
-      {
-        context.Response.Clear();
-        string script = returnUrl.Substring ("javascript:".Length);
-        context.Response.Write ("<html><script language=\"JavaScript\">" + script + "</script></html>");
-        context.Response.End();
-      }
-      else
-      {
-        context.Response.Redirect (returnUrl, true);
-      }
+      context.Response.Redirect (returnUrl, true);
+    }
+
+    private void ProcessExecutionCompletedScript (HttpContext context, string script)
+    {
+      context.Response.Clear();
+      context.Response.Write ("<html><script language=\"JavaScript\">" + script + "</script></html>");
+      context.Response.End();
     }
 
     bool IHttpHandler.IsReusable

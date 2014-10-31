@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
@@ -172,6 +173,7 @@ namespace Remotion.Web.ExecutionEngine
     private readonly WxeExceptionHandler _exceptionHandler = new WxeExceptionHandler ();
     private string _functionToken;
     private string _returnUrl;
+    private string _executionCompletedScript;
 
     protected WxeFunction (ITransactionMode transactionMode, params object[] actualParameters)
     {
@@ -305,10 +307,45 @@ namespace Remotion.Web.ExecutionEngine
       return _variablesContainer.Variables.Values.Cast<object>().ToArray();
     }
 
+    /// <summary>
+    /// Gets or sets the URL the browser will be redirected to after the <see cref="WxeFunction"/> has finished executing.
+    /// </summary>
+    /// <remarks>
+    /// If an <see cref="ExecutionCompletedScript"/> is set on the same <see cref="WxeFunction"/>, the <see cref="ReturnUrl"/> will not be used.
+    /// </remarks>
+    [CanBeNull]
     public string ReturnUrl
     {
       get { return _returnUrl; }
-      set { _returnUrl = value; }
+      set
+      {
+        if (value != null && value.StartsWith ("javascript:", StringComparison.OrdinalIgnoreCase))
+        {
+          throw new ArgumentException (
+              "The ReturnUrl cannot be a javascript-URL. Use the WxeFunction.SetExecutionCompletedScript(script) method instead.",
+              "value");
+        }
+
+        _returnUrl = value;
+      }
+    }
+
+    [CanBeNull]
+    public string ExecutionCompletedScript
+    {
+      get { return _executionCompletedScript; }
+    }
+
+    /// <summary>
+    /// Sets the script that will be executed when the <see cref="WxeFunction"/> as completed the execution.
+    /// </summary>
+    /// <remarks>The <paramref name="script"/> will supersede any <see cref="ReturnUrl"/> set on the same <see cref="WxeFunction"/>.</remarks>
+    public void SetExecutionCompletedScript ([NotNull] string script)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("script", script);
+
+      _returnUrl = null;
+      _executionCompletedScript = script;
     }
 
     public override NameObjectCollection Variables

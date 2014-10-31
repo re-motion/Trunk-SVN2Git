@@ -123,7 +123,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxeExecutor), "WxeExecuteFunction", openScript);
       _page.RegisterClientSidePageEventHandler (SmartPageEvents.OnLoad, "WxeExecuteFunction", functionName);
 
-      function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback);
+      function.SetExecutionCompletedScript (GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback));
     }
 
     /// <summary> 

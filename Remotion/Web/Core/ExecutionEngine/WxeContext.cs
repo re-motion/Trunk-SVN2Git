@@ -185,7 +185,7 @@ namespace Remotion.Web.ExecutionEngine
         openScript = string.Format ("window.open('{0}', '{1}');\r\n", href, target);
       ScriptManager.RegisterStartupScript (page, typeof (WxeContext), "WxeExecuteFunction", openScript, true);
 
-      function.ReturnUrl = "javascript:window.close();";
+      function.SetExecutionCompletedScript ("window.close();");
     }
 
     private static string GetExternalFunctionUrl (WxeFunction function, bool createPermaUrl, NameValueCollection urlParameters)

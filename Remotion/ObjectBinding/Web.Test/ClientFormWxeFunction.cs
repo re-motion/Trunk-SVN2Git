@@ -29,7 +29,7 @@ public class ClientFormWxeFunction: WxeFunction
     : base (new NoneTransactionMode ())
   {
     Object = Person.GetObject (new Guid (0,0,0,0,0,0,0,0,0,0,1));
-    ReturnUrl = "javascript:window.close();";
+    SetExecutionCompletedScript ("javascript:window.close();");
   }
 
   // parameters
