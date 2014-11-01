@@ -14,7 +14,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     public static IAdvancedCompletionDetection When ([NotNull] ICompletionDetectionStrategy completionDetectionStrategy)
     {
-      var completionDetector = new CompletionDetector();
+      var completionDetector = new CompletionDetectorBuilder();
       completionDetector.And (completionDetectionStrategy);
       return completionDetector;
     }
@@ -32,7 +32,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     public static IAdvancedCompletionDetection Automatically ()
     {
-      var completionDetector = new CompletionDetector();
+      var completionDetector = new CompletionDetectorBuilder();
       return completionDetector;
     }
   }

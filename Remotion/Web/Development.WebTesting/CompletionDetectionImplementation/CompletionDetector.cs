@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 {
   /// <summary>
-  /// Implementation class for <see cref="ICompletionDetection"/>, <see cref="IAdvancedCompletionDetection"/> and <see cref="ICompletionDetector"/>.
+  /// Default implementation for <see cref="ICompletionDetector"/>.
   /// </summary>
-  internal class CompletionDetector : ICompletionDetection, IAdvancedCompletionDetection, ICompletionDetector
+  internal class CompletionDetector : ICompletionDetector
   {
     /// <summary>
     /// Returns a unique ID for an <see cref="CompletionDetector"/> (used for debug output purposes).
@@ -26,68 +27,28 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (CompletionDetector));
 
+    private readonly int _debugOutputID;
     private readonly List<ICompletionDetectionStrategy> _completionDetectionStrategies;
-    private readonly List<Action<WebTestObjectContext>> _additionallyRequiredActions;
-    private bool _useParentContext;
+    private readonly Dictionary<ICompletionDetectionStrategy, object> _completionDetectionStrategyStates;
+    private readonly List<Action<CompletionDetector, WebTestObjectContext>> _additionallyRequiredActions;
+    private readonly bool _useParentContext;
 
-    private int _debugOutputID;
-    private Dictionary<ICompletionDetectionStrategy, object> _completionDetectionStrategyStates;
     private bool _prepareWaitForCompletionExecuted;
     private bool _waitForCompletionExecuted;
 
-    public CompletionDetector ()
-    {
-      _completionDetectionStrategies = new List<ICompletionDetectionStrategy>();
-      _additionallyRequiredActions = new List<Action<WebTestObjectContext>>();
-      _useParentContext = false;
-    }
-
-    public ICompletionDetector Build ()
+    public CompletionDetector (
+        [NotNull] IEnumerable<ICompletionDetectionStrategy> completionDetectionStrategies,
+        [NotNull] IEnumerable<Action<CompletionDetector, WebTestObjectContext>> additionallyRequiredActions,
+        bool useParentContext)
     {
       _debugOutputID = CompletionDetectorSequenceNumberGenerator.GetNextSequenceNumber();
+      _completionDetectionStrategies = new List<ICompletionDetectionStrategy> (completionDetectionStrategies);
       _completionDetectionStrategyStates = new Dictionary<ICompletionDetectionStrategy, object>();
+      _additionallyRequiredActions = new List<Action<CompletionDetector, WebTestObjectContext>> (additionallyRequiredActions);
+      _useParentContext = useParentContext;
+
       _prepareWaitForCompletionExecuted = false;
       _waitForCompletionExecuted = false;
-
-      return this;
-    }
-
-    public IAdvancedCompletionDetection And (ICompletionDetectionStrategy completionDetectionStrategy)
-    {
-      ArgumentUtility.CheckNotNull ("completionDetectionStrategy", completionDetectionStrategy);
-
-      _completionDetectionStrategies.Add (completionDetectionStrategy);
-      return this;
-    }
-
-    public IAdvancedCompletionDetection AndWindowHasClosed ()
-    {
-      _useParentContext = true;
-      return this;
-    }
-
-    public IAdvancedCompletionDetection AndModalDialogHasBeenAccepted ()
-    {
-      _additionallyRequiredActions.Add (
-          ctx =>
-          {
-            Debug ("Accepting modal browser dialog.");
-            ctx.Browser.AcceptModalDialogFixed();
-          });
-
-      return this;
-    }
-
-    public IAdvancedCompletionDetection AndModalDialogHasBeenCanceled ()
-    {
-      _additionallyRequiredActions.Add (
-          ctx =>
-          {
-            Debug ("Canceling modal browser dialog.");
-            ctx.Browser.CancelModalDialogFixed();
-          });
-
-      return this;
     }
 
     public void PrepareWaitForCompletion (PageObjectContext context)
@@ -99,8 +60,8 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
       _prepareWaitForCompletionExecuted = true;
 
-      Debug ("Started.");
-      Debug ("Collecting state for completion detection.");
+      OutputDebugMessage ("Started.");
+      OutputDebugMessage ("Collecting state for completion detection.");
 
       var actualContext = DetermineContextForCompletionDetectionStrategies (context);
       foreach (var completionDetectionStrategy in _completionDetectionStrategies)
@@ -122,7 +83,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
       _waitForCompletionExecuted = true;
 
-      Debug ("Waiting for completion...");
+      OutputDebugMessage ("Waiting for completion...");
 
       ExecuteAdditionallyRequiredActions (context);
 
@@ -133,29 +94,29 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
         completionDetectionStrategy.WaitForCompletion (actualContext, state);
       }
 
-      Debug ("Finished.");
+      OutputDebugMessage ("Finished.");
+    }
+
+    public void OutputDebugMessage (string message)
+    {
+      s_log.DebugFormat ("Action {0}: {1}", _debugOutputID, message);
     }
 
     private void ExecuteAdditionallyRequiredActions (PageObjectContext context)
     {
       foreach (var action in _additionallyRequiredActions)
-        action (context);
+        action (this, context);
     }
 
     private PageObjectContext DetermineContextForCompletionDetectionStrategies (PageObjectContext context)
     {
       if (_useParentContext)
       {
-        Debug ("Using parent context for completion detection.");
+        OutputDebugMessage ("Using parent context for completion detection.");
         return context.ParentContext;
       }
 
       return context;
-    }
-
-    private void Debug (string message)
-    {
-      s_log.DebugFormat ("Action {0}: {1}", _debugOutputID, message);
     }
   }
 }
