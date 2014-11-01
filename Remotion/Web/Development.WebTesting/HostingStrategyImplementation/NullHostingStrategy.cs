@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
 {
   /// <summary>
   /// Does not host any web application. E.g. used for web tests on already deployed and running web applications.

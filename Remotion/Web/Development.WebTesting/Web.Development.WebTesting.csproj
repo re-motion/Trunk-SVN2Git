@@ -188,9 +188,9 @@
     <Compile Include="Configuration\IBrowserConfiguration.cs" />
     <Compile Include="Configuration\ICoypuConfiguration.cs" />
     <Compile Include="IHostingStrategy.cs" />
-    <Compile Include="IisExpressHostingStrategy.cs" />
+    <Compile Include="HostingStrategyImplementation\IisExpressHostingStrategy.cs" />
     <Compile Include="Configuration\IWebTestConfiguration.cs" />
-    <Compile Include="NullHostingStrategy.cs" />
+    <Compile Include="HostingStrategyImplementation\NullHostingStrategy.cs" />
     <Compile Include="PageObjectContext.cs" />
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
     <Compile Include="Utilities\EnumerableExtensions.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="CoypuElementScopeFindExtensions.cs" />
     <Compile Include="CoypuWaitingElementScopeExtensions.cs" />
     <Compile Include="IControlHost.cs" />
-    <Compile Include="IisExpressProcessWrapper.cs" />
+    <Compile Include="HostingStrategyImplementation\IisExpressProcessWrapper.cs" />
     <Compile Include="FinishInputWithFluentInterface.cs" />
     <Compile Include="Wxe.cs" />
     <Compile Include="CompletionDetectionImplementation\NullCompletionDetectionStrategy.cs" />

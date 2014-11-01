@@ -4,6 +4,7 @@ using System.Configuration;
 using Coypu.Drivers;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.HostingStrategyImplementation;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {

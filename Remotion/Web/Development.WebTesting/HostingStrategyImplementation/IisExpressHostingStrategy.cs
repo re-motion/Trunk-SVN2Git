@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
 {
   /// <summary>
   /// Hosts the web application using IIS Express.
