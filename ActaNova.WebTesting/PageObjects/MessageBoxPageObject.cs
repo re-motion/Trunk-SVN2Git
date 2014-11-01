@@ -5,10 +5,13 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.PageObjects
 {
+  /// <summary>
+  /// Page object representing the AppTools-based page which displays a modal message box.
+  /// </summary>
   // ReSharper disable once ClassNeverInstantiated.Global
-  public class ActaNovaMessageBoxPageObject : ActaNovaPageObject
+  public class MessageBoxPageObject : AppToolsPageObject
   {
-    public ActaNovaMessageBoxPageObject ([NotNull] PageObjectContext context)
+    public MessageBoxPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }

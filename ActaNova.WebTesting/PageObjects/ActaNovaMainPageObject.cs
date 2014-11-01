@@ -9,6 +9,9 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace ActaNova.WebTesting.PageObjects
 {
+  /// <summary>
+  /// Page object representing the ActaNova main page.
+  /// </summary>
   // ReSharper disable once ClassNeverInstantiated.Global
   public class ActaNovaMainPageObject : ActaNovaPageObject
   {

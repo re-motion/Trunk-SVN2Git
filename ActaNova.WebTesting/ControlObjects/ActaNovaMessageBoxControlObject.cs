@@ -9,7 +9,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova message box.
   /// </summary>
-  public class ActaNovaMessageBoxControlObject : RemotionControlObject // Todo RM-6297: Check if the buttons have RM-stuff rendered and this is ok!
+  public class ActaNovaMessageBoxControlObject : RemotionControlObject
   {
     public ActaNovaMessageBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)

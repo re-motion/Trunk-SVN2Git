@@ -88,7 +88,7 @@ namespace ActaNova.WebTesting.SampleTests
       Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (2));
 
       var confirmPage = newCitizenConcernPage.Header.BreadCrumbs[0].Click (Continue.When (Wxe.PostBackCompleted))
-          .Expect<ActaNovaMessageBoxPageObject>();
+          .Expect<MessageBoxPageObject>();
       home = confirmPage.Confirm().Expect<ActaNovaMainPageObject>();
 
       Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (1));
