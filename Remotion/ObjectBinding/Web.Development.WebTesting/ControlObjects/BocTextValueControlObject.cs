@@ -20,7 +20,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public string GetText ()
     {
-      var valueScope = FindChild ("Value");
+      var valueScope = Scope.FindChild ("Value");
 
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
         return valueScope.Text; // do not trim
@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      FindChild ("Value").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FindChild ("Value").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 

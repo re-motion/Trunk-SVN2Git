@@ -23,9 +23,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public bool? GetState ()
     {
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-        return ParseState (FindChild ("Value")["data-value"]);
+        return ParseState (Scope.FindChild ("Value")["data-value"]);
 
-      return ParseState (FindChild ("Value").Value);
+      return ParseState (Scope.FindChild ("Value").Value);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
-      var linkScope = FindChild ("DisplayValue");
+      var linkScope = Scope.FindChild ("DisplayValue");
 
       for (var i = 0; i < numberOfClicks; ++i)
         linkScope.ClickAndWait (Context, actualCompletionDetector);

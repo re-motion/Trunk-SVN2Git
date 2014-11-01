@@ -40,25 +40,25 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public void GoToFirstPage ()
     {
-      var firstPageLinkScope = FindChild ("Navigation_First");
+      var firstPageLinkScope = Scope.FindChild ("Navigation_First");
       firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToPreviousPage ()
     {
-      var previousPageLinkScope = FindChild ("Navigation_Previous");
+      var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
       previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToNextPage ()
     {
-      var nextPageLinkScope = FindChild ("Navigation_Next");
+      var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
       nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToLastPage ()
     {
-      var lastPageLinkScope = FindChild ("Navigation_Last");
+      var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
       lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
@@ -202,7 +202,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private ElementScope GetAvailableViewsScope ()
     {
-      return FindChild ("Boc_AvailableViewsList");
+      return Scope.FindChild ("Boc_AvailableViewsList");
     }
 
     private ElementScope GetCurrentPageTextInputScope ()

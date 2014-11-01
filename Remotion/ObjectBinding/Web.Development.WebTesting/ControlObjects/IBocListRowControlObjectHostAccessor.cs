@@ -1,4 +1,5 @@
 using System;
+using Coypu;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -8,9 +9,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   public interface IBocListRowControlObjectHostAccessor
   {
     /// <summary>
-    /// Returns the ID of the parent control.
+    /// Returns the scope of the parent control.
     /// </summary>
-    string ID { get; }
+    ElementScope ParentScope { get; }
 
     /// <summary>
     /// Returns the one-based column index of the given <paramref name="columnItemID"/> within the parent control.

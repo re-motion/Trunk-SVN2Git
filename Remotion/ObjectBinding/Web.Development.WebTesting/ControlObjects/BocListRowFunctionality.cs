@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void ClickSelectCheckbox ()
     {
       var zeroBasedRowIndex = _rowIndex - 1;
-      var rowSelectorCheckboxScope = FindChild (_accessor.ID, string.Format ("RowSelector_{0}", zeroBasedRowIndex));
+      var rowSelectorCheckboxScope = _accessor.ParentScope.FindChild (string.Format ("RowSelector_{0}", zeroBasedRowIndex));
       rowSelectorCheckboxScope.Click();
     }
 

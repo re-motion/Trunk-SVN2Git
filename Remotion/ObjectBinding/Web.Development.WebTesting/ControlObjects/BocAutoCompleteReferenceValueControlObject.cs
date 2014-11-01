@@ -21,9 +21,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public string GetText ()
     {
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-        return FindChild ("Label").Text; // do not trim
+        return Scope.FindChild ("Label").Text; // do not trim
 
-      return FindChild ("TextValue").Value; // do not trim
+      return Scope.FindChild ("TextValue").Value; // do not trim
     }
 
     public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
@@ -39,13 +39,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      FindChild ("TextValue").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FindChild ("TextValue").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 
     public CommandControlObject GetCommand ()
     {
-      var commandScope = FindChild ("Command");
+      var commandScope = Scope.FindChild ("Command");
       var context = Context.CloneForControl (commandScope);
       return new CommandControlObject (context);
     }
@@ -57,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public DropDownMenuControlObject GetDropDownMenu ()
     {
-      var dropDownMenuScope = FindChild ("Boc_OptionsMenu");
+      var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
       var context = Context.CloneForControl (dropDownMenuScope);
       return new DropDownMenuControlObject (context);
     }

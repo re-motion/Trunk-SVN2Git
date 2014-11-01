@@ -18,19 +18,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public ScopeControlObject GetTopControls ()
     {
-      var scope = FindChild ("TopControl");
+      var scope = Scope.FindChild ("TopControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetActiveView ()
     {
-      var scope = FindChild ("ActiveView");
+      var scope = Scope.FindChild ("ActiveView");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetBottomControls ()
     {
-      var scope = FindChild ("BottomControl");
+      var scope = Scope.FindChild ("BottomControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
@@ -62,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private WebTabStripControlObject GetTabStrip ()
     {
-      var scope = FindChild ("TabStrip");
+      var scope = Scope.FindChild ("TabStrip");
       return new WebTabStripControlObject (Context.CloneForControl (scope));
     }
 

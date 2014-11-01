@@ -18,19 +18,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public ScopeControlObject GetTopControls ()
     {
-      var scope = FindChild ("TopControl");
+      var scope = Scope.FindChild ("TopControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetView ()
     {
-      var scope = FindChild ("View");
+      var scope = Scope.FindChild ("View");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetBottomControls ()
     {
-      var scope = FindChild ("BottomControl");
+      var scope = Scope.FindChild ("BottomControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 

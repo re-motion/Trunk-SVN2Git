@@ -50,9 +50,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         _bocList = bocList;
       }
 
-      public string ID
+      public ElementScope ParentScope
       {
-        get { return _bocList.GetHtmlID(); }
+        get { return _bocList.Context.Scope; }
       }
 
       public int GetColumnIndex (string columnItemID)
@@ -144,13 +144,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public DropDownMenuControlObject GetDropDownMenu ()
     {
-      var dropDownMenuScope = FindChild ("Boc_OptionsMenu");
+      var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
       return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
     }
 
     public ListMenuControlObject GetListMenu ()
     {
-      var listMenuScope = FindChild ("Boc_ListMenu");
+      var listMenuScope = Scope.FindChild ("Boc_ListMenu");
       return new ListMenuControlObject (Context.CloneForControl (listMenuScope));
     }
 

@@ -103,9 +103,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       public string GetSelectedOption ()
       {
         if (_controlObject.Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-          return _controlObject.FindChild ("Value").Text; // do not trim
+          return _controlObject.Scope.FindChild ("Value").Text; // do not trim
 
-        return _controlObject.FindChild ("Value").GetSelectedOptionText();
+        return _controlObject.Scope.FindChild ("Value").GetSelectedOptionText();
       }
 
       public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
         var actualCompletionDetector = _controlObject.GetActualCompletionDetector (completionDetection);
-        _controlObject.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualCompletionDetector);
+        _controlObject.Scope.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualCompletionDetector);
         return _controlObject.UnspecifiedPage();
       }
     }
@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       public string GetSelectedOption ()
       {
         if (_controlObject.Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-          return _controlObject.FindChild ("Value").Text; // do not trim
+          return _controlObject.Scope.FindChild ("Value").Text; // do not trim
 
         return _controlObject.Scope.FindCss ("input[type='radio'][checked='checked']").Value;
       }

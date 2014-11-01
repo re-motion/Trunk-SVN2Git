@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject ClickItem (int index, ICompletionDetection completionDetection = null)
     {
-      var item = FindChild ((index - 1).ToString());
+      var item = Scope.FindChild ((index - 1).ToString());
       return ClickItem (item, completionDetection);
     }
 

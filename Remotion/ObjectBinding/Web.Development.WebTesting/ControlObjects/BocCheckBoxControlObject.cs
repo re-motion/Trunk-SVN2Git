@@ -22,9 +22,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public bool GetState ()
     {
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
-        return ParseState (FindChild ("Value")["data-value"]);
+        return ParseState (Scope.FindChild ("Value")["data-value"]);
 
-      return FindChild ("Value")["checked"] != null;
+      return Scope.FindChild ("Value")["checked"] != null;
     }
 
     /// <summary>
@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return UnspecifiedPage();
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      FindChild ("Value").PerformAction (
+      Scope.FindChild ("Value").PerformAction (
           s =>
           {
             if (newState)
