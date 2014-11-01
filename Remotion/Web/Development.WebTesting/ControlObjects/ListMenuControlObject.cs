@@ -43,8 +43,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var anchorScope = item.FindLink();
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (anchorScope, completionDetection);
-      anchorScope.ClickAndWait (Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (anchorScope, completionDetection);
+      anchorScope.ClickAndWait (Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
   }

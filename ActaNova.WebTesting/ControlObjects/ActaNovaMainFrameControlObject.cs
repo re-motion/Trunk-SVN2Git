@@ -1,5 +1,6 @@
 ﻿using System;
 using ActaNova.WebTesting.Infrastructure;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
 
@@ -12,12 +13,9 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    protected ICompletionDetector DetermineActualCompletionDetection ([CanBeNull] ICompletionDetection usedDefinedCompletionDetection)
+    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
-      if (usedDefinedCompletionDetection != null)
-        return usedDefinedCompletionDetection.Build();
-
-      return Continue.When (WaitForActaNova.OuterInnerOuterUpdate).Build();
+      return Continue.When (WaitForActaNova.OuterInnerOuterUpdate);
     }
   }
 }

@@ -65,8 +65,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var dateScope = GetDateScope();
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (dateScope, completionDetection);
-      dateScope.FillWithAndWait (newDateString, FinishInput.WithTab, Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (dateScope, completionDetection);
+      dateScope.FillWithAndWait (newDateString, FinishInput.WithTab, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 
@@ -95,8 +95,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var timeScope = GetTimeScope();
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (timeScope, completionDetection);
-      timeScope.FillWithAndWait (newTimeString, FinishInput.WithTab, Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (timeScope, completionDetection);
+      timeScope.FillWithAndWait (newTimeString, FinishInput.WithTab, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 

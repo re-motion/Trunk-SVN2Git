@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -10,7 +12,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// HTML anchor &lt;a&gt; control within a re-motion applicaiton.
   /// </summary>
   [UsedImplicitly]
-  public class AnchorControlObject : ControlObject, IClickableControlObject
+  public class AnchorControlObject : WebFormsControlObject, IClickableControlObject
   {
     public AnchorControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -19,35 +21,29 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
     {
-      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      Scope.ClickAndWait (Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 
-    /// <summary>
-    /// Returns the actual <see cref="ICompletionDetection"/> to be used.
-    /// </summary>
-    /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
-    /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
-    private ICompletionDetector DetermineActualCompletionDetection (ICompletionDetection userDefinedCompletionDetection)
+    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
-      if (userDefinedCompletionDetection != null)
-        return userDefinedCompletionDetection.Build();
+      ArgumentUtility.CheckNotNull ("scope", scope);
 
-      if (IsPostBackLink())
-        return Continue.When (Wxe.PostBackCompleted).Build();
+      if (IsPostBackLink(scope))
+        return Continue.When (Wxe.PostBackCompleted);
 
-      return Continue.When (Wxe.Reset).Build();
+      return Continue.When (Wxe.Reset);
     }
 
-    private bool IsPostBackLink ()
+    private bool IsPostBackLink (ElementScope scope)
     {
       const string remotionDoPostBackScript = "DoPostBackWithOptions";
       const string aspNetDoPostBackScript = "__doPostBack";
 
-      return Scope["href"].Contains (remotionDoPostBackScript) ||
-             Scope["href"].Contains (aspNetDoPostBackScript) ||
-             (Scope["href"].Equals ("#") && Scope["onclick"] != null && Scope["onclick"].Contains (aspNetDoPostBackScript));
+      return scope["href"].Contains (remotionDoPostBackScript) ||
+             scope["href"].Contains (aspNetDoPostBackScript) ||
+             (scope["href"].Equals ("#") && scope["onclick"] != null && scope["onclick"].Contains (aspNetDoPostBackScript));
     }
   }
 }

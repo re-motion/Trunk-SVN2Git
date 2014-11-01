@@ -1,12 +1,13 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaControlObject : ControlObject
+  public abstract class ActaNovaControlObject : RemotionControlObject
   {
-    public ActaNovaControlObject ([NotNull] ControlObjectContext context)
+    protected ActaNovaControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }

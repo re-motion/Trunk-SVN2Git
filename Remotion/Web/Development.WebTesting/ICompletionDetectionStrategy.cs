@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
   /// Zero or more completion detection strategies are utilized each time a <see cref="ICompletionDetector"/> is run. A completion detection strategy

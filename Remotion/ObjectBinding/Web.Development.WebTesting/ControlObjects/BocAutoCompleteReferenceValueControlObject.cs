@@ -38,8 +38,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
-      FindChild ("TextValue").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      FindChild ("TextValue").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 

@@ -62,10 +62,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private UnspecifiedPageObject ClickItem (ElementScope item, ICompletionDetection completionDetection = null)
     {
-      var actualCompletionDetection = DetermineActualCompletionDetection (item, completionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (item, completionDetection);
 
       var anchorScope = item.FindLink();
-      anchorScope.ClickAndWait (Context, actualCompletionDetection);
+      anchorScope.ClickAndWait (Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
   }

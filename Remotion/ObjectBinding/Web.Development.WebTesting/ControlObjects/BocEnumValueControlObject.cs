@@ -134,8 +134,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-        var actualCompletionDetection = _controlObject.DetermineActualCompletionDetection (completionDetection);
-        _controlObject.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualCompletionDetection);
+        var actualCompletionDetector = _controlObject.GetActualCompletionDetector (completionDetection);
+        _controlObject.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualCompletionDetector);
         return _controlObject.UnspecifiedPage();
       }
     }
@@ -189,8 +189,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("scope", scope);
 
-        var actualCompletionDetection = _controlObject.DetermineActualCompletionDetection (completionDetection);
-        scope.PerformAction (s => s.Check(), _controlObject.Context, actualCompletionDetection);
+        var actualCompletionDetector = _controlObject.GetActualCompletionDetector (completionDetection);
+        scope.PerformAction (s => s.Check(), _controlObject.Context, actualCompletionDetector);
         return _controlObject.UnspecifiedPage();
       }
     }

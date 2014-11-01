@@ -35,7 +35,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (GetState() == newState)
         return UnspecifiedPage();
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
       FindChild ("Value").PerformAction (
           s =>
           {
@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
               s.Uncheck();
           },
           Context,
-          actualCompletionDetection);
+          actualCompletionDetector);
 
       return UnspecifiedPage();
     }

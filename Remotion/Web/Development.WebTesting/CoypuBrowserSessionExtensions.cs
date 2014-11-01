@@ -1,6 +1,5 @@
 ﻿using System;
 using Coypu;
-using Coypu.Drivers;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;

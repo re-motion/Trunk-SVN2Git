@@ -40,16 +40,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (finishInputWith, completionDetection);
-      FindChild ("Value").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
+      FindChild ("Value").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 
-    private ICompletionDetector DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetector GetActualCompletionDetector (
+        FinishInputWithAction finishInputWith,
+        ICompletionDetection userDefinedCompletionDetection)
     {
-      return finishInputWith == FinishInput.Promptly && userDefinedCompletionDetection == null
-          ? Continue.Immediately().Build()
-          : DetermineActualCompletionDetection (userDefinedCompletionDetection);
+      if (finishInputWith == FinishInput.Promptly)
+        return Continue.Immediately().Build();
+
+      return GetActualCompletionDetector (userDefinedCompletionDetection);
     }
   }
 }

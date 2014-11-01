@@ -33,7 +33,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// </summary>
     public UnspecifiedPageObject Select (IEnumerable<string> menuItems, ICompletionDetection completionDetection = null)
     {
-      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
       Scope.PerformAction (
           s =>
@@ -51,7 +51,7 @@ namespace ActaNova.WebTesting.ControlObjects
             actions.Perform();
           },
           Context,
-          actualCompletionDetection);
+          actualCompletionDetector);
 
       return UnspecifiedPage();
     }

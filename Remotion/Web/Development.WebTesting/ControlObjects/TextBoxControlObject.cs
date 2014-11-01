@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
@@ -9,7 +10,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object for <see cref="TextBox"/> and all its derivatives (none in re-motion).
   /// </summary>
   [UsedImplicitly]
-  public class TextBoxControlObject : ControlObject, IFillableControlObject
+  public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject
   {
     public TextBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -36,20 +37,26 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (finishInputWith, completionDetection);
-      Scope.FillWithAndWait (text, finishInputWith, Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
+      Scope.FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 
-    private ICompletionDetector DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetector GetActualCompletionDetector (
+        FinishInputWithAction finishInputWith,
+        ICompletionDetection userDefinedCompletionDetection)
     {
-      if (userDefinedCompletionDetection != null)
-        return userDefinedCompletionDetection.Build();
-
-      if(finishInputWith == FinishInput.Promptly)
+      if (finishInputWith == FinishInput.Promptly)
         return Continue.Immediately().Build();
 
-      return Continue.When (Wxe.PostBackCompleted).Build();
+      return GetActualCompletionDetector (userDefinedCompletionDetection);
+    }
+
+    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }

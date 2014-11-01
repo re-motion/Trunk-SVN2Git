@@ -15,8 +15,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
     {
-      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      Scope.ClickAndWait (Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
   }

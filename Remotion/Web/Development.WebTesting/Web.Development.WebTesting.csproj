@@ -128,6 +128,7 @@
     <Compile Include="ControlObjects\Selectors\WebTreeViewSelector.cs" />
     <Compile Include="ControlObjects\TabbedMenuControlObject.cs" />
     <Compile Include="ControlObjects\TextBoxControlObject.cs" />
+    <Compile Include="ControlObjects\WebFormsControlObject.cs" />
     <Compile Include="ControlObjects\WebTreeViewControlObject.cs" />
     <Compile Include="ControlObjects\WebTreeViewNodeControlObject.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
@@ -208,7 +209,7 @@
     <Compile Include="CompletionDetectionImplementation\NullCompletionDetectionStrategy.cs" />
     <Compile Include="CompletionDetectionImplementation\WxePostBackInCompletionDetectionStrategy.cs" />
     <Compile Include="CompletionDetectionImplementation\WxePostBackCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\ICompletionDetectionStrategy.cs" />
+    <Compile Include="ICompletionDetectionStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
     <Compile Include="CompletionDetectionImplementation\WxeResetInCompletionDetectionStrategy.cs" />

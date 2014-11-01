@@ -53,8 +53,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-      var actualCompletionDetection = DetermineActualCompletionDetection (completionDetection);
-      FindChild ("Value").PerformAction (selectAction, Context, actualCompletionDetection);
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      FindChild ("Value").PerformAction (selectAction, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 

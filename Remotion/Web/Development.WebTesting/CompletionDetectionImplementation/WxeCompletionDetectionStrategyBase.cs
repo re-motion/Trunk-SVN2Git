@@ -1,5 +1,4 @@
 ﻿using System;
-using Coypu;
 using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;

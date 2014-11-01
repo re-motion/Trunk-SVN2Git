@@ -1,4 +1,5 @@
 ﻿using System;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 
 namespace ActaNova.WebTesting.Infrastructure
