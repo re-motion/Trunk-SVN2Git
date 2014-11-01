@@ -246,7 +246,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
   function GetDropDownSearchStringForValidInput(searchString)
   {
-    if (searchString.toLowerCase() == _itemBackUp.DisplayName.toLowerCase())
+    if (_itemBackUp.UniqueIdentifier != nullValueString && searchString.toLowerCase() == _itemBackUp.DisplayName.toLowerCase())
       return '';
     return searchString;
   }
