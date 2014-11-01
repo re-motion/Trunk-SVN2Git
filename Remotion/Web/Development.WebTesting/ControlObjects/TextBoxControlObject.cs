@@ -46,7 +46,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       if (userDefinedCompletionDetection != null)
         return userDefinedCompletionDetection;
 
-      return finishInputWith != FinishInput.Promptly ? Continue.When (Wxe.PostBackCompleted) : Continue.Immediately();
+      if(finishInputWith == FinishInput.Promptly)
+        return Continue.Immediately();
+
+      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }
