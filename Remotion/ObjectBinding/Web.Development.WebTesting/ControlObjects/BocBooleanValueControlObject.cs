@@ -57,12 +57,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private UnspecifiedPageObject Click (int numberOfClicks, ICompletionDetection completionDetection)
     {
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-
       var linkScope = Scope.FindChild ("DisplayValue");
 
       for (var i = 0; i < numberOfClicks; ++i)
+      {
+        var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
         linkScope.ClickAndWait (Context, actualCompletionDetector);
+      }
 
       return UnspecifiedPage();
     }

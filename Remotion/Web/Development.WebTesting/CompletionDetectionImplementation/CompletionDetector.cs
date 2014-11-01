@@ -32,6 +32,8 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
     private int _debugOutputID;
     private Dictionary<ICompletionDetectionStrategy, object> _completionDetectionStrategyStates;
+    private bool _prepareWaitForCompletionExecuted;
+    private bool _waitForCompletionExecuted;
 
     public CompletionDetector ()
     {
@@ -42,6 +44,11 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
     public ICompletionDetector Build ()
     {
+      _debugOutputID = CompletionDetectorSequenceNumberGenerator.GetNextSequenceNumber();
+      _completionDetectionStrategyStates = new Dictionary<ICompletionDetectionStrategy, object>();
+      _prepareWaitForCompletionExecuted = false;
+      _waitForCompletionExecuted = false;
+
       return this;
     }
 
@@ -87,12 +94,15 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      _debugOutputID = CompletionDetectorSequenceNumberGenerator.GetNextSequenceNumber();
+      if (_prepareWaitForCompletionExecuted)
+        throw new InvalidOperationException ("CompletionDetector cannot be reused, please create a new instance.");
+
+      _prepareWaitForCompletionExecuted = true;
+
       Debug ("Started.");
       Debug ("Collecting state for completion detection.");
 
       var actualContext = DetermineContextForCompletionDetectionStrategies (context);
-      _completionDetectionStrategyStates = new Dictionary<ICompletionDetectionStrategy, object>();
       foreach (var completionDetectionStrategy in _completionDetectionStrategies)
       {
         var state = completionDetectionStrategy.PrepareWaitForCompletion (actualContext);
@@ -103,6 +113,14 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     public void WaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
+
+      if (!_prepareWaitForCompletionExecuted)
+        throw new InvalidOperationException ("PrepareWaitForCompletion must be called before WaitForCompletion.");
+
+      if (_waitForCompletionExecuted)
+        throw new InvalidOperationException ("CompletionDetector cannot be reused, please create a new instance.");
+
+      _waitForCompletionExecuted = true;
 
       Debug ("Waiting for completion...");
 
