@@ -4,6 +4,7 @@ using Coypu.Drivers;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
@@ -35,21 +36,21 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog();
       else
         browser.AcceptModalDialogFixedInternetExplorer ();
     }
 
     /// <summary>
-    /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestingFrameworkConfiguration.SearchTimeout"/> and
-    /// <see cref="WebTestingFrameworkConfiguration.RetryInterval"/> do not apply.
+    /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestingConfiguration.SearchTimeout"/> and
+    /// <see cref="WebTestingConfiguration.RetryInterval"/> do not apply.
     /// </summary>
     public static void AcceptModalDialogImmediatelyFixed([NotNull] this BrowserSession browser)
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog (Options.NoWait);
       else
         browser.AcceptModalDialogImmediatelyFixedInternetExplorer();
@@ -65,7 +66,7 @@ namespace Remotion.Web.Development.WebTesting
 
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         browser.CancelModalDialog();
       else
         browser.CancelModalDialogFixedInternetExplorer ();

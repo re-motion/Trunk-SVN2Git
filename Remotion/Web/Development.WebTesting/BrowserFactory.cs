@@ -4,11 +4,12 @@ using Coypu.Drivers;
 using Coypu.Drivers.Selenium;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Factory to create Coypu <see cref="BrowserSession"/> objects from a given <see cref="WebTestingFrameworkConfiguration"/>.
+  /// Factory to create Coypu <see cref="BrowserSession"/> objects from a given <see cref="WebTestingConfiguration"/>.
   /// </summary>
   public static class BrowserFactory
   {

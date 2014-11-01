@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using log4net;
 using OpenQA.Selenium;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Keys = OpenQA.Selenium.Keys;
 
@@ -63,7 +64,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("finishInputWithAction", finishInputWithAction);
 
-      if (!WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         scope.FillInWithFixedForNormalBrowsers (value, clearValue);
       else
         scope.FillInWithFixedForInternetExplorer (value, clearValue);

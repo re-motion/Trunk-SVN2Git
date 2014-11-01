@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
@@ -16,7 +17,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestCoypuElementScopeFillInWithAndSendKeysExtensions_FillWithAndWait (string input)
     {
       // Todo RM-6297: Fix problems on TeamCity with FillWithFixed.
-      if (WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         Assert.Ignore("Currently ignored until TeamCity-related probelms with FillWithFixed are fixed.");
 
       var home = Start();

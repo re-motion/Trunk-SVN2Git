@@ -1,7 +1,7 @@
 ﻿using System;
 using Coypu.Drivers;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.Configuration
 {
   /// <summary>
   /// Provides all the necessary information to initialize an shut down a browser session.

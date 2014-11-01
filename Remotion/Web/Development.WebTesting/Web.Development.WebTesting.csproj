@@ -185,11 +185,11 @@
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
     <Compile Include="CompletionDetectionBuilderFluentInterface.cs" />
     <Compile Include="ICompletionDetector.cs" />
-    <Compile Include="IBrowserConfiguration.cs" />
-    <Compile Include="ICoypuConfiguration.cs" />
+    <Compile Include="Configuration\IBrowserConfiguration.cs" />
+    <Compile Include="Configuration\ICoypuConfiguration.cs" />
     <Compile Include="IHostingStrategy.cs" />
     <Compile Include="IisExpressHostingStrategy.cs" />
-    <Compile Include="IWebTestConfiguration.cs" />
+    <Compile Include="Configuration\IWebTestConfiguration.cs" />
     <Compile Include="NullHostingStrategy.cs" />
     <Compile Include="PageObjectContext.cs" />
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
@@ -214,7 +214,7 @@
     <Compile Include="CompletionDetectionImplementation\WxeResetInCompletionDetectionStrategy.cs" />
     <Compile Include="CompletionDetectionImplementation\WxeResetCompletionDetectionStrategy.cs" />
     <Compile Include="WebTestHelper.cs" />
-    <Compile Include="WebTestingFrameworkConfiguration.cs" />
+    <Compile Include="Configuration\WebTestingConfiguration.cs" />
     <Compile Include="WebTestObject.cs" />
     <Compile Include="WebTestObjectContext.cs" />
     <Compile Include="ControlObject.cs" />

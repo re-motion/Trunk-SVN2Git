@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
@@ -101,7 +102,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestAcceptModalBrowserDialog ()
     {
       // Todo RM-6297: Fix problems on TeamCity with AcceptModalDialog.
-      if (WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         Assert.Ignore("Currently ignored until TeamCity-related probelms with AcceptModalDialog are fixed.");
 
       var home = Start();
@@ -129,7 +130,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestCancelModalBrowserDialog ()
     {
       // Todo RM-6297: Fix problems on TeamCity with CancelModalDialog.
-      if (WebTestingFrameworkConfiguration.Current.BrowserIsInternetExplorer())
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         Assert.Ignore("Currently ignored until TeamCity-related probelms with CancelModalDialog are fixed.");
 
       var home = Start();

@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -25,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Constructor required for direct usage in <see cref="WebTestingFrameworkConfiguration"/>.
+    /// Constructor required for direct usage in <see cref="WebTestingConfiguration"/>.
     /// </summary>
     /// <param name="properties">The configuration properties.</param>
     [UsedImplicitly]

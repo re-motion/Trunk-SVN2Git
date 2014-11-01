@@ -5,23 +5,23 @@ using Coypu.Drivers;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.Configuration
 {
   /// <summary>
   /// Configures the web testing framework.
   /// </summary>
   [UsedImplicitly]
-  public class WebTestingFrameworkConfiguration : ConfigurationSection, IBrowserConfiguration, ICoypuConfiguration, IWebTestConfiguration
+  public class WebTestingConfiguration : ConfigurationSection, IBrowserConfiguration, ICoypuConfiguration, IWebTestConfiguration
   {
-    private static readonly Lazy<WebTestingFrameworkConfiguration> s_current;
+    private static readonly Lazy<WebTestingConfiguration> s_current;
     private static readonly Dictionary<string, Type> s_wellKnownHostingStrategyTypes;
 
-    static WebTestingFrameworkConfiguration ()
+    static WebTestingConfiguration ()
     {
-      s_current = new Lazy<WebTestingFrameworkConfiguration> (
+      s_current = new Lazy<WebTestingConfiguration> (
           () =>
           {
-            var configuration = (WebTestingFrameworkConfiguration) ConfigurationManager.GetSection ("remotion.webTesting");
+            var configuration = (WebTestingConfiguration) ConfigurationManager.GetSection ("remotion.webTesting");
             Assertion.IsNotNull (configuration, "Configuration section 'remotion.webTesting' missing.");
             return configuration;
           });
@@ -30,9 +30,9 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns the current <see cref="WebTestingFrameworkConfiguration"/>.
+    /// Returns the current <see cref="WebTestingConfiguration"/>.
     /// </summary>
-    public static WebTestingFrameworkConfiguration Current
+    public static WebTestingConfiguration Current
     {
       get { return s_current.Value; }
     }

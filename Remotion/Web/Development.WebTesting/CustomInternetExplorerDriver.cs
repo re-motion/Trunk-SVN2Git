@@ -5,6 +5,7 @@ using Coypu.Drivers.Selenium;
 using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -46,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting
       for (var i = 0;; ++i)
       {
         var fileName = string.Format ("InternetExplorerDriver{0}.log", i);
-        var logFile = Path.Combine (WebTestingFrameworkConfiguration.Current.LogsDirectory, fileName);
+        var logFile = Path.Combine (WebTestingConfiguration.Current.LogsDirectory, fileName);
 
         if (File.Exists (logFile))
           continue;
@@ -59,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting
 
     private static void EnsureLogsDirectoryExists ()
     {
-      Directory.CreateDirectory (WebTestingFrameworkConfiguration.Current.LogsDirectory);
+      Directory.CreateDirectory (WebTestingConfiguration.Current.LogsDirectory);
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.Configuration
 {
   /// <summary>
   /// Provides all the necessary information to run a web test.

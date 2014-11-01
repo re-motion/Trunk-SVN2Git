@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using log4net;
 using OpenQA.Selenium;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
@@ -102,14 +103,11 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Creates a new <see cref="WebTestHelper"/> from <see cref="WebTestingFrameworkConfiguration.Current"/>.
+    /// Creates a new <see cref="WebTestHelper"/> from <see cref="WebTestingConfiguration.Current"/>.
     /// </summary>
     public static WebTestHelper CreateFromConfiguration ()
     {
-      return new WebTestHelper (
-          WebTestingFrameworkConfiguration.Current,
-          WebTestingFrameworkConfiguration.Current,
-          WebTestingFrameworkConfiguration.Current);
+      return new WebTestHelper (WebTestingConfiguration.Current, WebTestingConfiguration.Current, WebTestingConfiguration.Current);
     }
 
     /// <summary>

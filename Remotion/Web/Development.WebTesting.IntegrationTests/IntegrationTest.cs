@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
@@ -39,7 +40,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     protected RemotionPageObject Start (string page)
     {
-      var url = WebTestingFrameworkConfiguration.Current.WebApplicationRoot + page;
+      var url = WebTestingConfiguration.Current.WebApplicationRoot + page;
       _webTestHelper.MainBrowserSession.Visit (url);
 
       return _webTestHelper.CreateInitialPageObject<RemotionPageObject>();

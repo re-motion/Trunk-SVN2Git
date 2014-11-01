@@ -4,6 +4,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.Utilities
 {
@@ -45,8 +46,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       var retryUntilTimeout = new RetryUntilTimeout (
           action,
-          WebTestingFrameworkConfiguration.Current.SearchTimeout,
-          WebTestingFrameworkConfiguration.Current.RetryInterval);
+          WebTestingConfiguration.Current.SearchTimeout,
+          WebTestingConfiguration.Current.RetryInterval);
       retryUntilTimeout.Run();
     }
 
@@ -56,8 +57,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       var retryUntilTimeout = new RetryUntilTimeout<TReturnType> (
           func,
-          WebTestingFrameworkConfiguration.Current.SearchTimeout,
-          WebTestingFrameworkConfiguration.Current.RetryInterval);
+          WebTestingConfiguration.Current.SearchTimeout,
+          WebTestingConfiguration.Current.RetryInterval);
       return retryUntilTimeout.Run();
     }
   }

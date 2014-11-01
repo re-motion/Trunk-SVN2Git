@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
@@ -42,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var userControlUrl = string.Format ("Controls/{0}UserControl.ascx", userControl);
 
-      var url = string.Format ("{0}ControlTest.wxe?UserControl={1}", WebTestingFrameworkConfiguration.Current.WebApplicationRoot, userControlUrl);
+      var url = string.Format ("{0}ControlTest.wxe?UserControl={1}", WebTestingConfiguration.Current.WebApplicationRoot, userControlUrl);
       _webTestHelper.MainBrowserSession.Visit (url);
       _webTestHelper.AcceptPossibleModalDialog();
 

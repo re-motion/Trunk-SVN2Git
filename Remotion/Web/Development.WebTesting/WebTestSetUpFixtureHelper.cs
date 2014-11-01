@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using log4net.Config;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -20,11 +21,11 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Creates a new <see cref="WebTestSetUpFixtureHelper"/> from <see cref="WebTestingFrameworkConfiguration.Current"/>.
+    /// Creates a new <see cref="WebTestSetUpFixtureHelper"/> from <see cref="WebTestingConfiguration.Current"/>.
     /// </summary>
     public static WebTestSetUpFixtureHelper CreateFromConfiguration ()
     {
-      return new WebTestSetUpFixtureHelper (WebTestingFrameworkConfiguration.Current.GetHostingStrategy());
+      return new WebTestSetUpFixtureHelper (WebTestingConfiguration.Current.GetHostingStrategy());
     }
 
     /// <summary>

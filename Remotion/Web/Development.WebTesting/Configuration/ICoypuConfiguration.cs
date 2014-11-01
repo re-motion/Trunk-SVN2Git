@@ -1,7 +1,7 @@
 ﻿using System;
 using Coypu;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.Configuration
 {
   /// <summary>
   /// Provides all the necessary information to initialize Coypu <see cref="Options"/>.

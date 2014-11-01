@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.ControlObjects
@@ -42,7 +43,7 @@ namespace ActaNova.WebTesting.ControlObjects
             var nativeMainMenuScope = (IWebElement) s.Native;
 
             var actions = new ActionsWithWaitSupport (webDriver);
-            var timeout = WebTestingFrameworkConfiguration.Current.SearchTimeout;
+            var timeout = WebTestingConfiguration.Current.SearchTimeout;
 
             var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
             actions.Click (nativeLastMenuItemScope);
