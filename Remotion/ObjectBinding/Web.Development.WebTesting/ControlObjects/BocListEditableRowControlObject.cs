@@ -12,10 +12,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly BocListRowFunctionality _impl;
 
-    public BocListEditableRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListEditableRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _impl = new BocListRowFunctionality (accessor, id, context);
+      _impl = new BocListRowFunctionality (accessor, context);
     }
 
     public BocListRowControlObject Save ()

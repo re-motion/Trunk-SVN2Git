@@ -10,12 +10,12 @@ namespace Remotion.Web.Development.WebTesting
   {
     public static readonly WxePostBackCompletionDetectionStrategy PostBackCompleted = new WxePostBackCompletionDetectionStrategy (1);
 
-    public static readonly Func<TestObject, WxePostBackInCompletionDetectionStrategy> PostBackCompletedIn =
-        to => new WxePostBackInCompletionDetectionStrategy (to.Context.FrameRootElement, 1);
+    public static readonly Func<PageObject, WxePostBackInCompletionDetectionStrategy> PostBackCompletedIn =
+        po => new WxePostBackInCompletionDetectionStrategy (po.Context, 1);
 
     public static readonly WxeResetCompletionDetectionStrategy Reset = new WxeResetCompletionDetectionStrategy();
 
-    public static readonly Func<TestObject, WxeResetInCompletionDetectionStrategy> ResetIn =
-        to => new WxeResetInCompletionDetectionStrategy (to.Context.FrameRootElement);
+    public static readonly Func<PageObject, WxeResetInCompletionDetectionStrategy> ResetIn =
+        po => new WxeResetInCompletionDetectionStrategy (po.Context);
   }
 }

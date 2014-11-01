@@ -1,6 +1,5 @@
 ﻿using System;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace Remotion.Web.Development.WebTesting
@@ -10,32 +9,36 @@ namespace Remotion.Web.Development.WebTesting
   /// developer and instead provide a semantic interface. In contrast to <see cref="PageObject"/>s, control objects represent a specific
   /// ASP.NET (custom) control and not a whole page.
   /// </summary>
-  public abstract class ControlObject : TestObject
+  public abstract class ControlObject : WebTestObject<ControlObjectContext>
   {
-    private readonly string _id;
-
-    protected ControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
+    protected ControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-
-      _id = id;
     }
 
     /// <summary>
-    /// The control's ID.
-    /// </summary>
-    public string ID
-    {
-      get { return _id; }
-    }
-
-    /// <summary>
-    /// Allows access to child controls of the control.
+    /// Provides access to child controls of the control.
     /// </summary>
     public IControlHost Children
     {
       get { return new ControlHost (Context); }
+    }
+
+    /// <summary>
+    /// Return's the control's HTML ID.
+    /// </summary>
+    public string GetHtmlID ()
+    {
+      return Scope.Id;
+    }
+
+    /// <summary>
+    /// Convinience method which returns a new <see cref="UnspecifiedPageObject"/>.
+    /// </summary>
+    /// <returns>A new unspecified page object.</returns>
+    protected UnspecifiedPageObject UnspecifiedPage ()
+    {
+      return new UnspecifiedPageObject (Context);
     }
   }
 }

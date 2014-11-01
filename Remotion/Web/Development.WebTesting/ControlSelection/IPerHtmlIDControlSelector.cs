@@ -17,6 +17,6 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
     /// </summary>
     /// <returns>The control object.</returns>
     /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
-    TControlObject SelectPerHtmlID ([NotNull] TestObjectContext context, [NotNull] string htmlID);
+    TControlObject SelectPerHtmlID ([NotNull] WebTestObjectContext context, [NotNull] string htmlID);
   }
 }

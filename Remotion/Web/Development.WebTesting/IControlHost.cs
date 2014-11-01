@@ -6,7 +6,7 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Interface for all <see cref="TestObject"/>s which host controls within their scope.
+  /// Interface for all <see cref="WebTestObject{TWebTestObjectContext}"/>s which host controls within their scope.
   /// </summary>
   public interface IControlHost
   {

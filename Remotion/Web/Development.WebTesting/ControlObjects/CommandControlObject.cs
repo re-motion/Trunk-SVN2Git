@@ -8,8 +8,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class CommandControlObject : RemotionControlObject, IClickableControlObject
   {
-    public CommandControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public CommandControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

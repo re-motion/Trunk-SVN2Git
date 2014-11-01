@@ -11,8 +11,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IClickableItemsControlObject
   {
-    protected DropDownMenuControlObjectBase ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    protected DropDownMenuControlObjectBase ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -56,7 +56,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       OpenDropDownMenu();
 
-      var dropDownMenuOptionsScope = Context.RootElement.FindCss ("ul.DropDownMenuOptions");
+      var dropDownMenuOptionsScope = Context.RootScope.FindCss ("ul.DropDownMenuOptions");
       return dropDownMenuOptionsScope;
     }
 

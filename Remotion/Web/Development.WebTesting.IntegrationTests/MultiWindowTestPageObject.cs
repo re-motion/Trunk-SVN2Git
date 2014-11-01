@@ -5,7 +5,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
   public class MultiWindowTestPageObject : RemotionPageObject
   {
-    public MultiWindowTestPageObject (TestObjectContext context)
+    public MultiWindowTestPageObject (PageObjectContext context)
         : base (context)
     {
     }

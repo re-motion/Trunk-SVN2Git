@@ -19,12 +19,12 @@ namespace Remotion.Web.Development.WebTesting
     /// Called immediately before the action is performed. This method should capture all state (e.g. a page sequence number) required for
     /// subsequently determining whether the action has completed.
     /// </summary>
-    void PrepareWaitForCompletion ([NotNull] TestObjectContext context);
+    void PrepareWaitForCompletion ([NotNull] PageObjectContext context);
 
     /// <summary>
     /// Called immediately after the action has been performed. This method should block until the DOM fulfills certain characteristics (i.e. a page
     /// sequence number has been increased).
     /// </summary>
-    void WaitForCompletion ([NotNull] TestObjectContext context);
+    void WaitForCompletion ([NotNull] PageObjectContext context);
   }
 }

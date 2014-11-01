@@ -13,10 +13,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly BocListCellFunctionality _impl;
 
-    public BocListEditableCellControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListEditableCellControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _impl = new BocListCellFunctionality (id, context);
+      _impl = new BocListCellFunctionality (context);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

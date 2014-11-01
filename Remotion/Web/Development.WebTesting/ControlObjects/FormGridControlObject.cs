@@ -10,8 +10,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class FormGridControlObject : RemotionControlObject, IControlHost
   {
-    public FormGridControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public FormGridControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

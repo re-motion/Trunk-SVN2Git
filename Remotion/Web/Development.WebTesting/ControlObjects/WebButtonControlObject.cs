@@ -9,8 +9,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class WebButtonControlObject : RemotionControlObject, IClickableControlObject
   {
-    public WebButtonControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public WebButtonControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

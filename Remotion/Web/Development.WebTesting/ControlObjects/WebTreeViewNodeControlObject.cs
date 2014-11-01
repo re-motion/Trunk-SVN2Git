@@ -11,8 +11,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class WebTreeViewNodeControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
   {
-    public WebTreeViewNodeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public WebTreeViewNodeControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -26,13 +26,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
-      return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
+      return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
     public WebTreeViewNodeControlObject GetNode (int index)
     {
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
-      return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
+      return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
     [Obsolete ("WebTreeView nodes cannot be selected using a full HTML ID.", true)]
@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.Text, text);
-      return new WebTreeViewNodeControlObject (ID, Context.CloneForScope (nodeScope));
+      return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
     public WebTreeViewNodeControlObject Expand ()
@@ -85,7 +85,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public ContextMenuControlObject OpenContextMenu ()
     {
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      return new ContextMenuControlObject (ID, Context.CloneForScope (selectAnchorScope));
+      return new ContextMenuControlObject (Context.CloneForControl (selectAnchorScope));
     }
 
     private ElementScope GetWellKnownSelectAnchorScope ()

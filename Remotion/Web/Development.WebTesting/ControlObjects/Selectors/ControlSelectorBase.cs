@@ -11,13 +11,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public abstract class ControlSelectorBase<TControlObject> : IPerHtmlIDControlSelector<TControlObject>, IPerLocalIDControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    public TControlObject SelectPerHtmlID (TestObjectContext context, string htmlID)
+    public TControlObject SelectPerHtmlID (WebTestObjectContext context, string htmlID)
     {
       var scope = context.Scope.FindId (htmlID);
       return CreateControlObject (context, scope);
     }
 
-    public TControlObject SelectPerLocalID (TestObjectContext context, string localID)
+    public TControlObject SelectPerLocalID (WebTestObjectContext context, string localID)
     {
       var scope = context.Scope.FindIdEndingWith ("_" + localID);
       if (!scope.Exists())
@@ -26,12 +26,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
-    protected TControlObject CreateControlObject (TestObjectContext context, ElementScope scope)
+    protected TControlObject CreateControlObject (WebTestObjectContext context, ElementScope scope)
     {
-      var id = scope.Id;
-      var newContext = context.CloneForScope (scope);
-
-      return (TControlObject) Activator.CreateInstance (typeof (TControlObject), new object[] { id, newContext });
+      var newContext = context.CloneForControl (scope);
+      return (TControlObject) Activator.CreateInstance (typeof (TControlObject), new object[] { newContext });
     }
   }
 }

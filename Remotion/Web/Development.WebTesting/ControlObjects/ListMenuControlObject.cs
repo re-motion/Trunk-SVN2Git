@@ -10,8 +10,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class ListMenuControlObject : RemotionControlObject, IClickableItemsControlObject
   {
-    public ListMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public ListMenuControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

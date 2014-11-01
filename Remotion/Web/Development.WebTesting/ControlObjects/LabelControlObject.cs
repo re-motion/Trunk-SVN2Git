@@ -10,8 +10,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class LabelControlObject : ControlObject
   {
-    public LabelControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public LabelControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

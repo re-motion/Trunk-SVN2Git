@@ -15,23 +15,23 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     /// subsequently determining whether the action has completed.
     /// </summary>
     /// <param name="context">
-    /// The <see cref="TestObjectContext"/> of the <see cref="ControlObject"/> with which the interaction takes place. Warning: the executed
-    /// <see cref="ICompletionDetector"/> may decide to pass a different <see cref="TestObjectContext"/> to this method (e.g. the context of the
+    /// The <see cref="WebTestObjectContext"/> of the <see cref="ControlObject"/> with which the interaction takes place. Warning: the executed
+    /// <see cref="ICompletionDetector"/> may decide to pass a different <see cref="WebTestObjectContext"/> to this method (e.g. the context of the
     /// parent window if the action closes the current window).
     /// </param>
     /// <returns>A state object which is subsequently passed to <see cref="WaitForCompletion"/>. May be null.</returns>
-    object PrepareWaitForCompletion ([NotNull] TestObjectContext context);
+    object PrepareWaitForCompletion ([NotNull] PageObjectContext context);
 
     /// <summary>
     /// Called immediately after the action has been performed. This method should block until the DOM fulfills certain characteristics (i.e. a page
     /// sequence number has been increased). The object returned by <see cref="PrepareWaitForCompletion"/> is passed as <paramref name="state"/>.
     /// </summary>
     /// <param name="context">
-    /// The <see cref="TestObjectContext"/> of the <see cref="ControlObject"/> with which the interaction takes place. Warning: the executed
-    /// <see cref="ICompletionDetector"/> may decide to pass a different <see cref="TestObjectContext"/> to this method (e.g. the context of the
+    /// The <see cref="WebTestObjectContext"/> of the <see cref="ControlObject"/> with which the interaction takes place. Warning: the executed
+    /// <see cref="ICompletionDetector"/> may decide to pass a different <see cref="WebTestObjectContext"/> to this method (e.g. the context of the
     /// parent window if the action closes the current window).
     /// </param>
     /// <param name="state">The state object obtained from <see cref="PrepareWaitForCompletion"/>.</param>
-    void WaitForCompletion ([NotNull] TestObjectContext context, [CanBeNull] object state);
+    void WaitForCompletion ([NotNull] PageObjectContext context, [CanBeNull] object state);
   }
 }

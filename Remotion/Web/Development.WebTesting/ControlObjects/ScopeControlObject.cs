@@ -12,8 +12,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class ScopeControlObject : RemotionControlObject, IControlHost
   {
-    public ScopeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public ScopeControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

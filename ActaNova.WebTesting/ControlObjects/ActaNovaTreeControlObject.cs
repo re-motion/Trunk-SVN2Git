@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 
@@ -11,10 +12,10 @@ namespace ActaNova.WebTesting.ControlObjects
   {
     private readonly ActaNovaTreeNodeControlObject _metaRootNode;
 
-    public ActaNovaTreeControlObject (string id, TestObjectContext context)
-        : base (id, context)
+    public ActaNovaTreeControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _metaRootNode = new ActaNovaTreeNodeControlObject (id, context);
+      _metaRootNode = new ActaNovaTreeNodeControlObject (context);
     }
 
     public ActaNovaTreeNodeControlObject GetNode (string itemID)

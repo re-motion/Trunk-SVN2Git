@@ -15,8 +15,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocListControlObject : BocListControlObjectBase<BocListRowControlObject, BocListCellControlObject>
   {
-    public BocListControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private BocListRowControlObject GetRowFromCell (BocListCellControlObject cell)
     {
       var rowScope = cell.Scope.FindXPath ("..");
-      return CreateRowControlObject (ID, rowScope, Accessor);
+      return CreateRowControlObject (GetHtmlID(), rowScope, Accessor);
     }
 
     public BocListCellControlObject GetCellWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
@@ -114,7 +114,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
           containsCellText);
       var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
-      return CreateCellControlObject (ID, cellScope);
+      return CreateCellControlObject (GetHtmlID(), cellScope);
     }
 
     public BocListCellControlObject GetCellWhereByColumnTitle ([NotNull] string columnTitle, [NotNull] string containsCellText)
@@ -181,7 +181,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("rowScope", rowScope);
       ArgumentUtility.CheckNotNull ("accessor", accessor);
 
-      return new BocListRowControlObject (accessor, ID, Context.CloneForScope (rowScope));
+      return new BocListRowControlObject (accessor, Context.CloneForControl (rowScope));
     }
 
     protected override BocListCellControlObject CreateCellControlObject (string id, ElementScope cellScope)
@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("cellScope", cellScope);
 
-      return new BocListCellControlObject (ID, Context.CloneForScope (cellScope));
+      return new BocListCellControlObject (Context.CloneForControl (cellScope));
     }
 
     private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction)

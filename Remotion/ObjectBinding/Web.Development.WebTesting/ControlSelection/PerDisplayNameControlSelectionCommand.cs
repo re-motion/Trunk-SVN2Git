@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
       _displayName = displayName;
     }
 
-    public TControlObject Select (TestObjectContext context)
+    public TControlObject Select (WebTestObjectContext context)
     {
       return _controlSelector.SelectPerDisplayName (context, _displayName);
     }

@@ -16,14 +16,14 @@ namespace ActaNova.WebTesting.ControlObjects
     private readonly BocTreeViewNodeControlObject _bocTreeViewNode;
 
     [UsedImplicitly]
-    public ActaNovaTreeNodeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public ActaNovaTreeNodeControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _bocTreeViewNode = new BocTreeViewNodeControlObject (id, context);
+      _bocTreeViewNode = new BocTreeViewNodeControlObject (context);
     }
 
     internal ActaNovaTreeNodeControlObject ([NotNull] BocTreeViewNodeControlObject bocTreeViewNode)
-        : base (bocTreeViewNode.ID, bocTreeViewNode.Context)
+        : base (bocTreeViewNode.Context)
     {
       _bocTreeViewNode = bocTreeViewNode;
     }

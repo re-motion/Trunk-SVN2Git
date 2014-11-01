@@ -12,8 +12,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class AnchorControlObject : ControlObject, IClickableControlObject
   {
-    public AnchorControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public AnchorControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

@@ -11,8 +11,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocCheckBoxControlObject : BocControlObject
   {
-    public BocCheckBoxControlObject (string id, TestObjectContext context)
-        : base (id, context)
+    public BocCheckBoxControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

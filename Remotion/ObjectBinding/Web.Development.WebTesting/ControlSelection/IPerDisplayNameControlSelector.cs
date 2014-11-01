@@ -20,6 +20,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
     /// <returns>The control object.</returns>
     /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="displayName"/> are found.</exception>
     /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
-    TControlObject SelectPerDisplayName ([NotNull] TestObjectContext context, [NotNull] string displayName);
+    TControlObject SelectPerDisplayName ([NotNull] WebTestObjectContext context, [NotNull] string displayName);
   }
 }

@@ -8,20 +8,20 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
   /// </summary>
   public class WxeResetCompletionDetectionStrategy : WxeResetInCompletionDetectionStrategy
   {
-    public override object PrepareWaitForCompletion (TestObjectContext context)
+    public override object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       
-      FrameRootElement = context.FrameRootElement;
+      PageObjectContext = context;
       return base.PrepareWaitForCompletion (context);
     }
 
-    public override void WaitForCompletion (TestObjectContext context, object state)
+    public override void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);
 
-      FrameRootElement = context.FrameRootElement;
+      PageObjectContext = context;
       base.WaitForCompletion (context, state);
     }
   }

@@ -13,10 +13,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly BocListRowFunctionality _impl;
 
-    public BocListRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _impl = new BocListRowFunctionality (accessor, id, context);
+      _impl = new BocListRowFunctionality (accessor, context);
     }
 
     public void ClickSelectCheckbox ()

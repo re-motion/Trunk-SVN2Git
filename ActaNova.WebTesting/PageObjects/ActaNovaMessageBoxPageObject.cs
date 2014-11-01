@@ -7,7 +7,7 @@ namespace ActaNova.WebTesting.PageObjects
 {
   public class ActaNovaMessageBoxPageObject : ActaNovaPageObject
   {
-    public ActaNovaMessageBoxPageObject ([NotNull] TestObjectContext context)
+    public ActaNovaMessageBoxPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }
@@ -15,10 +15,9 @@ namespace ActaNova.WebTesting.PageObjects
     public UnspecifiedPageObject Confirm ()
     {
       var context = DetailsArea.Context;
-      var messageBoxScope = context.FrameRootElement.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (messageBoxScope.Id, context.CloneForScope (messageBoxScope));
-      actaNovaMessageBox.Okay();
-      return UnspecifiedPage();
+      var messageBoxScope = context.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
+      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (context.CloneForControl (messageBoxScope));
+      return actaNovaMessageBox.Okay();
     }
 
     private ActaNovaDetailsAreaControlObject DetailsArea
@@ -26,7 +25,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsAreaControlObject (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
+        return new ActaNovaDetailsAreaControlObject (Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

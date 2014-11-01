@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting
     public static void PerformAction (
         [NotNull] this ElementScope scope,
         [NotNull] Action<ElementScope> action,
-        [NotNull] TestObjectContext context,
+        [NotNull] ControlObjectContext context,
         [NotNull] ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
@@ -32,9 +32,10 @@ namespace Remotion.Web.Development.WebTesting
 
       var completionDetector = completionDetection.Build();
 
-      completionDetector.PrepareWaitForCompletion (context);
+      var pageContext = context.PageContext;
+      completionDetector.PrepareWaitForCompletion (pageContext);
       action (scope);
-      completionDetector.WaitForCompletion (context);
+      completionDetector.WaitForCompletion (pageContext);
     }
 
     /// <summary>
@@ -46,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="completionDetection"><see cref="ICompletionDetection"/> for this action.</param>
     public static void ClickAndWait (
         [NotNull] this ElementScope scope,
-        [NotNull] TestObjectContext context,
+        [NotNull] ControlObjectContext context,
         [NotNull] ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
@@ -70,7 +71,7 @@ namespace Remotion.Web.Development.WebTesting
         [NotNull] this ElementScope scope,
         [NotNull] string value,
         [NotNull] FinishInputWithAction finishInputWithAction,
-        [NotNull] TestObjectContext context,
+        [NotNull] ControlObjectContext context,
         [NotNull] ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);

@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestSelection_Single ()
     {
       var home = Start();
-      var scope = new ScopeControlObject ("scope", home.Context.CloneForScope (home.Scope.FindId ("scope")));
+      var scope = new ScopeControlObject (home.Context.CloneForControl (home.Scope.FindId ("scope")));
 
       var tabStrip = scope.GetWebTabStrip().Single();
       Assert.That (tabStrip.Scope.Id, Is.EqualTo ("body_MyTabStrip2"));

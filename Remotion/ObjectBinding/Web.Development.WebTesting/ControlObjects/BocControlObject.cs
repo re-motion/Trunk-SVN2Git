@@ -10,8 +10,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public abstract class BocControlObject : RemotionControlObject
   {
-    protected BocControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    protected BocControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
   }

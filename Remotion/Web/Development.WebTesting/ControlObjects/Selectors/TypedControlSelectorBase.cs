@@ -38,20 +38,20 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       get { return _controlType; }
     }
 
-    public TControlObject SelectFirst (TestObjectContext context)
+    public TControlObject SelectFirst (WebTestObjectContext context)
     {
       var scope = context.Scope.FindDMA ("*", DiagnosticMetadataAttributes.ControlType, _controlType);
       return CreateControlObject (context, scope);
     }
 
-    public TControlObject SelectSingle (TestObjectContext context)
+    public TControlObject SelectSingle (WebTestObjectContext context)
     {
       var scope = context.Scope.FindDMA ("*", DiagnosticMetadataAttributes.ControlType, _controlType);
       scope.ElementFinder.Options.Match = Match.Single;
       return CreateControlObject (context, scope);
     }
 
-    public TControlObject SelectPerIndex (TestObjectContext context, int index)
+    public TControlObject SelectPerIndex (WebTestObjectContext context, int index)
     {
       var hasAttributeCheck = XPathUtils.CreateHasAttributeCheck (DiagnosticMetadataAttributes.ControlType, _controlType);
       var scope = context.Scope.FindXPath (string.Format ("(.//*{0})[{1}]", hasAttributeCheck, index));

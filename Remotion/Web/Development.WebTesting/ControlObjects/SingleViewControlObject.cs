@@ -11,27 +11,27 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class SingleViewControlObject : RemotionControlObject, IControlHost
   {
-    public SingleViewControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public SingleViewControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
     public ScopeControlObject GetTopControls ()
     {
       var scope = FindChild ("TopControl");
-      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
+      return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetView ()
     {
       var scope = FindChild ("View");
-      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
+      return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetBottomControls ()
     {
       var scope = FindChild ("BottomControl");
-      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
+      return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

@@ -12,10 +12,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public abstract class RemotionControlObject : ControlObject
   {
     /// <summary>
-    /// Initializes the control object with the given <paramref name="context"/> and <paramref name="id"/>.
+    /// Initializes the control object with the given <paramref name="context"/>.
     /// </summary>
-    protected RemotionControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    protected RemotionControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -26,7 +26,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("idSuffix", idSuffix);
 
-      var fullId = string.Format ("{0}_{1}", ID, idSuffix);
+      return FindChild (GetHtmlID(), idSuffix);
+    }
+
+    protected ElementScope FindChild ([NotNull] string id, [NotNull] string idSuffix)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNullOrEmpty ("idSuffix", idSuffix);
+
+      var fullId = string.Format ("{0}_{1}", id, idSuffix);
       return Scope.FindId (fullId);
     }
 

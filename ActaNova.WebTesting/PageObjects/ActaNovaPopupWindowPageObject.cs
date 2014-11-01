@@ -6,7 +6,7 @@ namespace ActaNova.WebTesting.PageObjects
 {
   public class ActaNovaPopupWindowPageObject : ActaNovaPageObject
   {
-    public ActaNovaPopupWindowPageObject ([NotNull] TestObjectContext context)
+    public ActaNovaPopupWindowPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }

@@ -12,10 +12,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly BocListCellFunctionality _impl;
 
-    public BocListCellControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListCellControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _impl = new BocListCellFunctionality (id, context);
+      _impl = new BocListCellFunctionality (context);
     }
 
     /// <summary>

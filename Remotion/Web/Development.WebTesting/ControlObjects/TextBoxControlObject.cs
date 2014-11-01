@@ -11,8 +11,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class TextBoxControlObject : ControlObject, IFillableControlObject
   {
-    public TextBoxControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public TextBoxControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

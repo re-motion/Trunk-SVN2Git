@@ -6,8 +6,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Helper class for web test set up fixtures. Initializes log4net, ensures that the screenshot directory exists and most importantly hosts the
-  /// configured web application in its own IIS express instance.
+  /// Helper class for web test set up fixtures. Initializes log4net and hosts the configured web application under test.
   /// </summary>
   public class WebTestSetUpFixtureHelper
   {

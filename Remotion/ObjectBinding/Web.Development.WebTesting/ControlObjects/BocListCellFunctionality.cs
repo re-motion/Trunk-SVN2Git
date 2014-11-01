@@ -14,8 +14,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// </summary>
   internal class BocListCellFunctionality : BocControlObject, ICommandHost, IControlHost
   {
-    public BocListCellFunctionality ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListCellFunctionality ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -30,8 +30,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindLink();
-      var context = Context.CloneForScope (commandScope);
-      return new CommandControlObject (commandScope.Id, context);
+      var context = Context.CloneForControl (commandScope);
+      return new CommandControlObject (context);
     }
 
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)

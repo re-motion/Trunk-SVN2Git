@@ -8,6 +8,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   public interface IBocListRowControlObjectHostAccessor
   {
     /// <summary>
+    /// Returns the ID of the parent control.
+    /// </summary>
+    string ID { get; }
+
+    /// <summary>
     /// Returns the one-based column index of the given <paramref name="columnItemID"/> within the parent control.
     /// </summary>
     int GetColumnIndex (string columnItemID);

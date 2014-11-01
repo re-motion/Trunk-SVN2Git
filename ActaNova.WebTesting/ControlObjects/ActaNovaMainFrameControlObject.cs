@@ -7,8 +7,8 @@ namespace ActaNova.WebTesting.ControlObjects
 {
   public abstract class ActaNovaMainFrameControlObject : ActaNovaControlObject
   {
-    protected ActaNovaMainFrameControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    protected ActaNovaMainFrameControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

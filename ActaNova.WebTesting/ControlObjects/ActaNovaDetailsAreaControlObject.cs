@@ -1,6 +1,6 @@
 ﻿using System;
+using ActaNova.WebTesting.PageObjects;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
@@ -8,10 +8,10 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaDetailsAreaControlObject : ActaNovaControlObject, IControlHost
+  public class ActaNovaDetailsAreaControlObject : ActaNovaPageObject
   {
-    public ActaNovaDetailsAreaControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public ActaNovaDetailsAreaControlObject ([NotNull] PageObjectContext context)
+        : base (context)
     {
     }
 
@@ -28,14 +28,6 @@ namespace ActaNova.WebTesting.ControlObjects
       return GetControl (
           new PerHtmlIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), string.Format ("{0}Button", command)))
           .Click (completionDetection);
-    }
-
-    public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
-        where TControlObject : ControlObject
-    {
-      ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
-
-      return Children.GetControl (controlSelectionCommand);
     }
   }
 }

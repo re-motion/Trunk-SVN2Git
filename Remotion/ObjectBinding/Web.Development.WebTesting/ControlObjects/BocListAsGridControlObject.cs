@@ -12,8 +12,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocListAsGridControlObject : BocListControlObjectBase<BocListAsGridRowControlObject, BocListAsGridCellControlObject>
   {
-    public BocListAsGridControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListAsGridControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("rowScope", rowScope);
       ArgumentUtility.CheckNotNull ("accessor", accessor);
 
-      return new BocListAsGridRowControlObject (accessor, ID, Context.CloneForScope (rowScope));
+      return new BocListAsGridRowControlObject (accessor, Context.CloneForControl (rowScope));
     }
 
     protected override BocListAsGridCellControlObject CreateCellControlObject (string id, ElementScope cellScope)
@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("cellScope", cellScope);
 
-      return new BocListAsGridCellControlObject (ID, Context.CloneForScope (cellScope));
+      return new BocListAsGridCellControlObject (Context.CloneForControl (cellScope));
     }
   }
 }

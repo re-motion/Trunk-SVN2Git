@@ -13,10 +13,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly BocTreeViewNodeControlObject _metaRootNode;
 
-    public BocTreeViewControlObject (string id, TestObjectContext context)
-        : base (id, context)
+    public BocTreeViewControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _metaRootNode = new BocTreeViewNodeControlObject (id, context);
+      _metaRootNode = new BocTreeViewNodeControlObject (context);
     }
 
     public BocTreeViewNodeControlObject GetRootNode ()

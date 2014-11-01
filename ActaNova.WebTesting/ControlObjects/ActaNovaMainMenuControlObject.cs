@@ -14,8 +14,8 @@ namespace ActaNova.WebTesting.ControlObjects
   /// </summary>
   public class ActaNovaMainMenuControlObject : ActaNovaMainFrameControlObject
   {
-    public ActaNovaMainMenuControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public ActaNovaMainMenuControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

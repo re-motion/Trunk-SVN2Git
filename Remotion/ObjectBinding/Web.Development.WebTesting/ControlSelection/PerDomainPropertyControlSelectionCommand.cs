@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
       _domainClass = domainClass;
     }
 
-    public TControlObject Select (TestObjectContext context)
+    public TControlObject Select (WebTestObjectContext context)
     {
       return _controlSelector.SelectPerDomainProperty (context, _domainProperty, _domainClass);
     }

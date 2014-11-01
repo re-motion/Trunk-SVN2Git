@@ -14,13 +14,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocReferenceValueControlObject : BocControlObject, ICommandHost, IDropDownMenuHost, ISelectableControlObject
   {
-    /// <summary>
-    /// Initializes the control object.
-    /// </summary>
-    /// <param name="id">The control object's ID.</param>
-    /// <param name="context">The control object's context.</param>
-    public BocReferenceValueControlObject (string id, TestObjectContext context)
-        : base (id, context)
+    public BocReferenceValueControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -66,8 +61,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public CommandControlObject GetCommand ()
     {
       var commandScope = FindChild ("Command");
-      var context = Context.CloneForScope (commandScope);
-      return new CommandControlObject (commandScope.Id, context);
+      var context = Context.CloneForControl (commandScope);
+      return new CommandControlObject (context);
     }
 
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
@@ -78,8 +73,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = FindChild ("Boc_OptionsMenu");
-      var context = Context.CloneForScope (dropDownMenuScope);
-      return new DropDownMenuControlObject (dropDownMenuScope.Id, context);
+      var context = Context.CloneForControl (dropDownMenuScope);
+      return new DropDownMenuControlObject (context);
     }
   }
 }

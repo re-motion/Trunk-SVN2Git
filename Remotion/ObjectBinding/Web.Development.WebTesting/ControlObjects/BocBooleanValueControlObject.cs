@@ -12,8 +12,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocBooleanValueControlObject : BocControlObject
   {
-    public BocBooleanValueControlObject (string id, TestObjectContext context)
-        : base (id, context)
+    public BocBooleanValueControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

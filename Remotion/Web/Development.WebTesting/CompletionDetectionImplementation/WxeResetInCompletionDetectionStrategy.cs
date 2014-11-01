@@ -12,26 +12,26 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
   /// </summary>
   public class WxeResetInCompletionDetectionStrategy : WxeCompletionDetectionStrategyBase
   {
-    public WxeResetInCompletionDetectionStrategy ([NotNull] ElementScope frameRootElement)
+    public WxeResetInCompletionDetectionStrategy ([NotNull] PageObjectContext context)
     {
-      ArgumentUtility.CheckNotNull ("frameRootElement", frameRootElement);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      FrameRootElement = frameRootElement;
+      PageObjectContext = context;
     }
 
     protected WxeResetInCompletionDetectionStrategy ()
     {
     }
 
-    public override object PrepareWaitForCompletion (TestObjectContext context)
+    public override object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var wxeFunctionToken = GetWxeFunctionToken (FrameRootElement);
+      var wxeFunctionToken = GetWxeFunctionToken (PageObjectContext);
       return wxeFunctionToken;
     }
 
-    public override void WaitForCompletion (TestObjectContext context, object state)
+    public override void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);
@@ -45,12 +45,12 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       WaitForExpectedWxePostBackSequenceNumber (context, expectedWxePostBackSequenceNumber);
     }
 
-    private void WaitForNewWxeFunctionToken (TestObjectContext context, string oldWxeFunctionToken)
+    private void WaitForNewWxeFunctionToken (PageObjectContext context, string oldWxeFunctionToken)
     {
-      context.Window.Query (() => GetWxeFunctionToken (FrameRootElement) != oldWxeFunctionToken, true);
+      context.Window.Query (() => GetWxeFunctionToken (PageObjectContext) != oldWxeFunctionToken, true);
 
       Assertion.IsTrue (
-          GetWxeFunctionToken (FrameRootElement) != oldWxeFunctionToken,
+          GetWxeFunctionToken (PageObjectContext) != oldWxeFunctionToken,
           string.Format ("Expected WXE-FT to be different to '{0}', but it is equal.", oldWxeFunctionToken));
     }
   }

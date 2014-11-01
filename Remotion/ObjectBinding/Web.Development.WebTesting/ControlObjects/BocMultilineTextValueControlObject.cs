@@ -14,13 +14,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class BocMultilineTextValueControlObject : BocControlObject, IFillableControlObject
   {
-    /// <summary>
-    /// Initializes the control object.
-    /// </summary>
-    /// <param name="id">The control object's ID.</param>
-    /// <param name="context">The control object's context.</param>
-    public BocMultilineTextValueControlObject (string id, TestObjectContext context)
-        : base (id, context)
+    public BocMultilineTextValueControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 

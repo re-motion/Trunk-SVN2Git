@@ -18,7 +18,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="context">The corresponding control object's context.</param>
-    public static void ContextClick ([NotNull] this ElementScope scope, [NotNull] TestObjectContext context)
+    public static void ContextClick ([NotNull] this ElementScope scope, [NotNull] WebTestObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("context", context);

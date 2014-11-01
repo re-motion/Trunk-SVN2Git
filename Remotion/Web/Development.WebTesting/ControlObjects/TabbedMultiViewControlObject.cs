@@ -11,27 +11,27 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   [UsedImplicitly]
   public class TabbedMultiViewControlObject : RemotionControlObject, IControlHost, ITabStripControlObject
   {
-    public TabbedMultiViewControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public TabbedMultiViewControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
     public ScopeControlObject GetTopControls ()
     {
       var scope = FindChild ("TopControl");
-      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
+      return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetActiveView ()
     {
       var scope = FindChild ("ActiveView");
-      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
+      return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public ScopeControlObject GetBottomControls ()
     {
       var scope = FindChild ("BottomControl");
-      return new ScopeControlObject (scope.Id, Context.CloneForScope (scope));
+      return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
     public UnspecifiedPageObject SwitchTo (string itemID)
@@ -63,7 +63,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     private WebTabStripControlObject GetTabStrip ()
     {
       var scope = FindChild ("TabStrip");
-      return new WebTabStripControlObject (scope.Id, Context.CloneForScope (scope));
+      return new WebTabStripControlObject (Context.CloneForControl (scope));
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

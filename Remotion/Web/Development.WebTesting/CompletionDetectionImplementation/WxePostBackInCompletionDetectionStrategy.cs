@@ -13,11 +13,11 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
   {
     private readonly int _expectedWxePostBackSequenceNumberIncrease;
 
-    public WxePostBackInCompletionDetectionStrategy ([NotNull] ElementScope frameRootElement, int expectedWxePostBackSequenceNumberIncrease)
+    public WxePostBackInCompletionDetectionStrategy ([NotNull] PageObjectContext context, int expectedWxePostBackSequenceNumberIncrease)
     {
-      ArgumentUtility.CheckNotNull ("frameRootElement", frameRootElement);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      FrameRootElement = frameRootElement;
+      PageObjectContext = context;
       _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
     }
 
@@ -26,15 +26,15 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
     }
 
-    public override object PrepareWaitForCompletion (TestObjectContext context)
+    public override object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber (FrameRootElement);
+      var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber (PageObjectContext);
       return wxePostBackSequenceNumber;
     }
 
-    public override void WaitForCompletion (TestObjectContext context, object state)
+    public override void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);

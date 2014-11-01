@@ -14,14 +14,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private readonly WebTreeViewNodeControlObject _webTreeViewNode;
 
     [UsedImplicitly]
-    public BocTreeViewNodeControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocTreeViewNodeControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _webTreeViewNode = new WebTreeViewNodeControlObject (id, context);
+      _webTreeViewNode = new WebTreeViewNodeControlObject (context);
     }
 
     internal BocTreeViewNodeControlObject ([NotNull] WebTreeViewNodeControlObject webTreeViewNode)
-        : base (webTreeViewNode.ID, webTreeViewNode.Context)
+        : base (webTreeViewNode.Context)
     {
       _webTreeViewNode = webTreeViewNode;
     }

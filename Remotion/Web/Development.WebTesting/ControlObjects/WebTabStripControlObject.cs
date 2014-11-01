@@ -12,8 +12,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public class WebTabStripControlObject : RemotionControlObject, ITabStripControlObject
   {
-    public WebTabStripControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public WebTabStripControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -55,8 +55,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var commandScope = tabScope.FindLink();
 
-      var commandContext = Context.CloneForScope (commandScope);
-      var command = new CommandControlObject (commandScope.Id, commandContext);
+      var commandContext = Context.CloneForControl (commandScope);
+      var command = new CommandControlObject (commandContext);
       return command.Click (Continue.When (Wxe.PostBackCompleted));
     }
   }

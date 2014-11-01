@@ -14,34 +14,34 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     private const string c_wxeFunctionToken = "WxeFunctionToken";
     private const string c_wxePostBackSequenceNumberFieldId = "wxePostBackSequenceNumberField";
 
-    public abstract object PrepareWaitForCompletion (TestObjectContext context);
-    public abstract void WaitForCompletion (TestObjectContext context, object state);
+    public abstract object PrepareWaitForCompletion (PageObjectContext context);
+    public abstract void WaitForCompletion (PageObjectContext context, object state);
 
-    protected ElementScope FrameRootElement { get; set; }
+    protected PageObjectContext PageObjectContext { get; set; }
 
-    protected string GetWxeFunctionToken ([NotNull] ElementScope scope)
+    protected string GetWxeFunctionToken ([NotNull] PageObjectContext context)
     {
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      return scope.FindId (c_wxeFunctionToken).Value;
+      return context.Scope.FindId (c_wxeFunctionToken).Value;
     }
 
-    protected int GetWxePostBackSequenceNumber ([NotNull] ElementScope scope)
+    protected int GetWxePostBackSequenceNumber ([NotNull] PageObjectContext context)
     {
-      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNull ("context", context);
 
-      return int.Parse (scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
+      return int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
     }
 
-    protected void WaitForExpectedWxePostBackSequenceNumber ([NotNull] TestObjectContext context, int expectedWxePostBackSequenceNumber)
+    protected void WaitForExpectedWxePostBackSequenceNumber ([NotNull] PageObjectContext context, int expectedWxePostBackSequenceNumber)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
       LogManager.GetLogger (GetType())
-          .DebugFormat ("Parameters: window: '{0}' scope: '{1}'.", context.Window.Title, GetScopeTitle (context, FrameRootElement));
+          .DebugFormat ("Parameters: window: '{0}' scope: '{1}'.", context.Window.Title, GetPageTitle (PageObjectContext));
 
       var newWxePostBackSequenceNumber = context.Window.Query (
-          () => GetWxePostBackSequenceNumber (FrameRootElement),
+          () => GetWxePostBackSequenceNumber (PageObjectContext),
           expectedWxePostBackSequenceNumber);
 
       Assertion.IsTrue (
@@ -49,12 +49,9 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
           string.Format ("Expected WXE-PSN to be '{0}', but it actually is '{1}'", expectedWxePostBackSequenceNumber, newWxePostBackSequenceNumber));
     }
 
-    private string GetScopeTitle (TestObjectContext context, ElementScope frameRootElement)
+    private string GetPageTitle (PageObjectContext page)
     {
-      if (context.RootElement == frameRootElement)
-        return "root";
-
-      return frameRootElement.FindCss ("title").InnerHTML.Trim();
+      return page.Scope.FindCss ("title").InnerHTML;
     }
   }
 }

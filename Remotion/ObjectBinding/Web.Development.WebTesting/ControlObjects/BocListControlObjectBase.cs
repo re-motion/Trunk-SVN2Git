@@ -50,6 +50,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         _bocList = bocList;
       }
 
+      public string ID
+      {
+        get { return _bocList.GetHtmlID(); }
+      }
+
       public int GetColumnIndex (string columnItemID)
       {
         return _bocList.GetColumnIndex (columnItemID);
@@ -59,8 +64,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly List<ColumnDefinition> _columns;
 
-    protected BocListControlObjectBase ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    protected BocListControlObjectBase ([NotNull] ControlObjectContext context)
+        : base (context)
     {
       _accessor = new BocListRowControlObjectHostAccessor (this);
       _columns = RetryUntilTimeout.Run (
@@ -134,19 +139,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private TRowControlObject GetRowByCssSelector (string cssSelector)
     {
       var rowScope = Scope.FindCss (cssSelector);
-      return CreateRowControlObject (ID, rowScope, _accessor);
+      return CreateRowControlObject (GetHtmlID(), rowScope, _accessor);
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = FindChild ("Boc_OptionsMenu");
-      return new DropDownMenuControlObject (dropDownMenuScope.Id, Context.CloneForScope (dropDownMenuScope));
+      return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
     }
 
     public ListMenuControlObject GetListMenu ()
     {
       var listMenuScope = FindChild ("Boc_ListMenu");
-      return new ListMenuControlObject (listMenuScope.Id, Context.CloneForScope (listMenuScope));
+      return new ListMenuControlObject (Context.CloneForControl (listMenuScope));
     }
 
     protected int GetColumnIndex (string columnItemID)

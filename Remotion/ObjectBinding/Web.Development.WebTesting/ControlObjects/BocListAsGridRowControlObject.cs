@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web.UI;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -13,10 +14,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   {
     private readonly BocListRowFunctionality _impl;
 
-    public BocListAsGridRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public BocListAsGridRowControlObject (IBocListRowControlObjectHostAccessor accessor, [NotNull] ControlObjectContext context)
+        : base (context)
     {
-      _impl = new BocListRowFunctionality (accessor, id, context);
+      _impl = new BocListRowFunctionality (accessor, context);
     }
 
     public void ClickSelectCheckbox ()

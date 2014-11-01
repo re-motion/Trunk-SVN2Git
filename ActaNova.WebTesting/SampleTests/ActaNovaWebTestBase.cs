@@ -40,8 +40,7 @@ namespace ActaNova.WebTesting.SampleTests
 
     protected ActaNovaMainPageObject Start ()
     {
-      var context = TestObjectContext.New (_webTestHelper.MainBrowserSession);
-      return new UnspecifiedPageObject (context).Expect<ActaNovaMainPageObject>();
+      return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>();
     }
   }
 }

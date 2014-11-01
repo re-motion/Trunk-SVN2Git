@@ -1,5 +1,6 @@
 ﻿using System;
 using Coypu;
+using Coypu.Drivers;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
@@ -12,6 +13,20 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class CoypuBrowserSessionExtensions
   {
+    /// <summary>
+    /// Some WebDriver implementations hang, when trying to query within an <see cref="ElementScope"/> which is not on the "active" window.
+    /// </summary>
+    public static void EnsureWindowIsActive (this BrowserWindow window)
+    {
+      // ReSharper disable once UnusedVariable
+      var temp = window.Title;
+    }
+
+    public static ElementScope GetRootScope (this BrowserWindow window)
+    {
+      return window.FindCss ("html");
+    }
+
     /// <summary>
     /// IE-compatible version for Selenium's <see cref="BrowserWindow.AcceptModalDialog"/> method.
     /// </summary>

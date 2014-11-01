@@ -14,8 +14,8 @@ namespace ActaNova.WebTesting.ControlObjects
   /// </summary>
   public class ActaNovaHeaderControlObject : ActaNovaMainFrameControlObject, IControlHost
   {
-    public ActaNovaHeaderControlObject ([NotNull] string id, [NotNull] TestObjectContext context)
-        : base (id, context)
+    public ActaNovaHeaderControlObject ([NotNull] ControlObjectContext context)
+        : base (context)
     {
     }
 
@@ -77,7 +77,7 @@ namespace ActaNova.WebTesting.ControlObjects
         var breadCrumbsScope = Scope.FindId ("BreadCrumbsLabel");
         return RetryUntilTimeout.Run (
             () => breadCrumbsScope.FindAllCss (".breadCrumbLink")
-                .Select (s => new ActaNovaBreadCrumbControlObject (ID, Context.CloneForScope (s)))
+                .Select (s => new ActaNovaBreadCrumbControlObject (Context.CloneForControl (s)))
                 .ToList());
       }
     }

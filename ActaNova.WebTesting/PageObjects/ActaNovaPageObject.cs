@@ -6,7 +6,7 @@ namespace ActaNova.WebTesting.PageObjects
 {
   public abstract class ActaNovaPageObject : PageObject
   {
-    protected ActaNovaPageObject ([NotNull] TestObjectContext context)
+    protected ActaNovaPageObject ([NotNull] PageObjectContext context)
         : base(context)
     {
     }

@@ -11,7 +11,7 @@ namespace ActaNova.WebTesting.PageObjects
 {
   public class ActaNovaMainPageObject : ActaNovaPageObject
   {
-    public ActaNovaMainPageObject ([NotNull] TestObjectContext context)
+    public ActaNovaMainPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }
@@ -26,9 +26,7 @@ namespace ActaNova.WebTesting.PageObjects
       var actualActionBehavior = completionDetection ?? Continue.When (WaitForActaNova.OuterInnerOuterUpdate);
 
       var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "RefreshButton"));
-      webButton.Click (actualActionBehavior);
-
-      return UnspecifiedPage();
+      return webButton.Click (actualActionBehavior);
     }
 
     public ActaNovaHeaderControlObject Header
@@ -36,7 +34,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var headerScope = Scope.FindId ("HeaderPanel");
-        return new ActaNovaHeaderControlObject (headerScope.Id, Context.CloneForScope (headerScope));
+        return new ActaNovaHeaderControlObject (Context.CloneForControl (headerScope));
       }
     }
 
@@ -45,7 +43,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var mainMenuScope = Scope.FindId ("MainMenu");
-        return new ActaNovaMainMenuControlObject (mainMenuScope.Id, Context.CloneForScope (mainMenuScope));
+        return new ActaNovaMainMenuControlObject (Context.CloneForControl (mainMenuScope));
       }
     }
 
@@ -54,7 +52,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var treeScope = Scope.FindId ("MainTreeView");
-        return new ActaNovaTreeControlObject (treeScope.Id, Context.CloneForScope (treeScope));
+        return new ActaNovaTreeControlObject (Context.CloneForControl (treeScope));
       }
     }
 
@@ -63,7 +61,7 @@ namespace ActaNova.WebTesting.PageObjects
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsAreaControlObject (detailsAreaScope.Id, Context.CloneForFrame (detailsAreaScope));
+        return new ActaNovaDetailsAreaControlObject (Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

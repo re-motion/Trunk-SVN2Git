@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     private static readonly ILog s_log = LogManager.GetLogger (typeof (CompletionDetector));
 
     private readonly List<ICompletionDetectionStrategy> _completionDetectionStrategies;
-    private readonly List<Action<TestObjectContext>> _additionallyRequiredActions;
+    private readonly List<Action<WebTestObjectContext>> _additionallyRequiredActions;
     private bool _useParentContext;
 
     private int _debugOutputID;
@@ -36,7 +36,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     public CompletionDetector ()
     {
       _completionDetectionStrategies = new List<ICompletionDetectionStrategy>();
-      _additionallyRequiredActions = new List<Action<TestObjectContext>>();
+      _additionallyRequiredActions = new List<Action<WebTestObjectContext>>();
       _useParentContext = false;
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return this;
     }
 
-    public void PrepareWaitForCompletion (TestObjectContext context)
+    public void PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -100,7 +100,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       }
     }
 
-    public void WaitForCompletion (TestObjectContext context)
+    public void WaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -118,21 +118,18 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       Debug ("Finished.");
     }
 
-    private void ExecuteAdditionallyRequiredActions (TestObjectContext context)
+    private void ExecuteAdditionallyRequiredActions (PageObjectContext context)
     {
       foreach (var action in _additionallyRequiredActions)
         action (context);
     }
 
-    private TestObjectContext DetermineContextForCompletionDetectionStrategies (TestObjectContext context)
+    private PageObjectContext DetermineContextForCompletionDetectionStrategies (PageObjectContext context)
     {
       if (_useParentContext)
       {
         Debug ("Using parent context for completion detection.");
-
-        var newContext = context.CloneForParentWindow();
-        newContext.EnsureWindowIsActive();
-        return newContext;
+        return context.ParentContext;
       }
 
       return context;

@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     {
     }
 
-    public TControlObject SelectPerDisplayName (TestObjectContext context, string displayName)
+    public TControlObject SelectPerDisplayName (WebTestObjectContext context, string displayName)
     {
       var scope = context.Scope.FindDMA (
           "*",
@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       return CreateControlObject (context, scope);
     }
 
-    public TControlObject SelectPerDomainProperty (TestObjectContext context, string domainProperty, string domainClass)
+    public TControlObject SelectPerDomainProperty (WebTestObjectContext context, string domainProperty, string domainClass)
     {
       var diagnosticMetadata = new Dictionary<string, string>
             {

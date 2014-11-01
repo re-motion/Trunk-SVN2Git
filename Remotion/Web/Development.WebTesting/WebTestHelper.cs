@@ -13,8 +13,50 @@ using Remotion.Web.Development.WebTesting.Utilities;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Helper class for web tests. On set up, it ensures that all browser windows are closed, initializes a new browser session and ensures that the
-  /// cursor is outside the browser window. On tear down it automatically takes screenshots if the test failed and disposes the browser session.
+  /// Helper class for web tests which provides various convinience methods:
+  /// <list type="table">
+  ///   <listheader>
+  ///     <term>Step</term>
+  ///     <description>Actions</description>
+  ///   </listheader>
+  ///   <item>
+  ///     <term>FixtureSetUp</term>
+  ///     <description>
+  ///       <list type="bullet">
+  ///         <item>Ensures that all browser windows are closed.</item>
+  ///         <item>Initializes a new browser session.</item>
+  ///         <item>Visits the configured application root.</item>
+  ///         <item>Ensures that the cursor is outside the browser window.</item>
+  ///       </list>
+  ///     </description>
+  ///   </item>
+  ///   <item>
+  ///     <term>SetUp</term>
+  ///     <description>
+  ///       <list type="bullet">
+  ///         <item>Log output.</item>
+  ///       </list>
+  ///     </description>
+  ///   </item>
+  ///   <item>
+  ///     <term>TearDown</term>
+  ///     <description>
+  ///       <list type="bullet">
+  ///         <item>Takes screenshots if the test failed.</item>
+  ///         <item>Log output.</item>
+  ///       </list>
+  ///     </description>
+  ///   </item>
+  ///   <item>
+  ///     <term>FixtureTearDown</term>
+  ///     <description>
+  ///       <list type="bullet">
+  ///         <item>Disposes the browser session.</item>
+  ///         <item>Ensures that all browser windows are closed.</item>
+  ///       </list>
+  ///     </description>
+  ///   </item>
+  /// </list>
   /// </summary>
   public class WebTestHelper
   {
@@ -115,11 +157,12 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns a new <see cref="TestObjectContext"/> for the <see cref="MainBrowserSession"/>.
+    /// Returns a new <typeparamref name="TPageObject"/> for the initial page displayed by <see cref="MainBrowserSession"/>.
     /// </summary>
-    public TestObjectContext CreateNewTestObjectContext ()
+    public TPageObject CreateInitialPageObject<TPageObject> ()
     {
-      return TestObjectContext.New (MainBrowserSession);
+      var context = PageObjectContext.New (MainBrowserSession);
+      return (TPageObject) Activator.CreateInstance (typeof (TPageObject), new object[] { context });
     }
 
     /// <summary>
@@ -129,8 +172,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       try
       {
-        var context = CreateNewTestObjectContext();
-        MainBrowserSession.AcceptModalDialogImmediatelyFixed ();
+        MainBrowserSession.AcceptModalDialogImmediatelyFixed();
       }
       catch (NoAlertPresentException)
       {
