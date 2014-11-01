@@ -46,7 +46,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("domainProperty", domainProperty);
-      ArgumentUtility.CheckNotNull ("domainClass", domainClass);
 
       var diagnosticMetadata = new Dictionary<string, string>
             {
