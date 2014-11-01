@@ -1,12 +1,11 @@
 ﻿using System;
-using ActaNova.WebTesting.PageObjects;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace ActaNova.WebTesting.ControlObjects
+namespace ActaNova.WebTesting.PageObjects
 {
   public class AppToolsFormPageObject : AppToolsPageObject
   {
