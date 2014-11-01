@@ -8,9 +8,9 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
-  public class ActaNovaDetailsAreaControlObject : ActaNovaPageObject
+  public class AppToolsFormPageObject : AppToolsPageObject
   {
-    public ActaNovaDetailsAreaControlObject ([NotNull] PageObjectContext context)
+    public AppToolsFormPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }
@@ -22,12 +22,9 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Perform (string command, ICompletionDetection completionDetection = null)
     {
-      if (completionDetection == null)
-        completionDetection = Continue.When (Wxe.PostBackCompleted);
-
-      return GetControl (
-          new PerHtmlIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), string.Format ("{0}Button", command)))
-          .Click (completionDetection);
+      var localID = string.Format ("{0}Button", command);
+      var webButton = GetControl (new PerLocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), localID));
+      return webButton.Click (completionDetection);
     }
   }
 }

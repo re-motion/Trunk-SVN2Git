@@ -9,6 +9,7 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace ActaNova.WebTesting.PageObjects
 {
+  // ReSharper disable once ClassNeverInstantiated.Global
   public class ActaNovaMainPageObject : ActaNovaPageObject
   {
     public ActaNovaMainPageObject ([NotNull] PageObjectContext context)
@@ -56,12 +57,12 @@ namespace ActaNova.WebTesting.PageObjects
       }
     }
 
-    public ActaNovaDetailsAreaControlObject DetailsArea
+    public AppToolsFormPageObject DetailsArea
     {
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsAreaControlObject (Context.CloneForFrame (detailsAreaScope));
+        return new AppToolsFormPageObject (Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

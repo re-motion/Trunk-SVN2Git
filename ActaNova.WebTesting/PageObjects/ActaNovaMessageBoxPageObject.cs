@@ -5,6 +5,7 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.PageObjects
 {
+  // ReSharper disable once ClassNeverInstantiated.Global
   public class ActaNovaMessageBoxPageObject : ActaNovaPageObject
   {
     public ActaNovaMessageBoxPageObject ([NotNull] PageObjectContext context)
@@ -20,12 +21,12 @@ namespace ActaNova.WebTesting.PageObjects
       return actaNovaMessageBox.Okay();
     }
 
-    private ActaNovaDetailsAreaControlObject DetailsArea
+    private AppToolsFormPageObject DetailsArea
     {
       get
       {
         var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new ActaNovaDetailsAreaControlObject (Context.CloneForFrame (detailsAreaScope));
+        return new AppToolsFormPageObject (Context.CloneForFrame (detailsAreaScope));
       }
     }
   }

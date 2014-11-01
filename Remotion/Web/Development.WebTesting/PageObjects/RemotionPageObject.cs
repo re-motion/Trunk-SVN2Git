@@ -8,6 +8,7 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
   /// </summary>
   public class RemotionPageObject : PageObject
   {
+    // ReSharper disable once MemberCanBeProtected.Global
     public RemotionPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {

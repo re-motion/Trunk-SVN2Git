@@ -4,6 +4,7 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.PageObjects
 {
+  // ReSharper disable once ClassNeverInstantiated.Global
   public class ActaNovaPopupWindowPageObject : ActaNovaPageObject
   {
     public ActaNovaPopupWindowPageObject ([NotNull] PageObjectContext context)
