@@ -50,8 +50,6 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// check of the condition is retried.</exception>
     public ActionsWithWaitSupport WaitFor (IWebElement webElement, Func<IWebElement, bool> predicate, TimeSpan timeout)
     {
-      // Todo RM-6297: Refactor predicate parameter to DSL in order to be more along the style of Coypu?
-
       AddAction (
           new ActionAdapter (
               () =>

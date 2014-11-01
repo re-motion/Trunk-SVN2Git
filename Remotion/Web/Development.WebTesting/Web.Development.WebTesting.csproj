@@ -222,7 +222,6 @@
     <Compile Include="ControlObject.cs" />
     <Compile Include="PageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Todo.cs" />
     <Compile Include="WebTestSetUpFixtureHelper.cs" />
   </ItemGroup>
   <ItemGroup>

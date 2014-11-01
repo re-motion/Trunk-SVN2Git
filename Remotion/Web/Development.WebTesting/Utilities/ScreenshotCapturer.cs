@@ -93,6 +93,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     private static class ScreenshotCapturerFileNameGenerator
     {
+      // Todo RM-6297: Add unit testing!
+
       /// <summary>
       /// Combines the given <paramref name="screenshotDirectory"/> with the <paramref name="baseFileName"/>, the suffix <paramref name="suffix"/> and
       /// the file <paramref name="extension"/>. If the full file path would be longer than 260 characters, the <paramref name="baseFileName"/> is

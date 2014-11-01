@@ -61,8 +61,6 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="browser">The <see cref="BrowserSession"/> on which the action is performed.</param>
     public static void CancelModalDialogFixed ([NotNull] this BrowserSession browser)
     {
-      // Todo RM-6297: get rid of code duplication in Accept/CancelModalDialogFixed and Accept/CancelModalDialogFixedInternetExplorer.
-
       ArgumentUtility.CheckNotNull ("browser", browser);
 
       if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
