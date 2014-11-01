@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
@@ -21,6 +22,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public WebButtonControlObject SelectPerText (ControlSelectionContext context, string text)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("text", text);
+
       var scope = context.Scope.FindDMA (
           "*",
           new Dictionary<string, string>
@@ -33,6 +37,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public WebButtonControlObject SelectPerCommandName (ControlSelectionContext context, string commandName)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("commandName", commandName);
+
       var scope = context.Scope.FindDMA (
           "*",
           new Dictionary<string, string>
@@ -45,6 +52,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public WebButtonControlObject SelectPerItemID (ControlSelectionContext context, string itemID)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("itemID", itemID);
+
       var scope = context.Scope.FindDMA (
           "*",
           new Dictionary<string, string>

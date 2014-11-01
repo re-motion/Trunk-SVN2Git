@@ -4,6 +4,7 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
@@ -27,6 +28,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
 
     public TControlObject SelectPerDisplayName (ControlSelectionContext context, string displayName)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("displayName", displayName);
+
       var scope = context.Scope.FindDMA (
           "*",
           new Dictionary<string, string>
@@ -40,6 +44,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
 
     public TControlObject SelectPerDomainProperty (ControlSelectionContext context, string domainProperty, string domainClass)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("domainProperty", domainProperty);
+      ArgumentUtility.CheckNotNull ("domainClass", domainClass);
+
       var diagnosticMetadata = new Dictionary<string, string>
             {
                 { DiagnosticMetadataAttributes.ControlType, ControlType },

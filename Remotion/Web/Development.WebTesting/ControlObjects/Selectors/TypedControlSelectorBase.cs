@@ -40,12 +40,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public TControlObject SelectFirst (ControlSelectionContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       var scope = context.Scope.FindDMA ("*", DiagnosticMetadataAttributes.ControlType, _controlType);
       return CreateControlObject (context, scope);
     }
 
     public TControlObject SelectSingle (ControlSelectionContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       var scope = context.Scope.FindDMA ("*", DiagnosticMetadataAttributes.ControlType, _controlType);
       scope.ElementFinder.Options.Match = Match.Single;
       return CreateControlObject (context, scope);
@@ -53,6 +57,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public TControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       var hasAttributeCheck = XPathUtils.CreateHasAttributeCheck (DiagnosticMetadataAttributes.ControlType, _controlType);
       var scope = context.Scope.FindXPath (string.Format ("(.//*{0})[{1}]", hasAttributeCheck, index));
       return CreateControlObject (context, scope);

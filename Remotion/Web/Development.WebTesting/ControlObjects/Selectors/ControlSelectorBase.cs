@@ -1,5 +1,7 @@
 ﻿using System;
 using Coypu;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
@@ -13,12 +15,18 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   {
     public TControlObject SelectPerHtmlID (ControlSelectionContext context, string htmlID)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("htmlID", htmlID);
+
       var scope = context.Scope.FindId (htmlID);
       return CreateControlObject (context, scope);
     }
 
     public TControlObject SelectPerLocalID (ControlSelectionContext context, string localID)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("localID", localID);
+
       var scope = context.Scope.FindIdEndingWith ("_" + localID);
       if (!scope.Exists())
         scope = context.Scope.FindId (localID);
@@ -26,8 +34,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
-    protected TControlObject CreateControlObject (ControlSelectionContext context, ElementScope scope)
+    protected TControlObject CreateControlObject ([NotNull] ControlSelectionContext context, [NotNull] ElementScope scope)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
       var newContext = context.CloneForControl (context.PageObject, scope);
       return (TControlObject) Activator.CreateInstance (typeof (TControlObject), new object[] { newContext });
     }

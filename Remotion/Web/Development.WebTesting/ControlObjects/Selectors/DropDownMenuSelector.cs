@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
@@ -17,6 +18,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     public DropDownMenuControlObject SelectPerText (ControlSelectionContext context, string text)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNull ("text", text);
+
       var scope = context.Scope.FindDMA (
           "*",
           new Dictionary<string, string>
