@@ -187,26 +187,11 @@ namespace Remotion.Web.Development.WebTesting
       if (!hasSucceeded && ShouldTakeScreenshots())
       {
         var screenshotCapturer = new ScreenshotCapturer (_webTestConfiguration.ScreenshotDirectory);
-
-        var baseFileName = SanitizeFileName (_testName);
-
-        var desktopScreenshotFileName = string.Format ("{0}_Desktop", baseFileName);
-        screenshotCapturer.TakeDesktopScreenshot (desktopScreenshotFileName);
-
-        var browserScreenshotFileName = string.Format ("{0}_Browser", baseFileName);
-        screenshotCapturer.TakeBrowserScreenshot (browserScreenshotFileName, MainBrowserSession);
+        screenshotCapturer.TakeDesktopScreenshot (_testName);
+        screenshotCapturer.TakeBrowserScreenshot (_testName, MainBrowserSession);
       }
 
       s_log.InfoFormat ("Finished test: {0} [has succeeded: {1}].", _testName, hasSucceeded);
-    }
-
-    // Todo RM-6297: SRP: move somewhere...
-    private string SanitizeFileName (string fileName)
-    {
-      foreach (var c in Path.GetInvalidFileNameChars())
-        fileName = fileName.Replace (c, '_');
-
-      return fileName;
     }
 
     private bool ShouldTakeScreenshots ()

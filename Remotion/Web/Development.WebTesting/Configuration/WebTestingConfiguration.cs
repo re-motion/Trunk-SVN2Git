@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using Coypu.Drivers;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -112,7 +113,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     [ConfigurationProperty ("screenshotDirectory", IsRequired = false)]
     public string ScreenshotDirectory
     {
-      get { return (string) this["screenshotDirectory"]; }
+      get { return Path.GetFullPath ((string) this["screenshotDirectory"]); }
     }
 
     /// <summary>

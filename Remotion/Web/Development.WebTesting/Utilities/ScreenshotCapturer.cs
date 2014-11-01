@@ -42,11 +42,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       EnsureScreenshotDirectoryExists();
     }
 
-    public void TakeDesktopScreenshot ([NotNull] string fileName)
+    public void TakeDesktopScreenshot ([NotNull] string baseFileName)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+      ArgumentUtility.CheckNotNullOrEmpty ("baseFileName", baseFileName);
 
-      var fullFilePath = GetFullScreenshotFilePath (fileName);
+      var fullFilePath = ScreenshotCapturerFileNameGenerator.GetFullScreenshotFilePath (_screenshotDirectory, baseFileName, "Desktop", "png");
       s_log.InfoFormat ("Saving screenshot of desktop to '{0}'.", fullFilePath);
 
       try
@@ -68,12 +68,12 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     }
 
 
-    public void TakeBrowserScreenshot ([NotNull] string fileName, [NotNull] BrowserSession browser)
+    public void TakeBrowserScreenshot ([NotNull] string baseFileName, [NotNull] BrowserSession browser)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+      ArgumentUtility.CheckNotNullOrEmpty ("baseFileName", baseFileName);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      var fullFilePath = GetFullScreenshotFilePath (fileName);
+      var fullFilePath = ScreenshotCapturerFileNameGenerator.GetFullScreenshotFilePath (_screenshotDirectory, baseFileName, "Browser", "png");
       s_log.InfoFormat ("Saving screenshot of browser to '{0}'.", fullFilePath);
 
       try
@@ -91,31 +91,65 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       Directory.CreateDirectory (_screenshotDirectory);
     }
 
-    private string GetFullScreenshotFilePath (string fileName)
+    private static class ScreenshotCapturerFileNameGenerator
     {
-      var filePath = Path.Combine (_screenshotDirectory, fileName + ".png");
-
-      try
+      /// <summary>
+      /// Combines the given <paramref name="screenshotDirectory"/> with the <paramref name="baseFileName"/>, the suffix <paramref name="suffix"/> and
+      /// the file <paramref name="extension"/>. If the full file path would be longer than 260 characters, the <paramref name="baseFileName"/> is
+      /// shortened accordingly.
+      /// </summary>
+      /// <exception cref="PathTooLongException">
+      /// If the resulting file path would be longer than 260 characters (despite shortening of the <paramref name="baseFileName"/>).
+      /// </exception>
+      public static string GetFullScreenshotFilePath (string screenshotDirectory, string baseFileName, string suffix, string extension)
       {
-        return Path.GetFullPath (filePath);
-      }
-      catch (PathTooLongException)
-      {
-        filePath = ShortenFilePathHeuristically (filePath);
-        return Path.GetFullPath (filePath);
-      }
-    }
+        var sanitizedBaseFileName = SanitizeFileName (baseFileName);
+        var filePath = GetFullScreenshotFilePathInternal (screenshotDirectory, sanitizedBaseFileName, suffix, extension);
+        if (filePath.Length > 260)
+        {
+          var shortenedSanitizedBaseFileName = ShortenBaseFileName (filePath, sanitizedBaseFileName);
+          filePath = GetFullScreenshotFilePathInternal (screenshotDirectory, shortenedSanitizedBaseFileName, suffix, extension);
+        }
 
-    /// <summary>
-    /// Executes some heuristics to shorten the file path.
-    /// </summary>
-    /// <param name="filePath">File path which is too long.</param>
-    /// <returns>Probably a shorter file path...guarantee: not longer than before.</returns>
-    private string ShortenFilePathHeuristically (string filePath)
-    {
-      // Remove NUnit test parameters from file name...
-      var beginOfTestParametersIndex = filePath.IndexOf ('(');
-      return filePath.Substring (0, beginOfTestParametersIndex);
+        return filePath;
+      }
+
+      /// <summary>
+      /// Combines the given <paramref name="screenshotDirectory"/> with the <paramref name="baseFileName"/>, the suffix <paramref name="suffix"/> and
+      /// the file <paramref name="extension"/>.
+      /// </summary>
+      private static string GetFullScreenshotFilePathInternal (string screenshotDirectory, string baseFileName, string suffix, string extension)
+      {
+        var fileName = string.Format ("{0}_{1}.{2}", baseFileName, suffix, extension);
+        return Path.Combine (screenshotDirectory, fileName);
+      }
+
+      /// <summary>
+      /// Removes all invalid file name characters from the given <paramref name="fileName"/>.
+      /// </summary>
+      private static string SanitizeFileName (string fileName)
+      {
+        foreach (var c in Path.GetInvalidFileNameChars())
+          fileName = fileName.Replace (c, '_');
+
+        return fileName;
+      }
+
+      /// <summary>
+      /// Reduces the <paramref name="baseFileName"/> length such that the <paramref name="fullFilePath"/> is no longer than 260 characters. Throws an
+      /// <see cref="PathTooLongException"/> if the <paramref name="baseFileName"/> would have to be reduced to zero characters.
+      /// </summary>
+      private static string ShortenBaseFileName (string fullFilePath, string baseFileName)
+      {
+        var overflow = fullFilePath.Length - 260;
+        if (overflow > baseFileName.Length - 1)
+        {
+          throw new PathTooLongException (
+              string.Format ("Could not save screenshot to '{0}', the file path is too long and cannot be reduced to 260 characters.", fullFilePath));
+        }
+
+        return baseFileName.Substring (0, baseFileName.Length - overflow);
+      }
     }
   }
 }
