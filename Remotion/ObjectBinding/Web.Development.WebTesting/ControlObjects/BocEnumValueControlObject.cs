@@ -48,9 +48,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _variantImpl.SelectOptionByText (text, completionDetection);
     }
 
-    // Todo RM-6297: CreateVariant factory method, IBocEnumValueControlObjectVariant interface and implementation classes can be moved outside ...
-    // as soon as base class functionality like FindChild() has been moved to a helper class or to extension methods.
-
     /// <summary>
     /// Factory method, creates a <see cref="IBocEnumValueControlObjectVariant"/> from the given <paramref name="style"/>, which must be one of
     /// <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.ListControlType.ToString"/>.
