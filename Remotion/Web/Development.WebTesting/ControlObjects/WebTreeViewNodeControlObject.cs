@@ -55,28 +55,31 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject Expand ()
     {
+      var actualCompletionDetector = GetActualCompletionDetector (null);
+
       var expandAnchorScope = Scope.FindDMA (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      expandAnchorScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      expandAnchorScope.ClickAndWait (Context, actualCompletionDetector);
       return this;
     }
 
     public WebTreeViewNodeControlObject Collapse ()
     {
+      var actualCompletionDetector = GetActualCompletionDetector (null);
+
       var collapseAnchorScope = Scope.FindDMA (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      collapseAnchorScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      collapseAnchorScope.ClickAndWait (Context, actualCompletionDetector);
       return this;
     }
 
     public WebTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
-      var actualCompletionDetection = completionDetection ?? Continue.When (Wxe.PostBackCompleted);
-      var actualCompletionDetector = actualCompletionDetection.Build();
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
       selectAnchorScope.ClickAndWait (Context, actualCompletionDetector);
@@ -95,6 +98,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);
+    }
+
+    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
+    {
+      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }
