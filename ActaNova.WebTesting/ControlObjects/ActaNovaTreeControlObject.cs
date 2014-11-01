@@ -8,7 +8,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the ActaNova tree.
   /// </summary>
-  public class ActaNovaTreeControlObject : ActaNovaControlObject, IActaNovaTreeNodeNavigator
+  public class ActaNovaTreeControlObject : ActaNovaMainFrameControlObject, IActaNovaTreeNodeNavigator
   {
     private readonly ActaNovaTreeNodeControlObject _metaRootNode;
 

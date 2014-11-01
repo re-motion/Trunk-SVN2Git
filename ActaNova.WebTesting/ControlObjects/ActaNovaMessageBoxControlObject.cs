@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.ControlObjects
@@ -8,7 +9,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova message box.
   /// </summary>
-  public class ActaNovaMessageBoxControlObject : ActaNovaControlObject
+  public class ActaNovaMessageBoxControlObject : RemotionControlObject // Todo RM-6297: Check if the buttons have RM-stuff rendered and this is ok!
   {
     public ActaNovaMessageBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)

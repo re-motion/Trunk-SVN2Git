@@ -11,7 +11,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
-  public class ActaNovaTreeNodeControlObject : ActaNovaControlObject, IActaNovaTreeNodeNavigator
+  public class ActaNovaTreeNodeControlObject : ActaNovaMainFrameControlObject, IActaNovaTreeNodeNavigator
   {
     private readonly BocTreeViewNodeControlObject _bocTreeViewNode;
 
