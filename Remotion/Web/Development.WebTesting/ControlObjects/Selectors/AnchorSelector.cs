@@ -15,19 +15,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   {
     private const string c_htmlAnchorTag = "a";
 
-    public AnchorControlObject SelectFirst (WebTestObjectContext context)
+    public AnchorControlObject SelectFirst (ControlSelectionContext context)
     {
       var scope = context.Scope.FindCss (c_htmlAnchorTag);
       return CreateControlObject (context, scope);
     }
 
-    public AnchorControlObject SelectSingle (WebTestObjectContext context)
+    public AnchorControlObject SelectSingle (ControlSelectionContext context)
     {
       var scope = context.Scope.FindCss (c_htmlAnchorTag, Options.Single);
       return CreateControlObject (context, scope);
     }
 
-    public AnchorControlObject SelectPerIndex (WebTestObjectContext context, int index)
+    public AnchorControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
       var scope = context.Scope.FindXPath (string.Format ("(.//{0})[{1}]", c_htmlAnchorTag, index));
       return CreateControlObject (context, scope);

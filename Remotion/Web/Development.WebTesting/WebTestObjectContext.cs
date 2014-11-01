@@ -34,11 +34,6 @@ namespace Remotion.Web.Development.WebTesting
     public abstract BrowserWindow Window { get; }
 
     /// <summary>
-    /// The scope of the <see cref="PageObject"/> on which the <see cref="WebTestObject{TWebTestObjectContext}"/> resides.
-    /// </summary>
-    public abstract ElementScope RootScope { get; }
-
-    /// <summary>
     /// The scope of the <see cref="WebTestObject{TWebTestObjectContext}"/>.
     /// </summary>
     public ElementScope Scope
@@ -48,10 +43,11 @@ namespace Remotion.Web.Development.WebTesting
 
     /// <summary>
     /// Clones the context for another <see cref="ControlObject"/> which resides within the same <see cref="BrowserSession"/>, on the same
-    /// <see cref="BrowserWindow"/> and within the same <see cref="PageObject"/>.
+    /// <see cref="BrowserWindow"/> and on the given <paramref name="pageObject"/>.
     /// </summary>
+    /// <param name="pageObject">The <see cref="PageObject"/> on which the <see cref="ControlObject"/> resides.</param>
     /// <param name="scope">The scope of the other <see cref="ControlObject"/>.</param>
-    public abstract ControlObjectContext CloneForControl ([NotNull] ElementScope scope);
+    public abstract ControlObjectContext CloneForControl ([NotNull] PageObject pageObject, [NotNull] ElementScope scope);
 
     /// <summary>
     /// Clones the context for a child <see cref="PageObject"/> which represents an IFRAME on the page.

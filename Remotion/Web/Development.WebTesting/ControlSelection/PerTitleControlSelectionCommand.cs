@@ -24,7 +24,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _title = title;
     }
 
-    public TControlObject Select (WebTestObjectContext context)
+    public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectPerTitle (context, _title);
     }

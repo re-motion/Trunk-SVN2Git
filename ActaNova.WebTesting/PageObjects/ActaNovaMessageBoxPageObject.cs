@@ -16,7 +16,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var context = DetailsArea.Context;
       var messageBoxScope = context.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (context.CloneForControl (messageBoxScope));
+      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (context.CloneForControl (this, messageBoxScope));
       return actaNovaMessageBox.Okay();
     }
 

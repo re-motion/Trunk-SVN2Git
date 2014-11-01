@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _index = index;
     }
 
-    public TControlObject Select (WebTestObjectContext context)
+    public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectPerIndex (context, _index);
     }

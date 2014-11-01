@@ -132,6 +132,7 @@
     <Compile Include="ControlObjects\WebFormsControlObject.cs" />
     <Compile Include="ControlObjects\WebTreeViewControlObject.cs" />
     <Compile Include="ControlObjects\WebTreeViewNodeControlObject.cs" />
+    <Compile Include="ControlSelection\ControlSelectionContext.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\IControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\IFirstControlSelector.cs" />

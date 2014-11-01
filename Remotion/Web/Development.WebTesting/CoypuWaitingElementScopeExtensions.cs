@@ -30,7 +30,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("completionDetector", completionDetector);
 
-      var pageContext = context.PageContext;
+      var pageContext = context.PageObject.Context;
       completionDetector.PrepareWaitForCompletion (pageContext);
       action (scope);
       completionDetector.WaitForCompletion (pageContext);

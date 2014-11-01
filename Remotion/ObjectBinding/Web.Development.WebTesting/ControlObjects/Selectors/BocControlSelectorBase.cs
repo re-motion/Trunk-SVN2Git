@@ -7,6 +7,7 @@ using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors
 {
@@ -24,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     {
     }
 
-    public TControlObject SelectPerDisplayName (WebTestObjectContext context, string displayName)
+    public TControlObject SelectPerDisplayName (ControlSelectionContext context, string displayName)
     {
       var scope = context.Scope.FindDMA (
           "*",
@@ -37,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       return CreateControlObject (context, scope);
     }
 
-    public TControlObject SelectPerDomainProperty (WebTestObjectContext context, string domainProperty, string domainClass)
+    public TControlObject SelectPerDomainProperty (ControlSelectionContext context, string domainProperty, string domainClass)
     {
       var diagnosticMetadata = new Dictionary<string, string>
             {

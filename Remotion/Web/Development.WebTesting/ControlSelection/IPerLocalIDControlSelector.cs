@@ -18,6 +18,6 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
     /// <returns>The control object.</returns>
     /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="localID"/> are found.</exception>
     /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
-    TControlObject SelectPerLocalID ([NotNull] WebTestObjectContext context, [NotNull] string localID);
+    TControlObject SelectPerLocalID ([NotNull] ControlSelectionContext context, [NotNull] string localID);
   }
 }

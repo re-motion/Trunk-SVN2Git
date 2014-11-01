@@ -19,7 +19,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
     }
 
-    public WebButtonControlObject SelectPerText (WebTestObjectContext context, string text)
+    public WebButtonControlObject SelectPerText (ControlSelectionContext context, string text)
     {
       var scope = context.Scope.FindDMA (
           "*",
@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
-    public WebButtonControlObject SelectPerCommandName (WebTestObjectContext context, string commandName)
+    public WebButtonControlObject SelectPerCommandName (ControlSelectionContext context, string commandName)
     {
       var scope = context.Scope.FindDMA (
           "*",
@@ -43,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
-    public WebButtonControlObject SelectPerItemID (WebTestObjectContext context, string itemID)
+    public WebButtonControlObject SelectPerItemID (ControlSelectionContext context, string itemID)
     {
       var scope = context.Scope.FindDMA (
           "*",

@@ -17,19 +17,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     private const string c_htmlTextBoxTag = "input";
     private const string c_htmlTextBoxCssTypeAttributeCheck = "[type='text']";
 
-    public TextBoxControlObject SelectFirst (WebTestObjectContext context)
+    public TextBoxControlObject SelectFirst (ControlSelectionContext context)
     {
       var scope = context.Scope.FindCss (c_htmlTextBoxTag + c_htmlTextBoxCssTypeAttributeCheck);
       return CreateControlObject (context, scope);
     }
 
-    public TextBoxControlObject SelectSingle (WebTestObjectContext context)
+    public TextBoxControlObject SelectSingle (ControlSelectionContext context)
     {
       var scope = context.Scope.FindCss (c_htmlTextBoxTag + c_htmlTextBoxCssTypeAttributeCheck, Options.Single);
       return CreateControlObject (context, scope);
     }
 
-    public TextBoxControlObject SelectPerIndex (WebTestObjectContext context, int index)
+    public TextBoxControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
       var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_htmlTextBoxTag, XPathUtils.CreateHasAttributeCheck ("type", "text"), index);
       var scope = context.Scope.FindXPath (xPathSelector);

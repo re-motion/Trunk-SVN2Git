@@ -6,13 +6,13 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Implements the <see cref="IControlHost"/> interface for an arbitrary <see cref="WebTestObjectContext"/> scope.
+  /// Implements the <see cref="IControlHost"/> interface for an arbitrary <see cref="ControlObject"/>.
   /// </summary>
   internal class ControlHost : IControlHost
   {
-    private readonly WebTestObjectContext _context;
+    private readonly ControlObjectContext _context;
 
-    public ControlHost ([NotNull] WebTestObjectContext context)
+    public ControlHost ([NotNull] ControlObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {
-      return controlSelectionCommand.Select (_context);
+      return controlSelectionCommand.Select (_context.CloneForControlSelection());
     }
   }
 }

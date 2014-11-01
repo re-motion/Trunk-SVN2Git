@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("controlSelectionCommand", controlSelectionCommand);
 
-      return controlSelectionCommand.Select (Context);
+      return controlSelectionCommand.Select (Context.CloneForControlSelection (this));
     }
   }
 }

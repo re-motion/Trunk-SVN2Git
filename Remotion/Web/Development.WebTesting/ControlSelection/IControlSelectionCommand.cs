@@ -18,6 +18,6 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
     /// <returns>The control object.</returns>
     /// <exception cref="AmbiguousException">If the selection command cannot unambiguously identify the control.</exception>
     /// <exception cref="MissingHtmlException">If the element cannot be found.</exception>
-    TControlObject Select ([NotNull] WebTestObjectContext context);
+    TControlObject Select ([NotNull] ControlSelectionContext context);
   }
 }

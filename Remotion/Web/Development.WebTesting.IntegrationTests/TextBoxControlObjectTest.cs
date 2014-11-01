@@ -62,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestSelection_Single ()
     {
       var home = Start();
-      var scope = new ScopeControlObject (home.Context.CloneForControl (home.Scope.FindId ("scope")));
+      var scope = new ScopeControlObject (home.Context.CloneForControl (home, home.Scope.FindId ("scope")));
 
       var htmlAnchor = scope.GetTextBox().Single();
       Assert.That (htmlAnchor.Scope.Id, Is.EqualTo ("body_MyAspTextBoxNoAutoPostBack"));

@@ -17,6 +17,6 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
     /// </summary>
     /// <returns>The control object.</returns>
     /// <exception cref="MissingHtmlException">If no matching control can be found.</exception>
-    TControlObject SelectFirst ([NotNull] WebTestObjectContext context);
+    TControlObject SelectFirst ([NotNull] ControlSelectionContext context);
   }
 }

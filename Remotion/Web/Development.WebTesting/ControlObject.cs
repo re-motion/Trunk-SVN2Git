@@ -29,6 +29,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Return's the control's HTML ID.
     /// </summary>
+    /// <exception cref="MissingHtmlException">If the DOM element does not bear the ID attribute.</exception>
     public string GetHtmlID ()
     {
       return Scope.Id;

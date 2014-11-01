@@ -2,6 +2,7 @@
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -10,46 +11,68 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public class ControlObjectContext : WebTestObjectContext
   {
-    private readonly PageObjectContext _pageContext;
+    private readonly PageObject _pageObject;
 
     /// <summary>
     /// Private constructor, may be obtained only via a <see cref="PageObjectContext"/>.
     /// </summary>
-    internal ControlObjectContext ([NotNull] PageObjectContext pageContext, [NotNull] ElementScope scope)
+    internal ControlObjectContext ([NotNull] PageObject pageObject, [NotNull] ElementScope scope)
         : base (scope)
     {
-      ArgumentUtility.CheckNotNull ("pageContext", pageContext);
+      ArgumentUtility.CheckNotNull ("pageObject", pageObject);
       
-      _pageContext = pageContext;
+      _pageObject = pageObject;
     }
 
     public override BrowserSession Browser
     {
-      get { return PageContext.Browser; }
+      get { return PageObject.Context.Browser; }
     }
 
     public override BrowserWindow Window
     {
-      get { return PageContext.Window; }
+      get { return PageObject.Context.Window; }
     }
 
-    public override ElementScope RootScope
+    public ElementScope RootScope
     {
-      get { return PageContext.Scope; }
+      get { return PageObject.Scope; }
     }
 
     /// <summary>
-    /// Returns the corresponding <see cref="PageObject"/>'s <see cref="PageObjectContext"/>.
+    /// Returns the <see cref="PageObject"/> on which the <see cref="ControlObject"/> resides.
     /// </summary>
-    public PageObjectContext PageContext
+    public PageObject PageObject
     {
-      get { return _pageContext; }
+      get { return _pageObject; }
     }
-    
-    public override ControlObjectContext CloneForControl (ElementScope scope)
+
+    /// <summary>
+    /// Returns a <see cref="ControlSelectionContext"/> based upon the control object context at hand.
+    /// </summary>
+    public ControlSelectionContext CloneForControlSelection ()
+    {
+      return new ControlSelectionContext (PageObject, Scope);
+    }
+
+    /// <summary>
+    /// Clones the context for another <see cref="ControlObject"/> which resides within the same <see cref="BrowserSession"/>, on the same
+    /// <see cref="BrowserWindow"/> and on the same page.
+    /// </summary>
+    /// <param name="scope">The scope of the other <see cref="ControlObject"/>.</param>
+    public ControlObjectContext CloneForControl (ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
-      return new ControlObjectContext (PageContext, scope);
+
+      return CloneForControl (PageObject, scope);
+    }
+
+    public override ControlObjectContext CloneForControl (PageObject pageObject, ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("pageObject", pageObject);
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      
+      return new ControlObjectContext (pageObject, scope);
     }
 
     public override PageObjectContext CloneForFrame (ElementScope frameScope)
@@ -57,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("frameScope", frameScope);
 
       var frameRootScope = frameScope.FindCss ("html");
-      return new PageObjectContext (Browser, Window, frameRootScope, PageContext);
+      return new PageObjectContext (Browser, Window, frameRootScope, PageObject.Context);
     }
 
     /// <summary>
@@ -67,7 +90,7 @@ namespace Remotion.Web.Development.WebTesting
     public PageObjectContext CloneForNewPage ()
     {
       var rootScope = Window.GetRootScope();
-      return new PageObjectContext (Browser, Window, rootScope, PageContext.ParentContext);
+      return new PageObjectContext (Browser, Window, rootScope, PageObject.Context.ParentContext);
     }
 
     /// <summary>
@@ -98,7 +121,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       var window = Browser.FindWindow (windowLocator);
       var rootScope = window.GetRootScope();
-      return new PageObjectContext (Browser, window, rootScope, PageContext);
+      return new PageObjectContext (Browser, window, rootScope, PageObject.Context);
     }
   }
 }

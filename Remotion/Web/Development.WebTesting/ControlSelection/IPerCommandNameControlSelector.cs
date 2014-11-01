@@ -18,6 +18,6 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
     /// <returns>The control object.</returns>
     /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="commandName"/> are found.</exception>
     /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
-    TControlObject SelectPerCommandName ([NotNull] WebTestObjectContext context, [NotNull] string commandName);
+    TControlObject SelectPerCommandName ([NotNull] ControlSelectionContext context, [NotNull] string commandName);
   }
 }
