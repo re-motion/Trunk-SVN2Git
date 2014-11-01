@@ -36,7 +36,7 @@ namespace ActaNova.WebTesting.ControlObjects
       var id = string.Format ("DisplayBoxPopUp_MessageBoxControl_Popup{0}Button", buttonId);
       var buttonScope = Scope.FindId (id);
 
-      RetryUntilTimeout.Run (() => buttonScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted)));
+      RetryUntilTimeout.Run (() => buttonScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build()));
       
       return UnspecifiedPage();
     }

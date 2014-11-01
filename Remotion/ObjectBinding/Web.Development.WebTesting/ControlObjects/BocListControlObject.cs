@@ -35,31 +35,31 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      currentPageTextInputScope.FillWithAndWait (Keys.Backspace + page, FinishInput.WithTab, Context, Continue.When (Wxe.PostBackCompleted));
+      currentPageTextInputScope.FillWithAndWait (Keys.Backspace + page, FinishInput.WithTab, Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = FindChild ("Navigation_First");
-      firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
+      firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = FindChild ("Navigation_Previous");
-      previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
+      previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToNextPage ()
     {
       var nextPageLinkScope = FindChild ("Navigation_Next");
-      nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
+      nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToLastPage ()
     {
       var lastPageLinkScope = FindChild ("Navigation_Last");
-      lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
+      lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public BocListRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
@@ -142,7 +142,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           columnIndex.ToString());
 
       var sortColumnLinkScope = sortColumnScope.FindLink();
-      sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted));
+      sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void ClickOnSortColumnByTitle ([NotNull] string columnTitle)
@@ -197,7 +197,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
       var availableViewsScope = GetAvailableViewsScope();
-      availableViewsScope.PerformAction (selectAction, Context, Continue.When (Wxe.PostBackCompleted));
+      availableViewsScope.PerformAction (selectAction, Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     private ElementScope GetAvailableViewsScope ()

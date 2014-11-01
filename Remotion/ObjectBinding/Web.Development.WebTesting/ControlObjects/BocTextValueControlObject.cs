@@ -45,10 +45,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    private ICompletionDetection DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetector DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
     {
       return finishInputWith == FinishInput.Promptly && userDefinedCompletionDetection == null
-          ? Continue.Immediately()
+          ? Continue.Immediately().Build()
           : DetermineActualCompletionDetection (userDefinedCompletionDetection);
     }
   }

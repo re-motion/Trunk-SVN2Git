@@ -41,15 +41,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    private ICompletionDetection DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetector DetermineActualCompletionDetection (FinishInputWithAction finishInputWith, ICompletionDetection userDefinedCompletionDetection)
     {
       if (userDefinedCompletionDetection != null)
-        return userDefinedCompletionDetection;
+        return userDefinedCompletionDetection.Build();
 
       if(finishInputWith == FinishInput.Promptly)
-        return Continue.Immediately();
+        return Continue.Immediately().Build();
 
-      return Continue.When (Wxe.PostBackCompleted);
+      return Continue.When (Wxe.PostBackCompleted).Build();
     }
   }
 }

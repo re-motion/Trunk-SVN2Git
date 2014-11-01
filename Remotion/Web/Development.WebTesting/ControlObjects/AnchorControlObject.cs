@@ -29,15 +29,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
     /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
-    private ICompletionDetection DetermineActualCompletionDetection (ICompletionDetection userDefinedCompletionDetection)
+    private ICompletionDetector DetermineActualCompletionDetection (ICompletionDetection userDefinedCompletionDetection)
     {
       if (userDefinedCompletionDetection != null)
-        return userDefinedCompletionDetection;
+        return userDefinedCompletionDetection.Build();
 
       if (IsPostBackLink())
-        return Continue.When (Wxe.PostBackCompleted);
+        return Continue.When (Wxe.PostBackCompleted).Build();
 
-      return Continue.When (Wxe.Reset);
+      return Continue.When (Wxe.Reset).Build();
     }
 
     private bool IsPostBackLink ()

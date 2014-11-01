@@ -43,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
     /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
-    protected ICompletionDetection DetermineActualCompletionDetection ([CanBeNull] ICompletionDetection userDefinedCompletionDetection)
+    protected ICompletionDetector DetermineActualCompletionDetection ([CanBeNull] ICompletionDetection userDefinedCompletionDetection)
     {
       return DetermineActualCompletionDetection (Scope, userDefinedCompletionDetection);
     }
@@ -54,28 +54,28 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <param name="scope">Scope which is to be acted on.</param>
     /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
     /// <returns><see cref="ICompletionDetection"/> to be used.</returns>
-    protected ICompletionDetection DetermineActualCompletionDetection ([NotNull] ElementScope scope, [CanBeNull] ICompletionDetection userDefinedCompletionDetection)
+    protected ICompletionDetector DetermineActualCompletionDetection ([NotNull] ElementScope scope, [CanBeNull] ICompletionDetection userDefinedCompletionDetection)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       if (userDefinedCompletionDetection != null)
-        return userDefinedCompletionDetection;
+        return userDefinedCompletionDetection.Build();
 
       if (scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
-          return Continue.When (Wxe.PostBackCompleted);
+          return Continue.When (Wxe.PostBackCompleted).Build();
       }
 
       if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return Continue.When (Wxe.Reset);
+          return Continue.When (Wxe.Reset).Build();
       }
 
-      return Continue.Immediately();
+      return Continue.Immediately().Build();
     }
   }
 }
