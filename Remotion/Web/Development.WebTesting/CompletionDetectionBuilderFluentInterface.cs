@@ -27,14 +27,15 @@ namespace Remotion.Web.Development.WebTesting
       return When (new NullCompletionDetectionStrategy());
     }
 
-    /// <summary>
-    /// Specifies, that the action should automatically determine an appropriate completion detection strategy.
-    /// </summary>
-    public static IAdvancedCompletionDetection Automatically ()
-    {
-      var completionDetector = new CompletionDetectorBuilder();
-      return completionDetector;
-    }
+    // Todo RM-6297: Improve ControlObject.GetActualCompletionDetector() in order to enable Continue.Automatically().
+    ///// <summary>
+    ///// Specifies, that the action should automatically determine an appropriate completion detection strategy.
+    ///// </summary>
+    //public static IAdvancedCompletionDetection Automatically ()
+    //{
+    //  var completionDetector = new CompletionDetectorBuilder();
+    //  return completionDetector;
+    //}
   }
 
   /// <summary>
