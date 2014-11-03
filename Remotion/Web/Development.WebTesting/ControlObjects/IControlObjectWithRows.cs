@@ -14,6 +14,5 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     TRowControlObject WithColumnItemID ([NotNull] string columnItemID);
     TRowControlObject WithIndex (int index);
-    TRowControlObject WithHtmlID ([NotNull] string htmlID);
   }
 }

@@ -137,16 +137,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetRowByCssSelector (cssSelector);
     }
 
-    [Obsolete ("BocList rows cannot be selected using a full HTML ID.", true)]
-    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithHtmlID (string htmlID)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      // Method declaration exists for symmetry reasons only.
-
-      throw new NotSupportedException ("BocList rows cannot be selected using a full HTML ID.");
-    }
-
     private TRowControlObject GetRowByCssSelector (string cssSelector)
     {
       var rowScope = Scope.FindCss (cssSelector);

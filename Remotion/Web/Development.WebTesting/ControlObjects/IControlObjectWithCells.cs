@@ -14,6 +14,5 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     TCellControlObject WithColumnItemID ([NotNull] string columnItemID);
     TCellControlObject WithIndex (int index);
-    TCellControlObject WithHtmlID ([NotNull] string htmlID);
   }
 }
