@@ -76,13 +76,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home = tabStrip1.SwitchTo ("Tab2").Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip1/Tab2"));
 
-      home = tabStrip1.SwitchToByText ("Tab1Label").Expect<RemotionPageObject>();
+      home = tabStrip1.SwitchTo().WithText ("Tab1Label").Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip1/Tab1"));
 
-      home = tabStrip2.SwitchTo (2).Expect<RemotionPageObject>();
+      home = tabStrip2.SwitchTo().WithIndex (2).Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip2/Tab2"));
 
-      home = tabStrip2.SwitchToByHtmlID ("body_MyTabStrip2_Tab1").Expect<RemotionPageObject>();
+      home = tabStrip2.SwitchTo().WithHtmlID ("body_MyTabStrip2_Tab1").Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip2/Tab1"));
     }
 

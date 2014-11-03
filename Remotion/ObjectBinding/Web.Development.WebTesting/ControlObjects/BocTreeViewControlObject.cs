@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -9,7 +10,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocTreeViewControlObject : BocControlObject, IBocTreeViewNodeNavigator
+  public class BocTreeViewControlObject : BocControlObject, IControlObjectWithNodes<BocTreeViewNodeControlObject>
   {
     private readonly BocTreeViewNodeControlObject _metaRootNode;
 
@@ -21,36 +22,46 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocTreeViewNodeControlObject GetRootNode ()
     {
-      return _metaRootNode.GetNode (1);
+      return _metaRootNode.GetNode().WithIndex (1);
+    }
+
+    public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
+    {
+      return this;
     }
 
     public BocTreeViewNodeControlObject GetNode (string itemID)
+    {
+      return GetNode().WithItemID (itemID);
+    }
+
+    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       return _metaRootNode.GetNode (itemID);
     }
 
-    public BocTreeViewNodeControlObject GetNode (int index)
+    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
     {
-      return _metaRootNode.GetNode (index);
+      return _metaRootNode.GetNode().WithIndex (index);
     }
 
     [Obsolete ("BocTreeView nodes cannot be selected using a full HTML ID.", true)]
-    public BocTreeViewNodeControlObject GetNodeByHtmlID (string htmlID)
+    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithHtmlID (string htmlID)
     {
       // Method declaration exists for symmetry reasons only.
 
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
-      return _metaRootNode.GetNodeByHtmlID (htmlID);
+      return _metaRootNode.GetNode().WithHtmlID (htmlID);
     }
 
-    public BocTreeViewNodeControlObject GetNodeByText (string text)
+    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return _metaRootNode.GetNodeByText (text);
+      return _metaRootNode.GetNode().WithText (text);
     }
   }
 }

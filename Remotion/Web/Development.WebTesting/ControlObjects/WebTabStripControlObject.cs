@@ -10,14 +10,26 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.WebTabStrip"/>.
   /// </summary>
-  public class WebTabStripControlObject : RemotionControlObject, ITabStripControlObject
+  public class WebTabStripControlObject : RemotionControlObject, IControlObjectWithTabs
   {
     public WebTabStripControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
 
-    public UnspecifiedPageObject SwitchTo (string itemID)
+    public IControlObjectWithTabs SwitchTo ()
+    {
+      return this;
+    }
+
+    public UnspecifiedPageObject SwitchTo (string itemID, ICompletionDetection completionDetection = null)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return SwitchTo().WithItemID (itemID, completionDetection);
+    }
+
+    UnspecifiedPageObject IControlObjectWithTabs.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -25,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope);
     }
 
-    public UnspecifiedPageObject SwitchTo (int index)
+    UnspecifiedPageObject IControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection)
     {
       var xPathSelector = string.Format (
           "(.//span{0})[{1}]",
@@ -35,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope);
     }
 
-    public UnspecifiedPageObject SwitchToByHtmlID (string htmlID)
+    UnspecifiedPageObject IControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -43,7 +55,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope);
     }
 
-    public UnspecifiedPageObject SwitchToByText (string text)
+    UnspecifiedPageObject IControlObjectWithTabs.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 

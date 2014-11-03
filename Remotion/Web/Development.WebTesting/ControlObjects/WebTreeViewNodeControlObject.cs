@@ -9,7 +9,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
-  public class WebTreeViewNodeControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
+  public class WebTreeViewNodeControlObject : RemotionControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>
   {
     public WebTreeViewNodeControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -21,7 +21,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope[DiagnosticMetadataAttributes.Text];
     }
 
+    public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
+    {
+      return this;
+    }
+
     public WebTreeViewNodeControlObject GetNode (string itemID)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return GetNode().WithItemID (itemID);
+    }
+
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -29,14 +41,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
-    public WebTreeViewNodeControlObject GetNode (int index)
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
       var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
     [Obsolete ("WebTreeView nodes cannot be selected using a full HTML ID.", true)]
-    public WebTreeViewNodeControlObject GetNodeByHtmlID (string htmlID)
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithHtmlID (string htmlID)
     {
       // Method declaration exists for symmetry reasons only.
 
@@ -45,7 +57,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       throw new NotSupportedException ("WebTreeView nodes cannot be selected using the full HTML ID.");
     }
 
-    public WebTreeViewNodeControlObject GetNodeByText (string text)
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 

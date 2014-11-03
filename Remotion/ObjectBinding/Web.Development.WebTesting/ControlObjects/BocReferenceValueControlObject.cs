@@ -12,7 +12,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocReferenceValueControlObject : BocControlObject, ICommandHost, IDropDownMenuHost, ISelectableControlObject
+  public class BocReferenceValueControlObject : BocControlObject, ICommandHost, IDropDownMenuHost, IControlObjectWithSelectableOptions
   {
     public BocReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -27,7 +27,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return Scope.FindChild ("Value").GetSelectedOptionText();
     }
 
+    public IControlObjectWithSelectableOptions SelectOption ()
+    {
+      return this;
+    }
+
     public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return SelectOption().WithItemID (itemID, completionDetection);
+    }
+
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
@@ -35,17 +47,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return SelectOption (selectAction, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (int index, ICompletionDetection completionDetection)
     {
       Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
       return SelectOption (selectAction, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOptionByText (string text, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNull ("text", text);
-      
-      Action<ElementScope> selectAction = s => s.SelectOption(text);
+
+      Action<ElementScope> selectAction = s => s.SelectOption (text);
       return SelectOption (selectAction, completionDetection);
     }
 

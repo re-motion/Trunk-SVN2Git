@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web.UI;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -10,7 +9,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/> in grid mode.
   /// </summary>
-  public class BocListAsGridRowControlObject : BocControlObject, IDropDownMenuHost
+  public class BocListAsGridRowControlObject : BocControlObject, IDropDownMenuHost, IControlObjectWithCells<BocListAsGridCellControlObject>
   {
     private readonly BocListRowFunctionality _impl;
 
@@ -25,20 +24,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _impl.ClickSelectCheckbox();
     }
 
-    public BocListAsGridCellControlObject GetCell ([NotNull] string columnItemID)
+    public IControlObjectWithCells<BocListAsGridCellControlObject> GetCell ()
+    {
+      return this;
+    }
+
+    public BocListAsGridCellControlObject GetCell (string columnItemID)
+    {
+      return GetCell().WithColumnItemID (columnItemID);
+    }
+
+    BocListAsGridCellControlObject IControlObjectWithCells<BocListAsGridCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
       return _impl.GetCell<BocListAsGridCellControlObject> (columnItemID);
     }
 
-    public BocListAsGridCellControlObject GetCell (int index)
+    BocListAsGridCellControlObject IControlObjectWithCells<BocListAsGridCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListAsGridCellControlObject> (index);
     }
 
     [Obsolete ("BocList cells cannot be selected using a full HTML ID.", true)]
-    public BocListCellControlObject GetCellByHtmlID ([NotNull] string htmlID)
+    BocListAsGridCellControlObject IControlObjectWithCells<BocListAsGridCellControlObject>.WithHtmlID (string htmlID)
     {
       // Method declaration exists for symmetry reasons only.
 

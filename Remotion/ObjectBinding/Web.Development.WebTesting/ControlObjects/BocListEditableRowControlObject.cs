@@ -2,13 +2,14 @@ using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
   /// Control object representing a row in edit-mode within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  public class BocListEditableRowControlObject : BocControlObject
+  public class BocListEditableRowControlObject : BocControlObject, IControlObjectWithCells<BocListEditableCellControlObject>
   {
     private readonly BocListRowFunctionality _impl;
 
@@ -28,20 +29,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.Cancel();
     }
 
-    public BocListEditableCellControlObject GetCell ([NotNull] string columnItemID)
+    public IControlObjectWithCells<BocListEditableCellControlObject> GetCell ()
+    {
+      return this;
+    }
+
+    public BocListEditableCellControlObject GetCell (string columnItemID)
+    {
+      return GetCell().WithColumnItemID (columnItemID);
+    }
+
+    BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
       return _impl.GetCell<BocListEditableCellControlObject> (columnItemID);
     }
 
-    public BocListEditableCellControlObject GetCell (int index)
+    BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListEditableCellControlObject> (index);
     }
 
     [Obsolete ("BocList cells cannot be selected using a full HTML ID.", true)]
-    public BocListEditableCellControlObject GetCellByHtmlID ([NotNull] string htmlID)
+    BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithHtmlID (string htmlID)
     {
       // Method declaration exists for symmetry reasons only.
 

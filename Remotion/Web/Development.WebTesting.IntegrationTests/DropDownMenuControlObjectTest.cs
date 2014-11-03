@@ -83,16 +83,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var dropDownMenu = home.GetDropDownMenu().ByLocalID ("MyDropDownMenu");
 
-      dropDownMenu.ClickItem ("ItemID5");
+      dropDownMenu.SelectItem ("ItemID5");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID5|Event"));
 
-      dropDownMenu.ClickItem (2);
+      dropDownMenu.SelectItem().WithIndex (2);
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
-      dropDownMenu.ClickItemByHtmlID ("body_MyDropDownMenu_3");
+      dropDownMenu.SelectItem().WithHtmlID ("body_MyDropDownMenu_3");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID4|WxeFunction"));
 
-      dropDownMenu.ClickItemByText ("EventItem");
+      dropDownMenu.SelectItem().WithText ("EventItem");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
     }
 

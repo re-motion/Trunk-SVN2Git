@@ -84,16 +84,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var tabbedMenu = home.GetTabbedMenu().Single();
 
-      tabbedMenu.SelectMenuItem ("EventCommandTab");
+      tabbedMenu.SelectItem ("EventCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
 
-      tabbedMenu.SelectMenuItem (1);
+      tabbedMenu.SelectItem().WithIndex (1);
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
 
-      tabbedMenu.SelectMenuItemByHtmlID ("body_MyTabbedMenu_MainMenuTabStrip_EventCommandTab");
+      tabbedMenu.SelectItem().WithHtmlID ("body_MyTabbedMenu_MainMenuTabStrip_EventCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
 
-      tabbedMenu.SelectMenuItemByText ("EventCommandTabTitle");
+      tabbedMenu.SelectItem().WithText ("EventCommandTabTitle");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
     }
 
@@ -104,16 +104,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var tabbedMenu = home.GetTabbedMenu().Single();
 
-      tabbedMenu.SelectMenuItem ("EventCommandTab");
+      tabbedMenu.SelectItem ("EventCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
 
-      tabbedMenu.SelectMenuItem ("HrefCommandTab");
+      tabbedMenu.SelectItem ("HrefCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
-      tabbedMenu.SelectMenuItem ("EventCommandTab");
+      tabbedMenu.SelectItem ("EventCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
 
-      tabbedMenu.SelectMenuItem ("WxeFunctionCommandTab");
+      tabbedMenu.SelectItem ("WxeFunctionCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
     }
 
@@ -123,18 +123,18 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var tabbedMenu = home.GetTabbedMenu().Single();
-      tabbedMenu.SelectMenuItem ("TabWithSubMenu");
+      tabbedMenu.SelectItem ("TabWithSubMenu");
 
-      tabbedMenu.SelectSubMenuItem ("SubMenuTab1");
+      tabbedMenu.SelectSubItem ("SubMenuTab1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
 
-      tabbedMenu.SelectSubMenuItem (3);
+      tabbedMenu.SelectSubItem().WithIndex (3);
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
-      tabbedMenu.SelectSubMenuItemByHtmlID ("body_MyTabbedMenu_SubMenuTabStrip_SubMenuTab1");
+      tabbedMenu.SelectSubItem().WithHtmlID ("body_MyTabbedMenu_SubMenuTabStrip_SubMenuTab1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
 
-      tabbedMenu.SelectSubMenuItemByText ("SubMenuTab2Title");
+      tabbedMenu.SelectSubItem().WithText ("SubMenuTab2Title");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab2|Event"));
     }
 

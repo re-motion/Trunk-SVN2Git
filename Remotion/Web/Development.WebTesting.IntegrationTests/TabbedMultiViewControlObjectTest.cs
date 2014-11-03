@@ -117,17 +117,17 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content2"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content1"));
 
-      home = tabbedMultiView.SwitchToByText ("Tab1Title").Expect<RemotionPageObject>();
+      home = tabbedMultiView.SwitchTo().WithText ("Tab1Title").Expect<RemotionPageObject>();
       tabbedMultiView = home.GetTabbedMultiView().Single();
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content1"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content2"));
 
-      home = tabbedMultiView.SwitchTo (2).Expect<RemotionPageObject>();
+      home = tabbedMultiView.SwitchTo().WithIndex (2).Expect<RemotionPageObject>();
       tabbedMultiView = home.GetTabbedMultiView().Single();
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content2"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content1"));
 
-      home = tabbedMultiView.SwitchToByHtmlID ("body_MyTabbedMultiView_TabStrip_Tab1_Tab").Expect<RemotionPageObject>();
+      home = tabbedMultiView.SwitchTo().WithHtmlID ("body_MyTabbedMultiView_TabStrip_Tab1_Tab").Expect<RemotionPageObject>();
       tabbedMultiView = home.GetTabbedMultiView().Single();
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content1"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content2"));

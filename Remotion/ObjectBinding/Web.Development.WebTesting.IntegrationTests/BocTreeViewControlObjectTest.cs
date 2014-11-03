@@ -107,10 +107,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       rootNode.GetNode ("c8ace752-55f6-4074-8890-130276ea6cd1").Select();
       Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("c8ace752-55f6-4074-8890-130276ea6cd1|B, A"));
 
-      rootNode.GetNode (3).Select();
+      rootNode.GetNode().WithIndex (3).Select();
       Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("9e713934-1226-4669-880e-c07c22cdab19|B, C"));
 
-      rootNode.GetNodeByText ("B, B").Select();
+      rootNode.GetNode().WithText ("B, B").Select();
       Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("a97d84b0-c1c9-4580-a6c1-1fed1ee8c041|B, B"));
     }
 
@@ -225,7 +225,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var node = bocTreeView.GetRootNode();
       node = node.Expand().GetNode ("c8ace752-55f6-4074-8890-130276ea6cd1").Select();
 
-      node.OpenContextMenu().ClickItem ("MenuItem");
+      node.OpenContextMenu().SelectItem ("MenuItem");
 
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("Normal_Boc_TreeView"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("NodeContextMenuClick"));

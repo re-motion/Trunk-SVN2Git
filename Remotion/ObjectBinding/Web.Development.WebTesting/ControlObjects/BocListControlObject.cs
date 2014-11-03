@@ -6,6 +6,7 @@ using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -13,7 +14,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   [UsedImplicitly]
-  public class BocListControlObject : BocListControlObjectBase<BocListRowControlObject, BocListCellControlObject>
+  public class BocListControlObject
+      : BocListControlObjectBase<BocListRowControlObject, BocListCellControlObject>,
+          IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>,
+          IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>
   {
     public BocListControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -62,29 +66,48 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
-    public BocListRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
+    public IControlObjectWithRowsWhereColumnContains<BocListRowControlObject> GetRowWhere ()
+    {
+      return this;
+    }
+
+    public BocListRowControlObject GetRowWhere (string columnItemID, string containsCellText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var cell = GetCellWhere (columnItemID, containsCellText);
+      return GetRowWhere().ColumnWithItemIDContains (columnItemID, containsCellText);
+    }
+
+    BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithItemIDContains (
+        string itemID,
+        string containsCellText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
+      var cell = GetCellWhere (itemID, containsCellText);
       return GetRowFromCell (cell);
     }
 
-    public BocListRowControlObject GetRowWhere (int columnIndex, [NotNull] string containsCellText)
+    BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithIndexContains (
+        int index,
+        string containsCellText)
     {
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var cell = GetCellWhere (columnIndex, containsCellText);
+      var cell = GetCellWhere().ColumnWithIndexContains (index, containsCellText);
       return GetRowFromCell (cell);
     }
 
-    public BocListRowControlObject GetRowWhereByColumnTitle ([NotNull] string columnTitle, [NotNull] string containsCellText)
+    BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithTitleContains (
+        string title,
+        string containsCellText)
     {
-      ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
+      ArgumentUtility.CheckNotNull ("title", title);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var cell = GetCellWhereByColumnTitle (columnTitle, containsCellText);
+      var cell = GetCellWhere().ColumnWithTitleContains (title, containsCellText);
       return GetRowFromCell (cell);
     }
 
@@ -94,36 +117,55 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return CreateRowControlObject (GetHtmlID(), rowScope, Accessor);
     }
 
-    public BocListCellControlObject GetCellWhere ([NotNull] string columnItemID, [NotNull] string containsCellText)
+    public IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject> GetCellWhere ()
+    {
+      return this;
+    }
+
+    public BocListCellControlObject GetCellWhere (string columnItemID, string containsCellText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var index = GetColumnIndex (columnItemID);
-      return GetCellWhere (index, containsCellText);
+      return GetCellWhere().ColumnWithItemIDContains (columnItemID, containsCellText);
     }
 
-    public BocListCellControlObject GetCellWhere (int columnIndex, [NotNull] string containsCellText)
+    BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithItemIDContains (
+        string itemID,
+        string containsCellText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
+      var index = GetColumnIndex (itemID);
+      return GetCellWhere().ColumnWithIndexContains (index, containsCellText);
+    }
+
+    BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithIndexContains (
+        int index,
+        string containsCellText)
     {
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
-          columnIndex,
+          index,
           DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
           containsCellText);
       var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
       return CreateCellControlObject (GetHtmlID(), cellScope);
     }
 
-    public BocListCellControlObject GetCellWhereByColumnTitle ([NotNull] string columnTitle, [NotNull] string containsCellText)
+    BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
+        string title,
+        string containsCellText)
     {
-      ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
+      ArgumentUtility.CheckNotNull ("title", title);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var index = GetColumnIndexByTitle (columnTitle);
-      return GetCellWhere (index, containsCellText);
+      var index = GetColumnIndexByTitle (title);
+      return GetCellWhere().ColumnWithIndexContains (index, containsCellText);
     }
 
     public void ClickOnSortColumn ([NotNull] string columnItemID)

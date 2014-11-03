@@ -129,11 +129,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo(baLabel));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (1);
+      bocReferenceValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.Empty);
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOptionByText ("D, A");
+      bocReferenceValue.SelectOption().WithText ("D, A");
       Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo(daLabel));
     }
 
@@ -204,28 +204,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       var dropDownMenu = bocReferenceValue.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal_AlternativeRendering");
       dropDownMenu = bocReferenceValue.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal_AlternativeRendering"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_ReadOnly");
       dropDownMenu = bocReferenceValue.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_ReadOnly"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_ReadOnly_AlternativeRendering");
       dropDownMenu = bocReferenceValue.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_ReadOnly_AlternativeRendering"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));

@@ -183,28 +183,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       var dropDownMenu = bocAutoComplete.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal_AlternativeRendering");
       dropDownMenu = bocAutoComplete.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_Normal_AlternativeRendering"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_ReadOnly");
       dropDownMenu = bocAutoComplete.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_ReadOnly"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_ReadOnly_AlternativeRendering");
       dropDownMenu = bocAutoComplete.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("PartnerField_ReadOnly_AlternativeRendering"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("MenuItemClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));

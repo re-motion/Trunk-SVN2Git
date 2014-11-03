@@ -13,7 +13,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue"/> control.
   /// </summary>
   [UsedImplicitly]
-  public class BocEnumValueControlObject : BocControlObject, ISelectableControlObject
+  public class BocEnumValueControlObject : BocControlObject, IControlObjectWithSelectableOptions
   {
     private readonly IBocEnumValueControlObjectVariant _variantImpl;
 
@@ -29,19 +29,31 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _variantImpl.GetSelectedOption();
     }
 
+    public IControlObjectWithSelectableOptions SelectOption ()
+    {
+      return this;
+    }
+
     public UnspecifiedPageObject SelectOption (string itemID, ICompletionDetection completionDetection = null)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return SelectOption().WithItemID (itemID, completionDetection);
+    }
+
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       return _variantImpl.SelectOption (itemID, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (int index, ICompletionDetection completionDetection)
     {
       return _variantImpl.SelectOption (index, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectOptionByText (string text, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
@@ -76,9 +88,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Declares all methods a boc enum rendering variant must support.
     /// </summary>
-    private interface IBocEnumValueControlObjectVariant : ISelectableControlObject
+    private interface IBocEnumValueControlObjectVariant
     {
       string GetSelectedOption ();
+      UnspecifiedPageObject SelectOption ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null);
+      UnspecifiedPageObject SelectOption (int index, [CanBeNull] ICompletionDetection completionDetection = null);
+      UnspecifiedPageObject SelectOptionByText ([NotNull] string text, [CanBeNull] ICompletionDetection completionDetection = null);
     }
 
     /// <summary>
@@ -164,13 +179,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
-        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss("input");
+        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss ("input");
         return CheckScope (scope, completionDetection);
       }
 
       public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
       {
-        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss("input");
+        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss ("input");
         return CheckScope (scope, completionDetection);
       }
 
@@ -178,7 +193,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
-        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.Text, text).FindCss("input");
+        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.Text, text).FindCss ("input");
         return CheckScope (scope, completionDetection);
       }
 

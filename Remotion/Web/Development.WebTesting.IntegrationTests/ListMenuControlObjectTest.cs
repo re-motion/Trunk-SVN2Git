@@ -72,16 +72,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var listMenu = home.GetListMenu().ByLocalID ("MyListMenu");
 
-      listMenu.ClickItem ("ItemID5");
+      listMenu.SelectItem ("ItemID5");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID5|Event"));
 
-      listMenu.ClickItem (2);
+      listMenu.SelectItem().WithIndex (2);
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
-      listMenu.ClickItemByHtmlID ("body_MyListMenu_3");
+      listMenu.SelectItem().WithHtmlID ("body_MyListMenu_3");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID4|WxeFunction"));
 
-      listMenu.ClickItemByText ("EventItem");
+      listMenu.SelectItem().WithText ("EventItem");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
     }
 

@@ -9,7 +9,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Base class for all control objects representing a <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/>.
   /// </summary>
-  public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IClickableItemsControlObject
+  public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IControlObjectWithSelectableItems
   {
     protected DropDownMenuControlObjectBase ([NotNull] ControlObjectContext context)
         : base (context)
@@ -18,7 +18,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     protected abstract void OpenDropDownMenu ();
 
-    public UnspecifiedPageObject ClickItem (string itemID, ICompletionDetection completionDetection = null)
+    public IControlObjectWithSelectableItems SelectItem ()
+    {
+      return this;
+    }
+
+    public UnspecifiedPageObject SelectItem (string itemID, ICompletionDetection completionDetection = null)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return SelectItem().WithItemID (itemID, completionDetection);
+    }
+
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -27,14 +39,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItem (int index, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (int index, ICompletionDetection completionDetection)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindXPath (string.Format ("li[{0}]", index));
       return ClickItem (scope, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItemByHtmlID (string htmlID, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -43,7 +55,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, completionDetection);
     }
 
-    public UnspecifiedPageObject ClickItemByText (string text, ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 

@@ -176,99 +176,99 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var dropDownListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_DropDownListNormal");
 
       dropDownListBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.EqualTo (single));
 
-      dropDownListBocEnumValue.SelectOption (1);
+      dropDownListBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.Empty);
 
-      dropDownListBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.EqualTo(divorced));
+      dropDownListBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      dropDownListBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      dropDownListBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.Empty);
 
       var listBoxBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_ListBoxNormal");
 
       listBoxBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.EqualTo (single));
 
-      listBoxBocEnumValue.SelectOption (1);
+      listBoxBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.Empty);
 
-      listBoxBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.EqualTo(divorced));
+      listBoxBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      listBoxBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      listBoxBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.Empty);
 
       var radioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListNormal");
 
       radioButtonListBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.EqualTo (single));
 
-      radioButtonListBocEnumValue.SelectOption (1);
+      radioButtonListBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.Empty);
 
-      radioButtonListBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.EqualTo(divorced));
+      radioButtonListBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      radioButtonListBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      radioButtonListBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.Empty);
 
       var multiColumnradioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListMultiColumn");
 
       multiColumnradioButtonListBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListMultiColumnCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListMultiColumnCurrentValueLabel").Text, Is.EqualTo (single));
 
-      multiColumnradioButtonListBocEnumValue.SelectOption (1);
+      multiColumnradioButtonListBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListMultiColumnCurrentValueLabel").Text, Is.Empty);
 
-      multiColumnradioButtonListBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListMultiColumnCurrentValueLabel").Text, Is.EqualTo(divorced));
+      multiColumnradioButtonListBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListMultiColumnCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      multiColumnradioButtonListBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      multiColumnradioButtonListBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListMultiColumnCurrentValueLabel").Text, Is.Empty);
 
       var flowRadioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListFlow");
 
       flowRadioButtonListBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListFlowCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListFlowCurrentValueLabel").Text, Is.EqualTo (single));
 
-      flowRadioButtonListBocEnumValue.SelectOption (1);
+      flowRadioButtonListBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListFlowCurrentValueLabel").Text, Is.Empty);
 
-      flowRadioButtonListBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListFlowCurrentValueLabel").Text, Is.EqualTo(divorced));
+      flowRadioButtonListBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListFlowCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      flowRadioButtonListBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      flowRadioButtonListBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListFlowCurrentValueLabel").Text, Is.Empty);
 
       var orderedListRadioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListOrderedList");
 
       orderedListRadioButtonListBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListOrderedListCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListOrderedListCurrentValueLabel").Text, Is.EqualTo (single));
 
-      orderedListRadioButtonListBocEnumValue.SelectOption (1);
+      orderedListRadioButtonListBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListOrderedListCurrentValueLabel").Text, Is.Empty);
 
-      orderedListRadioButtonListBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListOrderedListCurrentValueLabel").Text, Is.EqualTo(divorced));
+      orderedListRadioButtonListBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListOrderedListCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      orderedListRadioButtonListBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      orderedListRadioButtonListBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListOrderedListCurrentValueLabel").Text, Is.Empty);
 
       var labelLeftRadioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListLabelLeft");
 
       labelLeftRadioButtonListBocEnumValue.SelectOption (single);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListLabelLeftCurrentValueLabel").Text, Is.EqualTo(single));
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListLabelLeftCurrentValueLabel").Text, Is.EqualTo (single));
 
-      labelLeftRadioButtonListBocEnumValue.SelectOption (1);
+      labelLeftRadioButtonListBocEnumValue.SelectOption().WithIndex (1);
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListLabelLeftCurrentValueLabel").Text, Is.Empty);
 
-      labelLeftRadioButtonListBocEnumValue.SelectOptionByText (divorced);
-      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListLabelLeftCurrentValueLabel").Text, Is.EqualTo(divorced));
+      labelLeftRadioButtonListBocEnumValue.SelectOption().WithText (divorced);
+      Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListLabelLeftCurrentValueLabel").Text, Is.EqualTo (divorced));
 
-      labelLeftRadioButtonListBocEnumValue.SelectOptionByText ("Is_So_Undefined");
+      labelLeftRadioButtonListBocEnumValue.SelectOption().WithText ("Is_So_Undefined");
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListLabelLeftCurrentValueLabel").Text, Is.Empty);
     }
 
@@ -289,7 +289,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       normalDropDownListBocEnumValue.SelectOption (single);
       Assert.That (home.Scope.FindIdEndingWith ("DropDownListNormalCurrentValueLabel").Text, Is.EqualTo (single));
-      
+
       noAutoPostBackDropDownListBocEnumValue.SelectOption (single); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("DropDownListNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
@@ -308,7 +308,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       normalListBoxBocEnumValue.SelectOption (single);
       Assert.That (home.Scope.FindIdEndingWith ("ListBoxNormalCurrentValueLabel").Text, Is.EqualTo (single));
-      
+
       noAutoPostBackListBoxBocEnumValue.SelectOption (single); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("ListBoxNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 
@@ -327,7 +327,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       normalRadioButtonListBocEnumValue.SelectOption (single);
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNormalCurrentValueLabel").Text, Is.EqualTo (single));
-      
+
       noAutoPostBackRadioButtonListBocEnumValue.SelectOption (single); // no auto post back
       Assert.That (home.Scope.FindIdEndingWith ("RadioButtonListNoAutoPostBackCurrentValueLabel").Text, Is.EqualTo (married));
 

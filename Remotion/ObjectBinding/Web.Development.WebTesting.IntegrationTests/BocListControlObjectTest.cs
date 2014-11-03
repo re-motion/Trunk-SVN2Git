@@ -141,10 +141,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
       var row = bocList.GetRow ("0ba19f5c-f2a2-4c9f-83c9-e6d25b461d98");
-      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
+      Assert.That (row.GetCell().WithIndex (6).GetText(), Is.EqualTo ("CEO"));
 
-      row = bocList.GetRow (1);
-      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("Programmer"));
+      row = bocList.GetRow().WithIndex (1);
+      Assert.That (row.GetCell().WithIndex (6).GetText(), Is.EqualTo ("Programmer"));
     }
 
     [Test]
@@ -155,13 +155,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
       var row = bocList.GetRowWhere ("Title", "CEO");
-      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
+      Assert.That (row.GetCell().WithIndex (6).GetText(), Is.EqualTo ("CEO"));
 
-      row = bocList.GetRowWhere (6, "CEO");
-      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
+      row = bocList.GetRowWhere().ColumnWithIndexContains (6, "CEO");
+      Assert.That (row.GetCell().WithIndex (6).GetText(), Is.EqualTo ("CEO"));
 
-      row = bocList.GetRowWhereByColumnTitle ("Title", "CEO");
-      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
+      row = bocList.GetRowWhere().ColumnWithTitleContains ("Title", "CEO");
+      Assert.That (row.GetCell().WithIndex (6).GetText(), Is.EqualTo ("CEO"));
     }
 
     [Test]
@@ -174,10 +174,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var cell = bocList.GetCellWhere ("Title", "CEO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
 
-      cell = bocList.GetCellWhere (6, "CEO");
+      cell = bocList.GetCellWhere().ColumnWithIndexContains (6, "CEO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
 
-      cell = bocList.GetCellWhereByColumnTitle ("Title", "CEO");
+      cell = bocList.GetCellWhere().ColumnWithTitleContains ("Title", "CEO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -187,17 +187,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      
+
       bocList.ClickOnSortColumn ("StartDate");
       bocList.ClickOnSortColumn ("Title");
-      Assert.That (bocList.GetRow (2).GetCell (6).GetText(), Is.EqualTo ("Programmer"));
+      Assert.That (bocList.GetRow().WithIndex (2).GetCell().WithIndex (6).GetText(), Is.EqualTo ("Programmer"));
 
       bocList.ClickOnSortColumn (6);
-      Assert.That (bocList.GetRow (2).GetCell (6).GetText(), Is.EqualTo ("Clerk"));
+      Assert.That (bocList.GetRow().WithIndex (2).GetCell().WithIndex (6).GetText(), Is.EqualTo ("Clerk"));
 
       bocList.ClickOnSortColumnByTitle ("Title");
       bocList.ClickOnSortColumnByTitle ("StartDate");
-      Assert.That (bocList.GetRow (2).GetCell (6).GetText(), Is.EqualTo ("Developer"));
+      Assert.That (bocList.GetRow().WithIndex (2).GetCell().WithIndex (6).GetText(), Is.EqualTo ("Developer"));
     }
 
     [Test]
@@ -224,7 +224,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var dropDownMenu = bocList.GetDropDownMenu();
-      dropDownMenu.ClickItem ("OptCmd2");
+      dropDownMenu.SelectItem ("OptCmd2");
 
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderRowLabel").Text, Is.EqualTo ("-1"));
@@ -239,7 +239,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var listMenu = bocList.GetListMenu();
-      listMenu.ClickItem ("ListMenuCmd3");
+      listMenu.SelectItem ("ListMenuCmd3");
 
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderRowLabel").Text, Is.EqualTo ("-1"));
@@ -253,12 +253,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow (2);
+      var row = bocList.GetRow().WithIndex (2);
 
       var cell = row.GetCell ("Title");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
 
-      cell = row.GetCell (6);
+      cell = row.GetCell().WithIndex (6);
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -268,10 +268,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow (2);
+      var row = bocList.GetRow().WithIndex (2);
 
       row.ClickSelectCheckbox();
-      row.GetCell (4).ExecuteCommand();
+      row.GetCell().WithIndex (4).ExecuteCommand();
 
       Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("1"));
     }
@@ -282,9 +282,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow (2);
+      var row = bocList.GetRow().WithIndex (2);
       var dropDownMenu = row.GetDropDownMenu();
-      dropDownMenu.ClickItem ("RowMenuItemCmd2");
+      dropDownMenu.SelectItem ("RowMenuItemCmd2");
 
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderRowLabel").Text, Is.EqualTo ("1"));
@@ -298,7 +298,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow (2);
+      var row = bocList.GetRow().WithIndex (2);
 
       Assert.That (home.Scope.FindIdEndingWith ("EditModeLabel").Text, Is.EqualTo ("False"));
 
@@ -312,7 +312,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var editableRow = bocList.GetRow (2).Edit();
+      var editableRow = bocList.GetRow().WithIndex (2).Edit();
 
       editableRow.Save();
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));
@@ -327,7 +327,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var editableRow = bocList.GetRow (2).Edit();
+      var editableRow = bocList.GetRow().WithIndex (2).Edit();
 
       editableRow.Cancel();
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderLabel").Text, Is.EqualTo ("JobList_Normal"));
@@ -342,12 +342,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var editableRow = bocList.GetRow (2).Edit();
+      var editableRow = bocList.GetRow().WithIndex (2).Edit();
 
       var cell = editableRow.GetCell ("Title");
       Assert.That (cell.GetTextValue().First().GetText(), Is.EqualTo ("CEO"));
 
-      cell = editableRow.GetCell (6);
+      cell = editableRow.GetCell().WithIndex (6);
       Assert.That (cell.GetTextValue().First().GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -357,7 +357,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var cell = bocList.GetRow (2).GetCell (9);
+      var cell = bocList.GetRow().WithIndex (2).GetCell().WithIndex (9);
 
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
@@ -368,7 +368,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var cell = bocList.GetRow (2).GetCell (4);
+      var cell = bocList.GetRow().WithIndex (2).GetCell().WithIndex (4);
 
       cell.ExecuteCommand();
 
@@ -377,15 +377,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("CellCommandClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("RowCmd"));
     }
-    
+
     [Test]
     public void TestEditableCellGetControl ()
     {
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var editableRow = bocList.GetRow (2).Edit();
-      var editableCell = editableRow.GetCell (6);
+      var editableRow = bocList.GetRow().WithIndex (2).Edit();
+      var editableCell = editableRow.GetCell().WithIndex (6);
 
       var bocText = editableCell.GetTextValue().First();
       bocText.FillWith ("NewTitle");

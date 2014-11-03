@@ -15,7 +15,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Common functionality of <see cref="BocListControlObject"/> and <see cref="BocListAsGridControlObject"/>.
   /// </summary>
-  public abstract class BocListControlObjectBase<TRowControlObject, TCellControlObject> : BocControlObject, IDropDownMenuHost, IListMenuHost
+  public abstract class BocListControlObjectBase<TRowControlObject, TCellControlObject>
+      : BocControlObject, IDropDownMenuHost, IListMenuHost, IControlObjectWithRows<TRowControlObject>
       where TRowControlObject : ControlObject
       where TCellControlObject : ControlObject
   {
@@ -106,18 +107,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody tr").Count());
     }
 
-    public TRowControlObject GetRow ([NotNull] string itemID)
+    public IControlObjectWithRows<TRowControlObject> GetRow ()
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+      return this;
+    }
+
+    public TRowControlObject GetRow (string columnItemID)
+    {
+      return GetRow().WithColumnItemID (columnItemID);
+    }
+
+    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithColumnItemID (string columnItemID)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
           DiagnosticMetadataAttributes.ItemID,
-          itemID);
+          columnItemID);
       return GetRowByCssSelector (cssSelector);
     }
 
-    public TRowControlObject GetRow (int index)
+    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithIndex (int index)
     {
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
@@ -127,7 +138,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     [Obsolete ("BocList rows cannot be selected using a full HTML ID.", true)]
-    public TRowControlObject GetRowByHtmlID ([NotNull] string htmlID)
+    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithHtmlID (string htmlID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 

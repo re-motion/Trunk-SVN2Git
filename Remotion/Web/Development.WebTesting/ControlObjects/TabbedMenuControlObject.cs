@@ -10,8 +10,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.TabbedMenu"/>.
   /// </summary>
   [UsedImplicitly]
-  public class TabbedMenuControlObject : RemotionControlObject
+  public class TabbedMenuControlObject : RemotionControlObject, IControlObjectWithSelectableItems, IControlObjectWithSelectableSubItems
   {
+    // Todo RM-6297: Replace IControlObjectWithSelectableSubItems with a sub menu control object, it is a cleaner approach.
+
     public TabbedMenuControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
@@ -22,7 +24,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope.FindCss ("td.tabbedMenuStatusCell").Text.Trim();
     }
 
-    public UnspecifiedPageObject SelectMenuItem ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null)
+    public IControlObjectWithSelectableItems SelectItem ()
+    {
+      return this;
+    }
+
+    public UnspecifiedPageObject SelectItem (string itemID, ICompletionDetection completionDetection = null)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return SelectItem().WithItemID (itemID, completionDetection);
+    }
+
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -30,13 +44,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectMenuItem (int index, [CanBeNull] ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (int index, ICompletionDetection completionDetection)
     {
       var menuItemScope = GetMainMenuScope().FindXPath (string.Format ("(.//li/span/span[2])[{0}]", index));
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectMenuItemByHtmlID ([NotNull] string htmlID, [CanBeNull] ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -44,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectMenuItemByText ([NotNull] string text, [CanBeNull] ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
@@ -52,7 +66,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItem ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null)
+    public IControlObjectWithSelectableSubItems SelectSubItem ()
+    {
+      return this;
+    }
+
+    public UnspecifiedPageObject SelectSubItem (string itemID, ICompletionDetection completionDetection = null)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
+      return SelectSubItem().WithItemID (itemID, completionDetection);
+    }
+
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -60,13 +86,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItem (int index, [CanBeNull] ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithIndex (int index, ICompletionDetection completionDetection)
     {
       var menuItemScope = GetSubMenuScope().FindXPath (string.Format ("(.//li/span/span[2])[{0}]", index));
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItemByHtmlID ([NotNull] string htmlID, [CanBeNull] ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -74,7 +100,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
     }
 
-    public UnspecifiedPageObject SelectSubMenuItemByText ([NotNull] string text, [CanBeNull] ICompletionDetection completionDetection = null)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 

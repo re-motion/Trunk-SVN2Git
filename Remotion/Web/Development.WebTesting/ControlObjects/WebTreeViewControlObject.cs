@@ -8,7 +8,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
   [UsedImplicitly]
-  public class WebTreeViewControlObject : RemotionControlObject, IWebTreeViewNodeNavigator
+  public class WebTreeViewControlObject : RemotionControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>
   {
     private readonly WebTreeViewNodeControlObject _metaRootNode;
 
@@ -20,33 +20,43 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetRootNode ()
     {
-      return _metaRootNode.GetNode (1);
+      return _metaRootNode.GetNode().WithIndex (1);
+    }
+
+    public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
+    {
+      return this;
     }
 
     public WebTreeViewNodeControlObject GetNode (string itemID)
+    {
+      return GetNode().WithItemID (itemID);
+    }
+
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       return _metaRootNode.GetNode (itemID);
     }
 
-    public WebTreeViewNodeControlObject GetNode (int index)
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
-      return _metaRootNode.GetNode (index);
+      return _metaRootNode.GetNode().WithIndex (index);
     }
 
-    public WebTreeViewNodeControlObject GetNodeByHtmlID (string htmlID)
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithHtmlID (string htmlID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       return _metaRootNode.GetNode (htmlID);
     }
 
-    public WebTreeViewNodeControlObject GetNodeByText (string text)
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return _metaRootNode.GetNodeByText (text);
+      return _metaRootNode.GetNode().WithText (text);
     }
   }
 }

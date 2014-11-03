@@ -43,7 +43,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public ActaNovaTreeNodeControlObject GetNode (int index)
     {
-      var bocTreeViewNode = _bocTreeViewNode.GetNode (index);
+      var bocTreeViewNode = _bocTreeViewNode.GetNode().WithIndex (index);
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 
@@ -54,7 +54,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
-      var bocTreeViewNode = _bocTreeViewNode.GetNodeByHtmlID (htmlID);
+      var bocTreeViewNode = _bocTreeViewNode.GetNode().WithHtmlID (htmlID);
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 
@@ -62,7 +62,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      var bocTreeViewNode = _bocTreeViewNode.GetNodeByText (text);
+      var bocTreeViewNode = _bocTreeViewNode.GetNode().WithText (text);
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 

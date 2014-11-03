@@ -9,7 +9,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  public class BocListRowControlObject : BocControlObject, IDropDownMenuHost
+  public class BocListRowControlObject : BocControlObject, IDropDownMenuHost, IControlObjectWithCells<BocListCellControlObject>
   {
     private readonly BocListRowFunctionality _impl;
 
@@ -29,20 +29,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.Edit();
     }
 
-    public BocListCellControlObject GetCell ([NotNull] string columnItemID)
+    public IControlObjectWithCells<BocListCellControlObject> GetCell ()
+    {
+      return this;
+    }
+
+    public BocListCellControlObject GetCell (string columnItemID)
+    {
+      return GetCell().WithColumnItemID (columnItemID);
+    }
+
+    BocListCellControlObject IControlObjectWithCells<BocListCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
       return _impl.GetCell<BocListCellControlObject> (columnItemID);
     }
 
-    public BocListCellControlObject GetCell (int index)
+    BocListCellControlObject IControlObjectWithCells<BocListCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListCellControlObject> (index);
     }
 
     [Obsolete ("BocList cells cannot be selected using a full HTML ID.", true)]
-    public BocListCellControlObject GetCellByHtmlID ([NotNull] string htmlID)
+    BocListCellControlObject IControlObjectWithCells<BocListCellControlObject>.WithHtmlID (string htmlID)
     {
       // Method declaration exists for symmetry reasons only.
 
