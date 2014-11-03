@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Coypu;
 using JetBrains.Annotations;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlSelection;
@@ -46,8 +49,12 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       get
       {
-        // Todo RM-6297: Implement as soon as BocReferenceValueControlObject is implemented.
-        throw new NotImplementedException ("Not implemented yet.");
+        var userAndGroup = GetUserAndGroup();
+        
+        var startIndexOfGroup = userAndGroup.LastIndexOf ('(');
+        Assertion.IsTrue (startIndexOfGroup >= 0, "Current user and group label is not correctly formatted.");
+
+        return userAndGroup.Substring (0, startIndexOfGroup - 1);
       }
     }
 
@@ -58,14 +65,62 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       get
       {
-        // Todo RM-6297: Implement as soon as BocReferenceValueControlObject is implemented.
-        throw new NotImplementedException ("Not implemented yet.");
+        var userAndGroup = GetUserAndGroup();
+        
+        var startIndexOfGroup = userAndGroup.LastIndexOf ('(') + 1;
+        Assertion.IsTrue (startIndexOfGroup >= 0, "Current user and group label is not correctly formatted.");
+
+        return userAndGroup.Substring (startIndexOfGroup, userAndGroup.Length - startIndexOfGroup - 1);
       }
     }
 
-    // Todo RM-6297: Implement "BocReferenceValue GetDefaultGroupControl()" as soon as BocReferenceValueControlObject is implemented.
-    // Todo RM-6297: Implement "BocReferenceValue GetCurrentTenantControl()" as soon as BocReferenceValueControlObject is implemented.
-    // Todo RM-6297: Probably make ActaNovaHeaderControlObject an IControlHost? Or use ActaNovaMainPage as entry point?
+    private string GetUserAndGroup ()
+    {
+      var currentUserAndGroup = GetControl (
+          new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
+              new BocReferenceValueSelector(),
+              "SecurityManagerCurrentTenantControl_CurrentUserField"));
+
+      return currentUserAndGroup.GetText();
+    }
+
+    public BocReferenceValueControlObject OpenDefaultGroupControlWhenStandardIsDisplayed ()
+    {
+      var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_NoDefaultGroupButton");
+      return GetDefaultGroupControlUsingOpenButton(openButtonScope);
+    }
+
+    public BocReferenceValueControlObject OpenDefaultGroupControl ()
+    {
+      var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_DefaultGroupField_Command");
+      return GetDefaultGroupControlUsingOpenButton(openButtonScope);
+    }
+
+    private BocReferenceValueControlObject GetDefaultGroupControlUsingOpenButton (ElementScope openButtonScope)
+    {
+      openButtonScope.Now();
+
+      // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
+      openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
+
+      return GetControl (
+          new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
+              new BocReferenceValueSelector(),
+              "SecurityManagerCurrentTenantControl_DefaultGroupField"));
+    }
+
+    public BocReferenceValueControlObject OpenCurrentTenantControl ()
+    {
+      var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_CurrentTenantField_Command");
+
+      // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
+      openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
+
+      return GetControl (
+          new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
+              new BocReferenceValueSelector(),
+              "SecurityManagerCurrentTenantControl_CurrentTenantField"));
+    }
 
     /// <summary>
     /// Returns the list of currently displayed ActaNova bread crumbs.

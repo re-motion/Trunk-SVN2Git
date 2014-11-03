@@ -1,4 +1,5 @@
 ﻿using System;
+using ActaNova.WebTesting.Infrastructure;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
@@ -44,11 +45,62 @@ namespace ActaNova.WebTesting.SampleTests
     {
       var home = Start();
 
+      if (home.DetailsArea.FormPageTitle != "Eigener AV")
+        home.Tree.GetNode().WithText ("Eigener AV").Select();
+
       // Todo RM-6297: MainMenu.Select() should allow overridden IActionBehavior
       home = home.MainMenu.Select ("Extras", "Benutzerprofil").Expect<ActaNovaMainPageObject>();
       home = home.Refresh().Expect<ActaNovaMainPageObject>();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
+    }
+
+    [Test]
+    public void TestActaNovaHeader ()
+    {
+      var home = Start();
+
+      Assert.That (home.Header.CurrentUser, Is.EqualTo ("Muster Max, Ing."));
+      Assert.That (home.Header.CurrentGroup, Is.EqualTo ("EG/1"));
+      Assert.That (home.Header.CurrentApplicationContext, Is.Null);
+    }
+
+    [Test]
+    public void TestActaNovaHeaderOpenDefaultGroupControl ()
+    {
+      var home = Start();
+
+      var defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
+      Assert.That (defaultGroupControl.GetText(), Is.Empty);
+
+      defaultGroupControl.SelectOption().WithText ("Kanzlei (Kanzlei)");
+
+      defaultGroupControl = home.Header.OpenDefaultGroupControl();
+      Assert.That (defaultGroupControl.GetText(), Is.EqualTo ("Kanzlei (Kanzlei)"));
+
+      defaultGroupControl.SelectOption().WithIndex (1);
+
+      defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
+      Assert.That (defaultGroupControl.GetText(), Is.Empty);
+    }
+
+    [Test]
+    public void TestActaNovaHeaderOpenCurrentTenantControl ()
+    {
+      var home = Start();
+
+      var currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
+
+      currentTenantControl.SelectOption().WithText ("Acta Nova Ortsteil 1", Continue.When(ActaNovaCompletion.OuterInnerOuterUpdated));
+
+      currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Ortsteil 1"));
+
+      currentTenantControl.SelectOption().WithIndex (1, Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
+
+      currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
     }
 
     [Test]

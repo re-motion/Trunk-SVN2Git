@@ -16,7 +16,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
-      return Continue.When (WaitForActaNova.OuterInnerOuterUpdate);
+      return Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
     }
   }
 }

@@ -68,7 +68,7 @@
     <Compile Include="ControlObjects\ActaNovaMessageBoxControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaTreeControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaTreeNodeControlObject.cs" />
-    <Compile Include="Infrastructure\WaitForActaNova.cs" />
+    <Compile Include="Infrastructure\ActaNovaCompletion.cs" />
     <Compile Include="PageObjects\ActaNovaMainPageObject.cs" />
     <Compile Include="PageObjects\MessageBoxPageObject.cs" />
     <Compile Include="PageObjects\ActaNovaPageObject.cs" />
