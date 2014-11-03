@@ -30,5 +30,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           });
       return CreateControlObject (context, scope);
     }
+
+    protected override DropDownMenuControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+
+      return new DropDownMenuControlObject (newControlObjectContext);
+    }
   }
 }

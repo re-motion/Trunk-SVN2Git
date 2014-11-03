@@ -42,5 +42,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       var scope = context.Scope.FindXPath (xPathSelector);
       return CreateControlObject (context, scope);
     }
+
+    protected override TextBoxControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+
+      return new TextBoxControlObject (newControlObjectContext);
+    }
   }
 }

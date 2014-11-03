@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;

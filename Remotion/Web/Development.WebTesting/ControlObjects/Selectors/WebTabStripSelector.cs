@@ -1,4 +1,6 @@
 ﻿using System;
+using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 {
@@ -10,6 +12,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     public WebTabStripSelector ()
         : base ("WebTabStrip")
     {
+    }
+
+    protected override WebTabStripControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+
+      return new WebTabStripControlObject (newControlObjectContext);
     }
   }
 }

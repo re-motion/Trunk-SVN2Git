@@ -1,4 +1,7 @@
 ﻿using System;
+using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors
 {
@@ -10,6 +13,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     public BocDateTimeValueSelector ()
         : base ("BocDateTimeValue")
     {
+    }
+
+    protected override BocDateTimeValueControlObject CreateControlObject (ControlObjectContext newControlObjectContext, ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+
+      return new BocDateTimeValueControlObject (newControlObjectContext);
     }
   }
 }

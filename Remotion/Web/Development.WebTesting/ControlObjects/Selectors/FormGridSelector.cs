@@ -34,5 +34,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
       return CreateControlObject (context, scope);
     }
+
+    protected override FormGridControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+
+      return new FormGridControlObject (newControlObjectContext);
+    }
   }
 }

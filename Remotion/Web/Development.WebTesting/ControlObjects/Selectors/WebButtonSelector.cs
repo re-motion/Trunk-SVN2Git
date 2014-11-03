@@ -64,5 +64,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           });
       return CreateControlObject (context, scope);
     }
+
+    protected override WebButtonControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+
+      return new WebButtonControlObject (newControlObjectContext);
+    }
   }
 }

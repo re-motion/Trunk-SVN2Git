@@ -36,11 +36,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
     protected TControlObject CreateControlObject ([NotNull] ControlSelectionContext context, [NotNull] ElementScope scope)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("scope", scope);
-
-      var newContext = context.CloneForControl (context.PageObject, scope);
-      return (TControlObject) Activator.CreateInstance (typeof (TControlObject), new object[] { newContext });
+      var newControlObjectContext = context.CloneForControl (context.PageObject, scope);
+      return CreateControlObject (newControlObjectContext, context);
     }
+
+    protected abstract TControlObject CreateControlObject (
+        [NotNull] ControlObjectContext newControlObjectContext,
+        [NotNull] ControlSelectionContext controlSelectionContext);
   }
 }

@@ -39,5 +39,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       var scope = context.Scope.FindXPath (string.Format ("(.//{0})[{1}]", c_htmlAnchorTag, index));
       return CreateControlObject (context, scope);
     }
+
+    protected override AnchorControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
+      ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
+
+      return new AnchorControlObject (newControlObjectContext);
+    }
   }
 }

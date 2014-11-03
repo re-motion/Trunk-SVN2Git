@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
