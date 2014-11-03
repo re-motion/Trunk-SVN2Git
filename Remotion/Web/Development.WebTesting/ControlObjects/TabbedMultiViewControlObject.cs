@@ -50,26 +50,26 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return GetTabStrip().SwitchTo (itemID + "_Tab");
+      return GetTabStrip().SwitchTo (itemID + "_Tab", completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection)
     {
-      return GetTabStrip().SwitchTo().WithIndex (index);
+      return GetTabStrip().SwitchTo().WithIndex (index, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
-      return GetTabStrip().SwitchTo().WithHtmlID (htmlID);
+      return GetTabStrip().SwitchTo().WithHtmlID (htmlID, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithTabs.WithText (string text, ICompletionDetection completionDetection)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return GetTabStrip().SwitchTo().WithText (text);
+      return GetTabStrip().SwitchTo().WithText (text, completionDetection);
     }
 
     private WebTabStripControlObject GetTabStrip ()

@@ -34,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var itemScope = Scope.FindDMA ("span.tabStripTab", DiagnosticMetadataAttributes.ItemID, itemID);
-      return SwitchTo (itemScope);
+      return SwitchTo (itemScope, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection)
@@ -44,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           XPathUtils.CreateHasOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"),
           index);
       var itemScope = Scope.FindXPath (xPathSelector);
-      return SwitchTo (itemScope);
+      return SwitchTo (itemScope, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
@@ -52,7 +52,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       var itemScope = Scope.FindId (htmlID);
-      return SwitchTo (itemScope);
+      return SwitchTo (itemScope, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithTabs.WithText (string text, ICompletionDetection completionDetection)
@@ -60,16 +60,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       var itemScope = Scope.FindDMA ("span.tabStripTab", DiagnosticMetadataAttributes.Text, text);
-      return SwitchTo (itemScope);
+      return SwitchTo (itemScope, completionDetection);
     }
 
-    private UnspecifiedPageObject SwitchTo (ElementScope tabScope)
+    private UnspecifiedPageObject SwitchTo (ElementScope tabScope, ICompletionDetection completionDetection)
     {
       var commandScope = tabScope.FindLink();
 
       var commandContext = Context.CloneForControl (commandScope);
       var command = new CommandControlObject (commandContext);
-      return command.Click (Continue.When (Wxe.PostBackCompleted));
+      return command.Click (completionDetection);
     }
   }
 }
