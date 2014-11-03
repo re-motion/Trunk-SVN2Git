@@ -55,17 +55,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
-    [Obsolete ("BocTreeView nodes cannot be selected using a full HTML ID.", true)]
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithHtmlID (string htmlID)
-    {
-      // Method declaration exists for symmetry reasons only.
-
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      var webTreeViewNode = _webTreeViewNode.GetNode().WithHtmlID (htmlID);
-      return new BocTreeViewNodeControlObject (webTreeViewNode);
-    }
-
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);

@@ -16,20 +16,20 @@ namespace ActaNova.WebTesting.SampleTests
     {
       var home = Start();
 
-      var eigenerAv = home.Tree.GetNode (1);
+      var eigenerAv = home.Tree.GetNode().WithIndex (1);
       Assert.That (eigenerAv.GetText(), Is.EqualTo ("Eigener AV"));
 
-      home = home.Tree.GetNode (2).Expand().GetNodeByText ("egora Gemeinde").Select().Expect<ActaNovaMainPageObject>();
+      home = home.Tree.GetNode().WithIndex (2).Expand().GetNode().WithText ("egora Gemeinde").Select().Expect<ActaNovaMainPageObject>();
       Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("egora Gemeinde AV"));
 
-      var geschaeftsfall = home.Tree.GetNodeByText ("Favoriten").Expand().Collapse().Expand().GetNode (2);
+      var geschaeftsfall = home.Tree.GetNode().WithText ("Favoriten").Expand().Collapse().Expand().GetNode().WithIndex (2);
       home = geschaeftsfall.Select().Expect<ActaNovaMainPageObject>();
       Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
 
       home =
           geschaeftsfall.GetNode ("Files")
               .Expand()
-              .GetNode (1)
+              .GetNode().WithIndex (1)
               .Expand()
               .GetNode ("WrappedDocumentsHierarchy")
               .Expand()

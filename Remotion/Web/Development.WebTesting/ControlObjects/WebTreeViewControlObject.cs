@@ -45,13 +45,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithHtmlID (string htmlID)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      return _metaRootNode.GetNode (htmlID);
-    }
-
     WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);

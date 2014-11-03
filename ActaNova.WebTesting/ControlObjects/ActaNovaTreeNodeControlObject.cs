@@ -11,7 +11,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
-  public class ActaNovaTreeNodeControlObject : ActaNovaMainFrameControlObject, IActaNovaTreeNodeNavigator
+  public class ActaNovaTreeNodeControlObject : ActaNovaMainFrameControlObject, IControlObjectWithNodes<ActaNovaTreeNodeControlObject>
   {
     private readonly BocTreeViewNodeControlObject _bocTreeViewNode;
 
@@ -33,7 +33,17 @@ namespace ActaNova.WebTesting.ControlObjects
       return _bocTreeViewNode.GetText();
     }
 
+    public IControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
+    {
+      return this;
+    }
+
     public ActaNovaTreeNodeControlObject GetNode (string itemID)
+    {
+      return GetNode().WithItemID (itemID);
+    }
+
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -41,24 +51,13 @@ namespace ActaNova.WebTesting.ControlObjects
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 
-    public ActaNovaTreeNodeControlObject GetNode (int index)
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithIndex (int index)
     {
       var bocTreeViewNode = _bocTreeViewNode.GetNode().WithIndex (index);
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 
-    [Obsolete ("ActaNovaTree nodes cannot be selected using a full HTML ID.", true)]
-    public ActaNovaTreeNodeControlObject GetNodeByHtmlID (string htmlID)
-    {
-      // Method declaration exists for symmetry reasons only.
-
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      var bocTreeViewNode = _bocTreeViewNode.GetNode().WithHtmlID (htmlID);
-      return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
-    }
-
-    public ActaNovaTreeNodeControlObject GetNodeByText (string text)
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
@@ -81,7 +80,7 @@ namespace ActaNova.WebTesting.ControlObjects
     public UnspecifiedPageObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
       var actualActionBehavior = completionDetection ?? Continue.When (WaitForActaNova.OuterInnerOuterUpdate);
-      _bocTreeViewNode.Select(actualActionBehavior);
+      _bocTreeViewNode.Select (actualActionBehavior);
 
       return UnspecifiedPage();
     }

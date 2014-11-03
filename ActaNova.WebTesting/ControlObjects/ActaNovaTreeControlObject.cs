@@ -2,13 +2,14 @@
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
   /// <summary>
   /// Control object representing the ActaNova tree.
   /// </summary>
-  public class ActaNovaTreeControlObject : ActaNovaMainFrameControlObject, IActaNovaTreeNodeNavigator
+  public class ActaNovaTreeControlObject : ActaNovaMainFrameControlObject, IControlObjectWithNodes<ActaNovaTreeNodeControlObject>
   {
     private readonly ActaNovaTreeNodeControlObject _metaRootNode;
 
@@ -18,33 +19,33 @@ namespace ActaNova.WebTesting.ControlObjects
       _metaRootNode = new ActaNovaTreeNodeControlObject (context);
     }
 
+    public IControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
+    {
+      return this;
+    }
+
     public ActaNovaTreeNodeControlObject GetNode (string itemID)
+    {
+      return GetNode().WithItemID (itemID);
+    }
+
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       return _metaRootNode.GetNode (itemID);
     }
 
-    public ActaNovaTreeNodeControlObject GetNode (int index)
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithIndex (int index)
     {
-      return _metaRootNode.GetNode (index);
+      return _metaRootNode.GetNode().WithIndex (index);
     }
 
-    [Obsolete ("ActaNovaTree nodes cannot be selected using a full HTML ID.", true)]
-    public ActaNovaTreeNodeControlObject GetNodeByHtmlID (string htmlID)
-    {
-      // Method declaration exists for symmetry reasons only.
-
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      return _metaRootNode.GetNodeByHtmlID (htmlID);
-    }
-
-    public ActaNovaTreeNodeControlObject GetNodeByText (string text)
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithText (string text)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return _metaRootNode.GetNodeByText (text);
+      return _metaRootNode.GetNode().WithText (text);
     }
   }
 }

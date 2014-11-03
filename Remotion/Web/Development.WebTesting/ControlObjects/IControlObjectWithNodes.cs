@@ -14,7 +14,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     TNodeControlObject WithItemID ([NotNull] string itemID);
     TNodeControlObject WithIndex (int index);
-    TNodeControlObject WithHtmlID ([NotNull] string htmlID);
     TNodeControlObject WithText ([NotNull] string text);
   }
 }
