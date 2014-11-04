@@ -16,15 +16,27 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Some WebDriver implementations hang, when trying to query within an <see cref="ElementScope"/> which is not on the "active" window.
     /// </summary>
-    public static void EnsureWindowIsActive (this BrowserWindow window)
+    public static void EnsureWindowIsActive ([NotNull] this BrowserWindow window)
     {
       // ReSharper disable once UnusedVariable
       var temp = window.Title;
     }
 
-    public static ElementScope GetRootScope (this BrowserWindow window)
+    /// <summary>
+    /// Returns the scope of the HTML element on the given window.
+    /// </summary>
+    public static ElementScope GetRootScope ([NotNull] this BrowserWindow window)
     {
       return window.FindCss ("html");
+    }
+
+    /// <summary>
+    /// Clears all cookies for the current domain.
+    /// </summary>
+    public static void ClearCookies ([NotNull] this BrowserSession browser)
+    {
+      var webDriver = browser.Native as IWebDriver;
+      webDriver.Manage().Cookies.DeleteAllCookies();
     }
 
     /// <summary>
@@ -38,14 +50,14 @@ namespace Remotion.Web.Development.WebTesting
       if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         browser.AcceptModalDialog();
       else
-        browser.AcceptModalDialogFixedInternetExplorer ();
+        browser.AcceptModalDialogFixedInternetExplorer();
     }
 
     /// <summary>
     /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestingConfiguration.SearchTimeout"/> and
     /// <see cref="WebTestingConfiguration.RetryInterval"/> do not apply.
     /// </summary>
-    public static void AcceptModalDialogImmediatelyFixed([NotNull] this BrowserSession browser)
+    public static void AcceptModalDialogImmediatelyFixed ([NotNull] this BrowserSession browser)
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
@@ -66,7 +78,7 @@ namespace Remotion.Web.Development.WebTesting
       if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
         browser.CancelModalDialog();
       else
-        browser.CancelModalDialogFixedInternetExplorer ();
+        browser.CancelModalDialogFixedInternetExplorer();
     }
 
     /// <summary>
@@ -80,7 +92,7 @@ namespace Remotion.Web.Development.WebTesting
       RetryUntilTimeout.Run (browser.AcceptModalDialogImmediatelyFixedInternetExplorer);
     }
 
-    private static void AcceptModalDialogImmediatelyFixedInternetExplorer([NotNull] this BrowserSession browser)
+    private static void AcceptModalDialogImmediatelyFixedInternetExplorer ([NotNull] this BrowserSession browser)
     {
       var webDriver = (IWebDriver) browser.Native;
       webDriver.SwitchTo().Alert().Accept();
@@ -97,7 +109,7 @@ namespace Remotion.Web.Development.WebTesting
       RetryUntilTimeout.Run (browser.CancelModalDialogImmediatelyFixedInternetExplorer);
     }
 
-    private static void CancelModalDialogImmediatelyFixedInternetExplorer([NotNull] this BrowserSession browser)
+    private static void CancelModalDialogImmediatelyFixedInternetExplorer ([NotNull] this BrowserSession browser)
     {
       var webDriver = (IWebDriver) browser.Native;
       webDriver.SwitchTo().Alert().Dismiss();
