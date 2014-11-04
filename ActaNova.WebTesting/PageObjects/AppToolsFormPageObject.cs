@@ -21,8 +21,8 @@ namespace ActaNova.WebTesting.PageObjects
 
     public UnspecifiedPageObject Perform (string command, ICompletionDetection completionDetection = null)
     {
-      var localID = string.Format ("{0}Button", command);
-      var webButton = GetControl (new PerLocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), localID));
+      var itemID = string.Format ("{0}Button", command);
+      var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), itemID));
       return webButton.Click (completionDetection);
     }
   }

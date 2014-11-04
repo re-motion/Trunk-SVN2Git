@@ -1,0 +1,110 @@
+﻿using System;
+using ActaNova.WebTesting.Infrastructure;
+using ActaNova.WebTesting.SampleTests;
+using NUnit.Framework;
+using Remotion.Web.Development.WebTesting;
+
+namespace ActaNova.WebTesting.IntegrationTests
+{
+  [TestFixture]
+  public class ActaNovaHeaderControlObjectTest : ActaNovaWebTestBase
+  {
+    [Test]
+    public void TestGetCurrentUser ()
+    {
+      var home = Start();
+
+      Assert.That (home.Header.GetCurrentUser(), Is.EqualTo ("Muster Max, Ing."));
+    }
+
+    [Test]
+    public void TestGetCurrentGroup ()
+    {
+      var home = Start();
+
+      Assert.That (home.Header.GetCurrentGroup(), Is.EqualTo ("EG/1"));
+    }
+
+    [Test]
+    public void TestGetCurrentApplicationContext ()
+    {
+      var home = Start();
+
+      Assert.That (home.Header.GetCurrentApplicationContext(), Is.Null);
+    }
+
+    [Test]
+    public void TestDefaultGroupControl ()
+    {
+      var home = Start();
+
+      var defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
+      Assert.That (defaultGroupControl.GetText(), Is.Empty);
+
+      defaultGroupControl.SelectOption().WithText ("Kanzlei (Kanzlei)");
+
+      defaultGroupControl = home.Header.OpenDefaultGroupControl();
+      Assert.That (defaultGroupControl.GetText(), Is.EqualTo ("Kanzlei (Kanzlei)"));
+
+      defaultGroupControl.SelectOption().WithIndex (1);
+
+      defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
+      Assert.That (defaultGroupControl.GetText(), Is.Empty);
+    }
+
+    [Test]
+    public void TestCurrentTenantControl ()
+    {
+      var home = Start();
+
+      var currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
+
+      currentTenantControl.SelectOption().WithText ("Acta Nova Ortsteil 1", Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
+
+      currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Ortsteil 1"));
+
+      currentTenantControl.SelectOption().WithIndex (1, Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
+
+      currentTenantControl = home.Header.OpenCurrentTenantControl();
+      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
+    }
+
+    [Test]
+    public void TestGetBreadCrumbs ()
+    {
+      var home = Start();
+
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
+      Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Eigener AV"));
+
+      home.Tree.GetNode().WithText ("Stellvertretungs AV").Select();
+
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
+      Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Stellvertretungs AV"));
+
+      home.MainMenu.Select ("Verfahrensbereich", "BA - Bürgeranliegen");
+      home.MainMenu.Select ("Extras", "Passwort ändern");
+
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (2));
+      Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Stellvertretungs AV"));
+      Assert.That (home.Header.GetBreadCrumbs()[1].GetText(), Is.EqualTo ("Passwort ändern"));
+
+      var searchPage = home.MainMenu.Select ("Suchen", "Geschäftsobjekt", "Akt").ExpectActaNova();
+
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (3));
+      Assert.That (home.Header.GetBreadCrumbs()[2].GetText(), Is.EqualTo ("Akt Suchen"));
+
+      searchPage.DetailsArea.Perform ("Search");
+
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (3));
+      Assert.That (home.Header.GetBreadCrumbs()[2].GetText(), Is.EqualTo ("Akt Suchen"));
+
+      searchPage.Header.GetBreadCrumbs()[0].Click();
+
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
+      Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Stellvertretungs AV"));
+    }
+  }
+}

@@ -54,55 +54,7 @@ namespace ActaNova.WebTesting.SampleTests
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
-
-    [Test]
-    public void TestActaNovaHeader ()
-    {
-      var home = Start();
-
-      Assert.That (home.Header.GetCurrentUser(), Is.EqualTo ("Muster Max, Ing."));
-      Assert.That (home.Header.GetCurrentGroup(), Is.EqualTo ("EG/1"));
-      Assert.That (home.Header.GetCurrentApplicationContext(), Is.Null);
-    }
-
-    [Test]
-    public void TestActaNovaHeaderOpenDefaultGroupControl ()
-    {
-      var home = Start();
-
-      var defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
-      Assert.That (defaultGroupControl.GetText(), Is.Empty);
-
-      defaultGroupControl.SelectOption().WithText ("Kanzlei (Kanzlei)");
-
-      defaultGroupControl = home.Header.OpenDefaultGroupControl();
-      Assert.That (defaultGroupControl.GetText(), Is.EqualTo ("Kanzlei (Kanzlei)"));
-
-      defaultGroupControl.SelectOption().WithIndex (1);
-
-      defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
-      Assert.That (defaultGroupControl.GetText(), Is.Empty);
-    }
-
-    [Test]
-    public void TestActaNovaHeaderOpenCurrentTenantControl ()
-    {
-      var home = Start();
-
-      var currentTenantControl = home.Header.OpenCurrentTenantControl();
-      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
-
-      currentTenantControl.SelectOption().WithText ("Acta Nova Ortsteil 1", Continue.When(ActaNovaCompletion.OuterInnerOuterUpdated));
-
-      currentTenantControl = home.Header.OpenCurrentTenantControl();
-      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Ortsteil 1"));
-
-      currentTenantControl.SelectOption().WithIndex (1, Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
-
-      currentTenantControl = home.Header.OpenCurrentTenantControl();
-      Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
-    }
-
+    
     [Test]
     public void MySampleTest ()
     {
@@ -128,7 +80,7 @@ namespace ActaNova.WebTesting.SampleTests
 
       Assert.That (home.Header.GetCurrentApplicationContext(), Is.EqualTo ("Verfahrensbereich BA"));
       Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
-      Assert.That (home.Header.GetBreadCrumbs()[0].Text, Is.EqualTo ("Eigener AV"));
+      Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Eigener AV"));
 
       home.MainMenu.Select ("Verfahrensbereich", "Kein Verfahrensbereich");
 

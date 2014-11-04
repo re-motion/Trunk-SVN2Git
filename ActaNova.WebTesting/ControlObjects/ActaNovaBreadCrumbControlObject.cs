@@ -8,7 +8,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova bread crumb.
   /// </summary>
-  public class ActaNovaBreadCrumbControlObject : ActaNovaMainFrameControlObject, IClickableControlObject
+  public class ActaNovaBreadCrumbControlObject : ActaNovaMainFrameControlObject, IClickableControlObject, IControlObjectWithText
   {
     public ActaNovaBreadCrumbControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -18,9 +18,9 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Returns the bread crumb's displayed text.
     /// </summary>
-    public string Text
+    public string GetText ()
     {
-      get { return Scope.FindCss ("span.breadCrumbElementText").Text.Trim(); }
+      return Scope.FindCss ("span.breadCrumbElementText").Text.Trim();
     }
 
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
