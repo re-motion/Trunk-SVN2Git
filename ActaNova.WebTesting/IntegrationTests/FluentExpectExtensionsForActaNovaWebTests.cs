@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 
-namespace ActaNova.WebTesting.SampleTests
+namespace ActaNova.WebTesting.IntegrationTests
 {
   /// <summary>
   /// Fluent selection extension methods.

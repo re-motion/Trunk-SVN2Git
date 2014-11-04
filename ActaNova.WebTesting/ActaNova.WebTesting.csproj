@@ -105,10 +105,10 @@
     <Compile Include="PageObjects\AppToolsPageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IntegrationTests\ActaNovaHeaderControlObjectTest.cs" />
-    <Compile Include="SampleTests\ActaNovaWebTestBase.cs" />
-    <Compile Include="SampleTests\FluentExpectExtensionsForActaNovaWebTests.cs" />
+    <Compile Include="IntegrationTests\ActaNovaWebTestBase.cs" />
+    <Compile Include="IntegrationTests\FluentExpectExtensionsForActaNovaWebTests.cs" />
     <Compile Include="SampleTests\SampleTest.cs" />
-    <Compile Include="SampleTests\SetUpFixture.cs" />
+    <Compile Include="IntegrationTests\SetUpFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Remotion\ObjectBinding\Web.Development.WebTesting\ObjectBinding.Web.Development.WebTesting.csproj">

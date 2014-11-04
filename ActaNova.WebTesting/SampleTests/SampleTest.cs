@@ -1,5 +1,6 @@
 ﻿using System;
 using ActaNova.WebTesting.Infrastructure;
+using ActaNova.WebTesting.IntegrationTests;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
