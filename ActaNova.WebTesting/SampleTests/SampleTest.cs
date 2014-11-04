@@ -13,21 +13,6 @@ namespace ActaNova.WebTesting.SampleTests
   public class SampleTest : ActaNovaWebTestBase
   {
     [Test]
-    public void TestRefresh ()
-    {
-      var home = Start();
-
-      if (home.DetailsArea.FormPageTitle != "Eigener AV")
-        home.Tree.GetNode().WithText ("Eigener AV").Select();
-
-      // Todo RM-6297: MainMenu.Select() should allow overridden IActionBehavior
-      home = home.MainMenu.Select ("Extras", "Benutzerprofil").Expect<ActaNovaMainPageObject>();
-      home = home.Refresh().Expect<ActaNovaMainPageObject>();
-
-      Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
-    }
-    
-    [Test]
     public void MySampleTest ()
     {
       var home = Start();
