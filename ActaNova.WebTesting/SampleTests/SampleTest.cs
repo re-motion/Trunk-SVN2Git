@@ -60,9 +60,9 @@ namespace ActaNova.WebTesting.SampleTests
     {
       var home = Start();
 
-      Assert.That (home.Header.CurrentUser, Is.EqualTo ("Muster Max, Ing."));
-      Assert.That (home.Header.CurrentGroup, Is.EqualTo ("EG/1"));
-      Assert.That (home.Header.CurrentApplicationContext, Is.Null);
+      Assert.That (home.Header.GetCurrentUser(), Is.EqualTo ("Muster Max, Ing."));
+      Assert.That (home.Header.GetCurrentGroup(), Is.EqualTo ("EG/1"));
+      Assert.That (home.Header.GetCurrentApplicationContext(), Is.Null);
     }
 
     [Test]
@@ -126,24 +126,24 @@ namespace ActaNova.WebTesting.SampleTests
           "Cancel",
           Continue.When (Wxe.PostBackCompletedIn (newCitizenConcernPage)).AndModalDialogHasBeenAccepted()).Expect<ActaNovaMainPageObject>();
 
-      Assert.That (home.Header.CurrentApplicationContext, Is.EqualTo ("Verfahrensbereich BA"));
-      Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (1));
-      Assert.That (home.Header.BreadCrumbs[0].Text, Is.EqualTo ("Eigener AV"));
+      Assert.That (home.Header.GetCurrentApplicationContext(), Is.EqualTo ("Verfahrensbereich BA"));
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
+      Assert.That (home.Header.GetBreadCrumbs()[0].Text, Is.EqualTo ("Eigener AV"));
 
       home.MainMenu.Select ("Verfahrensbereich", "Kein Verfahrensbereich");
 
-      Assert.That (home.Header.CurrentApplicationContext, Is.Null);
+      Assert.That (home.Header.GetCurrentApplicationContext(), Is.Null);
 
       // Todo RM-6297: MainMenu.Select() should allow overridden IActionBehavior
       newCitizenConcernPage = home.MainMenu.Select ("Neu", "Bürgeranliegen").Expect<ActaNovaMainPageObject>();
 
-      Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (2));
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (2));
 
-      var confirmPage = newCitizenConcernPage.Header.BreadCrumbs[0].Click (Continue.When (Wxe.PostBackCompleted))
+      var confirmPage = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted))
           .Expect<MessageBoxPageObject>();
       home = confirmPage.Confirm().Expect<ActaNovaMainPageObject>();
 
-      Assert.That (home.Header.BreadCrumbs.Count, Is.EqualTo (1));
+      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
     }
   }
 }

@@ -28,50 +28,41 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <remarks>
     /// ActaNova currently displays the application context as "(Verfahrensbereich BA)", this property returns only "Verfahrensbereich BA".
     /// </remarks>
-    public string CurrentApplicationContext
+    public string GetCurrentApplicationContext ()
     {
-      get
-      {
-        var applicationContextScope = Scope.FindId ("CurrentAppContextLabel");
-        var currentApplicationContext = applicationContextScope.Text.Trim();
+      var applicationContextScope = Scope.FindId ("CurrentAppContextLabel");
+      var currentApplicationContext = applicationContextScope.Text.Trim();
 
-        if (!currentApplicationContext.StartsWith ("("))
-          return null;
+      if (!currentApplicationContext.StartsWith ("("))
+        return null;
 
-        return currentApplicationContext.Substring (1, currentApplicationContext.Length - 2);
-      }
+      return currentApplicationContext.Substring (1, currentApplicationContext.Length - 2);
     }
 
     /// <summary>
     /// Returns the current ActaNova user name.
     /// </summary>
-    public string CurrentUser
+    public string GetCurrentUser ()
     {
-      get
-      {
-        var userAndGroup = GetUserAndGroup();
-        
-        var startIndexOfGroup = userAndGroup.LastIndexOf ('(');
-        Assertion.IsTrue (startIndexOfGroup >= 0, "Current user and group label is not correctly formatted.");
+      var userAndGroup = GetUserAndGroup();
 
-        return userAndGroup.Substring (0, startIndexOfGroup - 1);
-      }
+      var startIndexOfGroup = userAndGroup.LastIndexOf ('(');
+      Assertion.IsTrue (startIndexOfGroup >= 0, "Current user and group label is not correctly formatted.");
+
+      return userAndGroup.Substring (0, startIndexOfGroup - 1);
     }
 
     /// <summary>
     /// Returns the current ActaNova group name.
     /// </summary>
-    public string CurrentGroup
+    public string GetCurrentGroup ()
     {
-      get
-      {
-        var userAndGroup = GetUserAndGroup();
-        
-        var startIndexOfGroup = userAndGroup.LastIndexOf ('(') + 1;
-        Assertion.IsTrue (startIndexOfGroup >= 0, "Current user and group label is not correctly formatted.");
+      var userAndGroup = GetUserAndGroup();
 
-        return userAndGroup.Substring (startIndexOfGroup, userAndGroup.Length - startIndexOfGroup - 1);
-      }
+      var startIndexOfGroup = userAndGroup.LastIndexOf ('(') + 1;
+      Assertion.IsTrue (startIndexOfGroup >= 0, "Current user and group label is not correctly formatted.");
+
+      return userAndGroup.Substring (startIndexOfGroup, userAndGroup.Length - startIndexOfGroup - 1);
     }
 
     private string GetUserAndGroup ()
@@ -87,13 +78,13 @@ namespace ActaNova.WebTesting.ControlObjects
     public BocReferenceValueControlObject OpenDefaultGroupControlWhenStandardIsDisplayed ()
     {
       var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_NoDefaultGroupButton");
-      return GetDefaultGroupControlUsingOpenButton(openButtonScope);
+      return GetDefaultGroupControlUsingOpenButton (openButtonScope);
     }
 
     public BocReferenceValueControlObject OpenDefaultGroupControl ()
     {
       var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_DefaultGroupField_Command");
-      return GetDefaultGroupControlUsingOpenButton(openButtonScope);
+      return GetDefaultGroupControlUsingOpenButton (openButtonScope);
     }
 
     private BocReferenceValueControlObject GetDefaultGroupControlUsingOpenButton (ElementScope openButtonScope)
@@ -125,16 +116,13 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Returns the list of currently displayed ActaNova bread crumbs.
     /// </summary>
-    public IReadOnlyList<ActaNovaBreadCrumbControlObject> BreadCrumbs
+    public IReadOnlyList<ActaNovaBreadCrumbControlObject> GetBreadCrumbs ()
     {
-      get
-      {
-        var breadCrumbsScope = Scope.FindId ("BreadCrumbsLabel");
-        return RetryUntilTimeout.Run (
-            () => breadCrumbsScope.FindAllCss (".breadCrumbLink")
-                .Select (s => new ActaNovaBreadCrumbControlObject (Context.CloneForControl (s)))
-                .ToList());
-      }
+      var breadCrumbsScope = Scope.FindId ("BreadCrumbsLabel");
+      return RetryUntilTimeout.Run (
+          () => breadCrumbsScope.FindAllCss (".breadCrumbLink")
+              .Select (s => new ActaNovaBreadCrumbControlObject (Context.CloneForControl (s)))
+              .ToList());
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
