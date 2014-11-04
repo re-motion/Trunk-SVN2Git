@@ -14,9 +14,9 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
-    public string FormPageTitle
+    public override string GetTitle ()
     {
-      get { return Scope.FindCss (".formPageTitleLabel").Text; }
+      return Scope.FindCss (".formPageTitleLabel").Text;
     }
 
     public UnspecifiedPageObject Perform (string command, ICompletionDetection completionDetection = null)

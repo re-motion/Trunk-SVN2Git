@@ -1,5 +1,4 @@
 ﻿using System;
-using ActaNova.WebTesting.Infrastructure;
 using ActaNova.WebTesting.IntegrationTests;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
@@ -27,12 +26,12 @@ namespace ActaNova.WebTesting.SampleTests
       //        "CitizenConcernFormPage_view_LazyContainer_ctl01_ObjectFormPageDataSource_ApplicationContext"))
       //    .FillWith ("BA - Bürgeranliegen", Continue.When (WaitFor.WxePostBackIn (home)));
 
-      newCitizenConcernPage.DetailsArea.GetControl (
+      newCitizenConcernPage.FormPage.GetControl (
           new PerDomainPropertyControlSelectionCommand<BocAutoCompleteReferenceValueControlObject> (
               new BocAutoCompleteReferenceValueSelector(),
               "ApplicationContext")).FillWith ("BA - Bürgeranliegen", Continue.When (Wxe.PostBackCompletedIn (home)));
 
-      home = newCitizenConcernPage.DetailsArea.Perform (
+      home = newCitizenConcernPage.FormPage.Perform (
           "Cancel",
           Continue.When (Wxe.PostBackCompletedIn (newCitizenConcernPage)).AndModalDialogHasBeenAccepted()).Expect<ActaNovaMainPageObject>();
 

@@ -2,6 +2,7 @@
 using ActaNova.WebTesting.PageObjects;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
@@ -54,6 +55,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var url = WebTestingConfiguration.Current.WebApplicationRoot + queryString;
       _webTestHelper.MainBrowserSession.Visit (url);
+      _webTestHelper.AcceptPossibleModalDialog();
 
       return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>();
     }

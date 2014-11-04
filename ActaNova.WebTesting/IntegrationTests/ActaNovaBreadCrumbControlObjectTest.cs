@@ -1,5 +1,4 @@
 ﻿using System;
-using ActaNova.WebTesting.SampleTests;
 using NUnit.Framework;
 
 namespace ActaNova.WebTesting.IntegrationTests
@@ -32,7 +31,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (3));
       Assert.That (home.Header.GetBreadCrumbs()[2].GetText(), Is.EqualTo ("Akt Suchen"));
 
-      searchPage.DetailsArea.Perform ("Search");
+      searchPage.FormPage.Perform ("Search");
 
       Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (3));
       Assert.That (home.Header.GetBreadCrumbs()[2].GetText(), Is.EqualTo ("Akt Suchen"));

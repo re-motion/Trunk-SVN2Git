@@ -24,6 +24,14 @@ namespace ActaNova.WebTesting.PageObjects
       return actaNovaMessageBox.Okay();
     }
 
+    public UnspecifiedPageObject Cancel ()
+    {
+      var context = DetailsArea.Context;
+      var messageBoxScope = context.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
+      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (context.CloneForControl (this, messageBoxScope));
+      return actaNovaMessageBox.Cancel();
+    }
+
     private AppToolsFormPageObject DetailsArea
     {
       get

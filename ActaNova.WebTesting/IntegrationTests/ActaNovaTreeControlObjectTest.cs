@@ -1,6 +1,5 @@
 ﻿using System;
 using ActaNova.WebTesting.PageObjects;
-using ActaNova.WebTesting.SampleTests;
 using NUnit.Framework;
 
 namespace ActaNova.WebTesting.IntegrationTests
@@ -17,11 +16,11 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (eigenerAv.GetText(), Is.EqualTo ("Eigener AV"));
 
       home = home.Tree.GetNode().WithIndex (2).Expand().GetNode().WithText ("egora Gemeinde").Select().Expect<ActaNovaMainPageObject>();
-      Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("egora Gemeinde AV"));
+      Assert.That (home.GetTitle(), Is.EqualTo ("egora Gemeinde AV"));
 
       var geschaeftsfall = home.Tree.GetNode().WithText ("Favoriten").Expand().Collapse().Expand().GetNode().WithIndex (2);
       home = geschaeftsfall.Select().Expect<ActaNovaMainPageObject>();
-      Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
+      Assert.That (home.GetTitle(), Is.EqualTo ("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
 
       home =
           geschaeftsfall.GetNode ("Files")
@@ -32,7 +31,7 @@ namespace ActaNova.WebTesting.IntegrationTests
               .Expand()
               .Select()
               .Expect<ActaNovaMainPageObject>();
-      Assert.That (home.DetailsArea.FormPageTitle, Is.EqualTo ("Akt \"OE/1\" bearbeiten"));
+      Assert.That (home.GetTitle(), Is.EqualTo ("Akt \"OE/1\" bearbeiten"));
     }
   }
 }

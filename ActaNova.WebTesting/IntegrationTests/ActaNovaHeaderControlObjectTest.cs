@@ -1,6 +1,5 @@
 ﻿using System;
 using ActaNova.WebTesting.Infrastructure;
-using ActaNova.WebTesting.SampleTests;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 

@@ -63,6 +63,7 @@
     <Compile Include="ControlObjects\ActaNovaBreadCrumbControlObject.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainPageObjectTest.cs" />
+    <Compile Include="IntegrationTests\ActaNovaMessageBoxControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaTreeControlObjectTest.cs" />
     <Compile Include="PageObjects\AppToolsFormPageObject.cs" />
     <Compile Include="ControlObjects\ActaNovaHeaderControlObject.cs" />

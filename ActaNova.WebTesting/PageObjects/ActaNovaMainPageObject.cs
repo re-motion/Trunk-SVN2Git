@@ -22,7 +22,7 @@ namespace ActaNova.WebTesting.PageObjects
 
     public override string GetTitle ()
     {
-      return DetailsArea.FormPageTitle;
+      return FormPage.GetTitle();
     }
 
     public UnspecifiedPageObject Refresh (ICompletionDetection completionDetection = null)
@@ -60,7 +60,7 @@ namespace ActaNova.WebTesting.PageObjects
       }
     }
 
-    public AppToolsFormPageObject DetailsArea
+    public AppToolsFormPageObject FormPage
     {
       get
       {

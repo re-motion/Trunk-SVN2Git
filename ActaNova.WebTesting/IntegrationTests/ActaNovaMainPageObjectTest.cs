@@ -1,5 +1,4 @@
 ﻿using System;
-using ActaNova.WebTesting.SampleTests;
 using NUnit.Framework;
 
 namespace ActaNova.WebTesting.IntegrationTests
