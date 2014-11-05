@@ -16,29 +16,34 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
-    public UnspecifiedPageObject Confirm ()
+    public UnspecifiedPageObject Confirm (ICompletionDetection completionDetection = null)
     {
-      var context = DetailsArea.Context;
-      var messageBoxScope = context.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (context.CloneForControl (this, messageBoxScope));
-      return actaNovaMessageBox.Okay();
+      var mesageBox = GetActaNovaMessageBoxControlObject();
+      return mesageBox.Okay (completionDetection);
     }
 
-    public UnspecifiedPageObject Cancel ()
+    public UnspecifiedPageObject Cancel (ICompletionDetection completionDetection = null)
     {
-      var context = DetailsArea.Context;
-      var messageBoxScope = context.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      var actaNovaMessageBox = new ActaNovaMessageBoxControlObject (context.CloneForControl (this, messageBoxScope));
-      return actaNovaMessageBox.Cancel();
+      var mesageBox = GetActaNovaMessageBoxControlObject();
+      return mesageBox.Cancel (completionDetection);
     }
 
-    private AppToolsFormPageObject DetailsArea
+    private ActaNovaMessageBoxControlObject GetActaNovaMessageBoxControlObject ()
     {
-      get
-      {
-        var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new AppToolsFormPageObject (Context.CloneForFrame (detailsAreaScope));
-      }
+      var messageBoxScope = Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
+      if (messageBoxScope.IsVisible())
+        return new ActaNovaMessageBoxControlObject (Context.CloneForControl (this, messageBoxScope));
+
+      var detailsArea = GetDetailsArea();
+      messageBoxScope = detailsArea.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
+      return new ActaNovaMessageBoxControlObject (detailsArea.Context.CloneForControl (detailsArea, messageBoxScope));
+    }
+
+    private ActaNovaPageObject GetDetailsArea ()
+    {
+      var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
+      var detailsArea = new ActaNovaPageObject (Context.CloneForFrame (detailsAreaScope));
+      return detailsArea;
     }
   }
 }

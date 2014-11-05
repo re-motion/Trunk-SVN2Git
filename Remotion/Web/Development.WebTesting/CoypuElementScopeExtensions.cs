@@ -1,4 +1,5 @@
-﻿using Coypu;
+﻿using System;
+using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
@@ -23,7 +24,8 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns whether the given <paramref name="scope"/> is currently displayed (visible).
+    /// Returns whether the given <paramref name="scope"/> is currently displayed (visible). The given <paramref name="scope"/> must exist, otherwise
+    /// this method will throw an <see cref="NoSuchElementException"/>.
     /// </summary>
     /// <returns>True if the given <paramref name="scope"/> is visible, otherwise false.</returns>
     public static bool IsVisible ([NotNull] this ElementScope scope)
