@@ -88,6 +88,8 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       ExecuteAdditionallyRequiredActions (context);
 
       var actualContext = DetermineContextForCompletionDetectionStrategies (context);
+      // Note: currently all framework-supported completion strategies already ensure this implicitly, keep for user-created completion strategies!
+      actualContext.Window.EnsureWindowIsActive();
       foreach (var completionDetectionStrategy in _completionDetectionStrategies)
       {
         var state = _completionDetectionStrategyStates[completionDetectionStrategy];
