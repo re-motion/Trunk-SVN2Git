@@ -117,7 +117,7 @@ namespace Remotion.Web.Development.WebTesting
       // Note: otherwise the Selenium web driver may get confused when searching for windows.
       EnsureAllBrowserWindowsAreClosed();
 
-      MainBrowserSession = CreateNewBrowserSession (_webTestConfiguration.WebApplicationRoot);
+      MainBrowserSession = CreateNewBrowserSession ();
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
@@ -138,17 +138,15 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Creates a new browser session using the configured settings from the App.config file.
     /// </summary>
-    /// <param name="url">The URL to visit.</param>
     /// <param name="maximiseWindow">Specified whether the new browser session's window should be maximized.</param>
     /// <returns>The new browser session.</returns>
-    public BrowserSession CreateNewBrowserSession (string url, bool maximiseWindow = true)
+    public BrowserSession CreateNewBrowserSession (bool maximiseWindow = true)
     {
       using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
         var browser = BrowserFactory.CreateBrowser (_browserConfiguration, _coypuConfiguration);
         if (maximiseWindow)
           browser.MaximiseWindow();
-        browser.Visit (url);
         return browser;
       }
     }

@@ -2,7 +2,6 @@
 using ActaNova.WebTesting.PageObjects;
 using JetBrains.Annotations;
 using NUnit.Framework;
-using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
@@ -26,7 +25,6 @@ namespace ActaNova.WebTesting.IntegrationTests
     public void ActaNovaWebTestBaseSetUp ()
     {
       _webTestHelper.OnSetUp (GetType().Name + "_" + TestContext.CurrentContext.Test.Name);
-
       _webTestHelper.MainBrowserSession.ClearCookies();
     }
 
@@ -45,7 +43,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
     protected ActaNovaMainPageObject Start ()
     {
-      var defaultQueryString = "?debugLoginUser=mm&debugDmsDownLevel=true";
+      const string defaultQueryString = "?debugLoginUser=mm&debugDmsDownLevel=true";
       return Start (defaultQueryString);
     }
 
@@ -54,9 +52,12 @@ namespace ActaNova.WebTesting.IntegrationTests
       ArgumentUtility.CheckNotNullOrEmpty ("queryString", queryString);
 
       var url = WebTestingConfiguration.Current.WebApplicationRoot + queryString;
-      _webTestHelper.MainBrowserSession.Visit (url);
+
+      // Visit blank page in order to trigger all WxeAbort calls: this prevents that the initial load of the right frame triggers a main frame update.
+      _webTestHelper.MainBrowserSession.Visit ("about:blank");
       _webTestHelper.AcceptPossibleModalDialog();
 
+      _webTestHelper.MainBrowserSession.Visit (url);
       return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>();
     }
   }
