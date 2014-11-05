@@ -18,6 +18,9 @@ namespace ActaNova.WebTesting.PageObjects
     public ActaNovaMainPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
+      // Ensure that inner frame has loaded before actual work starts (otherwise IE driver sometimes loads right frame in new window, don't know why).
+      // ActaNovaBreadCrumbControlObjectTest.Test often failed that way.
+      FormPage.Scope.EnsureExistence();
     }
 
     public override string GetTitle ()
