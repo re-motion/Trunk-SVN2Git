@@ -12,6 +12,7 @@ namespace ActaNova.WebTesting.IntegrationTests
   public class ActaNovaMessageBox
   {
     public static readonly ActaNovaMessageBox Okay = new ActaNovaMessageBox (mb => mb.Confirm());
+    public static readonly ActaNovaMessageBox OkayWithoutPostback = new ActaNovaMessageBox (mb => mb.Confirm (Continue.Immediately()));
     public static readonly ActaNovaMessageBox Cancel = new ActaNovaMessageBox (mb => mb.Cancel());
 
     private readonly Func<MessageBoxPageObject, UnspecifiedPageObject> _func;

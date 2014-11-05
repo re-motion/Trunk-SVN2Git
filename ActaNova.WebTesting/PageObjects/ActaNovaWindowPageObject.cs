@@ -10,5 +10,10 @@ namespace ActaNova.WebTesting.PageObjects
         : base(context)
     {
     }
+
+    public void Close ()
+    {
+      Context.CloseWindow();
+    }
   }
 }
