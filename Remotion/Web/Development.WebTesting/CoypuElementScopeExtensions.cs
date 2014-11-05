@@ -1,5 +1,6 @@
 ﻿using Coypu;
 using JetBrains.Annotations;
+using OpenQA.Selenium;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
@@ -19,6 +20,18 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       scope.Now();
+    }
+
+    /// <summary>
+    /// Returns whether the given <paramref name="scope"/> is currently displayed (visible).
+    /// </summary>
+    /// <returns>True if the given <paramref name="scope"/> is visible, otherwise false.</returns>
+    public static bool IsVisible ([NotNull] this ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      var webElement = (IWebElement) scope.Native;
+      return webElement.Displayed;
     }
 
     /// <summary>

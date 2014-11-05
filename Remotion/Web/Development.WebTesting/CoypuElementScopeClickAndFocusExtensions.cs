@@ -43,15 +43,8 @@ namespace Remotion.Web.Development.WebTesting
     public static void Focus ([NotNull] this ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
-
-      // Todo RM-6297: Check whether we really need to fall back to using Selenium here.
-
-      var webElement = (IWebElement) scope.Native;
-
-      if (webElement.TagName == "input" || webElement.TagName == "textarea")
-        webElement.Click();
-      else
-        webElement.SendKeys ("");
+      
+      scope.SendKeys ("");
     }
 
     /// <summary>
