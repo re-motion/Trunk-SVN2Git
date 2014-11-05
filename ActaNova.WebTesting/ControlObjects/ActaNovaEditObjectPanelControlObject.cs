@@ -5,18 +5,16 @@ using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace ActaNova.WebTesting.PageObjects
+namespace ActaNova.WebTesting.ControlObjects
 {
-  public class AppToolsFormPageObject : AppToolsPageObject, IWebTestObjectWithWebButtons
+  /// <summary>
+  /// Control object representing the ActaNova edit object panel.
+  /// </summary>
+  public class ActaNovaEditObjectPanelControlObject : ScopeControlObject, IWebTestObjectWithWebButtons
   {
-    public AppToolsFormPageObject ([NotNull] PageObjectContext context)
+    public ActaNovaEditObjectPanelControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
-    }
-
-    public override string GetTitle ()
-    {
-      return Scope.FindCss (".formPageTitleLabel").Text;
     }
 
     public UnspecifiedPageObject Perform (string itemID, ICompletionDetection completionDetection = null)

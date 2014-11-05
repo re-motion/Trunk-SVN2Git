@@ -115,6 +115,7 @@
     <Compile Include="ControlObjects\IControlObjectWithSelectableSubItems.cs" />
     <Compile Include="ControlObjects\IControlObjectWithSelectableItems.cs" />
     <Compile Include="ControlObjects\IControlObjectWithText.cs" />
+    <Compile Include="ControlObjects\IWebTestObjectWithWebButtons.cs" />
     <Compile Include="ControlObjects\IListMenuHost.cs" />
     <Compile Include="ControlObjects\IDropDownMenuHost.cs" />
     <Compile Include="ControlObjects\IClickableControlObject.cs" />
