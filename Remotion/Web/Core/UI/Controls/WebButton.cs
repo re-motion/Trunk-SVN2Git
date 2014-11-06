@@ -207,12 +207,14 @@ namespace Remotion.Web.UI.Controls
       ControlStyle.CssClass = computedCssClass;
 
       base.AddAttributesToRender (writer);
-      if (_renderingFeatures.EnableDiagnosticMetadata)
-        AddDiagnosticMetadataAttributes (writer);
-
+      
       ControlStyle.CssClass = cssClassBackup;
 
       OnClientClick = backUpOnClientClick;
+
+      // Must be after OnClientClick has been reset
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+        AddDiagnosticMetadataAttributes (writer);
 
       _options = null;
     }
@@ -230,9 +232,9 @@ namespace Remotion.Web.UI.Controls
 
       if (!string.IsNullOrEmpty (ID))
         writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, ID);
-      
 
-      writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, true.ToString().ToLower());
+      var triggersPostBack = !OnClientClick.Contains (";return ");
+      writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, triggersPostBack.ToString().ToLower());
     }
 
     protected override PostBackOptions GetPostBackOptions ()
