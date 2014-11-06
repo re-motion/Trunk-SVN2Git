@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using NUnit.Framework;
@@ -101,7 +102,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocReferenceValue = home.GetReferenceValue().ByDomainProperty ("Partner", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
+      var bocReferenceValue = home.GetReferenceValue()
+          .ByDomainProperty ("Partner", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
       Assert.That (bocReferenceValue.Scope.Id, Is.EqualTo ("body_DataEditControl_PartnerField_Normal"));
     }
 
@@ -142,7 +144,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       bocReferenceValue.SelectOption (baLabel);
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo(baLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (baLabel));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       bocReferenceValue.SelectOption().WithIndex (1);
@@ -150,7 +152,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       bocReferenceValue.SelectOption().WithText ("D, A");
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo(daLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
     }
 
     [Test]
@@ -247,7 +249,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
     }
 
-    private RemotionPageObject Start()
+    private RemotionPageObject Start ()
     {
       return Start ("BocReferenceValue");
     }

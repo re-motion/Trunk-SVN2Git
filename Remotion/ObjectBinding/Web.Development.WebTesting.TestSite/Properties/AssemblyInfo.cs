@@ -23,5 +23,6 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remotion BusinessObjectControls Library WebTesting Framework Integration TestSite For Integration Tests")]
-[assembly: AssemblyCulture("")]		
+
+[assembly: AssemblyTitle ("Remotion BusinessObjectControls Library WebTesting Framework Integration TestSite For Integration Tests")]
+[assembly: AssemblyCulture ("")]

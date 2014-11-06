@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 
@@ -25,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     {
       NormalCurrentValueLabel.Text = value;
     }
-    
+
     public void SetCurrentValueTriState (string value)
     {
       TriStateCurrentValueLabel.Text = value;

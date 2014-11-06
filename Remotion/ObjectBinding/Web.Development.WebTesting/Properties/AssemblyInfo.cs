@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using System.Resources;
@@ -25,7 +26,8 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Remotion BusinessObjectControls Library WebTesting Framework Integration")]
+
+[assembly: AssemblyTitle ("Remotion BusinessObjectControls Library WebTesting Framework Integration")]
 [assembly: AssemblyDescription ("WebTesting framework integration for business object web controls.")]
-[assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]

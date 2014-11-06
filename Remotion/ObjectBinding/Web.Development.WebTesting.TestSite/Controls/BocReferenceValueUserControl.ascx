@@ -22,12 +22,12 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_Normal"
-        DropDownListStyle-AutoPostBack="true"
-        ReadOnly="False"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="true"
+                                  ReadOnly="False"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
@@ -58,13 +58,13 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_Normal_AlternativeRendering"
-        DropDownListStyle-AutoPostBack="true"
-        ReadOnly="False"
-        HasValueEmbeddedInsideOptionsMenu="True"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="true"
+                                  ReadOnly="False"
+                                  HasValueEmbeddedInsideOptionsMenu="True"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
@@ -95,12 +95,12 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_ReadOnly"
-        DropDownListStyle-AutoPostBack="true"
-        ReadOnly="True"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="true"
+                                  ReadOnly="True"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
@@ -131,13 +131,13 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_ReadOnly_AlternativeRendering"
-        DropDownListStyle-AutoPostBack="true"
-        ReadOnly="True"
-        HasValueEmbeddedInsideOptionsMenu="False"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="true"
+                                  ReadOnly="True"
+                                  HasValueEmbeddedInsideOptionsMenu="False"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
@@ -168,12 +168,12 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_Disabled"
-        DropDownListStyle-AutoPostBack="true"
-        Enabled="False"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="true"
+                                  Enabled="False"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
@@ -204,12 +204,12 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_NoAutoPostBack"
-        DropDownListStyle-AutoPostBack="false"
-        ReadOnly="False"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="false"
+                                  ReadOnly="False"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
         <PersistedCommand>
           <remotion:BocCommand Type="Event"></remotion:BocCommand>
@@ -240,12 +240,12 @@
     <td></td>
     <td>
       <remotion:BocReferenceValue ID="PartnerField_NoCommandNoMenu"
-        DropDownListStyle-AutoPostBack="true"
-        ReadOnly="False"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="Partner"
-        IconServicePath="IconService.asmx"
-        runat="server">
+                                  DropDownListStyle-AutoPostBack="true"
+                                  ReadOnly="False"
+                                  DataSourceControl="CurrentObject"
+                                  PropertyIdentifier="Partner"
+                                  IconServicePath="IconService.asmx"
+                                  runat="server">
         
       </remotion:BocReferenceValue>
     </td>

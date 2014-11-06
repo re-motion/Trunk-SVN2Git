@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.IO;
 using System.Web;
@@ -37,18 +38,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       if (!Directory.Exists (objectPath))
         Directory.CreateDirectory (objectPath);
 
-      SetObjectStorageProvider(objectPath);
+      SetObjectStorageProvider (objectPath);
       RegisterAutoCompleteService();
       RegisterIconService();
       RegisterResourceVirtualPathProvider();
-      SetRenderingFeatures(RenderingFeatures.WithDiagnosticMetadata);
+      SetRenderingFeatures (RenderingFeatures.WithDiagnosticMetadata);
     }
 
     protected void Application_BeginRequest (Object sender, EventArgs e)
     {
       _resourceVirtualPathProvider.HandleBeginRequest();
     }
-    
+
     private static void SetObjectStorageProvider (string objectPath)
     {
       var provider = new XmlReflectionBusinessObjectStorageProvider (objectPath);

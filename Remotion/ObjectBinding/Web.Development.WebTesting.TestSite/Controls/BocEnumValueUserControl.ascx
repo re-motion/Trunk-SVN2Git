@@ -22,17 +22,17 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_DropDownListNormal"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="DropDownList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="DropDownList"
+                             ReadOnly="false"
+                             Required="false"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(DropDownList, normal)</td>
   </tr>
@@ -40,17 +40,17 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_DropDownListReadOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="DropDownList"
-        ReadOnly="true"
-        Required="true"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="DropDownList"
+                             ReadOnly="true"
+                             Required="true"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(DropDownList, read-only)</td>
   </tr>
@@ -58,17 +58,17 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_DropDownListDisabled"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="false"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="DropDownList"
-        ReadOnly="false"
-        Required="true"
+                             Enabled="false"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="DropDownList"
+                             ReadOnly="false"
+                             Required="true"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(DropDownList, disabled)</td>
   </tr>
@@ -76,17 +76,17 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_DropDownListNoAutoPostBack"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="true"
-        ListControlStyle-AutoPostBack="false"
-        ListControlStyle-ControlType="DropDownList"
-        ReadOnly="false"
-        Required="true"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="false"
+                             ListControlStyle-ControlType="DropDownList"
+                             ReadOnly="false"
+                             Required="true"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(DropDownList, no auto postback)</td>
   </tr>
@@ -94,19 +94,19 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_ListBoxNormal"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        ListControlStyle-ListBoxRows="2"
+                             ListControlStyle-ListBoxRows="2"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="ListBox"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="ListBox"
+                             ReadOnly="false"
+                             Required="false"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(ListBox, normal)</td>
   </tr>
@@ -114,19 +114,19 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_ListBoxReadOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        ListControlStyle-ListBoxRows="2"
+                             ListControlStyle-ListBoxRows="2"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="ListBox"
-        ReadOnly="true"
-        Required="true"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="ListBox"
+                             ReadOnly="true"
+                             Required="true"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(ListBox, read-only)</td>
   </tr>
@@ -134,19 +134,19 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_ListBoxDisabled"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        ListControlStyle-ListBoxRows="2"
+                             ListControlStyle-ListBoxRows="2"
 
-        Enabled="false"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="ListBox"
-        ReadOnly="false"
-        Required="true"
+                             Enabled="false"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="ListBox"
+                             ReadOnly="false"
+                             Required="true"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(ListBox, disabled)</td>
   </tr>
@@ -154,19 +154,19 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_ListBoxNoAutoPostBack"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        ListControlStyle-ListBoxRows="2"
+                             ListControlStyle-ListBoxRows="2"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="false"
-        ListControlStyle-ControlType="ListBox"
-        ReadOnly="false"
-        Required="true"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="false"
+                             ListControlStyle-ControlType="ListBox"
+                             ReadOnly="false"
+                             Required="true"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(ListBox, no auto postback)</td>
   </tr>
@@ -174,21 +174,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListNormal"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="false"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="Table"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="Table"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, normal)</td>
   </tr>
@@ -196,21 +196,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListReadOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="true"
-        Required="true"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="true"
+                             Required="true"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="Table"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="Table"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, read-only)</td>
   </tr>
@@ -218,21 +218,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListDisabled"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="false"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="true"
+                             Enabled="false"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="true"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="Table"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="Table"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, disabled)</td>
   </tr>
@@ -240,21 +240,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListNoAutoPostBack"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
         
-        Enabled="true"
-        ListControlStyle-AutoPostBack="false"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="true"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="false"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="true"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="Table"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="Table"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, no auto postback)</td>
   </tr>
@@ -262,21 +262,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListMultiColumn"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="false"
         
-        ListControlStyle-RadioButtonListRepeatColumns="2"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="Table"
+                             ListControlStyle-RadioButtonListRepeatColumns="2"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="Table"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, multi-column)</td>
   </tr>
@@ -284,21 +284,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListFlow"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="false"
         
-        ListControlStyle-RadioButtonListRepeatColumns="2"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="Flow"
+                             ListControlStyle-RadioButtonListRepeatColumns="2"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="Flow"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, flow, multi-column)</td>
   </tr>
@@ -306,21 +306,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListOrderedList"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="false"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="OrderedList"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="OrderedList"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, ordered list)</td>
   </tr>
@@ -328,21 +328,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListUnorderedList"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="false"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Right"
-        ListControlStyle-RadionButtonListRepeatLayout="UnorderedList"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Right"
+                             ListControlStyle-RadionButtonListRepeatLayout="UnorderedList"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, unordered list)</td>
   </tr>
@@ -350,21 +350,21 @@
     <td></td>
     <td>
       <remotion:BocEnumValue ID="MarriageStatusField_RadioButtonListLabelLeft"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="MarriageStatus"
-        UndefinedItemText="Is_So_Undefined"
+                             DataSourceControl="CurrentObject"
+                             PropertyIdentifier="MarriageStatus"
+                             UndefinedItemText="Is_So_Undefined"
 
-        Enabled="true"
-        ListControlStyle-AutoPostBack="true"
-        ListControlStyle-ControlType="RadioButtonList"
-        ReadOnly="false"
-        Required="false"
+                             Enabled="true"
+                             ListControlStyle-AutoPostBack="true"
+                             ListControlStyle-ControlType="RadioButtonList"
+                             ReadOnly="false"
+                             Required="false"
         
-        ListControlStyle-RadioButtonListRepeatColumns="1"
-        ListControlStyle-RadioButtonListTextAlign="Left"
-        ListControlStyle-RadionButtonListRepeatLayout="Table"
+                             ListControlStyle-RadioButtonListRepeatColumns="1"
+                             ListControlStyle-RadioButtonListTextAlign="Left"
+                             ListControlStyle-RadionButtonListRepeatLayout="Table"
         
-        runat="server"/>
+                             runat="server"/>
     </td>
     <td>(RadioButtonList, label left)</td>
   </tr>

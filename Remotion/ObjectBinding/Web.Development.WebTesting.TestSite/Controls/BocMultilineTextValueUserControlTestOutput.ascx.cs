@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 
@@ -23,12 +24,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
   {
     public void SetCurrentValueNormal (string value)
     {
-      NormalCurrentValueLabel.Text = Server.HtmlEncode(value);
+      NormalCurrentValueLabel.Text = Server.HtmlEncode (value);
     }
 
     public void SetCurrentValueNoAutoPostBack (string value)
     {
-      NoAutoPostBackCurrentValueLabel.Text = Server.HtmlEncode(value);
+      NoAutoPostBackCurrentValueLabel.Text = Server.HtmlEncode (value);
     }
   }
 }

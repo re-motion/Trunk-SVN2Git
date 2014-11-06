@@ -22,16 +22,16 @@
     <td></td>
     <td>
       <remotion:BocCheckBox ID="DeceasedField_Normal"
-        DataSourceControl="CurrentObject"
-        FalseDescription="Is_So_False"
-        PropertyIdentifier="Deceased"
-        TrueDescription="Is_So_True"
+                            DataSourceControl="CurrentObject"
+                            FalseDescription="Is_So_False"
+                            PropertyIdentifier="Deceased"
+                            TrueDescription="Is_So_True"
 
-        AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="false"
+                            AutoPostBack="true"
+                            Enabled="true"
+                            ReadOnly="false"
         
-        runat="server"/>
+                            runat="server"/>
     </td>
     <td>(normal)</td>
   </tr>
@@ -39,16 +39,16 @@
     <td></td>
     <td>
       <remotion:BocCheckBox ID="DeceasedField_ReadOnly"
-        DataSourceControl="CurrentObject"
-        FalseDescription="Is_So_False"
-        PropertyIdentifier="Deceased"
-        TrueDescription="Is_So_True"
+                            DataSourceControl="CurrentObject"
+                            FalseDescription="Is_So_False"
+                            PropertyIdentifier="Deceased"
+                            TrueDescription="Is_So_True"
 
-        AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="true"
+                            AutoPostBack="true"
+                            Enabled="true"
+                            ReadOnly="true"
         
-        runat="server"/>
+                            runat="server"/>
     </td>
     <td>(read-only)</td>
   </tr>
@@ -56,16 +56,16 @@
     <td></td>
     <td>
       <remotion:BocCheckBox ID="DeceasedField_Disabled"
-        DataSourceControl="CurrentObject"
-        FalseDescription="Is_So_False"
-        PropertyIdentifier="Deceased"
-        TrueDescription="Is_So_True"
+                            DataSourceControl="CurrentObject"
+                            FalseDescription="Is_So_False"
+                            PropertyIdentifier="Deceased"
+                            TrueDescription="Is_So_True"
 
-        AutoPostBack="true"
-        Enabled="false"
-        ReadOnly="false"
+                            AutoPostBack="true"
+                            Enabled="false"
+                            ReadOnly="false"
         
-        runat="server"/>
+                            runat="server"/>
     </td>
     <td>(disabled)</td>
   </tr>
@@ -73,16 +73,16 @@
     <td></td>
     <td>
       <remotion:BocCheckBox ID="DeceasedField_NoAutoPostBack"
-        DataSourceControl="CurrentObject"
-        FalseDescription="Is_So_False"
-        PropertyIdentifier="Deceased"
-        TrueDescription="Is_So_True"
+                            DataSourceControl="CurrentObject"
+                            FalseDescription="Is_So_False"
+                            PropertyIdentifier="Deceased"
+                            TrueDescription="Is_So_True"
 
-        AutoPostBack="false"
-        Enabled="true"
-        ReadOnly="false"
+                            AutoPostBack="false"
+                            Enabled="true"
+                            ReadOnly="false"
         
-        runat="server"/>
+                            runat="server"/>
     </td>
     <td>(no auto postback)</td>
   </tr> 

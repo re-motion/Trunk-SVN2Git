@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using NUnit.Framework;
@@ -226,7 +227,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
     }
 
-    private RemotionPageObject Start()
+    private RemotionPageObject Start ()
     {
       return Start ("BocAutoCompleteReferenceValue");
     }

@@ -22,17 +22,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_Normal"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="false"
+                                 DateTimeTextBoxStyle-AutoPostBack="true"
+                                 Enabled="true"
+                                 ReadOnly="false"
         
-        ShowSeconds="false"
-        ValueType="DateTime"
+                                 ShowSeconds="false"
+                                 ValueType="DateTime"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(normal)</td>
   </tr>
@@ -40,17 +40,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_ReadOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="true"
+                                 DateTimeTextBoxStyle-AutoPostBack="true"
+                                 Enabled="true"
+                                 ReadOnly="true"
         
-        ShowSeconds="false"
-        ValueType="DateTime"
+                                 ShowSeconds="false"
+                                 ValueType="DateTime"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(read-only)</td>
   </tr>
@@ -58,17 +58,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_Disabled"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="true"
-        Enabled="false"
-        ReadOnly="false"
+                                 DateTimeTextBoxStyle-AutoPostBack="true"
+                                 Enabled="false"
+                                 ReadOnly="false"
         
-        ShowSeconds="false"
-        ValueType="DateTime"
+                                 ShowSeconds="false"
+                                 ValueType="DateTime"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(disabled)</td>
   </tr>
@@ -76,17 +76,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_NoAutoPostBack"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="false"
-        Enabled="true"
-        ReadOnly="false"
+                                 DateTimeTextBoxStyle-AutoPostBack="false"
+                                 Enabled="true"
+                                 ReadOnly="false"
         
-        ShowSeconds="false"
-        ValueType="DateTime"
+                                 ShowSeconds="false"
+                                 ValueType="DateTime"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(no auto postback)</td>
   </tr>
@@ -94,17 +94,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_DateOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="false"
+                                 DateTimeTextBoxStyle-AutoPostBack="true"
+                                 Enabled="true"
+                                 ReadOnly="false"
         
-        ShowSeconds="false"
-        ValueType="Date"
+                                 ShowSeconds="false"
+                                 ValueType="Date"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(date-only)</td>
   </tr>
@@ -112,17 +112,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_ReadOnlyDateOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="true"
+                                 DateTimeTextBoxStyle-AutoPostBack="true"
+                                 Enabled="true"
+                                 ReadOnly="true"
         
-        ShowSeconds="false"
-        ValueType="Date"
+                                 ShowSeconds="false"
+                                 ValueType="Date"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(read-only, date-only)</td>
   </tr>
@@ -130,17 +130,17 @@
     <td></td>
     <td>
       <remotion:BocDateTimeValue ID="DateOfBirthField_WithSeconds"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="DateOfBirth"
+                                 DataSourceControl="CurrentObject"
+                                 PropertyIdentifier="DateOfBirth"
 
-        DateTimeTextBoxStyle-AutoPostBack="true"
-        Enabled="true"
-        ReadOnly="false"
+                                 DateTimeTextBoxStyle-AutoPostBack="true"
+                                 Enabled="true"
+                                 ReadOnly="false"
         
-        ShowSeconds="true"
-        ValueType="DateTime"
+                                 ShowSeconds="true"
+                                 ValueType="DateTime"
 
-        runat="server"/>
+                                 runat="server"/>
     </td>
     <td>(with seconds)</td>
   </tr>

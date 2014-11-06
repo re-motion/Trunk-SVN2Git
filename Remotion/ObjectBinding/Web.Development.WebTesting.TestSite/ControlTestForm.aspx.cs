@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.ExecutionEngine;
@@ -44,7 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
       PopulateDataSources();
       LoadValues (IsPostBack);
     }
-    
+
     private void LoadUserControl ()
     {
       var control = LoadControl (CurrentFunction.UserControl);
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite
     {
       var testOutputControlPath = CurrentFunction.UserControl.Replace (".ascx", "TestOutput.ascx");
       var testOutputControl = LoadControl (testOutputControlPath);
-      
+
       TestOutputControlPlaceHolder.Controls.Add (testOutputControl);
     }
 

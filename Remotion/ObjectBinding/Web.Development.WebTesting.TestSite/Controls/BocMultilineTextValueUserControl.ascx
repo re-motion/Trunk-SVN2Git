@@ -22,15 +22,15 @@
     <td></td>
     <td>
       <remotion:BocMultilineTextValue ID="CVField_Normal"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="CV"
-        ValueType="String"
+                                      DataSourceControl="CurrentObject"
+                                      PropertyIdentifier="CV"
+                                      ValueType="String"
         
-        Enabled="true"
-        ReadOnly="false"
-        TextBoxStyle-AutoPostBack="true"
+                                      Enabled="true"
+                                      ReadOnly="false"
+                                      TextBoxStyle-AutoPostBack="true"
 
-        runat="server"/>
+                                      runat="server"/>
     </td>
     <td>(normal)</td>
   </tr>
@@ -38,15 +38,15 @@
     <td></td>
     <td>
       <remotion:BocMultilineTextValue ID="CVField_ReadOnly"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="CV"
-        ValueType="String"
+                                      DataSourceControl="CurrentObject"
+                                      PropertyIdentifier="CV"
+                                      ValueType="String"
         
-        Enabled="true"
-        ReadOnly="true"
-        TextBoxStyle-AutoPostBack="true"
+                                      Enabled="true"
+                                      ReadOnly="true"
+                                      TextBoxStyle-AutoPostBack="true"
         
-        runat="server"/>
+                                      runat="server"/>
     </td>
     <td>(read-only)</td>
   </tr>
@@ -54,15 +54,15 @@
     <td></td>
     <td>
       <remotion:BocMultilineTextValue ID="CVField_Disabled"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="CV"
-        ValueType="String"
+                                      DataSourceControl="CurrentObject"
+                                      PropertyIdentifier="CV"
+                                      ValueType="String"
         
-        Enabled="false"
-        ReadOnly="false"
-        TextBoxStyle-AutoPostBack="true"
+                                      Enabled="false"
+                                      ReadOnly="false"
+                                      TextBoxStyle-AutoPostBack="true"
         
-        runat="server"/>
+                                      runat="server"/>
     </td>
     <td>(disabled)</td>
   </tr>
@@ -70,15 +70,15 @@
     <td></td>
     <td>
       <remotion:BocMultilineTextValue ID="CVField_NoAutoPostBack"
-        DataSourceControl="CurrentObject"
-        PropertyIdentifier="CV"
-        ValueType="String"
+                                      DataSourceControl="CurrentObject"
+                                      PropertyIdentifier="CV"
+                                      ValueType="String"
         
-        Enabled="true"
-        ReadOnly="false"
-        TextBoxStyle-AutoPostBack="false"
+                                      Enabled="true"
+                                      ReadOnly="false"
+                                      TextBoxStyle-AutoPostBack="false"
         
-        runat="server"/>
+                                      runat="server"/>
     </td>
     <td>(no auto postback)</td>
   </tr>

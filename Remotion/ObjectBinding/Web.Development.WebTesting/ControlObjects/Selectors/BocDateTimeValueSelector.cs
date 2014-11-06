@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -31,7 +32,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     {
     }
 
-    protected override BocDateTimeValueControlObject CreateControlObject (ControlObjectContext newControlObjectContext, ControlSelectionContext controlSelectionContext)
+    protected override BocDateTimeValueControlObject CreateControlObject (
+        ControlObjectContext newControlObjectContext,
+        ControlSelectionContext controlSelectionContext)
     {
       ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
       ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using NUnit.Framework;
@@ -101,7 +102,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocBooleanValue = home.GetBooleanValue().ByDomainProperty ("Deceased", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
+      var bocBooleanValue = home.GetBooleanValue()
+          .ByDomainProperty ("Deceased", "Remotion.ObjectBinding.Sample.Person, Remotion.ObjectBinding.Sample");
       Assert.That (bocBooleanValue.Scope.Id, Is.EqualTo ("body_DataEditControl_DeceasedField_Normal"));
     }
 
@@ -170,10 +172,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       bocBooleanValue.SetTo (null);
       Assert.That (home.Scope.FindIdEndingWith ("TriStateCurrentValueLabel").Text, Is.Empty);
 
-      bocBooleanValue.SetTo(false);
+      bocBooleanValue.SetTo (false);
       Assert.That (home.Scope.FindIdEndingWith ("TriStateCurrentValueLabel").Text, Is.EqualTo ("False"));
 
-      bocBooleanValue.SetTo(true);
+      bocBooleanValue.SetTo (true);
       Assert.That (home.Scope.FindIdEndingWith ("TriStateCurrentValueLabel").Text, Is.EqualTo ("True"));
     }
 

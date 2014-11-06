@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -63,11 +64,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       ArgumentUtility.CheckNotNull ("domainProperty", domainProperty);
 
       var diagnosticMetadata = new Dictionary<string, string>
-            {
-                { DiagnosticMetadataAttributes.ControlType, ControlType },
-                { DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty }
-            };
-      
+                               {
+                                   { DiagnosticMetadataAttributes.ControlType, ControlType },
+                                   { DiagnosticMetadataAttributesForObjectBinding.BoundProperty, domainProperty }
+                               };
+
       if (domainClass != null)
         diagnosticMetadata.Add (DiagnosticMetadataAttributesForObjectBinding.BoundType, domainClass);
 

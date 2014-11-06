@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- This file is part of the re-motion Core Framework (www.re-motion.org)
  ! Copyright (c) rubicon IT GmbH, www.rubicon.eu
@@ -22,5 +22,5 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 
-  <add id="ControlTest" type="Remotion.ObjectBinding.Web.Development.WebTesting.TestSite::ControlTestFunction" resource="~/ControlTest.wxe"/>
+  <add id="ControlTest" type="Remotion.ObjectBinding.Web.Development.WebTesting.TestSite::ControlTestFunction" resource="~/ControlTest.wxe" />
 </urlMapping>

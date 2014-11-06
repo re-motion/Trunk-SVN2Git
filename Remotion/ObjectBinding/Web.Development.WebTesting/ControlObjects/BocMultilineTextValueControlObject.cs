@@ -69,7 +69,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    public UnspecifiedPageObject FillWith ([NotNull] string[] lines, FinishInputWithAction finishInputWith, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        [NotNull] string[] lines,
+        FinishInputWithAction finishInputWith,
+        [CanBeNull] ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNull ("lines", lines);
 
