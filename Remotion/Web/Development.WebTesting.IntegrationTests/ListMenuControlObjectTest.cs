@@ -67,7 +67,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestSelection_Single ()
     {
       var home = Start();
-      var scope = new ScopeControlObject (home.Context.CloneForControl (home, home.Scope.FindId ("scope")));
+      var scope = home.GetScope().ByID ("scope");
 
       var listMenu = scope.GetListMenu().Single();
       Assert.That (listMenu.Scope.Id, Is.EqualTo ("body_MyListMenu2"));

@@ -91,7 +91,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestSelection_Single ()
     {
       var home = Start();
-      var scope = new ScopeControlObject (home.Context.CloneForControl (home, home.Scope.FindId ("scope")));
+      var scope = home.GetScope().ByID ("scope");
 
       var htmlAnchor = scope.GetAnchor().Single();
       Assert.That (htmlAnchor.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor"));

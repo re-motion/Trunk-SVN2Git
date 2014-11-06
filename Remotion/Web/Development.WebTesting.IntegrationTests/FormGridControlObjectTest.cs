@@ -81,7 +81,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestSelection_Single ()
     {
       var home = Start();
-      var scope = new ScopeControlObject (home.Context.CloneForControl (home, home.Scope.FindId ("scope")));
+      var scope = home.GetScope().ByID ("scope");
 
       var formGrid = scope.GetFormGrid().Single();
       Assert.That (formGrid.Scope.Text, Is.StringContaining ("Content2"));

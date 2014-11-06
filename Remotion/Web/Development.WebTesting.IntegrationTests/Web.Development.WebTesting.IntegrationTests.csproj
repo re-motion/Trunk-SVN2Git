@@ -73,6 +73,7 @@
     <Compile Include="LabelControlObjectTest.cs" />
     <Compile Include="MultiWindowTest.cs" />
     <Compile Include="MultiWindowTestPageObject.cs" />
+    <Compile Include="ScopeControlObjectTest.cs" />
     <Compile Include="SingleViewControlObjectTest.cs" />
     <Compile Include="FormGridControlObjectTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

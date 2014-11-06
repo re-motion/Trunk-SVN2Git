@@ -128,6 +128,7 @@
     <Compile Include="ControlObjects\Selectors\ControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\DropDownMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\AnchorSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\ScopeSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TabbedMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TextBoxSelector.cs" />
     <Compile Include="ControlObjects\Selectors\LabelSelector.cs" />

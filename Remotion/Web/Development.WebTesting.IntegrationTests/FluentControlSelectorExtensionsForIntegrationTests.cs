@@ -57,6 +57,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<ListMenuSelector, ListMenuControlObject> (host, new ListMenuSelector());
     }
 
+    public static FluentControlSelector<ScopeSelector, ScopeControlObject> GetScope (this IControlHost host)
+    {
+      return new FluentControlSelector<ScopeSelector, ScopeControlObject> (host, new ScopeSelector());
+    }
+
     public static FluentControlSelector<SingleViewSelector, SingleViewControlObject> GetSingleView (this IControlHost host)
     {
       return new FluentControlSelector<SingleViewSelector, SingleViewControlObject> (host, new SingleViewSelector());
