@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -32,7 +31,7 @@ namespace Remotion.Globalization.Implementation
   /// <seealso cref="MultiLingualResourcesAttribute"/>
   /// <threadsafety static="true" instance="true"/>
   [ImplementationFor (typeof (IResourceManagerFactory), Position = Position, RegistrationType = RegistrationType.Multiple)]
-  public class ResourceAttributeBasedResourceManagerFactory : IResourceManagerFactory
+  public sealed class ResourceAttributeBasedResourceManagerFactory : IResourceManagerFactory
   {
     public const int Position = 19;
 
