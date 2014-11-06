@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (bool newState, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetTo (bool newState, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       if (GetState() == newState)
         return UnspecifiedPage();

@@ -31,9 +31,11 @@ namespace ActaNova.WebTesting.ControlObjects
     /// </remarks>
     public string GetCurrentApplicationContext ()
     {
-      var applicationContextScope = Scope.FindId ("CurrentAppContextLabel");
-      var currentApplicationContext = applicationContextScope.Text.Trim();
-
+      var currentApplicationContextLabel = GetControl (
+          new PerHtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "CurrentAppContextLabel"));
+      
+      var currentApplicationContext = currentApplicationContextLabel.GetText();
+      
       if (!currentApplicationContext.StartsWith ("("))
         return null;
 
@@ -76,11 +78,17 @@ namespace ActaNova.WebTesting.ControlObjects
       return currentUserAndGroup.GetText();
     }
 
+    /// <summary>
+    /// Opens and returns the default group control when the default value is displayed.
+    /// </summary>
     public BocReferenceValueControlObject OpenDefaultGroupControlWhenStandardIsDisplayed ()
     {
       return GetDefaultGroupControlUsingOpenButton ("SecurityManagerCurrentTenantControl_NoDefaultGroupButton", false);
     }
 
+    /// <summary>
+    /// Opens and returns the default group control when a non-default value is displayed.
+    /// </summary>
     public BocReferenceValueControlObject OpenDefaultGroupControl ()
     {
       return GetDefaultGroupControlUsingOpenButton ("SecurityManagerCurrentTenantControl_DefaultGroupField_Command", true);
@@ -101,7 +109,7 @@ namespace ActaNova.WebTesting.ControlObjects
         var openButtonScope = Scope.FindId (buttonId);
         openButtonScope.Now();
 
-        //// Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
+        // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
         openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
       }
 
@@ -111,6 +119,9 @@ namespace ActaNova.WebTesting.ControlObjects
               "SecurityManagerCurrentTenantControl_DefaultGroupField"));
     }
 
+    /// <summary>
+    /// Opens and returns the current tenant control.
+    /// </summary>
     public BocReferenceValueControlObject OpenCurrentTenantControl ()
     {
       var openButton = GetControl (

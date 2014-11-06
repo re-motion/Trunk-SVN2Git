@@ -26,6 +26,8 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public ActaNovaTreeNodeControlObject GetNode (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       return GetNode().WithItemID (itemID);
     }
 

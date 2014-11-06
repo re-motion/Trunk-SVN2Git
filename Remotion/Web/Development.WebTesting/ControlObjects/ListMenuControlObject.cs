@@ -47,35 +47,33 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
-      var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
-      return ClickItem (item);
+      var itemScope = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
+      return ClickItem (itemScope);
     }
 
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (int index, ICompletionDetection completionDetection)
     {
-      var item = Scope.FindChild ((index - 1).ToString());
-      return ClickItem (item, completionDetection);
+      var itemScope = Scope.FindChild ((index - 1).ToString());
+      return ClickItem (itemScope, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
     {
-      var item = Scope.FindId (htmlID);
-      return ClickItem (item, completionDetection);
+      var itemScope = Scope.FindId (htmlID);
+      return ClickItem (itemScope, completionDetection);
     }
 
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (string text, ICompletionDetection completionDetection)
     {
-      var item = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
-      return ClickItem (item, completionDetection);
+      var itemScope = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
+      return ClickItem (itemScope, completionDetection);
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope item, ICompletionDetection completionDetection = null)
+    private UnspecifiedPageObject ClickItem (ElementScope itemScope, ICompletionDetection completionDetection = null)
     {
-      var anchorScope = item.FindLink();
-
-      var actualCompletionDetector = GetActualCompletionDetector (anchorScope, completionDetection);
-      anchorScope.ClickAndWait (Context, actualCompletionDetector);
-      return UnspecifiedPage();
+      var itemCommandScope = itemScope.FindLink();
+      var itemCommand = new CommandControlObject (Context.CloneForControl (itemCommandScope));
+      return itemCommand.Click (completionDetection);
     }
   }
 }

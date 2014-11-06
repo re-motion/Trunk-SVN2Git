@@ -90,8 +90,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindChild ("Command");
-      var context = Context.CloneForControl (commandScope);
-      return new CommandControlObject (context);
+      return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
@@ -102,8 +101,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
-      var context = Context.CloneForControl (dropDownMenuScope);
-      return new DropDownMenuControlObject (context);
+      return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
     }
   }
 }

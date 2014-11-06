@@ -48,6 +48,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocListAsGridCellControlObject GetCell (string columnItemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+
       return GetCell().WithColumnItemID (columnItemID);
     }
 

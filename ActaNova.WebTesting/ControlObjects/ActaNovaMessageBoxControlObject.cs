@@ -2,6 +2,8 @@
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -18,7 +20,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Confirms the ActaNova message box.
     /// </summary>
-    public UnspecifiedPageObject Okay (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Okay ([CanBeNull] ICompletionDetection completionDetection = null)
     {
       return ClickButton ("OK", completionDetection);
     }
@@ -26,18 +28,16 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Cancels the ActaNova message box.
     /// </summary>
-    public UnspecifiedPageObject Cancel (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Cancel ([CanBeNull] ICompletionDetection completionDetection = null)
     {
       return ClickButton ("Cancel", completionDetection);
     }
 
     private UnspecifiedPageObject ClickButton (string buttonId, ICompletionDetection userDefinedCompletionDetection = null)
     {
-      var id = string.Format ("DisplayBoxPopUp_MessageBoxControl_Popup{0}Button", buttonId);
-      var buttonScope = Scope.FindId (id);
-      var actualCompletionDetector = GetActualCompletionDetector (buttonScope, userDefinedCompletionDetection);
-      buttonScope.ClickAndWait (Context, actualCompletionDetector);
-      return UnspecifiedPage();
+      var itemID = string.Format ("Popup{0}Button", buttonId);
+      var webButton = Children.GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), itemID));
+      return webButton.Click (userDefinedCompletionDetection);
     }
   }
 }

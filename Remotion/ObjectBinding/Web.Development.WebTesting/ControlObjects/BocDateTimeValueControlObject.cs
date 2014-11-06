@@ -19,6 +19,7 @@ using System;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
+using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 
@@ -78,8 +79,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the date component of the control to <paramref name="newDateString"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDate (string newDateString, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetDate ([NotNull] string newDateString, [CanBeNull] ICompletionDetection completionDetection = null)
     {
+      ArgumentUtility.CheckNotNull ("newDateString", newDateString);
+
       var dateScope = GetDateScope();
 
       var actualCompletionDetector = GetActualCompletionDetector (dateScope, completionDetection);
@@ -108,8 +111,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the time component of the control to <paramref name="newTimeString"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTime (string newTimeString, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetTime ([NotNull] string newTimeString, [CanBeNull] ICompletionDetection completionDetection = null)
     {
+      ArgumentUtility.CheckNotNull ("newTimeString", newTimeString);
+
       var timeScope = GetTimeScope();
 
       var actualCompletionDetector = GetActualCompletionDetector (timeScope, completionDetection);

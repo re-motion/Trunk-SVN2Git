@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.Utilities;
@@ -22,16 +23,21 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Selects the menu item using a path through the menu given by <paramref name="menuItems"/>, e.g.: <c>.Select("New", "File")</c>.
     /// </summary>
-    public UnspecifiedPageObject Select (params string[] menuItems)
+    public UnspecifiedPageObject Select ([NotNull] params string[] menuItems)
     {
+      ArgumentUtility.CheckNotNull ("menuItems", menuItems);
+
       return Select (menuItems.AsEnumerable());
     }
 
     /// <summary>
     /// See <see cref="Select(string[])"/>, however, a <paramref name="completionDetection"/> may be given which is used instead of the default one.
     /// </summary>
-    public UnspecifiedPageObject Select (IEnumerable<string> menuItems, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Select ([NotNull] IEnumerable<string> menuItems, [CanBeNull] ICompletionDetection completionDetection = null)
     {
+      ArgumentUtility.CheckNotNull ("menuItems", menuItems);
+      ArgumentUtility.CheckNotNull ("completionDetection", completionDetection);
+
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
       Scope.PerformAction (

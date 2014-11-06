@@ -73,9 +73,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocListEditableRowControlObject Edit ()
     {
-      var editCommandScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
-      var editCommandLinkScope = editCommandScope.FindLink();
-      editCommandLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      var editCell = GetWellKnownEditCell();
+
+      var edit = editCell.GetControl (new SingleControlSelectionCommand<CommandControlObject> (new CommandSelector()));
+      edit.Click();
 
       return new BocListEditableRowControlObject (_accessor, Context);
     }

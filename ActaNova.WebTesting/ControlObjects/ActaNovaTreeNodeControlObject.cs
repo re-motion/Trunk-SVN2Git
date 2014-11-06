@@ -25,6 +25,8 @@ namespace ActaNova.WebTesting.ControlObjects
     internal ActaNovaTreeNodeControlObject ([NotNull] BocTreeViewNodeControlObject bocTreeViewNode)
         : base (bocTreeViewNode.Context)
     {
+      ArgumentUtility.CheckNotNull ("bocTreeViewNode", bocTreeViewNode);
+
       _bocTreeViewNode = bocTreeViewNode;
     }
 
@@ -40,6 +42,8 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public ActaNovaTreeNodeControlObject GetNode (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       return GetNode().WithItemID (itemID);
     }
 

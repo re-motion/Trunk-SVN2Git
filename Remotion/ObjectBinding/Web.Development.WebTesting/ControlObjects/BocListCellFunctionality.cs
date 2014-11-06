@@ -47,8 +47,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindLink();
-      var context = Context.CloneForControl (commandScope);
-      return new CommandControlObject (context);
+      return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)

@@ -45,14 +45,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNull ("text", text);
 
       return FillWith (text, FinishInput.WithTab, completionDetection);
     }
 
     public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
@@ -63,8 +63,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindChild ("Command");
-      var context = Context.CloneForControl (commandScope);
-      return new CommandControlObject (context);
+      return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
@@ -75,8 +74,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
-      var context = Context.CloneForControl (dropDownMenuScope);
-      return new DropDownMenuControlObject (context);
+      return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
     }
   }
 }

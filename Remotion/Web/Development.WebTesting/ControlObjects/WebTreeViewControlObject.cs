@@ -47,6 +47,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       return GetNode().WithItemID (itemID);
     }
 

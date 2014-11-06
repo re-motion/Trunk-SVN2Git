@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (bool? newState, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetTo (bool? newState, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       if (!IsTriState() && !newState.HasValue)
         throw new ArgumentException ("Must not be null for non-tri-state BocBooleanValue controls.", "newState");

@@ -49,6 +49,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocTreeViewNodeControlObject GetNode (string itemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       return GetNode().WithItemID (itemID);
     }
 

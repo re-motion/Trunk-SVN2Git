@@ -53,6 +53,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public BocListEditableCellControlObject GetCell (string columnItemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+
       return GetCell().WithColumnItemID (columnItemID);
     }
 

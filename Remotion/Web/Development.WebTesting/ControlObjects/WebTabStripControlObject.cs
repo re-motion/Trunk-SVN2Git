@@ -82,11 +82,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private UnspecifiedPageObject SwitchTo (ElementScope tabScope, ICompletionDetection completionDetection)
     {
-      var commandScope = tabScope.FindLink();
-
-      var commandContext = Context.CloneForControl (commandScope);
-      var command = new CommandControlObject (commandContext);
-      return command.Click (completionDetection);
+      var tabCommandScope = tabScope.FindLink();
+      var tabCommand = new CommandControlObject (Context.CloneForControl (tabCommandScope));
+      return tabCommand.Click (completionDetection);
     }
   }
 }

@@ -127,11 +127,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private UnspecifiedPageObject SelectMenuOrSubMenuItem (ElementScope menuItemScope, ICompletionDetection completionDetection)
     {
-      var commandScope = menuItemScope.FindLink();
-
-      var commandContext = Context.CloneForControl (commandScope);
-      var command = new CommandControlObject (commandContext);
-      return command.Click (completionDetection);
+      var menuItemCommandScope = menuItemScope.FindLink();
+      var menuItemCommand = new CommandControlObject (Context.CloneForControl (menuItemCommandScope));
+      return menuItemCommand.Click (completionDetection);
     }
 
     private ElementScope GetMainMenuScope ()
