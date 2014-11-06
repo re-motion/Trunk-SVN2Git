@@ -37,6 +37,16 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetCommand().ByLocalID (localID);
     }
 
+    public static FluentControlSelector<DropDownListSelector, DropDownListControlObject> GetDropDownList (this IControlHost host)
+    {
+      return new FluentControlSelector<DropDownListSelector, DropDownListControlObject> (host, new DropDownListSelector());
+    }
+
+    public static DropDownListControlObject GetDropDownList (this IControlHost host, string localID)
+    {
+      return host.GetDropDownList().ByLocalID (localID);
+    }
+
     public static FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> GetDropDownMenu (this IControlHost host)
     {
       return new FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> (host, new DropDownMenuSelector());
@@ -55,6 +65,11 @@ namespace ActaNova.WebTesting.IntegrationTests
     public static FormGridControlObject GetFormGrid (this IControlHost host, string localID)
     {
       return host.GetFormGrid().ByLocalID (localID);
+    }
+
+    public static FormGridControlObject GetOnlyFormGrid (this IControlHost host)
+    {
+      return host.GetFormGrid().Single();
     }
 
     public static FluentControlSelector<LabelSelector, LabelControlObject> GetLabel (this IControlHost host)
@@ -77,6 +92,16 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetListMenu().ByLocalID (localID);
     }
 
+    public static FluentControlSelector<ScopeSelector, ScopeControlObject> GetScope (this IControlHost host)
+    {
+      return new FluentControlSelector<ScopeSelector, ScopeControlObject> (host, new ScopeSelector());
+    }
+
+    public static ScopeControlObject GetScope (this IControlHost host, string localID)
+    {
+      return host.GetScope().ByLocalID (localID);
+    }
+
     public static FluentControlSelector<SingleViewSelector, SingleViewControlObject> GetSingleView (this IControlHost host)
     {
       return new FluentControlSelector<SingleViewSelector, SingleViewControlObject> (host, new SingleViewSelector());
@@ -87,6 +112,11 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetSingleView().ByLocalID (localID);
     }
 
+    public static SingleViewControlObject GetOnlySingleView (this IControlHost host)
+    {
+      return host.GetSingleView().Single();
+    }
+
     public static FluentControlSelector<TabbedMenuSelector, TabbedMenuControlObject> GetTabbedMenu (this IControlHost host)
     {
       return new FluentControlSelector<TabbedMenuSelector, TabbedMenuControlObject> (host, new TabbedMenuSelector());
@@ -95,6 +125,11 @@ namespace ActaNova.WebTesting.IntegrationTests
     public static TabbedMenuControlObject GetTabbedMenu (this IControlHost host, string localID)
     {
       return host.GetTabbedMenu().ByLocalID (localID);
+    }
+
+    public static TabbedMenuControlObject GetOnlyTabbedMenu (this IControlHost host)
+    {
+      return host.GetTabbedMenu().Single();
     }
 
     public static FluentControlSelector<TabbedMultiViewSelector, TabbedMultiViewControlObject> GetTabbedMultiView (this IControlHost host)
