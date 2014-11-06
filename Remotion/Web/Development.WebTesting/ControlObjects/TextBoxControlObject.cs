@@ -55,7 +55,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 

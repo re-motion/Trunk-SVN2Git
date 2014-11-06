@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      currentPageTextInputScope.FillWithAndWait (Keys.Backspace + page, FinishInput.WithTab, Context, Continue.When (Wxe.PostBackCompleted).Build());
+      currentPageTextInputScope.FillInWithAndWait (Keys.Backspace + page, FinishInput.WithTab, Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
     public void GoToFirstPage ()

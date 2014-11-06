@@ -31,44 +31,11 @@ namespace Remotion.Web.Development.WebTesting
   public static class CoypuBrowserSessionExtensions
   {
     /// <summary>
-    /// WebDriver implementations hang when trying to find an element within an <see cref="ElementScope"/> which is on an already closed window.
-    /// Therefore, after closing a window, it is important to ensure that a non-closed window is active.
-    /// </summary>
-    public static void EnsureWindowIsActive ([NotNull] this BrowserWindow window)
-    {
-      ArgumentUtility.CheckNotNull ("window", window);
-
-      // ReSharper disable once UnusedVariable
-      var temp = window.Title;
-    }
-
-    /// <summary>
-    /// Returns the scope of the HTML element on the given window.
-    /// </summary>
-    public static ElementScope GetRootScope ([NotNull] this BrowserWindow window)
-    {
-      ArgumentUtility.CheckNotNull ("window", window);
-
-      return window.FindCss ("html");
-    }
-
-    /// <summary>
-    /// Closes the window specified in the context.
-    /// </summary>
-    public static void CloseWindow ([NotNull] this PageObjectContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      context.Window.ExecuteScript (CommonJavaScripts.SelfClose);
-      context.ParentContext.Window.EnsureWindowIsActive();
-    }
-
-    /// <summary>
     /// Clears all cookies for the current domain.
     /// </summary>
     public static void ClearCookies ([NotNull] this BrowserSession browser)
     {
-      var webDriver = browser.Native as IWebDriver;
+      var webDriver = (IWebDriver) browser.Native;
       webDriver.Manage().Cookies.DeleteAllCookies();
     }
 

@@ -33,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting
     /// its <paramref name="context"/>) using the given <paramref name="completionDetector"/>.
     /// </summary>
     /// <param name="scope">The DOM element.</param>
-    /// /// <param name="action">Action to be performed on the DOM element.</param>
+    /// <param name="action">Action to be performed on the DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="completionDetector"><see cref="ICompletionDetector"/> for this action.</param>
     public static void PerformAction (
@@ -82,7 +82,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="completionDetector"><see cref="ICompletionDetector"/> for this action.</param>
-    public static void FillWithAndWait (
+    public static void FillInWithAndWait (
         [NotNull] this ElementScope scope,
         [NotNull] string value,
         [NotNull] FinishInputWithAction finishInputWithAction,

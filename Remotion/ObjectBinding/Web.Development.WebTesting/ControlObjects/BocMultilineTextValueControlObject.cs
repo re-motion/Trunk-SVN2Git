@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FindChild ("Value").FillWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FindChild ("Value").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
       return UnspecifiedPage();
     }
 

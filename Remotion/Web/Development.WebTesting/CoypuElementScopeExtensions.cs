@@ -23,6 +23,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
+  /// <summary>
+  /// Various general extension methods for Coypu's <see cref="ElementScope"/> class.
+  /// </summary>
   public static class CoypuElementScopeExtensions
   {
     /// <summary>
@@ -51,18 +54,6 @@ namespace Remotion.Web.Development.WebTesting
 
       var webElement = (IWebElement) scope.Native;
       return webElement.Displayed;
-    }
-
-    /// <summary>
-    /// Returns a child element of a control, specified by a <paramref name="idSuffix"/>.
-    /// </summary>
-    public static ElementScope FindChild ([NotNull] this ElementScope scope, [NotNull] string idSuffix)
-    {
-      ArgumentUtility.CheckNotNull ("scope", scope);
-      ArgumentUtility.CheckNotNullOrEmpty ("idSuffix", idSuffix);
-
-      var fullId = string.Format ("{0}_{1}", scope.Id, idSuffix);
-      return scope.FindId (fullId);
     }
   }
 }

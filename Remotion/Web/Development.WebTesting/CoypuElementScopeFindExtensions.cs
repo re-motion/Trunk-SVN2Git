@@ -30,6 +30,18 @@ namespace Remotion.Web.Development.WebTesting
   public static class CoypuElementScopeFindExtensions
   {
     /// <summary>
+    /// Returns a child element of a control, specified by a <paramref name="idSuffix"/>.
+    /// </summary>
+    public static ElementScope FindChild ([NotNull] this ElementScope scope, [NotNull] string idSuffix)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNullOrEmpty ("idSuffix", idSuffix);
+
+      var fullId = string.Format ("{0}_{1}", scope.Id, idSuffix);
+      return scope.FindId (fullId);
+    }
+
+    /// <summary>
     /// Find an element with the given <paramref name="tagSelector"/> bearing a given diagnostic metadata attribute name/value combination.
     /// </summary>
     /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
