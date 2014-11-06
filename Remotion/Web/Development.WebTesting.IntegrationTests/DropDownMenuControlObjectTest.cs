@@ -77,7 +77,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       try
       {
         home.GetDropDownMenu().Single();
-        Assert.Fail ("Should not be able to unambigously find a list menu.");
+        Assert.Fail ("Should not be able to unambigously find a drop down menu.");
       }
       catch (AmbiguousException)
       {
