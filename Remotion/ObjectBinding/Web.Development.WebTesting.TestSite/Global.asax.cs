@@ -23,7 +23,6 @@ using Remotion.Development.Web.ResourceHosting;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Sample;
 using Remotion.ServiceLocation;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite

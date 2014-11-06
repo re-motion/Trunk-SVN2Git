@@ -20,7 +20,6 @@ using System.Web;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Development.Web.ResourceHosting;
 using Remotion.ServiceLocation;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.Web.Development.WebTesting.TestSite

@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq;
-using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 
