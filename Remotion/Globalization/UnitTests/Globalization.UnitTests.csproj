@@ -66,6 +66,8 @@
     <Compile Include="Implementation\MultiLingualNameBasedEnumerationGlobalizationServiceTest.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetPropertyDisplayName_MLNBMIGST.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationServiceTests\TryGetTypeDisplayName_MLNBMIGST.cs" />
+    <Compile Include="Implementation\ResourceAttributeBasedResourceManagerFactoryTest.cs" />
+    <Compile Include="IntegrationTests\ResourceManagerResolverIntegrationTest.cs" />
     <Compile Include="IntegrationTests\CompoundEnumerationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="IntegrationTests\CompoundMemberInformationGlobalizationServiceIntegrationTest.cs" />
     <Compile Include="IntegrationTests\MultiLingualNameBasedEnumerationGlobalizationServiceIntegrationTest.cs" />
