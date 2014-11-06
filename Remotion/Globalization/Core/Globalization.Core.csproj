@@ -56,10 +56,13 @@
     <Compile Include="CultureInfoExtensions.cs" />
     <Compile Include="Implementation\CompoundEnumerationGlobalizationService.cs" />
     <Compile Include="Implementation\CompoundMemberInformationGlobalizationService.cs" />
+    <Compile Include="Implementation\CompoundResourceManagerFactory.cs" />
+    <Compile Include="Implementation\IResourceManagerFactory.cs" />
     <Compile Include="Implementation\LocalizedNameProviderBase.cs" />
     <Compile Include="Implementation\MissingLocalizationException.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedEnumerationGlobalizationService.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationService.cs" />
+    <Compile Include="Implementation\ResourceAttributeBasedResourceManagerFactory.cs" />
     <Compile Include="MultiLingualNameAttribute.cs" />
     <Compile Include="Obsolete\EnumDescription.cs" />
     <Compile Include="Obsolete\EnumDescriptionAttribute.cs" />
