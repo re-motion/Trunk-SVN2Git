@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
 
@@ -77,22 +78,32 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public BocReferenceValueControlObject OpenDefaultGroupControlWhenStandardIsDisplayed ()
     {
-      var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_NoDefaultGroupButton");
-      return GetDefaultGroupControlUsingOpenButton (openButtonScope);
+      return GetDefaultGroupControlUsingOpenButton ("SecurityManagerCurrentTenantControl_NoDefaultGroupButton", false);
     }
 
     public BocReferenceValueControlObject OpenDefaultGroupControl ()
     {
-      var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_DefaultGroupField_Command");
-      return GetDefaultGroupControlUsingOpenButton (openButtonScope);
+      return GetDefaultGroupControlUsingOpenButton ("SecurityManagerCurrentTenantControl_DefaultGroupField_Command", true);
     }
 
-    private BocReferenceValueControlObject GetDefaultGroupControlUsingOpenButton (ElementScope openButtonScope)
+    private BocReferenceValueControlObject GetDefaultGroupControlUsingOpenButton (string buttonId, bool isCommand)
     {
-      openButtonScope.Now();
+      if (isCommand)
+      {
+        var openButton = GetControl (
+            new PerHtmlIDControlSelectionCommand<CommandControlObject> (
+                new CommandSelector(),
+                buttonId));
+        openButton.Click();
+      }
+      else
+      {
+        var openButtonScope = Scope.FindId (buttonId);
+        openButtonScope.Now();
 
-      // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
-      openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
+        //// Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
+        openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
+      }
 
       return GetControl (
           new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
@@ -102,10 +113,11 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public BocReferenceValueControlObject OpenCurrentTenantControl ()
     {
-      var openButtonScope = Scope.FindId ("SecurityManagerCurrentTenantControl_CurrentTenantField_Command");
-
-      // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
-      openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
+      var openButton = GetControl (
+          new PerHtmlIDControlSelectionCommand<CommandControlObject> (
+              new CommandSelector(),
+              "SecurityManagerCurrentTenantControl_CurrentTenantField_Command"));
+      openButton.Click();
 
       return GetControl (
           new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
