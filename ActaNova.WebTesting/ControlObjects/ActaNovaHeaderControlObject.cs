@@ -33,9 +33,9 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       var currentApplicationContextLabel = GetControl (
           new PerHtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "CurrentAppContextLabel"));
-      
+
       var currentApplicationContext = currentApplicationContextLabel.GetText();
-      
+
       if (!currentApplicationContext.StartsWith ("("))
         return null;
 

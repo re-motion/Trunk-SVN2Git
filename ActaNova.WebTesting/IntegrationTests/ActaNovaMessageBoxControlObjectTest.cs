@@ -16,7 +16,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
 
-      home = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click(Continue.When(Wxe.PostBackCompleted)).ExpectActaNova (ActaNovaMessageBox.Okay);
+      home = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted)).ExpectActaNova (ActaNovaMessageBox.Okay);
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
@@ -30,7 +30,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
 
-      home = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click(Continue.When(Wxe.PostBackCompleted)).ExpectActaNova (ActaNovaMessageBox.Cancel);
+      home = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted)).ExpectActaNova (ActaNovaMessageBox.Cancel);
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
     }
