@@ -114,6 +114,9 @@
     <Content Include="objects\Remotion.ObjectBinding.Sample.Person\c93f1935-2d55-4b2a-9fd5-219739324cfb" />
     <Content Include="objects\Remotion.ObjectBinding.Sample.Person\eb94bfdb-1140-46f8-971f-e4b41dae13b8" />
     <Content Include="objects\Remotion.ObjectBinding.Sample.Person\ef898bb1-7095-46d2-872b-5f732a7c0036" />
+    <Content Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

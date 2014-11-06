@@ -247,6 +247,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
+    </None>
     <None Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\ReSharperAnnotations Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.25.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />

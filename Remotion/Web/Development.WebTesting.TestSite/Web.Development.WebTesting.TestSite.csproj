@@ -74,6 +74,9 @@
     <Content Include="TextBoxTest.aspx" />
     <Content Include="ListMenuTest.aspx" />
     <Content Include="Layout.Master" />
+    <Content Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -102,6 +102,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Remotion LGPL.licenseheader">
+      <Link>Remotion LGPL.licenseheader</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
