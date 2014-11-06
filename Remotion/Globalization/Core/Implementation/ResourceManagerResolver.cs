@@ -33,10 +33,13 @@ namespace Remotion.Globalization.Implementation
     private readonly LockingCacheDecorator<Type, ResolvedResourceManagerResult> _resourceManagerWrappersCache =
         CacheFactory.CreateWithLocking<Type, ResolvedResourceManagerResult>();
 
-    private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
+    private readonly IResourceManagerFactory _resourceManagerFactory;
 
-    public ResourceManagerResolver ()
+    public ResourceManagerResolver (IResourceManagerFactory resourceManagerFactory)
     {
+      ArgumentUtility.CheckNotNull ("resourceManagerFactory", resourceManagerFactory);
+
+      _resourceManagerFactory = resourceManagerFactory;
     }
 
     public ResolvedResourceManagerResult Resolve (Type type)
@@ -56,15 +59,9 @@ namespace Remotion.Globalization.Implementation
 
     private ResolvedResourceManagerResult CreateResolvedResourceManagerResult (Type type)
     {
-      var definedResourceManager = CreateResourceManager (type);
+      var definedResourceManager = _resourceManagerFactory.CreateResourceManager (type);
       var inheritedResourceManager = GetResolvedResourceManagerFromCache (type.BaseType).ResourceManager;
       return ResolvedResourceManagerResult.Create (definedResourceManager, inheritedResourceManager);
-    }
-
-    private IResourceManager CreateResourceManager (Type type)
-    {
-      var resourceAttributes = AttributeUtility.GetCustomAttributes<IResourcesAttribute> (type, false);
-      return ResourceManagerWrapper.CreateWrapperSet (_resourceManagerFactory.GetResourceManagers (type.Assembly, resourceAttributes));
     }
   }
 }

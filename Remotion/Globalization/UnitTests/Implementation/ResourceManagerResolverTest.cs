@@ -31,7 +31,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new ResourceManagerResolver();
+      _resolver = new ResourceManagerResolver (new CompoundResourceManagerFactory (new[] { new ResourceAttributeBasedResourceManagerFactory() }));
     }
 
     [Test]
