@@ -36,7 +36,6 @@ namespace ActaNova.WebTesting.ControlObjects
     public UnspecifiedPageObject Select ([NotNull] IEnumerable<string> menuItems, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNull ("menuItems", menuItems);
-      ArgumentUtility.CheckNotNull ("completionDetection", completionDetection);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
