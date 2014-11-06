@@ -100,6 +100,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    public UnspecifiedPageObject Click ([CanBeNull] ICompletionDetection completionDetection = null)
+    {
+      return _webTreeViewNode.Click (completionDetection);
+    }
+
     public ContextMenuControlObject OpenContextMenu ()
     {
       return _webTreeViewNode.OpenContextMenu();

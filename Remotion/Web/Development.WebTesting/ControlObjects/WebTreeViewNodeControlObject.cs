@@ -98,11 +98,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public WebTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
+      ClickNode (completionDetection);
+      return this;
+    }
+
+    public UnspecifiedPageObject Click ([CanBeNull] ICompletionDetection completionDetection = null)
+    {
+      ClickNode (completionDetection);
+      return UnspecifiedPage();
+    }
+
+    private void ClickNode (ICompletionDetection completionDetection)
+    {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
       selectAnchorScope.ClickAndWait (Context, actualCompletionDetector);
-      return this;
     }
 
     public ContextMenuControlObject OpenContextMenu ()
