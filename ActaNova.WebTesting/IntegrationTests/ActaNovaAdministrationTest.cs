@@ -32,11 +32,13 @@ namespace ActaNova.WebTesting.IntegrationTests
       
       administration.Close();
 
-      var tempExportDokumente = home.MainMenu.Select ("Extras", "Temp. Export Dokumente").ExpectActaNova();
+      var tempExportDokumente = home.MainMenu.Select ("Extras", "Temp. Export Dokumente").ExpectMainPage();
       var itemsList = tempExportDokumente.FormPage.GetList ("Items");
       Assert.That (itemsList.GetRowCount(), Is.EqualTo (1));
 
-      itemsList.GetRow().WithIndex (1).GetCell().WithIndex (2).ExecuteCommand().ExpectActaNova (ActaNovaMessageBox.Yes);
+      var deletionConfirmation = itemsList.GetRow().WithIndex (1).GetCell().WithIndex (2).ExecuteCommand().Expect<ActaNovaMessageBoxPageObject>();
+      deletionConfirmation.Yes();
+
       Assert.That (itemsList.GetRowCount(), Is.EqualTo (0));
     }
 

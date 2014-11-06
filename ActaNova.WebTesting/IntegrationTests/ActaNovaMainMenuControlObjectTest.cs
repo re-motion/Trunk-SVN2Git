@@ -13,17 +13,18 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      home.MainMenu.Select ("Neu", "Akt");
-      Assert.That (home.GetTitle(), Is.EqualTo ("Akt erzeugen"));
+      var aktErzeugenPage = home.MainMenu.Select ("Neu", "Akt").ExpectMainPage();
+      Assert.That (aktErzeugenPage.GetTitle(), Is.EqualTo ("Akt erzeugen"));
 
-      var aktErzeugenPage = home.MainMenu.Select (new[] { "Verfahrensbereich", "BW - Bauen und Wohnen" }, Continue.When (Wxe.PostBackCompleted))
-          .ExpectActaNova (ActaNovaMessageBox.OkayWithoutPostback);
+      var forbiddenNote = home.MainMenu.Select (new[] { "Verfahrensbereich", "BW - Bauen und Wohnen" }, Continue.When (Wxe.PostBackCompleted))
+          .Expect<ActaNovaMessageBoxPageObject>();
+      forbiddenNote.Confirm (Continue.Immediately());
 
-      home = aktErzeugenPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompleted).AndModalDialogHasBeenAccepted()).ExpectActaNova();
+      home = aktErzeugenPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompleted).AndModalDialogHasBeenAccepted()).ExpectMainPage();
 
-      home = home.MainMenu.Select ("Verfahrensbereich", "BW - Bauen und Wohnen").ExpectActaNova();
+      home = home.MainMenu.Select ("Verfahrensbereich", "BW - Bauen und Wohnen").ExpectMainPage();
 
-      home = home.MainMenu.Select ("Suchen", "Stammdatenobjekt", "Rechtsträger", "Organisation").ExpectActaNova();
+      home = home.MainMenu.Select ("Suchen", "Stammdatenobjekt", "Rechtsträger", "Organisation").ExpectMainPage();
 
       var administration =
           home.MainMenu.Select (new[] { "Extras", "Administration" }, Continue.When (Wxe.PostBackCompleted))
@@ -34,8 +35,8 @@ namespace ActaNova.WebTesting.IntegrationTests
           .ExpectNewWindow<ActaNovaWindowPageObject> ("Fehlerberichte/Wünsche");
       wuensche.Close();
 
-      home = home.MainMenu.Select (new[] { "Extras", "Befehle vormerken" }, Continue.When (Wxe.PostBackCompleted)).ExpectActaNova();
-      home = home.MainMenu.Select (new[] { "Extras", "Befehle sofort ausführen" }, Continue.When (Wxe.PostBackCompleted)).ExpectActaNova();
+      home = home.MainMenu.Select (new[] { "Extras", "Befehle vormerken" }, Continue.When (Wxe.PostBackCompleted)).ExpectMainPage();
+      home = home.MainMenu.Select (new[] { "Extras", "Befehle sofort ausführen" }, Continue.When (Wxe.PostBackCompleted)).ExpectMainPage();
 
       home.Refresh();
     }

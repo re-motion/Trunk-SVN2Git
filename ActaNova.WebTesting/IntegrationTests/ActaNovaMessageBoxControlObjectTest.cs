@@ -1,4 +1,5 @@
 ﻿using System;
+using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 
@@ -12,11 +13,13 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var newCitizenConcernPage = home.MainMenu.Select ("Neu", "Bürgeranliegen").ExpectActaNova();
+      var newCitizenConcernPage = home.MainMenu.Select ("Neu", "Bürgeranliegen").ExpectMainPage();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
 
-      home = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted)).ExpectActaNova (ActaNovaMessageBox.Okay);
+      var cancelConfirmation =
+          newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+      cancelConfirmation.Confirm();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
@@ -26,11 +29,13 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var newCitizenConcernPage = home.MainMenu.Select ("Neu", "Bürgeranliegen").ExpectActaNova();
+      var newCitizenConcernPage = home.MainMenu.Select ("Neu", "Bürgeranliegen").ExpectMainPage();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
 
-      home = newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted)).ExpectActaNova (ActaNovaMessageBox.Cancel);
+      var cancelConfirmation =
+          newCitizenConcernPage.Header.GetBreadCrumbs()[0].Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+      cancelConfirmation.Cancel();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
     }

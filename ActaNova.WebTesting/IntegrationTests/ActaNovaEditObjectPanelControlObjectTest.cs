@@ -11,7 +11,7 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var personErzeugen = home.MainMenu.Select ("Neu", "Person").ExpectActaNova();
+      var personErzeugen = home.MainMenu.Select ("Neu", "Person").ExpectMainPage();
       personErzeugen.FormPage.GetTextValue ("LastName").FillWith ("Rauch");
       personErzeugen.FormPage.GetEnumValue ("Gender").SelectOption ("Male");
       personErzeugen.FormPage.Perform ("Save");
@@ -29,7 +29,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       dialog.GetTextValue ("Address").FillWith ("max.mustermann@rubicon.eu");
       dialog.Perform ("TakeOverDetails");
 
-      home = personErzeugen.FormPage.Perform ("SaveAndReturn").ExpectActaNova();
+      home = personErzeugen.FormPage.Perform ("SaveAndReturn").ExpectMainPage();
 
       var personBearbeiten =
           home.Tree.GetNode()
@@ -40,7 +40,7 @@ namespace ActaNova.WebTesting.IntegrationTests
               .Expand()
               .GetNode ("WrappedLinks")
               .Select()
-              .ExpectActaNova();
+              .ExpectMainPage();
 
       Assert.That (personBearbeiten.FormPage.GetList ("Links").GetRowCount(), Is.EqualTo (2));
     }

@@ -26,7 +26,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Stellvertretungs AV"));
       Assert.That (home.Header.GetBreadCrumbs()[1].GetText(), Is.EqualTo ("Passwort ändern"));
 
-      var searchPage = home.MainMenu.Select ("Suchen", "Geschäftsobjekt", "Akt").ExpectActaNova();
+      var searchPage = home.MainMenu.Select ("Suchen", "Geschäftsobjekt", "Akt").ExpectMainPage();
 
       Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (3));
       Assert.That (home.Header.GetBreadCrumbs()[2].GetText(), Is.EqualTo ("Akt Suchen"));

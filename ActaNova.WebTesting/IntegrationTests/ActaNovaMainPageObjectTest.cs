@@ -13,8 +13,8 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      home = home.MainMenu.Select ("Extras", "Benutzerprofil").ExpectActaNova();
-      home = home.Refresh().ExpectActaNova();
+      home = home.MainMenu.Select ("Extras", "Benutzerprofil").ExpectMainPage();
+      home = home.Refresh().ExpectMainPage();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
