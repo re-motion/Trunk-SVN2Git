@@ -24,7 +24,7 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Remotion Web Contract for Diagnostic Metadata")]
-[assembly: AssemblyDescription ("Contracts for diagnostic metadata rendering.")]
+[assembly: AssemblyTitle ("Remotion Diagnostic Metadata Contract for WebControls Library")]
+[assembly: AssemblyDescription ("Shared contracts between control rendering and web testing framework in web controls library.")]
 [assembly: AssemblyCulture ("")]
 [assembly: CLSCompliant (true)]
