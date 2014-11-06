@@ -101,5 +101,16 @@ namespace Remotion.Globalization.UnitTests.Implementation
       var inheritedResourceManagerSet = (ResourceManagerSet) result.InheritedResourceManager;
       Assert.That (inheritedResourceManagerSet.ResourceManagers, Is.EqualTo (new[] { resourceManagerOnClassStub, resourceManagerOnBaseClassStub }));
     }
+
+    [Test]
+    public void Resolve_WithoutResourcesDefinedOnTypeHierarchy_ReturnsNullResult ()
+    {
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (Class))).Return (NullResourceManager.Instance);
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (BaseClass))).Return (NullResourceManager.Instance);
+
+      var result = _resolver.Resolve (typeof (Class));
+
+      Assert.That (result.IsNull, Is.True);
+    }
   }
 }
