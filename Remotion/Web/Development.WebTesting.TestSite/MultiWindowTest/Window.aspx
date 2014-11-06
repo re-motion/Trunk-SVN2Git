@@ -17,10 +17,10 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Window.aspx.cs" Inherits="Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest.Window" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
+  <head runat="server">
     <title>MyWindow</title>
-</head>
-<body>
+  </head>
+  <body>
     <form id="form1" runat="server">
       <div>
         <p>Window.aspx running in WindowFunction</p>
@@ -30,5 +30,5 @@
         <p><remotion:WebButton ID="CloseAndRefreshMainAsWell" Text="Close (and refresh Main even if started from Frame)" runat="server"/></p>
       </div>
     </form>
-</body>
+  </body>
 </html>

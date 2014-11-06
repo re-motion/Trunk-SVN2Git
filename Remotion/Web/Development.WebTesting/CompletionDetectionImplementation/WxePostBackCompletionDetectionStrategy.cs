@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Utilities;
 
@@ -32,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     public override object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      
+
       PageObjectContext = context;
       return base.PrepareWaitForCompletion (context);
     }

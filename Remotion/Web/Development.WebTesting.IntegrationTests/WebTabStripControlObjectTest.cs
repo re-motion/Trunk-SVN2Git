@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using NUnit.Framework;
@@ -104,7 +105,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private RemotionPageObject Start ()
     {
-      return Start("WebTabStripTest.wxe");
+      return Start ("WebTabStripTest.wxe");
     }
   }
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.Configuration;
@@ -108,7 +109,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 3);
 
       var closeAndRefreshMainAsWellButton = window.GetWebButton().ByID ("CloseAndRefreshMainAsWell");
-      closeAndRefreshMainAsWellButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)).And (Wxe.PostBackCompletedIn (home)).AndWindowHasClosed());
+      closeAndRefreshMainAsWellButton.Click (
+          Continue.When (Wxe.PostBackCompletedIn (home.Frame)).And (Wxe.PostBackCompletedIn (home)).AndWindowHasClosed());
       AssertPostBackSequenceNumber (frameLabel, 3);
       AssertPostBackSequenceNumber (mainLabel, 4);
     }
@@ -118,7 +120,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       // Todo RM-6297: Fix problems on TeamCity with AcceptModalDialog.
       if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Assert.Ignore("Currently ignored until TeamCity-related probelms with AcceptModalDialog are fixed.");
+        Assert.Ignore ("Currently ignored until TeamCity-related probelms with AcceptModalDialog are fixed.");
 
       var home = Start();
 
@@ -146,7 +148,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       // Todo RM-6297: Fix problems on TeamCity with CancelModalDialog.
       if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Assert.Ignore("Currently ignored until TeamCity-related probelms with CancelModalDialog are fixed.");
+        Assert.Ignore ("Currently ignored until TeamCity-related probelms with CancelModalDialog are fixed.");
 
       var home = Start();
 

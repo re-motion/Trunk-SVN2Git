@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using NUnit.Framework;
@@ -105,7 +106,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var webButton = home.GetWebButton().ByItemID ("MyWebButton2Async");
-      Assert.That(webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
+      Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
     }
 
     [Test]
@@ -128,7 +129,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private RemotionPageObject Start ()
     {
-      return Start("WebButtonTest.wxe");
+      return Start ("WebButtonTest.wxe");
     }
   }
 }

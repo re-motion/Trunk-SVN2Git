@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -39,7 +40,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       ArgumentUtility.CheckNotNull ("predicate", predicate);
 
       var index = 0;
-      foreach(var item in enumerable)
+      foreach (var item in enumerable)
       {
         if (predicate (item))
           return index;

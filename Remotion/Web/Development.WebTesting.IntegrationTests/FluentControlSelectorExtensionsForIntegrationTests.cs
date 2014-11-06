@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
@@ -45,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       return new FluentControlSelector<FormGridSelector, FormGridControlObject> (host, new FormGridSelector());
     }
-    
+
     public static FluentControlSelector<LabelSelector, LabelControlObject> GetLabel (this IControlHost host)
     {
       return new FluentControlSelector<LabelSelector, LabelControlObject> (host, new LabelSelector());

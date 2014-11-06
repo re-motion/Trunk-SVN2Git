@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -26,7 +27,8 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
   /// </summary>
   /// <typeparam name="TControlSelector">The <see cref="IPerHtmlIDControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerHtmlIDControlSelectionCommandBuilder<TControlSelector, TControlObject> : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
+  public class PerHtmlIDControlSelectionCommandBuilder<TControlSelector, TControlObject>
+      : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
       where TControlSelector : IPerHtmlIDControlSelector<TControlObject>
       where TControlObject : ControlObject
   {

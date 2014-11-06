@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web;
 using Microsoft.Practices.ServiceLocation;
@@ -31,7 +32,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite
     protected void Application_Start (object sender, EventArgs e)
     {
       RegisterResourceVirtualPathProvider();
-      SetRenderingFeatures(RenderingFeatures.WithDiagnosticMetadata);
+      SetRenderingFeatures (RenderingFeatures.WithDiagnosticMetadata);
     }
 
     protected void Application_BeginRequest (Object sender, EventArgs e)

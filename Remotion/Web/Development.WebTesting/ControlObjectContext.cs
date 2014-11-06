@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using JetBrains.Annotations;
@@ -36,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting
         : base (scope)
     {
       ArgumentUtility.CheckNotNull ("pageObject", pageObject);
-      
+
       _pageObject = pageObject;
     }
 
@@ -87,7 +88,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("pageObject", pageObject);
       ArgumentUtility.CheckNotNull ("scope", scope);
-      
+
       return new ControlObjectContext (pageObject, scope);
     }
 

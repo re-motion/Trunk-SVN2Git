@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Windows.Forms;
 using Coypu;
@@ -55,7 +56,10 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <param name="value">The value to fill in.</param>
     /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
-    public static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] FinishInputWithAction finishInputWithAction)
+    public static void FillInWithFixed (
+        [NotNull] this ElementScope scope,
+        [NotNull] string value,
+        [NotNull] FinishInputWithAction finishInputWithAction)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
@@ -72,7 +76,11 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="value">The value to fill in.</param>
     /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
     /// <param name="clearValue">Determines whether the old content should be cleared before filling in the new value.</param>
-    private static void FillInWithFixed ([NotNull] this ElementScope scope, [NotNull] string value, [NotNull] FinishInputWithAction finishInputWithAction, bool clearValue)
+    private static void FillInWithFixed (
+        [NotNull] this ElementScope scope,
+        [NotNull] string value,
+        [NotNull] FinishInputWithAction finishInputWithAction,
+        bool clearValue)
     {
       // Todo RM-6297: ugly boolean flag in method parameters.
 

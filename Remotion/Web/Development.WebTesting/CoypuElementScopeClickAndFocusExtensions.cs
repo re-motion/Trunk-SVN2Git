@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Coypu;
 using JetBrains.Annotations;
@@ -59,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting
     public static void Focus ([NotNull] this ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
-      
+
       scope.SendKeys ("");
     }
 

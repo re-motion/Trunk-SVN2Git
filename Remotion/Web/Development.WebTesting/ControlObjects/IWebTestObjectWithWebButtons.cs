@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -24,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public interface IWebTestObjectWithWebButtons
   {
-     /// <summary>
+    /// <summary>
     /// Presses the button given by <paramref name="itemID"/>, using a given <paramref name="completionDetection"/> to wait for the triggered
     /// action's results.
     /// </summary>

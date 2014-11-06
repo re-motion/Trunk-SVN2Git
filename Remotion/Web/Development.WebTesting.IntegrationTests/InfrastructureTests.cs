@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.Configuration;
@@ -34,11 +35,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       // Todo RM-6297: Fix problems on TeamCity with FillWithFixed.
       if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Assert.Ignore("Currently ignored until TeamCity-related probelms with FillWithFixed are fixed.");
+        Assert.Ignore ("Currently ignored until TeamCity-related probelms with FillWithFixed are fixed.");
 
       var home = Start();
 
-      var textBox = home.GetTextBox().ByLocalID("MyTextBox");
+      var textBox = home.GetTextBox().ByLocalID ("MyTextBox");
 
       textBox.FillWith (input, FinishInput.WithTab);
 

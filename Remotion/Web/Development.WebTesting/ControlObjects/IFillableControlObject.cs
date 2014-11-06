@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -38,6 +39,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <param name="finishInputWith">What to do after the text has been filled in (see <see cref="FinishInput"/> for supported default options).</param>
     /// <param name="completionDetection">Required <see cref="ICompletionDetection"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
     /// <returns>An unspecified page object, may be used in case a new page is expected after clicking the control object.</returns>
-    UnspecifiedPageObject FillWith ([NotNull] string text, [NotNull] FinishInputWithAction finishInputWith, [CanBeNull] ICompletionDetection completionDetection = null);
+    UnspecifiedPageObject FillWith (
+        [NotNull] string text,
+        [NotNull] FinishInputWithAction finishInputWith,
+        [CanBeNull] ICompletionDetection completionDetection = null);
   }
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -99,7 +100,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
                                       { Keys.Divide, "{DIVIDE}" }
                                   };
 
-      foreach(var replacement in replacementDictionary)
+      foreach (var replacement in replacementDictionary)
         value = value.Replace (replacement.Key, replacement.Value);
 
       return value;
@@ -114,10 +115,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
                                       { Keys.Alt, "%" }
                                   };
 
-      foreach(var replacement in replacementDictionary)
+      foreach (var replacement in replacementDictionary)
       {
         // Todo RM-6297: TransformModifierKeys
-        
+
         // Replace: Keys.Shift + ABC + Keys.Shift + DEF + Keys.Shift + GHI
         //    with: +(ABC)DEF+(GHI)
         // etc. pp.

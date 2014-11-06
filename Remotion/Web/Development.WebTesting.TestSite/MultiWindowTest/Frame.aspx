@@ -17,10 +17,10 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Frame.aspx.cs" Inherits="Remotion.Web.Development.WebTesting.TestSite.MultiWindowTest.Frame" %>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
+  <head runat="server">
     <title>MyFrame</title>
-</head>
-<body>
+  </head>
+  <body>
     <form id="form1" runat="server">
       <asp:ScriptManager ID="ScriptManager" EnablePartialRendering="true" AsyncPostBackTimeout="3600" runat="server" />
       <div>
@@ -37,5 +37,5 @@
         </asp:UpdatePanel>
       </div>
     </form>
-</body>
+  </body>
 </html>

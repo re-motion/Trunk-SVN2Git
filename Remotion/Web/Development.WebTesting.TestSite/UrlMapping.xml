@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- This file is part of the re-motion Core Framework (www.re-motion.org)
  ! Copyright (c) rubicon IT GmbH, www.rubicon.eu
@@ -22,18 +22,21 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.re-motion.org/Web/ExecutionEngine/UrlMapping/1.0 UrlMapping.xsd">
 
-  <add id="AnchorTest" type="Remotion.Web.Development.WebTesting.TestSite::AnchorTestFunction" resource="~/AnchorTest.wxe"/>
-  <add id="CommandTest" type="Remotion.Web.Development.WebTesting.TestSite::CommandTestFunction" resource="~/CommandTest.wxe"/>
-  <add id="DropDownMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::DropDownMenuTestFunction" resource="~/DropDownMenuTest.wxe"/>
-  <add id="InfrastructureTests" type="Remotion.Web.Development.WebTesting.TestSite::InfrastructureTestsFunction" resource="~/InfrastructureTests.wxe"/>
-  <add id="ListMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::ListMenuTestFunction" resource="~/ListMenuTest.wxe"/>
-  <add id="TabbedMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMenuTestFunction" resource="~/TabbedMenuTest.wxe"/>
-  <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe"/>
-  <add id="TextBoxTest" type="Remotion.Web.Development.WebTesting.TestSite::TextBoxTestFunction" resource="~/TextBoxTest.wxe"/>
-  <add id="WebButtonTest" type="Remotion.Web.Development.WebTesting.TestSite::WebButtonTestFunction" resource="~/WebButtonTest.wxe"/>
-  <add id="WebTabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::WebTabStripTestFunction" resource="~/WebTabStripTest.wxe"/>
+  <add id="AnchorTest" type="Remotion.Web.Development.WebTesting.TestSite::AnchorTestFunction" resource="~/AnchorTest.wxe" />
+  <add id="CommandTest" type="Remotion.Web.Development.WebTesting.TestSite::CommandTestFunction" resource="~/CommandTest.wxe" />
+  <add id="DropDownMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::DropDownMenuTestFunction" resource="~/DropDownMenuTest.wxe" />
+  <add id="InfrastructureTests" type="Remotion.Web.Development.WebTesting.TestSite::InfrastructureTestsFunction" resource="~/InfrastructureTests.wxe" />
+  <add id="ListMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::ListMenuTestFunction" resource="~/ListMenuTest.wxe" />
+  <add id="TabbedMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMenuTestFunction" resource="~/TabbedMenuTest.wxe" />
+  <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe" />
+  <add id="TextBoxTest" type="Remotion.Web.Development.WebTesting.TestSite::TextBoxTestFunction" resource="~/TextBoxTest.wxe" />
+  <add id="WebButtonTest" type="Remotion.Web.Development.WebTesting.TestSite::WebButtonTestFunction" resource="~/WebButtonTest.wxe" />
+  <add id="WebTabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::WebTabStripTestFunction" resource="~/WebTabStripTest.wxe" />
 
-  <add id="MultiWindowTest_Main" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.MainFunction" resource="~/MultiWindowTest/Main.wxe"/>
-  <add id="MultiWindowTest_Frame" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.FrameFunction" resource="~/MultiWindowTest/Frame.wxe"/>
-  <add id="MultiWindowTest_Window" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.WindowFunction" resource="~/MultiWindowTest/Window.wxe"/>
+  <add id="MultiWindowTest_Main" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.MainFunction"
+      resource="~/MultiWindowTest/Main.wxe" />
+  <add id="MultiWindowTest_Frame" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.FrameFunction"
+      resource="~/MultiWindowTest/Frame.wxe" />
+  <add id="MultiWindowTest_Window" type="Remotion.Web.Development.WebTesting.TestSite::MultiWindowTest.WindowFunction"
+      resource="~/MultiWindowTest/Window.wxe" />
 </urlMapping>

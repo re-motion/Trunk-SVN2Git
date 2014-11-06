@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
@@ -35,7 +36,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite
       var tabStrip = (WebTabStrip) sender;
 
       var testOutput = tabStrip.ID + "/" + tabStrip.SelectedTab.ItemID;
-      ((Layout)Master).SetTestOutput(testOutput);
+      ((Layout) Master).SetTestOutput (testOutput);
     }
   }
 }

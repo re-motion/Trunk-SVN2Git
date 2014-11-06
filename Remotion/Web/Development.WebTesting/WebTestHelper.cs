@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -133,7 +134,7 @@ namespace Remotion.Web.Development.WebTesting
       // Note: otherwise the Selenium web driver may get confused when searching for windows.
       EnsureAllBrowserWindowsAreClosed();
 
-      MainBrowserSession = CreateNewBrowserSession ();
+      MainBrowserSession = CreateNewBrowserSession();
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
