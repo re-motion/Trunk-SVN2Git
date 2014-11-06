@@ -30,7 +30,11 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls
 
     protected IGlobalizationService GlobalizationService
     {
-      get { return new CompoundGlobalizationService (new[] { new GlobalizationService (new ResourceManagerResolver()) }); }
+      get
+      {
+        return new CompoundGlobalizationService (
+            new[] { new GlobalizationService (new ResourceManagerResolver (new ResourceAttributeBasedResourceManagerFactory())) });
+      }
     }
 
     protected RendererTestBase ()
