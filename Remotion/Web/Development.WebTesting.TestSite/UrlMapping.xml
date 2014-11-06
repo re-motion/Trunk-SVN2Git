@@ -24,6 +24,7 @@
 
   <add id="AnchorTest" type="Remotion.Web.Development.WebTesting.TestSite::AnchorTestFunction" resource="~/AnchorTest.wxe" />
   <add id="CommandTest" type="Remotion.Web.Development.WebTesting.TestSite::CommandTestFunction" resource="~/CommandTest.wxe" />
+  <add id="DropDownListTest" type="Remotion.Web.Development.WebTesting.TestSite::DropDownListTestFunction" resource="~/DropDownListTest.wxe" />
   <add id="DropDownMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::DropDownMenuTestFunction" resource="~/DropDownMenuTest.wxe" />
   <add id="InfrastructureTests" type="Remotion.Web.Development.WebTesting.TestSite::InfrastructureTestsFunction" resource="~/InfrastructureTests.wxe" />
   <add id="ListMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::ListMenuTestFunction" resource="~/ListMenuTest.wxe" />

@@ -37,6 +37,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<CommandSelector, CommandControlObject> (host, new CommandSelector());
     }
 
+    public static FluentControlSelector<DropDownListSelector, DropDownListControlObject> GetDropDownList (this IControlHost host)
+    {
+      return new FluentControlSelector<DropDownListSelector, DropDownListControlObject> (host, new DropDownListSelector());
+    }
+
     public static FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> GetDropDownMenu (this IControlHost host)
     {
       return new FluentControlSelector<DropDownMenuSelector, DropDownMenuControlObject> (host, new DropDownMenuSelector());

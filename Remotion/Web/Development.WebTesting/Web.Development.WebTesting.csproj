@@ -105,6 +105,7 @@
     <Compile Include="ControlObjects\AnchorControlObject.cs" />
     <Compile Include="ControlObjects\ContextMenuControlObject.cs" />
     <Compile Include="ControlObjects\ControlHost.cs" />
+    <Compile Include="ControlObjects\DropDownListControlObject.cs" />
     <Compile Include="ControlObjects\DropDownMenuControlObjectBase.cs" />
     <Compile Include="ControlObjects\ICommandHost.cs" />
     <Compile Include="ControlObjects\IControlObjectWithRows.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="ControlObjects\Selectors\AnchorSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ScopeSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TabbedMenuSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\DropDownListSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TextBoxSelector.cs" />
     <Compile Include="ControlObjects\Selectors\LabelSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ListMenuSelector.cs" />
