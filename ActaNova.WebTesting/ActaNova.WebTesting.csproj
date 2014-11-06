@@ -60,10 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
+    <Compile Include="ControlObjects\ActaNovaAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaBreadCrumbControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaEditObjectPanelControlObject.cs" />
+    <Compile Include="ControlObjects\Selectors\ActaNovaAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaEditObjectPanelSelector.cs" />
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
+    <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainMenuControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainPageObjectTest.cs" />

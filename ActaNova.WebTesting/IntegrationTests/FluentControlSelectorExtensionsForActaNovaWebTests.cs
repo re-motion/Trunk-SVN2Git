@@ -192,15 +192,15 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetWebTreeView().ByLocalID (localID);
     }
 
-    public static FluentControlSelector<BocAutoCompleteReferenceValueSelector, BocAutoCompleteReferenceValueControlObject> GetAutoComplete (
+    public static FluentControlSelector<ActaNovaAutoCompleteReferenceValueSelector, ActaNovaAutoCompleteReferenceValueControlObject> GetAutoComplete (
         this IControlHost host)
     {
-      return new FluentControlSelector<BocAutoCompleteReferenceValueSelector, BocAutoCompleteReferenceValueControlObject> (
+      return new FluentControlSelector<ActaNovaAutoCompleteReferenceValueSelector, ActaNovaAutoCompleteReferenceValueControlObject> (
           host,
-          new BocAutoCompleteReferenceValueSelector());
+          new ActaNovaAutoCompleteReferenceValueSelector());
     }
 
-    public static BocAutoCompleteReferenceValueControlObject GetAutoComplete (
+    public static ActaNovaAutoCompleteReferenceValueControlObject GetAutoComplete (
         this IControlHost host,
         string domainProperty,
         string domainClass = null)
