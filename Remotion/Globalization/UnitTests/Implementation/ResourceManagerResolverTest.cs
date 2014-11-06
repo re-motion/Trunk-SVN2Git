@@ -16,111 +16,90 @@
 // 
 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Globalization.Implementation;
-using Remotion.Globalization.UnitTests.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Globalization.UnitTests.Implementation
 {
   [TestFixture]
   public class ResourceManagerResolverTest
   {
+    private class BaseClass
+    {
+    }
+
+    private class Class : BaseClass
+    {
+    }
+
+    private class DerivedClass : Class
+    {
+    }
+
     private ResourceManagerResolver _resolver;
+    private IResourceManagerFactory _factoryStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _resolver = new ResourceManagerResolver (new CompoundResourceManagerFactory (new[] { new ResourceAttributeBasedResourceManagerFactory() }));
+      _factoryStub = MockRepository.GenerateStub<IResourceManagerFactory>();
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (object))).Return (NullResourceManager.Instance);
+
+      _resolver = new ResourceManagerResolver (_factoryStub);
     }
 
     [Test]
-    public void Resolve_WithTypeDefiningSingleResource_ReturnsResourceManager ()
+    public void Resolve_WithResourceManagerOnlyDefinedOnCurrentType_ReturnsNullResourceManagerForInheritedResourceManager ()
     {
-      var result = _resolver.Resolve (typeof (ClassWithResources));
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (Class))).Return (resourceManagerStub);
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (BaseClass))).Return (NullResourceManager.Instance);
 
-      Assert.That (result.IsNull, Is.False);
-      Assert.That (result.ResourceManager.IsNull, Is.False);
-      Assert.That (result.ResourceManager.Name, Is.EqualTo ("Remotion.Globalization.UnitTests.TestDomain.Resources.ClassWithResources"));
+      var result = _resolver.Resolve (typeof (Class));
+
+      Assert.That (result.ResourceManager, Is.SameAs (resourceManagerStub));
       Assert.That (result.DefinedResourceManager, Is.SameAs (result.ResourceManager));
       Assert.That (result.InheritedResourceManager.IsNull, Is.True);
     }
 
     [Test]
-    public void Resolve_WithTypeDefiningMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
+    public void Resolve_WithResourceManagerOnlyDefinedOnBaseTypeReturnsNullResourceManagerForDefinedResourceManager ()
     {
-      var result = _resolver.Resolve (typeof (ClassWithMultiLingualResourcesAttributes));
+      var resourceManagerStub = MockRepository.GenerateStub<IResourceManager>();
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (Class))).Return (NullResourceManager.Instance);
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (BaseClass))).Return (resourceManagerStub);
 
-      Assert.That (result.ResourceManager.IsNull, Is.False);
-      Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
-      Assert.That (result.DefinedResourceManager, Is.SameAs (result.ResourceManager));
-      Assert.That (result.InheritedResourceManager.IsNull, Is.True);
+      var result = _resolver.Resolve (typeof (Class));
 
-      var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
-
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
+      Assert.That (result.ResourceManager, Is.SameAs (resourceManagerStub));
+      Assert.That (result.DefinedResourceManager.IsNull, Is.True);
+      Assert.That (result.InheritedResourceManager, Is.SameAs (result.ResourceManager));
     }
 
     [Test]
-    public void Resolve_TypeWithoutResources_ReturnsNullResult ()
+    public void Resolve_WithMultipleResourceManagersDefinedOnTypeHierarchy_ReturnsResourceManagersInOrderOfDefinition ()
     {
-      var result = _resolver.Resolve (typeof (ClassWithoutMultiLingualResourcesAttributes));
+      var resourceManagerOnBaseClassStub = MockRepository.GenerateStub<IResourceManager>();
+      resourceManagerOnBaseClassStub.Stub (_ => _.Name).Return ("Base");
 
-      Assert.That (result.IsNull, Is.True);
-    }
+      var resourceManagerOnClassStub = MockRepository.GenerateStub<IResourceManager>();
+      resourceManagerOnClassStub.Stub (_ => _.Name).Return ("Class");
 
-    [Test]
-    public void Resolve_WithTypeDefiningAndInheritingMultipleResources_ReturnsResourceManagersInOrderOfDefinition ()
-    {
-      var result = _resolver.Resolve (typeof (DerivedClassWithMultiLingualResourcesAttributes));
+      var resourceManagerOnDerivedClassStub = MockRepository.GenerateStub<IResourceManager>();
+      resourceManagerOnDerivedClassStub.Stub (_ => _.Name).Return ("Derived");
+
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (BaseClass))).Return (resourceManagerOnBaseClassStub);
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (Class))).Return (resourceManagerOnClassStub);
+      _factoryStub.Stub (_ => _.CreateResourceManager (typeof (DerivedClass))).Return (resourceManagerOnDerivedClassStub);
+
+      var result = _resolver.Resolve (typeof (DerivedClass));
 
       Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
-      var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five, NamedResources.One, NamedResources.Two, NamedResources.Three }));
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
-
-      Assert.That (result.DefinedResourceManager, Is.InstanceOf<ResourceManagerSet>());
-      var definedResourceManagerSet = (ResourceManagerSet) result.DefinedResourceManager;
-      Assert.That (
-          definedResourceManagerSet.ResourceManagers.Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
-
+      Assert.That (result.DefinedResourceManager, Is.SameAs (resourceManagerOnDerivedClassStub));
       Assert.That (result.InheritedResourceManager, Is.InstanceOf<ResourceManagerSet>());
       var inheritedResourceManagerSet = (ResourceManagerSet) result.InheritedResourceManager;
-      Assert.That (
-          inheritedResourceManagerSet.ResourceManagers.Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
-    }
-
-    [Test]
-    public void Resolve_WithTypeOnlyInheritingMultipleResources_ReturnsNullResourceManagerForDefinedResourceManager ()
-    {
-      var result = _resolver.Resolve (typeof (DerivedClassWithoutMultiLingualResourcesAttributes));
-
-      Assert.That (result.ResourceManager, Is.InstanceOf<ResourceManagerSet>());
-      var resourceManagerSet = (ResourceManagerSet) result.ResourceManager;
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five, NamedResources.One, NamedResources.Two, NamedResources.Three }));
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Take (2).Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.Four, NamedResources.Five }));
-      Assert.That (
-          resourceManagerSet.ResourceManagers.Skip (2).Select (rm => rm.Name),
-          Is.EquivalentTo (new[] { NamedResources.One, NamedResources.Two, NamedResources.Three }));
-
-      Assert.That (result.DefinedResourceManager.IsNull, Is.True);
-
-      Assert.That (result.InheritedResourceManager, Is.SameAs (result.ResourceManager));
+      Assert.That (inheritedResourceManagerSet.ResourceManagers, Is.EqualTo (new[] { resourceManagerOnClassStub, resourceManagerOnBaseClassStub }));
     }
   }
 }

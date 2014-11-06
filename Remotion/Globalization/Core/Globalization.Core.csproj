@@ -80,7 +80,6 @@
     <Compile Include="Implementation\ResourceManagerBasedMemberInformationGlobalizationService.cs" />
     <Compile Include="MemberInformationGlobalizationServiceExtensions.cs" />
     <Compile Include="Implementation\ResolvedResourceManagerResult.cs" />
-    <Compile Include="Implementation\ResourceManagerFactory.cs" />
     <Compile Include="Implementation\ResourceManagerResolver.cs" />
     <Compile Include="Implementation\ResourceManagerWrapper.cs" />
     <Compile Include="IObjectWithResources.cs" />

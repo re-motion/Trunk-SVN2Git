@@ -15,6 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
+using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -29,7 +35,9 @@ namespace Remotion.Globalization.Implementation
   public class ResourceAttributeBasedResourceManagerFactory : IResourceManagerFactory
   {
     public const int Position = 19;
-    private readonly ResourceManagerFactory _resourceManagerFactory = new ResourceManagerFactory();
+
+    private readonly LockingCacheDecorator<Tuple<Assembly, string>, ResourceManager> _resourceManagersCache =
+        CacheFactory.CreateWithLocking<Tuple<Assembly, string>, ResourceManager>();
 
     public ResourceAttributeBasedResourceManagerFactory ()
     {
@@ -40,7 +48,31 @@ namespace Remotion.Globalization.Implementation
       ArgumentUtility.CheckNotNull ("type", type);
 
       var resourceAttributes = AttributeUtility.GetCustomAttributes<IResourcesAttribute> (type, false);
-      return ResourceManagerWrapper.CreateWrapperSet (_resourceManagerFactory.GetResourceManagers (type.Assembly, resourceAttributes));
+      var assembly = type.Assembly;
+      var resourceManagers = resourceAttributes.Select (resourcesAttribute => GetResourceManagerFromCache (assembly, resourcesAttribute));
+      return ResourceManagerWrapper.CreateWrapperSet (resourceManagers);
+    }
+
+    private ResourceManager GetResourceManagerFromCache (Assembly assembly, IResourcesAttribute resourcesAttribute)
+    {
+      return _resourceManagersCache.GetOrCreateValue (
+          Tuple.Create (resourcesAttribute.ResourceAssembly ?? assembly, resourcesAttribute.BaseName),
+          GetResourceManager);
+    }
+
+    private ResourceManager GetResourceManager (Tuple<Assembly, string> key)
+    {
+      var resourceManager = new ResourceManager (key.Item2, key.Item1);
+      var neutralSet = resourceManager.GetResourceSet (CultureInfo.InvariantCulture, true, false);
+      if (neutralSet == null)
+      {
+        throw new MissingManifestResourceException (
+            string.Format (
+                "Could not find any resources appropriate for the neutral culture. Make sure '{1}.resources' was correctly embedded into assembly '{0}' at compile time.",
+                key.Item1.GetName().Name,
+                key.Item2));
+      }
+      return resourceManager;
     }
   }
 }
