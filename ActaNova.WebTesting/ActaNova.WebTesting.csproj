@@ -74,12 +74,12 @@
     <Compile Include="ControlObjects\ActaNovaHeaderControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaMainFrameControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaMainMenuControlObject.cs" />
-    <Compile Include="ControlObjects\ActaNovaMessageBoxControlObject.cs" />
+    <Compile Include="ControlObjects\MessageBoxControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaTreeControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaTreeNodeControlObject.cs" />
     <Compile Include="Infrastructure\ActaNovaCompletion.cs" />
     <Compile Include="PageObjects\ActaNovaMainPageObject.cs" />
-    <Compile Include="PageObjects\MessageBoxPageObject.cs" />
+    <Compile Include="PageObjects\ActaNovaMessageBoxPageObject.cs" />
     <Compile Include="PageObjects\ActaNovaPageObject.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />

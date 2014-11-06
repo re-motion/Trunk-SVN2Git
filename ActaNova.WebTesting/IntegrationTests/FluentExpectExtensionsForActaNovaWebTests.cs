@@ -14,17 +14,19 @@ namespace ActaNova.WebTesting.IntegrationTests
     public static readonly ActaNovaMessageBox Okay = new ActaNovaMessageBox (mb => mb.Confirm());
     public static readonly ActaNovaMessageBox OkayWithoutPostback = new ActaNovaMessageBox (mb => mb.Confirm (Continue.Immediately()));
     public static readonly ActaNovaMessageBox Cancel = new ActaNovaMessageBox (mb => mb.Cancel());
+    public static readonly ActaNovaMessageBox Yes = new ActaNovaMessageBox (mb => mb.Yes());
+    public static readonly ActaNovaMessageBox No = new ActaNovaMessageBox (mb => mb.No());
 
-    private readonly Func<MessageBoxPageObject, UnspecifiedPageObject> _func;
+    private readonly Func<ActaNovaMessageBoxPageObject, UnspecifiedPageObject> _func;
 
-    private ActaNovaMessageBox (Func<MessageBoxPageObject, UnspecifiedPageObject> func)
+    private ActaNovaMessageBox (Func<ActaNovaMessageBoxPageObject, UnspecifiedPageObject> func)
     {
       _func = func;
     }
 
     public UnspecifiedPageObject Apply ([NotNull] UnspecifiedPageObject unspecifiedPageObject)
     {
-      var messageBox = unspecifiedPageObject.Expect<MessageBoxPageObject>();
+      var messageBox = unspecifiedPageObject.Expect<ActaNovaMessageBoxPageObject>();
       return _func (messageBox);
     }
   }

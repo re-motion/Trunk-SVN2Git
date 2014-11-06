@@ -10,15 +10,15 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova message box.
   /// </summary>
-  public class ActaNovaMessageBoxControlObject : RemotionControlObject
+  public class MessageBoxControlObject : RemotionControlObject
   {
-    public ActaNovaMessageBoxControlObject ([NotNull] ControlObjectContext context)
+    public MessageBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
 
     /// <summary>
-    /// Confirms the ActaNova message box.
+    /// Confirms the ActaNova message box (presses the "OK" button on an ActaNova message box).
     /// </summary>
     public UnspecifiedPageObject Okay ([CanBeNull] ICompletionDetection completionDetection = null)
     {
@@ -26,11 +26,27 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Cancels the ActaNova message box.
+    /// Cancels the ActaNova message box (presses the "Cancel" button on an ActaNova message box).
     /// </summary>
     public UnspecifiedPageObject Cancel ([CanBeNull] ICompletionDetection completionDetection = null)
     {
       return ClickButton ("Cancel", completionDetection);
+    }
+
+     /// <summary>
+    /// Presses the "Yes" button on an ActaNova message box.
+    /// </summary>
+    public UnspecifiedPageObject Yes ([CanBeNull] ICompletionDetection completionDetection = null)
+    {
+      return ClickButton ("Yes", completionDetection);
+    }
+
+    /// <summary>
+    /// Presses the "No" button on an ActaNova message box.
+    /// </summary>
+    public UnspecifiedPageObject No ([CanBeNull] ICompletionDetection completionDetection = null)
+    {
+      return ClickButton ("No", completionDetection);
     }
 
     private UnspecifiedPageObject ClickButton (string buttonId, ICompletionDetection userDefinedCompletionDetection = null)

@@ -16,5 +16,10 @@ namespace ActaNova.WebTesting.PageObjects
     {
       return Scope.FindId ("TitleLabel").Text;
     }
+
+    public void Close ()
+    {
+      Context.CloseWindow();
+    }
   }
 }

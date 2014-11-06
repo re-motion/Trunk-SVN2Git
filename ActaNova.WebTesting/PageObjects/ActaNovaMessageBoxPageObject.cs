@@ -9,9 +9,9 @@ namespace ActaNova.WebTesting.PageObjects
   /// Page object representing the AppTools-based page which displays a modal message box.
   /// </summary>
   // ReSharper disable once ClassNeverInstantiated.Global
-  public class MessageBoxPageObject : AppToolsPageObject
+  public class ActaNovaMessageBoxPageObject : AppToolsPageObject
   {
-    public MessageBoxPageObject ([NotNull] PageObjectContext context)
+    public ActaNovaMessageBoxPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }
@@ -28,15 +28,27 @@ namespace ActaNova.WebTesting.PageObjects
       return mesageBox.Cancel (completionDetection);
     }
 
-    private ActaNovaMessageBoxControlObject GetActaNovaMessageBoxControlObject ()
+    public UnspecifiedPageObject Yes (ICompletionDetection completionDetection = null)
+    {
+      var mesageBox = GetActaNovaMessageBoxControlObject();
+      return mesageBox.Yes (completionDetection);
+    }
+
+    public UnspecifiedPageObject No (ICompletionDetection completionDetection = null)
+    {
+      var mesageBox = GetActaNovaMessageBoxControlObject();
+      return mesageBox.No (completionDetection);
+    }
+
+    private MessageBoxControlObject GetActaNovaMessageBoxControlObject ()
     {
       var messageBoxScope = Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
       if (messageBoxScope.IsVisible())
-        return new ActaNovaMessageBoxControlObject (Context.CloneForControl (this, messageBoxScope));
+        return new MessageBoxControlObject (Context.CloneForControl (this, messageBoxScope));
 
       var detailsArea = GetDetailsArea();
       messageBoxScope = detailsArea.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      return new ActaNovaMessageBoxControlObject (detailsArea.Context.CloneForControl (detailsArea, messageBoxScope));
+      return new MessageBoxControlObject (detailsArea.Context.CloneForControl (detailsArea, messageBoxScope));
     }
 
     private ActaNovaPageObject GetDetailsArea ()
