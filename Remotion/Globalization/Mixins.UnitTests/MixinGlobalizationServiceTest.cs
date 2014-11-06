@@ -37,7 +37,7 @@ namespace Remotion.Globalization.Mixins.UnitTests
     [SetUp]
     public void SetUp ()
     {
-      _globalizationService = new MixinGlobalizationService (new ResourceManagerResolver());
+      _globalizationService = new MixinGlobalizationService (new ResourceManagerResolver(new ResourceAttributeBasedResourceManagerFactory()));
     }
 
     [Test]
