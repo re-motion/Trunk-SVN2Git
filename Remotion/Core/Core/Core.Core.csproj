@@ -439,6 +439,9 @@
     <Compile Include="Xml\XmlSerializationUtility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <None Include="..\..\..\SharedSource\SharedSource Apache-2.0.licenseheader">
+      <Link>SharedSource\SharedSource Apache-2.0.licenseheader</Link>
+    </None>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
