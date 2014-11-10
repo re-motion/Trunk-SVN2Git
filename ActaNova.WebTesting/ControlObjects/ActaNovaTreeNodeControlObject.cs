@@ -35,6 +35,16 @@ namespace ActaNova.WebTesting.ControlObjects
       return _bocTreeViewNode.GetText();
     }
 
+    public bool IsSelected ()
+    {
+      return _bocTreeViewNode.IsSelected();
+    }
+
+    public int GetNumberOfChildren ()
+    {
+      return _bocTreeViewNode.GetNumberOfChildren();
+    }
+
     public IControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
     {
       return this;
@@ -83,13 +93,24 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public UnspecifiedPageObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
-      var actualActionBehavior = completionDetection ?? Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
-      return _bocTreeViewNode.Click (actualActionBehavior);
+      var actualCompletionDetection = GetActualCompletionDetection (completionDetection);
+      return _bocTreeViewNode.Click (actualCompletionDetection);
     }
 
     public ContextMenuControlObject OpenContextMenu ()
     {
       return _bocTreeViewNode.OpenContextMenu();
+    }
+
+    private ICompletionDetection GetActualCompletionDetection (ICompletionDetection completionDetection)
+    {
+      if (completionDetection != null)
+        return completionDetection;
+
+      if (IsSelected())
+        return Continue.When(Wxe.PostBackCompleted);
+      
+      return Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
     }
   }
 }

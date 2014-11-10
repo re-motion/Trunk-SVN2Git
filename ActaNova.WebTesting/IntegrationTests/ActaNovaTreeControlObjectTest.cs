@@ -1,5 +1,4 @@
 ﻿using System;
-using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 
 namespace ActaNova.WebTesting.IntegrationTests
@@ -15,11 +14,11 @@ namespace ActaNova.WebTesting.IntegrationTests
       var eigenerAv = home.Tree.GetNode().WithIndex (1);
       Assert.That (eigenerAv.GetText(), Is.EqualTo ("Eigener AV"));
 
-      home = home.Tree.GetNode().WithIndex (2).Expand().GetNode().WithText ("egora Gemeinde").Select().Expect<ActaNovaMainPageObject>();
+      home = home.Tree.GetNode().WithIndex (2).Expand().GetNode().WithText ("egora Gemeinde").Select().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("egora Gemeinde AV"));
 
       var geschaeftsfall = home.Tree.GetNode().WithText ("Favoriten").Expand().Collapse().Expand().GetNode().WithIndex (2);
-      home = geschaeftsfall.Select().Expect<ActaNovaMainPageObject>();
+      home = geschaeftsfall.Select().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
 
       home =
@@ -30,8 +29,39 @@ namespace ActaNova.WebTesting.IntegrationTests
               .GetNode ("WrappedDocumentsHierarchy")
               .Expand()
               .Select()
-              .Expect<ActaNovaMainPageObject>();
+              .ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("Akt \"OE/1\" bearbeiten"));
+    }
+
+    [Test]
+    public void TestGetMethods ()
+    {
+      var home = Start();
+
+      var eigenerAvNode = home.Tree.GetNode().WithText ("Eigener AV");
+      Assert.That (eigenerAvNode.IsSelected(), Is.True);
+
+      var gruppenAvNode = home.Tree.GetNode().WithText ("Gruppen AV");
+      Assert.That (gruppenAvNode.IsSelected(), Is.False);
+
+      gruppenAvNode.Select();
+      Assert.That (eigenerAvNode.IsSelected(), Is.False);
+      Assert.That (gruppenAvNode.IsSelected(), Is.True);
+
+      Assert.That (eigenerAvNode.GetNumberOfChildren(), Is.EqualTo (0));
+      Assert.That (gruppenAvNode.GetNumberOfChildren(), Is.EqualTo (3));
+    }
+
+    [Test]
+    public void TestDoubleSelection ()
+    {
+      var home = Start();
+
+      home = home.Tree.GetNode().WithIndex (1).Select().ExpectMainPage();
+      Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
+
+      home = home.Tree.GetNode().WithIndex (1).Select().ExpectMainPage();
+      Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
   }
 }
