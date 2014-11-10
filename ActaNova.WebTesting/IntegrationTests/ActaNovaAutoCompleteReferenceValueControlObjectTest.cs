@@ -8,7 +8,6 @@ namespace ActaNova.WebTesting.IntegrationTests
   public class ActaNovaAutoCompleteReferenceValueControlObjectTest : ActaNovaWebTestBase
   {
     [Test]
-    [Ignore("Fails until fixed WebButton DMA rendering is integrated into ActaNova.")]
     public void Test ()
     {
       var home = Start();
@@ -42,7 +41,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           createPersonPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompleted).AndModalDialogHasBeenAccepted()).ExpectMainPage();
 
       var applicationContext = createIncomingPage.FormPage.GetAutoComplete ("ApplicationContext");
-      applicationContext.Clear();
+      applicationContext.Clear(Continue.When(Wxe.PostBackCompletedIn(createIncomingPage)));
       Assert.That (createIncomingPage.Header.GetCurrentApplicationContext(), Is.Null);
     }
   }
