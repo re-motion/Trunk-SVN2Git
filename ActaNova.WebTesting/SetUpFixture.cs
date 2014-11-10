@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 
-namespace ActaNova.WebTesting.IntegrationTests
+namespace ActaNova.WebTesting
 {
   [SetUpFixture]
   public class SetUpFixture

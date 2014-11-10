@@ -6,7 +6,7 @@ using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
 
-namespace ActaNova.WebTesting.IntegrationTests
+namespace ActaNova.WebTesting
 {
   /// <summary>
   /// Base class for all ActaNova web tests.
