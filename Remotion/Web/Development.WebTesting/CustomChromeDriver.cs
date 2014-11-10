@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Configuration;
 using System.IO;
 using Coypu.Drivers;
 using Coypu.Drivers.Selenium;
@@ -39,13 +41,14 @@ namespace Remotion.Web.Development.WebTesting
 
     private static IWebDriver CreateChromeDriver ()
     {
-      var driverService = ChromeDriverService.CreateDefaultService();
+      var customUserDataDir = ConfigurationManager.AppSettings["CustomChromeUserDataDir"];
 
+      var driverService = ChromeDriverService.CreateDefaultService();
       var chromeOptions = new ChromeOptions();
-      var userDataDirPath = GetUserDataDirPath();
-      s_log.InfoFormat ("Chrome driver user-data-dir='{0}'.", userDataDirPath);
-      chromeOptions.AddArgument (string.Format ("user-data-dir={0}", userDataDirPath));
-      
+      chromeOptions.AddArgument (string.Format ("user-data-dir={0}", customUserDataDir));
+
+      s_log.InfoFormat ("Using custom Chrome user-data-dir '{0}'.", customUserDataDir);
+
       return new ChromeDriver (
           driverService,
           chromeOptions);
@@ -53,7 +56,7 @@ namespace Remotion.Web.Development.WebTesting
 
     private static string GetUserDataDirPath ()
     {
-      var path = Path.Combine (Path.GetDirectoryName(typeof (CustomChromeDriver).Assembly.CodeBase), "..", "..", "ChromeUserDataDir");
+      var path = Path.Combine (Path.GetDirectoryName (typeof (CustomChromeDriver).Assembly.CodeBase), "..", "..", "ChromeUserDataDir");
       path = path.Substring ("file:/".Length);
       return Path.GetFullPath (path);
     }
