@@ -200,6 +200,7 @@
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
     <Compile Include="CompletionDetectionBuilderFluentInterface.cs" />
+    <Compile Include="PageObjects\HtmlPageObject.cs" />
     <Compile Include="ICompletionDetector.cs" />
     <Compile Include="Configuration\IBrowserConfiguration.cs" />
     <Compile Include="Configuration\ICoypuConfiguration.cs" />

@@ -14,7 +14,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("breadCrumb", breadCrumb);
 
       var confirmPage = breadCrumb.Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Confirm();
+      return confirmPage.Confirm (Continue.When (Wxe.PostBackCompletedIn (breadCrumb.Context.PageObject)));
     }
 
     public static UnspecifiedPageObject ClickAndPreventDataLoss ([NotNull] this ActaNovaBreadCrumbControlObject breadCrumb)
@@ -29,10 +29,10 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("treeNode", treeNode);
 
-      var completionDetection = treeNode.IsSelected() ? null : Continue.When (Wxe.PostBackCompletedInContext (treeNode.Context.PageObject.Context));
+      var completionDetection = treeNode.IsSelected() ? null : Continue.When (Wxe.PostBackCompletedIn (treeNode.Context.PageObject));
 
       var confirmPage = treeNode.Select (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Confirm(completionDetection);
+      return confirmPage.Confirm (completionDetection);
     }
 
     public static UnspecifiedPageObject SelectAndPreventDataLoss ([NotNull] this ActaNovaTreeNodeControlObject treeNode)
@@ -47,7 +47,9 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
-      return formPage.Perform (itemID, Continue.When (Wxe.PostBackCompleted).AndModalDialogHasBeenAccepted());
+      return formPage.Perform (
+          itemID,
+          Continue.When (Wxe.PostBackCompletedInContext (formPage.Context.ParentContext)).AndModalDialogHasBeenAccepted());
     }
 
     public static UnspecifiedPageObject PerformAndPreventDataLoss ([NotNull] this AppToolsFormPageObject formPage, string itemID)
