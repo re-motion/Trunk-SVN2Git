@@ -65,7 +65,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
-      objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Entitled for read only of object");
+      objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Beim Objekt nur lesend berechtigt");
       permissions.Perform ("Save", Continue.When (Wxe.PostBackCompleted).AndWindowHasClosed());
 
       permissions = securableClassesTree.GetRootNode().GetNode().WithIndex (1).Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Berechtigungen");
