@@ -28,7 +28,7 @@ namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
   /// Custom <see cref="SeleniumWebDriver"/> implementation for <see cref="Browser.InternetExplorer"/>. The default implementation of Coypu does not
-  /// set all <see cref="InternetExplorerOptions"/> and does not enable driver-internal logging.
+  /// set all <see cref="InternetExplorerOptions"/> as required and does not enable driver-internal logging.
   /// </summary>
   public class CustomInternetExplorerDriver : SeleniumWebDriver
   {

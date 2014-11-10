@@ -54,8 +54,12 @@ namespace Remotion.Web.Development.WebTesting
 
       if (sessionConfiguration.Browser == Browser.Chrome)
       {
-        sessionConfiguration.Driver = typeof (SeleniumWebDriver);
-        return new BrowserSession (sessionConfiguration);
+        // Todo RM-6297: Switch back to using the default Chrome driver as soon as the ActaNova language problem has been solved.
+        //sessionConfiguration.Driver = typeof (SeleniumWebDriver);
+        //return new BrowserSession (sessionConfiguration);
+
+        sessionConfiguration.Driver = typeof (CustomChromeDriver);
+        return new BrowserSession (sessionConfiguration, new CustomChromeDriver());
       }
 
       if (sessionConfiguration.Browser == Browser.InternetExplorer)

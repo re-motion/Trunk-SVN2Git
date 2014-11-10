@@ -183,6 +183,7 @@
     <Compile Include="CoypuElementScopeSelectExtensions.cs" />
     <Compile Include="CoypuElementScopeClickAndFocusExtensions.cs" />
     <Compile Include="CoypuElementScopeFillInWithAndSendKeysExtensions.cs" />
+    <Compile Include="CustomChromeDriver.cs" />
     <Compile Include="CustomInternetExplorerDriver.cs" />
     <Compile Include="FinishInputWithAction.cs" />
     <Compile Include="FluentControlSelection\IFluentControlSelector.cs" />
