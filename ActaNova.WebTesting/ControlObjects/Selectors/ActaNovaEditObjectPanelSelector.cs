@@ -1,4 +1,5 @@
 ﻿using System;
+using Coypu;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
@@ -14,7 +15,7 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
   {
     public ActaNovaEditObjectPanelControlObject SelectSingle (ControlSelectionContext context)
     {
-      var scope = context.Scope.FindCss ("div.editObjectDetailsPanel");
+      var scope = context.Scope.FindCss ("div.editObjectDetailsPanel", new Options { Match = Match.Single });
       return CreateControlObject (context, scope);
     }
 
