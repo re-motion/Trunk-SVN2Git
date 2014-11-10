@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
@@ -119,18 +120,39 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     private static void FillInWithFixedForInternetExplorer ([NotNull] this ElementScope scope, [NotNull] string value, bool clearValue)
     {
-      value = SeleniumSendKeysToWindowsFormsSendKeysTransformer.Convert (value);
+      var convertedValue = SeleniumSendKeysToWindowsFormsSendKeysTransformer.Convert (value);
 
       if (clearValue)
       {
         const string clearTextBox = "^a{DEL}";
-        value = clearTextBox + value;
+        convertedValue = clearTextBox + convertedValue;
       }
 
-      s_log.DebugFormat ("FillInWith for InternetExplorer: '{0}'.", value);
+      s_log.DebugFormat ("FillInWith for InternetExplorer: '{0}'.", convertedValue);
 
-      scope.Focus();
-      SendKeys.SendWait (value);
+      do
+      {
+        scope.Focus();
+        SendKeys.SendWait (convertedValue);
+      } while (!IsInputOkay (scope, value));
+    }
+
+    /// <summary>
+    /// Unfortunately, Internet Explorer sometimes skips single characters of <see cref="SendKeys.SendWait"/> (we don't know if this is an IE issue
+    /// or a SendKeys issue). To keep flaky tests to a minimum, we try to check the input before continuing.
+    /// </summary>
+    private static bool IsInputOkay (ElementScope scope, string value)
+    {
+      if (value.Any (c => Convert.ToInt32 (c) > Convert.ToInt32 (Keys.Null)))
+      {
+        s_log.DebugFormat ("FillInWith for InternetExplorer: value contains special characters, no retry-check possible.");
+        return true;
+      }
+
+      var isInputOkay = scope.Value == value;
+      if (!isInputOkay)
+        s_log.DebugFormat ("FillInWith for InternetExplorer: value is different: '{0}' != '{1}' - retrying...", scope.Value, value);
+      return isInputOkay;
     }
   }
 }
