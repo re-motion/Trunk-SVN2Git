@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public int GetRowCount ()
     {
-      return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody tr").Count());
+      return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody > tr").Count());
     }
 
     public IControlObjectWithRows<TRowControlObject> GetRow ()
