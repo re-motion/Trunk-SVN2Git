@@ -177,6 +177,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetNumberOfChildren ()
+    {
+      var home = Start();
+
+      var bocTreeView = home.GetTreeView().ByLocalID ("Normal");
+      var rootNode = bocTreeView.GetRootNode();
+      Assert.That (rootNode.GetNumberOfChildren(), Is.EqualTo (6));
+
+      var bANode = rootNode.Expand().GetNode ("c8ace752-55f6-4074-8890-130276ea6cd1");
+      Assert.That (bANode.GetNumberOfChildren(), Is.EqualTo (1));
+    }
+
+    [Test]
     public void TestNodeExpand ()
     {
       var home = Start();

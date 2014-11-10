@@ -53,6 +53,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _webTreeViewNode.IsSelected();
     }
 
+    public int GetNumberOfChildren ()
+    {
+      return _webTreeViewNode.GetNumberOfChildren();
+    }
+
     public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
     {
       return this;

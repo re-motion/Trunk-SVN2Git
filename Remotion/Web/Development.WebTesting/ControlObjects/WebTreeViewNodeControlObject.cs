@@ -43,6 +43,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope[DiagnosticMetadataAttributes.WebTreeViewIsSelectedNode] != null;
     }
 
+    public int GetNumberOfChildren ()
+    {
+      return int.Parse (Scope[DiagnosticMetadataAttributes.WebTreeViewChildren]);
+    }
+
     public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
     {
       return this;

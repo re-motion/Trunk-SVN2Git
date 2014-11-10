@@ -33,6 +33,7 @@ namespace Remotion.Web.Contract.DiagnosticMetadata
     public static readonly string TriggersNavigation = "data-triggers-navigation";
     public static readonly string TriggersPostBack = "data-triggers-postback";
 
+    public static readonly string WebTreeViewChildren = "data-webtreeview-children";
     public static readonly string WebTreeViewIsSelectedNode = "data-webtreeview-is-selected-node";
     public static readonly string WebTreeViewWellKnownAnchor = "data-webtreeview-wellknown-anchor";
   }
