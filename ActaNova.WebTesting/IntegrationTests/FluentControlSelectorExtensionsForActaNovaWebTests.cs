@@ -339,6 +339,22 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetTreeView().ByDomainProperty (domainProperty, domainClass);
     }
 
+    public static FluentControlSelector<BocTreeViewAutoCompleteReferenceValueSelector, BocTreeViewAutoCompleteReferenceValueControlObject>
+        GetTreeViewAutoComplete (this IControlHost host)
+    {
+      return new FluentControlSelector<BocTreeViewAutoCompleteReferenceValueSelector, BocTreeViewAutoCompleteReferenceValueControlObject> (
+          host,
+          new BocTreeViewAutoCompleteReferenceValueSelector());
+    }
+
+    public static BocTreeViewAutoCompleteReferenceValueControlObject GetTreeViewAutoComplete (
+        this IControlHost host,
+        string domainProperty,
+        string domainClass = null)
+    {
+      return host.GetTreeViewAutoComplete().ByDomainProperty (domainProperty, domainClass);
+    }
+
     public static ActaNovaEditObjectPanelControlObject GetDialog (this IControlHost host)
     {
       return host.GetControl (new SingleControlSelectionCommand<ActaNovaEditObjectPanelControlObject> (new ActaNovaEditObjectPanelSelector()));

@@ -63,9 +63,14 @@
     <Compile Include="ControlObjects\ActaNovaAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaBreadCrumbControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaEditObjectPanelControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaTreePopupTableControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaTreePopupTableNodeControlObject.cs" />
+    <Compile Include="ControlObjects\BocTreeViewAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\DownLevelDmsControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaEditObjectPanelSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\ActaNovaTreePopupTableSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\BocTreeViewAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\DownLevelDmsSelector.cs" />
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
@@ -74,6 +79,7 @@
     <Compile Include="IntegrationTests\ActaNovaMainPageObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMessageBoxControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaTreeControlObjectTest.cs" />
+    <Compile Include="IntegrationTests\BocTreeViewAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\DownLevelDmsControlObjectTest.cs" />
     <Compile Include="IntegrationTests\FluentControlSelectorExtensionsForActaNovaWebTests.cs" />
     <Compile Include="IntegrationTests\ActaNovaEditObjectPanelControlObjectTest.cs" />
