@@ -63,8 +63,10 @@
     <Compile Include="ControlObjects\ActaNovaAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaBreadCrumbControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaEditObjectPanelControlObject.cs" />
+    <Compile Include="ControlObjects\DownLevelDmsControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaEditObjectPanelSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\DownLevelDmsSelector.cs" />
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="IntegrationTests\ActaNovaMainPageObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMessageBoxControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaTreeControlObjectTest.cs" />
+    <Compile Include="IntegrationTests\DownLevelDmsControlObjectTest.cs" />
     <Compile Include="IntegrationTests\FluentControlSelectorExtensionsForActaNovaWebTests.cs" />
     <Compile Include="IntegrationTests\ActaNovaEditObjectPanelControlObjectTest.cs" />
     <Compile Include="PageObjects\AppToolsFormPageObject.cs" />
@@ -137,7 +140,11 @@
     <None Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\SharedSource Apache-2.0.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="SampleFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

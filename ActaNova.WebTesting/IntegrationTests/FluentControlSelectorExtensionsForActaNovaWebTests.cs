@@ -343,5 +343,10 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       return host.GetControl (new SingleControlSelectionCommand<ActaNovaEditObjectPanelControlObject> (new ActaNovaEditObjectPanelSelector()));
     }
+
+    public static DownLevelDmsControlObject GetOnlyDownLevelDms (this IControlHost host)
+    {
+      return host.GetControl (new SingleControlSelectionCommand<DownLevelDmsControlObject> (new DownLevelDmsSelector()));
+    }
   }
 }
