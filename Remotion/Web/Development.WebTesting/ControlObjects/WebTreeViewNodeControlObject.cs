@@ -38,6 +38,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope[DiagnosticMetadataAttributes.Text];
     }
 
+    public bool IsSelected ()
+    {
+      return Scope[DiagnosticMetadataAttributes.WebTreeViewIsSelectedNode] != null;
+    }
+
     public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
     {
       return this;

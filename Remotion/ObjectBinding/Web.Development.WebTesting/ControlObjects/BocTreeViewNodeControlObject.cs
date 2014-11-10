@@ -48,6 +48,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _webTreeViewNode.GetText();
     }
 
+    public bool IsSelected ()
+    {
+      return _webTreeViewNode.IsSelected();
+    }
+
     public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
     {
       return this;

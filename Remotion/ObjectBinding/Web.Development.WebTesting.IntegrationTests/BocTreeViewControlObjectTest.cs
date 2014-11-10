@@ -157,6 +157,26 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestNodeIsSelected ()
+    {
+      var home = Start();
+
+      var bocTreeView = home.GetTreeView().ByLocalID ("Normal");
+      var rootNode = bocTreeView.GetRootNode();
+      Assert.That (rootNode.IsSelected(), Is.False);
+
+      rootNode.Select();
+      Assert.That (rootNode.IsSelected(), Is.True);
+
+      var bANode = rootNode.Expand().GetNode ("c8ace752-55f6-4074-8890-130276ea6cd1");
+      var aBNode = bANode.Expand().GetNode ("eb94bfdb-1140-46f8-971f-e4b41dae13b8").Select();
+
+      Assert.That (rootNode.IsSelected(), Is.False);
+      Assert.That (bANode.IsSelected(), Is.False);
+      Assert.That (aBNode.IsSelected(), Is.True);
+    }
+
+    [Test]
     public void TestNodeExpand ()
     {
       var home = Start();
