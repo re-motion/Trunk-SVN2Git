@@ -143,7 +143,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     private static bool IsInputOkay (ElementScope scope, string value)
     {
-      if (value.Any (c => Convert.ToInt32 (c) > Convert.ToInt32 (Keys.Null)))
+      if (value.Any (c => c >= Keys.Null[0]))
       {
         s_log.DebugFormat ("FillInWith for InternetExplorer: value contains special characters, no retry-check possible.");
         return true;
