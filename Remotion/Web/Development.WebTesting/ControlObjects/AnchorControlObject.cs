@@ -50,6 +50,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       if (IsPostBackLink (scope))
         return Continue.When (Wxe.PostBackCompleted);
 
+      // TODO RM-6297: Add integration test for IsSimpleJavaScriptLink() case.
+      if (IsSimpleJavaScriptLink (scope))
+        return Continue.Immediately();
+
       return Continue.When (Wxe.Reset);
     }
 
@@ -58,9 +62,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       const string remotionDoPostBackScript = "DoPostBackWithOptions";
       const string aspNetDoPostBackScript = "__doPostBack";
 
+      // Note: unfortunately, Selenium sometimes reports wrong href contents, therefore we cannot check for href in the third condition.
       return scope["href"].Contains (remotionDoPostBackScript) ||
              scope["href"].Contains (aspNetDoPostBackScript) ||
-             (scope["href"].Equals ("#") && scope["onclick"] != null && scope["onclick"].Contains (aspNetDoPostBackScript));
+             (/*scope["href"].Equals ("#") &&*/ scope["onclick"] != null && scope["onclick"].Contains (aspNetDoPostBackScript));
+    }
+
+    private bool IsSimpleJavaScriptLink (ElementScope scope)
+    {
+      return scope["href"].Equals ("#") && scope["onclick"] != null && scope["onclick"].Contains ("javascript:");
     }
   }
 }
