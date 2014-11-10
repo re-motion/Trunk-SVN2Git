@@ -14,7 +14,7 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
   {
     public ActaNovaEditObjectPanelControlObject SelectSingle (ControlSelectionContext context)
     {
-      var scope = context.Scope.FindId ("PageEditObjectPanel_FormGridContainer");
+      var scope = context.Scope.FindCss ("div.editObjectDetailsPanel");
       return CreateControlObject (context, scope);
     }
 
