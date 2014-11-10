@@ -24,7 +24,8 @@ namespace ActaNova.WebTesting.ControlObjects
       var scope = GetIFrameScope();
 
       var fileScope = scope.FindCss ("input.HtmlUpload");
-      fileScope.SendKeysFixed (filePath);
+      // Note: do not use SendKeysFixed here, it does not work with file input tags in IE => we do not support "special characters" in file paths.
+      fileScope.SendKeys (filePath);
 
       var uploadButton = scope.FindCss ("input.UploadButton");
       uploadButton.ClickAndWait (Context, GetActualCompletionDetector (completionDetection));
