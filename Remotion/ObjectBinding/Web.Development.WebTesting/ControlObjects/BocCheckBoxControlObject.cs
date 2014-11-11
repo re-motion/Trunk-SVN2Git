@@ -25,7 +25,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox"/> control.
   /// </summary>
-  [UsedImplicitly]
   public class BocCheckBoxControlObject : BocControlObject
   {
     public BocCheckBoxControlObject ([NotNull] ControlObjectContext context)

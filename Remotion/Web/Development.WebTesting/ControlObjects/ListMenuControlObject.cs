@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="T:Remotion.Web.UI.Controls.ListMenu"/>.
   /// </summary>
-  public class ListMenuControlObject : RemotionControlObject, IControlObjectWithSelectableItems
+  public class ListMenuControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems
   {
     public ListMenuControlObject ([NotNull] ControlObjectContext context)
         : base (context)

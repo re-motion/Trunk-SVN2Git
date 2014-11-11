@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Base class for all control objects representing a <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/>.
   /// </summary>
-  public abstract class DropDownMenuControlObjectBase : RemotionControlObject, IControlObjectWithSelectableItems
+  public abstract class DropDownMenuControlObjectBase : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems
   {
     protected DropDownMenuControlObjectBase ([NotNull] ControlObjectContext context)
         : base (context)

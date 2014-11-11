@@ -26,7 +26,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> control.
   /// </summary>
-  [UsedImplicitly]
   public class BocBooleanValueControlObject : BocControlObject
   {
     public BocBooleanValueControlObject ([NotNull] ControlObjectContext context)

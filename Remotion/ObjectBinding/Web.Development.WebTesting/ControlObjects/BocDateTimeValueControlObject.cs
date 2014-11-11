@@ -28,7 +28,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue"/> control.
   /// </summary>
-  [UsedImplicitly]
   public class BocDateTimeValueControlObject : BocControlObject
   {
     private readonly bool _hasTimeField;

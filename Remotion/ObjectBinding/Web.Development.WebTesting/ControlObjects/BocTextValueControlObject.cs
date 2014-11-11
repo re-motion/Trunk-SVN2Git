@@ -27,7 +27,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue"/>.
   /// </summary>
-  [UsedImplicitly]
   public class BocTextValueControlObject : BocControlObject, IFillableControlObject
   {
     public BocTextValueControlObject ([NotNull] ControlObjectContext context)

@@ -25,7 +25,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="Label"/> and all its derivatives (e.g. <see cref="T:Remotion.Web.UI.Controls.SmartLabel"/>).
   /// </summary>
-  [UsedImplicitly]
   public class LabelControlObject : WebFormsControlObject, IControlObjectWithText
   {
     public LabelControlObject ([NotNull] ControlObjectContext context)

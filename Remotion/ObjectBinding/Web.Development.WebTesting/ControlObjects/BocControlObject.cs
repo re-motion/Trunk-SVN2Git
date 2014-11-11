@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an arbitrary re-motion-based business object control.
   /// </summary>
-  public abstract class BocControlObject : RemotionControlObject
+  public abstract class BocControlObject : WebFormsControlObjectWithDiagnosticMetadata
   {
     protected BocControlObject ([NotNull] ControlObjectContext context)
         : base (context)

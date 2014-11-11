@@ -25,8 +25,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.SingleView"/>.
   /// </summary>
-  [UsedImplicitly]
-  public class SingleViewControlObject : RemotionControlObject, IControlHost
+  public class SingleViewControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlHost
   {
     public SingleViewControlObject ([NotNull] ControlObjectContext context)
         : base (context)

@@ -26,7 +26,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="DropDownList"/>.
   /// </summary>
-  [UsedImplicitly]
   public class DropDownListControlObject : WebFormsControlObject, IControlObjectWithSelectableOptions
   {
     public DropDownListControlObject ([NotNull] ControlObjectContext context)

@@ -23,14 +23,11 @@ using Remotion.Web.Contract.DiagnosticMetadata;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object representing an arbitrary re-motion-based control.
+  /// Base class for control objects representing an ASP.NET WebForms control which features diagnostic metadata rendering.
   /// </summary>
-  public abstract class RemotionControlObject : WebFormsControlObject
+  public abstract class WebFormsControlObjectWithDiagnosticMetadata : WebFormsControlObject
   {
-    /// <summary>
-    /// Initializes the control object with the given <paramref name="context"/>.
-    /// </summary>
-    protected RemotionControlObject ([NotNull] ControlObjectContext context)
+    protected WebFormsControlObjectWithDiagnosticMetadata ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }

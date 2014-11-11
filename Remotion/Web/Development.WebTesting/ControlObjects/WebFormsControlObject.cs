@@ -16,6 +16,7 @@
 // 
 
 using System;
+using Coypu;
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -28,6 +29,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     protected WebFormsControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
+    {
+      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }

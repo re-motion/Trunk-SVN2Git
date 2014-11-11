@@ -24,8 +24,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
-  [UsedImplicitly]
-  public class WebTreeViewControlObject : RemotionControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>
+  public class WebTreeViewControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithNodes<WebTreeViewNodeControlObject>
   {
     private readonly WebTreeViewNodeControlObject _metaRootNode;
 

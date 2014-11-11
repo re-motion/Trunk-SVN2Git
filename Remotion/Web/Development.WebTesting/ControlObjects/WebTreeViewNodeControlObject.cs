@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
-  public class WebTreeViewNodeControlObject : RemotionControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>
+  public class WebTreeViewNodeControlObject : WebFormsControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>
   {
     public WebTreeViewNodeControlObject ([NotNull] ControlObjectContext context)
         : base (context)

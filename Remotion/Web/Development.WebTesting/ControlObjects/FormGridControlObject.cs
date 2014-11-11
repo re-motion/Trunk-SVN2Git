@@ -25,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.FormGridManager"/>.
   /// </summary>
-  public class FormGridControlObject : RemotionControlObject, IControlHost
+  public class FormGridControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlHost
   {
     public FormGridControlObject ([NotNull] ControlObjectContext context)
         : base (context)

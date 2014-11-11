@@ -26,7 +26,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="TextBox"/> and all its derivatives (none in re-motion).
   /// </summary>
-  [UsedImplicitly]
   public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject
   {
     public TextBoxControlObject ([NotNull] ControlObjectContext context)

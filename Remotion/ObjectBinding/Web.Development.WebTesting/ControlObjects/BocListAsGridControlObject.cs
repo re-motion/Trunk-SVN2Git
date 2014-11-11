@@ -26,7 +26,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  [UsedImplicitly]
   public class BocListAsGridControlObject : BocListControlObjectBase<BocListAsGridRowControlObject, BocListAsGridCellControlObject>
   {
     public BocListAsGridControlObject ([NotNull] ControlObjectContext context)

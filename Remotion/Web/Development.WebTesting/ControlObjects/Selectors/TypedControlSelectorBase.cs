@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           IFirstControlSelector<TControlObject>,
           IPerIndexControlSelector<TControlObject>,
           ISingleControlSelector<TControlObject>
-      where TControlObject : RemotionControlObject
+      where TControlObject : WebFormsControlObjectWithDiagnosticMetadata
   {
     private readonly string _controlType;
 

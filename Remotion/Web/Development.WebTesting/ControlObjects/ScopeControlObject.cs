@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// controls (<see cref="IControlHost"/>). Typcially this control object is returned by other control objects in order to scope into a specific
   /// area (e.g. top controls or bottom controls in <see cref="TabbedMultiViewControlObject"/>.
   /// </summary>
-  public class ScopeControlObject : RemotionControlObject, IControlHost
+  public class ScopeControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlHost
   {
     public ScopeControlObject ([NotNull] ControlObjectContext context)
         : base (context)

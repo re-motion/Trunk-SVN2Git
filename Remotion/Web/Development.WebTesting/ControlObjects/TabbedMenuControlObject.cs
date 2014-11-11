@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.TabbedMenu"/>.
   /// </summary>
   [UsedImplicitly]
-  public class TabbedMenuControlObject : RemotionControlObject, IControlObjectWithSelectableItems, IControlObjectWithSelectableSubItems
+  public class TabbedMenuControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems, IControlObjectWithSelectableSubItems
   {
     // Todo RM-6297: Replace IControlObjectWithSelectableSubItems with a sub menu control object, it is a cleaner approach.
 

@@ -27,7 +27,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocMultilineTextValue"/>.
   /// </summary>
-  [UsedImplicitly]
   public class BocMultilineTextValueControlObject : BocControlObject, IFillableControlObject
   {
     public BocMultilineTextValueControlObject ([NotNull] ControlObjectContext context)

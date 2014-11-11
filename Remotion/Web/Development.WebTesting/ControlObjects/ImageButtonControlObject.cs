@@ -26,7 +26,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="ImageButton"/>.
   /// </summary>
-  [UsedImplicitly]
   public class ImageButtonControlObject : WebFormsControlObject, IClickableControlObject
   {
     public ImageButtonControlObject ([NotNull] ControlObjectContext context)

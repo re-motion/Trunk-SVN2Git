@@ -28,7 +28,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <see cref="T:Remotion.Web.UI.Controls.WebLinkButton"/> or <see cref="T:Remotion.Web.UI.Controls.SmartHyperLink"/>). Also represents a simple
   /// HTML anchor &lt;a&gt; control within a re-motion applicaiton.
   /// </summary>
-  [UsedImplicitly]
   public class AnchorControlObject : WebFormsControlObject, IClickableControlObject
   {
     public AnchorControlObject ([NotNull] ControlObjectContext context)

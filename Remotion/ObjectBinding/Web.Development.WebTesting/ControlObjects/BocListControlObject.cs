@@ -30,7 +30,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  [UsedImplicitly]
   public class BocListControlObject
       : BocListControlObjectBase<BocListRowControlObject, BocListCellControlObject>,
           IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>,
@@ -259,7 +258,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       availableViewsScope.PerformAction (selectAction, Context, Continue.When (Wxe.PostBackCompleted).Build());
     }
 
-    private ElementScope GetAvailableViewsScope ()
+    protected virtual ElementScope GetAvailableViewsScope ()
     {
       return Scope.FindChild ("Boc_AvailableViewsList");
     }
