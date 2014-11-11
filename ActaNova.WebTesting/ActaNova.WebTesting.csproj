@@ -63,7 +63,6 @@
     <Compile Include="ActaNovaExtensionsTest\ActaNovaMainMenuExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaTreeExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaClickExtensions.cs" />
-    <Compile Include="ActaNovaExtensions\ActaNovaControlHostExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaMainMenuExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaTreeExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaUnspecifiedPageObjectExtensions.cs" />
@@ -80,8 +79,8 @@
     <Compile Include="ControlObjects\Selectors\ActaNovaEditObjectPanelSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaTreePopupTableSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaListSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\ActaNovaTreeViewAutoCompleteReferenceValueSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\ActaNovaDownLevelDmsSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\BocTreeViewAutoCompleteReferenceValueSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\DownLevelDmsSelector.cs" />
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
