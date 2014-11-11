@@ -25,6 +25,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IFillableControlObject
   {
     /// <summary>
+    /// Returns the current text.
+    /// </summary>
+    string GetText ();
+
+    /// <summary>
     /// Fills the control with the given <paramref name="text"/>.
     /// </summary>
     /// <param name="text">The text to fill in.</param>
