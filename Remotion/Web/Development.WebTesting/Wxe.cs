@@ -33,11 +33,17 @@ namespace Remotion.Web.Development.WebTesting
     public static readonly Func<PageObjectContext, WxePostBackInCompletionDetectionStrategy> PostBackCompletedInContext =
         ctx => new WxePostBackInCompletionDetectionStrategy (ctx, 1);
 
+    public static readonly Func<PageObject, WxePostBackInCompletionDetectionStrategy> PostBackCompletedInParent =
+        po => PostBackCompletedInContext (po.Context.ParentContext);
+
     public static readonly WxeResetCompletionDetectionStrategy Reset = new WxeResetCompletionDetectionStrategy();
 
     public static readonly Func<PageObject, WxeResetInCompletionDetectionStrategy> ResetIn = po => ResetInContext (po.Context);
 
     public static readonly Func<PageObjectContext, WxeResetInCompletionDetectionStrategy> ResetInContext =
         ctx => new WxeResetInCompletionDetectionStrategy (ctx);
+
+    public static readonly Func<PageObject, WxeResetInCompletionDetectionStrategy> ResetInParent =
+        po => ResetInContext (po.Context.ParentContext);
   }
 }
