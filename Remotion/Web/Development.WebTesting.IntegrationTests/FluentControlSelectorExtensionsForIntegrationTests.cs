@@ -52,6 +52,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<FormGridSelector, FormGridControlObject> (host, new FormGridSelector());
     }
 
+    public static FluentControlSelector<ImageButtonSelector, ImageButtonControlObject> GetImageButton (this IControlHost host)
+    {
+      return new FluentControlSelector<ImageButtonSelector, ImageButtonControlObject> (host, new ImageButtonSelector());
+    }
+
     public static FluentControlSelector<LabelSelector, LabelControlObject> GetLabel (this IControlHost host)
     {
       return new FluentControlSelector<LabelSelector, LabelControlObject> (host, new LabelSelector());
