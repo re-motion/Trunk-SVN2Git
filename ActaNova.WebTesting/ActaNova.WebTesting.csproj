@@ -76,11 +76,11 @@
     <Compile Include="ControlObjects\ActaNovaTreeViewAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaDownLevelDmsControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaAutoCompleteReferenceValueSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\ActaNovaDownLevelDmsSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaEditObjectPanelSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaTreePopupTableSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaListSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\BocTreeViewAutoCompleteReferenceValueSelector.cs" />
-    <Compile Include="ControlObjects\Selectors\DownLevelDmsSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\ActaNovaTreeViewAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
