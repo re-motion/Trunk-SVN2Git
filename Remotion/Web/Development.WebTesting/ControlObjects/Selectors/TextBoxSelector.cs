@@ -33,13 +33,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           ISingleControlSelector<TextBoxControlObject>
   {
     private const string c_htmlTextBoxTag = "input";
-    private const string c_htmlTextBoxCssTypeAttributeCheck = "[type='text']";
 
     public TextBoxControlObject SelectFirst (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var scope = context.Scope.FindCss (c_htmlTextBoxTag + c_htmlTextBoxCssTypeAttributeCheck);
+      var scope = context.Scope.FindDMA (c_htmlTextBoxTag, "type", "text");
       return CreateControlObject (context, scope);
     }
 
@@ -47,7 +46,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var scope = context.Scope.FindCss (c_htmlTextBoxTag + c_htmlTextBoxCssTypeAttributeCheck, Options.Single);
+      var scope = context.Scope.FindDMA (c_htmlTextBoxTag, "type", "text");
+      scope.ElementFinder.Options.Match = Match.Single;
       return CreateControlObject (context, scope);
     }
 
