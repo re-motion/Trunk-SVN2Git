@@ -10,7 +10,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="ActaNovaTreePopupTableControlObject"/>.
   /// </summary>
-  public class ActaNovaTreePopupTableNodeControlObject : RemotionControlObject, IClickableControlObject, IControlObjectWithText
+  public class ActaNovaTreePopupTableNodeControlObject : WebFormsControlObject, IClickableControlObject, IControlObjectWithText
   {
     public ActaNovaTreePopupTableNodeControlObject ([NotNull] ControlObjectContext context)
         : base (context)

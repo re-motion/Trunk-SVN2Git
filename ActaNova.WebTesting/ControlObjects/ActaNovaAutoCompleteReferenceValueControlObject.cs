@@ -12,7 +12,6 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the ActaNova auto complete reference value.
   /// </summary>
-  [UsedImplicitly]
   public class ActaNovaAutoCompleteReferenceValueControlObject : BocAutoCompleteReferenceValueControlObject
   {
     public ActaNovaAutoCompleteReferenceValueControlObject ([NotNull] ControlObjectContext context)
@@ -78,19 +77,6 @@ namespace ActaNova.WebTesting.ControlObjects
               new WebButtonSelector(),
               "SelectRelatedObjectControlCreateReferencedObjectButton"));
       return newButton.Click (completionDetection);
-    }
-
-    /// <summary>
-    /// Presses the "New in ÖKOM" button for the reference value search class.
-    /// </summary>
-    public UnspecifiedPageObject NewInOekom ([CanBeNull] ICompletionDetection completionDetection = null)
-    {
-      var actualCompletionDetection = completionDetection ?? Continue.When (Wxe.PostBackCompleted);
-
-      var scope = GetNeighbourCellScope();
-      var link = scope.Scope.FindLink();
-      link.ClickAndWait (Context, actualCompletionDetection.Build());
-      return UnspecifiedPage();
     }
 
     private ScopeControlObject GetAdditionalButtonsScope ()

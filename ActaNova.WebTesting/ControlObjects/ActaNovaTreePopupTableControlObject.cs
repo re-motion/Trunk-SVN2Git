@@ -11,7 +11,7 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing an ActaNova popup table control, filled with a tree.
   /// </summary>
-  public class ActaNovaTreePopupTableControlObject : RemotionControlObject
+  public class ActaNovaTreePopupTableControlObject : WebFormsControlObject
   {
     public ActaNovaTreePopupTableControlObject ([NotNull] ControlObjectContext context)
         : base (context)

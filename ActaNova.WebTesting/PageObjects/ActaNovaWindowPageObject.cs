@@ -3,6 +3,9 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.PageObjects
 {
+  /// <summary>
+  /// Represents an ActaNova window.
+  /// </summary>
   // ReSharper disable once ClassNeverInstantiated.Global
   public class ActaNovaWindowPageObject : ActaNovaPageObject
   {
@@ -11,6 +14,9 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
+    /// <summary>
+    /// Closes the window.
+    /// </summary>
     public void Close ()
     {
       Context.CloseWindow();

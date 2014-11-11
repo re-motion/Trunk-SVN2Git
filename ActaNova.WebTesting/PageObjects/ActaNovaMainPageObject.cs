@@ -13,7 +13,7 @@ namespace ActaNova.WebTesting.PageObjects
   /// Page object representing the ActaNova main page.
   /// </summary>
   // ReSharper disable once ClassNeverInstantiated.Global
-  public class ActaNovaMainPageObject : ActaNovaPageObject
+  public class ActaNovaMainPageObject : ActaNovaPageObjectBase
   {
     public ActaNovaMainPageObject ([NotNull] PageObjectContext context)
         : base (context)
@@ -63,13 +63,20 @@ namespace ActaNova.WebTesting.PageObjects
       }
     }
 
-    public AppToolsFormPageObject FormPage
+    public ActaNovaFormPageObject FormPage
     {
-      get
-      {
-        var detailsAreaScope = Scope.FindFrame ("RightFrameContent");
-        return new AppToolsFormPageObject (Context.CloneForFrame (detailsAreaScope));
-      }
+      get { return new ActaNovaFormPageObject (GetContextForFrame()); }
+    }
+
+    public ActaNovaWorkListPageObject WorkList
+    {
+      get { return new ActaNovaWorkListPageObject (GetContextForFrame()); }
+    }
+
+    private PageObjectContext GetContextForFrame ()
+    {
+      var frameScope = Scope.FindFrame ("RightFrameContent");
+      return Context.CloneForFrame (frameScope);
     }
   }
 }

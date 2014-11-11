@@ -13,9 +13,9 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the ActaNova tree-view auto complete reference value.
   /// </summary>
-  public class BocTreeViewAutoCompleteReferenceValueControlObject : ActaNovaAutoCompleteReferenceValueControlObject
+  public class ActaNovaTreeViewAutoCompleteReferenceValueControlObject : ActaNovaAutoCompleteReferenceValueControlObject
   {
-    public BocTreeViewAutoCompleteReferenceValueControlObject ([NotNull] ControlObjectContext context)
+    public ActaNovaTreeViewAutoCompleteReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }

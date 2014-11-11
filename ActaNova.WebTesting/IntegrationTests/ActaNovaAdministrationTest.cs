@@ -27,7 +27,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var classificationTypeList = administration.GetList().Single();
       Assert.That (classificationTypeList.GetRowCount(), Is.EqualTo (4));
 
-      var downloadNotification = administration.ClickImage ("ExcelExport").Expect<ActaNovaMessageBoxPageObject>();
+      var downloadNotification = administration.GetImageButton ("ExcelExportButton").Click().Expect<ActaNovaMessageBoxPageObject>();
       downloadNotification.Confirm();
       
       administration.Close();

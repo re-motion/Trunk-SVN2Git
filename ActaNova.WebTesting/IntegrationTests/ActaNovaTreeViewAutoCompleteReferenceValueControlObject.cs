@@ -6,7 +6,7 @@ using Remotion.Web.Development.WebTesting;
 namespace ActaNova.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class BocTreeViewAutoCompleteReferenceValueControlObjectTest : ActaNovaWebTestBase
+  public class ActaNovaTreeViewAutoCompleteReferenceValueControlObject : ActaNovaWebTestBase
   {
     [Test]
     public void Test ()

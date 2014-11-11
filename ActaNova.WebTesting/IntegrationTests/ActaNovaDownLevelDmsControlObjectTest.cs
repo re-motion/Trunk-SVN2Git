@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace ActaNova.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class DownLevelDmsControlObjectTest : ActaNovaWebTestBase
+  public class ActaNovaDownLevelDmsControlObjectTest : ActaNovaWebTestBase
   {
     [Test]
     public void Test ()

@@ -7,23 +7,23 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace ActaNova.WebTesting.ControlObjects.Selectors
 {
   /// <summary>
-  /// Control object selector for <see cref="BocTreeViewAutoCompleteReferenceValueControlObject"/>.
+  /// Control object selector for <see cref="ActaNovaTreeViewAutoCompleteReferenceValueControlObject"/>.
   /// </summary>
-  public class BocTreeViewAutoCompleteReferenceValueSelector : BocControlSelectorBase<BocTreeViewAutoCompleteReferenceValueControlObject>
+  public class ActaNovaTreeViewAutoCompleteReferenceValueSelector : BocControlSelectorBase<ActaNovaTreeViewAutoCompleteReferenceValueControlObject>
   {
-    public BocTreeViewAutoCompleteReferenceValueSelector ()
+    public ActaNovaTreeViewAutoCompleteReferenceValueSelector ()
         : base ("BocAutoCompleteReferenceValue")
     {
     }
 
-    protected override BocTreeViewAutoCompleteReferenceValueControlObject CreateControlObject (
+    protected override ActaNovaTreeViewAutoCompleteReferenceValueControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)
     {
       ArgumentUtility.CheckNotNull ("controlSelectionContext", controlSelectionContext);
       ArgumentUtility.CheckNotNull ("newControlObjectContext", newControlObjectContext);
 
-      return new BocTreeViewAutoCompleteReferenceValueControlObject (newControlObjectContext);
+      return new ActaNovaTreeViewAutoCompleteReferenceValueControlObject (newControlObjectContext);
     }
   }
 }

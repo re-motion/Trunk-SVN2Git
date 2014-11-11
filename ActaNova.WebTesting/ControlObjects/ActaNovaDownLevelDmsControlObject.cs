@@ -10,9 +10,9 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the down-level DMS control.
   /// </summary>
-  public class DownLevelDmsControlObject : WebFormsControlObject
+  public class ActaNovaDownLevelDmsControlObject : WebFormsControlObject
   {
-    public DownLevelDmsControlObject ([NotNull] ControlObjectContext context)
+    public ActaNovaDownLevelDmsControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
@@ -21,7 +21,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("filePath", filePath);
 
-      var scope = GetIFrameScope();
+      var scope = GetIframeScope();
 
       var fileScope = scope.FindCss ("input.HtmlUpload");
       // Note: do not use SendKeysFixed here, it does not work with file input tags in IE => we do not support "special characters" in file paths.
@@ -32,14 +32,9 @@ namespace ActaNova.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    private ElementScope GetIFrameScope ()
+    private ElementScope GetIframeScope ()
     {
       return Scope.FindFrame ("").FindCss ("body.UploadPage");
-    }
-
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
-    {
-      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }

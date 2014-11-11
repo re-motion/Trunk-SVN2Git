@@ -7,23 +7,23 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace ActaNova.WebTesting.ControlObjects.Selectors
 {
   /// <summary>
-  /// Control object selector for <see cref="DownLevelDmsControlObject"/>.
+  /// Control object selector for <see cref="ActaNovaDownLevelDmsControlObject"/>.
   /// </summary>
-  public class DownLevelDmsSelector
-      : ControlSelectorBase<DownLevelDmsControlObject>,
-          ISingleControlSelector<DownLevelDmsControlObject>
+  public class ActaNovaDownLevelDmsSelector
+      : ControlSelectorBase<ActaNovaDownLevelDmsControlObject>,
+          ISingleControlSelector<ActaNovaDownLevelDmsControlObject>
   {
-    public DownLevelDmsControlObject SelectSingle (ControlSelectionContext context)
+    public ActaNovaDownLevelDmsControlObject SelectSingle (ControlSelectionContext context)
     {
       var scope = context.Scope.FindCss ("table.dmsContentTable", new Options { Match = Match.Single });
       return CreateControlObject (context, scope);
     }
 
-    protected override DownLevelDmsControlObject CreateControlObject (
+    protected override ActaNovaDownLevelDmsControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)
     {
-      return new DownLevelDmsControlObject (newControlObjectContext);
+      return new ActaNovaDownLevelDmsControlObject (newControlObjectContext);
     }
   }
 }

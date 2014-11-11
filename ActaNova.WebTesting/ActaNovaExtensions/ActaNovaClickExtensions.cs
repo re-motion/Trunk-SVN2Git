@@ -43,7 +43,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       return confirmPage.Cancel();
     }
 
-    public static UnspecifiedPageObject PerformAndConfirmDataLoss ([NotNull] this AppToolsFormPageObject formPage, string itemID)
+    public static UnspecifiedPageObject PerformAndConfirmDataLoss ([NotNull] this ActaNovaFormPageObject formPage, string itemID)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
@@ -52,7 +52,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
           Continue.When (Wxe.PostBackCompletedInContext (formPage.Context.ParentContext)).AndModalDialogHasBeenAccepted());
     }
 
-    public static UnspecifiedPageObject PerformAndPreventDataLoss ([NotNull] this AppToolsFormPageObject formPage, string itemID)
+    public static UnspecifiedPageObject PerformAndPreventDataLoss ([NotNull] this ActaNovaFormPageObject formPage, string itemID)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 

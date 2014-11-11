@@ -57,6 +57,16 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetDropDownMenu().ByLocalID (localID);
     }
 
+    public static FluentControlSelector<ImageButtonSelector, ImageButtonControlObject> GetImageButton (this IControlHost host)
+    {
+      return new FluentControlSelector<ImageButtonSelector, ImageButtonControlObject> (host, new ImageButtonSelector());
+    }
+
+    public static ImageButtonControlObject GetImageButton (this IControlHost host, string localID)
+    {
+      return host.GetImageButton().ByLocalID (localID);
+    }
+
     public static FluentControlSelector<FormGridSelector, FormGridControlObject> GetFormGrid (this IControlHost host)
     {
       return new FluentControlSelector<FormGridSelector, FormGridControlObject> (host, new FormGridSelector());
@@ -339,15 +349,15 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetTreeView().ByDomainProperty (domainProperty, domainClass);
     }
 
-    public static FluentControlSelector<BocTreeViewAutoCompleteReferenceValueSelector, BocTreeViewAutoCompleteReferenceValueControlObject>
+    public static FluentControlSelector<ActaNovaTreeViewAutoCompleteReferenceValueSelector, ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject>
         GetTreeViewAutoComplete (this IControlHost host)
     {
-      return new FluentControlSelector<BocTreeViewAutoCompleteReferenceValueSelector, BocTreeViewAutoCompleteReferenceValueControlObject> (
+      return new FluentControlSelector<ActaNovaTreeViewAutoCompleteReferenceValueSelector, ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject> (
           host,
-          new BocTreeViewAutoCompleteReferenceValueSelector());
+          new ActaNovaTreeViewAutoCompleteReferenceValueSelector());
     }
 
-    public static BocTreeViewAutoCompleteReferenceValueControlObject GetTreeViewAutoComplete (
+    public static ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject GetTreeViewAutoComplete (
         this IControlHost host,
         string domainProperty,
         string domainClass = null)
@@ -360,9 +370,9 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetControl (new SingleControlSelectionCommand<ActaNovaEditObjectPanelControlObject> (new ActaNovaEditObjectPanelSelector()));
     }
 
-    public static DownLevelDmsControlObject GetOnlyDownLevelDms (this IControlHost host)
+    public static ActaNovaDownLevelDmsControlObject GetOnlyDownLevelDms (this IControlHost host)
     {
-      return host.GetControl (new SingleControlSelectionCommand<DownLevelDmsControlObject> (new DownLevelDmsSelector()));
+      return host.GetControl (new SingleControlSelectionCommand<ActaNovaDownLevelDmsControlObject> (new ActaNovaDownLevelDmsSelector()));
     }
   }
 }

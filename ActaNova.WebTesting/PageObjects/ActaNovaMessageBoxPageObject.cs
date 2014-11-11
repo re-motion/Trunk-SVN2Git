@@ -6,10 +6,10 @@ using Remotion.Web.Development.WebTesting;
 namespace ActaNova.WebTesting.PageObjects
 {
   /// <summary>
-  /// Page object representing the AppTools-based page which displays a modal message box.
+  /// Page object representing the ActaNova message box page.
   /// </summary>
   // ReSharper disable once ClassNeverInstantiated.Global
-  public class ActaNovaMessageBoxPageObject : AppToolsPageObject
+  public class ActaNovaMessageBoxPageObject : ActaNovaPageObjectBase
   {
     public ActaNovaMessageBoxPageObject ([NotNull] PageObjectContext context)
         : base (context)
@@ -40,15 +40,15 @@ namespace ActaNova.WebTesting.PageObjects
       return mesageBox.No (completionDetection);
     }
 
-    private MessageBoxControlObject GetActaNovaMessageBoxControlObject ()
+    private ActaNovaMessageBoxControlObject GetActaNovaMessageBoxControlObject ()
     {
       var messageBoxScope = Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
       if (messageBoxScope.IsVisible())
-        return new MessageBoxControlObject (Context.CloneForControl (this, messageBoxScope));
+        return new ActaNovaMessageBoxControlObject (Context.CloneForControl (this, messageBoxScope));
 
       var detailsArea = GetDetailsArea();
       messageBoxScope = detailsArea.Scope.FindId ("DisplayBoxPopUp_MessagePopupDisplayBoxPopUp");
-      return new MessageBoxControlObject (detailsArea.Context.CloneForControl (detailsArea, messageBoxScope));
+      return new ActaNovaMessageBoxControlObject (detailsArea.Context.CloneForControl (detailsArea, messageBoxScope));
     }
 
     private ActaNovaPageObject GetDetailsArea ()
