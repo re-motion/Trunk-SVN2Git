@@ -403,11 +403,13 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
 
     public static HtmlPageObject Hilfe_Gesamthilfe ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
     {
-      throw new NotImplementedException ("Hilfe_Gesamthilfe cannot be implemented at the moment due to technical reasons in Acta Nova.");
+      throw new NotSupportedException ("Hilfe_Gesamthilfe cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
 
-      //ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
+#pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
+      ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      //return mainMenu.Select (new[] { "Hilfe", "Gesamthilfe" }, Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
+      return mainMenu.Select (new[] { "Hilfe", "Gesamthilfe" }, Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
+#pragma warning restore 162
     }
 
     public static HtmlPageObject Hilfe_Index ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
