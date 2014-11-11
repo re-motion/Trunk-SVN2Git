@@ -49,7 +49,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       if (IsPostBackLink (scope))
         return Continue.When (Wxe.PostBackCompleted);
 
-      // Todo RM-6297: Add integration test for IsSimpleJavaScriptLink() case.
       if (IsSimpleJavaScriptLink (scope))
         return Continue.Immediately();
 
@@ -61,15 +60,21 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       const string doPostBackScript = "__doPostBack";
       const string doPostBackWithOptionsScript = "DoPostBackWithOptions";
 
-      // Note: unfortunately, Selenium sometimes reports wrong href contents, therefore we cannot check for href in the third condition.
       return scope["href"].Contains (doPostBackScript) ||
              scope["href"].Contains (doPostBackWithOptionsScript) ||
-             ( /*scope["href"].Equals ("#") &&*/ scope["onclick"] != null && scope["onclick"].Contains (doPostBackScript));
+             ( TargetsCurrentPage(scope["href"]) && scope["onclick"] != null && scope["onclick"].Contains (doPostBackScript));
     }
 
     private bool IsSimpleJavaScriptLink (ElementScope scope)
     {
-      return scope["href"].Equals ("#") && scope["onclick"] != null && scope["onclick"].Contains ("javascript:");
+      return TargetsCurrentPage(scope["href"]) && scope["onclick"] != null && scope["onclick"].Contains ("javascript:");
+    }
+
+    private bool TargetsCurrentPage (string href)
+    {
+      // Note: unfortunately, Selenium sometimes reports wrong href contents, therefore we have to check for the window location as well.
+      var windowLocation = Context.Window.Location.ToString();
+      return href.Equals("#") || href.Equals(windowLocation) || href.Equals(windowLocation + "#");
     }
   }
 }

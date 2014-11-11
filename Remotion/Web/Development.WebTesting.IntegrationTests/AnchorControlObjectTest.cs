@@ -45,6 +45,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var htmlAnchor = home.GetAnchor().ByID ("body_MyHtmlAnchor");
       Assert.That (htmlAnchor.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor"));
+
+      var htmlAnchorWithJavaScriptLink = home.GetAnchor().ByID ("body_MyHtmlAnchorWithJavaScriptLink");
+      Assert.That (htmlAnchorWithJavaScriptLink.Scope.Id, Is.EqualTo ("body_MyHtmlAnchorWithJavaScriptLink"));
     }
 
     [Test]
@@ -75,6 +78,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var htmlAnchor = home.GetAnchor().ByLocalID ("MyHtmlAnchor");
       Assert.That (htmlAnchor.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor"));
+
+      var htmlAnchorWithJavaScriptLink = home.GetAnchor().ByLocalID ("MyHtmlAnchorWithJavaScriptLink");
+      Assert.That (htmlAnchorWithJavaScriptLink.Scope.Id, Is.EqualTo ("body_MyHtmlAnchorWithJavaScriptLink"));
     }
 
     [Test]
@@ -129,6 +135,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var htmlAnchor = home.GetAnchor().ByLocalID ("MyHtmlAnchor");
       home = htmlAnchor.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyHtmlAnchor"));
+
+      var htmlAnchorWithJavaScriptLink = home.GetAnchor().ByLocalID ("MyHtmlAnchorWithJavaScriptLink");
+      home = htmlAnchorWithJavaScriptLink.Click().Expect<RemotionPageObject>();
+      Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyHtmlAnchorWithJavaScriptLink"));
     }
 
     private RemotionPageObject Start ()
