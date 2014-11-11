@@ -27,10 +27,10 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
 
       home = home.MainMenu.Neu_Eingangsstueck();
 
-      home.Tree.EigenerAV().SelectAndPreventDataLoss();
+      home.Tree.GetEigenerAvNode().SelectAndPreventDataLoss();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eingangsstück erzeugen"));
 
-      home = home.Tree.EigenerAV().SelectAndConfirmDataLoss().ExpectMainPage();
+      home = home.Tree.GetEigenerAvNode().SelectAndConfirmDataLoss().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
 
@@ -41,10 +41,10 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
 
       home = home.MainMenu.Neu_Eingangsstueck();
 
-      home.Tree.GruppenAV().SelectAndPreventDataLoss();
+      home.Tree.GetGruppenAvNode().SelectAndPreventDataLoss();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eingangsstück erzeugen"));
 
-      home = home.Tree.GruppenAV().SelectAndConfirmDataLoss().ExpectMainPage();
+      home = home.Tree.GetGruppenAvNode().SelectAndConfirmDataLoss().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("Gruppen AV"));
     }
 
