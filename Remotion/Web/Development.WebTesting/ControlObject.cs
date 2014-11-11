@@ -36,20 +36,20 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Provides access to child controls of the control.
-    /// </summary>
-    public IControlHost Children
-    {
-      get { return new ControlHost (Context); }
-    }
-
-    /// <summary>
     /// Return's the control's HTML ID.
     /// </summary>
     /// <exception cref="MissingHtmlException">If the DOM element does not bear the ID attribute.</exception>
     public string GetHtmlID ()
     {
       return Scope.Id;
+    }
+
+    /// <summary>
+    /// Provides access to child controls of the control.
+    /// </summary>
+    protected IControlHost Children
+    {
+      get { return new ControlHost (Context); }
     }
 
     /// <summary>
