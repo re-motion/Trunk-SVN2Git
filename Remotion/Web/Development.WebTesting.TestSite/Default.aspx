@@ -29,6 +29,7 @@
           <tr><td><a href="DropDownListTest.wxe">DropDownListTest</a></td></tr>
           <tr><td><a href="DropDownMenuTest.wxe">DropDownMenuTest</a></td></tr>
           <tr><td><a href="FormGridTest.aspx">FormGridTest</a></td></tr>
+          <tr><td><a href="ImageButtonTest.wxe">ImageButtonTest</a></td></tr>
           <tr><td><a href="InfrastructureTests.wxe">InfrastructureTests</a></td></tr>
           <tr><td><a href="LabelTest.aspx">LabelTest</a></td></tr>
           <tr><td><a href="ListMenuTest.wxe">ListMenuTest</a></td></tr>

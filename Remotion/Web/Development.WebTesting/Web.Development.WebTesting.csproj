@@ -102,6 +102,7 @@
     <Compile Include="CompletionDetectionImplementation\CompletionDetectorBuilder.cs" />
     <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionStrategyBase.cs" />
     <Compile Include="ControlObjectContext.cs" />
+    <Compile Include="ControlObjects\ImageButtonControlObject.cs" />
     <Compile Include="ControlObjects\AnchorControlObject.cs" />
     <Compile Include="ControlObjects\ContextMenuControlObject.cs" />
     <Compile Include="ControlObjects\ControlHost.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="ControlObjects\Selectors\ControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\DropDownMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\AnchorSelector.cs" />
+    <Compile Include="ControlObjects\Selectors\ImageButtonSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ScopeSelector.cs" />
     <Compile Include="ControlObjects\Selectors\TabbedMenuSelector.cs" />
     <Compile Include="ControlObjects\Selectors\DropDownListSelector.cs" />

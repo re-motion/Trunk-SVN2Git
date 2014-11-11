@@ -64,6 +64,7 @@
     <Content Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </Content>
+    <Content Include="ImageButtonTest.aspx" />
     <Content Include="CommandTest.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="InfrastructureTests.aspx" />
@@ -105,6 +106,14 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="ImageButtonTest.aspx.cs">
+      <DependentUpon>ImageButtonTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ImageButtonTest.aspx.designer.cs">
+      <DependentUpon>ImageButtonTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ImageButtonTestFunction.cs" />
     <Compile Include="ScopeTest.aspx.cs">
       <DependentUpon>ScopeTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
