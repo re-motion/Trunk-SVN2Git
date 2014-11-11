@@ -42,46 +42,46 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Find an element with the given <paramref name="tagSelector"/> bearing a given diagnostic metadata attribute name/value combination.
+    /// Find an element with the given <paramref name="tagSelector"/> bearing a given attribute name/value combination.
     /// </summary>
     /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
-    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the diagnostic metadata attributes.</param>
-    /// <param name="diagnosticMetadataAttributeName">The diagnostic metadata attribute name.</param>
-    /// <param name="diagnosticMetadataAttributeValue">The diagnostic metadata attribute value.</param>
+    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the attributes.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <param name="attributeValue">The attribute value.</param>
     /// <returns>The <see cref="ElementScope"/> of the found element.</returns>
-    public static ElementScope FindDMA (
+    public static ElementScope FindTagWithAttribute (
         [NotNull] this ElementScope scope,
         [NotNull] string tagSelector,
-        [NotNull] string diagnosticMetadataAttributeName,
-        [NotNull] string diagnosticMetadataAttributeValue)
+        [NotNull] string attributeName,
+        [NotNull] string attributeValue)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("tagSelector", tagSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeName", diagnosticMetadataAttributeName);
-      ArgumentUtility.CheckNotNullOrEmpty ("diagnosticMetadataAttributeValue", diagnosticMetadataAttributeValue);
+      ArgumentUtility.CheckNotNullOrEmpty ("attributeName", attributeName);
+      ArgumentUtility.CheckNotNullOrEmpty ("attributeValue", attributeValue);
 
-      var cssSelector = string.Format ("{0}[{1}='{2}']", tagSelector, diagnosticMetadataAttributeName, diagnosticMetadataAttributeValue);
+      var cssSelector = string.Format ("{0}[{1}='{2}']", tagSelector, attributeName, attributeValue);
       return scope.FindCss (cssSelector);
     }
 
     /// <summary>
-    /// Find an element with the given <paramref name="tagSelector"/> bearing one or more given diagnostic metadata attribute name/value combinations.
+    /// Find an element with the given <paramref name="tagSelector"/> bearing one or more given attribute name/value combinations.
     /// </summary>
     /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
-    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the diagnostic metadata attributes.</param>
-    /// <param name="diagnosticMetadata">The diagnostic metadata attribute name/value pairs to check for.</param>
+    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the attributes.</param>
+    /// <param name="attributes">The attribute name/value pairs to check for.</param>
     /// <returns>The <see cref="ElementScope"/> of the found element.</returns>
-    public static ElementScope FindDMA (
+    public static ElementScope FindTagWithAttributes (
         [NotNull] this ElementScope scope,
         [NotNull] string tagSelector,
-        [NotNull] IDictionary<string, string> diagnosticMetadata)
+        [NotNull] IDictionary<string, string> attributes)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("tagSelector", tagSelector);
-      ArgumentUtility.CheckNotNull ("diagnosticMetadata", diagnosticMetadata);
+      ArgumentUtility.CheckNotNull ("attributes", attributes);
 
       const string dmaCheckPattern = "[{0}='{1}']";
-      var dmaCheck = string.Concat (diagnosticMetadata.Select (dm => string.Format (dmaCheckPattern, dm.Key, dm.Value)));
+      var dmaCheck = string.Concat (attributes.Select (dm => string.Format (dmaCheckPattern, dm.Key, dm.Value)));
       var cssSelector = tagSelector + dmaCheck;
       return scope.FindCss (cssSelector);
     }

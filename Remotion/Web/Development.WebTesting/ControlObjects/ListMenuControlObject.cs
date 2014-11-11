@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (string itemID, ICompletionDetection completionDetection)
     {
-      var itemScope = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
+      var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (itemScope);
     }
 
@@ -65,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (string text, ICompletionDetection completionDetection)
     {
-      var itemScope = Scope.FindDMA ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
+      var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
       return ClickItem (itemScope, completionDetection);
     }
 

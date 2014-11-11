@@ -134,12 +134,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private ElementScope GetDateScope ()
     {
-      return Scope.FindDMA ("input", DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueDateField, "true");
+      return Scope.FindTagWithAttribute ("input", DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueDateField, "true");
     }
 
     private ElementScope GetTimeScope ()
     {
-      return Scope.FindDMA ("input", DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueTimeField, "true");
+      return Scope.FindTagWithAttribute ("input", DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueTimeField, "true");
     }
   }
 }

@@ -194,7 +194,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public void ClickOnSortColumn (int columnIndex)
     {
-      var sortColumnScope = Scope.FindDMA (
+      var sortColumnScope = Scope.FindTagWithAttribute (
           ".bocListFakeTableHead th",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
           columnIndex.ToString());

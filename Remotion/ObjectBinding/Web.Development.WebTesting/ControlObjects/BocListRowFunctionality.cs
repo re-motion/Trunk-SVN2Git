@@ -60,13 +60,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public TCellControlObject GetCell<TCellControlObject> (int index)
     {
-      var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
+      var cellScope = Scope.FindTagWithAttribute ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
       return (TCellControlObject) Activator.CreateInstance (typeof (TCellControlObject), new object[] { Context.CloneForControl (cellScope) });
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()
     {
-      var cellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
+      var cellScope = Scope.FindTagWithAttribute ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
       var rowDropDownMenuScope = cellScope.FindCss ("span.DropDownMenuContainer");
       return new DropDownMenuControlObject (Context.CloneForControl (rowDropDownMenuScope));
     }
@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private BocListEditableCellControlObject GetWellKnownEditCell ()
     {
-      var editCellScope = Scope.FindDMA ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
+      var editCellScope = Scope.FindTagWithAttribute ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownEditCell, "true");
       return new BocListEditableCellControlObject (Context.CloneForControl (editCellScope));
     }
   }

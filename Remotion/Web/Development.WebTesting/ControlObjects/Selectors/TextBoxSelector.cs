@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var scope = context.Scope.FindDMA (c_htmlTextBoxTag, "type", "text");
+      var scope = context.Scope.FindTagWithAttribute (c_htmlTextBoxTag, "type", "text");
       return CreateControlObject (context, scope);
     }
 
@@ -46,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var scope = context.Scope.FindDMA (c_htmlTextBoxTag, "type", "text");
+      var scope = context.Scope.FindTagWithAttribute (c_htmlTextBoxTag, "type", "text");
       scope.ElementFinder.Options.Match = Match.Single;
       return CreateControlObject (context, scope);
     }

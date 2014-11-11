@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("text", text);
 
-      var scope = context.Scope.FindDMA (
+      var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {
@@ -57,7 +57,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("commandName", commandName);
 
-      var scope = context.Scope.FindDMA (
+      var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {
@@ -72,7 +72,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
-      var scope = context.Scope.FindDMA (
+      var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {

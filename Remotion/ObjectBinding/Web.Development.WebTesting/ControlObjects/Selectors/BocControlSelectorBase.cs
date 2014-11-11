@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("displayName", displayName);
 
-      var scope = context.Scope.FindDMA (
+      var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       if (domainClass != null)
         diagnosticMetadata.Add (DiagnosticMetadataAttributesForObjectBinding.BoundType, domainClass);
 
-      var scope = context.Scope.FindDMA ("*", diagnosticMetadata);
+      var scope = context.Scope.FindTagWithAttributes ("*", diagnosticMetadata);
       return CreateControlObject (context, scope);
     }
   }

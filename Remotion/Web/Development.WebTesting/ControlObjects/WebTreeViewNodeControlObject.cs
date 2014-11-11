@@ -64,13 +64,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
+      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
     WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
-      var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
+      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
@@ -78,7 +78,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      var nodeScope = Scope.FindDMA ("ul li", DiagnosticMetadataAttributes.Text, text);
+      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.Text, text);
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
@@ -86,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var actualCompletionDetector = GetActualCompletionDetector (null);
 
-      var expandAnchorScope = Scope.FindDMA (
+      var expandAnchorScope = Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
@@ -98,7 +98,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var actualCompletionDetector = GetActualCompletionDetector (null);
 
-      var collapseAnchorScope = Scope.FindDMA (
+      var collapseAnchorScope = Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
@@ -134,7 +134,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private ElementScope GetWellKnownSelectAnchorScope ()
     {
-      return Scope.FindDMA (
+      return Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);

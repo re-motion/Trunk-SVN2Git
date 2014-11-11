@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("text", text);
 
-      var scope = context.Scope.FindDMA (
+      var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {

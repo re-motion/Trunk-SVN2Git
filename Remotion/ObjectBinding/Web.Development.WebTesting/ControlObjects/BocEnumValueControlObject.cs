@@ -195,13 +195,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
-        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss ("input");
+        var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss ("input");
         return CheckScope (scope, completionDetection);
       }
 
       public UnspecifiedPageObject SelectOption (int index, ICompletionDetection completionDetection = null)
       {
-        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss ("input");
+        var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss ("input");
         return CheckScope (scope, completionDetection);
       }
 
@@ -209,7 +209,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
-        var scope = _controlObject.Scope.FindDMA ("span", DiagnosticMetadataAttributes.Text, text).FindCss ("input");
+        var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Text, text).FindCss ("input");
         return CheckScope (scope, completionDetection);
       }
 
