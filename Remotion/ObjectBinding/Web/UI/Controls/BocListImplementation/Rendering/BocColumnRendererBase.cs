@@ -122,6 +122,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
         var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
+
+        var isCustomColumn = this is BocCustomColumnRenderer;
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn, isCustomColumn.ToString().ToLower());
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
 

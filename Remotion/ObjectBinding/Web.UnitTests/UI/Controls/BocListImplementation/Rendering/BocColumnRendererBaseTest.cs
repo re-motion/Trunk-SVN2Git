@@ -153,6 +153,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.ItemID, Column.ItemID);
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.Text, Column.ColumnTitle);
       Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 7.ToString());
+      Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn, "false");
     }
 
     private void RenderTitleCell (
