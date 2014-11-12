@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
     public static readonly string BocEnumValueStyle = "data-bocenumvalue-style";
 
     public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";
-    public static readonly string BocListIsCustomColumn = "data-boclist-is-custom-column";
+    public static readonly string BocListColumnHasDiagnosticMetadata = "data-boclist-has-dma";
     public static readonly string BocListRowIndex = "data-boclist-row-index";
     public static readonly string BocListCellIndex = "data-boclist-cell-index";
     public static readonly string BocListWellKnownEditCell = "data-boclist-wellknown-cell-edit";

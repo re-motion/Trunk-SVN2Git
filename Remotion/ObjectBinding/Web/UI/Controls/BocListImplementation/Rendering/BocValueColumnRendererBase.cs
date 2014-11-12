@@ -155,5 +155,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       else
         renderingContext.Writer.RenderEndTag();
     }
+
+    /// <summary>
+    /// <see cref="BocValueColumnRendererBase{TBocColumnDefinition}"/> renders diagnostic metadata.
+    /// </summary>
+    protected override bool HasDiagnoticMetadata
+    {
+      get { return true; }
+    }
   }
 }

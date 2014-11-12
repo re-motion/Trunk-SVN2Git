@@ -154,7 +154,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var column = GetColumnByItemID(itemID);
+      var column = GetColumnByItemID (itemID);
       return GetCellWhereColumnContains (column, containsCellText);
     }
 
@@ -181,7 +181,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private BocListCellControlObject GetCellWhereColumnContains (ColumnDefinition column, string containsCellText)
     {
-      if(!column.IsCustomColumn)
+      if (column.HasDiagnosticMetadata)
       {
         var cssSelector = string.Format (
             ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",

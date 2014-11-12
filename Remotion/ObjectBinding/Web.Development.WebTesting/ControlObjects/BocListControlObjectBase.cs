@@ -42,14 +42,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       private readonly string _itemID;
       private readonly int _index;
       private readonly string _title;
-      private readonly bool _isCustomColumn;
+      private readonly bool _hasDiagnosticMetadata;
 
-      public ColumnDefinition (string itemID, int index, string title, bool isCustomColumn)
+      public ColumnDefinition (string itemID, int index, string title, bool hasDiagnosticMetadata)
       {
         _itemID = itemID;
         _index = index;
         _title = title;
-        _isCustomColumn = isCustomColumn;
+        _hasDiagnosticMetadata = hasDiagnosticMetadata;
       }
 
       public string ItemID
@@ -67,9 +67,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         get { return _title; }
       }
 
-      public bool IsCustomColumn
+      public bool HasDiagnosticMetadata
       {
-        get { return _isCustomColumn;  }
+        get { return _hasDiagnosticMetadata;  }
       }
     }
 
@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
                           s[DiagnosticMetadataAttributes.ItemID],
                           i + 1,
                           s[DiagnosticMetadataAttributes.Text],
-                          IsScopeOfCustomColumn(s)))
+                          ColumnHasDiagnosticMetadata(s)))
               .ToList());
     }
 
@@ -207,12 +207,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _columns.Single (cd => cd.Title == columnTitle);
     }
 
-    private bool IsScopeOfCustomColumn (ElementScope scope)
+    private bool ColumnHasDiagnosticMetadata (ElementScope scope)
     {
-      if (scope[DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn] == null)
-        return true;
+      if (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata] == null)
+        return false;
 
-      return bool.Parse (scope[DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn]);
+      return bool.Parse (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata]);
     }
   }
 }

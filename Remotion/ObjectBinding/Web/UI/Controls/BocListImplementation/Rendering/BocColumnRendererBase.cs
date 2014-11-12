@@ -91,6 +91,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _cssClasses; }
     }
 
+    /// <summary>
+    /// Returns whether the renderer is able to render diagnostic metadata.
+    /// </summary>
+    protected virtual bool HasDiagnoticMetadata
+    {
+      get { return false; }
+    }
+
     void IBocColumnRenderer.RenderTitleCell (BocColumnRenderingContext renderingContext, SortingDirection sortingDirection, int orderIndex)
     {
       RenderTitleCell (
@@ -123,8 +131,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         var oneBasedCellIndex = renderingContext.VisibleColumnIndex + 1;
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
 
-        var isCustomColumn = this is BocCustomColumnRenderer;
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn, isCustomColumn.ToString().ToLower());
+        renderingContext.Writer.AddAttribute (
+            DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata,
+            HasDiagnoticMetadata.ToString().ToLower());
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
 
