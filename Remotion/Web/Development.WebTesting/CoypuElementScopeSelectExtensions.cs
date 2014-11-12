@@ -117,9 +117,18 @@ namespace Remotion.Web.Development.WebTesting
             var select = new SelectElement (webElement);
             foreach (var option in select.Options)
             {
-              if (option.GetAttribute (diagnosticMetadataAttributeName) == diagnosticMetadataAttributeValue)
-                select.SelectByValue (option.GetAttribute ("value"));
+              if (option.GetAttribute (diagnosticMetadataAttributeName) != diagnosticMetadataAttributeValue)
+                continue;
+
+              select.SelectByValue (option.GetAttribute ("value"));
+              return;
             }
+
+            throw new MissingHtmlException (
+                string.Format (
+                    "No option matches the diagnostic metadata '{0}'='{1}'.",
+                    diagnosticMetadataAttributeName,
+                    diagnosticMetadataAttributeValue));
           });
     }
   }
