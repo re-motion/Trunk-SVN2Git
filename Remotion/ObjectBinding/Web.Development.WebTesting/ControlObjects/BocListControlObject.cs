@@ -230,23 +230,26 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ClickOnSortColumn (column.Index);
     }
 
-    public void ChangeViewTo ([NotNull] string itemID)
+    public void ChangeViewTo ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID));
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID), actualCompletionDetector);
     }
 
-    public void ChangeViewTo (int index)
+    public void ChangeViewTo (int index, [CanBeNull] ICompletionDetection completionDetection = null)
     {
-      ChangeViewTo (scope => scope.SelectOptionByIndex (index));
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      ChangeViewTo (scope => scope.SelectOptionByIndex (index), actualCompletionDetector);
     }
 
-    public void ChangeViewToByLabel ([NotNull] string label)
+    public void ChangeViewToByLabel ([NotNull] string label, [CanBeNull] ICompletionDetection completionDetection = null)
     {
       ArgumentUtility.CheckNotNull ("label", label);
 
-      ChangeViewTo (scope => scope.SelectOption (label));
+      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      ChangeViewTo (scope => scope.SelectOption (label), actualCompletionDetector);
     }
 
     protected override BocListRowControlObject CreateRowControlObject (
@@ -269,12 +272,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListCellControlObject (Context.CloneForControl (cellScope));
     }
 
-    private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction)
+    private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction, [NotNull] ICompletionDetector completionDetector)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
+      ArgumentUtility.CheckNotNull ("completionDetector", completionDetector);
 
       var availableViewsScope = GetAvailableViewsScope();
-      availableViewsScope.PerformAction (selectAction, Context, Continue.When (Wxe.PostBackCompleted).Build());
+      availableViewsScope.PerformAction (selectAction, Context, completionDetector);
     }
 
     protected virtual ElementScope GetAvailableViewsScope ()
