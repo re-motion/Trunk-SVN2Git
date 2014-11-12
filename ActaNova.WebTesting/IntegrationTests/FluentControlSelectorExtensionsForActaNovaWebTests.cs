@@ -270,12 +270,12 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetEnumValue().ByDomainProperty (domainProperty, domainClass);
     }
 
-    public static FluentControlSelector<BocListSelector, BocListControlObject> GetList (this IControlHost host)
+    public static FluentControlSelector<ActaNovaListSelector, ActaNovaListControlObject> GetList (this IControlHost host)
     {
-      return new FluentControlSelector<BocListSelector, BocListControlObject> (host, new BocListSelector());
+      return new FluentControlSelector<ActaNovaListSelector, ActaNovaListControlObject> (host, new ActaNovaListSelector());
     }
 
-    public static BocListControlObject GetList (
+    public static ActaNovaListControlObject GetList (
         this IControlHost host,
         string domainProperty,
         string domainClass = null)
