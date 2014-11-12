@@ -101,6 +101,7 @@
     <Compile Include="BrowserFactory.cs" />
     <Compile Include="CompletionDetectionImplementation\CompletionDetectorBuilder.cs" />
     <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionStrategyBase.cs" />
+    <Compile Include="Configuration\WebTestingConstants.cs" />
     <Compile Include="ControlObjectContext.cs" />
     <Compile Include="ControlObjects\ImageButtonControlObject.cs" />
     <Compile Include="ControlObjects\AnchorControlObject.cs" />

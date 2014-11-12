@@ -49,8 +49,9 @@ namespace Remotion.Web.Development.WebTesting
                                      Browser = browserConfiguration.Browser,
                                      RetryInterval = coypuConfiguration.RetryInterval,
                                      Timeout = coypuConfiguration.SearchTimeout,
-                                     ConsiderInvisibleElements = true,
-                                     Match = Match.First
+                                     ConsiderInvisibleElements = WebTestingConstants.ShouldConsiderInvisibleElements,
+                                     Match = WebTestingConstants.DefaultMatchStrategy,
+                                     TextPrecision = WebTestingConstants.DefaultTextPrecision
                                  };
 
       if (sessionConfiguration.Browser == Browser.Chrome)
