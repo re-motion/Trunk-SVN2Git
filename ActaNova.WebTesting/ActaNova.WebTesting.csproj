@@ -82,6 +82,7 @@
     <Compile Include="ControlObjects\Selectors\ActaNovaTreePopupTableSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaListSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaTreeViewAutoCompleteReferenceValueSelector.cs" />
+    <Compile Include="IntegrationTests\ActaNovaAdditionalStuffTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
