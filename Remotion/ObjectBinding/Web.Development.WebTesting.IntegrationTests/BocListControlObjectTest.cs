@@ -199,6 +199,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetCellWhereWithVariousColumnDefinitions ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Special");
+
+      var cell = bocList.GetCellWhere ("DateRange", "01.01.2000 until 31.12.2004");
+      Assert.That (cell.GetText(), Is.EqualTo ("01.01.2000 until 31.12.2004"));
+
+      cell = bocList.GetCellWhere ("CustomCell", "Custom 1");
+      Assert.That (cell.GetText(), Is.EqualTo ("Custom 1"));
+    }
+
+    [Test]
     public void TestClickOnSortColumn ()
     {
       var home = Start();

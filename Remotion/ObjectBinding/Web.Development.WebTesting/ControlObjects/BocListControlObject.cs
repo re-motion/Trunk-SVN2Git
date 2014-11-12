@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -153,8 +154,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var index = GetColumnIndex (itemID);
-      return GetCellWhere().ColumnWithIndexContains (index, containsCellText);
+      var column = GetColumnByItemID(itemID);
+      return GetCellWhereColumnContains (column, containsCellText);
     }
 
     BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithIndexContains (
@@ -163,14 +164,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var cssSelector = string.Format (
-          ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
-          DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
-          index,
-          DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
-          containsCellText);
-      var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
-      return CreateCellControlObject (GetHtmlID(), cellScope);
+      var column = GetColumnByIndex (index);
+      return GetCellWhereColumnContains (column, containsCellText);
     }
 
     BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
@@ -180,16 +175,40 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("title", title);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
-      var index = GetColumnIndexByTitle (title);
-      return GetCellWhere().ColumnWithIndexContains (index, containsCellText);
+      var column = GetColumnByTitle (title);
+      return GetCellWhereColumnContains (column, containsCellText);
+    }
+
+    private BocListCellControlObject GetCellWhereColumnContains (ColumnDefinition column, string containsCellText)
+    {
+      if(!column.IsCustomColumn)
+      {
+        var cssSelector = string.Format (
+            ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
+            DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
+            column.Index,
+            DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
+            containsCellText);
+        var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
+        return CreateCellControlObject (GetHtmlID(), cellScope);
+      }
+      else
+      {
+        var xPathSelector = string.Format (
+            ".//tbody{0}/tr/td[contains(.,'{1}')]",
+            XPathUtils.CreateHasClassCheck ("bocListTableBody"),
+            containsCellText);
+        var cellScope = Scope.FindXPath (xPathSelector);
+        return CreateCellControlObject (GetHtmlID(), cellScope);
+      }
     }
 
     public void ClickOnSortColumn ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      var index = GetColumnIndex (columnItemID);
-      ClickOnSortColumn (index);
+      var column = GetColumnByItemID (columnItemID);
+      ClickOnSortColumn (column.Index);
     }
 
     public void ClickOnSortColumn (int columnIndex)
@@ -207,8 +226,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
 
-      var index = GetColumnIndexByTitle (columnTitle);
-      ClickOnSortColumn (index);
+      var column = GetColumnByTitle (columnTitle);
+      ClickOnSortColumn (column.Index);
     }
 
     public void ChangeViewTo ([NotNull] string itemID)

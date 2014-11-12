@@ -298,6 +298,7 @@
       <DependentUpon>IconService.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TestBocListCustomCell.cs" />
     <Compile Include="Controls\TestBocListWithRowMenuItems.cs" />
     <Compile Include="Controls\TestBocTreeViewContextMenu.cs" />
     <Compile Include="ControlTestForm.aspx.cs">

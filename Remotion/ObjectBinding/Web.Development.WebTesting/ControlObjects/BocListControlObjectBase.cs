@@ -37,15 +37,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       where TRowControlObject : ControlObject
       where TCellControlObject : ControlObject
   {
-    private class ColumnDefinition
+    protected class ColumnDefinition
     {
       private readonly string _itemID;
+      private readonly int _index;
       private readonly string _title;
+      private readonly bool _isCustomColumn;
 
-      public ColumnDefinition (string itemID, string title)
+      public ColumnDefinition (string itemID, int index, string title, bool isCustomColumn)
       {
         _itemID = itemID;
+        _index = index;
         _title = title;
+        _isCustomColumn = isCustomColumn;
       }
 
       public string ItemID
@@ -53,9 +57,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         get { return _itemID; }
       }
 
+      public int Index
+      {
+        get { return _index; }
+      }
+
       public string Title
       {
         get { return _title; }
+      }
+
+      public bool IsCustomColumn
+      {
+        get { return _isCustomColumn;  }
       }
     }
 
@@ -75,7 +89,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       public int GetColumnIndex (string columnItemID)
       {
-        return _bocList.GetColumnIndex (columnItemID);
+        return _bocList.GetColumnByItemID (columnItemID).Index;
       }
     }
 
@@ -88,7 +102,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _accessor = new BocListRowControlObjectHostAccessor (this);
       _columns = RetryUntilTimeout.Run (
           () => Scope.FindAllCss (".bocListFakeTableHead th")
-              .Select (s => new ColumnDefinition (s[DiagnosticMetadataAttributes.ItemID], s[DiagnosticMetadataAttributes.Text]))
+              .Select (
+                  (s, i) =>
+                      new ColumnDefinition (
+                          s[DiagnosticMetadataAttributes.ItemID],
+                          i + 1,
+                          s[DiagnosticMetadataAttributes.Text],
+                          IsScopeOfCustomColumn(s)))
               .ToList());
     }
 
@@ -172,22 +192,27 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new ListMenuControlObject (Context.CloneForControl (listMenuScope));
     }
 
-    protected int GetColumnIndex (string columnItemID)
+    protected ColumnDefinition GetColumnByItemID (string columnItemID)
     {
-      var indexOf = _columns.IndexOf (cd => cd.ItemID == columnItemID);
-      if (indexOf == -1)
-        throw new KeyNotFoundException (string.Format ("Column item ID '{0}' does not exist.", columnItemID));
-
-      return indexOf + 1;
+      return _columns.Single (cd => cd.ItemID == columnItemID);
     }
 
-    protected int GetColumnIndexByTitle (string columnTitle)
+    protected ColumnDefinition GetColumnByIndex(int index)
     {
-      var indexOf = _columns.IndexOf (cd => cd.Title == columnTitle);
-      if (indexOf == -1)
-        throw new KeyNotFoundException (string.Format ("Column title '{0}' does not exist.", columnTitle));
+      return _columns.Single (cd => cd.Index == index);
+    }
 
-      return indexOf + 1;
+    protected ColumnDefinition GetColumnByTitle (string columnTitle)
+    {
+      return _columns.Single (cd => cd.Title == columnTitle);
+    }
+
+    private bool IsScopeOfCustomColumn (ElementScope scope)
+    {
+      if (scope[DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn] == null)
+        return true;
+
+      return bool.Parse (scope[DiagnosticMetadataAttributesForObjectBinding.BocListIsCustomColumn]);
     }
   }
 }
