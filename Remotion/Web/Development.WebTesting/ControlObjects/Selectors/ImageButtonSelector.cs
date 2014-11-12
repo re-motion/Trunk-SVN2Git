@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
 
       var scope = context.Scope.FindTagWithAttribute (c_inputTag, "type", "image");
-      scope.ElementFinder.Options.Match = Match.Single;
+      scope.EnsureSingle();
       return CreateControlObject (context, scope);
     }
 
@@ -55,7 +55,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_inputTag, XPathUtils.CreateHasAttributeCheck ("type", "image"), index);
+      var hasAttributeCheck = XPathUtils.CreateHasAttributeCheck ("type", "image");
+      var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_inputTag, hasAttributeCheck, index);
       var scope = context.Scope.FindXPath (xPathSelector);
       return CreateControlObject (context, scope);
     }

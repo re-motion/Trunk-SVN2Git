@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
 
       var scope = context.Scope.FindTagWithAttribute (c_htmlTextBoxTag, "type", "text");
-      scope.ElementFinder.Options.Match = Match.Single;
+      scope.EnsureSingle();
       return CreateControlObject (context, scope);
     }
 
@@ -55,7 +55,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_htmlTextBoxTag, XPathUtils.CreateHasAttributeCheck ("type", "text"), index);
+      var hasAttributeCheck = XPathUtils.CreateHasAttributeCheck ("type", "text");
+      var xPathSelector = string.Format ("(.//{0}{1})[{2}]", c_htmlTextBoxTag, hasAttributeCheck, index);
       var scope = context.Scope.FindXPath (xPathSelector);
       return CreateControlObject (context, scope);
     }

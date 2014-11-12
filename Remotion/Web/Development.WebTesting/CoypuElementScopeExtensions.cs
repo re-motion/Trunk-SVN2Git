@@ -20,6 +20,7 @@ using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -42,6 +43,20 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       scope.Now();
+    }
+
+    /// <summary>
+    /// Ensures that the given <see cref="Scope"/> exists, much like <see cref="EnsureExistence"/>. However, it ensures that Coypu uses the
+    /// <see cref="Match.Single"/> matching strategy.
+    /// </summary>
+    /// <param name="scope"></param>
+    public static void EnsureSingle ([NotNull] this ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      scope.ElementFinder.Options.Match = Match.Single;
+      scope.Now();
+      scope.ElementFinder.Options.Match = WebTestingConstants.DefaultMatchStrategy;
     }
 
     /// <summary>

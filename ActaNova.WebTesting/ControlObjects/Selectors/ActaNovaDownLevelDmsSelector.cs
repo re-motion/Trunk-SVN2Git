@@ -15,7 +15,8 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
   {
     public ActaNovaDownLevelDmsControlObject SelectSingle (ControlSelectionContext context)
     {
-      var scope = context.Scope.FindCss ("table.dmsContentTable", new Options { Match = Match.Single });
+      var scope = context.Scope.FindCss ("table.dmsContentTable");
+      scope.EnsureSingle();
       return CreateControlObject (context, scope);
     }
 

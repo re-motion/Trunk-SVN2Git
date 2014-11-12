@@ -68,7 +68,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
 
       var scope = context.Scope.FindTagWithAttribute ("*", DiagnosticMetadataAttributes.ControlType, _controlType);
-      scope.ElementFinder.Options.Match = Match.Single;
+      scope.EnsureSingle();
       return CreateControlObject (context, scope);
     }
 

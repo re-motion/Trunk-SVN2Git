@@ -15,7 +15,8 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
   {
     public ActaNovaEditObjectPanelControlObject SelectSingle (ControlSelectionContext context)
     {
-      var scope = context.Scope.FindCss ("div.editObjectDetailsPanel", new Options { Match = Match.Single });
+      var scope = context.Scope.FindCss ("div.editObjectDetailsPanel");
+      scope.EnsureSingle();
       return CreateControlObject (context, scope);
     }
 

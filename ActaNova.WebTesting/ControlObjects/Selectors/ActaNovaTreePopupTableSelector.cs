@@ -15,7 +15,8 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
   {
     public ActaNovaTreePopupTableControlObject SelectSingle (ControlSelectionContext context)
     {
-      var scope = context.Scope.FindCss ("div.popupTableDiv", new Options { Match = Match.Single });
+      var scope = context.Scope.FindCss ("div.popupTableDiv");
+      scope.EnsureSingle();
       return CreateControlObject (context, scope);
     }
 
