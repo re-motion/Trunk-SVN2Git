@@ -68,7 +68,7 @@ namespace ActaNova.WebTesting.PageObjects
       get { return new ActaNovaFormPageObject (GetContextForFrame()); }
     }
 
-    public ActaNovaWorkListPageObject WorkList
+    public ActaNovaWorkListPageObject WorkListPage
     {
       get { return new ActaNovaWorkListPageObject (GetContextForFrame()); }
     }
