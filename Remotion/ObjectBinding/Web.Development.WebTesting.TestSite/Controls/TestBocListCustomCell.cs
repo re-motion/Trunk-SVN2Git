@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
+using System.Linq;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
@@ -25,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     protected override void Render (HtmlTextWriter writer, BocCustomCellRenderArguments arguments)
     {
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      writer.Write ("Custom " + arguments.ListIndex);
+      writer.Write ("Custom " + new string (Enumerable.Repeat ('X', Math.Max(0, 5 - arguments.ListIndex)).ToArray()));
       writer.RenderEndTag();
     }
   }
