@@ -70,6 +70,7 @@
     <Compile Include="ControlObjects\ActaNovaAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaBreadCrumbControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaEditObjectPanelControlObject.cs" />
+    <Compile Include="ControlObjects\ActaNovaListControlObjectExtensions.cs" />
     <Compile Include="ControlObjects\ActaNovaTreePopupTableControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaTreePopupTableNodeControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaListControlObject.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
+    <Compile Include="IntegrationTests\ActaNovaListTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainMenuControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainPageObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMessageBoxControlObjectTest.cs" />

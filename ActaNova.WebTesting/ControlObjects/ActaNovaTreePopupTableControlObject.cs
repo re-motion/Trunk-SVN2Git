@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -34,10 +35,10 @@ namespace ActaNova.WebTesting.ControlObjects
       var treeNodesAsList = treeNodes.ToList();
 
       var treeNodesToExpand = treeNodesAsList.Take (treeNodesAsList.Count - 1);
-      ExpandTreeNodes(treeNodesToExpand);
+      ExpandTreeNodes (treeNodesToExpand);
 
       var lastTreeNode = treeNodesAsList.Last();
-      var lastTreeNodeScope = Scope.FindXPath (string.Format (".//div[@class='NodeItem' and contains(a, '{0}')]", lastTreeNode));
+      var lastTreeNodeScope = Scope.FindXPath (string.Format (".//div[@class='NodeItem' and .//span[contains(., '{0}')]]", lastTreeNode));
       return new ActaNovaTreePopupTableNodeControlObject (Context.CloneForControl (lastTreeNodeScope));
     }
 
@@ -45,11 +46,11 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       foreach (var node in treeNodesToExpand)
       {
-        var nodeExpandLink = Scope.FindXPath (string.Format (".//a[@class='NodeLink' and contains(following-sibling::a, '{0}')]", node));
-        if (nodeExpandLink["onclick"].Contains ("collapse"))
+        var nodeExpandLinkScope = Scope.FindXPath (string.Format (".//a[@class='NodeLink' and following-sibling::a//span[contains(., '{0}')]]", node));
+        if (nodeExpandLinkScope["onclick"].Contains ("collapse"))
           continue;
 
-        nodeExpandLink.FocusClick();
+        nodeExpandLinkScope.FocusClick();
       }
     }
   }

@@ -19,7 +19,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
     public string GetText ()
     {
-      return Scope.Text;
+      return Scope.Text.Trim();
     }
 
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)

@@ -6,9 +6,13 @@ using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
+  /// <summary>
+  /// Control object representing the ActaNova BocList.
+  /// </summary>
   public class ActaNovaListControlObject : BocListControlObject
   {
     public ActaNovaListControlObject ([NotNull] ControlObjectContext context)
@@ -16,22 +20,40 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the top scope of the list.
+    /// Of course this method fails, if the actual list doesn't feature a top block.
+    /// </summary>
     public ScopeControlObject GetTopBlock ()
     {
       var scope = Scope.FindCss ("div.bocListTopBlock");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <summary>
+    /// Returns the top right-aligned scope of the list.
+    /// Of course this method fails, if the actual list doesn't feature a top right-aligned block.
+    /// </summary>
+    public ScopeControlObject GetTopRightAlignedBlock ()
+    {
+      var scope = Scope.FindXPath (string.Format ("../div{0}", XPathUtils.CreateHasClassCheck ("bocListTopRightAlignedSection")));
+      return new ScopeControlObject (Context.CloneForControl (scope));
+    }
+
+    /// <summary>
+    /// Uses the text filter feature to filter the list.
+    /// Of course this method fails, if the actual list doesn't feature a text filter.
+    /// </summary>
     public void Filter (string filter)
     {
       var textBox = GetTopBlock().GetControl (new PerLocalIDControlSelectionCommand<TextBoxControlObject> (new TextBoxSelector(), "TextFilterField"));
-      textBox.FillWith (filter, FinishInput.Promptly);
-
-      var filterButton =
-          GetTopBlock().GetControl (new PerLocalIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "TextFilterButton"));
-      filterButton.Click();
+      textBox.FillWith (filter);
     }
 
+    /// <summary>
+    /// Clears the text filter of the list.
+    /// Of course this method fails, if the actual list doesn't feature a text filter.
+    /// </summary>
     public void ClearFilter ()
     {
       var clearButton =
@@ -39,6 +61,10 @@ namespace ActaNova.WebTesting.ControlObjects
       clearButton.Click();
     }
 
+    /// <summary>
+    /// Opens the column configuration for the list.
+    /// Of course this method fails, if the actual list doesn't allow column configuration.
+    /// </summary>
     public UnspecifiedPageObject OpenColumnConfiguration ()
     {
       var openConfigurationButtonScope = Scope.FindChild ("OpenConfigurationButton");
@@ -46,6 +72,10 @@ namespace ActaNova.WebTesting.ControlObjects
       return openConfigurationButton.Click();
     }
 
+    /// <summary>
+    /// Sets the current column configuration as preferred view.
+    /// Of course this method fails, if the actual list doesn't allow setting a preferred view.
+    /// </summary>
     public void SetPreferredView ()
     {
       var setPreferredViewButtonScope = Scope.FindChild ("SetPreferredViewButton");

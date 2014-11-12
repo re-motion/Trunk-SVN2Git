@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Provides access to child controls of the control.
     /// </summary>
-    protected IControlHost Children
+    public IControlHost Children
     {
       get { return new ControlHost (Context); }
     }
