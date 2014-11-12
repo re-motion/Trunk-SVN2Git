@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       renderingContext.Writer.AddAttribute ("class", CssClasses.CommandText);
-      if (RenderingFeatures.EnableDiagnosticMetadata)
+      if (RenderingFeatures.EnableDiagnosticMetadata && contents != null)
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, contents);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
