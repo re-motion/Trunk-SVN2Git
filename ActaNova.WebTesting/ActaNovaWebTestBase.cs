@@ -25,12 +25,14 @@ namespace ActaNova.WebTesting
     public void ActaNovaWebTestBaseSetUp ()
     {
       _webTestHelper.OnSetUp (GetType().Name + "_" + TestContext.CurrentContext.Test.Name);
-      _webTestHelper.MainBrowserSession.ClearCookies();
     }
 
     [TearDown]
     public void ActaNovaWebTestBaseTearDown ()
     {
+      // Todo RM-6297: Remove as soon as the ActaNova language problem has been solved and the default Chrome driver can be used again.
+      _webTestHelper.MainBrowserSession.ClearCookies();
+
       var hasSucceeded = TestContext.CurrentContext.Result.Status != TestStatus.Failed;
       _webTestHelper.OnTearDown (hasSucceeded);
     }
