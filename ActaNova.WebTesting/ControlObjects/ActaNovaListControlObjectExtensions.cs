@@ -1,4 +1,6 @@
-﻿using ActaNova.WebTesting.ControlObjects.Selectors;
+﻿using System;
+using System.Threading;
+using ActaNova.WebTesting.ControlObjects.Selectors;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlSelection;
@@ -27,6 +29,23 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       cell.Scope.Hover();
       return cell.Children.GetControl (new SingleControlSelectionCommand<ActaNovaTreePopupTableControlObject> (new ActaNovaTreePopupTableSelector()));
+    }
+
+    /// <summary>
+    /// Hovers the given <paramref name="cell"/> and returns the appearing <see cref="ActaNovaTreePopupListControlObject"/>.
+    /// </summary>
+    public static ActaNovaTreePopupListControlObject HoverAndGetListPopup (this BocListCellControlObject cell)
+    {
+      cell.Scope.Hover();
+      return cell.Children.GetControl (new SingleControlSelectionCommand<ActaNovaTreePopupListControlObject> (new ActaNovaTreePopupListSelector()));
+    }
+
+    /// <summary>
+    /// Returns the text of a cell which features a popup.
+    /// </summary>
+    public static string GetTextOfPopupCell (this BocListCellControlObject cell)
+    {
+      return cell.Scope.FindCss ("span.columnText").Text.Trim();
     }
   }
 }

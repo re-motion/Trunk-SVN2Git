@@ -1,5 +1,7 @@
 ﻿using System;
+using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.ControlObjects;
+using ActaNova.WebTesting.PageObjects;
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
@@ -107,6 +109,41 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       popup = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "OE/2/BW-BV-BA-M/1").GetCell("DocumentsHierarchy").HoverAndGetTreePopup();
       Assert.That (popup.GetNode("Keine Einträge.").GetText(), Is.EqualTo("Keine Einträge."));
+    }
+
+    [Test]
+    public void TestHoverAndGetListPopupCheckItem ()
+    {
+      var home = Start();
+
+      var workStepsCell = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "04.06.2009/1").GetCell ("WorkSteps");
+      Assert.That (workStepsCell.GetTextOfPopupCell(), Is.EqualTo ("2 offen"));
+
+      workStepsCell.HoverAndGetListPopup().CheckItem ("Antragsformular prüfen");
+      Assert.That (workStepsCell.GetTextOfPopupCell(), Is.EqualTo ("1 offen"));
+
+      var workStepsCell2 = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "04.04.2001/1").GetCell ("WorkSteps");
+      Assert.That (workStepsCell2.GetTextOfPopupCell(), Is.EqualTo ("2 offen"));
+
+      workStepsCell2.HoverAndGetListPopup().CheckItem ("Einbringerdaten prüfen");
+      Assert.That (workStepsCell2.GetTextOfPopupCell(), Is.EqualTo ("1 offen"));
+      
+      workStepsCell.HoverAndGetListPopup().CheckItem ("Antragsformular prüfen");
+      Assert.That (workStepsCell.GetTextOfPopupCell(), Is.EqualTo ("2 offen"));
+
+      workStepsCell2.HoverAndGetListPopup().CheckItem ("Einbringerdaten prüfen");
+      Assert.That (workStepsCell2.GetTextOfPopupCell(), Is.EqualTo ("2 offen"));
+    }
+
+    [Test]
+    public void TestHoverAndGetListPopupClickItem ()
+    {
+      var home = Start();
+
+      var workStepsCell = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "04.06.2009/1").GetCell ("WorkSteps");
+      var editProcess =
+          workStepsCell.HoverAndGetListPopup().ClickItem ("Prozess öffnen").ExpectNewWindow<ActaNovaWindowPageObject> ("Prozess bearbeiten");
+      editProcess.PerformAndCloseWindow ("Cancel");
     }
   }
 }

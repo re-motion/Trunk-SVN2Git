@@ -16,9 +16,12 @@
 // 
 
 using System;
+using System.Drawing;
+using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
 
@@ -70,6 +73,16 @@ namespace Remotion.Web.Development.WebTesting
 
       var webElement = (IWebElement) scope.Native;
       return webElement.Displayed;
+    }
+
+    /// <summary>
+    /// Ensures unhovering of the given <paramref name="scope"/> by placing the cursor back at 0/0 in the top-left corner.
+    /// </summary>
+    public static void Unhover ([NotNull] this ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      Cursor.Position = new Point (0, 0);
     }
   }
 }
