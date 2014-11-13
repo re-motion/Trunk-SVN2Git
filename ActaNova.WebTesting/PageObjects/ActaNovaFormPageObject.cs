@@ -63,18 +63,14 @@ namespace ActaNova.WebTesting.PageObjects
       var permalinkButton = GetControl (new PerHtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "PermalinkButton"));
       permalinkButton.Click (Continue.Immediately().AndModalDialogHasBeenAccepted());
 
-      var permalink = permalinkButton.Scope["href"].Replace ("Default.aspx", "Main.wxe");
+      var permalink = permalinkButton.Scope["href"].Replace ("/?", "/Main.wxe?");
       return permalink;
     }
 
     public /*ActaNovaPrintPageObject*/ ActaNovaPageObject Print ()
     {
-      throw new NotSupportedException ("Print cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
-
-#pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
       var printButton = GetControl (new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PrintButton"));
-      return printButton.Click().ExpectNewWindow< /*ActaNovaPrintPageObject*/ ActaNovaPageObject> ("");
-#pragma warning restore 162
+      return printButton.Click().ExpectNewWindow< /*ActaNovaPrintPageObject*/ ActaNovaPageObject> ("Untitled Page");
     }
 
     public HtmlPageObject OpenHelp ()

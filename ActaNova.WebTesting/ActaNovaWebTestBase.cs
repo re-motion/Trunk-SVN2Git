@@ -1,5 +1,6 @@
 ﻿using System;
 using ActaNova.WebTesting.PageObjects;
+using Coypu;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Utilities;
@@ -45,7 +46,7 @@ namespace ActaNova.WebTesting
 
     protected ActaNovaMainPageObject Start ()
     {
-      const string defaultQueryString = "?debugLoginUser=mm&debugDmsDownLevel=true";
+      const string defaultQueryString = "?debugLoginUser=mm&debugDmsDownLevel=true&debugCulture=DE-AT";
       return Start (defaultQueryString);
     }
 
@@ -60,7 +61,22 @@ namespace ActaNova.WebTesting
       _webTestHelper.AcceptPossibleModalDialog();
 
       _webTestHelper.MainBrowserSession.Visit (url);
-      return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>();
+      return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>(_webTestHelper.MainBrowserSession);
+    }
+
+    protected BrowserSession CreateNewBrowser ()
+    {
+      return _webTestHelper.CreateNewBrowserSession ();
+    }
+
+    protected TPageObject StartAgain<TPageObject> ([NotNull] BrowserSession browser, [NotNull] string url)
+      where TPageObject : PageObject
+    {
+      ArgumentUtility.CheckNotNull ("browser", browser);
+      ArgumentUtility.CheckNotNullOrEmpty ("url", url);
+
+      browser.Visit (url);
+      return _webTestHelper.CreateInitialPageObject<TPageObject>(browser);
     }
   }
 }

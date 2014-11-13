@@ -83,6 +83,7 @@
     <Compile Include="IntegrationTests\ActaNovaAdministrationTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaAutoCompleteReferenceValueControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaBreadCrumbControlObjectTest.cs" />
+    <Compile Include="IntegrationTests\ActaNovaFormPageObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaListTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainMenuControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaMainPageObjectTest.cs" />

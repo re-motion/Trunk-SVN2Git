@@ -63,7 +63,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.MainBrowserSession.Visit (url);
       _webTestHelper.AcceptPossibleModalDialog();
 
-      return _webTestHelper.CreateInitialPageObject<RemotionPageObject>();
+      return _webTestHelper.CreateInitialPageObject<RemotionPageObject>(_webTestHelper.MainBrowserSession);
     }
   }
 }

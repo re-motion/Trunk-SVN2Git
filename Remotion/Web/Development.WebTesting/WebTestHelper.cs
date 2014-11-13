@@ -169,11 +169,14 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns a new <typeparamref name="TPageObject"/> for the initial page displayed by <see cref="MainBrowserSession"/>.
+    /// Returns a new <typeparamref name="TPageObject"/> for the initial page displayed by <paramref name="browser"/>.
     /// </summary>
-    public TPageObject CreateInitialPageObject<TPageObject> ()
+    public TPageObject CreateInitialPageObject<TPageObject> ([NotNull] BrowserSession browser)
+      where TPageObject : PageObject
     {
-      var context = PageObjectContext.New (MainBrowserSession);
+      ArgumentUtility.CheckNotNull ("browser", browser);
+
+      var context = PageObjectContext.New (browser);
       return (TPageObject) Activator.CreateInstance (typeof (TPageObject), new object[] { context });
     }
 
