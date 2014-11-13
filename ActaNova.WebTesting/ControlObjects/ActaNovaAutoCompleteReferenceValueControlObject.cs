@@ -79,6 +79,15 @@ namespace ActaNova.WebTesting.ControlObjects
       return newButton.Click (completionDetection);
     }
 
+    /// <summary>
+    /// Returns the extra space to the right of the control where extra buttons are placed (e.g. "Neu in ÖKOM").
+    /// </summary>
+    public ScopeControlObject GetExtraSpace ()
+    {
+      var scope = Scope.FindXPath ("../../../td[2]");
+      return new ScopeControlObject (Context.CloneForControl (scope));
+    }
+
     private ScopeControlObject GetAdditionalButtonsScope ()
     {
       var scope = Scope.FindXPath (string.Format ("../span{0}", XPathUtils.CreateHasClassCheck ("additionalButtonContainer")));
@@ -88,12 +97,6 @@ namespace ActaNova.WebTesting.ControlObjects
     private ScopeControlObject GetParentScope ()
     {
       var scope = Scope.FindXPath ("..");
-      return new ScopeControlObject (Context.CloneForControl (scope));
-    }
-
-    private ScopeControlObject GetNeighbourCellScope ()
-    {
-      var scope = Scope.FindXPath ("../../../td[2]");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
   }
