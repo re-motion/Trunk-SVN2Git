@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using ActaNova.WebTesting.ControlObjects.Selectors;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting;
