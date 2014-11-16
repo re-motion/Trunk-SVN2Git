@@ -54,7 +54,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       ArgumentUtility.CheckNotNull ("context", context);
 
       LogManager.GetLogger (GetType())
-          .DebugFormat ("Parameters: window: '{0}' scope: '{1}'.", context.Window.Title, GetPageTitle (PageObjectContext));
+          .DebugFormat ("Parameters: window: '{0}' scope: '{1}'.", PageObjectContext.Window.Title, GetPageTitle (PageObjectContext));
 
       var newWxePostBackSequenceNumber = context.Window.Query (
           () => GetWxePostBackSequenceNumber (PageObjectContext),

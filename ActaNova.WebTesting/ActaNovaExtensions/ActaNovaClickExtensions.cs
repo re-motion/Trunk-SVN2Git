@@ -48,9 +48,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (
-          itemID,
-          Continue.When (Wxe.PostBackCompletedInContext (page.Context.ParentContext)).AndModalDialogHasBeenAccepted());
+      return page.Perform (itemID, Continue.When (Wxe.PostBackCompletedInContext (page.Context.ParentContext)), HandleModalDialog.Accept());
     }
 
     public static UnspecifiedPageObject PerformAndPreventDataLoss ([NotNull] this ActaNovaFormPageObject page, [NotNull] string itemID)
@@ -58,7 +56,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (itemID, Continue.Immediately().AndModalDialogHasBeenCanceled());
+      return page.Perform (itemID, Continue.Immediately(), HandleModalDialog.Cancel());
     }
 
     public static UnspecifiedPageObject PerformAndCloseWindow ([NotNull] this ActaNovaPageObject page, [NotNull] string itemID)
@@ -66,7 +64,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (itemID, Continue.When (Wxe.PostBackCompleted).AndWindowHasClosed());
+      return page.Perform (itemID, Continue.When (Wxe.PostBackCompletedInContext(page.Context.ParentContext)));
     }
   }
 }

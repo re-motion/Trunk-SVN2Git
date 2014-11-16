@@ -27,7 +27,10 @@ namespace ActaNova.WebTesting.ControlObjects
       return Select (treeNodes.AsEnumerable());
     }
 
-    public UnspecifiedPageObject Select ([NotNull] IEnumerable<string> treeNodes, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Select (
+        [NotNull] IEnumerable<string> treeNodes,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("treeNodes", treeNodes);
 
@@ -38,7 +41,7 @@ namespace ActaNova.WebTesting.ControlObjects
       var treePopupTable =
           scope.GetControl (new SingleControlSelectionCommand<ActaNovaTreePopupTableControlObject> (new ActaNovaTreePopupTableSelector()));
       var node = treePopupTable.GetNode (treeNodes);
-      return node.Click (completionDetection);
+      return node.Click (completionDetection, modalDialogHandler);
     }
 
     private ScopeControlObject GetParentScope ()

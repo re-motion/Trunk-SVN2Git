@@ -26,10 +26,25 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IControlObjectWithSelectableOptions
   {
     IControlObjectWithSelectableOptions SelectOption ();
-    UnspecifiedPageObject SelectOption ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null);
 
-    UnspecifiedPageObject WithItemID ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null);
-    UnspecifiedPageObject WithIndex (int index, [CanBeNull] ICompletionDetection completionDetection = null);
-    UnspecifiedPageObject WithText ([NotNull] string text, [CanBeNull] ICompletionDetection completionDetection = null);
+    UnspecifiedPageObject SelectOption (
+        [NotNull] string itemID,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithItemID (
+        [NotNull] string itemID,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithIndex (
+        int index,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithText (
+        [NotNull] string text,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
   }
 }

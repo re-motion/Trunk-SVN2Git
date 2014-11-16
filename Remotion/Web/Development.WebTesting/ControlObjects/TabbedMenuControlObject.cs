@@ -46,41 +46,44 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
-    public UnspecifiedPageObject SelectItem (string itemID, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SelectItem (
+        string itemID,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SelectItem().WithItemID (itemID, completionDetection);
+      return SelectItem().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (string itemID, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (string itemID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var menuItemScope = GetMainMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.ItemID, itemID);
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (int index, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (int index, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       var menuItemScope = GetMainMenuScope().FindXPath (string.Format ("(.//li/span/span[2])[{0}]", index));
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       var menuItemScope = Scope.FindId (htmlID);
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (string text, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (string text, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       var menuItemScope = GetMainMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Text, text);
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
     public IControlObjectWithSelectableSubItems SelectSubItem ()
@@ -88,48 +91,51 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
-    public UnspecifiedPageObject SelectSubItem (string itemID, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SelectSubItem (
+        string itemID,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SelectSubItem().WithItemID (itemID, completionDetection);
+      return SelectSubItem().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithItemID (string itemID, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithItemID (string itemID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.ItemID, itemID);
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithIndex (int index, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithIndex (int index, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       var menuItemScope = GetSubMenuScope().FindXPath (string.Format ("(.//li/span/span[2])[{0}]", index));
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithHtmlID (string htmlID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       var menuItemScope = Scope.FindId (htmlID);
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithText (string text, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableSubItems.WithText (string text, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Text, text);
-      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection);
+      return SelectMenuOrSubMenuItem (menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    private UnspecifiedPageObject SelectMenuOrSubMenuItem (ElementScope menuItemScope, ICompletionDetection completionDetection)
+    private UnspecifiedPageObject SelectMenuOrSubMenuItem (ElementScope menuItemScope, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       var menuItemCommandScope = menuItemScope.FindLink();
       var menuItemCommand = new CommandControlObject (Context.CloneForControl (menuItemCommandScope));
-      return menuItemCommand.Click (completionDetection);
+      return menuItemCommand.Click (completionDetection, modalDialogHandler);
     }
 
     private ElementScope GetMainMenuScope ()

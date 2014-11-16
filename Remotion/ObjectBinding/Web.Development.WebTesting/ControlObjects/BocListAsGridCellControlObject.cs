@@ -50,9 +50,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.GetCommand();
     }
 
-    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
-      return _impl.ExecuteCommand();
+      return _impl.ExecuteCommand(completionDetection, modalDialogHandler);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

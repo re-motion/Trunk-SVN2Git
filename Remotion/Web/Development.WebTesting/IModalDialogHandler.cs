@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -18,23 +18,16 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Control object for <see cref="T:Remotion.Web.UI.Controls.WebButton"/>.
+  /// Modal dialogs must be handled before an action may be completed, as all DOM interaction is blocked.
   /// </summary>
-  public class WebButtonControlObject : WebFormsControlObjectWithDiagnosticMetadata, IClickableControlObject
+  public interface IModalDialogHandler
   {
-    public WebButtonControlObject ([NotNull] ControlObjectContext context)
-        : base (context)
-    {
-    }
-
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
-    {
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
-      return UnspecifiedPage();
-    }
+    /// <summary>
+    /// Handles the modal dialog (either accept or cancel it) as specified.
+    /// </summary>
+    void HandleModalDialog ([NotNull] PageObjectContext context);
   }
 }

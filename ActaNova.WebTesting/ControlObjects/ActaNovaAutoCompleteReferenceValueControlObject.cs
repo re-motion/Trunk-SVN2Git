@@ -22,26 +22,30 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Clears the reference value.
     /// </summary>
-    public UnspecifiedPageObject Clear ([CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Clear (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var additionalButtonsScope = GetAdditionalButtonsScope();
       var clearValueButton =
           additionalButtonsScope.GetControl (
               new PerLocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "ClearValueButton"));
 
-      return clearValueButton.Click (completionDetection);
+      return clearValueButton.Click (completionDetection, modalDialogHandler);
     }
 
     /// <summary>
     /// Presses the "Edit" button for the reference value.
     /// </summary>
-    public UnspecifiedPageObject Edit ([CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Edit (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var additionalButtonsScope = GetAdditionalButtonsScope();
       var editButton =
           additionalButtonsScope.GetControl (new PerLocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "EditButton"));
 
-      return editButton.Click (completionDetection);
+      return editButton.Click (completionDetection, modalDialogHandler);
     }
 
     /// <summary>
@@ -56,27 +60,31 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Presses the "Search" button for the reference value search class.
     /// </summary>
-    public UnspecifiedPageObject Search ([CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Search (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var scope = GetParentScope();
       var searchButton = scope.GetControl (
           new PerLocalIDControlSelectionCommand<WebButtonControlObject> (
               new WebButtonSelector(),
               "SelectRelatedObjectControlSearchReferencedObjectButton"));
-      return searchButton.Click (completionDetection);
+      return searchButton.Click (completionDetection, modalDialogHandler);
     }
 
     /// <summary>
     /// Presses the "New" button for the reference value search class.
     /// </summary>
-    public UnspecifiedPageObject New ([CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject New (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var scope = GetParentScope();
       var newButton = scope.GetControl (
           new PerLocalIDControlSelectionCommand<WebButtonControlObject> (
               new WebButtonSelector(),
               "SelectRelatedObjectControlCreateReferencedObjectButton"));
-      return newButton.Click (completionDetection);
+      return newButton.Click (completionDetection, modalDialogHandler);
     }
 
     /// <summary>

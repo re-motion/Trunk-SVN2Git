@@ -33,7 +33,10 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// See <see cref="Select(string[])"/>, however, a <paramref name="completionDetection"/> may be given which is used instead of the default one.
     /// </summary>
-    public UnspecifiedPageObject Select ([NotNull] IEnumerable<string> menuItems, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Select (
+        [NotNull] IEnumerable<string> menuItems,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("menuItems", menuItems);
 
@@ -55,7 +58,8 @@ namespace ActaNova.WebTesting.ControlObjects
             actions.Perform();
           },
           Context,
-          actualCompletionDetector);
+          actualCompletionDetector,
+          modalDialogHandler);
 
       return UnspecifiedPage();
     }

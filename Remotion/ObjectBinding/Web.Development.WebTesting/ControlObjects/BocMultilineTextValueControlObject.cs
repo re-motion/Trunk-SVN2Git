@@ -44,38 +44,49 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return valueScope.Value; // do not trim
     }
 
-    public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        string text,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection);
+      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
-    public UnspecifiedPageObject FillWith ([NotNull] string[] lines, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        [NotNull] string[] lines,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("lines", lines);
 
-      return FillWith (string.Join (Environment.NewLine, lines), completionDetection);
+      return FillWith (string.Join (Environment.NewLine, lines), completionDetection, modalDialogHandler);
     }
 
-    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        string text,
+        FinishInputWithAction finishInputWith,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FindChild ("Value").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FindChild ("Value").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 
     public UnspecifiedPageObject FillWith (
         [NotNull] string[] lines,
         FinishInputWithAction finishInputWith,
-        [CanBeNull] ICompletionDetection completionDetection = null)
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("lines", lines);
 
-      return FillWith (string.Join (Environment.NewLine, lines), finishInputWith, completionDetection);
+      return FillWith (string.Join (Environment.NewLine, lines), finishInputWith, completionDetection, modalDialogHandler);
     }
 
     private ICompletionDetector GetActualCompletionDetector (

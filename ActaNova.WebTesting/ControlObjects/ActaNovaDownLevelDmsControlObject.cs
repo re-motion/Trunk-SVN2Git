@@ -17,7 +17,10 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject UploadFile ([NotNull] string filePath, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject UploadFile (
+        [NotNull] string filePath,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("filePath", filePath);
 
@@ -28,7 +31,7 @@ namespace ActaNova.WebTesting.ControlObjects
       fileScope.SendKeys (filePath);
 
       var uploadButton = scope.FindCss ("input.UploadButton");
-      uploadButton.ClickAndWait (Context, GetActualCompletionDetector (completionDetection));
+      uploadButton.ClickAndWait (Context, GetActualCompletionDetector (completionDetection), modalDialogHandler);
       return UnspecifiedPage();
     }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
@@ -66,14 +67,14 @@ namespace ActaNova.WebTesting.IntegrationTests
       var objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
       objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Beim Objekt nur lesend berechtigt");
-      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompleted).AndWindowHasClosed());
+      permissions.PerformAndCloseWindow ("Save");
 
       permissions = securableClassesTree.GetRootNode().GetNode().WithIndex (1).Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Berechtigungen");
 
       objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
       objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Standard");
-      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompleted).AndWindowHasClosed());
+      permissions.PerformAndCloseWindow ("Save");
 
       administration.Close();
     }

@@ -28,7 +28,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           createIncoming.FormPage.GetTreeViewAutoComplete ("SubjectArea").GetText(),
           Is.EqualTo ("BW-WF-KS-A - Kleine Sanierung - Zuschuss, Antrag"));
 
-      createIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createIncoming)).AndModalDialogHasBeenAccepted())
+      createIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createIncoming)), HandleModalDialog.Accept())
           .ExpectMainPage();
     }
 
@@ -51,7 +51,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           createIncoming.FormPage.GetTreeViewAutoComplete ("SubjectArea").GetText(),
           Is.EqualTo ("BW-WF-KS-A - Kleine Sanierung - Zuschuss, Antrag"));
 
-      createIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createIncoming)).AndModalDialogHasBeenAccepted())
+      createIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createIncoming)), HandleModalDialog.Accept())
           .ExpectMainPage();
     }
   }

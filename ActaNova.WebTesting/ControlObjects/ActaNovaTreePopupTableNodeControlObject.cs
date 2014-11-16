@@ -22,10 +22,10 @@ namespace ActaNova.WebTesting.ControlObjects
       return Scope.Text.Trim();
     }
 
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var anchorControl = Children.GetControl (new SingleControlSelectionCommand<AnchorControlObject> (new AnchorSelector()));
-      return anchorControl.Click (completionDetection);
+      return anchorControl.Click (completionDetection, modalDialogHandler);
     }
   }
 }

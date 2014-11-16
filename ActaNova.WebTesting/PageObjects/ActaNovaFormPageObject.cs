@@ -61,7 +61,7 @@ namespace ActaNova.WebTesting.PageObjects
     public string GetPermalink ()
     {
       var permalinkButton = GetControl (new PerHtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "PermalinkButton"));
-      permalinkButton.Click (Continue.Immediately().AndModalDialogHasBeenAccepted());
+      permalinkButton.Click (Continue.Immediately(), HandleModalDialog.Accept());
 
       var permalink = permalinkButton.Scope["href"].Replace ("/?", "/Main.wxe?");
       return permalink;

@@ -33,6 +33,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Shortcut, directly executes the command retrieved by <see cref="GetCommand"/>. See <see cref="CommandControlObject.Click"/> for more
     /// information.
     /// </summary>
-    UnspecifiedPageObject ExecuteCommand ([CanBeNull] ICompletionDetection completionDetection = null);
+    UnspecifiedPageObject ExecuteCommand (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
   }
 }

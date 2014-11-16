@@ -2,6 +2,7 @@
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
@@ -46,6 +47,8 @@ namespace ActaNova.WebTesting.ControlObjects
     /// </summary>
     public void Filter (string filter)
     {
+      ArgumentUtility.CheckNotNull ("filter", filter);
+
       var textBox = GetTopBlock().GetControl (new PerLocalIDControlSelectionCommand<TextBoxControlObject> (new TextBoxSelector(), "TextFilterField"));
       textBox.FillWith (filter);
     }

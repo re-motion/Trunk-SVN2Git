@@ -15,26 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using System;
-using JetBrains.Annotations;
+using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 {
   /// <summary>
-  /// Control object for <see cref="T:Remotion.Web.UI.Controls.WebButton"/>.
+  /// Default implementation for <see cref="IModalDialogHandler"/>.
   /// </summary>
-  public class WebButtonControlObject : WebFormsControlObjectWithDiagnosticMetadata, IClickableControlObject
+  internal class ModalDialogHandler : IModalDialogHandler
   {
-    public WebButtonControlObject ([NotNull] ControlObjectContext context)
-        : base (context)
+    private readonly bool _acceptModalDialog;
+
+    public ModalDialogHandler (bool acceptModalDialog)
     {
+      _acceptModalDialog = acceptModalDialog;
     }
 
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
+    public void HandleModalDialog (PageObjectContext context)
     {
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
-      return UnspecifiedPage();
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      if (_acceptModalDialog)
+        context.Browser.AcceptModalDialogFixed();
+      else
+        context.Browser.CancelModalDialogFixed();
     }
   }
 }

@@ -30,10 +30,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetector);
+      Scope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
   }

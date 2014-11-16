@@ -55,7 +55,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (bool? newState, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetTo (
+        bool? newState,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       if (!IsTriState() && !newState.HasValue)
         throw new ArgumentException ("Must not be null for non-tri-state BocBooleanValue controls.", "newState");
@@ -64,21 +67,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return UnspecifiedPage();
 
       if (!IsTriState())
-        return Click (1, completionDetection);
+        return Click (1, completionDetection, modalDialogHandler);
 
       var states = new bool?[] { false, null, true, false, null };
       var numberOfClicks = Array.LastIndexOf (states, newState) - Array.IndexOf (states, GetState());
-      return Click (numberOfClicks, completionDetection);
+      return Click (numberOfClicks, completionDetection, modalDialogHandler);
     }
 
-    private UnspecifiedPageObject Click (int numberOfClicks, ICompletionDetection completionDetection)
+    private UnspecifiedPageObject Click (int numberOfClicks, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       var linkScope = Scope.FindChild ("DisplayValue");
 
       for (var i = 0; i < numberOfClicks; ++i)
       {
         var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-        linkScope.ClickAndWait (Context, actualCompletionDetector);
+        linkScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
       }
 
       return UnspecifiedPage();

@@ -26,11 +26,30 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IControlObjectWithSelectableSubItems
   {
     IControlObjectWithSelectableSubItems SelectSubItem ();
-    UnspecifiedPageObject SelectSubItem ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null);
 
-    UnspecifiedPageObject WithItemID ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null);
-    UnspecifiedPageObject WithIndex (int index, [CanBeNull] ICompletionDetection completionDetection = null);
-    UnspecifiedPageObject WithHtmlID ([NotNull] string htmlID, [CanBeNull] ICompletionDetection completionDetection = null);
-    UnspecifiedPageObject WithText ([NotNull] string text, [CanBeNull] ICompletionDetection completionDetection = null);
+    UnspecifiedPageObject SelectSubItem (
+        [NotNull] string itemID,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithItemID (
+        [NotNull] string itemID,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithIndex (
+        int index,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithHtmlID (
+        [NotNull] string htmlID,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+
+    UnspecifiedPageObject WithText (
+        [NotNull] string text,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
   }
 }

@@ -38,7 +38,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var createPersonPage = actualSubmitter.New().ExpectMainPage();
       Assert.That (searchPage.GetTitle(), Is.EqualTo ("Person erzeugen"));
       createIncomingPage =
-          createPersonPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompleted).AndModalDialogHasBeenAccepted()).ExpectMainPage();
+          createPersonPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompleted), HandleModalDialog.Accept()).ExpectMainPage();
 
       actualSubmitter = createIncomingPage.FormPage.GetAutoComplete ("ActualSubmitter");
       createIncomingPage = actualSubmitter.GetExtraSpace().GetWebButton ("ActualSubmitterCreateObjectInOekomButton").Click().ExpectMainPage();

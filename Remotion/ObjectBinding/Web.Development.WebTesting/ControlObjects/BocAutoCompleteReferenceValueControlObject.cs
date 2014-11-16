@@ -42,20 +42,27 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return Scope.FindChild ("TextValue").Value; // do not trim
     }
 
-    public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        string text,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection);
+      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
-    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        string text,
+        FinishInputWithAction finishInputWith,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.FindChild ("TextValue").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FindChild ("TextValue").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 
@@ -65,9 +72,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
-    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
-      return GetCommand().Click (completionDetection);
+      return GetCommand().Click (completionDetection, modalDialogHandler);
     }
 
     public DropDownMenuControlObject GetDropDownMenu ()

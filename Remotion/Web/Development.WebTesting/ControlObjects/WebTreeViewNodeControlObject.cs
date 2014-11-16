@@ -90,7 +90,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      expandAnchorScope.ClickAndWait (Context, actualCompletionDetector);
+      expandAnchorScope.ClickAndWait (Context, actualCompletionDetector, null);
       return this;
     }
 
@@ -102,28 +102,32 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      collapseAnchorScope.ClickAndWait (Context, actualCompletionDetector);
+      collapseAnchorScope.ClickAndWait (Context, actualCompletionDetector, null);
       return this;
     }
 
-    public WebTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
+    public WebTreeViewNodeControlObject Select (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
-      ClickNode (completionDetection);
+      ClickNode (completionDetection, modalDialogHandler);
       return this;
     }
 
-    public UnspecifiedPageObject Click ([CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Click (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
-      ClickNode (completionDetection);
+      ClickNode (completionDetection, modalDialogHandler);
       return UnspecifiedPage();
     }
 
-    private void ClickNode (ICompletionDetection completionDetection)
+    private void ClickNode (ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      selectAnchorScope.ClickAndWait (Context, actualCompletionDetector);
+      selectAnchorScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
     }
 
     public ContextMenuControlObject OpenContextMenu ()

@@ -38,23 +38,30 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope.Value; // do not trim
     }
 
-    public UnspecifiedPageObject FillWith (string text, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        string text,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection);
+      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
     /// <remarks>
     /// The default <see cref="ICompletionDetection"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
     /// </remarks>
-    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject FillWith (
+        string text,
+        FinishInputWithAction finishInputWith,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector);
+      Scope.FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 

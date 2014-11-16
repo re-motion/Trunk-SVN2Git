@@ -35,10 +35,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetector);
+      Scope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 
@@ -62,19 +62,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
       return scope["href"].Contains (doPostBackScript) ||
              scope["href"].Contains (doPostBackWithOptionsScript) ||
-             ( TargetsCurrentPage(scope["href"]) && scope["onclick"] != null && scope["onclick"].Contains (doPostBackScript));
+             (TargetsCurrentPage (scope["href"]) && scope["onclick"] != null && scope["onclick"].Contains (doPostBackScript));
     }
 
     private bool IsSimpleJavaScriptLink (ElementScope scope)
     {
-      return TargetsCurrentPage(scope["href"]) && scope["onclick"] != null && scope["onclick"].Contains ("javascript:");
+      return TargetsCurrentPage (scope["href"]) && scope["onclick"] != null && scope["onclick"].Contains ("javascript:");
     }
 
     private bool TargetsCurrentPage (string href)
     {
       // Note: unfortunately, Selenium sometimes reports wrong href contents, therefore we have to check for the window location as well.
       var windowLocation = Context.RootScope.Location.ToString();
-      return href.Equals("#") || href.Equals(windowLocation) || href.Equals(windowLocation + "#");
+      return href.Equals ("#") || href.Equals (windowLocation) || href.Equals (windowLocation + "#");
     }
   }
 }

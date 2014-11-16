@@ -36,11 +36,13 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="action">Action to be performed on the DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="completionDetector"><see cref="ICompletionDetector"/> for this action.</param>
+    /// <param name="modalDialogHandler"><see cref="IModalDialogHandler"/> for this action.</param>
     public static void PerformAction (
         [NotNull] this ElementScope scope,
         [NotNull] Action<ElementScope> action,
         [NotNull] ControlObjectContext context,
-        [NotNull] ICompletionDetector completionDetector)
+        [NotNull] ICompletionDetector completionDetector,
+        [CanBeNull] IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("action", action);
@@ -50,6 +52,8 @@ namespace Remotion.Web.Development.WebTesting
       var pageContext = context.PageObject.Context;
       completionDetector.PrepareWaitForCompletion (pageContext);
       action (scope);
+      if (modalDialogHandler != null)
+        modalDialogHandler.HandleModalDialog (pageContext);
       completionDetector.WaitForCompletion (pageContext);
     }
 
@@ -60,16 +64,18 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="scope">The DOM element.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="completionDetector"><see cref="ICompletionDetector"/> for this action.</param>
+    /// <param name="modalDialogHandler"><see cref="IModalDialogHandler"/> for this action.</param>
     public static void ClickAndWait (
         [NotNull] this ElementScope scope,
         [NotNull] ControlObjectContext context,
-        [NotNull] ICompletionDetector completionDetector)
+        [NotNull] ICompletionDetector completionDetector,
+        [CanBeNull] IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("completionDetector", completionDetector);
 
-      scope.PerformAction (s => s.FocusClick(), context, completionDetector);
+      scope.PerformAction (s => s.FocusClick(), context, completionDetector, modalDialogHandler);
     }
 
     /// <summary>
@@ -82,12 +88,14 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="finishInputWithAction"><see cref="FinishInputWithAction"/> for this action.</param>
     /// <param name="context">The corresponding control object's context.</param>
     /// <param name="completionDetector"><see cref="ICompletionDetector"/> for this action.</param>
+    /// <param name="modalDialogHandler"><see cref="IModalDialogHandler"/> for this action.</param>
     public static void FillInWithAndWait (
         [NotNull] this ElementScope scope,
         [NotNull] string value,
         [NotNull] FinishInputWithAction finishInputWithAction,
         [NotNull] ControlObjectContext context,
-        [NotNull] ICompletionDetector completionDetector)
+        [NotNull] ICompletionDetector completionDetector,
+        [CanBeNull] IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
@@ -95,7 +103,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("completionDetector", completionDetector);
 
-      scope.PerformAction (s => s.FillInWithFixed (value, finishInputWithAction), context, completionDetector);
+      scope.PerformAction (s => s.FillInWithFixed (value, finishInputWithAction), context, completionDetector, modalDialogHandler);
     }
   }
 }

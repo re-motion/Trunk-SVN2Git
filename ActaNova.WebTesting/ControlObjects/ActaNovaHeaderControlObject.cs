@@ -110,7 +110,7 @@ namespace ActaNova.WebTesting.ControlObjects
         openButtonScope.Now();
 
         // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
-        openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build());
+        openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
       }
 
       return GetControl (

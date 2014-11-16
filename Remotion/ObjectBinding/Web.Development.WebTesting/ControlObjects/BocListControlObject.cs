@@ -56,31 +56,36 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      currentPageTextInputScope.FillInWithAndWait (Keys.Backspace + page, FinishInput.WithTab, Context, Continue.When (Wxe.PostBackCompleted).Build());
+      currentPageTextInputScope.FillInWithAndWait (
+          Keys.Backspace + page,
+          FinishInput.WithTab,
+          Context,
+          Continue.When (Wxe.PostBackCompleted).Build(),
+          null);
     }
 
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = Scope.FindChild ("Navigation_First");
-      firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
-      previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
     public void GoToNextPage ()
     {
       var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
-      nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
     public void GoToLastPage ()
     {
       var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
-      lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
     public IControlObjectWithRowsWhereColumnContains<BocListRowControlObject> GetRowWhere ()
@@ -219,7 +224,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           columnIndex.ToString());
 
       var sortColumnLinkScope = sortColumnScope.FindLink();
-      sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build());
+      sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
     public void ClickOnSortColumnByTitle ([NotNull] string columnTitle)
@@ -230,26 +235,35 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ClickOnSortColumn (column.Index);
     }
 
-    public void ChangeViewTo ([NotNull] string itemID, [CanBeNull] ICompletionDetection completionDetection = null)
+    public void ChangeViewTo (
+        [NotNull] string itemID,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID), actualCompletionDetector);
+      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID), actualCompletionDetector, modalDialogHandler);
     }
 
-    public void ChangeViewTo (int index, [CanBeNull] ICompletionDetection completionDetection = null)
+    public void ChangeViewTo (
+        int index,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      ChangeViewTo (scope => scope.SelectOptionByIndex (index), actualCompletionDetector);
+      ChangeViewTo (scope => scope.SelectOptionByIndex (index), actualCompletionDetector, modalDialogHandler);
     }
 
-    public void ChangeViewToByLabel ([NotNull] string label, [CanBeNull] ICompletionDetection completionDetection = null)
+    public void ChangeViewToByLabel (
+        [NotNull] string label,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("label", label);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      ChangeViewTo (scope => scope.SelectOption (label), actualCompletionDetector);
+      ChangeViewTo (scope => scope.SelectOption (label), actualCompletionDetector, modalDialogHandler);
     }
 
     protected override BocListRowControlObject CreateRowControlObject (
@@ -272,13 +286,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListCellControlObject (Context.CloneForControl (cellScope));
     }
 
-    private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction, [NotNull] ICompletionDetector completionDetector)
+    private void ChangeViewTo (
+        [NotNull] Action<ElementScope> selectAction,
+        [NotNull] ICompletionDetector completionDetector,
+        [CanBeNull] IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
       ArgumentUtility.CheckNotNull ("completionDetector", completionDetector);
 
       var availableViewsScope = GetAvailableViewsScope();
-      availableViewsScope.PerformAction (selectAction, Context, completionDetector);
+      availableViewsScope.PerformAction (selectAction, Context, completionDetector, modalDialogHandler);
     }
 
     protected virtual ElementScope GetAvailableViewsScope ()

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -17,14 +16,17 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    public UnspecifiedPageObject ClickItem ([NotNull] string item, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject ClickItem (
+        [NotNull] string item,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("item", item);
 
       var itemScope = Scope.FindXPath (string.Format (".//a[contains(., '{0}')]", item));
 
       var actualCompletionDetector = GetActualCompletionDetector (itemScope, completionDetection);
-      itemScope.ClickAndWait (Context, actualCompletionDetector);
+      itemScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
 
       Scope.Unhover();
       EnsurePopupIsClosed();
@@ -32,7 +34,10 @@ namespace ActaNova.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    public UnspecifiedPageObject CheckItem ([NotNull] string item, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject CheckItem (
+        [NotNull] string item,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("item", item);
 
@@ -42,7 +47,7 @@ namespace ActaNova.WebTesting.ControlObjects
       itemScope.Hover();
 
       var actualCompletionDetector = GetActualCompletionDetector (itemScope, completionDetection);
-      itemScope.ClickAndWait (Context, actualCompletionDetector);
+      itemScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
 
       Scope.Unhover();
       EnsurePopupIsClosed();

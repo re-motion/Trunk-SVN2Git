@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
@@ -18,11 +19,16 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
-    public UnspecifiedPageObject Perform (string itemID, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Perform (
+        string itemID,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
+      ArgumentUtility.CheckNotNull ("itemID", itemID);
+
       var fullItemID = string.Format ("{0}Button", itemID);
       var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), fullItemID));
-      return webButton.Click (completionDetection);
+      return webButton.Click (completionDetection, modalDialogHandler);
     }
   }
 }

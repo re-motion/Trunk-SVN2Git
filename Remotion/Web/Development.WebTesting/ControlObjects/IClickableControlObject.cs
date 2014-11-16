@@ -29,7 +29,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Clicks the link, using a given <paramref name="completionDetection"/> to wait for the triggered action's results.
     /// </summary>
     /// <param name="completionDetection">Required <see cref="ICompletionDetection"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
+    /// <param name="modalDialogHandler">Required <see cref="IModalDialogHandler"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
     /// <returns>An unspecified page object, may be used in case a new page is expected after clicking the control object.</returns>
-    UnspecifiedPageObject Click ([CanBeNull] ICompletionDetection completionDetection = null);
+    UnspecifiedPageObject Click (
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
   }
 }

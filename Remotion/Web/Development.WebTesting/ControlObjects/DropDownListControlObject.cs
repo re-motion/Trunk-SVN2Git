@@ -43,41 +43,56 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
-    public UnspecifiedPageObject SelectOption (string value, ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SelectOption (
+        string value,
+        ICompletionDetection completionDetection = null,
+        IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("value", value);
 
       return SelectOption().WithItemID (value, completionDetection);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (string value, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (
+        string value,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
       Action<ElementScope> selectAction = s => s.SelectOptionByValue (value);
-      return SelectOption (selectAction, completionDetection);
+      return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (int index, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (
+        int index,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
-      return SelectOption (selectAction, completionDetection);
+      return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithText (string text, ICompletionDetection completionDetection)
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithText (
+        string text,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
       Action<ElementScope> selectAction = s => s.SelectOption (text);
-      return SelectOption (selectAction, completionDetection);
+      return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
-    private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, ICompletionDetection completionDetection = null)
+    private UnspecifiedPageObject SelectOption (
+        [NotNull] Action<ElementScope> selectAction,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.PerformAction (selectAction, Context, actualCompletionDetector);
+      Scope.PerformAction (selectAction, Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 

@@ -44,15 +44,13 @@ namespace Remotion.Web.Development.WebTesting
       return When (new NullCompletionDetectionStrategy());
     }
 
-    // Todo RM-6297: Improve ControlObject.GetActualCompletionDetector() in order to enable Continue.Automatically().
-    ///// <summary>
-    ///// Specifies, that the action should automatically determine an appropriate completion detection strategy.
-    ///// </summary>
-    //public static IAdvancedCompletionDetection Automatically ()
-    //{
-    //  var completionDetector = new CompletionDetectorBuilder();
-    //  return completionDetector;
-    //}
+    /// <summary>
+    /// Specifies, that the action should automatically determine an appropriate completion detection strategy.
+    /// </summary>
+    public static IAdvancedCompletionDetection Automatically ()
+    {
+      return null;
+    }
   }
 
   /// <summary>
@@ -80,21 +78,5 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="completionDetectionStrategy">An additional <see cref="ICompletionDetectionStrategy"/>.</param>
     IAdvancedCompletionDetection And ([NotNull] ICompletionDetectionStrategy completionDetectionStrategy);
-
-    /// <summary>
-    /// Informs the completion detector to wait for the current window to be closed. Note: this causes the completion detector to execute all
-    /// <see cref="ICompletionDetectionStrategy"/>s on the parent window.
-    /// </summary>
-    IAdvancedCompletionDetection AndWindowHasClosed ();
-
-    /// <summary>
-    /// Accepts the modal browser dialog which is triggrered by the action.
-    /// </summary>
-    IAdvancedCompletionDetection AndModalDialogHasBeenAccepted ();
-
-    /// <summary>
-    /// Cancels the modal browser dialog which is triggered by the action.
-    /// </summary>
-    IAdvancedCompletionDetection AndModalDialogHasBeenCanceled ();
   }
 }

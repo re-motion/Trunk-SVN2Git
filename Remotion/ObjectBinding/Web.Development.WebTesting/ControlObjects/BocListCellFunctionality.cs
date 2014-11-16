@@ -50,9 +50,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
-    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
-      return GetCommand().Click (completionDetection);
+      return GetCommand().Click (completionDetection, modalDialogHandler);
     }
 
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

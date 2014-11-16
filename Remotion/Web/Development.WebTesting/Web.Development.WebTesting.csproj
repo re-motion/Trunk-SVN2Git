@@ -100,6 +100,7 @@
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
     <Compile Include="CompletionDetectionImplementation\CompletionDetectorBuilder.cs" />
+    <Compile Include="CompletionDetectionImplementation\ModalDialogHandler.cs" />
     <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionStrategyBase.cs" />
     <Compile Include="Configuration\WebTestingConstants.cs" />
     <Compile Include="ControlObjectContext.cs" />
@@ -203,6 +204,8 @@
     <Compile Include="FluentControlSelection\PerTitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
     <Compile Include="CompletionDetectionBuilderFluentInterface.cs" />
+    <Compile Include="ModalDialogHandlerFluentInterface.cs" />
+    <Compile Include="IModalDialogHandler.cs" />
     <Compile Include="PageObjects\HtmlPageObject.cs" />
     <Compile Include="ICompletionDetector.cs" />
     <Compile Include="Configuration\IBrowserConfiguration.cs" />

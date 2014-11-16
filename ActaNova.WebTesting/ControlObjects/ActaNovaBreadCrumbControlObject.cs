@@ -23,10 +23,10 @@ namespace ActaNova.WebTesting.ControlObjects
       return Scope.FindCss ("span.breadCrumbElementText").Text.Trim();
     }
 
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetector);
+      Scope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
   }

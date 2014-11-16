@@ -69,30 +69,39 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the date component of the control to <paramref name="newDate"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDate (DateTime newDate, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetDate (
+        DateTime newDate,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var newDateString = newDate.ToShortDateString();
-      return SetDate (newDateString, completionDetection);
+      return SetDate (newDateString, completionDetection, modalDialogHandler);
     }
 
     /// <summary>
     /// Sets the date component of the control to <paramref name="newDateString"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDate ([NotNull] string newDateString, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetDate (
+        [NotNull] string newDateString,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("newDateString", newDateString);
 
       var dateScope = GetDateScope();
 
       var actualCompletionDetector = GetActualCompletionDetector (dateScope, completionDetection);
-      dateScope.FillInWithAndWait (newDateString, FinishInput.WithTab, Context, actualCompletionDetector);
+      dateScope.FillInWithAndWait (newDateString, FinishInput.WithTab, Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 
     /// <summary>
     /// Sets the time component of the control to <paramref name="newTime"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTime (TimeSpan newTime, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetTime (
+        TimeSpan newTime,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var newTimeAsDateTime = DateTime.MinValue.Add (newTime);
 
@@ -104,31 +113,37 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       else
         newTimeString = newTimeAsDateTime.ToShortTimeString();
 
-      return SetTime (newTimeString, completionDetection);
+      return SetTime (newTimeString, completionDetection, modalDialogHandler);
     }
 
     /// <summary>
     /// Sets the time component of the control to <paramref name="newTimeString"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTime ([NotNull] string newTimeString, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetTime (
+        [NotNull] string newTimeString,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       ArgumentUtility.CheckNotNull ("newTimeString", newTimeString);
 
       var timeScope = GetTimeScope();
 
       var actualCompletionDetector = GetActualCompletionDetector (timeScope, completionDetection);
-      timeScope.FillInWithAndWait (newTimeString, FinishInput.WithTab, Context, actualCompletionDetector);
+      timeScope.FillInWithAndWait (newTimeString, FinishInput.WithTab, Context, actualCompletionDetector, modalDialogHandler);
       return UnspecifiedPage();
     }
 
     /// <summary>
     /// Sets the date component and the time component of the control to <paramref name="newDateTime"/>.
     /// </summary>
-    public UnspecifiedPageObject SetDateTime (DateTime newDateTime, [CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject SetDateTime (
+        DateTime newDateTime,
+        [CanBeNull] ICompletionDetection completionDetection = null,
+        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       SetDate (newDateTime, completionDetection);
       if (_hasTimeField)
-        SetTime (newDateTime.TimeOfDay, completionDetection);
+        SetTime (newDateTime.TimeOfDay, completionDetection, modalDialogHandler);
       return UnspecifiedPage();
     }
 

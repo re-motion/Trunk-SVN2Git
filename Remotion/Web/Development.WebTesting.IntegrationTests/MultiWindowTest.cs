@@ -98,7 +98,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       var closeButton = window.GetWebButton().ByID ("Close");
-      closeButton.Click (Continue.When (Wxe.PostBackCompletedIn (home)).AndWindowHasClosed());
+      closeButton.Click (Continue.When (Wxe.PostBackCompletedInContext (window.Context.ParentContext)));
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 3);
 
@@ -110,7 +110,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var closeAndRefreshMainAsWellButton = window.GetWebButton().ByID ("CloseAndRefreshMainAsWell");
       closeAndRefreshMainAsWellButton.Click (
-          Continue.When (Wxe.PostBackCompletedIn (home.Frame)).And (Wxe.PostBackCompletedIn (home)).AndWindowHasClosed());
+          Continue.When (Wxe.PostBackCompletedIn (home.Frame)).And (Wxe.PostBackCompletedInContext (window.Context.ParentContext)));
       AssertPostBackSequenceNumber (frameLabel, 3);
       AssertPostBackSequenceNumber (mainLabel, 4);
     }
@@ -133,7 +133,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", FinishInput.Promptly);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)).AndModalDialogHasBeenAccepted());
+      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)), HandleModalDialog.Accept());
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
@@ -161,13 +161,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", FinishInput.Promptly);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)).AndModalDialogHasBeenCanceled());
+      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)), HandleModalDialog.Cancel());
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       // Ensure that page can still be used
       var navigatieAwayButton = home.GetWebButton().ByID ("NavigateAway");
-      var defaultPage = navigatieAwayButton.Click (Continue.Immediately().AndModalDialogHasBeenAccepted()).Expect<RemotionPageObject>();
+      var defaultPage = navigatieAwayButton.Click (Continue.Immediately(), HandleModalDialog.Accept()).Expect<RemotionPageObject>();
       Assert.That (defaultPage.GetTitle(), Is.EqualTo ("Web.Development.WebTesting.TestSite"));
     }
 

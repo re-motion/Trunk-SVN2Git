@@ -18,7 +18,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// </summary>
     public static void ExpandHierarchyRow (this BocListCellControlObject cell)
     {
-      cell.Scope.FindCss ("img").PerformAction (s => s.Click(), cell.Context, Continue.When (Wxe.PostBackCompleted).Build());
+      cell.Scope.FindCss ("img").PerformAction (s => s.Click(), cell.Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
     /// <summary>
