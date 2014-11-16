@@ -13,10 +13,10 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
 
       home = home.MainMenu.Neu_Eingangsstueck();
 
-      home.Header.GetBreadCrumbs()[0].ClickAndPreventDataLoss();
+      home.Header.GetBreadCrumb(1).ClickAndPreventDataLoss();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eingangsstück erzeugen"));
 
-      home = home.Header.GetBreadCrumbs()[0].ClickAndConfirmDataLoss().ExpectMainPage();
+      home = home.Header.GetBreadCrumb(1).ClickAndConfirmDataLoss().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
 

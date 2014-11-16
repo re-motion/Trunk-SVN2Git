@@ -75,8 +75,8 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      Assert.That (home.Header.GetBreadCrumbs().Count, Is.EqualTo (1));
-      Assert.That (home.Header.GetBreadCrumbs()[0].GetText(), Is.EqualTo ("Eigener AV"));
+      Assert.That (home.Header.GetNumberOfBreadCrumbs(), Is.EqualTo (1));
+      Assert.That (home.Header.GetBreadCrumb(1).GetText(), Is.EqualTo ("Eigener AV"));
 
       // Note: tests for ActaNovaBreadCrumbControlObject are found in ActaNovaBreadCrumbControlObjectTest, this test only tests the Header property.
     }

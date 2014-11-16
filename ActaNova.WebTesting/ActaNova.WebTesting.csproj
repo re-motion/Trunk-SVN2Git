@@ -72,6 +72,7 @@
     <Compile Include="ControlObjects\ActaNovaListControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaTreeViewAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="ControlObjects\ActaNovaDownLevelDmsControlObject.cs" />
+    <Compile Include="ControlObjects\IControlObjectWithBreadCrumbs.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaDownLevelDmsSelector.cs" />
     <Compile Include="ControlObjects\Selectors\ActaNovaEditObjectPanelSelector.cs" />

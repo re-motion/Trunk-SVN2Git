@@ -39,7 +39,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       home = home.MainMenu.Neu_VerteilerStatisch();
       Assert.That (home.GetTitle(), Is.EqualTo ("Verteiler (statisch) erzeugen"));
 
-      home.Header.GetBreadCrumbs()[0].ClickAndConfirmDataLoss();
+      home.Header.GetBreadCrumb(1).ClickAndConfirmDataLoss();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
 
@@ -54,7 +54,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       home = home.MainMenu.Neu_VerteilerDynamisch();
       Assert.That (home.GetTitle(), Is.EqualTo ("Verteiler (dynamisch) erzeugen"));
 
-      home.Header.GetBreadCrumbs()[0].ClickAndConfirmDataLoss();
+      home.Header.GetBreadCrumb(1).ClickAndConfirmDataLoss();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
 
       home = home.MainMenu.Verfahrensbereich_BW();
@@ -144,7 +144,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       home = home.MainMenu.Suchen_Telefon();
       Assert.That (home.GetTitle(), Is.EqualTo ("Telefon suchen"));
 
-      home.Header.GetBreadCrumbs()[0].Click();
+      home.Header.GetBreadCrumb(1).Click();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
 
       home = home.MainMenu.Suchen_WebSeite();
@@ -198,7 +198,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       home = home.MainMenu.Extras_RueckscheinErfassen();
       Assert.That (home.GetTitle(), Is.EqualTo ("Rückschein erfassen"));
 
-      home.Header.GetBreadCrumbs()[0].Click();
+      home.Header.GetBreadCrumb(1).Click();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
 
       home = home.MainMenu.Extras_BefehleVormerken();
@@ -213,7 +213,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       home = home.MainMenu.Extras_EDIAKTImport();
       Assert.That (home.GetTitle(), Is.EqualTo ("EDIAKT importieren"));
 
-      home.Header.GetBreadCrumbs()[0].ClickAndConfirmDataLoss();
+      home.Header.GetBreadCrumb(1).ClickAndConfirmDataLoss();
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
     }
 
