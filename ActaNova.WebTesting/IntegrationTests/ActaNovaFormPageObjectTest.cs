@@ -37,11 +37,11 @@ namespace ActaNova.WebTesting.IntegrationTests
       var printWindow = editIncomingPage.FormPage.Print();
       printWindow.PerformAndCloseWindow ("CancelDetails");
 
-      // Todo EVB-8268: enable as soon as the bug report window does not show a yellow page anymore.
+      // Todo EVB-8268: Enable as soon as the bug report window does not show a yellow page anymore.
       //var bugReportWindow = editIncomingPage.FormPage.CreateBugReport();
       //bugReportWindow.Close();
 
-      // Todo EVB-8268: enable as soon as the help window does have a title.
+      // Todo EVB-8268: Enable as soon as the help window does have a title.
       //var helpPage = editIncomingPage.FormPage.OpenHelp();
       //helpPage.Close();
 
