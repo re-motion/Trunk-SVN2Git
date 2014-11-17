@@ -200,38 +200,13 @@
         DataSourceControl="CurrentObject"
         PropertyIdentifier="Jobs"
         
-        AlwaysShowPageInfo="True"
-        AvailableViewsListTitle="V_iews:"
-        EnableEditModeValidator="true"
-        EnableMultipleSorting="true"
-        EnableSorting="true"
-        Index="SortedOrder"
-        IndexColumnTitle="I_ndex"
-        IndexOffset="10"
-        ListMenuLineBreaks="BetweenGroups"
-        OptionsTitle="O_ptions:"
         PageSize="2"
-        RowMenuDisplay="Manual"
-        Selection="Multiple"
         ShowAllProperties="False"
-        ShowAvailableViewsList="True"
-        ShowEditModeRequiredMarkers="true"
-        ShowEditModeValidationMarkers="true"
-        ShowListMenu="true"
-        ShowOptionsMenu="true"
-        ShowSortingOrder="True"
         
         Width="100%"
         Height="10em"
         runat="server">
         <FixedColumns>
-          <remotion:BocRowEditModeColumnDefinition ItemID="EditRow" EditText="Edit" SaveText="Save" CancelText="Cancel" Width="2em" />
-          <remotion:BocCommandColumnDefinition ItemID="RowCmd" Text="Row command" ColumnTitle="Command">
-            <PersistedCommand>
-              <remotion:BocListItemCommand Type="Event" CommandStateType="Remotion.ObjectBinding.Sample::PersonListItemCommandState"></remotion:BocListItemCommand>
-            </PersistedCommand>
-          </remotion:BocCommandColumnDefinition>
-          <remotion:BocDropDownMenuColumnDefinition ItemID="RowMenu" MenuTitleText="Context" Width="16px" ColumnTitle="Menu"/>
           <remotion:BocCompoundColumnDefinition ItemID="DateRange" ColumnTitle="Date range" FormatString="{0} until {1}">
             <PropertyPathBindings>
               <remotion:PropertyPathBinding PropertyPathIdentifier="StartDate"/>
@@ -263,5 +238,20 @@
       </testsite:TestBocListWithRowMenuItems>
     </td>
     <td>&nbsp; (empty)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <testsite:TestBocListWithRowMenuItems
+        ID="JobList_NoFakeTableHeader"
+        ReadOnly="False"
+        DataSourceControl="CurrentObject"
+        PropertyIdentifier="Jobs"
+        
+        ShowAllProperties="True"
+        runat="server">
+      </testsite:TestBocListWithRowMenuItems>
+    </td>
+    <td>&nbsp; (no fake table header)</td>
   </tr>
 </table>
