@@ -23,7 +23,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("item", item);
 
-      var itemScope = Scope.FindXPath (string.Format (".//a[contains(., '{0}')]", item));
+      var itemScope = Scope.FindXPath (string.Format (".//a[normalize-space(.)='{0}']", item));
 
       var actualCompletionDetector = GetActualCompletionDetector (itemScope, completionDetection);
       itemScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
@@ -41,7 +41,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("item", item);
 
-      var itemScope = Scope.FindXPath (string.Format (".//a[contains(../../td/span, '{0}')]", item));
+      var itemScope = Scope.FindXPath (string.Format (".//a[normalize-space(../../td/span)='{0}']", item));
 
       // Note: without hover before the click, the check item action does not work, we don't know why yet.
       itemScope.Hover();

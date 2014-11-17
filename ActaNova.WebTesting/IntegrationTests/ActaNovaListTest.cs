@@ -103,7 +103,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var popup = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "OE-W/1/BW-WH-WD/1").GetCell("DocumentsHierarchy").HoverAndGetTreePopup();
 
-      Assert.That (popup.GetNode ("Reinschrift").GetText(), Is.EqualTo ("Reinschrift.pdf")); // yep, contains match.
+      Assert.That (popup.GetNode ("Reinschrift").GetText(), Is.EqualTo ("Reinschrift"));
       Assert.That (popup.GetNode ("Reinschrift.pdf").GetText(), Is.EqualTo ("Reinschrift.pdf"));
 
       popup = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "OE/2/BW-BV-BA-M/1").GetCell("DocumentsHierarchy").HoverAndGetTreePopup();

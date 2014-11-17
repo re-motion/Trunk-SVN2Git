@@ -37,7 +37,7 @@ namespace ActaNova.WebTesting.ControlObjects
       ExpandTreeNodes (treeNodesToExpand);
 
       var lastTreeNode = treeNodesAsList.Last();
-      var lastTreeNodeScope = Scope.FindXPath (string.Format (".//div[@class='NodeItem' and .//span[contains(., '{0}')]]", lastTreeNode));
+      var lastTreeNodeScope = Scope.FindXPath (string.Format (".//div[@class='NodeItem' and .//span[normalize-space(.)='{0}']]", lastTreeNode));
       return new ActaNovaTreePopupTableNodeControlObject (Context.CloneForControl (lastTreeNodeScope));
     }
 
@@ -45,7 +45,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       foreach (var node in treeNodesToExpand)
       {
-        var nodeExpandLinkScope = Scope.FindXPath (string.Format (".//a[@class='NodeLink' and following-sibling::a//span[contains(., '{0}')]]", node));
+        var nodeExpandLinkScope = Scope.FindXPath (string.Format (".//a[@class='NodeLink' and following-sibling::a//span[normalize-space(.)='{0}']]", node));
         if (nodeExpandLinkScope["onclick"].Contains ("collapse"))
           continue;
 

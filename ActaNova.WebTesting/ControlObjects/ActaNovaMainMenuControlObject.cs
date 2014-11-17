@@ -74,7 +74,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
       foreach (var menuItem in menuItems)
       {
-        nativeMenuItemScope = nativeMenuItemScope.FindElement (By.XPath (string.Format ("ul/li[a[contains(.,'{0}')]]", menuItem)));
+        nativeMenuItemScope = nativeMenuItemScope.FindElement (By.XPath (string.Format ("ul/li[normalize-space(a)='{0}']", menuItem)));
         actions.WaitFor (nativeMenuItemScope, ActionsWithWaitSupport.IsVisible, timeout);
         actions.MoveToElement (nativeMenuItemScope);
       }
