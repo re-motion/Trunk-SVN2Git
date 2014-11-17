@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Threading;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
@@ -96,6 +97,10 @@ namespace Remotion.Web.Development.WebTesting
     {
       var webDriver = (IWebDriver) browser.Native;
       webDriver.SwitchTo().Alert().Accept();
+
+      // Note: unfortunately, we run into a race condition *after* accepting the modal dialog again, so we need to do some waiting here.
+      // Todo RM-6297: Try to get rid of this. See https://groups.google.com/forum/#!topic/selenium-users/NrtJnq7b678 for more information.
+      Thread.Sleep (TimeSpan.FromMilliseconds (250));
     }
 
     /// <summary>
@@ -113,6 +118,10 @@ namespace Remotion.Web.Development.WebTesting
     {
       var webDriver = (IWebDriver) browser.Native;
       webDriver.SwitchTo().Alert().Dismiss();
+
+      // Note: unfortunately, we run into a race condition *after* accepting the modal dialog again, so we need to do some waiting here.
+      // Todo RM-6297: Try to get rid of this. See https://groups.google.com/forum/#!topic/selenium-users/NrtJnq7b678 for more information.
+      Thread.Sleep (TimeSpan.FromMilliseconds (250));
     }
   }
 }
