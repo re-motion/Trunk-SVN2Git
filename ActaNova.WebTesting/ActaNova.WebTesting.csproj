@@ -92,6 +92,7 @@
     <Compile Include="IntegrationTests\ActaNovaTreeControlObjectTest.cs" />
     <Compile Include="IntegrationTests\ActaNovaTreeViewAutoCompleteReferenceValueControlObject.cs" />
     <Compile Include="IntegrationTests\ActaNovaDownLevelDmsControlObjectTest.cs" />
+    <Compile Include="IntegrationTests\ActaNovaWorkListPageObjectTest.cs" />
     <Compile Include="IntegrationTests\FluentControlSelectorExtensionsForActaNovaWebTests.cs" />
     <Compile Include="IntegrationTests\ActaNovaEditObjectPanelControlObjectTest.cs" />
     <Compile Include="PageObjects\ActaNovaFormPageObject.cs" />
