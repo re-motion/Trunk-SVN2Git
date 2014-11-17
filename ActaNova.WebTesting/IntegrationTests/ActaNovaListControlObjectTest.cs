@@ -10,7 +10,7 @@ using Remotion.Web.Development.WebTesting.FluentControlSelection;
 namespace ActaNova.WebTesting.IntegrationTests
 {
   [TestFixture]
-  public class ActaNovaListTest : ActaNovaWebTestBase
+  public class ActaNovaListControlObjectTest : ActaNovaWebTestBase
   {
     [Test]
     public void TestGetTopBlock ()
