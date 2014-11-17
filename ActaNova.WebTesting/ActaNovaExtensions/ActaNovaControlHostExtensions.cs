@@ -1,4 +1,5 @@
-﻿using ActaNova.WebTesting.ControlObjects;
+﻿using System;
+using ActaNova.WebTesting.ControlObjects;
 using ActaNova.WebTesting.ControlObjects.Selectors;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
@@ -359,6 +360,19 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     public static ActaNovaDownLevelDmsControlObject GetOnlyDownLevelDms (this IControlHost host)
     {
       return host.GetControl (new SingleControlSelectionCommand<ActaNovaDownLevelDmsControlObject> (new ActaNovaDownLevelDmsSelector()));
-    } 
+    }
+
+    public static FluentControlSelector<ActaNovaTinyMceSelector, ActaNovaTinyMceControlObject> GetTinyMce (this IControlHost host)
+    {
+      return new FluentControlSelector<ActaNovaTinyMceSelector, ActaNovaTinyMceControlObject> (host, new ActaNovaTinyMceSelector());
+    }
+
+    public static ActaNovaTinyMceControlObject GetTinyMce (
+        this IControlHost host,
+        string domainProperty,
+        string domainClass = null)
+    {
+      return host.GetTinyMce().ByDomainProperty (domainProperty, domainClass);
+    }
   }
 }

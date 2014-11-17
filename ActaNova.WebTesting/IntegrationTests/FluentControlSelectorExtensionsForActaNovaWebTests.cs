@@ -349,10 +349,13 @@ namespace ActaNova.WebTesting.IntegrationTests
       return host.GetTreeView().ByDomainProperty (domainProperty, domainClass);
     }
 
-    public static FluentControlSelector<ActaNovaTreeViewAutoCompleteReferenceValueSelector, ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject>
+    public static
+        FluentControlSelector
+            <ActaNovaTreeViewAutoCompleteReferenceValueSelector, ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject>
         GetTreeViewAutoComplete (this IControlHost host)
     {
-      return new FluentControlSelector<ActaNovaTreeViewAutoCompleteReferenceValueSelector, ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject> (
+      return new FluentControlSelector
+          <ActaNovaTreeViewAutoCompleteReferenceValueSelector, ControlObjects.ActaNovaTreeViewAutoCompleteReferenceValueControlObject> (
           host,
           new ActaNovaTreeViewAutoCompleteReferenceValueSelector());
     }
@@ -373,6 +376,19 @@ namespace ActaNova.WebTesting.IntegrationTests
     public static ActaNovaDownLevelDmsControlObject GetOnlyDownLevelDms (this IControlHost host)
     {
       return host.GetControl (new SingleControlSelectionCommand<ActaNovaDownLevelDmsControlObject> (new ActaNovaDownLevelDmsSelector()));
+    }
+
+    public static FluentControlSelector<ActaNovaTinyMceSelector, ActaNovaTinyMceControlObject> GetTinyMce (this IControlHost host)
+    {
+      return new FluentControlSelector<ActaNovaTinyMceSelector, ActaNovaTinyMceControlObject> (host, new ActaNovaTinyMceSelector());
+    }
+
+    public static ActaNovaTinyMceControlObject GetTinyMce (
+        this IControlHost host,
+        string domainProperty,
+        string domainClass = null)
+    {
+      return host.GetTinyMce().ByDomainProperty (domainProperty, domainClass);
     }
   }
 }
