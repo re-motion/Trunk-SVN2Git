@@ -94,14 +94,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     private readonly IBocListRowControlObjectHostAccessor _accessor;
+    private readonly bool _hasFakeTableHead;
     private readonly List<ColumnDefinition> _columns;
 
     protected BocListControlObjectBase ([NotNull] ControlObjectContext context)
         : base (context)
     {
       _accessor = new BocListRowControlObjectHostAccessor (this);
+      _hasFakeTableHead = Scope.FindCss ("div.bocListTableContainer")[DiagnosticMetadataAttributesForObjectBinding.BocListHasFakeTableHead] != null;
       _columns = RetryUntilTimeout.Run (
-          () => Scope.FindAllCss (".bocListFakeTableHead th")
+        () => Scope.FindAllCss (_hasFakeTableHead ? ".bocListFakeTableHead th" : ".bocListTableContainer th")
               .Select (
                   (s, i) =>
                       new ColumnDefinition (
@@ -119,6 +121,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     protected IBocListRowControlObjectHostAccessor Accessor
     {
       get { return _accessor; }
+    }
+
+    /// <summary>
+    /// Returns whether the list has a fake table head.
+    /// </summary>
+    protected bool HasFakeTableHead
+    {
+      get { return _hasFakeTableHead; }
     }
 
     /// <summary>

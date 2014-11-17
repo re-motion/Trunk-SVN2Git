@@ -223,9 +223,28 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (cell.GetText(), Is.EqualTo ("Custom XXXX"));
     }
 
-    // Todo RM-6297: Fix test.
     [Test]
-    [Ignore("RM-6297: Temporarily ignored until fixed.")]
+    public void TestBocListWithNoFakeTableHeader ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_NoFakeTableHeader");
+
+      bocList.ClickOnSortColumn ("EndDate");
+      Assert.That (bocList.GetRow().WithIndex (1).GetCell().WithIndex (1).GetText(), Is.EqualTo ("CEO"));
+
+      bocList.ClickOnSortColumn ("EndDate");
+      bocList.ClickOnSortColumn ("EndDate");
+      Assert.That (bocList.GetRow().WithIndex (1).GetCell().WithIndex (1).GetText(), Is.EqualTo ("Programmer"));
+
+      var row = bocList.GetRowWhere ("Title", "Developer");
+      Assert.That (row.GetCell ("DisplayName").GetText(), Is.EqualTo ("Developer"));
+
+      var columnTitles = bocList.GetColumnTitles();
+      Assert.That (columnTitles, Is.EquivalentTo (new[] { "Title", "StartDate", "EndDate", "DisplayName" }));
+    }
+
+    [Test]
     public void TestClickOnSortColumn ()
     {
       var home = Start();

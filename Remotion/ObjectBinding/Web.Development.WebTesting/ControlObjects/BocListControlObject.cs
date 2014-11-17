@@ -218,12 +218,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public void ClickOnSortColumn (int columnIndex)
     {
-      var sortColumnScope = Scope.FindTagWithAttribute (
-          ".bocListFakeTableHead th",
+      var sortColumnClickScope = Scope.FindTagWithAttribute (
+          HasFakeTableHead ? ".bocListFakeTableHead th" : ".bocListTableContainer th",
           DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
           columnIndex.ToString());
 
-      var sortColumnLinkScope = sortColumnScope.FindLink();
+      var sortColumnLinkScope = sortColumnClickScope.FindLink();
+      // Note: explicit hovering is required: Selenium does not correctly bring the fake table head into view.
+      if(HasFakeTableHead)
+        sortColumnLinkScope.Hover();
       sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
