@@ -455,6 +455,9 @@ function BocList_FixUpScrolling(bocList)
 
 function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
 {
+  // Add diganostic metadata for web testing framework (actually: should only be rendered with IRenderingFeatures.EnableDiagnosticMetadata on)
+  tableContainer.attr('data-boclist-has-fake-table-head', 'true');
+
   var table = scrollableContainer.children('table').first();
 
   var fakeTable = $('<table/>');
