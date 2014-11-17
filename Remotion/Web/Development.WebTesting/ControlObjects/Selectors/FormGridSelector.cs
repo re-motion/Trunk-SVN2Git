@@ -44,10 +44,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
 
       // Note: this implementation assumes that the title cell has the CSS class formGridTitleCell.
       var hasClassCheck = XPathUtils.CreateHasClassCheck ("formGridTitleCell");
-      var scope = context.Scope.FindXPath (string.Format (".//table[contains(tbody/tr/td{0},'{1}')]", hasClassCheck, title));
+      var scope = context.Scope.FindXPath (string.Format (".//table[tbody/tr/td{0}='{1}']", hasClassCheck, title));
 
       // This alterantive implementation assumes that the title cell is the very first row and column.
-      // var scope = context.Scope.FindXPath (string.Format (".//table[contains(tbody/tr[1]/td[1],'{0}')]", title));
+      // var scope = context.Scope.FindXPath (string.Format (".//table[tbody/tr[1]/td[1]='{0}']", title));
 
       return CreateControlObject (context, scope);
     }
