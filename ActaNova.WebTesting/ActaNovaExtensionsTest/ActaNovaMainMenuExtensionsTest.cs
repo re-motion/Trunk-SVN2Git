@@ -222,7 +222,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
     {
       var home = Start();
 
-      // Todo EVB-8268: Uncomment as soon as Hilfe_Gesamthilfe extension method has been implemented.
+      // Todo EVB-8268: Enable as soon as the help window does have a title.
       //var gesamthilfeWindow = home.MainMenu.Hilfe_Gesamthilfe();
       //Assert.That (gesamthilfeWindow.Scope.FindCss ("p.DokInfo").Text, Is.EqualTo ("Inhaltsverzeichnis"));
       //gesamthilfeWindow.Close();
