@@ -41,7 +41,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the current <see cref="DateTime"/> respresented by the control or null if an invalid <see cref="DateTime"/> is displayed.
     /// </summary>
-    /// <returns>The DateTime contains </returns>
     public DateTime? GetDateTime ()
     {
       DateTime result;
