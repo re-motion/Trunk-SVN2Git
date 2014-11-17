@@ -2,7 +2,6 @@
 using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
-using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace ActaNova.WebTesting.IntegrationTests
 {
@@ -25,6 +24,11 @@ namespace ActaNova.WebTesting.IntegrationTests
       editIncomingPage = editIncomingPage.FormPage.NextActivity().ExpectMainPage();
       Assert.That (editIncomingPage.FormPage.GetTitle(), Is.EqualTo ("Eingangsstück \"04.04.2001/1\" bearbeiten"));
       Assert.That (editIncomingPage.FormPage.GetCurrentActivityName(), Is.EqualTo ("AV-Element prüfen und verteilen"));
+
+      var weiterleitenWindow = editIncomingPage.FormPage.HoverWorkStepsControl()
+          .ClickItem ("Weiterleiten")
+          .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Aktivität weiterleiten");
+      weiterleitenWindow.PerformAndCloseWindow ("Cancel");
 
       editIncomingPage.FormPage.PressPinButton();
       Assert.That (editIncomingPage.Tree.GetFavoritenNode().Expand().GetNumberOfChildren(), Is.EqualTo (3));

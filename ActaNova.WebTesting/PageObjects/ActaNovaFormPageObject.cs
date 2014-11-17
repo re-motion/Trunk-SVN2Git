@@ -1,4 +1,6 @@
 ﻿using System;
+using ActaNova.WebTesting.ControlObjects;
+using ActaNova.WebTesting.ControlObjects.Selectors;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
@@ -50,6 +52,15 @@ namespace ActaNova.WebTesting.PageObjects
           GetControl (
               new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoNextButton"));
       return gotoNextButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
+    }
+
+    public ActaNovaTreePopupListControlObject HoverWorkStepsControl ()
+    {
+      var workStepsControlScope = GetControl (new PerHtmlIDControlSelectionCommand<ScopeControlObject> (new ScopeSelector(), "WorkStepsControl"));
+      workStepsControlScope.Scope.Hover();
+
+      return workStepsControlScope.GetControl (
+          new SingleControlSelectionCommand<ActaNovaTreePopupListControlObject> (new ActaNovaTreePopupListSelector()));
     }
 
     public UnspecifiedPageObject PressPinButton ()
