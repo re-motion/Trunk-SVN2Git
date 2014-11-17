@@ -14,9 +14,17 @@ namespace ActaNova.WebTesting.ControlObjects
      // Note: if the number of extension methods is getting too high, it is better to refactor ActaNovaList to return ActaNova-specific rows & cells.
 
     /// <summary>
-    /// Presses the expand button on the hierarchy row.
+    /// Presses the expand/collapse button on the hierarchy row.
     /// </summary>
     public static void ExpandHierarchyRow (this BocListCellControlObject cell)
+    {
+      cell.Scope.FindCss ("img").PerformAction (s => s.Click(), cell.Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+    }
+
+    /// <summary>
+    /// Presses the expand/collapse button on the hierarchy row.
+    /// </summary>
+    public static void CollapseHierarchyRow (this BocListCellControlObject cell)
     {
       cell.Scope.FindCss ("img").PerformAction (s => s.Click(), cell.Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }

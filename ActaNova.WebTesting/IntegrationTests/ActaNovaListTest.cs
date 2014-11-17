@@ -2,11 +2,9 @@
 using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.ControlObjects;
 using ActaNova.WebTesting.PageObjects;
-using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 
 namespace ActaNova.WebTesting.IntegrationTests
@@ -92,6 +90,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       editIncoming.FormPage.GetOnlyTabbedMultiView().SwitchTo ("IncomingEnclosuresFormPage_view");
 
       var documentsList = editIncoming.FormPage.GetList ("DocumentsHierarchy");
+      documentsList.GetCellWhere().ColumnWithIndexContains (3, "Sample Email.txt").CollapseHierarchyRow();
       documentsList.GetCellWhere().ColumnWithIndexContains (3, "Sample Email.txt").ExpandHierarchyRow();
 
       Assert.That (documentsList.GetCellWhere().ColumnWithIndexContains (3, "Sample Email Attachment.doc").Scope.Exists(), Is.True);
