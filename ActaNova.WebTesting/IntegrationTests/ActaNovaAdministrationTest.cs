@@ -20,7 +20,7 @@ namespace ActaNova.WebTesting.IntegrationTests
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Administration");
 
       var tabbedMenu = administration.GetOnlyTabbedMenu();
-      tabbedMenu.SelectSubItem ("StandardClassificationTypes");
+      tabbedMenu.SubMenu.SelectItem ("StandardClassificationTypes");
 
       var classificationTypeField = administration.GetOnlyFormGrid().GetDropDownList().Single();
       classificationTypeField.SelectOption().WithText ("Adressart");
@@ -30,7 +30,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var downloadNotification = administration.GetImageButton ("ExcelExportButton").Click().Expect<ActaNovaMessageBoxPageObject>();
       downloadNotification.Confirm();
-      
+
       administration.Close();
 
       var tempExportDokumente = home.MainMenu.Select ("Extras", "Temp. Export Dokumente").ExpectMainPage();
@@ -54,7 +54,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var tabbedMenu = administration.GetOnlyTabbedMenu();
       tabbedMenu.SelectItem ("SecurityTab");
-      tabbedMenu.SelectSubItem ("AccessControlSubMenuTab");
+      tabbedMenu.SubMenu.SelectItem ("AccessControlSubMenuTab");
 
       var securableClassesTree = administration.GetTreeView ("DerivedClasses");
 

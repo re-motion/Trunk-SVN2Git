@@ -142,16 +142,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var tabbedMenu = home.GetTabbedMenu().Single();
       tabbedMenu.SelectItem ("TabWithSubMenu");
 
-      tabbedMenu.SelectSubItem ("SubMenuTab1");
+      tabbedMenu.SubMenu.SelectItem ("SubMenuTab1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
 
-      tabbedMenu.SelectSubItem().WithIndex (3);
+      tabbedMenu.SubMenu.SelectItem().WithIndex (3);
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
-      tabbedMenu.SelectSubItem().WithHtmlID ("body_MyTabbedMenu_SubMenuTabStrip_SubMenuTab1");
+      tabbedMenu.SubMenu.SelectItem().WithHtmlID ("body_MyTabbedMenu_SubMenuTabStrip_SubMenuTab1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
 
-      tabbedMenu.SelectSubItem().WithText ("SubMenuTab2Title");
+      tabbedMenu.SubMenu.SelectItem().WithText ("SubMenuTab2Title");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab2|Event"));
     }
 

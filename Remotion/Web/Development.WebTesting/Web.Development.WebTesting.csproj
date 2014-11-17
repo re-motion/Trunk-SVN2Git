@@ -116,7 +116,6 @@
     <Compile Include="ControlObjects\IControlObjectWithCellsInRowsWhereColumnContains.cs" />
     <Compile Include="ControlObjects\IControlObjectWithRowsWhereColumnContains.cs" />
     <Compile Include="ControlObjects\IControlObjectWithSelectableOptions.cs" />
-    <Compile Include="ControlObjects\IControlObjectWithSelectableSubItems.cs" />
     <Compile Include="ControlObjects\IControlObjectWithSelectableItems.cs" />
     <Compile Include="ControlObjects\IControlObjectWithText.cs" />
     <Compile Include="ControlObjects\IWebTestObjectWithWebButtons.cs" />
