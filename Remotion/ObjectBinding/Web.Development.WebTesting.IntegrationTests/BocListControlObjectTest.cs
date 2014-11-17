@@ -126,6 +126,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestEmptyList ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Empty");
+      Assert.That (bocList.GetRowCount(), Is.EqualTo (0));
+      Assert.That (bocList.IsEmpty(), Is.True);
+      Assert.That (bocList.GetEmptyMessage(), Is.EqualTo ("A wonderful empty list."));
+    }
+
+    [Test]
     public void TestPaging ()
     {
       var home = Start();

@@ -17,6 +17,7 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="BocListAsGridUserControl.ascx.cs" Inherits="Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.BocListAsGridUserControl" %>
 <remotion:FormGridManager ID="FormGridManager" runat="server" />
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
+<remotion:BindableObjectDataSourceControl ID="EmptyObject" runat="server" Type="Remotion.ObjectBinding.Sample::Person" />
 <table id="FormGrid" runat="server">
   <tr>
     <td></td>
@@ -101,5 +102,25 @@
       </testsite:TestBocListWithRowMenuItems>
     </td>
     <td>&nbsp; (normal)</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <testsite:TestBocListWithRowMenuItems
+        ID="JobList_Empty"
+        ReadOnly="False"
+        DataSourceControl="EmptyObject"
+        PropertyIdentifier="Jobs"
+        
+        EmptyListMessage="A wonderful empty list."
+        ShowAllProperties="True"
+        ShowEmptyListMessage="True"
+        
+        Width="100%"
+        Height="10em"
+        runat="server">
+      </testsite:TestBocListWithRowMenuItems>
+    </td>
+    <td>&nbsp; (empty)</td>
   </tr>
 </table>

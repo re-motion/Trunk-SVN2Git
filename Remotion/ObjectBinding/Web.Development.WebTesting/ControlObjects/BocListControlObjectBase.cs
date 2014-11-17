@@ -134,14 +134,37 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     protected abstract TCellControlObject CreateCellControlObject ([NotNull] string id, [NotNull] ElementScope cellScope);
 
+    /// <summary>
+    /// Returns the list's column titles. Columns without titles are represented as <see langword="null" /> strings.
+    /// </summary>
     public IReadOnlyCollection<string> GetColumnTitles ()
     {
       return _columns.Select (cd => cd.Title).ToList();
     }
 
+    /// <summary>
+    /// Returns whether the list is empty.
+    /// </summary>
+    public bool IsEmpty ()
+    {
+      return GetRowCount() == 0;
+    }
+
+    /// <summary>
+    /// Returns the list's empty message, call only if <see cref="IsEmpty"/> returns <see langword="true" />.
+    /// </summary>
+    /// <returns></returns>
+    public string GetEmptyMessage ()
+    {
+      return Scope.FindCss (".bocListTable .bocListTableBody").Text.Trim();
+    }
+
+    /// <summary>
+    /// Returns the number of rows in the list.
+    /// </summary>
     public int GetRowCount ()
     {
-      return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody > tr").Count());
+      return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody > tr.bocListDataRow").Count());
     }
 
     public IControlObjectWithRows<TRowControlObject> GetRow ()

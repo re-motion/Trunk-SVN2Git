@@ -17,6 +17,7 @@
 
 using System;
 using System.Linq;
+using Remotion.ObjectBinding.Sample;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
 
@@ -32,6 +33,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
+
+      var dummyPersonWithNoJobs = Person.CreateObject();
+      dummyPersonWithNoJobs.Jobs = new Job[0];
+      EmptyObject.BusinessObject = (IBusinessObject) dummyPersonWithNoJobs;
+      EmptyObject.LoadValues (false);
 
       var view1 = new BocListView { ItemID = "ViewCmd1", Title = "View 1" };
       var view2 = new BocListView { ItemID = "ViewCmd2", Title = "View 2" };

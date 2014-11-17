@@ -31,6 +31,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
         protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl CurrentObject;
         
         /// <summary>
+        /// EmptyObject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.UI.Controls.BindableObjectDataSourceControl EmptyObject;
+        
+        /// <summary>
         /// FormGrid control.
         /// </summary>
         /// <remarks>
@@ -47,5 +56,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.TestBocListWithRowMenuItems JobList_Normal;
+        
+        /// <summary>
+        /// JobList_Empty control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls.TestBocListWithRowMenuItems JobList_Empty;
     }
 }
