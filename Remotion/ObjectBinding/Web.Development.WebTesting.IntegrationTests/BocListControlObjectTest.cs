@@ -220,7 +220,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (cell.GetText(), Is.EqualTo ("01.01.2000 until 31.12.2004"));
 
       cell = bocList.GetCellWhere ("CustomCell", "Custom XXXX");
-      Assert.That (cell.GetText(), Is.EqualTo ("Custom XXXXX")); // yep, contains match.
+      Assert.That (cell.GetText(), Is.EqualTo ("Custom XXXX"));
     }
 
     [Test]

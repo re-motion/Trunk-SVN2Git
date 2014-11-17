@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (column.HasDiagnosticMetadata)
       {
         var cssSelector = string.Format (
-            ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
+            ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}='{3}']",
             DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
             column.Index,
             DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
@@ -200,7 +200,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       else
       {
         var xPathSelector = string.Format (
-            ".//tbody{0}/tr/td[contains(.,'{1}')]",
+            ".//tbody{0}/tr/td[.//*='{1}']",
             XPathUtils.CreateHasClassCheck ("bocListTableBody"),
             containsCellText);
         var cellScope = Scope.FindXPath (xPathSelector);
