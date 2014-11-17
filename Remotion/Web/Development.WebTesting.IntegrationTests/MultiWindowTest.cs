@@ -118,10 +118,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestAcceptModalBrowserDialog ()
     {
-      // Todo RM-6297: Fix problems on TeamCity with AcceptModalDialog.
-      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Assert.Ignore ("Currently ignored until TeamCity-related probelms with AcceptModalDialog are fixed.");
-
       var home = Start();
 
       var mainLabel = home.GetLabel().ByID ("MainLabel");
@@ -146,10 +142,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestCancelModalBrowserDialog ()
     {
-      // Todo RM-6297: Fix problems on TeamCity with CancelModalDialog.
-      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Assert.Ignore ("Currently ignored until TeamCity-related probelms with CancelModalDialog are fixed.");
-
       var home = Start();
 
       var mainLabel = home.GetLabel().ByID ("MainLabel");
