@@ -64,6 +64,13 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\..\..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.SqlBackend, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\Remotion.Linq.SqlBackend.2.0.0-alpha-001\lib\net45\Remotion.Linq.SqlBackend.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
@@ -89,16 +96,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
-      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Linq.SqlBackend</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
       <Name>TypePipe.Core</Name>

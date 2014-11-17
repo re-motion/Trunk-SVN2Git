@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.UnitTests
 {
@@ -95,7 +96,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var result = transformer.Transform (call);
 
       var expected = Expression.MakeMemberAccess (instance, typeof (Order).GetProperty ("OrderNumber"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -109,7 +110,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var result = transformer.Transform (call);
 
       var expected = Expression.MakeMemberAccess (instance, privateProperty);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -123,7 +124,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var result = transformer.Transform (call);
 
       var expected = Expression.MakeMemberAccess (Expression.Convert (instance, typeof (IMixinAddingPersistentProperties)), mixinProperty);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -136,7 +137,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var result = transformer.Transform (call);
 
       var expected = Expression.MakeMemberAccess (instance, typeof (Order).GetProperty ("OrderNumber"));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]

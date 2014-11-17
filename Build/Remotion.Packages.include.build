@@ -18,19 +18,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <!-- Important: Keep list order! Core depends on Relinq and TypePipe, so Relinq and TypePipe should be
+    <!-- Important: Keep list order! Core depends on TypePipe, so TypePipe should be
          ordered first. Especially required for DependDB import (DependDB.Receiver) -->
-    
-    <AllPackages Include="Relinq">
-      <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
-      <DocumentationDeclaration>Remotion.Documentation.Relinq.build</DocumentationDeclaration>
-      <AssemblyInfoFile>Relinq\AssemblyInfoShared.*</AssemblyInfoFile>
-      <CompanyName>rubicon IT GmbH</CompanyName>
-      <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
-      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
-      <ProductName>re-linq project (relinq.codeplex.com)</ProductName>
-      <ProductNameShort>re-linq</ProductNameShort>
-    </AllPackages>
 
     <AllPackages Include="TypePipe">
       <PackageDeclaration>Remotion.Packaging.TypePipe.build</PackageDeclaration>
@@ -89,19 +78,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<NuGetPackages Include="Relinq.Core">
-      <PackageDeclaration>Remotion.NuGet.Packaging.Relinq.Core.build</PackageDeclaration>
-      <ID>Remotion.Linq</ID>
-      <Title>re-linq - re-motion Linq Library</Title>
-      <Authors>rubicon IT GmbH</Authors>
-      <Owners>Fabian Schmied</Owners>
-      <LicenseUrl>http://relinq.codeplex.com/license</LicenseUrl>
-      <ProjectUrl>http://relinq.codeplex.com</ProjectUrl>
-      <Description>With re-linq, it's now easier than ever to create full-featured LINQ providers.</Description>
-      <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)</Copyright>
-      <Tags>re-motion linq expression trees</Tags>
-    </NuGetPackages>-->
-
     <NuGetPackages Include="TypePipe">
       <PackageDeclaration>Remotion.NuGet.Packaging.TypePipe.build</PackageDeclaration>
       <ID>Remotion.TypePipe</ID>

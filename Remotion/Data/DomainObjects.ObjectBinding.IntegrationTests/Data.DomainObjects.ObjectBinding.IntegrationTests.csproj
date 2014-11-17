@@ -46,6 +46,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\..\..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -93,12 +96,9 @@
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
-      <Project>{028e7899-0d5f-49c8-9eb6-8b051e02f1e0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
       <Name>TypePipe.Core</Name>

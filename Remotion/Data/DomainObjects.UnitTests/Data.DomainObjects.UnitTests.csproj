@@ -112,6 +112,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\..\..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.Development">
+      <HintPath>..\..\..\packages\Remotion.Linq.Development.2.0.0-alpha-001\lib\net45\Remotion.Linq.Development.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching">
+      <HintPath>..\..\..\packages\Remotion.Linq.EagerFetching.2.0.0-alpha-002\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.SqlBackend">
+      <HintPath>..\..\..\packages\Remotion.Linq.SqlBackend.2.0.0-alpha-001\lib\net45\Remotion.Linq.SqlBackend.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.SqlBackend.Development">
+      <HintPath>..\..\..\packages\Remotion.Linq.SqlBackend.Development.2.0.0-alpha-001\lib\net45\Remotion.Linq.SqlBackend.Development.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=2.8.7.11026, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
@@ -129,18 +144,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Relinq\Development\Linq.Development.csproj">
-      <Project>{31a1ae30-079f-489e-9757-4efb4c457e43}</Project>
-      <Name>Linq.Development</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
-      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Linq.SqlBackend</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Name>Core.Core</Name>
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
@@ -261,6 +264,7 @@
     <Compile Include="Linq\IntegrationTests\UpcastIntegrationTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Linq\IntegrationTests\UnionConcatIntegrationTest.cs" />
     <Compile Include="Linq\TestDomain\Success\EagerFetching\BaseClass.cs" />
     <Compile Include="Linq\TestDomain\Success\EagerFetching\DerivedClass1.cs" />
     <Compile Include="Linq\TestDomain\Success\EagerFetching\DerivedClass2.cs" />
@@ -1941,6 +1945,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="TestDomain\TableInheritance\AbstractClassWithHierarchy.cd" />

@@ -32,7 +32,11 @@ namespace Remotion.Data.DomainObjects.Linq
     private static readonly MethodInfo s_getObjectIDOrNullMethod = MemberInfoFromExpressionUtility.GetMethod (() => GetObjectIDOrNull (null, null));
     private static readonly ConstructorInfo s_objectIDConstructor = MemberInfoFromExpressionUtility.GetConstructor (() => new ObjectID ((string) null, null));
 
-    public static new void GenerateSql (Expression expression, ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
+    public static new void GenerateSql (
+        Expression expression,
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SetOperationsMode setOperationsMode)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
@@ -40,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       EnsureNoCollectionExpression (expression);
 
-      var visitor = new ExtendedSqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage);
+      var visitor = new ExtendedSqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage, setOperationsMode);
       visitor.VisitExpression (expression);
     }
 
@@ -52,8 +56,11 @@ namespace Remotion.Data.DomainObjects.Linq
       return new ObjectID (classID, value);
     }
 
-    protected ExtendedSqlGeneratingOuterSelectExpressionVisitor (ISqlCommandBuilder commandBuilder, ISqlGenerationStage stage)
-        : base(commandBuilder, stage)
+    protected ExtendedSqlGeneratingOuterSelectExpressionVisitor (
+        ISqlCommandBuilder commandBuilder,
+        ISqlGenerationStage stage,
+        SetOperationsMode setOperationsMode)
+        : base (commandBuilder, stage, setOperationsMode)
     {
     }
 

@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain.InheritanceRootSample;
 using Remotion.Linq;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -218,7 +219,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var expression = _resolver.ResolveConstantExpression (constantExpression);
 
       var expected = new SqlEntityConstantExpression (constantExpression.Type, order, Expression.Constant (order.ID));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, expression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, expression);
     }
 
     [Test]
@@ -395,7 +396,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var sqlEntityExpression = CreateFakeEntityExpression (typeof (Student));
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (true));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (true));
     }
 
     [Test]
@@ -418,7 +419,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var expectedExpression = new SqlInExpression (
           classIDExpression, new SqlCollectionExpression (typeof (string[]), new Expression[] { new SqlLiteralExpression ("StorageGroupClass") }));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -428,7 +429,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
       var result = _resolver.ResolveTypeCheck (sqlEntityExpression, typeof (Student));
 
-      ExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (false));
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, Expression.Constant (false));
     }
 
     [Test]
@@ -451,7 +452,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
                   new SqlLiteralExpression ("Supplier") 
               }));
       
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]
@@ -466,7 +467,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var expectedExpression = new SqlInExpression (
           classIDExpression, new SqlCollectionExpression (typeof (string[]), new Expression[] { new SqlLiteralExpression ("Distributor") }));
       
-      ExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (result, expectedExpression);
     }
 
     [Test]

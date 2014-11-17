@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.UnitTests.Mapping;
 using Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -94,13 +95,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       Assert.That (result.Type, Is.SameAs (typeof (Order)));
       Assert.That (result.TableAlias, Is.EqualTo ("o"));
       Assert.That (result.Name, Is.Null);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedIdColumn, result.GetIdentityExpression());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedIdColumn, result.GetIdentityExpression());
       Assert.That (result.Columns, Has.Count.EqualTo (5));
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedIdColumn, result.Columns[0]);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedClassIdColumn, result.Columns[1]);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedTimestampColumn, result.Columns[2]);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedForeignKeyColumn, result.Columns[3]);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedColumn, result.Columns[4]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedIdColumn, result.Columns[0]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedClassIdColumn, result.Columns[1]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedTimestampColumn, result.Columns[2]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedForeignKeyColumn, result.Columns[3]);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedColumn, result.Columns[4]);
     }
 
     [Test]
@@ -177,7 +178,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var result = _storageSpecificExpressionResolver.ResolveIDProperty (entityExpression, _classDefinition);
 
       var ctor = MemberInfoFromExpressionUtility.GetConstructor (() => new ObjectID ("ClassID", "value"));
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           Expression.New (
               ctor,
               new[]
@@ -393,7 +394,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var expected = Expression.Equal (
           new SqlColumnDefinitionExpression (typeof (Guid), "o", "Customer", false),
           new SqlColumnDefinitionExpression (typeof (Guid), "c", "ID", true));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result.JoinCondition);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result.JoinCondition);
     }
 
     [Test]
@@ -420,7 +421,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
-      ExpressionTreeComparer.CheckAreEqualTrees (
+      SqlExpressionTreeComparer.CheckAreEqualTrees (
           Expression.Equal (
             entityExpression.GetIdentityExpression(), // c.ID
             new SqlColumnDefinitionExpression (typeof (Guid), "o", "Customer", false)),
@@ -447,7 +448,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
       var result = _storageSpecificExpressionResolver.ResolveEntityIdentityViaForeignKey (originatingEntity, foreignKeyEndPointDefinition);
 
       var expected = new SqlColumnDefinitionExpression (typeof (string), "o", "Customer", false);
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -477,7 +478,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
               new NamedExpression ("Value", Expression.Convert (originatingEntity.GetColumn (typeof (Guid), "CustomerID", false), typeof (object)))
           },
           new[] { typeof (ObjectID).GetProperty ("ClassID"), typeof (ObjectID).GetProperty ("Value") });
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -513,7 +514,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
               new NamedExpression ("Value", Expression.Convert (expectedValueColumn, typeof (object)))
           },
           new[] { typeof (ObjectID).GetProperty ("ClassID"), typeof (ObjectID).GetProperty ("Value") });
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]

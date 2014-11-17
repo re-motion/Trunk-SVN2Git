@@ -27,12 +27,15 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class ExtendedSqlGenerationStage : DefaultSqlGenerationStage
   {
-    public override void GenerateTextForOuterSelectExpression (ISqlCommandBuilder commandBuilder, Expression expression)
+    public override void GenerateTextForOuterSelectExpression (
+        ISqlCommandBuilder commandBuilder,
+        Expression expression,
+        SetOperationsMode setOperationsMode)
     {
       ArgumentUtility.CheckNotNull ("commandBuilder", commandBuilder);
       ArgumentUtility.CheckNotNull ("expression", expression);
       
-      ExtendedSqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this);
+      ExtendedSqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, commandBuilder, this, setOperationsMode);
     }
   }
 }

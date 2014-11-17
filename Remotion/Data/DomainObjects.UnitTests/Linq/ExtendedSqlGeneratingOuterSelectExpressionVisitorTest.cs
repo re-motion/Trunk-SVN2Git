@@ -19,8 +19,8 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Linq.Development.UnitTesting;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
@@ -34,6 +34,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
   {
     private ISqlGenerationStage _stageMock;
     private SqlCommandBuilder _commandBuilder;
+    private SetOperationsMode _someSetOperationsMode;
 
     public override void SetUp ()
     {
@@ -41,6 +42,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
       _stageMock = MockRepository.GenerateStrictMock<ISqlGenerationStage> ();
       _commandBuilder = new SqlCommandBuilder ();
+
+      _someSetOperationsMode = SetOperationsMode.StatementIsSetCombined;
     }
 
     [Test]
@@ -50,7 +53,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     public void GenerateSql_Collection ()
     {
       var expression = Expression.Constant (new Order[] { });
-      ExtendedSqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock);
+      ExtendedSqlGeneratingOuterSelectExpressionVisitor.GenerateSql (expression, _commandBuilder, _stageMock, _someSetOperationsMode);
     }
 
     [Test]
@@ -80,7 +83,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           Expression.Convert (new SqlColumnDefinitionExpression (typeof (Guid), "t0", "CustomerID", false), typeof (object)));
       var compoundExpression = NamedExpression.CreateNewExpressionWithNamedArguments (newObjectIDExpression);
 
-      ExtendedSqlGeneratingOuterSelectExpressionVisitor.GenerateSql (compoundExpression, _commandBuilder, _stageMock);
+      ExtendedSqlGeneratingOuterSelectExpressionVisitor.GenerateSql (compoundExpression, _commandBuilder, _stageMock, _someSetOperationsMode);
 
       Assert.That (_commandBuilder.GetCommandText(), Is.EqualTo ("[t0].[CustomerClassID] AS [m0],[t0].[CustomerID] AS [m1]"));
 
@@ -89,7 +92,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
               row.GetValue<string> (new ColumnID ("m0", 0)), 
               row.GetValue<object> (new ColumnID ("m1", 1)));
       var expectedInMemoryProjectionBody = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection.Body);
-      ExpressionTreeComparer.CheckAreEqualTrees (expectedInMemoryProjectionBody, _commandBuilder.GetInMemoryProjectionBody());
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expectedInMemoryProjectionBody, _commandBuilder.GetInMemoryProjectionBody());
     } 
   }
 }

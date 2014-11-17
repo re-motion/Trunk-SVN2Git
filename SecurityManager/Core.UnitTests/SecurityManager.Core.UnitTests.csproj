@@ -69,6 +69,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\NUnit-2.6\net-2.0\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks, Version=2.8.9.24225, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\Rhino.Mocks-3.6\net-3.5\Rhino.Mocks.dll</HintPath>
@@ -306,12 +309,9 @@
       <Link>remotion.snk</Link>
     </None>
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Relinq\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>

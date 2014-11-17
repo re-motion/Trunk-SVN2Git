@@ -66,6 +66,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching">
+      <HintPath>..\..\packages\Remotion.Linq.EagerFetching.2.0.0-alpha-002\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -313,6 +319,7 @@
     <Compile Include="SecurityManagerException.cs" />
     <Compile Include="SecurityProvider\RevisionBasedCachingSecurityProviderDecorator.cs" />
     <Compile Include="SecurityProvider\SecurityService.cs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Globalization\Domain\AccessControl\AccessControlEntry.de.resx">
@@ -431,10 +438,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Relinq\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>

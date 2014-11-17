@@ -120,10 +120,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
-      <Project>{028E7899-0D5F-49C8-9EB6-8B051E02F1E0}</Project>
-      <Name>Linq.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>

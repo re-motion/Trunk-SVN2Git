@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.UnitTests.Linq;
 using Remotion.Data.DomainObjects.UnitTests.MixedDomains.TestDomain;
 using Remotion.Linq.Development.UnitTesting;
+using Remotion.Linq.SqlBackend.Development.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.UnitTests
 {
@@ -51,7 +52,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var result = transformer.Transform (call);
 
       var expected = Expression.Convert (instance, typeof (IMixinAddingPersistentProperties));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]
@@ -76,7 +77,7 @@ namespace Remotion.Data.DomainObjects.UnitTests
       var result = transformer.Transform (call);
 
       var expected = Expression.Convert (instance, typeof (IMixinAddingPersistentProperties));
-      ExpressionTreeComparer.CheckAreEqualTrees (expected, result);
+      SqlExpressionTreeComparer.CheckAreEqualTrees (expected, result);
     }
 
     [Test]

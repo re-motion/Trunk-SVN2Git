@@ -52,12 +52,35 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           Expression.Convert (new SqlColumnDefinitionExpression (typeof (Guid), "t0", "CustomerID", false), typeof (object)));
       var compoundExpression = NamedExpression.CreateNewExpressionWithNamedArguments (newObjectIDExpression);
 
-      _stage.GenerateTextForOuterSelectExpression (_commandBuilder, compoundExpression);
+      var someSetOperationsMode = SetOperationsMode.StatementIsSetCombined;
+      _stage.GenerateTextForOuterSelectExpression (_commandBuilder, compoundExpression, someSetOperationsMode);
 
       Assert.That (_commandBuilder.GetInMemoryProjectionBody().NodeType, Is.EqualTo (ExpressionType.Call));
       var getObjectIDOrNullMethod =
           MemberInfoFromExpressionUtility.GetMethod (() => ExtendedSqlGeneratingOuterSelectExpressionVisitor.GetObjectIDOrNull (null, null));
       Assert.That (((MethodCallExpression) _commandBuilder.GetInMemoryProjectionBody()).Method, Is.EqualTo (getObjectIDOrNullMethod));
     } 
+
+    [Test]
+    public void GenerateTextForOuterSelectExpression_PassesOnSetOperationsMode ()
+    {
+      var stage = new DefaultSqlGenerationStage();
+
+      var projectionWithMethodCall = Expression.Call (
+          MemberInfoFromExpressionUtility.GetMethod (() => SomeMethod (null)),
+          new NamedExpression (null, Expression.Constant ("")));
+
+      Assert.That (
+          () => stage.GenerateTextForOuterSelectExpression (_commandBuilder, projectionWithMethodCall, SetOperationsMode.StatementIsSetCombined),
+          Throws.TypeOf<NotSupportedException>());
+      Assert.That (
+          () => stage.GenerateTextForOuterSelectExpression (_commandBuilder, projectionWithMethodCall, SetOperationsMode.StatementIsNotSetCombined),
+          Throws.Nothing);
+    }
+
+    private static string SomeMethod (string s)
+    {
+      throw new NotImplementedException();
+    }
   }
 }
