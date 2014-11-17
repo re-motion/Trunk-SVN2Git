@@ -1,6 +1,6 @@
-﻿using ActaNova.WebTesting.ActaNovaExtensions;
-using ActaNova.WebTesting.PageObjects;
+﻿using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
+using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.IntegrationTests
 {
@@ -31,7 +31,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           .SelectItem()
           .WithText ("Weiterleiten")
           .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Aktivität weiterleiten");
-      weiterleitenPopup.PerformAndCloseWindow ("Cancel");
+      weiterleitenPopup.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(weiterleitenPopup.Context.ParentContext)));
     }
   }
 }

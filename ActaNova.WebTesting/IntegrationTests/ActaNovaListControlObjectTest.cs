@@ -1,5 +1,4 @@
 ﻿using System;
-using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.ControlObjects;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
@@ -142,7 +141,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var workStepsCell = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "04.06.2009/1").GetCell ("WorkSteps");
       var editProcess =
           workStepsCell.HoverAndGetListPopup().ClickItem ("Prozess öffnen").ExpectNewWindow<ActaNovaWindowPageObject> ("Prozess bearbeiten");
-      editProcess.PerformAndCloseWindow ("Cancel");
+      editProcess.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(editProcess.Context.ParentContext)));
     }
   }
 }

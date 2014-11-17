@@ -1,7 +1,7 @@
 ﻿using System;
-using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
+using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.IntegrationTests
 {
@@ -28,18 +28,18 @@ namespace ActaNova.WebTesting.IntegrationTests
       var weiterleitenWindow = editIncomingPage.FormPage.HoverWorkStepsControl()
           .ClickItem ("Weiterleiten")
           .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Aktivität weiterleiten");
-      weiterleitenWindow.PerformAndCloseWindow ("Cancel");
+      weiterleitenWindow.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(weiterleitenWindow.Context.ParentContext)));
 
       editIncomingPage.FormPage.PressPinButton();
-      Assert.That (editIncomingPage.Tree.GetFavoritenNode().Expand().GetNumberOfChildren(), Is.EqualTo (3));
+      Assert.That (editIncomingPage.Tree.GetNode().WithText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (3));
 
       editIncomingPage.FormPage.PressPinButton();
-      Assert.That (editIncomingPage.Tree.GetFavoritenNode().Expand().GetNumberOfChildren(), Is.EqualTo (4));
+      Assert.That (editIncomingPage.Tree.GetNode().WithText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (4));
 
       var permalink = editIncomingPage.FormPage.GetPermalink();
 
       var printWindow = editIncomingPage.FormPage.Print();
-      printWindow.PerformAndCloseWindow ("CancelDetails");
+      printWindow.Perform ("CancelDetails", Continue.When (Wxe.PostBackCompletedInContext(printWindow.Context.ParentContext)));
 
       // Todo EVB-8268: Enable as soon as the bug report window does not show a yellow page anymore.
       //var bugReportWindow = editIncomingPage.FormPage.CreateBugReport();
@@ -50,7 +50,9 @@ namespace ActaNova.WebTesting.IntegrationTests
       //helpPage.Close();
 
       var createMailPage = editIncomingPage.FormPage.GetAdditionalCommandsMenu().SelectItem().WithText ("Mail versenden").ExpectMainPage();
-      editIncomingPage = createMailPage.FormPage.PerformAndConfirmDataLoss ("Cancel").ExpectMainPage();
+      editIncomingPage =
+          createMailPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createMailPage)), HandleModalDialog.Accept())
+              .ExpectMainPage();
 
       editIncomingPage.FormPage.Perform ("Cancel");
 

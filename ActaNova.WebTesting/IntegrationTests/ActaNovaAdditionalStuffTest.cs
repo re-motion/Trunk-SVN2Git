@@ -1,6 +1,6 @@
 ﻿using System;
-using ActaNova.WebTesting.ActaNovaExtensions;
 using NUnit.Framework;
+using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.IntegrationTests
 {
@@ -28,7 +28,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           Is.StringContaining ("Besitzer Muster Max, Ing. (EG/1) ist immer am Objekt berechtigt"));
       Assert.That (visibleObjectSpecificSecurtiyEntries.GetRowCount(), Is.EqualTo (1));
 
-      editIncoming.FormPage.PerformAndConfirmDataLoss ("Cancel");
+      editIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (editIncoming)), HandleModalDialog.Accept());
     }
   }
 }
