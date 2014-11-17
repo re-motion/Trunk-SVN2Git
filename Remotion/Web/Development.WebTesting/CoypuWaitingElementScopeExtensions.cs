@@ -53,7 +53,10 @@ namespace Remotion.Web.Development.WebTesting
       completionDetector.PrepareWaitForCompletion (pageContext);
       action (scope);
       if (modalDialogHandler != null)
+      {
+        completionDetector.OutputDebugMessage ("Handling modal dialog...");
         modalDialogHandler.HandleModalDialog (pageContext);
+      }
       completionDetector.WaitForCompletion (pageContext);
     }
 

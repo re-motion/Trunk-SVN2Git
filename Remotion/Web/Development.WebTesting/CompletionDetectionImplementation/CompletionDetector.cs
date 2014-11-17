@@ -105,8 +105,10 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       OutputDebugMessage ("Finished.");
     }
 
-    private void OutputDebugMessage (string message)
+    public void OutputDebugMessage (string message)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("message", message);
+
       s_log.DebugFormat ("Action {0}: {1}", _debugOutputID, message);
     }
   }

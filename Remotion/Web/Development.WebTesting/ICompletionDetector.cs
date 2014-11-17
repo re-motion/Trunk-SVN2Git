@@ -43,5 +43,10 @@ namespace Remotion.Web.Development.WebTesting
     /// sequence number has been increased).
     /// </summary>
     void WaitForCompletion ([NotNull] PageObjectContext context);
+
+    /// <summary>
+    /// Allows to output a debug message in-between the <see cref="ICompletionDetector"/>'s own messages.
+    /// </summary>
+    void OutputDebugMessage ([NotNull] string message);
   }
 }
