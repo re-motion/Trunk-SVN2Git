@@ -16,6 +16,7 @@
 // 
 
 using System;
+using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -67,8 +68,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var bocList = home.GetListAsGrid().Single();
-      Assert.That (bocList.Scope.Id, Is.EqualTo ("body_DataEditControl_JobList_Normal"));
+      try
+      {
+        home.GetListAsGrid().Single();
+        Assert.Fail ("Should not be able to unambigously find a BOC list.");
+      }
+      catch (AmbiguousException)
+      {
+      }
     }
 
     [Test]
