@@ -16,24 +16,36 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
+    /// <summary>
+    /// Confirms the message box by pressing the OK button.
+    /// </summary>
     public UnspecifiedPageObject Confirm (ICompletionDetection completionDetection = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
       return mesageBox.Okay (completionDetection);
     }
 
+    /// <summary>
+    /// Cancels the message box by pressing the Cancel button.
+    /// </summary>
     public UnspecifiedPageObject Cancel (ICompletionDetection completionDetection = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
       return mesageBox.Cancel (completionDetection);
     }
 
+    /// <summary>
+    /// Confirms the message box by pressing the Yes button.
+    /// </summary>
     public UnspecifiedPageObject Yes (ICompletionDetection completionDetection = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
       return mesageBox.Yes (completionDetection);
     }
 
+    /// <summary>
+    /// Cancels the message box by pressing the No button.
+    /// </summary>
     public UnspecifiedPageObject No (ICompletionDetection completionDetection = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();

@@ -23,11 +23,17 @@ namespace ActaNova.WebTesting.PageObjects
       FormPage.Scope.EnsureExistence();
     }
 
+    /// <summary>
+    /// Returns the main page's title (fails if the inner frame does not provide a form grid title).
+    /// </summary>
     public override string GetTitle ()
     {
       return FormPage.GetTitle();
     }
 
+    /// <summary>
+    /// Presses the refresh button.
+    /// </summary>
     public UnspecifiedPageObject Refresh (ICompletionDetection completionDetection = null)
     {
       var actualActionBehavior = completionDetection ?? Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
@@ -36,6 +42,9 @@ namespace ActaNova.WebTesting.PageObjects
       return webButton.Click (actualActionBehavior);
     }
 
+    /// <summary>
+    /// Gives access to the header area by returning the <see cref="ActaNovaHeaderControlObject"/>.
+    /// </summary>
     public ActaNovaHeaderControlObject Header
     {
       get
@@ -45,6 +54,9 @@ namespace ActaNova.WebTesting.PageObjects
       }
     }
 
+    /// <summary>
+    /// Gives access to the main menu by returning the <see cref="ActaNovaMainMenuControlObject"/>.
+    /// </summary>
     public ActaNovaMainMenuControlObject MainMenu
     {
       get
@@ -54,6 +66,9 @@ namespace ActaNova.WebTesting.PageObjects
       }
     }
 
+    /// <summary>
+    /// Gives access to the main tree by returning the <see cref="ActaNovaTreeControlObject"/>.
+    /// </summary>
     public ActaNovaTreeControlObject Tree
     {
       get
@@ -63,14 +78,30 @@ namespace ActaNova.WebTesting.PageObjects
       }
     }
 
+    /// <summary>
+    /// Gives access to the inner frame which should display a form page (<see cref="ActaNovaFormPageObject"/>) at the time of accessing this property.
+    /// </summary>
     public ActaNovaFormPageObject FormPage
     {
       get { return new ActaNovaFormPageObject (GetContextForFrame()); }
     }
 
+    /// <summary>
+    /// Gives access to the inner frame which should display a work list page (<see cref="ActaNovaWorkListPageObject"/>) at the time of accessing this
+    /// property.
+    /// </summary>
     public ActaNovaWorkListPageObject WorkListPage
     {
       get { return new ActaNovaWorkListPageObject (GetContextForFrame()); }
+    }
+
+    /// <summary>
+    /// Gives access to the inner frame which should display a <typeparamref name="TPageObject"/> at the time of calling this method.
+    /// </summary>
+    public TPageObject GetFrame<TPageObject> ()
+        where TPageObject : PageObject
+    {
+      return (TPageObject) Activator.CreateInstance (typeof (TPageObject), new object[] { GetContextForFrame() });
     }
 
     private PageObjectContext GetContextForFrame ()

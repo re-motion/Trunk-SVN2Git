@@ -44,12 +44,18 @@ namespace ActaNova.WebTesting
       _webTestHelper.OnFixtureTearDown();
     }
 
+    /// <summary>
+    /// Starts an ActaNova web test session.
+    /// </summary>
     protected ActaNovaMainPageObject Start ()
     {
       const string defaultQueryString = "?debugLoginUser=mm&debugDmsDownLevel=true&debugCulture=DE-AT";
       return Start (defaultQueryString);
     }
 
+    /// <summary>
+    /// Starts an ActaNova web test session using the given query string instead of the default query string.
+    /// </summary>
     protected ActaNovaMainPageObject Start ([NotNull] string queryString)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("queryString", queryString);
@@ -64,11 +70,17 @@ namespace ActaNova.WebTesting
       return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>(_webTestHelper.MainBrowserSession);
     }
 
+    /// <summary>
+    /// Creates a second browser session.
+    /// </summary>
     protected BrowserSession CreateNewBrowser ()
     {
       return _webTestHelper.CreateNewBrowserSession ();
     }
 
+    /// <summary>
+    /// Starts another ActaNova web test session for a second browser instance.
+    /// </summary>
     protected TPageObject StartAgain<TPageObject> ([NotNull] BrowserSession browser, [NotNull] string url)
       where TPageObject : PageObject
     {

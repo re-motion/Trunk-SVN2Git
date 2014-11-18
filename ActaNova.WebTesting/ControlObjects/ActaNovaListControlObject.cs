@@ -86,6 +86,7 @@ namespace ActaNova.WebTesting.ControlObjects
       setPreferredViewButton.Click();
     }
 
+    /// <inheritdoc/>
     protected override ElementScope GetAvailableViewsScope ()
     {
       return Scope.FindChild ("CurrentViewSelector");

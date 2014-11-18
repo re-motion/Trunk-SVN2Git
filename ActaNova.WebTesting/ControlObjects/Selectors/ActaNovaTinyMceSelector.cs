@@ -15,6 +15,7 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
     {
     }
 
+    /// <inheritdoc/>
     protected override ActaNovaTinyMceControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

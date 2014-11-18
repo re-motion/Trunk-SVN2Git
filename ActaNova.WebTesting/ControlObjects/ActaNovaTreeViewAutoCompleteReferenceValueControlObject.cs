@@ -20,6 +20,9 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Selects a node in the tree view auto complete given by its path (nodes are referenced by display text) <paramref name="treeNodes"/>.
+    /// </summary>
     public UnspecifiedPageObject Select ([NotNull] params string[] treeNodes)
     {
       ArgumentUtility.CheckNotNull ("treeNodes", treeNodes);
@@ -27,6 +30,9 @@ namespace ActaNova.WebTesting.ControlObjects
       return Select (treeNodes.AsEnumerable());
     }
 
+    /// <summary>
+    /// Selects a node in the tree view auto complete given by its path (nodes are referenced by display text) <paramref name="treeNodes"/>.
+    /// </summary>
     public UnspecifiedPageObject Select (
         [NotNull] IEnumerable<string> treeNodes,
         [CanBeNull] ICompletionDetection completionDetection = null,

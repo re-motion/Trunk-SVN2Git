@@ -8,6 +8,9 @@ using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace ActaNova.WebTesting.ActaNovaExtensions
 {
+  /// <summary>
+  /// ActaNova-specific extension methods for interacting with the main menu.
+  /// </summary>
   public static class ActaNovaMainMenuExtensions
   {
     public static ActaNovaMainPageObject Neu_Akt ([NotNull] this ActaNovaMainMenuControlObject mainMenu)

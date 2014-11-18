@@ -19,18 +19,23 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the current markup contained in the TinyMCE editor control.
+    /// </summary>
     public string GetMarkup ()
     {
       var tinyMceFrameBodyScope = GetTinyMceFrameBodyScope();
       return tinyMceFrameBodyScope.InnerHTML;
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       var tinyMceFrameBodyScope = GetTinyMceFrameBodyScope();
       return tinyMceFrameBodyScope.Text.Trim().Replace ("<br>", Environment.NewLine);
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         ICompletionDetection completionDetection = null,
@@ -41,6 +46,7 @@ namespace ActaNova.WebTesting.ControlObjects
       return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         FinishInputWithAction finishInputWith,
@@ -54,6 +60,13 @@ namespace ActaNova.WebTesting.ControlObjects
       return FillWithMarkup (translatedText, finishInputWith, completionDetection, modalDialogHandler);
     }
 
+    /// <summary>
+    /// Fills the control with the given <paramref name="markup"/>.
+    /// </summary>
+    /// <param name="markup">The markup to fill in.</param>
+    /// <param name="completionDetection">Required <see cref="ICompletionDetection"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
+    /// <param name="modalDialogHandler">Required <see cref="IModalDialogHandler"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
+    /// <returns>An unspecified page object, may be used in case a new page is expected after clicking the control object.</returns>
     public UnspecifiedPageObject FillWithMarkup (
         string markup,
         ICompletionDetection completionDetection = null,
@@ -64,6 +77,14 @@ namespace ActaNova.WebTesting.ControlObjects
       return FillWithMarkup (markup, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
+    /// <summary>
+    /// Fills the control with the given <paramref name="markup"/> and afterwards executes the given <paramref name="finishInputWith"/> action.
+    /// </summary>
+    /// <param name="markup">The markup to fill in.</param>
+    /// <param name="finishInputWith">What to do after the text has been filled in (see <see cref="FinishInput"/> for supported default options).</param>
+    /// <param name="completionDetection">Required <see cref="ICompletionDetection"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
+    /// <param name="modalDialogHandler">Required <see cref="IModalDialogHandler"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
+    /// <returns>An unspecified page object, may be used in case a new page is expected after clicking the control object.</returns>
     public UnspecifiedPageObject FillWithMarkup (
         string markup,
         FinishInputWithAction finishInputWith,

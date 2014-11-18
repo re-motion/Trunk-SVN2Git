@@ -19,6 +19,7 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override ActaNovaEditObjectPanelControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

@@ -19,6 +19,7 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override ActaNovaTreePopupTableControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

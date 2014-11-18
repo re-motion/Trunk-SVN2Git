@@ -13,12 +13,12 @@ namespace ActaNova.WebTesting.PageObjects
   /// </summary>
   public class ActaNovaPageObject : ActaNovaPageObjectBase, IWebTestObjectWithWebButtons
   {
-    // ReSharper disable once MemberCanBeProtected.Global
     public ActaNovaPageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject Perform (
         string itemID,
         ICompletionDetection completionDetection = null,

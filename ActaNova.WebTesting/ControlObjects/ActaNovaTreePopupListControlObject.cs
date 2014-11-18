@@ -16,6 +16,9 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Clicks an item in the popup list given by its display text <paramref name="item"/>.
+    /// </summary>
     public UnspecifiedPageObject ClickItem (
         [NotNull] string item,
         [CanBeNull] ICompletionDetection completionDetection = null,
@@ -34,6 +37,9 @@ namespace ActaNova.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
+    /// <summary>
+    /// Checks an item in the popup list given by its display text <paramref name="item"/>.
+    /// </summary>
     public UnspecifiedPageObject CheckItem (
         [NotNull] string item,
         [CanBeNull] ICompletionDetection completionDetection = null,

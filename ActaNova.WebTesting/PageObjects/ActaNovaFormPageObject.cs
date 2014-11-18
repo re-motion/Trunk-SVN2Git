@@ -20,11 +20,17 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
+    /// <summary>
+    /// Returns the form page's title.
+    /// </summary>
     public override string GetTitle ()
     {
       return Scope.FindCss (".formPageTitleLabel").Text;
     }
 
+    /// <summary>
+    /// Presses the begin activity button.
+    /// </summary>
     public UnspecifiedPageObject BeginActivity ()
     {
       var beginActivityButton =
@@ -32,12 +38,18 @@ namespace ActaNova.WebTesting.PageObjects
       return beginActivityButton.Click();
     }
 
+    /// <summary>
+    /// Returns the name of the current activity as displayed on the form page.
+    /// </summary>
     public string GetCurrentActivityName ()
     {
       var label = GetControl (new HtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "NavigationControl_CurrentItemLabel"));
       return label.GetText();
     }
 
+    /// <summary>
+    /// Presses the previous activity button.
+    /// </summary>
     public UnspecifiedPageObject PreviousActivity ()
     {
       var gotoPreviousButton =
@@ -46,6 +58,9 @@ namespace ActaNova.WebTesting.PageObjects
       return gotoPreviousButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
     }
 
+    /// <summary>
+    /// Presses the next activity button.
+    /// </summary>
     public UnspecifiedPageObject NextActivity ()
     {
       var gotoNextButton =
@@ -54,6 +69,9 @@ namespace ActaNova.WebTesting.PageObjects
       return gotoNextButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
     }
 
+    /// <summary>
+    /// Hovers the work steps control on the form page and returns the appearing <see cref="ActaNovaTreePopupListControlObject"/>.
+    /// </summary>
     public ActaNovaTreePopupListControlObject HoverWorkStepsControl ()
     {
       var workStepsControlScope = GetControl (new HtmlIDControlSelectionCommand<ScopeControlObject> (new ScopeSelector(), "WorkStepsControl"));
@@ -63,12 +81,18 @@ namespace ActaNova.WebTesting.PageObjects
           new SingleControlSelectionCommand<ActaNovaTreePopupListControlObject> (new ActaNovaTreePopupListSelector()));
     }
 
+    /// <summary>
+    /// Presses the pin (add to/remove from favorites) button.
+    /// </summary>
     public UnspecifiedPageObject PressPinButton ()
     {
       var pinButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PinButton"));
       return pinButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
     }
 
+    /// <summary>
+    /// Retrieves the permalink for the current form page.
+    /// </summary>
     public string GetPermalink ()
     {
       var permalinkButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "PermalinkButton"));
@@ -78,12 +102,18 @@ namespace ActaNova.WebTesting.PageObjects
       return permalink;
     }
 
+    /// <summary>
+    /// Presses the print button.
+    /// </summary>
     public /*ActaNovaPrintPageObject*/ ActaNovaPageObject Print ()
     {
       var printButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PrintButton"));
       return printButton.Click().ExpectNewWindow< /*ActaNovaPrintPageObject*/ ActaNovaPageObject> ("Untitled Page");
     }
 
+    /// <summary>
+    /// Presses the open help button.
+    /// </summary>
     public HtmlPageObject OpenHelp ()
     {
       throw new NotSupportedException ("OpenHelp cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
@@ -94,12 +124,18 @@ namespace ActaNova.WebTesting.PageObjects
 #pragma warning restore 162
     }
 
+    /// <summary>
+    /// Presses the create bug report button.
+    /// </summary>
     public ActaNovaWindowPageObject CreateBugReport ()
     {
       var bugReportButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
       return bugReportButton.Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Fehlerberichte/Wünsche");
     }
 
+    /// <summary>
+    /// Allows to interact with the form page's additional commands menu.
+    /// </summary>
     public DropDownMenuControlObject GetAdditionalCommandsMenu ()
     {
       var additionalCommandsMenu =

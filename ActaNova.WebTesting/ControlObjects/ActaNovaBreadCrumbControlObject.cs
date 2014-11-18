@@ -15,14 +15,13 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    /// <summary>
-    /// Returns the bread crumb's displayed text.
-    /// </summary>
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope.FindCss ("span.breadCrumbElementText").Text.Trim();
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);

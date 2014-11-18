@@ -7,6 +7,9 @@ using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.ActaNovaExtensions
 {
+  /// <summary>
+  /// ActaNova-specific extension methods for clicking/selecting controls.
+  /// </summary>
   public static class ActaNovaClickExtensions
   {
     public static UnspecifiedPageObject ClickAndConfirmDataLoss ([NotNull] this ActaNovaBreadCrumbControlObject breadCrumb)

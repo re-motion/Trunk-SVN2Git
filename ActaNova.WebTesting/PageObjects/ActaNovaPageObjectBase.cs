@@ -9,7 +9,6 @@ namespace ActaNova.WebTesting.PageObjects
   /// </summary>
   public abstract class ActaNovaPageObjectBase : PageObject
   {
-    // ReSharper disable once MemberCanBeProtected.Global
     protected ActaNovaPageObjectBase ([NotNull] PageObjectContext context)
         : base (context)
     {

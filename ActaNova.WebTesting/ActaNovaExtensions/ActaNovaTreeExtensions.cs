@@ -6,6 +6,9 @@ using Remotion.Utilities;
 
 namespace ActaNova.WebTesting.ActaNovaExtensions
 {
+  /// <summary>
+  /// ActaNova-specific extension methods for interacting with the main tree.
+  /// </summary>
   public static class ActaNovaTreeExtensions
   {
     public static ActaNovaTreeNodeControlObject GetEigenerAvNode ([NotNull] this ActaNovaTreeControlObject tree)

@@ -18,6 +18,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject Perform (
         string itemID,
         ICompletionDetection completionDetection = null,

@@ -12,6 +12,9 @@ using Remotion.Web.Development.WebTesting.FluentControlSelection;
 
 namespace ActaNova.WebTesting.ActaNovaExtensions
 {
+  /// <summary>
+  /// ActaNova-specific extension methods for selecting controls within a <see cref="IControlHost"/> instance.
+  /// </summary>
   public static class ActaNovaControlHostExtensions
   {
     public static FluentControlSelector<AnchorSelector, AnchorControlObject> GetAnchor (this IControlHost host)

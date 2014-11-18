@@ -16,6 +16,7 @@ namespace ActaNova.WebTesting.ControlObjects.Selectors
     {
     }
 
+    /// <inheritdoc/>
     protected override ActaNovaTreeViewAutoCompleteReferenceValueControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

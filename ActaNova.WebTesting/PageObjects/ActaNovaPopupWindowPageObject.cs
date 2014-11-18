@@ -15,6 +15,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
+    /// <inheritdoc/>
     public override string GetTitle ()
     {
       return Scope.FindId ("TitleLabel").Text;

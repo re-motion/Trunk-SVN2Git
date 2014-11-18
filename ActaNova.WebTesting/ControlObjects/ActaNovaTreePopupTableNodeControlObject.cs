@@ -17,11 +17,13 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope.Text.Trim();
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var anchorControl = Children.GetControl (new SingleControlSelectionCommand<AnchorControlObject> (new AnchorSelector()));

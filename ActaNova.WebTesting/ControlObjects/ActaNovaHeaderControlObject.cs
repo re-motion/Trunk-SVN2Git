@@ -136,17 +136,13 @@ namespace ActaNova.WebTesting.ControlObjects
               "SecurityManagerCurrentTenantControl_CurrentTenantField"));
     }
 
-    /// <summary>
-    /// Returns the number of displayed bread crumbs.
-    /// </summary>
+    /// <inheritdoc/>
     public int GetNumberOfBreadCrumbs ()
     {
       return GetBreadCrumbs().Count;
     }
 
-    /// <summary>
-    /// Returns the nth bread crumb, given by a one-based <paramref name="index"/>.
-    /// </summary>
+    /// <inheritdoc/>
     public ActaNovaBreadCrumbControlObject GetBreadCrumb (int index)
     {
       var zeroBasedIndex = index - 1;
@@ -164,6 +160,7 @@ namespace ActaNova.WebTesting.ControlObjects
       return breadCrumbs;
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

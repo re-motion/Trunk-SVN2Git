@@ -17,6 +17,9 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Uploads the file given by <paramref name="filePath"/> to the server using the down-level DMS control.
+    /// </summary>
     public UnspecifiedPageObject UploadFile (
         [NotNull] string filePath,
         [CanBeNull] ICompletionDetection completionDetection = null,

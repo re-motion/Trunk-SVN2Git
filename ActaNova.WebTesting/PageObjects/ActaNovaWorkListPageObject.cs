@@ -20,21 +20,33 @@ namespace ActaNova.WebTesting.PageObjects
     {
     }
 
+    /// <summary>
+    /// Returns the work list page's title.
+    /// </summary>
     public override string GetTitle ()
     {
       return Scope.FindCss (".formPageTitleLabel").Text;
     }
 
+    /// <summary>
+    /// Returns the single work list on the work list page.
+    /// </summary>
     public ActaNovaListControlObject GetWorkList ()
     {
       return GetControl (new SingleControlSelectionCommand<ActaNovaListControlObject> (new ActaNovaListSelector()));
     }
 
+    /// <summary>
+    /// Returns the multi item work step menu on the work list page.
+    /// </summary>
     public DropDownMenuControlObject GetWorkStepMenu ()
     {
       return GetControl (new HtmlIDControlSelectionCommand<DropDownMenuControlObject> (new DropDownMenuSelector(), "MultiItemWorkStepMenu"));
     }
 
+    /// <summary>
+    /// Presses the open RSS feed button.
+    /// </summary>
     public HtmlPageObject OpenRssFeed ()
     {
       throw new NotSupportedException (
@@ -46,6 +58,9 @@ namespace ActaNova.WebTesting.PageObjects
 #pragma warning restore 162
     }
 
+    /// <summary>
+    /// Presses the open help button.
+    /// </summary>
     public HtmlPageObject OpenHelp ()
     {
       throw new NotSupportedException ("OpenHelp cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
@@ -56,6 +71,9 @@ namespace ActaNova.WebTesting.PageObjects
 #pragma warning restore 162
     }
 
+    /// <summary>
+    /// Presses the create bug report button.
+    /// </summary>
     public ActaNovaWindowPageObject CreateBugReport ()
     {
       var createBugReportButton =

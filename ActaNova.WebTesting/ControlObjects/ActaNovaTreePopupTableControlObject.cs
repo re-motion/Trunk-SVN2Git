@@ -18,6 +18,9 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Retrieves a node in the popup tree given by its path (nodes are referenced by display text) <paramref name="treeNodes"/>.
+    /// </summary>
     public ActaNovaTreePopupTableNodeControlObject GetNode ([NotNull] params string[] treeNodes)
     {
       ArgumentUtility.CheckNotNull ("treeNodes", treeNodes);
@@ -25,6 +28,9 @@ namespace ActaNova.WebTesting.ControlObjects
       return GetNode (treeNodes.AsEnumerable());
     }
 
+    /// <summary>
+    /// Retrieves a node in the popup tree given by its path (nodes are referenced by display text) <paramref name="treeNodes"/>.
+    /// </summary>
     public ActaNovaTreePopupTableNodeControlObject GetNode (
         [NotNull] IEnumerable<string> treeNodes,
         [CanBeNull] ICompletionDetection completionDetection = null)

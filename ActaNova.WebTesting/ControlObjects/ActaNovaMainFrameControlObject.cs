@@ -15,6 +15,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
