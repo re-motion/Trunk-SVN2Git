@@ -85,7 +85,7 @@ namespace ActaNova.WebTesting.ControlObjects
 
     private ElementScope GetTinyMceFrameBodyScope ()
     {
-      var tinyMceFrameName = Scope.Id + "_Value_ifr";
+      var tinyMceFrameName = GetHtmlID() + "_Value_ifr";
       var tinyMceFrame = Scope.FindFrame (tinyMceFrameName);
       var tinyMceFrameBodyScope = tinyMceFrame.FindCss ("body");
       return tinyMceFrameBodyScope;
