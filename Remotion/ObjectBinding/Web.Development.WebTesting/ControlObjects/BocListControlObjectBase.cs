@@ -18,8 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Coypu;
 using JetBrains.Annotations;
+using log4net;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -69,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       public bool HasDiagnosticMetadata
       {
-        get { return _hasDiagnosticMetadata;  }
+        get { return _hasDiagnosticMetadata; }
       }
     }
 
@@ -93,6 +95,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
     }
 
+    private readonly ILog _log;
     private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly bool _hasFakeTableHead;
     private readonly List<ColumnDefinition> _columns;
@@ -100,17 +103,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     protected BocListControlObjectBase ([NotNull] ControlObjectContext context)
         : base (context)
     {
+      _log = LogManager.GetLogger (GetType());
       _accessor = new BocListRowControlObjectHostAccessor (this);
+
+      EnsureBocListHasBeenFullyInitialized();
+
       _hasFakeTableHead = Scope.FindCss ("div.bocListTableContainer")[DiagnosticMetadataAttributesForObjectBinding.BocListHasFakeTableHead] != null;
       _columns = RetryUntilTimeout.Run (
-        () => Scope.FindAllCss (_hasFakeTableHead ? ".bocListFakeTableHead th" : ".bocListTableContainer th")
+          () => Scope.FindAllCss (_hasFakeTableHead ? ".bocListFakeTableHead th" : ".bocListTableContainer th")
               .Select (
                   (s, i) =>
                       new ColumnDefinition (
                           s[DiagnosticMetadataAttributes.ItemID],
                           i + 1,
                           s[DiagnosticMetadataAttributes.Text],
-                          ColumnHasDiagnosticMetadata(s)))
+                          ColumnHasDiagnosticMetadata (s)))
               .ToList());
     }
 
@@ -230,7 +237,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _columns.Single (cd => cd.ItemID == columnItemID);
     }
 
-    protected ColumnDefinition GetColumnByIndex(int index)
+    protected ColumnDefinition GetColumnByIndex (int index)
     {
       return _columns.Single (cd => cd.Index == index);
     }
@@ -246,6 +253,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return false;
 
       return bool.Parse (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata]);
+    }
+
+    private void EnsureBocListHasBeenFullyInitialized ()
+    {
+      var bocListIsInitialized = RetryUntilTimeout.Run (() => Scope[DiagnosticMetadataAttributesForObjectBinding.BocListIsInitialized] == "true");
+      if (!bocListIsInitialized)
+        _log.WarnFormat ("Client side initialization of BocList '{0}' never finished.", GetHtmlID());
     }
   }
 }

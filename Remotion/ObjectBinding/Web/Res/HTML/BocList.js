@@ -118,6 +118,9 @@ function BocList_InitializeList(bocList, selectRowSelectorControlName, selectAll
   _bocList_selectedRows[bocList.id] = selectedRows;
 
   selectedRows.OnSelectionChanged (bocList, true);
+
+  // Add diganostic metadata for web testing framework (actually: should only be rendered with IRenderingFeatures.EnableDiagnosticMetadata on)
+  bocList.attr('data-boclist-is-initialized', 'true');
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl)
@@ -450,7 +453,7 @@ function BocList_FixUpScrolling(bocList)
     BocList_FixHeaderPosition(tableContainer, scrollableContainer);
     setTimeout(resizeHandler, resizeInterval);
   };
-  setTimeout(resizeHandler, resizeInterval); // Doubles for calling BocList_FixHeaderSize() after creating the header.
+  resizeHandler();
 }
 
 function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
