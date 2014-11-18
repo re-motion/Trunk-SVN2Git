@@ -127,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       rootNode.GetNode().WithIndex (3).Select();
       Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("9e713934-1226-4669-880e-c07c22cdab19|B, C"));
 
-      rootNode.GetNode().WithText ("B, B").Select();
+      rootNode.GetNode().WithDisplayText ("B, B").Select();
       Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("a97d84b0-c1c9-4580-a6c1-1fed1ee8c041|B, B"));
     }
 

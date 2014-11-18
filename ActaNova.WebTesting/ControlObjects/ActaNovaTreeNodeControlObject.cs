@@ -71,11 +71,11 @@ namespace ActaNova.WebTesting.ControlObjects
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithText (string text)
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithDisplayText (string displayText)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      var bocTreeViewNode = _bocTreeViewNode.GetNode().WithText (text);
+      var bocTreeViewNode = _bocTreeViewNode.GetNode().WithDisplayText (displayText);
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 

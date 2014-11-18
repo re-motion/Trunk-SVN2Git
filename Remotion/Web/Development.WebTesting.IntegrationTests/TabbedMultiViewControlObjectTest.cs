@@ -134,7 +134,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content2"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content1"));
 
-      home = tabbedMultiView.SwitchTo().WithText ("Tab1Title").Expect<RemotionPageObject>();
+      home = tabbedMultiView.SwitchTo().WithDisplayText ("Tab1Title").Expect<RemotionPageObject>();
       tabbedMultiView = home.GetTabbedMultiView().Single();
       Assert.That (tabbedMultiView.Scope.Text, Is.StringContaining ("Content1"));
       Assert.That (tabbedMultiView.Scope.Text, Is.Not.StringContaining ("Content2"));

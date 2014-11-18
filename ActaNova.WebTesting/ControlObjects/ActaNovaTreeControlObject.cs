@@ -43,11 +43,11 @@ namespace ActaNova.WebTesting.ControlObjects
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithText (string text)
+    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithDisplayText (string displayText)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return _metaRootNode.GetNode().WithText (text);
+      return _metaRootNode.GetNode().WithDisplayText (displayText);
     }
   }
 }

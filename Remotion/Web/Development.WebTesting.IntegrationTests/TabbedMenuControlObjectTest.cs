@@ -110,7 +110,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       tabbedMenu.SelectItem().WithHtmlID ("body_MyTabbedMenu_MainMenuTabStrip_EventCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
 
-      tabbedMenu.SelectItem().WithText ("EventCommandTabTitle");
+      tabbedMenu.SelectItem().WithDisplayText ("EventCommandTabTitle");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
     }
 
@@ -151,7 +151,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       tabbedMenu.SubMenu.SelectItem().WithHtmlID ("body_MyTabbedMenu_SubMenuTabStrip_SubMenuTab1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
 
-      tabbedMenu.SubMenu.SelectItem().WithText ("SubMenuTab2Title");
+      tabbedMenu.SubMenu.SelectItem().WithDisplayText ("SubMenuTab2Title");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab2|Event"));
     }
 

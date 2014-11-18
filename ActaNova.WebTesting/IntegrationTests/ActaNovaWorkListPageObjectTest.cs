@@ -29,7 +29,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var weiterleitenPopup = home.WorkListPage.GetWorkStepMenu()
           .SelectItem()
-          .WithText ("Weiterleiten")
+          .WithDisplayText ("Weiterleiten")
           .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Aktivität weiterleiten");
       weiterleitenPopup.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(weiterleitenPopup.Context.ParentContext)));
     }

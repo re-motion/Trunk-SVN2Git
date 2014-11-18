@@ -14,7 +14,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (home.Header.GetNumberOfBreadCrumbs(), Is.EqualTo (1));
       Assert.That (home.Header.GetBreadCrumb(1).GetText(), Is.EqualTo ("Eigener AV"));
 
-      home.Tree.GetNode().WithText ("Stellvertretungs AV").Select();
+      home.Tree.GetNode().WithDisplayText ("Stellvertretungs AV").Select();
 
       Assert.That (home.Header.GetNumberOfBreadCrumbs(), Is.EqualTo (1));
       Assert.That (home.Header.GetBreadCrumb(1).GetText(), Is.EqualTo ("Stellvertretungs AV"));

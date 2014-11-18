@@ -12,7 +12,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Eigener AV");
+      return tree.GetNode().WithDisplayText ("Eigener AV");
     }
 
     public static ActaNovaMainPageObject SelectEigenerAvNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -26,7 +26,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Gruppen AV");
+      return tree.GetNode().WithDisplayText ("Gruppen AV");
     }
 
     public static ActaNovaMainPageObject SelectGruppenAvNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -40,7 +40,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Stellvertretungs AV");
+      return tree.GetNode().WithDisplayText ("Stellvertretungs AV");
     }
 
     public static ActaNovaMainPageObject SelectStellvertretungsAvNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -54,7 +54,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Wiedervorlage AV");
+      return tree.GetNode().WithDisplayText ("Wiedervorlage AV");
     }
 
     public static ActaNovaMainPageObject SelectWiedervorlageAvNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -68,7 +68,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Zurückziehen AV");
+      return tree.GetNode().WithDisplayText ("Zurückziehen AV");
     }
 
     public static ActaNovaMainPageObject SelectZurueckziehenAvNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -82,7 +82,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Meine Aufgaben/Termine");
+      return tree.GetNode().WithDisplayText ("Meine Aufgaben/Termine");
     }
 
     public static ActaNovaMainPageObject SelectMeineAufgabenTermineNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -96,7 +96,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Gruppen Aufgaben/Termine");
+      return tree.GetNode().WithDisplayText ("Gruppen Aufgaben/Termine");
     }
 
     public static ActaNovaMainPageObject SelectGruppenAufgabenTermineNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -110,7 +110,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Favoriten");
+      return tree.GetNode().WithDisplayText ("Favoriten");
     }
 
     public static ActaNovaMainPageObject SelectFavoritenNode ([NotNull] this ActaNovaTreeControlObject tree)
@@ -124,7 +124,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("tree", tree);
 
-      return tree.GetNode().WithText ("Zuletzt gespeicherte Objekte");
+      return tree.GetNode().WithDisplayText ("Zuletzt gespeicherte Objekte");
     }
 
     public static ActaNovaMainPageObject SelectZuletztGespeicherteObjekteNode ([NotNull] this ActaNovaTreeControlObject tree)

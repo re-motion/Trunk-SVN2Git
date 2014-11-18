@@ -26,23 +26,26 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="DropDownList"/>.
   /// </summary>
-  public class DropDownListControlObject : WebFormsControlObject, IControlObjectWithSelectableOptions
+  public class DropDownListControlObject : WebFormsControlObject, IControlObjectWithSelectableOptions, IControlObjectWithText
   {
     public DropDownListControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope.GetSelectedOptionText();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithSelectableOptions SelectOption ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SelectOption (
         string value,
         ICompletionDetection completionDetection = null,
@@ -53,6 +56,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectOption().WithItemID (value, completionDetection);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (
         string value,
         ICompletionDetection completionDetection,
@@ -64,6 +68,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (
         int index,
         ICompletionDetection completionDetection,
@@ -73,14 +78,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithText (
-        string text,
+    /// <inheritdoc/>
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithDisplayText (
+        string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
     {
-      ArgumentUtility.CheckNotNull ("text", text);
+      ArgumentUtility.CheckNotNull ("displayText", displayText);
 
-      Action<ElementScope> selectAction = s => s.SelectOption (text);
+      Action<ElementScope> selectAction = s => s.SelectOption (displayText);
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
@@ -96,6 +102,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       return Continue.When (Wxe.PostBackCompleted);

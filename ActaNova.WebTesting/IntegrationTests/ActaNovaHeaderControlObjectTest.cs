@@ -40,7 +40,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var defaultGroupControl = home.Header.OpenDefaultGroupControlWhenStandardIsDisplayed();
       Assert.That (defaultGroupControl.GetText(), Is.Empty);
 
-      defaultGroupControl.SelectOption().WithText ("Kanzlei (Kanzlei)");
+      defaultGroupControl.SelectOption().WithDisplayText ("Kanzlei (Kanzlei)");
 
       defaultGroupControl = home.Header.OpenDefaultGroupControl();
       Assert.That (defaultGroupControl.GetText(), Is.EqualTo ("Kanzlei (Kanzlei)"));
@@ -59,7 +59,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var currentTenantControl = home.Header.OpenCurrentTenantControl();
       Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
 
-      currentTenantControl.SelectOption().WithText ("Acta Nova Ortsteil 1", Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
+      currentTenantControl.SelectOption().WithDisplayText ("Acta Nova Ortsteil 1", Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
 
       currentTenantControl = home.Header.OpenCurrentTenantControl();
       Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Ortsteil 1"));

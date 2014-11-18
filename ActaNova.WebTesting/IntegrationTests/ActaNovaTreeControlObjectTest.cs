@@ -14,10 +14,10 @@ namespace ActaNova.WebTesting.IntegrationTests
       var eigenerAv = home.Tree.GetNode().WithIndex (1);
       Assert.That (eigenerAv.GetText(), Is.EqualTo ("Eigener AV"));
 
-      home = home.Tree.GetNode().WithIndex (2).Expand().GetNode().WithText ("egora Gemeinde").Select().ExpectMainPage();
+      home = home.Tree.GetNode().WithIndex (2).Expand().GetNode().WithDisplayText ("egora Gemeinde").Select().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("egora Gemeinde AV"));
 
-      var geschaeftsfall = home.Tree.GetNode().WithText ("Favoriten").Expand().Collapse().Expand().GetNode().WithIndex (2);
+      var geschaeftsfall = home.Tree.GetNode().WithDisplayText ("Favoriten").Expand().Collapse().Expand().GetNode().WithIndex (2);
       home = geschaeftsfall.Select().ExpectMainPage();
       Assert.That (home.GetTitle(), Is.EqualTo ("Geschäftsfall \"OE/1/BW-BV-BA-M/1\" bearbeiten"));
 
@@ -38,10 +38,10 @@ namespace ActaNova.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var eigenerAvNode = home.Tree.GetNode().WithText ("Eigener AV");
+      var eigenerAvNode = home.Tree.GetNode().WithDisplayText ("Eigener AV");
       Assert.That (eigenerAvNode.IsSelected(), Is.True);
 
-      var gruppenAvNode = home.Tree.GetNode().WithText ("Gruppen AV");
+      var gruppenAvNode = home.Tree.GetNode().WithDisplayText ("Gruppen AV");
       Assert.That (gruppenAvNode.IsSelected(), Is.False);
 
       gruppenAvNode.Select();

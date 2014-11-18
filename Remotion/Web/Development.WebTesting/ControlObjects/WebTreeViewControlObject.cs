@@ -34,16 +34,21 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       _metaRootNode = new WebTreeViewNodeControlObject (context);
     }
 
+    /// <summary>
+    /// Returns the tree's root node.
+    /// </summary>
     public WebTreeViewNodeControlObject GetRootNode ()
     {
       return _metaRootNode.GetNode().WithIndex (1);
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -51,6 +56,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetNode().WithItemID (itemID);
     }
 
+    /// <inheritdoc/>
     WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -58,16 +64,18 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return _metaRootNode.GetNode (itemID);
     }
 
+    /// <inheritdoc/>
     WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithText (string text)
+    /// <inheritdoc/>
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return _metaRootNode.GetNode().WithText (text);
+      return _metaRootNode.GetNode().WithDisplayText (displayText);
     }
   }
 }

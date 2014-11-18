@@ -104,7 +104,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       dropDownList.SelectOption().WithIndex (2);
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Item2|Item2Value"));
 
-      dropDownList.SelectOption().WithText ("Item1");
+      dropDownList.SelectOption().WithDisplayText ("Item1");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Item1|Item1Value"));
     }
 

@@ -33,6 +33,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Template method for derived classes to open the drop down menu (i.e. make it visible on the page).
+    /// </summary>
     protected abstract void OpenDropDownMenu ();
 
     public IControlObjectWithSelectableItems SelectItem ()
@@ -40,6 +43,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SelectItem (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -50,6 +54,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectItem().WithItemID (itemID, completionDetection);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
@@ -62,6 +67,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
         int index,
         ICompletionDetection completionDetection,
@@ -72,6 +78,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
         string htmlID,
         ICompletionDetection completionDetection,
@@ -84,15 +91,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (
-        string text,
+    /// <inheritdoc/>
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+        string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
       var dropDownMenuScope = GetDropDownMenuScope();
-      var scope = dropDownMenuScope.FindTagWithAttribute ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Content, text);
+      var scope = dropDownMenuScope.FindTagWithAttribute ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Content, displayText);
       return ClickItem (scope, completionDetection, modalDialogHandler);
     }
 

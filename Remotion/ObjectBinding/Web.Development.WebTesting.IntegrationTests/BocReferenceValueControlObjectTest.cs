@@ -151,7 +151,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.Empty);
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption().WithText ("D, A");
+      bocReferenceValue.SelectOption().WithDisplayText ("D, A");
       Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
     }
 

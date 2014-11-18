@@ -78,14 +78,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithText (
-        string text,
+    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithDisplayText (
+        string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
     {
-      ArgumentUtility.CheckNotNull ("text", text);
+      ArgumentUtility.CheckNotNull ("displayText", displayText);
 
-      Action<ElementScope> selectAction = s => s.SelectOption (text);
+      Action<ElementScope> selectAction = s => s.SelectOption (displayText);
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 

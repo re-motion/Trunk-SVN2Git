@@ -34,16 +34,21 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the tabbed menu's status text.
+    /// </summary>
     public string GetStatusText ()
     {
       return Scope.FindCss ("td.tabbedMenuStatusCell").Text.Trim();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithSelectableItems SelectItem ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SelectItem (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -54,11 +59,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectItem().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
+    /// <summary>
+    /// Gives access to the sub menu.
+    /// </summary>
     public IControlObjectWithSelectableItems SubMenu
     {
       get { return new SubMenuItems (Context); }
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
@@ -70,6 +79,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
         int index,
         ICompletionDetection completionDetection,
@@ -79,6 +89,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
         string htmlID,
         ICompletionDetection completionDetection,
@@ -90,14 +101,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (
-        string text,
+    /// <inheritdoc/>
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+        string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      var menuItemScope = GetMainMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, text);
+      var menuItemScope = GetMainMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, displayText);
       return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
     }
 
@@ -170,14 +182,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
       }
 
-      UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (
-          string text,
+      UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+          string displayText,
           ICompletionDetection completionDetection,
           IModalDialogHandler modalDialogHandler)
       {
-        ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+        ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-        var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, text);
+        var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, displayText);
         return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
       }
 

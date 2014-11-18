@@ -33,10 +33,10 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var personBearbeiten =
           home.Tree.GetNode()
-              .WithText ("Zuletzt gespeicherte Objekte")
+              .WithDisplayText ("Zuletzt gespeicherte Objekte")
               .Expand()
               .GetNode()
-              .WithText ("Rauch")
+              .WithDisplayText ("Rauch")
               .Expand()
               .GetNode ("WrappedLinks")
               .Select()

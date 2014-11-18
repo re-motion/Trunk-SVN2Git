@@ -26,33 +26,42 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
-  public class WebTreeViewNodeControlObject : WebFormsControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>
+  public class WebTreeViewNodeControlObject : WebFormsControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>, IControlObjectWithText
   {
     public WebTreeViewNodeControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope[DiagnosticMetadataAttributes.Content];
     }
 
+    /// <summary>
+    /// Returns whether the node is currently selected.
+    /// </summary>
     public bool IsSelected ()
     {
       return Scope[DiagnosticMetadataAttributes.WebTreeViewIsSelectedNode] != null;
     }
 
+    /// <summary>
+    /// Returns the number of child nodes.
+    /// </summary>
     public int GetNumberOfChildren ()
     {
       return int.Parse (Scope[DiagnosticMetadataAttributes.WebTreeViewNumberOfChildren]);
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public WebTreeViewNodeControlObject GetNode (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -60,6 +69,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetNode().WithItemID (itemID);
     }
 
+    /// <inheritdoc/>
     WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -68,20 +78,25 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
+    /// <inheritdoc/>
     WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
       var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithText (string text)
+    /// <inheritdoc/>
+    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.Content, text);
+      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.Content, displayText);
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
+    /// <summary>
+    /// Expands the node.
+    /// </summary>
     public WebTreeViewNodeControlObject Expand ()
     {
       var actualCompletionDetector = GetActualCompletionDetector (null);
@@ -94,6 +109,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
+    /// <summary>
+    /// Collapses the node.
+    /// </summary>
     public WebTreeViewNodeControlObject Collapse ()
     {
       var actualCompletionDetector = GetActualCompletionDetector (null);
@@ -106,6 +124,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
+    /// <summary>
+    /// Selects the node by clicking on it, returns the node.
+    /// </summary>
     public WebTreeViewNodeControlObject Select (
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null)
@@ -114,6 +135,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
+    /// <summary>
+    /// Selects the node by clicking on it.
+    /// </summary>
     public UnspecifiedPageObject Click (
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null)
@@ -144,6 +168,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       return Continue.When (Wxe.PostBackCompleted);

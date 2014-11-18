@@ -65,11 +65,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithText (string text)
+    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return _metaRootNode.GetNode().WithText (text);
+      return _metaRootNode.GetNode().WithDisplayText (displayText);
     }
   }
 }

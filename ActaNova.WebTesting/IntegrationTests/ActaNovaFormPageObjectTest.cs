@@ -31,10 +31,10 @@ namespace ActaNova.WebTesting.IntegrationTests
       weiterleitenWindow.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(weiterleitenWindow.Context.ParentContext)));
 
       editIncomingPage.FormPage.PressPinButton();
-      Assert.That (editIncomingPage.Tree.GetNode().WithText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (3));
+      Assert.That (editIncomingPage.Tree.GetNode().WithDisplayText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (3));
 
       editIncomingPage.FormPage.PressPinButton();
-      Assert.That (editIncomingPage.Tree.GetNode().WithText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (4));
+      Assert.That (editIncomingPage.Tree.GetNode().WithDisplayText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (4));
 
       var permalink = editIncomingPage.FormPage.GetPermalink();
 
@@ -49,7 +49,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       //var helpPage = editIncomingPage.FormPage.OpenHelp();
       //helpPage.Close();
 
-      var createMailPage = editIncomingPage.FormPage.GetAdditionalCommandsMenu().SelectItem().WithText ("Mail versenden").ExpectMainPage();
+      var createMailPage = editIncomingPage.FormPage.GetAdditionalCommandsMenu().SelectItem().WithDisplayText ("Mail versenden").ExpectMainPage();
       editIncomingPage =
           createMailPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createMailPage)), HandleModalDialog.Accept())
               .ExpectMainPage();

@@ -32,29 +32,40 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the top control scope.
+    /// </summary>
     public ScopeControlObject GetTopControls ()
     {
       var scope = Scope.FindChild ("TopControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <summary>
+    /// Returns the tabbed multi view's active view.
+    /// </summary>
     public ScopeControlObject GetActiveView ()
     {
       var scope = Scope.FindChild ("ActiveView");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <summary>
+    /// Returns the bottom control scope.
+    /// </summary>
     public ScopeControlObject GetBottomControls ()
     {
       var scope = Scope.FindChild ("BottomControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithTabs SwitchTo ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SwitchTo (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -65,6 +76,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithTabs.WithItemID (string itemID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -72,11 +84,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetTabStrip().SwitchTo (itemID + "_Tab", completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       return GetTabStrip().SwitchTo().WithIndex (index, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
@@ -84,11 +98,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetTabStrip().SwitchTo().WithHtmlID (htmlID, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithTabs.WithText (string text, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    /// <inheritdoc/>
+    UnspecifiedPageObject IControlObjectWithTabs.WithDisplayText (string displayText, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return GetTabStrip().SwitchTo().WithText (text, completionDetection, modalDialogHandler);
+      return GetTabStrip().SwitchTo().WithDisplayText (displayText, completionDetection, modalDialogHandler);
     }
 
     private WebTabStripControlObject GetTabStrip ()
@@ -97,6 +112,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new WebTabStripControlObject (Context.CloneForControl (scope));
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

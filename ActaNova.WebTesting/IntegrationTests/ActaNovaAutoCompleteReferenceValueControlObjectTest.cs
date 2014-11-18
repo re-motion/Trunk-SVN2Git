@@ -29,7 +29,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       actualSubmitter.Clear();
       Assert.That (actualSubmitter.GetText(), Is.EqualTo (""));
 
-      actualSubmitter.GetSearchClassDropDown().SelectOption().WithText ("Person");
+      actualSubmitter.GetSearchClassDropDown().SelectOption().WithDisplayText ("Person");
       var searchPage = actualSubmitter.Search().ExpectMainPage();
       Assert.That (searchPage.GetTitle(), Is.EqualTo ("Person suchen"));
       createIncomingPage = searchPage.FormPage.Perform ("Cancel").ExpectMainPage();

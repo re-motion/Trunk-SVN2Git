@@ -34,11 +34,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithTabs SwitchTo ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SwitchTo (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -49,6 +51,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithTabs.WithItemID (string itemID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -57,6 +60,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       var xPathSelector = string.Format (
@@ -67,6 +71,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
@@ -75,11 +80,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithTabs.WithText (string text, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    /// <inheritdoc/>
+    UnspecifiedPageObject IControlObjectWithTabs.WithDisplayText (string displayText, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      var itemScope = Scope.FindTagWithAttribute ("span.tabStripTab", DiagnosticMetadataAttributes.Content, text);
+      var itemScope = Scope.FindTagWithAttribute ("span.tabStripTab", DiagnosticMetadataAttributes.Content, displayText);
       return SwitchTo (itemScope, completionDetection, modalDialogHandler);
     }
 

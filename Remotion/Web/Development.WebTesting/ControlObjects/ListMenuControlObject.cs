@@ -33,11 +33,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithSelectableItems SelectItem ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SelectItem (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -48,6 +50,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectItem().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
@@ -57,6 +60,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (itemScope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
         int index,
         ICompletionDetection completionDetection,
@@ -66,6 +70,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (itemScope, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
         string htmlID,
         ICompletionDetection completionDetection,
@@ -75,12 +80,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (itemScope, completionDetection, modalDialogHandler);
     }
 
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithText (
-        string text,
+    /// <inheritdoc/>
+    UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+        string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
     {
-      var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Content, text);
+      var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Content, displayText);
       return ClickItem (itemScope, completionDetection, modalDialogHandler);
     }
 

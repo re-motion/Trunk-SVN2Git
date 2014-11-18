@@ -25,25 +25,40 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public interface IControlObjectWithSelectableOptions
   {
+    /// <summary>
+    /// Start of the fluent interface for selecting an option.
+    /// </summary>
     IControlObjectWithSelectableOptions SelectOption ();
 
+    /// <summary>
+    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// </summary>
     UnspecifiedPageObject SelectOption (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
+    /// <summary>
+    /// Selects the option using the given <paramref name="itemID"/>.
+    /// </summary>
     UnspecifiedPageObject WithItemID (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
+    /// <summary>
+    /// Selects the option using the given <paramref name="index"/>.
+    /// </summary>
     UnspecifiedPageObject WithIndex (
         int index,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
-    UnspecifiedPageObject WithText (
-        [NotNull] string text,
+    /// <summary>
+    /// Selects the option using the given <paramref name="displayText"/>.
+    /// </summary>
+    UnspecifiedPageObject WithDisplayText (
+        [NotNull] string displayText,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
   }

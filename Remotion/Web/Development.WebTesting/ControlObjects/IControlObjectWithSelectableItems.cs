@@ -25,30 +25,48 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// </summary>
   public interface IControlObjectWithSelectableItems
   {
+    /// <summary>
+    /// Start of the fluent interface for selecting an item.
+    /// </summary>
     IControlObjectWithSelectableItems SelectItem ();
 
+    /// <summary>
+    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// </summary>
     UnspecifiedPageObject SelectItem (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
+    /// <summary>
+    /// Selects the item using the given <paramref name="itemID"/>.
+    /// </summary>
     UnspecifiedPageObject WithItemID (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
+    /// <summary>
+    /// Selects item row using the given <paramref name="index"/>.
+    /// </summary>
     UnspecifiedPageObject WithIndex (
         int index,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
+    /// <summary>
+    /// Selects item row using the given <paramref name="htmlID"/>.
+    /// </summary>
     UnspecifiedPageObject WithHtmlID (
         [NotNull] string htmlID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
 
-    UnspecifiedPageObject WithText (
-        [NotNull] string text,
+    /// <summary>
+    /// Selects item row using the given <paramref name="displayText"/>.
+    /// </summary>
+    UnspecifiedPageObject WithDisplayText (
+        [NotNull] string displayText,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
   }

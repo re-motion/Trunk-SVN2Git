@@ -22,7 +22,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       tabbedMenu.SubMenu.SelectItem ("StandardClassificationTypes");
 
       var classificationTypeField = administration.GetOnlyFormGrid().GetDropDownList().Single();
-      classificationTypeField.SelectOption().WithText ("Adressart");
+      classificationTypeField.SelectOption().WithDisplayText ("Adressart");
 
       var classificationTypeList = administration.GetList().Single();
       Assert.That (classificationTypeList.GetRowCount(), Is.EqualTo (4));
