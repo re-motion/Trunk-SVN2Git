@@ -59,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       WaitForNewWxeFunctionToken (context, oldWxeFunctionToken);
 
       const int expectedWxePostBackSequenceNumber = 2;
-      WaitForExpectedWxePostBackSequenceNumber (context, expectedWxePostBackSequenceNumber);
+      WaitForExpectedWxePostBackSequenceNumber (expectedWxePostBackSequenceNumber);
     }
 
     private void WaitForNewWxeFunctionToken (PageObjectContext context, string oldWxeFunctionToken)

@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber (PageObjectContext);
+      var wxePostBackSequenceNumber = GetWxePostBackSequenceNumber ();
       return wxePostBackSequenceNumber;
     }
 
@@ -64,7 +64,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
           oldWxePostBackSequenceNumber,
           expectedWxePostBackSequenceNumber);
 
-      WaitForExpectedWxePostBackSequenceNumber (context, expectedWxePostBackSequenceNumber);
+      WaitForExpectedWxePostBackSequenceNumber (expectedWxePostBackSequenceNumber);
     }
   }
 }

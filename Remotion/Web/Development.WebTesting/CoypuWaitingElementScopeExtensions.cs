@@ -51,6 +51,7 @@ namespace Remotion.Web.Development.WebTesting
 
       var pageContext = context.PageObject.Context;
       completionDetector.PrepareWaitForCompletion (pageContext);
+      completionDetector.OutputDebugMessage ("Executing action...");
       action (scope);
       if (modalDialogHandler != null)
       {

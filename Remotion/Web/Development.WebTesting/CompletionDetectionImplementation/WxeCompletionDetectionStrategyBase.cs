@@ -19,6 +19,7 @@ using System;
 using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 {
@@ -39,25 +40,24 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      return context.Scope.FindId (c_wxeFunctionToken).Value;
+      // Note: use RetryUntilTimeout until Coypu secured its attribute access (https://github.com/featurist/coypu/issues/117).
+      return RetryUntilTimeout.Run(() => context.Scope.FindId (c_wxeFunctionToken).Value);
     }
 
-    protected int GetWxePostBackSequenceNumber ([NotNull] PageObjectContext context)
+    protected int GetWxePostBackSequenceNumber ()
     {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      return int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
+      // Note: use RetryUntilTimeout until Coypu secured its attribute access (https://github.com/featurist/coypu/issues/117).
+      return RetryUntilTimeout.Run(() => int.Parse (PageObjectContext.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value));
     }
 
-    protected void WaitForExpectedWxePostBackSequenceNumber ([NotNull] PageObjectContext context, int expectedWxePostBackSequenceNumber)
+    protected void WaitForExpectedWxePostBackSequenceNumber (int expectedWxePostBackSequenceNumber)
     {
-      ArgumentUtility.CheckNotNull ("context", context);
 
       LogManager.GetLogger (GetType())
           .DebugFormat ("Parameters: window: '{0}' scope: '{1}'.", PageObjectContext.Window.Title, GetPageTitle (PageObjectContext));
 
-      var newWxePostBackSequenceNumber = context.Window.Query (
-          () => GetWxePostBackSequenceNumber (PageObjectContext),
+      var newWxePostBackSequenceNumber = PageObjectContext.Window.Query (
+          GetWxePostBackSequenceNumber,
           expectedWxePostBackSequenceNumber);
 
       Assertion.IsTrue (
@@ -67,7 +67,8 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
     private string GetPageTitle (PageObjectContext page)
     {
-      return page.Scope.FindCss ("title").InnerHTML;
+      // Note: use RetryUntilTimeout until Coypu secured its attribute access (https://github.com/featurist/coypu/issues/117).
+      return RetryUntilTimeout.Run(() => page.Scope.FindCss ("title").InnerHTML);
     }
   }
 }
