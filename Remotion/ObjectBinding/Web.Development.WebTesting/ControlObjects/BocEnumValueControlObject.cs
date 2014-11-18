@@ -255,7 +255,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
-        var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Text, text).FindCss ("input");
+        var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, text).FindCss ("input");
         return CheckScope (scope, completionDetection, modalDialogHandler);
       }
 

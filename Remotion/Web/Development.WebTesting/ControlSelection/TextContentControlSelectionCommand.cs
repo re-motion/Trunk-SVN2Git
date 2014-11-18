@@ -18,34 +18,34 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.FluentControlSelection
+namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Selection command builder, preparing a <see cref="PerTextControlSelectionCommand{TControlObject}"/>.
+  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type having the given text content,
+  /// within the given scope.
   /// </summary>
-  /// <typeparam name="TControlSelector">The <see cref="IPerTextControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerTextControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      where TControlSelector : IPerTextControlSelector<TControlObject>
+  public class TextContentControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly string _text;
+    private readonly ITextContentControlSelector<TControlObject> _controlSelector;
+    private readonly string _textContent;
 
-    public PerTextControlSelectionCommandBuilder ([NotNull] string text)
+    public TextContentControlSelectionCommand (
+        [NotNull] ITextContentControlSelector<TControlObject> controlSelector,
+        [NotNull] string textContent)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNull ("controlSelector", textContent);
+      ArgumentUtility.CheckNotNullOrEmpty ("textContent", textContent);
 
-      _text = text;
+      _controlSelector = controlSelector;
+      _textContent = textContent;
     }
 
-    public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
+    public TControlObject Select (ControlSelectionContext context)
     {
-      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-
-      return new PerTextControlSelectionCommand<TControlObject> (controlSelector, _text);
+      return _controlSelector.SelectPerTextContent (context, _textContent);
     }
   }
 }

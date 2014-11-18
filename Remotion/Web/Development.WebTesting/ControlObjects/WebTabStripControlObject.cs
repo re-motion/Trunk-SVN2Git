@@ -79,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      var itemScope = Scope.FindTagWithAttribute ("span.tabStripTab", DiagnosticMetadataAttributes.Text, text);
+      var itemScope = Scope.FindTagWithAttribute ("span.tabStripTab", DiagnosticMetadataAttributes.Content, text);
       return SwitchTo (itemScope, completionDetection, modalDialogHandler);
     }
 

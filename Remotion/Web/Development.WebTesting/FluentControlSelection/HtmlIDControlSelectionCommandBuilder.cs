@@ -23,29 +23,29 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
-  /// Selection command builder, preparing a <see cref="PerCommandNameControlSelectionCommand{TControlObject}"/>.
+  /// Selection command builder, preparing a <see cref="HtmlIDControlSelectionCommand{TControlObject}"/>.
   /// </summary>
-  /// <typeparam name="TControlSelector">The <see cref="IPerCommandNameControlSelector{TControlObject}"/> to use.</typeparam>
+  /// <typeparam name="TControlSelector">The <see cref="IHtmlIDControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerCommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject>
+  public class HtmlIDControlSelectionCommandBuilder<TControlSelector, TControlObject>
       : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      where TControlSelector : IPerCommandNameControlSelector<TControlObject>
+      where TControlSelector : IHtmlIDControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly string _commandName;
+    private readonly string _htmlID;
 
-    public PerCommandNameControlSelectionCommandBuilder ([NotNull] string commandName)
+    public HtmlIDControlSelectionCommandBuilder ([NotNull] string htmlID)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
-      _commandName = commandName;
+      _htmlID = htmlID;
     }
 
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
 
-      return new PerCommandNameControlSelectionCommand<TControlObject> (controlSelector, _commandName);
+      return new HtmlIDControlSelectionCommand<TControlObject> (controlSelector, _htmlID);
     }
   }
 }

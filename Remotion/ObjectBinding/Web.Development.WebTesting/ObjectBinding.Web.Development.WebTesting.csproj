@@ -131,13 +131,13 @@
     <Compile Include="ControlObjects\Selectors\BocAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\BocControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\BocControlSelectorBase.cs" />
-    <Compile Include="ControlSelection\IPerDisplayNameControlSelector.cs" />
-    <Compile Include="ControlSelection\IPerDomainPropertyControlSelector.cs" />
-    <Compile Include="ControlSelection\PerDisplayNameControlSelectionCommand.cs" />
-    <Compile Include="FluentControlSelection\PerDisplayNameControlSelectionCommandBuilder.cs" />
-    <Compile Include="ControlSelection\PerDomainPropertyControlSelectionCommand.cs" />
+    <Compile Include="ControlSelection\IDisplayNameControlSelector.cs" />
+    <Compile Include="ControlSelection\IDomainPropertyControlSelector.cs" />
+    <Compile Include="ControlSelection\DisplayNameControlSelectionCommand.cs" />
+    <Compile Include="FluentControlSelection\DisplayNameControlSelectionCommandBuilder.cs" />
+    <Compile Include="ControlSelection\DomainPropertyControlSelectionCommand.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelectorExtensions.cs" />
-    <Compile Include="FluentControlSelection\PerDomainPropertyControlSelectionCommandBuilder.cs" />
+    <Compile Include="FluentControlSelection\DomainPropertyControlSelectionCommandBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

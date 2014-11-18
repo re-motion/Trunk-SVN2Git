@@ -16,32 +16,24 @@
 // 
 
 using System;
+using Coypu;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the nth control of the given <typeparamref name="TControlObject"/> type within the given scope.
+  /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported
+  /// type of <typeparamref name="TControlObject"/> via the HTML ID.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerIndexControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public interface IHtmlIDControlSelector<out TControlObject> : IControlSelector
       where TControlObject : ControlObject
   {
-    private readonly IPerIndexControlSelector<TControlObject> _controlSelector;
-    private readonly int _index;
-
-    public PerIndexControlSelectionCommand ([NotNull] IPerIndexControlSelector<TControlObject> controlSelector, int index)
-    {
-      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-
-      _controlSelector = controlSelector;
-      _index = index;
-    }
-
-    public TControlObject Select (ControlSelectionContext context)
-    {
-      return _controlSelector.SelectPerIndex (context, _index);
-    }
+    /// <summary>
+    /// Selects the control within the given <paramref name="context"/> using the given <paramref name="htmlID"/>.
+    /// </summary>
+    /// <returns>The control object.</returns>
+    /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
+    TControlObject SelectPerHtmlID ([NotNull] ControlSelectionContext context, [NotNull] string htmlID);
   }
 }

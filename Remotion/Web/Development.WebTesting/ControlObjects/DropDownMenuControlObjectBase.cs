@@ -92,7 +92,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
       var dropDownMenuScope = GetDropDownMenuScope();
-      var scope = dropDownMenuScope.FindTagWithAttribute ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Text, text);
+      var scope = dropDownMenuScope.FindTagWithAttribute ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Content, text);
       return ClickItem (scope, completionDetection, modalDialogHandler);
     }
 

@@ -88,7 +88,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var dropDownMenu = home.GetDropDownMenu().ByText ("MyTitleText");
+      var dropDownMenu = home.GetDropDownMenu().ByTextContent ("MyTitleText");
       Assert.That (dropDownMenu.Scope.Id, Is.EqualTo ("body_MyDropDownMenu2"));
     }
 

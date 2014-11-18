@@ -196,7 +196,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
       base.AddDiagnosticMetadataAttributes (renderingContext);
 
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, renderingContext.Control.TitleText);
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, renderingContext.Control.TitleText);
     }
 
     private void RegisterEventHandlerScripts (DropDownMenuRenderingContext renderingContext)
@@ -331,7 +331,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
             diagnosticMetadataTriggersPostBack.ToString().ToLower(),
             DiagnosticMetadataAttributes.ItemID,
             menuItem.ItemID,
-            DiagnosticMetadataAttributes.Text,
+            DiagnosticMetadataAttributes.Content,
             diagnosticMetadataText);
       }
 

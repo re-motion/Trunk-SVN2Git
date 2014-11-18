@@ -28,15 +28,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
   /// domain object within the given scope.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerDomainPropertyControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public class DomainPropertyControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly IPerDomainPropertyControlSelector<TControlObject> _controlSelector;
+    private readonly IDomainPropertyControlSelector<TControlObject> _controlSelector;
     private readonly string _domainProperty;
     private readonly string _domainClass;
 
-    public PerDomainPropertyControlSelectionCommand (
-        [NotNull] IPerDomainPropertyControlSelector<TControlObject> controlSelector,
+    public DomainPropertyControlSelectionCommand (
+        [NotNull] IDomainPropertyControlSelector<TControlObject> controlSelector,
         [NotNull] string domainProperty,
         [CanBeNull] string domainClass = null)
     {

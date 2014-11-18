@@ -26,24 +26,24 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// <summary>
   /// Control object selector for <see cref="DropDownMenuControlObject"/>.
   /// </summary>
-  public class DropDownMenuSelector : TypedControlSelectorBase<DropDownMenuControlObject>, IPerTextControlSelector<DropDownMenuControlObject>
+  public class DropDownMenuSelector : TypedControlSelectorBase<DropDownMenuControlObject>, ITextContentControlSelector<DropDownMenuControlObject>
   {
     public DropDownMenuSelector ()
         : base ("DropDownMenu")
     {
     }
 
-    public DropDownMenuControlObject SelectPerText (ControlSelectionContext context, string text)
+    public DropDownMenuControlObject SelectPerTextContent (ControlSelectionContext context, string textContent)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("text", text);
+      ArgumentUtility.CheckNotNull ("textContent", textContent);
 
       var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },
-              { DiagnosticMetadataAttributes.Text, text }
+              { DiagnosticMetadataAttributes.Content, textContent }
           });
       return CreateControlObject (context, scope);
     }

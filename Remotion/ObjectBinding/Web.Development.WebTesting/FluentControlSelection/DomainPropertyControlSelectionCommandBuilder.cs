@@ -17,35 +17,41 @@
 
 using System;
 using JetBrains.Annotations;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Development.WebTesting.FluentControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.FluentControlSelection
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
-  /// Selection command builder, preparing a <see cref="PerItemIDControlSelectionCommand{TControlObject}"/>.
+  /// Selection command builder, preparing a <see cref="DomainPropertyControlSelectionCommand{TControlObject}"/>.
   /// </summary>
-  /// <typeparam name="TControlSelector">The <see cref="IPerItemIDControlSelector{TControlObject}"/> to use.</typeparam>
+  /// <typeparam name="TControlSelector">The <see cref="IDomainPropertyControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerItemIDControlSelectionCommandBuilder<TControlSelector, TControlObject>
+  public class DomainPropertyControlSelectionCommandBuilder<TControlSelector, TControlObject>
       : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      where TControlSelector : IPerItemIDControlSelector<TControlObject>
+      where TControlSelector : IDomainPropertyControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly string _itemID;
+    private readonly string _domainProperty;
+    private readonly string _domainClass;
 
-    public PerItemIDControlSelectionCommandBuilder ([NotNull] string itemID)
+    public DomainPropertyControlSelectionCommandBuilder ([NotNull] string domainProperty, [CanBeNull] string domainClass = null)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+      ArgumentUtility.CheckNotNullOrEmpty ("domainProperty", domainProperty);
+      ArgumentUtility.CheckNotEmpty ("domainClass", domainClass);
 
-      _itemID = itemID;
+      _domainProperty = domainProperty;
+      _domainClass = domainClass;
     }
 
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
 
-      return new PerItemIDControlSelectionCommand<TControlObject> (controlSelector, _itemID);
+      return new DomainPropertyControlSelectionCommand<TControlObject> (controlSelector, _domainProperty, _domainClass);
     }
   }
 }

@@ -63,7 +63,7 @@ namespace ActaNova.WebTesting.ControlObjects
         IModalDialogHandler modalDialogHandler)
     {
       var itemID = string.Format ("Popup{0}Button", buttonId);
-      var webButton = Children.GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), itemID));
+      var webButton = Children.GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), itemID));
       return webButton.Click (userDefinedCompletionDetection, modalDialogHandler);
     }
   }

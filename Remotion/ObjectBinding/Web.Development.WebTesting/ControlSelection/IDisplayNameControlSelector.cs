@@ -16,36 +16,27 @@
 // 
 
 using System;
+using Coypu;
 using JetBrains.Annotations;
-using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.ControlSelection
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given item ID
-  /// within the given scope.
+  /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported
+  /// type of <typeparamref name="TControlObject"/> via a display name.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerItemIDControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public interface IDisplayNameControlSelector<out TControlObject> : IControlSelector
       where TControlObject : ControlObject
   {
-    private readonly IPerItemIDControlSelector<TControlObject> _controlSelector;
-    private readonly string _itemID;
-
-    public PerItemIDControlSelectionCommand (
-        [NotNull] IPerItemIDControlSelector<TControlObject> controlSelector,
-        [NotNull] string itemID)
-    {
-      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
-
-      _controlSelector = controlSelector;
-      _itemID = itemID;
-    }
-
-    public TControlObject Select (ControlSelectionContext context)
-    {
-      return _controlSelector.SelectPerItemID (context, _itemID);
-    }
+    /// <summary>
+    /// Selects the control within the given <paramref name="context"/> using the given <paramref name="displayName"/>.
+    /// </summary>
+    /// <returns>The control object.</returns>
+    /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="displayName"/> are found.</exception>
+    /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
+    TControlObject SelectPerDisplayName ([NotNull] ControlSelectionContext context, [NotNull] string displayName);
   }
 }

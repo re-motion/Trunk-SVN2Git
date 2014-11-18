@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// Control object selector for <see cref="FormGridControlObject"/>.
   /// </summary>
   public class FormGridSelector
-      : TypedControlSelectorBase<FormGridControlObject>, IPerTitleControlSelector<FormGridControlObject>
+      : TypedControlSelectorBase<FormGridControlObject>, ITitleControlSelector<FormGridControlObject>
   {
     public FormGridSelector ()
         : base ("FormGrid")

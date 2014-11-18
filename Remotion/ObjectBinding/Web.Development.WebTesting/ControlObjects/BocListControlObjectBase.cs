@@ -116,7 +116,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
                       new ColumnDefinition (
                           s[DiagnosticMetadataAttributes.ItemID],
                           i + 1,
-                          s[DiagnosticMetadataAttributes.Text],
+                          s[DiagnosticMetadataAttributes.Content],
                           ColumnHasDiagnosticMetadata (s)))
               .ToList());
     }

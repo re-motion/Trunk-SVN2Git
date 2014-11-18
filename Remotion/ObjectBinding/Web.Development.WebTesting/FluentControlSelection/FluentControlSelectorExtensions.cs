@@ -32,29 +32,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelecti
   {
     /// <summary>
     /// Extension method for selecting a control by display name (using the
-    /// <see cref="PerDisplayNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="DisplayNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByDisplayName<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string displayName)
-        where TControlSelector : IPerDisplayNameControlSelector<TControlObject>
+        where TControlSelector : IDisplayNameControlSelector<TControlObject>
         where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
 
-      return fluentControlSelector.GetControl (new PerDisplayNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (displayName));
+      return fluentControlSelector.GetControl (new DisplayNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (displayName));
     }
 
     /// <summary>
     /// Extension method for selecting a control by the domain property it represetns (using the
-    /// <see cref="PerDomainPropertyControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="DomainPropertyControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByDomainProperty<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string domainProperty,
         [CanBeNull] string domainClass = null)
-        where TControlSelector : IPerDomainPropertyControlSelector<TControlObject>
+        where TControlSelector : IDomainPropertyControlSelector<TControlObject>
         where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelecti
       ArgumentUtility.CheckNotEmpty ("domainClass", domainClass);
 
       return fluentControlSelector.GetControl (
-          new PerDomainPropertyControlSelectionCommandBuilder<TControlSelector, TControlObject> (domainProperty, domainClass));
+          new DomainPropertyControlSelectionCommandBuilder<TControlSelector, TControlObject> (domainProperty, domainClass));
     }
   }
 }

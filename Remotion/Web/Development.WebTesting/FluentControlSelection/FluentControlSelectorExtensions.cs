@@ -30,61 +30,61 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
   {
     /// <summary>
     /// Extension method for selecting a control by HTML ID (using the
-    /// <see cref="PerHtmlIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="HtmlIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByID<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string id)
-        where TControlSelector : IPerHtmlIDControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : IHtmlIDControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
 
-      return fluentControlSelector.GetControl (new PerHtmlIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (id));
+      return fluentControlSelector.GetControl (new HtmlIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (id));
     }
 
     /// <summary>
     /// Extension method for selecting a control by index (using the
-    /// <see cref="PerIndexControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="IndexControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByIndex<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         int index)
-        where TControlSelector : IPerIndexControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : IIndexControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
 
-      return fluentControlSelector.GetControl (new PerIndexControlSelectionCommandBuilder<TControlSelector, TControlObject> (index));
+      return fluentControlSelector.GetControl (new IndexControlSelectionCommandBuilder<TControlSelector, TControlObject> (index));
     }
 
     /// <summary>
     /// Extension method for selecting a control by its local ID (using the
-    /// <see cref="PerLocalIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="LocalIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByLocalID<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string localID)
-        where TControlSelector : IPerLocalIDControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : ILocalIDControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
 
-      return fluentControlSelector.GetControl (new PerLocalIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (localID));
+      return fluentControlSelector.GetControl (new LocalIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (localID));
     }
 
     /// <summary>
     /// Extension method for selecting a control by title (using the
-    /// <see cref="PerTitleControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="TitleControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByTitle<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string title)
-        where TControlSelector : IPerTitleControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : ITitleControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("title", title);
 
-      return fluentControlSelector.GetControl (new PerTitleControlSelectionCommandBuilder<TControlSelector, TControlObject> (title));
+      return fluentControlSelector.GetControl (new TitleControlSelectionCommandBuilder<TControlSelector, TControlObject> (title));
     }
 
     /// <summary>
@@ -115,47 +115,47 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 
     /// <summary>
     /// Extension method for selecting a control by command name (using the
-    /// <see cref="PerCommandNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="CommandNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByCommandName<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string commandName)
-        where TControlSelector : IPerCommandNameControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : ICommandNameControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);
 
-      return fluentControlSelector.GetControl (new PerCommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (commandName));
+      return fluentControlSelector.GetControl (new CommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (commandName));
     }
 
     /// <summary>
     /// Extension method for selecting a control by item ID (using the
-    /// <see cref="PerItemIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="ItemIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
     public static TControlObject ByItemID<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string itemID)
-        where TControlSelector : IPerItemIDControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : IItemIDControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return fluentControlSelector.GetControl (new PerItemIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (itemID));
+      return fluentControlSelector.GetControl (new ItemIDControlSelectionCommandBuilder<TControlSelector, TControlObject> (itemID));
     }
 
     /// <summary>
     /// Extension method for selecting a control by text (using the
-    /// <see cref="PerTextControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
+    /// <see cref="TextContentControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
-    public static TControlObject ByText<TControlSelector, TControlObject> (
+    public static TControlObject ByTextContent<TControlSelector, TControlObject> (
         [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
         [NotNull] string text)
-        where TControlSelector : IPerTextControlSelector<TControlObject> where TControlObject : ControlObject
+        where TControlSelector : ITextContentControlSelector<TControlObject> where TControlObject : ControlObject
     {
       ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      return fluentControlSelector.GetControl (new PerTextControlSelectionCommandBuilder<TControlSelector, TControlObject> (text));
+      return fluentControlSelector.GetControl (new TextContentControlSelectionCommandBuilder<TControlSelector, TControlObject> (text));
     }
   }
 }

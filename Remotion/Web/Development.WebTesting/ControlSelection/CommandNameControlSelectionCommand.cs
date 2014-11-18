@@ -18,36 +18,34 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
+namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given display name
+  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given command name
   /// within the given scope.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerDisplayNameControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public class CommandNameControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly IPerDisplayNameControlSelector<TControlObject> _controlSelector;
-    private readonly string _displayName;
+    private readonly ICommandNameControlSelector<TControlObject> _controlSelector;
+    private readonly string _commandName;
 
-    public PerDisplayNameControlSelectionCommand (
-        [NotNull] IPerDisplayNameControlSelector<TControlObject> controlSelector,
-        [NotNull] string displayName)
+    public CommandNameControlSelectionCommand (
+        [NotNull] ICommandNameControlSelector<TControlObject> controlSelector,
+        [NotNull] string commandName)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);
 
       _controlSelector = controlSelector;
-      _displayName = displayName;
+      _commandName = commandName;
     }
 
     public TControlObject Select (ControlSelectionContext context)
     {
-      return _controlSelector.SelectPerDisplayName (context, _displayName);
+      return _controlSelector.SelectPerCommandName (context, _commandName);
     }
   }
 }

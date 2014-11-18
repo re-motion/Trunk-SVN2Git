@@ -32,7 +32,7 @@ namespace ActaNova.WebTesting.PageObjects
 
     public DropDownMenuControlObject GetWorkStepMenu ()
     {
-      return GetControl (new PerHtmlIDControlSelectionCommand<DropDownMenuControlObject> (new DropDownMenuSelector(), "MultiItemWorkStepMenu"));
+      return GetControl (new HtmlIDControlSelectionCommand<DropDownMenuControlObject> (new DropDownMenuSelector(), "MultiItemWorkStepMenu"));
     }
 
     public HtmlPageObject OpenRssFeed ()
@@ -41,7 +41,7 @@ namespace ActaNova.WebTesting.PageObjects
           "OpenRssFeed cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
-      var openRssFeedButton = GetControl (new PerHtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OpenRssFeedLink"));
+      var openRssFeedButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OpenRssFeedLink"));
       return openRssFeedButton.Click (Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
@@ -51,7 +51,7 @@ namespace ActaNova.WebTesting.PageObjects
       throw new NotSupportedException ("OpenHelp cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
-      var openHelpButton = GetControl (new PerHtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OnlineHelpLink"));
+      var openHelpButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OnlineHelpLink"));
       return openHelpButton.Click (Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
@@ -59,7 +59,7 @@ namespace ActaNova.WebTesting.PageObjects
     public ActaNovaWindowPageObject CreateBugReport ()
     {
       var createBugReportButton =
-          GetControl (new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
+          GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
       return createBugReportButton.Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Fehlerberichte/Wünsche");
     }
   }

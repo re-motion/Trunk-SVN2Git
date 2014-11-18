@@ -28,26 +28,26 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// </summary>
   public class WebButtonSelector
       : TypedControlSelectorBase<WebButtonControlObject>,
-          IPerTextControlSelector<WebButtonControlObject>,
-          IPerCommandNameControlSelector<WebButtonControlObject>,
-          IPerItemIDControlSelector<WebButtonControlObject>
+          ITextContentControlSelector<WebButtonControlObject>,
+          ICommandNameControlSelector<WebButtonControlObject>,
+          IItemIDControlSelector<WebButtonControlObject>
   {
     public WebButtonSelector ()
         : base ("WebButton")
     {
     }
 
-    public WebButtonControlObject SelectPerText (ControlSelectionContext context, string text)
+    public WebButtonControlObject SelectPerTextContent (ControlSelectionContext context, string textContent)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("text", text);
+      ArgumentUtility.CheckNotNull ("textContent", textContent);
 
       var scope = context.Scope.FindTagWithAttributes (
           "*",
           new Dictionary<string, string>
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },
-              { DiagnosticMetadataAttributes.Text, text }
+              { DiagnosticMetadataAttributes.Content, textContent }
           });
       return CreateControlObject (context, scope);
     }

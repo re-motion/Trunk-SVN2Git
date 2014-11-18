@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public class ImageButtonSelector
       : ControlSelectorBase<ImageButtonControlObject>,
           IFirstControlSelector<ImageButtonControlObject>,
-          IPerIndexControlSelector<ImageButtonControlObject>,
+          IIndexControlSelector<ImageButtonControlObject>,
           ISingleControlSelector<ImageButtonControlObject>
   {
     private const string c_inputTag = "input";

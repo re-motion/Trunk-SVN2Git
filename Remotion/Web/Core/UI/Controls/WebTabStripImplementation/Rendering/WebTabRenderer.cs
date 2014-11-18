@@ -109,7 +109,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
           renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, tab.ItemID);
 
         if (!string.IsNullOrEmpty (tab.Text))
-          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Text, tab.Text);
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, tab.Text);
       }
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span

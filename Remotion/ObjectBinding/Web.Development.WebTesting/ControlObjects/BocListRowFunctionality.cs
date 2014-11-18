@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var editCell = GetWellKnownEditCell();
 
-      var save = editCell.GetControl (new PerIndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 1));
+      var save = editCell.GetControl (new IndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 1));
       save.Click();
 
       return new BocListRowControlObject (_accessor, Context);
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var editCell = GetWellKnownEditCell();
 
-      var cancel = editCell.GetControl (new PerIndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 2));
+      var cancel = editCell.GetControl (new IndexControlSelectionCommand<CommandControlObject> (new CommandSelector(), 2));
       cancel.Click();
 
       return new BocListRowControlObject (_accessor, Context);

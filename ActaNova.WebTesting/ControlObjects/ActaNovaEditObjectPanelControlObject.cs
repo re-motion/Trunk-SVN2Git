@@ -26,7 +26,7 @@ namespace ActaNova.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var fullItemID = string.Format ("{0}Button", itemID);
-      var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), fullItemID));
+      var webButton = GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), fullItemID));
       return webButton.Click (completionDetection, modalDialogHandler);
     }
   }

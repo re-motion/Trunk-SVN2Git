@@ -225,7 +225,7 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (DiagnosticMetadataAttributes.ControlType, controlWithDiagnosticMetadata.ControlType);
 
       if (!string.IsNullOrEmpty (Text))
-        writer.AddAttribute (DiagnosticMetadataAttributes.Text, Text);
+        writer.AddAttribute (DiagnosticMetadataAttributes.Content, Text);
       
       if(!string.IsNullOrEmpty(CommandName))
         writer.AddAttribute (DiagnosticMetadataAttributes.CommandName, CommandName);

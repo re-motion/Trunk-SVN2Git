@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     public string GetText ()
     {
-      return Scope[DiagnosticMetadataAttributes.Text];
+      return Scope[DiagnosticMetadataAttributes.Content];
     }
 
     public bool IsSelected ()
@@ -78,7 +78,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.Text, text);
+      var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.Content, text);
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 

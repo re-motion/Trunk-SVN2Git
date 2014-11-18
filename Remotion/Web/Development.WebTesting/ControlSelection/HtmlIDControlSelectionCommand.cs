@@ -16,25 +16,34 @@
 // 
 
 using System;
-using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported
-  /// type of <typeparamref name="TControlObject"/> via their item ID.
+  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given ID within the
+  /// given scope.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public interface IPerItemIDControlSelector<out TControlObject> : IControlSelector
+  public class HtmlIDControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
       where TControlObject : ControlObject
   {
-    /// <summary>
-    /// Selects the control within the given <paramref name="context"/> using the given <paramref name="itemID"/>.
-    /// </summary>
-    /// <returns>The control object.</returns>
-    /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="itemID"/> are found.</exception>
-    /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
-    TControlObject SelectPerItemID ([NotNull] ControlSelectionContext context, [NotNull] string itemID);
+    private readonly IHtmlIDControlSelector<TControlObject> _controlSelector;
+    private readonly string _htmlID;
+
+    public HtmlIDControlSelectionCommand ([NotNull] IHtmlIDControlSelector<TControlObject> controlSelector, [NotNull] string htmlID)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
+      _controlSelector = controlSelector;
+      _htmlID = htmlID;
+    }
+
+    public TControlObject Select (ControlSelectionContext context)
+    {
+      return _controlSelector.SelectPerHtmlID (context, _htmlID);
+    }
   }
 }

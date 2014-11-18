@@ -151,7 +151,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.ItemID, Column.ItemID);
-      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Text, Column.ColumnTitle);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitle);
       Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 7.ToString());
       Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata, "true");
     }

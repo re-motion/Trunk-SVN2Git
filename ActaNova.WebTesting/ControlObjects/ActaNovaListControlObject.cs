@@ -49,7 +49,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNull ("filter", filter);
 
-      var textBox = GetTopBlock().GetControl (new PerLocalIDControlSelectionCommand<TextBoxControlObject> (new TextBoxSelector(), "TextFilterField"));
+      var textBox = GetTopBlock().GetControl (new LocalIDControlSelectionCommand<TextBoxControlObject> (new TextBoxSelector(), "TextFilterField"));
       textBox.FillWith (filter);
     }
 
@@ -60,7 +60,7 @@ namespace ActaNova.WebTesting.ControlObjects
     public void ClearFilter ()
     {
       var clearButton =
-          GetTopBlock().GetControl (new PerLocalIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "TextFilterClearButton"));
+          GetTopBlock().GetControl (new LocalIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "TextFilterClearButton"));
       clearButton.Click();
     }
 

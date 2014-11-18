@@ -28,7 +28,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public class AnchorSelector
       : ControlSelectorBase<AnchorControlObject>,
           IFirstControlSelector<AnchorControlObject>,
-          IPerIndexControlSelector<AnchorControlObject>,
+          IIndexControlSelector<AnchorControlObject>,
           ISingleControlSelector<AnchorControlObject>
   {
     private const string c_htmlAnchorTag = "a";

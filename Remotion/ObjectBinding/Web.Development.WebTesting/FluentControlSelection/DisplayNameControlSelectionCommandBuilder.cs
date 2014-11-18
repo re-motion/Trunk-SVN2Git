@@ -26,32 +26,29 @@ using Remotion.Web.Development.WebTesting.FluentControlSelection;
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
-  /// Selection command builder, preparing a <see cref="PerDomainPropertyControlSelectionCommand{TControlObject}"/>.
+  /// Selection command builder, preparing a <see cref="DisplayNameControlSelectionCommand{TControlObject}"/>.
   /// </summary>
-  /// <typeparam name="TControlSelector">The <see cref="IPerDomainPropertyControlSelector{TControlObject}"/> to use.</typeparam>
+  /// <typeparam name="TControlSelector">The <see cref="IDisplayNameControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerDomainPropertyControlSelectionCommandBuilder<TControlSelector, TControlObject>
+  public class DisplayNameControlSelectionCommandBuilder<TControlSelector, TControlObject>
       : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      where TControlSelector : IPerDomainPropertyControlSelector<TControlObject>
+      where TControlSelector : IDisplayNameControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly string _domainProperty;
-    private readonly string _domainClass;
+    private readonly string _displayName;
 
-    public PerDomainPropertyControlSelectionCommandBuilder ([NotNull] string domainProperty, [CanBeNull] string domainClass = null)
+    public DisplayNameControlSelectionCommandBuilder ([NotNull] string displayName)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("domainProperty", domainProperty);
-      ArgumentUtility.CheckNotEmpty ("domainClass", domainClass);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
 
-      _domainProperty = domainProperty;
-      _domainClass = domainClass;
+      _displayName = displayName;
     }
 
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
 
-      return new PerDomainPropertyControlSelectionCommand<TControlObject> (controlSelector, _domainProperty, _domainClass);
+      return new DisplayNameControlSelectionCommand<TControlObject> (controlSelector, _displayName);
     }
   }
 }

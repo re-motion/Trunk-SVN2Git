@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public class TextBoxSelector
       : ControlSelectorBase<TextBoxControlObject>,
           IFirstControlSelector<TextBoxControlObject>,
-          IPerIndexControlSelector<TextBoxControlObject>,
+          IIndexControlSelector<TextBoxControlObject>,
           ISingleControlSelector<TextBoxControlObject>
   {
     private const string c_htmlTextBoxTag = "input";

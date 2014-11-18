@@ -32,7 +32,7 @@ namespace ActaNova.WebTesting.ControlObjects
     public string GetCurrentApplicationContext ()
     {
       var currentApplicationContextLabel = GetControl (
-          new PerHtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "CurrentAppContextLabel"));
+          new HtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "CurrentAppContextLabel"));
 
       var currentApplicationContext = currentApplicationContextLabel.GetText();
 
@@ -71,7 +71,7 @@ namespace ActaNova.WebTesting.ControlObjects
     private string GetUserAndGroup ()
     {
       var currentUserAndGroup = GetControl (
-          new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
+          new HtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
               new BocReferenceValueSelector(),
               "SecurityManagerCurrentTenantControl_CurrentUserField"));
 
@@ -99,7 +99,7 @@ namespace ActaNova.WebTesting.ControlObjects
       if (isCommand)
       {
         var openButton = GetControl (
-            new PerHtmlIDControlSelectionCommand<CommandControlObject> (
+            new HtmlIDControlSelectionCommand<CommandControlObject> (
                 new CommandSelector(),
                 buttonId));
         openButton.Click();
@@ -114,7 +114,7 @@ namespace ActaNova.WebTesting.ControlObjects
       }
 
       return GetControl (
-          new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
+          new HtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
               new BocReferenceValueSelector(),
               "SecurityManagerCurrentTenantControl_DefaultGroupField"));
     }
@@ -125,13 +125,13 @@ namespace ActaNova.WebTesting.ControlObjects
     public BocReferenceValueControlObject OpenCurrentTenantControl ()
     {
       var openButton = GetControl (
-          new PerHtmlIDControlSelectionCommand<CommandControlObject> (
+          new HtmlIDControlSelectionCommand<CommandControlObject> (
               new CommandSelector(),
               "SecurityManagerCurrentTenantControl_CurrentTenantField_Command"));
       openButton.Click();
 
       return GetControl (
-          new PerHtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
+          new HtmlIDControlSelectionCommand<BocReferenceValueControlObject> (
               new BocReferenceValueSelector(),
               "SecurityManagerCurrentTenantControl_CurrentTenantField"));
     }

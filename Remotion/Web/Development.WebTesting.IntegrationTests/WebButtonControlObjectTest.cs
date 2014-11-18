@@ -86,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var webButton = home.GetWebButton().ByText ("AsyncButton");
+      var webButton = home.GetWebButton().ByTextContent ("AsyncButton");
       Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton2Async"));
     }
 
@@ -121,7 +121,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home = asyncWebButton.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Async"));
 
-      var hrefWebButton = home.GetWebButton().ByText ("HrefButton");
+      var hrefWebButton = home.GetWebButton().ByTextContent ("HrefButton");
       home = hrefWebButton.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
     }

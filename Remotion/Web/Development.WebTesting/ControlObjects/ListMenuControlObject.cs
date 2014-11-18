@@ -80,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
     {
-      var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Text, text);
+      var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Content, text);
       return ClickItem (itemScope, completionDetection, modalDialogHandler);
     }
 

@@ -18,34 +18,36 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.ControlSelection
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given text within the
-  /// given scope.
+  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given display name
+  /// within the given scope.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerTextControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public class DisplayNameControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly IPerTextControlSelector<TControlObject> _controlSelector;
-    private readonly string _text;
+    private readonly IDisplayNameControlSelector<TControlObject> _controlSelector;
+    private readonly string _displayName;
 
-    public PerTextControlSelectionCommand (
-        [NotNull] IPerTextControlSelector<TControlObject> controlSelector,
-        [NotNull] string text)
+    public DisplayNameControlSelectionCommand (
+        [NotNull] IDisplayNameControlSelector<TControlObject> controlSelector,
+        [NotNull] string displayName)
     {
-      ArgumentUtility.CheckNotNull ("controlSelector", text);
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("displayName", displayName);
 
       _controlSelector = controlSelector;
-      _text = text;
+      _displayName = displayName;
     }
 
     public TControlObject Select (ControlSelectionContext context)
     {
-      return _controlSelector.SelectPerText (context, _text);
+      return _controlSelector.SelectPerDisplayName (context, _displayName);
     }
   }
 }

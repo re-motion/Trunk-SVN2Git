@@ -572,7 +572,7 @@ namespace Remotion.Web.UI.Controls
           if (!string.IsNullOrEmpty (node.ItemID))
             writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, node.ItemID);
           if (!string.IsNullOrEmpty (node.Text))
-            writer.AddAttribute (DiagnosticMetadataAttributes.Text, node.Text);
+            writer.AddAttribute (DiagnosticMetadataAttributes.Content, node.Text);
           if(node.IsSelected)
             writer.AddAttribute (DiagnosticMetadataAttributes.WebTreeViewIsSelectedNode, "true");
           writer.AddAttribute (DiagnosticMetadataAttributes.WebTreeViewNumberOfChildren, node.Children.Count.ToString());

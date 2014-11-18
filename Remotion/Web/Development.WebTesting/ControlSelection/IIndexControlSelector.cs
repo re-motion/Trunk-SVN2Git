@@ -16,34 +16,24 @@
 // 
 
 using System;
+using Coypu;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given title within the
-  /// given scope.
+  /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported
+  /// type of <typeparamref name="TControlObject"/> via an index.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerTitleControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public interface IIndexControlSelector<out TControlObject> : IControlSelector
       where TControlObject : ControlObject
   {
-    private readonly IPerTitleControlSelector<TControlObject> _controlSelector;
-    private readonly string _title;
-
-    public PerTitleControlSelectionCommand ([NotNull] IPerTitleControlSelector<TControlObject> controlSelector, [NotNull] string title)
-    {
-      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("title", title);
-
-      _controlSelector = controlSelector;
-      _title = title;
-    }
-
-    public TControlObject Select (ControlSelectionContext context)
-    {
-      return _controlSelector.SelectPerTitle (context, _title);
-    }
+    /// <summary>
+    /// Selects the control within the given <paramref name="context"/> using the given <paramref name="index"/>.
+    /// </summary>
+    /// <returns>The control object.</returns>
+    /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
+    TControlObject SelectPerIndex ([NotNull] ControlSelectionContext context, int index);
   }
 }

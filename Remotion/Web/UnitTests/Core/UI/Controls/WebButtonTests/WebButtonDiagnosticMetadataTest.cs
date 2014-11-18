@@ -40,7 +40,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebButtonTests
 
       Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.ControlType + "=\"WebButton\""));
       Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.ItemID + "=\"" + webButton.ID + "\""));
-      Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.Text + "=\"" + webButton.Text + "\""));
+      Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.Content + "=\"" + webButton.Text + "\""));
       Assert.That (renderedText, Is.Not.StringContaining (DiagnosticMetadataAttributes.CommandName));
       Assert.That (renderedText, Is.StringContaining (DiagnosticMetadataAttributes.TriggersPostBack + "=\"true\""));
     }

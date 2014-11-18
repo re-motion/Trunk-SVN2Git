@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// Base implementation for <see cref="ControlObject"/> selector implementations.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public abstract class ControlSelectorBase<TControlObject> : IPerHtmlIDControlSelector<TControlObject>, IPerLocalIDControlSelector<TControlObject>
+  public abstract class ControlSelectorBase<TControlObject> : IHtmlIDControlSelector<TControlObject>, ILocalIDControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
     public TControlObject SelectPerHtmlID (ControlSelectionContext context, string htmlID)

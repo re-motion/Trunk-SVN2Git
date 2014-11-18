@@ -243,7 +243,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       var span = td.GetAssertedChildElement ("span", nodeIndex);
       span.AssertAttributeValueEquals ("id", _control.ClientID + "_" + itemIndex);
       span.AssertAttributeValueEquals (DiagnosticMetadataAttributes.ItemID, itemID);
-      span.AssertAttributeValueEquals (DiagnosticMetadataAttributes.Text, text);
+      span.AssertAttributeValueEquals (DiagnosticMetadataAttributes.Content, text);
       span.AssertChildElementCount (1);
 
       return span.GetAssertedChildElement ("a", 0);

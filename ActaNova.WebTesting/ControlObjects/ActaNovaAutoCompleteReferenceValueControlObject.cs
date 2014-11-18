@@ -28,8 +28,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       var additionalButtonsScope = GetAdditionalButtonsScope();
       var clearValueButton =
-          additionalButtonsScope.GetControl (
-              new PerLocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "ClearValueButton"));
+          additionalButtonsScope.GetControl (new LocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "ClearValueButton"));
 
       return clearValueButton.Click (completionDetection, modalDialogHandler);
     }
@@ -43,7 +42,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       var additionalButtonsScope = GetAdditionalButtonsScope();
       var editButton =
-          additionalButtonsScope.GetControl (new PerLocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "EditButton"));
+          additionalButtonsScope.GetControl (new LocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "EditButton"));
 
       return editButton.Click (completionDetection, modalDialogHandler);
     }
@@ -65,10 +64,11 @@ namespace ActaNova.WebTesting.ControlObjects
         [CanBeNull] IModalDialogHandler modalDialogHandler = null)
     {
       var scope = GetParentScope();
-      var searchButton = scope.GetControl (
-          new PerLocalIDControlSelectionCommand<WebButtonControlObject> (
-              new WebButtonSelector(),
-              "SelectRelatedObjectControlSearchReferencedObjectButton"));
+      var searchButton =
+          scope.GetControl (
+              new LocalIDControlSelectionCommand<WebButtonControlObject> (
+                  new WebButtonSelector(),
+                  "SelectRelatedObjectControlSearchReferencedObjectButton"));
       return searchButton.Click (completionDetection, modalDialogHandler);
     }
 
@@ -81,7 +81,7 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       var scope = GetParentScope();
       var newButton = scope.GetControl (
-          new PerLocalIDControlSelectionCommand<WebButtonControlObject> (
+          new LocalIDControlSelectionCommand<WebButtonControlObject> (
               new WebButtonSelector(),
               "SelectRelatedObjectControlCreateReferencedObjectButton"));
       return newButton.Click (completionDetection, modalDialogHandler);

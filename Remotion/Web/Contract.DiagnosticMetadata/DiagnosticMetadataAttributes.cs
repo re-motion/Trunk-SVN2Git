@@ -25,11 +25,11 @@ namespace Remotion.Web.Contract.DiagnosticMetadata
   public static class DiagnosticMetadataAttributes
   {
     public static readonly string CommandName = "data-command-name";
+    public static readonly string Content = "data-content";
     public static readonly string ControlType = "data-control-type";
     public static readonly string IndexInCollection = "data-index";
     public static readonly string IsReadOnly = "data-is-readonly";
     public static readonly string ItemID = "data-item-id";
-    public static readonly string Text = "data-text";
     public static readonly string TriggersNavigation = "data-triggers-navigation";
     public static readonly string TriggersPostBack = "data-triggers-postback";
 

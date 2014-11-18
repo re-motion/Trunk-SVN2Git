@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
-      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Text, "My_IndexColumn");
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, "My_IndexColumn");
     }
 
     private void RenderIndexDataCell (int indexOffset)

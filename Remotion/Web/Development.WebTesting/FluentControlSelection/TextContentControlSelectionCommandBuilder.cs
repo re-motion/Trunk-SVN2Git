@@ -18,32 +18,34 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.ControlSelection
+namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given local ID within
-  /// the given scope.
+  /// Selection command builder, preparing a <see cref="TextContentControlSelectionCommand{TControlObject}"/>.
   /// </summary>
+  /// <typeparam name="TControlSelector">The <see cref="ITextContentControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerLocalIDControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public class TextContentControlSelectionCommandBuilder<TControlSelector, TControlObject>
+      : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
+      where TControlSelector : ITextContentControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly IPerLocalIDControlSelector<TControlObject> _controlSelector;
-    private readonly string _localID;
+    private readonly string _textContent;
 
-    public PerLocalIDControlSelectionCommand ([NotNull] IPerLocalIDControlSelector<TControlObject> controlSelector, [NotNull] string localID)
+    public TextContentControlSelectionCommandBuilder ([NotNull] string textContent)
     {
-      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
+      ArgumentUtility.CheckNotNullOrEmpty ("textContent", textContent);
 
-      _controlSelector = controlSelector;
-      _localID = localID;
+      _textContent = textContent;
     }
 
-    public TControlObject Select (ControlSelectionContext context)
+    public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
-      return _controlSelector.SelectPerLocalID (context, _localID);
+      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
+
+      return new TextContentControlSelectionCommand<TControlObject> (controlSelector, _textContent);
     }
   }
 }

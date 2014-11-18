@@ -28,7 +28,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public class DropDownListSelector
       : ControlSelectorBase<DropDownListControlObject>,
           IFirstControlSelector<DropDownListControlObject>,
-          IPerIndexControlSelector<DropDownListControlObject>,
+          IIndexControlSelector<DropDownListControlObject>,
           ISingleControlSelector<DropDownListControlObject>
   {
     private const string c_htmlDropDownListTag = "select";

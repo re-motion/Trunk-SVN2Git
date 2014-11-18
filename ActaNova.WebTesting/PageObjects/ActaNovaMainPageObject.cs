@@ -32,7 +32,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var actualActionBehavior = completionDetection ?? Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
 
-      var webButton = GetControl (new PerItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "RefreshButton"));
+      var webButton = GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "RefreshButton"));
       return webButton.Click (actualActionBehavior);
     }
 

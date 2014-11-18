@@ -97,7 +97,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-      var menuItemScope = GetMainMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Text, text);
+      var menuItemScope = GetMainMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, text);
       return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
     }
 
@@ -177,7 +177,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       {
         ArgumentUtility.CheckNotNullOrEmpty ("text", text);
 
-        var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Text, text);
+        var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, text);
         return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
       }
 

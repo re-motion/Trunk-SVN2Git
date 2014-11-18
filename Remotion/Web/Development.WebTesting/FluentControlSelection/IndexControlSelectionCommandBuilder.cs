@@ -15,37 +15,33 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using System;
-using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
-  /// Selection command builder, preparing a <see cref="PerHtmlIDControlSelectionCommand{TControlObject}"/>.
+  /// Selection command builder, preparing a <see cref="IndexControlSelectionCommand{TControlObject}"/>.
   /// </summary>
-  /// <typeparam name="TControlSelector">The <see cref="IPerHtmlIDControlSelector{TControlObject}"/> to use.</typeparam>
+  /// <typeparam name="TControlSelector">The <see cref="IIndexControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerHtmlIDControlSelectionCommandBuilder<TControlSelector, TControlObject>
+  public class IndexControlSelectionCommandBuilder<TControlSelector, TControlObject>
       : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      where TControlSelector : IPerHtmlIDControlSelector<TControlObject>
+      where TControlSelector : IIndexControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly string _htmlID;
+    private readonly int _index;
 
-    public PerHtmlIDControlSelectionCommandBuilder ([NotNull] string htmlID)
+    public IndexControlSelectionCommandBuilder (int index)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
-
-      _htmlID = htmlID;
+      _index = index;
     }
 
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
 
-      return new PerHtmlIDControlSelectionCommand<TControlObject> (controlSelector, _htmlID);
+      return new IndexControlSelectionCommand<TControlObject> (controlSelector, _index);
     }
   }
 }

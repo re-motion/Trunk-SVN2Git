@@ -33,8 +33,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
   /// </summary>
   public abstract class BocControlSelectorBase<TControlObject>
       : TypedControlSelectorBase<TControlObject>,
-          IPerDisplayNameControlSelector<TControlObject>,
-          IPerDomainPropertyControlSelector<TControlObject>
+          IDisplayNameControlSelector<TControlObject>,
+          IDomainPropertyControlSelector<TControlObject>
       where TControlObject : BocControlObject
   {
     protected BocControlSelectorBase ([NotNull] string controlType)

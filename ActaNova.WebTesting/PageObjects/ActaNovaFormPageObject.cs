@@ -28,13 +28,13 @@ namespace ActaNova.WebTesting.PageObjects
     public UnspecifiedPageObject BeginActivity ()
     {
       var beginActivityButton =
-          GetControl (new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BeginActivityButton"));
+          GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BeginActivityButton"));
       return beginActivityButton.Click();
     }
 
     public string GetCurrentActivityName ()
     {
-      var label = GetControl (new PerHtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "NavigationControl_CurrentItemLabel"));
+      var label = GetControl (new HtmlIDControlSelectionCommand<LabelControlObject> (new LabelSelector(), "NavigationControl_CurrentItemLabel"));
       return label.GetText();
     }
 
@@ -42,7 +42,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var gotoPreviousButton =
           GetControl (
-              new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoPreviousButton"));
+              new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoPreviousButton"));
       return gotoPreviousButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
     }
 
@@ -50,13 +50,13 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var gotoNextButton =
           GetControl (
-              new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoNextButton"));
+              new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoNextButton"));
       return gotoNextButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
     }
 
     public ActaNovaTreePopupListControlObject HoverWorkStepsControl ()
     {
-      var workStepsControlScope = GetControl (new PerHtmlIDControlSelectionCommand<ScopeControlObject> (new ScopeSelector(), "WorkStepsControl"));
+      var workStepsControlScope = GetControl (new HtmlIDControlSelectionCommand<ScopeControlObject> (new ScopeSelector(), "WorkStepsControl"));
       workStepsControlScope.Scope.Hover();
 
       return workStepsControlScope.GetControl (
@@ -65,13 +65,13 @@ namespace ActaNova.WebTesting.PageObjects
 
     public UnspecifiedPageObject PressPinButton ()
     {
-      var pinButton = GetControl (new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PinButton"));
+      var pinButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PinButton"));
       return pinButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
     }
 
     public string GetPermalink ()
     {
-      var permalinkButton = GetControl (new PerHtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "PermalinkButton"));
+      var permalinkButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "PermalinkButton"));
       permalinkButton.Click (Continue.Immediately(), HandleModalDialog.Accept());
 
       var permalink = permalinkButton.Scope["href"].Replace ("/?", "/Main.wxe?");
@@ -80,7 +80,7 @@ namespace ActaNova.WebTesting.PageObjects
 
     public /*ActaNovaPrintPageObject*/ ActaNovaPageObject Print ()
     {
-      var printButton = GetControl (new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PrintButton"));
+      var printButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PrintButton"));
       return printButton.Click().ExpectNewWindow< /*ActaNovaPrintPageObject*/ ActaNovaPageObject> ("Untitled Page");
     }
 
@@ -89,14 +89,14 @@ namespace ActaNova.WebTesting.PageObjects
       throw new NotSupportedException ("OpenHelp cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
-      var openHelpButton = GetControl (new PerHtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OnlineHelpLink"));
+      var openHelpButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OnlineHelpLink"));
       return openHelpButton.Click (Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
 
     public ActaNovaWindowPageObject CreateBugReport ()
     {
-      var bugReportButton = GetControl (new PerHtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
+      var bugReportButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
       return bugReportButton.Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Fehlerberichte/Wünsche");
     }
 
@@ -104,7 +104,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var additionalCommandsMenu =
           GetControl (
-              new PerHtmlIDControlSelectionCommand<DropDownMenuControlObject> (new DropDownMenuSelector(), "AdditionalCommandsMenu_Boc_DropDownMenu"));
+              new HtmlIDControlSelectionCommand<DropDownMenuControlObject> (new DropDownMenuSelector(), "AdditionalCommandsMenu_Boc_DropDownMenu"));
       return additionalCommandsMenu;
     }
   }

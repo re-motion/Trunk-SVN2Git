@@ -23,29 +23,29 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.Web.Development.WebTesting.FluentControlSelection
 {
   /// <summary>
-  /// Selection command builder, preparing a <see cref="PerLocalIDControlSelectionCommand{TControlObject}"/>.
+  /// Selection command builder, preparing a <see cref="CommandNameControlSelectionCommand{TControlObject}"/>.
   /// </summary>
-  /// <typeparam name="TControlSelector">The <see cref="IPerLocalIDControlSelector{TControlObject}"/> to use.</typeparam>
+  /// <typeparam name="TControlSelector">The <see cref="ICommandNameControlSelector{TControlObject}"/> to use.</typeparam>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class PerLocalIDControlSelectionCommandBuilder<TControlSelector, TControlObject>
+  public class CommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject>
       : IControlSelectionCommandBuilder<TControlSelector, TControlObject>
-      where TControlSelector : IPerLocalIDControlSelector<TControlObject>
+      where TControlSelector : ICommandNameControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
-    private readonly string _localID;
+    private readonly string _commandName;
 
-    public PerLocalIDControlSelectionCommandBuilder ([NotNull] string localID)
+    public CommandNameControlSelectionCommandBuilder ([NotNull] string commandName)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
+      ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);
 
-      _localID = localID;
+      _commandName = commandName;
     }
 
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
 
-      return new PerLocalIDControlSelectionCommand<TControlObject> (controlSelector, _localID);
+      return new CommandNameControlSelectionCommand<TControlObject> (controlSelector, _commandName);
     }
   }
 }

@@ -16,25 +16,34 @@
 // 
 
 using System;
-using Coypu;
 using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported
-  /// type of <typeparamref name="TControlObject"/> via a title.
+  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given local ID within
+  /// the given scope.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public interface IPerTitleControlSelector<out TControlObject> : IControlSelector
+  public class LocalIDControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
       where TControlObject : ControlObject
   {
-    /// <summary>
-    /// Selects the control within the given <paramref name="context"/> using the given <paramref name="title"/>.
-    /// </summary>
-    /// <returns>The control object.</returns>
-    /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="title"/> are found.</exception>
-    /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
-    TControlObject SelectPerTitle ([NotNull] ControlSelectionContext context, [NotNull] string title);
+    private readonly ILocalIDControlSelector<TControlObject> _controlSelector;
+    private readonly string _localID;
+
+    public LocalIDControlSelectionCommand ([NotNull] ILocalIDControlSelector<TControlObject> controlSelector, [NotNull] string localID)
+    {
+      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("localID", localID);
+
+      _controlSelector = controlSelector;
+      _localID = localID;
+    }
+
+    public TControlObject Select (ControlSelectionContext context)
+    {
+      return _controlSelector.SelectPerLocalID (context, _localID);
+    }
   }
 }

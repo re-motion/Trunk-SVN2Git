@@ -33,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public abstract class TypedControlSelectorBase<TControlObject>
       : ControlSelectorBase<TControlObject>,
           IFirstControlSelector<TControlObject>,
-          IPerIndexControlSelector<TControlObject>,
+          IIndexControlSelector<TControlObject>,
           ISingleControlSelector<TControlObject>
       where TControlObject : WebFormsControlObjectWithDiagnosticMetadata
   {
