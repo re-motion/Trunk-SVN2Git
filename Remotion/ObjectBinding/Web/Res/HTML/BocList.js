@@ -120,7 +120,7 @@ function BocList_InitializeList(bocList, selectRowSelectorControlName, selectAll
   selectedRows.OnSelectionChanged (bocList, true);
 
   // Add diganostic metadata for web testing framework (actually: should only be rendered with IRenderingFeatures.EnableDiagnosticMetadata on)
-  bocList.attr('data-boclist-is-initialized', 'true');
+  $(bocList).attr('data-boclist-is-initialized', 'true');
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl)
