@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
   /// </summary>
   public static class DiagnosticMetadataAttributesForObjectBinding
   {
-    public static readonly string DisplayName = "data-displayname";
+    public static readonly string DisplayName = "data-display-name";
     public static readonly string IsBound = "data-is-bound";
     public static readonly string BoundType = "data-bound-type";
     public static readonly string BoundProperty = "data-bound-property";
@@ -38,14 +38,16 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
 
     public static readonly string BocEnumValueStyle = "data-bocenumvalue-style";
 
+    public static readonly string BocListCellContents = "data-boclist-cell-contents";
+    public static readonly string BocListCellIndex = "data-boclist-cell-index";
+    public static readonly string BocListColumnHasDiagnosticMetadata = "data-boclist-column-has-dma";
+    // Note: do not change value without chaning usages in JavaScript files.
     public static readonly string BocListHasFakeTableHead = "data-boclist-has-fake-table-head";
+    // Note: do not change value without chaning usages in JavaScript files.
     public static readonly string BocListIsInitialized = "data-boclist-is-initialized";
     public static readonly string BocListNumberOfPages = "data-boclist-number-of-pages";
-    public static readonly string BocListColumnHasDiagnosticMetadata = "data-boclist-has-dma";
     public static readonly string BocListRowIndex = "data-boclist-row-index";
-    public static readonly string BocListCellIndex = "data-boclist-cell-index";
     public static readonly string BocListWellKnownEditCell = "data-boclist-wellknown-cell-edit";
     public static readonly string BocListWellKnownRowDropDownMenuCell = "data-boclist-wellknown-cell-dropdownmenu";
-    public static readonly string BocListCellContents = "data-boclist-cell-contents";
   }
 }

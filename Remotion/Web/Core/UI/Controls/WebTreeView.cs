@@ -575,7 +575,7 @@ namespace Remotion.Web.UI.Controls
             writer.AddAttribute (DiagnosticMetadataAttributes.Text, node.Text);
           if(node.IsSelected)
             writer.AddAttribute (DiagnosticMetadataAttributes.WebTreeViewIsSelectedNode, "true");
-          writer.AddAttribute (DiagnosticMetadataAttributes.WebTreeViewChildren, node.Children.Count.ToString());
+          writer.AddAttribute (DiagnosticMetadataAttributes.WebTreeViewNumberOfChildren, node.Children.Count.ToString());
           writer.AddAttribute (DiagnosticMetadataAttributes.IndexInCollection, (i + 1).ToString());
         }
 
