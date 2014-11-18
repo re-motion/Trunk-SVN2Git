@@ -16,35 +16,43 @@
 // 
 
 using System;
+using log4net;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 {
   /// <summary>
-  /// Blocks until the WXE postback sequence number (for the current frame) has increased by the given amount.
+  /// Blocks until the WXE postback sequence number (for the current <see cref="PageObjectContext"/>) has increased by the given amount.
   /// </summary>
-  public class WxePostBackCompletionDetectionStrategy : WxePostBackInCompletionDetectionStrategy
+  public class WxePostBackCompletionDetectionStrategy : ICompletionDetectionStrategy
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxePostBackCompletionDetectionStrategy));
+    private readonly int _expectedWxePostBackSequenceNumberIncrease;
+
     public WxePostBackCompletionDetectionStrategy (int expectedWxePostBackSequenceNumberIncrease)
-        : base (expectedWxePostBackSequenceNumberIncrease)
     {
+      _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
     }
 
-    public override object PrepareWaitForCompletion (PageObjectContext context)
+    public object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      PageObjectContext = context;
-      return base.PrepareWaitForCompletion (context);
+      return WxeCompletionDetectionHelpers.GetWxePostBackSequenceNumber (context);
     }
 
-    public override void WaitForCompletion (PageObjectContext context, object state)
+    public void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);
 
-      PageObjectContext = context;
-      base.WaitForCompletion (context, state);
+      var oldWxePostBackSequenceNumber = (int) state;
+
+      WxeCompletionDetectionHelpers.WaitForExpectedWxePostBackSequenceNumber (
+          s_log,
+          context,
+          oldWxePostBackSequenceNumber,
+          _expectedWxePostBackSequenceNumberIncrease);
     }
   }
 }

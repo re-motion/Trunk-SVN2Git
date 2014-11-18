@@ -101,7 +101,11 @@
     <Compile Include="BrowserFactory.cs" />
     <Compile Include="CompletionDetectionImplementation\CompletionDetectorBuilder.cs" />
     <Compile Include="CompletionDetectionImplementation\ModalDialogHandler.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionStrategyBase.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionHelpers.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxeResetInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxePostBackCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxePostBackInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionImplementation\WxeResetCompletionDetectionStrategy.cs" />
     <Compile Include="Configuration\WebTestingConstants.cs" />
     <Compile Include="ControlObjectContext.cs" />
     <Compile Include="ControlObjects\ImageButtonControlObject.cs" />
@@ -228,13 +232,9 @@
     <Compile Include="FinishInputWithFluentInterface.cs" />
     <Compile Include="Wxe.cs" />
     <Compile Include="CompletionDetectionImplementation\NullCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxePostBackInCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxePostBackCompletionDetectionStrategy.cs" />
     <Compile Include="ICompletionDetectionStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxeResetInCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxeResetCompletionDetectionStrategy.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="Configuration\WebTestingConfiguration.cs" />
     <Compile Include="WebTestObject.cs" />
