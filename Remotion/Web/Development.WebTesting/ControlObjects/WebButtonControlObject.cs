@@ -30,6 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);

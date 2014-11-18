@@ -31,6 +31,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
       where TControlSelector : ISingleControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
+    /// <inheritdoc/>
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);

@@ -20,16 +20,33 @@ using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 
 namespace Remotion.Web.Development.WebTesting
 {
+  /// <summary>
+  /// Entry point of the fluent interface for building <see cref="IModalDialogHandler"/> instances.
+  /// </summary>
   public static class HandleModalDialog
   {
+    /// <summary>
+    /// Accept the modal dialog.
+    /// </summary>
     public static IModalDialogHandler Accept ()
     {
       return new ModalDialogHandler (true);
     }
 
+    /// <summary>
+    /// Cancel the modal dialog.
+    /// </summary>
     public static IModalDialogHandler Cancel ()
     {
       return new ModalDialogHandler (false);
+    }
+
+    /// <summary>
+    /// No modal dialog handling required.
+    /// </summary>
+    public static IModalDialogHandler None ()
+    {
+      return null;
     }
   }
 }

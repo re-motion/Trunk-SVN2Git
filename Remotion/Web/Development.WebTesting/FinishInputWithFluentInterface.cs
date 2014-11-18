@@ -25,8 +25,19 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class FinishInput
   {
+    /// <summary>
+    /// Finish promptly after entering the text.
+    /// </summary>
     public static readonly FinishInputWithAction Promptly = s => { };
+
+    /// <summary>
+    /// Finish entering the text by switching focus using the Tab key. Triggers the ASP.NET postback.
+    /// </summary>
     public static readonly FinishInputWithAction WithTab = s => s.SendKeysFixed (Keys.Tab);
+
+    /// <summary>
+    /// Finish entering the text by pressing the Enter key. Triggers the ASP.NET postback in many situations.
+    /// </summary>
     // Todo RM-6297: Why does PressEnter not trigger an auto postback in IE? Is this a bug? See BocListCO.GoToSpecificPage().
     public static readonly FinishInputWithAction WithEnter = s => s.SendKeysFixed (Keys.Enter);
   }

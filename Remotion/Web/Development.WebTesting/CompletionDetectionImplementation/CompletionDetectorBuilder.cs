@@ -34,11 +34,13 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       _completionDetectionStrategies = new List<ICompletionDetectionStrategy>();
     }
 
+    /// <inheritdoc/>
     public ICompletionDetector Build ()
     {
       return new CompletionDetector (_completionDetectionStrategies);
     }
 
+    /// <inheritdoc/>
     public IAdvancedCompletionDetection And (ICompletionDetectionStrategy completionDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("completionDetectionStrategy", completionDetectionStrategy);

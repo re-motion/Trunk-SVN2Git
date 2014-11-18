@@ -41,6 +41,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
       _itemID = itemID;
     }
 
+    /// <inheritdoc/>
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);

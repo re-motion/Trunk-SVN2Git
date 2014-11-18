@@ -43,6 +43,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _textContent = textContent;
     }
 
+    /// <inheritdoc/>
     public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectPerTextContent (context, _textContent);

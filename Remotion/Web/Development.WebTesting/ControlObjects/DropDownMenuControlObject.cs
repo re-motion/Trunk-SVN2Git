@@ -30,6 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     protected override void OpenDropDownMenu ()
     {
       var dropDownMenuButtonScope = Scope.FindCss ("a.DropDownMenuButton");

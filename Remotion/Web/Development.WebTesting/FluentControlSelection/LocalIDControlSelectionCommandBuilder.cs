@@ -41,6 +41,7 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
       _localID = localID;
     }
 
+    /// <inheritdoc/>
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);

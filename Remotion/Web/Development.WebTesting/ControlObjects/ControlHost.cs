@@ -36,6 +36,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       _context = context;
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

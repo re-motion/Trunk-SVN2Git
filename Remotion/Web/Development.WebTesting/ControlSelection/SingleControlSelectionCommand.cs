@@ -37,6 +37,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _controlSelector = controlSelector;
     }
 
+    /// <inheritdoc/>
     public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectSingle (context);

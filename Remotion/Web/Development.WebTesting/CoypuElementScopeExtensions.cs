@@ -21,7 +21,6 @@ using System.Windows.Forms;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
 

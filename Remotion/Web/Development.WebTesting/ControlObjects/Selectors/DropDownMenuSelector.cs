@@ -33,6 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
     }
 
+    /// <inheritdoc/>
     public DropDownMenuControlObject SelectPerTextContent (ControlSelectionContext context, string textContent)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -48,6 +49,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override DropDownMenuControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

@@ -32,11 +32,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope.Text.Trim();
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       throw new NotSupportedException ("The LabelControlObject does not support any interaction.");

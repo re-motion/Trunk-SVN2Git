@@ -26,11 +26,29 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IControlObjectWithRowsWhereColumnContains<TRowControlObject>
       where TRowControlObject : ControlObject
   {
+    /// <summary>
+    /// Start of the fluent interface for selecting a row.
+    /// </summary>
     IControlObjectWithRowsWhereColumnContains<TRowControlObject> GetRowWhere ();
+
+    /// <summary>
+    /// Short for explicitly implemented <see cref="ColumnWithItemIDContains"/>.
+    /// </summary>
     TRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText);
 
+    /// <summary>
+    /// Selects the row which contains the <paramref name="containsCellText"/> in the column given by <paramref name="itemID"/>.
+    /// </summary>
     TRowControlObject ColumnWithItemIDContains ([NotNull] string itemID, [NotNull] string containsCellText);
+
+    /// <summary>
+    /// Selects the cell which contains the <paramref name="containsCellText"/> in the column given by <paramref name="index"/>.
+    /// </summary>
     TRowControlObject ColumnWithIndexContains (int index, [NotNull] string containsCellText);
-    TRowControlObject ColumnWithTitleContains ([NotNull] string text, [NotNull] string containsCellText);
+
+    /// <summary>
+    /// Selects the cell which contains the <paramref name="containsCellText"/> in the column given by <paramref name="title"/>.
+    /// </summary>
+    TRowControlObject ColumnWithTitleContains ([NotNull] string title, [NotNull] string containsCellText);
   }
 }

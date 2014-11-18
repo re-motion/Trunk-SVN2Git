@@ -29,6 +29,10 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
       where TControlSelector : IControlSelector
       where TControlObject : ControlObject
   {
+    /// <summary>
+    /// Connects the selected <typeparamref name="TControlSelector"/> with its parameters and returns the
+    /// <see cref="IControlSelectionCommand{TControlObject}"/>.
+    /// </summary>
     IControlSelectionCommand<TControlObject> Using ([NotNull] TControlSelector strategy);
   }
 }

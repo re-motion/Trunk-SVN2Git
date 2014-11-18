@@ -37,6 +37,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
     }
 
+    /// <inheritdoc/>
     public WebButtonControlObject SelectPerTextContent (ControlSelectionContext context, string textContent)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -52,6 +53,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public WebButtonControlObject SelectPerCommandName (ControlSelectionContext context, string commandName)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -67,6 +69,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public WebButtonControlObject SelectPerItemID (ControlSelectionContext context, string itemID)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -82,6 +85,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override WebButtonControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

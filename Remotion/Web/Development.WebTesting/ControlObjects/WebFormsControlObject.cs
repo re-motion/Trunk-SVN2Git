@@ -31,6 +31,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       return Continue.When (Wxe.PostBackCompleted);

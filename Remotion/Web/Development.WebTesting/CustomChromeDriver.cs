@@ -53,12 +53,5 @@ namespace Remotion.Web.Development.WebTesting
           driverService,
           chromeOptions);
     }
-
-    private static string GetUserDataDirPath ()
-    {
-      var path = Path.Combine (Path.GetDirectoryName (typeof (CustomChromeDriver).Assembly.CodeBase), "..", "..", "ChromeUserDataDir");
-      path = path.Substring ("file:/".Length);
-      return Path.GetFullPath (path);
-    }
   }
 }

@@ -26,6 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// </summary>
   public class ScopeSelector : ControlSelectorBase<ScopeControlObject>
   {
+    /// <inheritdoc/>
     protected override ScopeControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

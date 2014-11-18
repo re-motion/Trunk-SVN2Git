@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using Coypu;
 using JetBrains.Annotations;
 using log4net;
@@ -189,19 +188,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return this;
     }
 
-    public TRowControlObject GetRow (string columnItemID)
+    public TRowControlObject GetRow (string itemID)
     {
-      return GetRow().WithColumnItemID (columnItemID);
+      return GetRow().WithItemID (itemID);
     }
 
-    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithColumnItemID (string columnItemID)
+    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithItemID (string itemID)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",
           DiagnosticMetadataAttributes.ItemID,
-          columnItemID);
+          itemID);
       return GetRowByCssSelector (cssSelector);
     }
 

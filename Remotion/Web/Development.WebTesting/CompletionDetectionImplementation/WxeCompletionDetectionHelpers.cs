@@ -31,6 +31,9 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     private const string c_wxeFunctionToken = "WxeFunctionToken";
     private const string c_wxePostBackSequenceNumberFieldId = "wxePostBackSequenceNumberField";
 
+    /// <summary>
+    /// Returns the current WXE postback sequence number in the given <paramref name="context"/>.
+    /// </summary>
     public static int GetWxePostBackSequenceNumber ([NotNull] PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -39,6 +42,9 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return RetryUntilTimeout.Run (() => int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value));
     }
 
+    /// <summary>
+    /// Returns the current WXE function token in the given <paramref name="context"/>.
+    /// </summary>
     public static string GetWxeFunctionToken ([NotNull] PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -47,6 +53,10 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return RetryUntilTimeout.Run (() => context.Scope.FindId (c_wxeFunctionToken).Value);
     }
 
+    /// <summary>
+    /// Waits for the WXE postback sequence number in the given <paramref name="context"/> to reach
+    /// <paramref name="expectedWxePostBackSequenceNumber"/>.
+    /// </summary>
     public static void WaitForExpectedWxePostBackSequenceNumber (
         [NotNull] ILog log,
         [NotNull] PageObjectContext context,
@@ -66,6 +76,10 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
           string.Format ("Expected WXE-PSN to be '{0}', but it actually is '{1}'", expectedWxePostBackSequenceNumber, newWxePostBackSequenceNumber));
     }
 
+    /// <summary>
+    /// Waits for the WXE postback sequence number in the given <paramref name="context"/> to increase from
+    /// <paramref name="oldWxePostBackSequenceNumber"/> by <paramref name="expectedWxePostBackSequenceNumberIncrease"/>.
+    /// </summary>
     public static void WaitForExpectedWxePostBackSequenceNumber (
         [NotNull] ILog log,
         [NotNull] PageObjectContext context,
@@ -82,6 +96,9 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       WaitForExpectedWxePostBackSequenceNumber (log, context, expectedWxePostBackSequenceNumber);
     }
 
+    /// <summary>
+    /// Waits for the WXE function token to change from <paramref name="oldWxeFunctionToken"/> to a new function token.
+    /// </summary>
     public static void WaitForNewWxeFunctionToken ([NotNull] ILog log, [NotNull] PageObjectContext context, [NotNull] string oldWxeFunctionToken)
     {
       ArgumentUtility.CheckNotNull ("log", log);

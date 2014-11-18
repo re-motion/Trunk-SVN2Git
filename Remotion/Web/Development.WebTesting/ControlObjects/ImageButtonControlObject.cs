@@ -33,6 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
@@ -40,6 +41,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);

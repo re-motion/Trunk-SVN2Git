@@ -43,6 +43,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _commandName = commandName;
     }
 
+    /// <inheritdoc/>
     public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectPerCommandName (context, _commandName);

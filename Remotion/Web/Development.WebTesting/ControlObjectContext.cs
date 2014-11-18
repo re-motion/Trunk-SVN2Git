@@ -41,16 +41,19 @@ namespace Remotion.Web.Development.WebTesting
       _pageObject = pageObject;
     }
 
+    /// <inheritdoc/>
     public override BrowserSession Browser
     {
       get { return PageObject.Context.Browser; }
     }
 
+    /// <inheritdoc/>
     public override BrowserWindow Window
     {
       get { return PageObject.Context.Window; }
     }
 
+    /// <inheritdoc/>
     public ElementScope RootScope
     {
       get { return PageObject.Scope; }
@@ -84,6 +87,7 @@ namespace Remotion.Web.Development.WebTesting
       return CloneForControl (PageObject, scope);
     }
 
+    /// <inheritdoc/>
     public override ControlObjectContext CloneForControl (PageObject pageObject, ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("pageObject", pageObject);
@@ -92,6 +96,7 @@ namespace Remotion.Web.Development.WebTesting
       return new ControlObjectContext (pageObject, scope);
     }
 
+    /// <inheritdoc/>
     public override PageObjectContext CloneForFrame (ElementScope frameScope)
     {
       ArgumentUtility.CheckNotNull ("frameScope", frameScope);

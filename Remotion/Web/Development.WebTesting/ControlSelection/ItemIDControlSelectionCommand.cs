@@ -43,6 +43,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _itemID = itemID;
     }
 
+    /// <inheritdoc/>
     public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectPerItemID (context, _itemID);

@@ -39,6 +39,7 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
       _index = index;
     }
 
+    /// <inheritdoc/>
     public TControlObject Select (ControlSelectionContext context)
     {
       return _controlSelector.SelectPerIndex (context, _index);

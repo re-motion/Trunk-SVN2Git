@@ -27,6 +27,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Utilities
 {
+  /// <summary>
+  /// Utility method to capture screenshots of web test "situations".
+  /// </summary>
   public class ScreenshotCapturer
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (ScreenshotCapturer));
@@ -59,6 +62,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       EnsureScreenshotDirectoryExists();
     }
 
+    /// <summary>
+    /// Takes a screenshot of the whole desktop.
+    /// </summary>
+    /// <param name="baseFileName">Base file name, will be combined with the screenshot directory, "_Desktop" and the file ending to the final file path.</param>
     public void TakeDesktopScreenshot ([NotNull] string baseFileName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("baseFileName", baseFileName);
@@ -84,7 +91,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       }
     }
 
-
+    /// <summary>
+    /// Takes a screenshot of the browser window by using the web driver's screenshot interface.
+    /// </summary>
+    /// <param name="baseFileName">Base file name, will be combined with the screenshot directory, "_Browser" and the file ending to the final file path.</param>
+    /// <param name="browser">The browser session of which the screenshot should be taken.</param>
     public void TakeBrowserScreenshot ([NotNull] string baseFileName, [NotNull] BrowserSession browser)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("baseFileName", baseFileName);

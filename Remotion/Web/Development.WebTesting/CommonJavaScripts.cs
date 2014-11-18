@@ -24,6 +24,9 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class CommonJavaScripts
   {
+    /// <summary>
+    /// Closes the current window.
+    /// </summary>
     public static readonly string SelfClose = "self.close();";
   }
 }

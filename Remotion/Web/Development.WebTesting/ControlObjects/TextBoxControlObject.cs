@@ -33,11 +33,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope.Value; // do not trim
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         ICompletionDetection completionDetection = null,
@@ -48,6 +50,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     /// <remarks>
     /// The default <see cref="ICompletionDetection"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
     /// </remarks>
@@ -75,6 +78,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetActualCompletionDetector (userDefinedCompletionDetection);
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);

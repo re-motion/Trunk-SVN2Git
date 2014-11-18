@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -55,6 +54,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       get { return _controlType; }
     }
 
+    /// <inheritdoc/>
     public TControlObject SelectFirst (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -63,6 +63,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public TControlObject SelectSingle (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -72,6 +73,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public TControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
       ArgumentUtility.CheckNotNull ("context", context);

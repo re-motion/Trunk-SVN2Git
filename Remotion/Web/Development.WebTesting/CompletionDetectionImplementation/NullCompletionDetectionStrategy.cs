@@ -24,11 +24,13 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
   /// </summary>
   public class NullCompletionDetectionStrategy : ICompletionDetectionStrategy
   {
+    /// <inheritdoc/>
     public object PrepareWaitForCompletion (PageObjectContext context)
     {
       return null;
     }
 
+    /// <inheritdoc/>
     public void WaitForCompletion (PageObjectContext context, object state)
     {
     }

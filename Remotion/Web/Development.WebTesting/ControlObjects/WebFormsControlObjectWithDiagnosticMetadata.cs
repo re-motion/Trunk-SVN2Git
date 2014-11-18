@@ -32,6 +32,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
     {
       if (scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)

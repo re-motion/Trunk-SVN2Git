@@ -33,6 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   {
     private const string c_htmlDropDownListTag = "select";
 
+    /// <inheritdoc/>
     public DropDownListControlObject SelectFirst (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -41,6 +42,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public DropDownListControlObject SelectSingle (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -49,6 +51,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public DropDownListControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -58,6 +61,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override DropDownListControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

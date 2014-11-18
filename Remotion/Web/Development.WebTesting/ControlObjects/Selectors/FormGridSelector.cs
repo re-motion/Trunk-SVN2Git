@@ -33,6 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
     {
     }
 
+    /// <inheritdoc/>
     public FormGridControlObject SelectPerTitle (ControlSelectionContext context, string title)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -52,6 +53,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override FormGridControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

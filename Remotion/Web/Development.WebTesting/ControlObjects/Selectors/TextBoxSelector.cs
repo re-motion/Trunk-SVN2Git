@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Coypu;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
@@ -34,6 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   {
     private const string c_htmlTextBoxTag = "input";
 
+    /// <inheritdoc/>
     public TextBoxControlObject SelectFirst (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -42,6 +42,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public TextBoxControlObject SelectSingle (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -51,6 +52,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public TextBoxControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -61,6 +63,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override TextBoxControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

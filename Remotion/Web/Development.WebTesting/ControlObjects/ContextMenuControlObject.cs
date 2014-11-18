@@ -30,6 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     protected override void OpenDropDownMenu ()
     {
       Scope.ContextClick (Context);

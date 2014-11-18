@@ -29,6 +29,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeResetCompletionDetectionStrategy));
 
+    /// <inheritdoc/>
     public object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -36,6 +37,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return WxeCompletionDetectionHelpers.GetWxeFunctionToken (context);
     }
 
+    /// <inheritdoc/>
     public void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);

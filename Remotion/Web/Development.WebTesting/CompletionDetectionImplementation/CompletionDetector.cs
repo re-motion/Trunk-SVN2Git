@@ -63,6 +63,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       _waitForCompletionExecuted = false;
     }
 
+    /// <inheritdoc/>
     public void PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -82,6 +83,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       }
     }
 
+    /// <inheritdoc/>
     public void WaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -105,6 +107,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       OutputDebugMessage ("Finished.");
     }
 
+    /// <inheritdoc/>
     public void OutputDebugMessage (string message)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);

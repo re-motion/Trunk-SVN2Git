@@ -33,6 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   {
     private const string c_htmlAnchorTag = "a";
 
+    /// <inheritdoc/>
     public AnchorControlObject SelectFirst (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -41,6 +42,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public AnchorControlObject SelectSingle (ControlSelectionContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -49,6 +51,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public AnchorControlObject SelectPerIndex (ControlSelectionContext context, int index)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -57,6 +60,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     protected override AnchorControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

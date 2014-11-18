@@ -30,6 +30,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public abstract class ControlSelectorBase<TControlObject> : IHtmlIDControlSelector<TControlObject>, ILocalIDControlSelector<TControlObject>
       where TControlObject : ControlObject
   {
+    /// <inheritdoc/>
     public TControlObject SelectPerHtmlID (ControlSelectionContext context, string htmlID)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -39,6 +40,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public TControlObject SelectPerLocalID (ControlSelectionContext context, string localID)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -51,12 +53,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       return CreateControlObject (context, scope);
     }
 
+    /// <summary>
+    /// Creates a control object of type <typeparamref name="TControlObject"/> using the given <paramref name="context"/> and <paramref name="scope"/>,
+    /// making help of the template method <see cref="CreateControlObject(ControlObjectContext,ControlSelectionContext)"/>.
+    /// </summary>
     protected TControlObject CreateControlObject ([NotNull] ControlSelectionContext context, [NotNull] ElementScope scope)
     {
       var newControlObjectContext = context.CloneForControl (context.PageObject, scope);
       return CreateControlObject (newControlObjectContext, context);
     }
 
+    /// <summary>
+    /// Template method for derived control selectors to instantiate the control object.
+    /// </summary>
     protected abstract TControlObject CreateControlObject (
         [NotNull] ControlObjectContext newControlObjectContext,
         [NotNull] ControlSelectionContext controlSelectionContext);

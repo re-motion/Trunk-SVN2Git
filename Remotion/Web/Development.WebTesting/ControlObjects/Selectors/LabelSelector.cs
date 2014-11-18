@@ -26,6 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   /// </summary>
   public class LabelSelector : ControlSelectorBase<LabelControlObject>
   {
+    /// <inheritdoc/>
     protected override LabelControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

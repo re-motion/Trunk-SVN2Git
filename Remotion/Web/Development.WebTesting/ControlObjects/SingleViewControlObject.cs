@@ -32,24 +32,34 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the top control scope.
+    /// </summary>
     public ScopeControlObject GetTopControls ()
     {
       var scope = Scope.FindChild ("TopControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <summary>
+    /// Returns the single view's main scope.
+    /// </summary>
     public ScopeControlObject GetView ()
     {
       var scope = Scope.FindChild ("View");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <summary>
+    /// Returns the bottom control scope.
+    /// </summary>
     public ScopeControlObject GetBottomControls ()
     {
       var scope = Scope.FindChild ("BottomControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

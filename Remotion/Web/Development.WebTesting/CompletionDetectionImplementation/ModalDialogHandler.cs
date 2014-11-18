@@ -31,6 +31,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       _acceptModalDialog = acceptModalDialog;
     }
 
+    /// <inheritdoc/>
     public void HandleModalDialog (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);

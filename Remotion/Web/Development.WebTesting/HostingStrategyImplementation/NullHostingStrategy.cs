@@ -24,10 +24,12 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
   /// </summary>
   public class NullHostingStrategy : IHostingStrategy
   {
+    /// <inheritdoc/>
     public void DeployAndStartWebApplication ()
     {
     }
 
+    /// <inheritdoc/>
     public void StopAndUndeployWebApplication ()
     {
     }

@@ -26,10 +26,24 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IControlObjectWithRows<TRowControlObject>
       where TRowControlObject : ControlObject
   {
+    /// <summary>
+    /// Start of the fluent interface for selecting a row.
+    /// </summary>
     IControlObjectWithRows<TRowControlObject> GetRow ();
-    TRowControlObject GetRow ([NotNull] string columnItemID);
 
-    TRowControlObject WithColumnItemID ([NotNull] string columnItemID);
+    /// <summary>
+    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// </summary>
+    TRowControlObject GetRow ([NotNull] string itemID);
+
+    /// <summary>
+    /// Selects the row using the given <paramref name="itemID"/>.
+    /// </summary>
+    TRowControlObject WithItemID ([NotNull] string itemID);
+
+    /// <summary>
+    /// Selects the row using the given <paramref name="index"/>.
+    /// </summary>
     TRowControlObject WithIndex (int index);
   }
 }

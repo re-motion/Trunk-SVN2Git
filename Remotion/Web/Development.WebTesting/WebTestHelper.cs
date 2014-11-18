@@ -42,7 +42,6 @@ namespace Remotion.Web.Development.WebTesting
   ///       <list type="bullet">
   ///         <item>Ensures that all browser windows are closed.</item>
   ///         <item>Initializes a new browser session.</item>
-  ///         <item>Visits the configured application root.</item>
   ///         <item>Ensures that the cursor is outside the browser window.</item>
   ///       </list>
   ///     </description>
@@ -134,7 +133,7 @@ namespace Remotion.Web.Development.WebTesting
       // Note: otherwise the Selenium web driver may get confused when searching for windows.
       EnsureAllBrowserWindowsAreClosed();
 
-      MainBrowserSession = CreateNewBrowserSession();
+      MainBrowserSession = CreateNewBrowserSession(false);
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();

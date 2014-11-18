@@ -47,6 +47,7 @@ namespace Remotion.Web.Development.WebTesting
       return Scope.FindCss ("title").InnerHTML.Trim();
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

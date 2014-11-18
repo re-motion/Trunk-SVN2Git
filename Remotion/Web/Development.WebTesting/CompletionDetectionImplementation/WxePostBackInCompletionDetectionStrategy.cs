@@ -39,6 +39,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
     }
 
+    /// <inheritdoc/>
     public object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -46,6 +47,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       return WxeCompletionDetectionHelpers.GetWxePostBackSequenceNumber (_context);
     }
 
+    /// <inheritdoc/>
     public void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);

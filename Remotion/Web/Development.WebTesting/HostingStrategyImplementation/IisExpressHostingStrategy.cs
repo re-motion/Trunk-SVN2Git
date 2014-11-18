@@ -52,12 +52,14 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
     {
     }
 
+    /// <inheritdoc/>
     public void DeployAndStartWebApplication ()
     {
       var iisExpressThread = new Thread (() => _webApplicationHost.Run()) { IsBackground = true };
       iisExpressThread.Start();
     }
 
+    /// <inheritdoc/>
     public void StopAndUndeployWebApplication ()
     {
       if (_webApplicationHost != null)
