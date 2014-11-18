@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       var valueScope = Scope.FindChild ("Value");
@@ -44,6 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return valueScope.Value; // do not trim
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         ICompletionDetection completionDetection = null,
@@ -54,6 +56,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
+    /// <summary>
+    /// Calls <see cref="FillWith(string,ICompletionDetection,IModalDialogHandler)"/> by joining the given lines with new line characters.
+    /// </summary>
     public UnspecifiedPageObject FillWith (
         [NotNull] string[] lines,
         [CanBeNull] ICompletionDetection completionDetection = null,
@@ -64,6 +69,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FillWith (string.Join (Environment.NewLine, lines), completionDetection, modalDialogHandler);
     }
 
+     /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         FinishInputWithAction finishInputWith,
@@ -78,6 +84,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
+    /// <summary>
+    /// Calls <see cref="FillWith(string,FinishInputWithAction,ICompletionDetection,IModalDialogHandler)"/> by joining the given lines with new line
+    /// characters.
+    /// </summary>
     public UnspecifiedPageObject FillWith (
         [NotNull] string[] lines,
         FinishInputWithAction finishInputWith,

@@ -43,6 +43,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
     }
 
+    /// <summary>
+    /// Clicks the row's select checkbox (either selecting or deselecting the row).
+    /// </summary>
     public void ClickSelectCheckbox ()
     {
       var zeroBasedRowIndex = _rowIndex - 1;
@@ -50,6 +53,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       rowSelectorCheckboxScope.Click();
     }
 
+    /// <inheritdoc/>
     public TCellControlObject GetCell<TCellControlObject> ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -58,12 +62,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCell<TCellControlObject> (index);
     }
 
+    /// <inheritdoc/>
     public TCellControlObject GetCell<TCellControlObject> (int index)
     {
       var cellScope = Scope.FindTagWithAttribute ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
       return (TCellControlObject) Activator.CreateInstance (typeof (TCellControlObject), new object[] { Context.CloneForControl (cellScope) });
     }
 
+    /// <inheritdoc/>
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var cellScope = Scope.FindTagWithAttribute ("td", DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownRowDropDownMenuCell, "true");
@@ -71,6 +77,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new DropDownMenuControlObject (Context.CloneForControl (rowDropDownMenuScope));
     }
 
+    /// <summary>
+    /// Enters edit-mode for the row.
+    /// </summary>
     public BocListEditableRowControlObject Edit ()
     {
       var editCell = GetWellKnownEditCell();
@@ -81,6 +90,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListEditableRowControlObject (_accessor, Context);
     }
 
+    /// <summary>
+    /// Saves the edited row and returns to the non-edit mode.
+    /// </summary>
     public BocListRowControlObject Save ()
     {
       var editCell = GetWellKnownEditCell();
@@ -91,6 +103,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListRowControlObject (_accessor, Context);
     }
 
+    /// <summary>
+    /// Cancels the editing of the row and returns to the non-edit mode.
+    /// </summary>
     public BocListRowControlObject Cancel ()
     {
       var editCell = GetWellKnownEditCell();

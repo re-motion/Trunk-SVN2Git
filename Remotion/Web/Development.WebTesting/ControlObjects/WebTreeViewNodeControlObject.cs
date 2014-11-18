@@ -136,7 +136,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Selects the node by clicking on it.
+    /// Selects the node by clicking on it, returns the following page.
     /// </summary>
     public UnspecifiedPageObject Click (
         [CanBeNull] ICompletionDetection completionDetection = null,

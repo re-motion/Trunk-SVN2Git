@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
@@ -42,6 +43,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return Scope.FindChild ("TextValue").Value; // do not trim
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         ICompletionDetection completionDetection = null,
@@ -52,6 +54,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         FinishInputWithAction finishInputWith,
@@ -66,17 +69,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
+    /// <inheritdoc/>
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindChild ("Command");
       return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       return GetCommand().Click (completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");

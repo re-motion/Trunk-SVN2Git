@@ -43,11 +43,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.GetText();
     }
 
+    /// <inheritdoc/>
     public CommandControlObject GetCommand ()
     {
       return _impl.GetCommand();
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       return _impl.ExecuteCommand (completionDetection, modalDialogHandler);

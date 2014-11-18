@@ -36,16 +36,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _metaRootNode = new BocTreeViewNodeControlObject (context);
     }
 
+    /// <summary>
+    /// Returns the tree's root node.
+    /// </summary>
     public BocTreeViewNodeControlObject GetRootNode ()
     {
       return _metaRootNode.GetNode().WithIndex (1);
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public BocTreeViewNodeControlObject GetNode (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -53,6 +58,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetNode().WithItemID (itemID);
     }
 
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -60,11 +66,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _metaRootNode.GetNode (itemID);
     }
 
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
     {
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);

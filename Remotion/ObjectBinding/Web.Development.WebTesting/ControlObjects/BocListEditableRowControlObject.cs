@@ -36,21 +36,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _impl = new BocListRowFunctionality (accessor, context);
     }
 
+    /// <summary>
+    /// Saves the edited row and returns to the non-edit mode.
+    /// </summary>
     public BocListRowControlObject Save ()
     {
       return _impl.Save();
     }
 
+    /// <summary>
+    /// Cancels the editing of the row and returns to the non-edit mode.
+    /// </summary>
     public BocListRowControlObject Cancel ()
     {
       return _impl.Cancel();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithCells<BocListEditableCellControlObject> GetCell ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public BocListEditableCellControlObject GetCell (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -58,6 +66,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCell().WithColumnItemID (columnItemID);
     }
 
+    /// <inheritdoc/>
     BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -65,6 +74,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.GetCell<BocListEditableCellControlObject> (columnItemID);
     }
 
+    /// <inheritdoc/>
     BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListEditableCellControlObject> (index);

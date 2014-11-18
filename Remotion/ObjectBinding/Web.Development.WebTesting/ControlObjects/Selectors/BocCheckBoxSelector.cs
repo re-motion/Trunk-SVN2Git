@@ -32,6 +32,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     {
     }
 
+    /// <inheritdoc/>
     protected override BocCheckBoxControlObject CreateControlObject (
         ControlObjectContext newControlObjectContext,
         ControlSelectionContext controlSelectionContext)

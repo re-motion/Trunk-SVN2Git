@@ -34,6 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       var valueScope = Scope.FindChild ("Value");
@@ -44,6 +45,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return valueScope.Value; // do not trim
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         ICompletionDetection completionDetection = null,
@@ -54,6 +56,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject FillWith (
         string text,
         FinishInputWithAction finishInputWith,

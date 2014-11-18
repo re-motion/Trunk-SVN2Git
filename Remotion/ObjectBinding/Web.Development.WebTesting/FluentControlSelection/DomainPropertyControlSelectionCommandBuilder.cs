@@ -47,6 +47,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelecti
       _domainClass = domainClass;
     }
 
+    /// <inheritdoc/>
     public IControlSelectionCommand<TControlObject> Using (TControlSelector controlSelector)
     {
       ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);

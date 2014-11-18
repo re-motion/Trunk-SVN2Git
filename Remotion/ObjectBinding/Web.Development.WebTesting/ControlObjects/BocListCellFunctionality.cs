@@ -29,32 +29,33 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// classes (<see cref="BocListCellControlObject"/>, <see cref="BocListEditableCellControlObject"/> and
   /// <see cref="BocListAsGridCellControlObject"/>) serve only as different interfaces.
   /// </summary>
-  internal class BocListCellFunctionality : BocControlObject, ICommandHost, IControlHost
+  internal class BocListCellFunctionality : BocControlObject, ICommandHost, IControlHost, IControlObjectWithText
   {
     public BocListCellFunctionality ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
 
-    /// <summary>
-    /// Returns the text content of the cell.
-    /// </summary>
+    /// <inheritdoc/>
     public string GetText ()
     {
       return Scope.Text.Trim();
     }
 
+    /// <inheritdoc/>
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindLink();
       return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
     {
       return GetCommand().Click (completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

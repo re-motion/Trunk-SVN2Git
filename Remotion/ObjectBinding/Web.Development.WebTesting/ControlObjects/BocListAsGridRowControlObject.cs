@@ -36,16 +36,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _impl = new BocListRowFunctionality (accessor, context);
     }
 
+    /// <summary>
+    /// Clicks the row's select checkbox (either selecting or deselecting the row).
+    /// </summary>
     public void ClickSelectCheckbox ()
     {
       _impl.ClickSelectCheckbox();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithCells<BocListAsGridCellControlObject> GetCell ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public BocListAsGridCellControlObject GetCell (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -53,6 +58,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCell().WithColumnItemID (columnItemID);
     }
 
+    /// <inheritdoc/>
     BocListAsGridCellControlObject IControlObjectWithCells<BocListAsGridCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -60,11 +66,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _impl.GetCell<BocListAsGridCellControlObject> (columnItemID);
     }
 
+    /// <inheritdoc/>
     BocListAsGridCellControlObject IControlObjectWithCells<BocListAsGridCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListAsGridCellControlObject> (index);
     }
 
+    /// <inheritdoc/>
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       return _impl.GetDropDownMenu();

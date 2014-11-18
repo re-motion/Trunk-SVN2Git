@@ -38,6 +38,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       where TRowControlObject : ControlObject
       where TCellControlObject : ControlObject
   {
+    /// <summary>
+    /// Defines a list's column.
+    /// </summary>
     protected class ColumnDefinition
     {
       private readonly string _itemID;
@@ -183,16 +186,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody > tr.bocListDataRow").Count());
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithRows<TRowControlObject> GetRow ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public TRowControlObject GetRow (string itemID)
     {
       return GetRow().WithItemID (itemID);
     }
 
+    /// <inheritdoc/>
     TRowControlObject IControlObjectWithRows<TRowControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -204,6 +210,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetRowByCssSelector (cssSelector);
     }
 
+    /// <inheritdoc/>
     TRowControlObject IControlObjectWithRows<TRowControlObject>.WithIndex (int index)
     {
       var cssSelector = string.Format (
@@ -219,28 +226,39 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return CreateRowControlObject (GetHtmlID(), rowScope, _accessor);
     }
 
+    /// <inheritdoc/>
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
       return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
     }
 
+    /// <inheritdoc/>
     public ListMenuControlObject GetListMenu ()
     {
       var listMenuScope = Scope.FindChild ("Boc_ListMenu");
       return new ListMenuControlObject (Context.CloneForControl (listMenuScope));
     }
 
+    /// <summary>
+    /// Returns the column defintion given by <paramref name="columnItemID"/>.
+    /// </summary>
     protected ColumnDefinition GetColumnByItemID (string columnItemID)
     {
       return _columns.Single (cd => cd.ItemID == columnItemID);
     }
 
+    /// <summary>
+    /// Returns the column defintion given by <paramref name="index"/>.
+    /// </summary>
     protected ColumnDefinition GetColumnByIndex (int index)
     {
       return _columns.Single (cd => cd.Index == index);
     }
 
+    /// <summary>
+    /// Returns the column defintion given by <paramref name="columnTitle"/>.
+    /// </summary>
     protected ColumnDefinition GetColumnByTitle (string columnTitle)
     {
       return _columns.Single (cd => cd.Title == columnTitle);

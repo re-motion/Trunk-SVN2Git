@@ -28,13 +28,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue"/>.
   /// </summary>
-  public class BocReferenceValueControlObject : BocControlObject, ICommandHost, IDropDownMenuHost, IControlObjectWithSelectableOptions
+  public class BocReferenceValueControlObject
+      : BocControlObject, ICommandHost, IDropDownMenuHost, IControlObjectWithSelectableOptions, IControlObjectWithText
   {
     public BocReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
@@ -43,11 +45,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return Scope.FindChild ("Value").GetSelectedOptionText();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithSelectableOptions SelectOption ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SelectOption (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -58,6 +62,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return SelectOption().WithItemID (itemID, completionDetection);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
@@ -69,6 +74,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (
         int index,
         ICompletionDetection completionDetection,
@@ -78,6 +84,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return SelectOption (selectAction, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,
@@ -101,17 +108,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
+    /// <inheritdoc/>
     public CommandControlObject GetCommand ()
     {
       var commandScope = Scope.FindChild ("Command");
       return new CommandControlObject (Context.CloneForControl (commandScope));
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
     {
       return GetCommand().Click (completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     public DropDownMenuControlObject GetDropDownMenu ()
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");

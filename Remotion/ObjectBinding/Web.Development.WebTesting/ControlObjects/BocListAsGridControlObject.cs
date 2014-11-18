@@ -33,6 +33,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <inheritdoc/>
     protected override BocListAsGridRowControlObject CreateRowControlObject (
         string id,
         ElementScope rowScope,
@@ -45,6 +46,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocListAsGridRowControlObject (accessor, Context.CloneForControl (rowScope));
     }
 
+    /// <inheritdoc/>
     protected override BocListAsGridCellControlObject CreateCellControlObject (string id, ElementScope cellScope)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);

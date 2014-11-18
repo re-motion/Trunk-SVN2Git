@@ -36,6 +36,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _impl = new BocListCellFunctionality (context);
     }
 
+    /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject
     {

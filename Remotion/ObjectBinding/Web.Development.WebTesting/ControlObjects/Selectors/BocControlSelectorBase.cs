@@ -42,6 +42,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
     {
     }
 
+    /// <inheritdoc/>
     public TControlObject SelectPerDisplayName (ControlSelectionContext context, string displayName)
     {
       ArgumentUtility.CheckNotNull ("context", context);
@@ -58,6 +59,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selec
       return CreateControlObject (context, scope);
     }
 
+    /// <inheritdoc/>
     public TControlObject SelectPerDomainProperty (ControlSelectionContext context, string domainProperty, string domainClass)
     {
       ArgumentUtility.CheckNotNull ("context", context);

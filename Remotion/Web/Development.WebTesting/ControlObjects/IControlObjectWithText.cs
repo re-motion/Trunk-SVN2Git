@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IControlObjectWithText
   {
     /// <summary>
-    /// Returns the text.
+    /// Returns the text content of the control.
     /// </summary>
     string GetText ();
   }

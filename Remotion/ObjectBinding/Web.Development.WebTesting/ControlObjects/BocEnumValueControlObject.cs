@@ -40,16 +40,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _variantImpl = CreateVariant (style);
     }
 
+    /// <summary>
+    /// Returns the currently selected option's value.
+    /// </summary>
     public string GetSelectedOption ()
     {
       return _variantImpl.GetSelectedOption();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithSelectableOptions SelectOption ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public UnspecifiedPageObject SelectOption (
         string itemID,
         ICompletionDetection completionDetection = null,
@@ -60,6 +65,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return SelectOption().WithItemID (itemID, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
@@ -70,6 +76,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _variantImpl.SelectOption (itemID, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (
         int index,
         ICompletionDetection completionDetection,
@@ -78,6 +85,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return _variantImpl.SelectOption (index, completionDetection, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
     UnspecifiedPageObject IControlObjectWithSelectableOptions.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,

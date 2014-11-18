@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
-  public class BocTreeViewNodeControlObject : BocControlObject, IControlObjectWithNodes<BocTreeViewNodeControlObject>
+  public class BocTreeViewNodeControlObject : BocControlObject, IControlObjectWithNodes<BocTreeViewNodeControlObject>, IControlObjectWithText
   {
     private readonly WebTreeViewNodeControlObject _webTreeViewNode;
 
@@ -43,26 +43,35 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _webTreeViewNode = webTreeViewNode;
     }
 
+    /// <inheritdoc/>
     public string GetText ()
     {
       return _webTreeViewNode.GetText();
     }
-
+    
+    /// <summary>
+    /// Returns whether the node is currently selected.
+    /// </summary>
     public bool IsSelected ()
     {
       return _webTreeViewNode.IsSelected();
     }
 
+    /// <summary>
+    /// Returns the number of child nodes.
+    /// </summary>
     public int GetNumberOfChildren ()
     {
       return _webTreeViewNode.GetNumberOfChildren();
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public BocTreeViewNodeControlObject GetNode (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -70,6 +79,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetNode().WithItemID (itemID);
     }
 
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
@@ -78,12 +88,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
     {
       var webTreeViewNode = _webTreeViewNode.GetNode().WithIndex (index);
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
@@ -92,29 +104,44 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <summary>
+    /// Expands the node.
+    /// </summary>
     public BocTreeViewNodeControlObject Expand ()
     {
       var webTreeViewNode = _webTreeViewNode.Expand();
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <summary>
+    /// Collapses the node.
+    /// </summary>
     public BocTreeViewNodeControlObject Collapse ()
     {
       var webTreeViewNode = _webTreeViewNode.Collapse();
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <summary>
+    /// Selects the node by clicking on it, returns the node.
+    /// </summary>
     public BocTreeViewNodeControlObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
     {
       var webTreeViewNode = _webTreeViewNode.Select (completionDetection);
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <summary>
+    /// Selects the node by clicking on it, returns the following page.
+    /// </summary>
     public UnspecifiedPageObject Click ([CanBeNull] ICompletionDetection completionDetection = null)
     {
       return _webTreeViewNode.Click (completionDetection);
     }
 
+    /// <summary>
+    /// Opens the node's context menu.
+    /// </summary>
     public ContextMenuControlObject OpenContextMenu ()
     {
       return _webTreeViewNode.OpenContextMenu();

@@ -41,18 +41,27 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the current page number.
+    /// </summary>
     public int GetCurrentPage ()
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
       return int.Parse (currentPageTextInputScope.Value);
     }
 
+    /// <summary>
+    /// Returns list's the number of pages.
+    /// </summary>
     public int GetNumberOfPages ()
     {
       var navigatorDivScope = Scope.FindCss (".bocListNavigator");
       return int.Parse (navigatorDivScope[DiagnosticMetadataAttributesForObjectBinding.BocListNumberOfPages]);
     }
 
+    /// <summary>
+    /// Switches to a specific <paramref name="page"/>.
+    /// </summary>
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
@@ -64,35 +73,49 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           null);
     }
 
+    /// <summary>
+    /// Switches to the first list apge.
+    /// </summary>
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = Scope.FindChild ("Navigation_First");
       firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
+    /// <summary>
+    /// Switches to the previous list page.
+    /// </summary>
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
       previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
+    /// <summary>
+    /// Switches to the next list page.
+    /// </summary>
     public void GoToNextPage ()
     {
       var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
       nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
+    /// <summary>
+    /// Switches to the last list page.
+    /// </summary>
     public void GoToLastPage ()
     {
       var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
       lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithRowsWhereColumnContains<BocListRowControlObject> GetRowWhere ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public BocListRowControlObject GetRowWhere (string columnItemID, string containsCellText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -101,6 +124,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetRowWhere().ColumnWithItemIDContains (columnItemID, containsCellText);
     }
 
+    /// <inheritdoc/>
     BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithItemIDContains (
         string itemID,
         string containsCellText)
@@ -112,6 +136,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetRowFromCell (cell);
     }
 
+    /// <inheritdoc/>
     BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithIndexContains (
         int index,
         string containsCellText)
@@ -122,6 +147,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetRowFromCell (cell);
     }
 
+    /// <inheritdoc/>
     BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithTitleContains (
         string title,
         string containsCellText)
@@ -139,11 +165,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return CreateRowControlObject (GetHtmlID(), rowScope, Accessor);
     }
 
+    /// <inheritdoc/>
     public IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject> GetCellWhere ()
     {
       return this;
     }
 
+    /// <inheritdoc/>
     public BocListCellControlObject GetCellWhere (string columnItemID, string containsCellText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -152,6 +180,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCellWhere().ColumnWithItemIDContains (columnItemID, containsCellText);
     }
 
+    /// <inheritdoc/>
     BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithItemIDContains (
         string itemID,
         string containsCellText)
@@ -163,6 +192,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCellWhereColumnContains (column, containsCellText);
     }
 
+    /// <inheritdoc/>
     BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithIndexContains (
         int index,
         string containsCellText)
@@ -173,6 +203,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCellWhereColumnContains (column, containsCellText);
     }
 
+    /// <inheritdoc/>
     BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
         string title,
         string containsCellText)
@@ -208,6 +239,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
     }
 
+    /// <summary>
+    /// Clicks on the column header given by <paramref name="columnItemID"/> in order to sort the column.
+    /// </summary>
     public void ClickOnSortColumn ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
@@ -216,6 +250,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ClickOnSortColumn (column.Index);
     }
 
+    /// <summary>
+    /// Clicks on the column header given by <paramref name="columnIndex"/> in order to sort the column.
+    /// </summary>
     public void ClickOnSortColumn (int columnIndex)
     {
       var sortColumnClickScope = Scope.FindTagWithAttribute (
@@ -230,6 +267,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
 
+    /// <summary>
+    /// Clicks on the column header given by <paramref name="columnTitle"/> in order to sort the column.
+    /// </summary>
     public void ClickOnSortColumnByTitle ([NotNull] string columnTitle)
     {
       ArgumentUtility.CheckNotNull ("columnTitle", columnTitle);
@@ -238,6 +278,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ClickOnSortColumn (column.Index);
     }
 
+    /// <summary>
+    /// Changes the list's view to the view given by <paramref name="itemID"/>.
+    /// </summary>
     public void ChangeViewTo (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
@@ -249,6 +292,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID), actualCompletionDetector, modalDialogHandler);
     }
 
+    /// <summary>
+    /// Changes the list's view to the view given by <paramref name="index"/>.
+    /// </summary>
     public void ChangeViewTo (
         int index,
         [CanBeNull] ICompletionDetection completionDetection = null,
@@ -258,6 +304,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ChangeViewTo (scope => scope.SelectOptionByIndex (index), actualCompletionDetector, modalDialogHandler);
     }
 
+    /// <summary>
+    /// Changes the list's view to the view given by <paramref name="label"/>.
+    /// </summary>
     public void ChangeViewToByLabel (
         [NotNull] string label,
         [CanBeNull] ICompletionDetection completionDetection = null,
@@ -267,26 +316,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
       ChangeViewTo (scope => scope.SelectOption (label), actualCompletionDetector, modalDialogHandler);
-    }
-
-    protected override BocListRowControlObject CreateRowControlObject (
-        string id,
-        ElementScope rowScope,
-        IBocListRowControlObjectHostAccessor accessor)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNull ("rowScope", rowScope);
-      ArgumentUtility.CheckNotNull ("accessor", accessor);
-
-      return new BocListRowControlObject (accessor, Context.CloneForControl (rowScope));
-    }
-
-    protected override BocListCellControlObject CreateCellControlObject (string id, ElementScope cellScope)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNull ("cellScope", cellScope);
-
-      return new BocListCellControlObject (Context.CloneForControl (cellScope));
     }
 
     private void ChangeViewTo (
@@ -301,6 +330,31 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       availableViewsScope.PerformAction (selectAction, Context, completionDetector, modalDialogHandler);
     }
 
+    /// <inheritdoc/>
+    protected override BocListRowControlObject CreateRowControlObject (
+        string id,
+        ElementScope rowScope,
+        IBocListRowControlObjectHostAccessor accessor)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("rowScope", rowScope);
+      ArgumentUtility.CheckNotNull ("accessor", accessor);
+
+      return new BocListRowControlObject (accessor, Context.CloneForControl (rowScope));
+    }
+
+    /// <inheritdoc/>
+    protected override BocListCellControlObject CreateCellControlObject (string id, ElementScope cellScope)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("cellScope", cellScope);
+
+      return new BocListCellControlObject (Context.CloneForControl (cellScope));
+    }
+    
+    /// <summary>
+    /// Allows derived classes to override the scope in which the available views select box resides.
+    /// </summary>
     protected virtual ElementScope GetAvailableViewsScope ()
     {
       return Scope.FindChild ("Boc_AvailableViewsList");
