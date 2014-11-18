@@ -1,4 +1,5 @@
 ﻿using System;
+using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 
 namespace ActaNova.WebTesting.IntegrationTests
@@ -17,6 +18,14 @@ namespace ActaNova.WebTesting.IntegrationTests
       home = home.Refresh().ExpectMainPage();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
+    }
+
+    [Test]
+    public void TestGetFrame ()
+    {
+      var home = Start();
+
+      Assert.That (home.GetFrame<ActaNovaWorkListPageObject>().GetTitle(), Is.EqualTo ("Eigener AV"));
     }
   }
 }
