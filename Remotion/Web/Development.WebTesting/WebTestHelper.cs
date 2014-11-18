@@ -133,7 +133,7 @@ namespace Remotion.Web.Development.WebTesting
       // Note: otherwise the Selenium web driver may get confused when searching for windows.
       EnsureAllBrowserWindowsAreClosed();
 
-      MainBrowserSession = CreateNewBrowserSession(false);
+      MainBrowserSession = CreateNewBrowserSession();
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
