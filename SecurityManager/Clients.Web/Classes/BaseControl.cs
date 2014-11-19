@@ -21,6 +21,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Reflection;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.ServiceLocation;
@@ -107,6 +108,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       Type type = this.GetType();
 
       return GlobalizationService.GetResourceManager (type);
+    }
+
+    protected IResourceManager GetResourceManager (Type resourceEnumType)
+    {
+      ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("resourceEnumType", resourceEnumType, typeof (Enum));
+
+      return ResourceManagerSet.Create (GlobalizationService.GetResourceManager (TypeAdapter.Create (resourceEnumType)), GetResourceManager());
     }
 
     protected IServiceLocator ServiceLocator

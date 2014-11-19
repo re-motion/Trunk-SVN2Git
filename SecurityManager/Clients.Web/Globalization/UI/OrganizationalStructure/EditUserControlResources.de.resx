@@ -101,10 +101,4 @@
   <data name="auto:UserLabel:Text" xml:space="preserve">
     <value>Benutzer bearbeiten</value>
   </data>
-  <data name="auto:RolesField:FixedColumns:GroupNameItem:ColumnTitle" xml:space="preserve">
-    <value>Gruppe</value>
-  </data>
-  <data name="auto:RolesField:FixedColumns:PositionNameItem:ColumnTitle" xml:space="preserve">
-    <value>Stelle</value>
-  </data>
 </root>

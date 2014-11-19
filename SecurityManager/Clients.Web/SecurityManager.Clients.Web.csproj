@@ -245,11 +245,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Globalization\UI\OrganizationalStructure\EditGroupControlResources.Designer.cs">
-      <DependentUpon>EditGroupControlResources.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Globalization\UI\OrganizationalStructure\EditGroupFormResources.Designer.cs">
       <DependentUpon>EditGroupFormResources.resx</DependentUpon>
       <AutoGen>True</AutoGen>

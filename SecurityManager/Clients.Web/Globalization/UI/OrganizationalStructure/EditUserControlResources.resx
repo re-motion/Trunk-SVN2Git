@@ -120,10 +120,4 @@
   <data name="auto:UserLabel:Text" xml:space="preserve">
     <value>Edit User</value>
   </data>
-  <data name="auto:RolesField:FixedColumns:GroupNameItem:ColumnTitle" xml:space="preserve">
-    <value>Group</value>
-  </data>
-  <data name="auto:RolesField:FixedColumns:PositionNameItem:ColumnTitle" xml:space="preserve">
-    <value>Position</value>
-  </data>
 </root>

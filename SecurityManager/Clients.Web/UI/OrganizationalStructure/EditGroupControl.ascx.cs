@@ -19,20 +19,26 @@ using System;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (EditGroupControlResources))]
   public partial class EditGroupControl : BaseEditControl<EditGroupControl>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditGroupControlResources")]
+    public enum ResourceIdentifier
+    {
+      GroupLabelText,
+      ParentValidatorErrorMessage
+    }
+
     private BocAutoCompleteReferenceValue _parentField;
     private BocAutoCompleteReferenceValue _groupTypeField;
 
@@ -97,6 +103,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected override void OnPreRender (EventArgs e)
     {
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+
+      GroupLabel.Text = resourceManager.GetString (ResourceIdentifier.GroupLabelText);
+      ParentValidator.ErrorMessage = resourceManager.GetString (ResourceIdentifier.ParentValidatorErrorMessage);
+
       base.OnPreRender (e);
 
       _parentField.Args = CurrentFunction.TenantHandle.AsArgument();
