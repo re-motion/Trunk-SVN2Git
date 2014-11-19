@@ -765,7 +765,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupControlResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EditGroupControlResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
