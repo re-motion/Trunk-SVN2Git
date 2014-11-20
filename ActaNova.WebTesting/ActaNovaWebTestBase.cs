@@ -90,5 +90,12 @@ namespace ActaNova.WebTesting
       browser.Visit (url);
       return _webTestHelper.CreateInitialPageObject<TPageObject>(browser);
     }
+
+    protected void ActivateWxeSequenceCounterDebugging ()
+    {
+      var script =
+          "setInterval(function(){document.title='P: ' + $('#wxePostBackSequenceNumberField').attr('value') + ' F: ' +  $('#RightFrameContent').contents().find('#wxePostBackSequenceNumberField').attr('value');}, 10);";
+      _webTestHelper.MainBrowserSession.ExecuteScript (script);
+    }
   }
 }
