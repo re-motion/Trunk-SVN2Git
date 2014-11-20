@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using ActaNova.WebTesting.ActaNovaExtensions;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
