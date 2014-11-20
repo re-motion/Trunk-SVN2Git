@@ -17,7 +17,6 @@
 
 using System;
 using System.Configuration;
-using System.IO;
 using Coypu.Drivers;
 using Coypu.Drivers.Selenium;
 using log4net;
