@@ -143,5 +143,10 @@ namespace ActaNova.WebTesting.PageObjects
               new HtmlIDControlSelectionCommand<DropDownMenuControlObject> (new DropDownMenuSelector(), "AdditionalCommandsMenu_Boc_DropDownMenu"));
       return additionalCommandsMenu;
     }
+
+    protected override ICompletionDetection GetDefaultCompletionDetectionForPerform ()
+    {
+      return Continue.When (Wxe.PostBackCompletedInParent (this));
+    }
   }
 }

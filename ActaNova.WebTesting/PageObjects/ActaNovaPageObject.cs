@@ -26,9 +26,20 @@ namespace ActaNova.WebTesting.PageObjects
     {
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
+      var defaultCompletionDetectionForPerform = GetDefaultCompletionDetectionForPerform();
+
       var fullItemID = string.Format ("{0}Button", itemID);
       var webButton = GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), fullItemID));
-      return webButton.Click (completionDetection, modalDialogHandler);
+      return webButton.Click (completionDetection ?? defaultCompletionDetectionForPerform, modalDialogHandler);
+    }
+
+    /// <summary>
+    /// Overrides the default <see cref="ICompletionDetection"/> used by <see cref="Perform"/>. Return <see langword="null" /> if you want to keep
+    /// the <see cref="WebButtonControlObject"/>'s default completion detection.
+    /// </summary>
+    protected virtual ICompletionDetection GetDefaultCompletionDetectionForPerform ()
+    {
+      return null;
     }
   }
 }
