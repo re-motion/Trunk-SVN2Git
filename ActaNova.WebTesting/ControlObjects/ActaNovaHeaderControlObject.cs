@@ -157,6 +157,8 @@ namespace ActaNova.WebTesting.ControlObjects
               .Select (s => new ActaNovaBreadCrumbControlObject (Context.CloneForControl (s)))
               .ToList());
 
+      breadCrumbs.Last().IsLast = true;
+
       return breadCrumbs;
     }
 
