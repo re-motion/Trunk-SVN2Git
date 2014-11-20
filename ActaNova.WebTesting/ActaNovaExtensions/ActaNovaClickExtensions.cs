@@ -25,7 +25,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("breadCrumb", breadCrumb);
 
       var confirmPage = breadCrumb.Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Cancel();
+      return confirmPage.Cancel(Continue.When(Wxe.PostBackCompletedIn(breadCrumb.Context.PageObject)));
     }
 
     public static UnspecifiedPageObject SelectAndConfirmDataLoss ([NotNull] this ActaNovaTreeNodeControlObject treeNode)
@@ -43,7 +43,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("treeNode", treeNode);
 
       var confirmPage = treeNode.Select (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Cancel();
+      return confirmPage.Cancel(Continue.When(Wxe.PostBackCompletedIn(treeNode.Context.PageObject)));
     }
 
     public static UnspecifiedPageObject PerformAndConfirmDataLoss ([NotNull] this ActaNovaFormPageObject page, [NotNull] string itemID)
@@ -67,7 +67,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (itemID, Continue.When (Wxe.PostBackCompletedInContext(page.Context.ParentContext)));
+      return page.Perform (itemID, Continue.When (Wxe.PostBackCompletedInContext (page.Context.ParentContext)));
     }
   }
 }
