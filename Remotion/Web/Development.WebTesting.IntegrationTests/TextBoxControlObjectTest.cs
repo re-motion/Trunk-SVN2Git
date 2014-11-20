@@ -75,6 +75,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    [Category ("LongRunning")]
     public void TestSelection_Single ()
     {
       var home = Start();

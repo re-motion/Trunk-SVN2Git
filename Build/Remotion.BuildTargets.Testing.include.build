@@ -179,6 +179,7 @@
         Framework="$(ActiveConfigurationFramework)"
         Use32Bit="$(_use32Bit)"
         NoShadow="True"
+        ExcludeCategory="$(TestCategoriesToExclude)"
         OutputXmlFile="$(_testResultFile)">
       <Output TaskParameter="Failures" PropertyName="_nunit_failures"/>
       <Output TaskParameter="Errors" PropertyName="_nunit_errors"/>

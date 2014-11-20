@@ -175,7 +175,8 @@
                          AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                          Platforms=$(Platforms);
                          DatabaseSystems=$(DatabaseSystems);
-                         Browsers=$(Browsers)"/>
+                         Browsers=$(Browsers);
+                         TestCategoriesToExclude=$(TestCategoriesToExclude)"/>
   </Target>
   
   <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders">
@@ -195,7 +196,8 @@
                   AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                   Platforms=$(Platforms);
                   DatabaseSystems=$(DatabaseSystems);
-                  Browsers=$(Browsers)"/>
+                  Browsers=$(Browsers);
+                  TestCategoriesToExclude=$(TestCategoriesToExclude)"/>
   </Target>
   
   <Target Name="TestBuildAllConfigurations" DependsOnTargets="CleanFolders">
@@ -215,7 +217,8 @@
                   AdditionalBuildMetadata=$(AdditionalBuildMetadata);
                   Platforms=$(Platforms);
                   DatabaseSystems=$(DatabaseSystems);
-                  Browsers=$(Browsers)"/>
+                  Browsers=$(Browsers);
+                  TestCategoriesToExclude=$(TestCategoriesToExclude)"/>
   </Target>
   
   <Target Name="QuickBuildDebugOnly" DependsOnTargets="CleanFolders">

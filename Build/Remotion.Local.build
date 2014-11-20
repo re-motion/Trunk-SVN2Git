@@ -34,6 +34,7 @@
       <Platforms>x86</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
       <Browsers></Browsers>
+      <TestCategoriesToExclude>LongRunning</TestCategoriesToExclude>
     </PropertyGroup>
   </Target>
   
@@ -42,6 +43,7 @@
       <Platforms>x86+x64</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
       <Browsers>Chrome+InternetExplorer</Browsers>
+      <TestCategoriesToExclude></TestCategoriesToExclude>
     </PropertyGroup>
   </Target>
  
