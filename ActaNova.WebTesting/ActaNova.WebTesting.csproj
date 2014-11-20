@@ -55,9 +55,11 @@
   <ItemGroup>
     <Compile Include="ActaNovaExtensionsTest\ActaNovaClickExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaMainMenuExtensionsTest.cs" />
+    <Compile Include="ActaNovaExtensionsTest\ActaNovaSequenceCounterTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaTreeExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaClickExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaControlHostExtensions.cs" />
+    <Compile Include="ActaNovaExtensions\ActaNovaConvinienceExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaMainMenuExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaTreeExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaUnspecifiedPageObjectExtensions.cs" />
