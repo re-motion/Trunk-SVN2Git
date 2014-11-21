@@ -43,20 +43,21 @@ namespace ActaNova.WebTesting.ControlObjects
       var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
 
       Scope.PerformAction (
-          s =>
-          {
-            // HACK: Use Selenium directly, Coypu does not support Actions API yet.
-            var webDriver = (IWebDriver) Context.Browser.Native;
-            var nativeMainMenuScope = (IWebElement) s.Native;
+          s => RetryUntilTimeout.Run (
+              () =>
+              {
+                // HACK: Use Selenium directly, Coypu does not support Actions API yet.
+                var webDriver = (IWebDriver) Context.Browser.Native;
+                var nativeMainMenuScope = (IWebElement) s.Native;
 
-            var actions = new ActionsWithWaitSupport (webDriver);
-            var timeout = WebTestingConfiguration.Current.SearchTimeout;
+                var actions = new ActionsWithWaitSupport (webDriver);
+                var timeout = WebTestingConfiguration.Current.SearchTimeout;
 
-            var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
-            actions.Click (nativeLastMenuItemScope);
+                var nativeLastMenuItemScope = AddMenuItemHoverActions (actions, nativeMainMenuScope, menuItems, timeout);
+                actions.Click (nativeLastMenuItemScope);
 
-            actions.Perform();
-          },
+                actions.Perform();
+              }),
           Context,
           actualCompletionDetector,
           modalDialogHandler);

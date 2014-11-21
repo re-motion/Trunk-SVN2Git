@@ -20,7 +20,11 @@ namespace ActaNova.WebTesting.IntegrationTests
           .Expect<ActaNovaMessageBoxPageObject>();
       forbiddenNote.Confirm (Continue.Immediately());
 
-      home = aktErzeugenPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompleted), HandleModalDialog.Accept()).ExpectMainPage();
+      home = aktErzeugenPage.FormPage.Perform (
+          "Cancel",
+          Continue.When (Wxe.PostBackCompletedIn (aktErzeugenPage)),
+          HandleModalDialog.Accept())
+          .ExpectMainPage();
 
       home = home.MainMenu.Select ("Verfahrensbereich", "BW - Bauen und Wohnen").ExpectMainPage();
 
