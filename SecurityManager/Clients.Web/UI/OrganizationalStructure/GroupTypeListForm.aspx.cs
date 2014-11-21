@@ -16,24 +16,25 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.SecurityManager.Clients.Web.Classes;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (GroupTypeListFormResources))]
   public partial class GroupTypeListForm : BasePage
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.GroupTypeListFormResources")]
+    public enum ResourceIdentifier
+    {
+      Title,
+    }
 
-    // types
+    protected override void OnPreRender (EventArgs e)
+    {
+      Title = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.Title);
 
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
-    // methods and properties
+      base.OnPreRender (e);
+    }
   }
 }

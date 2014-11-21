@@ -20,23 +20,29 @@ using System;
 using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (TenantListControlResources))]
   public partial class TenantListControl : BaseListControl<Tenant>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.TenantListControlResources")]
+    public enum ResourceIdentifier
+    {
+      TenantListLabelText,
+      NewTenantButtonText,
+    }
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -60,6 +66,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected override void OnPreRender (EventArgs e)
     {
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+      TenantListLabel.Text = resourceManager.GetString (ResourceIdentifier.TenantListLabelText);
+      NewTenantButton.Text = resourceManager.GetString (ResourceIdentifier.NewTenantButtonText);
+
       base.OnPreRender (e);
 
       ResetListOnTenantChange (TenantList);

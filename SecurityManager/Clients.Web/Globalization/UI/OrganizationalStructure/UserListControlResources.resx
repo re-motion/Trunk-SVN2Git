@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="auto:UserListLabel:Text" xml:space="preserve">
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.UserListControl.UserListLabelText" xml:space="preserve">
     <value>Administrate Users</value>
   </data>
-  <data name="auto:NewUserButton:Text" xml:space="preserve">
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.UserListControl.NewUserButtonText" xml:space="preserve">
     <value>Create New User</value>
   </data>
 </root>

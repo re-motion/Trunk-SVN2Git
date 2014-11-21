@@ -16,20 +16,25 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (EditUserControlResources))]
   public partial class EditUserControl : BaseEditControl<EditUserControl>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditUserControlResources")]
+    public enum ResourceIdentifier
+    {
+      UserLabelText,
+    }
+
     private BocAutoCompleteReferenceValue _owningGroupField;
 
     public override IBusinessObjectDataSourceControl DataSource
@@ -87,6 +92,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected override void OnPreRender (EventArgs e)
     {
+      UserLabel.Text = GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.UserLabelText);
+
       base.OnPreRender (e);
 
       _owningGroupField.Args = CurrentFunction.TenantHandle.AsArgument();

@@ -16,18 +16,23 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (EditGroupTypeControlResources))]
   public partial class EditGroupTypeControl : BaseEditControl<EditGroupTypeControl>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditGroupTypeControlResources")]
+    public enum ResourceIdentifier
+    {
+      GroupTypeLabelText,
+    }
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -65,6 +70,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (PositionsList.IsReadOnly)
         PositionsList.Selection = RowSelection.Disabled;
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      GroupTypeLabel.Text = GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.GroupTypeLabelText);
+
+      base.OnPreRender (e);
     }
   }
 }

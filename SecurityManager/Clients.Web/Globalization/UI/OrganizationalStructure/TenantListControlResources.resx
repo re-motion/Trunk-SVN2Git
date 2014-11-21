@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="auto:TenantListLabel:Text" xml:space="preserve">
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListControl.TenantListLabelText" xml:space="preserve">
     <value>Administrate Clients</value>
   </data>
-  <data name="auto:NewTenantButton:Text" xml:space="preserve">
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListControl.NewTenantButtonText" xml:space="preserve">
     <value>Create New Client</value>
   </data>
 </root>

@@ -16,18 +16,23 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.SecurityManager.Clients.Web.Classes;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (EditGroupTypeFormResources))]
   public partial class EditGroupTypeForm : BaseEditPage<GroupType>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditGroupTypeFormResources")]
+    public enum ResourceIdentifier
+    {
+      Title,
+    }
+
     protected override IFocusableControl InitialFocusControl
     {
       get { return EditGroupTypeControl.InitialFocusControl; }
@@ -38,6 +43,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
       RegisterDataEditUserControl (EditGroupTypeControl);
 
       base.OnLoad (e);
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      Title = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.Title);
+
+      base.OnPreRender (e);
     }
 
     protected override void ShowErrors ()

@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="auto:GroupListLabel:Text" xml:space="preserve">
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupListControl.GroupListLabelText" xml:space="preserve">
     <value>Administrate Groups</value>
   </data>
-  <data name="auto:NewGroupButton:Text" xml:space="preserve">
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupListControl.NewGroupButtonText" xml:space="preserve">
     <value>Create New Group</value>
   </data>
 </root>

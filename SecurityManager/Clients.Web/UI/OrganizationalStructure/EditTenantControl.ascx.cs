@@ -20,19 +20,25 @@ using System;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.FunctionalProgramming;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (EditTenantControlResources))]
   public partial class EditTenantControl : BaseEditControl<EditTenantControl>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditTenantControlResources")]
+    public enum ResourceIdentifier
+    {
+      ParentValidatorErrorMessage ,
+      TenantLabelText,
+    }
+
     private BocAutoCompleteReferenceValue _parentField;
 
     public override IBusinessObjectDataSourceControl DataSource
@@ -71,6 +77,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       if (ChildrenList.IsReadOnly)
         ChildrenList.Selection = RowSelection.Disabled;
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+      
+      ParentValidator.ErrorMessage = resourceManager.GetString (ResourceIdentifier.ParentValidatorErrorMessage);
+      TenantLabel.Text = resourceManager.GetString (ResourceIdentifier.TenantLabelText);
+
+      base.OnPreRender (e);
     }
 
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)

@@ -20,23 +20,29 @@ using System;
 using System.Collections;
 using System.Linq;
 using Remotion.Data.DomainObjects;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.OrganizationalStructure;
 using Remotion.SecurityManager.Configuration;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 {
-  [WebMultiLingualResources (typeof (UserListControlResources))]
   public partial class UserListControl : BaseListControl<User>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.UserListControlResources")]
+    public enum ResourceIdentifier
+    {
+      UserListLabelText,
+      NewUserButtonText,
+    }
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -60,6 +66,10 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
     protected override void OnPreRender (EventArgs e)
     {
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+      UserListLabel.Text = resourceManager.GetString (ResourceIdentifier.UserListLabelText);
+      NewUserButton.Text = resourceManager.GetString (ResourceIdentifier.NewUserButtonText);
+
       base.OnPreRender (e);
 
       ResetListOnTenantChange (UserList);
