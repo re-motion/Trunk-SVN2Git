@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
             new BocRowEditModeColumnDefinition
             {
                 Width = Unit.Pixel (40),
-                EditIcon = GetIcon ("EditItem.gif", GlobalResources.Edit),
+                EditIcon = GetIcon ("EditItem.gif", GlobalResources.Edit), //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
                 SaveIcon = GetIcon ("ApplyButton.gif", GlobalResources.Apply),
                 CancelIcon = GetIcon ("CancelButton.gif", GlobalResources.Cancel)
             });
@@ -77,13 +77,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
         bocList.ListMenuItems.Add (
             new BocMenuItem
             {
-                Text = GlobalResources.New,
+                Text = GlobalResources.New, //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
                 Command = new InlineEditingNewItemMenuItemCommand<TBusinessObject> (newObjectFactory)
             });
         bocList.ListMenuItems.Add (
             new BocMenuItem
             {
-                Text = GlobalResources.Delete,
+                Text = GlobalResources.Delete, //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
                 RequiredSelection = RequiredSelection.OneOrMore,
                 Command = new InlineEditingDeleteItemMenuItemCommand<TBusinessObject>()
             });

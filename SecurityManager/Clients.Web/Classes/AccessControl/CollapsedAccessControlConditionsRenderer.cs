@@ -63,7 +63,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.TenantCondition)
       {
         case TenantCondition.None:
-          writer.WriteEncodedText (AccessControlResources.TenantCondition_None);
+          writer.WriteEncodedText (AccessControlResources.TenantCondition_None);  //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
           break;
         case TenantCondition.OwningTenant:
           RenderTenantHierarchyIcon (writer, container);
@@ -86,7 +86,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.GroupCondition)
       {
         case GroupCondition.None:
-          writer.WriteEncodedText (AccessControlResources.GroupCondition_None);
+          writer.WriteEncodedText (AccessControlResources.GroupCondition_None); //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
           break;
         case GroupCondition.OwningGroup:
           RenderGroupHierarchyIcon (writer, container);
@@ -115,7 +115,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.UserCondition)
       {
         case UserCondition.None:
-          writer.WriteEncodedText (AccessControlResources.UserCondition_None);
+          writer.WriteEncodedText (AccessControlResources.UserCondition_None); //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
           break;
         case UserCondition.Owner:
           RenderPropertyPathString (writer, "UserCondition");
@@ -188,7 +188,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new InvalidOperationException();
         case TenantHierarchyCondition.This:
           url = "HierarchyThis.gif";
-          text = AccessControlResources.TenantHierarchyCondition_This;
+          text = AccessControlResources.TenantHierarchyCondition_This; //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
           break;
         case TenantHierarchyCondition.Parent:
           throw new InvalidOperationException();
@@ -214,7 +214,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new InvalidOperationException();
         case GroupHierarchyCondition.This:
           url = "HierarchyThis.gif";
-          text = AccessControlResources.GroupHierarchyCondition_This;
+          text = AccessControlResources.GroupHierarchyCondition_This; //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
           break;
         case GroupHierarchyCondition.Parent:
           throw new InvalidOperationException();
