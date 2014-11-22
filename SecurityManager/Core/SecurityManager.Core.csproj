@@ -257,60 +257,10 @@
     <Compile Include="Domain\UserRevisionKey.cs" />
     <Compile Include="Domain\UserRevisionProvider.cs" />
     <Compile Include="SecurityProvider\Implementation\SecurityContextCache.cs" />
-    <Compile Include="Globalization\AclTools\Expansion\AclToolsExpansion.de.Designer.cs">
-      <DependentUpon>AclToolsExpansion.de.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Include="Globalization\AclTools\Expansion\AclToolsExpansion.Designer.cs">
       <DependentUpon>AclToolsExpansion.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\Substitution.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Substitution.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\Tenant.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Tenant.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\Delegation.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Delegation.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\Group.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Group.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\GroupType.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GroupType.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\GroupTypePosition.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GroupTypePosition.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\Position.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Position.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\Role.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Role.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Globalization\Domain\OrganizationalStructure\User.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>User.resx</DependentUpon>
     </Compile>
     <Compile Include="Persistence\RevisionStorageProviderExtension.cs" />
     <Compile Include="Persistence\SecurityManagerSqlStorageObjectFactory.cs" />
@@ -366,8 +316,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Tenant.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Tenant.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Tenant.de.resx">
       <LastGenOutput>Client.de.Designer.cs</LastGenOutput>
@@ -403,38 +351,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Delegation.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Delegation.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Group.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Group.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\GroupType.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>GroupType.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\GroupTypePosition.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>GroupTypePosition.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Position.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Position.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Role.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Role.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\User.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>User.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -500,8 +434,6 @@
     <EmbeddedResource Include="AclTools\Expansion\AclExpansion.css" />
     <EmbeddedResource Include="Globalization\AclTools\Expansion\AclToolsExpansion.de.resx">
       <SubType>Designer</SubType>
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AclToolsExpansion.de.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\AclTools\Expansion\AclToolsExpansion.resx">
       <SubType>Designer</SubType>
@@ -512,8 +444,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Substitution.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Database\SecurityManagerSetupIndexes.sql" />
