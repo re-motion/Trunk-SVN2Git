@@ -17,6 +17,7 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -33,14 +34,20 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
   {
     private readonly AccessControlEntry _accessControlEntry;
     private readonly IResourceUrlFactory _resourceUrlFactory;
+    private readonly IGlobalizationService _globalizationService;
 
-    public CollapsedAccessControlConditionsRenderer (AccessControlEntry accessControlEntry, IResourceUrlFactory resourceUrlFactory)
+    public CollapsedAccessControlConditionsRenderer (
+        AccessControlEntry accessControlEntry,
+        IResourceUrlFactory resourceUrlFactory,
+        IGlobalizationService globalizationService)
     {
-      ArgumentUtility.CheckNotNull ("currentAccessControlEntry", accessControlEntry);
+      ArgumentUtility.CheckNotNull ("accessControlEntry", accessControlEntry);
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
       _accessControlEntry = accessControlEntry;
       _resourceUrlFactory = resourceUrlFactory;
+      _globalizationService = globalizationService;
     }
 
     public AccessControlEntry AccessControlEntry

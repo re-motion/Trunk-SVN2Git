@@ -130,7 +130,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       if (IsCollapsed)
       {
-        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry, ResourceUrlFactory);
+        var collapsedRenderer = new CollapsedAccessControlConditionsRenderer (CurrentAccessControlEntry, ResourceUrlFactory, GlobalizationService);
         CollapsedTenantInformation.SetRenderMethodDelegate (
             (writer, control) => collapsedRenderer.RenderTenant (writer, new ControlWrapper (control)));
         CollapsedGroupInformation.SetRenderMethodDelegate (

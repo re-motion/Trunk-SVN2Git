@@ -19,6 +19,7 @@ using System;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Domain;
@@ -42,12 +43,15 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
   public class BocListInlineEditingConfigurator
   {
     private readonly IResourceUrlFactory _resourceUrlFactory;
+    private readonly IGlobalizationService _globalizationService;
 
-    public BocListInlineEditingConfigurator (IResourceUrlFactory resourceUrlFactory)
+    public BocListInlineEditingConfigurator (IResourceUrlFactory resourceUrlFactory, IGlobalizationService globalizationService)
     {
       ArgumentUtility.CheckNotNull ("resourceUrlFactory", resourceUrlFactory);
+      ArgumentUtility.CheckNotNull ("globalizationService", globalizationService);
 
       _resourceUrlFactory = resourceUrlFactory;
+      _globalizationService = globalizationService;
     }
 
     public virtual void Configure<TBusinessObject> (BocList bocList, Func<TBusinessObject> newObjectFactory)
