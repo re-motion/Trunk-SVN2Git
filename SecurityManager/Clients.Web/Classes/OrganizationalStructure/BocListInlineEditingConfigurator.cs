@@ -77,13 +77,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
         bocList.ListMenuItems.Add (
             new BocMenuItem
             {
-                Text = "$res:New",
+                Text = GlobalResources.New,
                 Command = new InlineEditingNewItemMenuItemCommand<TBusinessObject> (newObjectFactory)
             });
         bocList.ListMenuItems.Add (
             new BocMenuItem
             {
-                Text = "$res:Delete",
+                Text = GlobalResources.Delete,
                 RequiredSelection = RequiredSelection.OneOrMore,
                 Command = new InlineEditingDeleteItemMenuItemCommand<TBusinessObject>()
             });
