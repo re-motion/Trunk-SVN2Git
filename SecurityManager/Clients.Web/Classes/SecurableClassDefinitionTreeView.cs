@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Globalization.Classes;
@@ -26,19 +27,20 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 {
   public class SecurableClassDefinitionTreeView : BocTreeView
   {
-    // types
-
-    // static members
-
-    // member fields
-
-    // construction and disposing
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.Classes.SecurableClassDefinitionTreeViewResources")]
+    public enum ResourceIdentifier
+    {
+    }
 
     public SecurableClassDefinitionTreeView ()
     {
     }
 
-    // methods and properties
+    protected virtual IResourceManager GetResourceManager ()
+    {
+      return GetResourceManager (typeof (ResourceIdentifier));
+    }
 
     protected override string GetText (IBusinessObjectWithIdentity businessObject)
     {
@@ -54,6 +56,9 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       if (classDefinition.StatelessAccessControlList != null)
         aclCount++;
       aclCount += classDefinition.StatefulAccessControlLists.Count;
+
+      //TODO RM-6362
+      var resourceManager = GetResourceManager();
 
       if (aclCount == 0)
         return string.Format (SecurableClassDefinitionTreeViewResources.NoAclsText, text);
