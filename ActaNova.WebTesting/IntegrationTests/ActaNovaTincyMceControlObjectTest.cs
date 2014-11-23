@@ -15,7 +15,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var tinyMce = page.FormPage.GetTinyMce ("EmailBody");
       Assert.That(tinyMce.GetText(), Is.Empty);
-      Assert.That(tinyMce.GetMarkup(), Is.EqualTo("<p><br data-mce-bogus=\"1\"></p>"));
+      Assert.That (tinyMce.GetMarkup(), Is.EqualTo ("<p><br data-mce-bogus=\"1\"></p>").Or.EqualTo ("<p></p>"));
 
       tinyMce.FillWithMarkup ("My<br>text<br>is<br>great.");
 
