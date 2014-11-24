@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListControl.TenantListLabelText" xml:space="preserve">
-    <value>Administrate Clients</value>
+    <value>Administrate Tenants</value>
   </data>
   <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListControl.NewTenantButtonText" xml:space="preserve">
-    <value>Create New Client</value>
+    <value>Create New Tenant</value>
   </data>
 </root>
