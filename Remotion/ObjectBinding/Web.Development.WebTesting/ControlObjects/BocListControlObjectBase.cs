@@ -34,7 +34,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Common functionality of <see cref="BocListControlObject"/> and <see cref="BocListAsGridControlObject"/>.
   /// </summary>
   public abstract class BocListControlObjectBase<TRowControlObject, TCellControlObject>
-      : BocControlObject, IDropDownMenuHost, IListMenuHost, IControlObjectWithRows<TRowControlObject>
+      : BocControlObject, IDropDownMenuHost, IListMenuHost, IControlObjectWithRows<TRowControlObject>, IFluentControlObjectWithRows<TRowControlObject>
       where TRowControlObject : ControlObject
       where TCellControlObject : ControlObject
   {
@@ -187,7 +187,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithRows<TRowControlObject> GetRow ()
+    public IFluentControlObjectWithRows<TRowControlObject> GetRow ()
     {
       return this;
     }
@@ -199,7 +199,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithItemID (string itemID)
+    TRowControlObject IFluentControlObjectWithRows<TRowControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -211,7 +211,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    TRowControlObject IControlObjectWithRows<TRowControlObject>.WithIndex (int index)
+    TRowControlObject IFluentControlObjectWithRows<TRowControlObject>.WithIndex (int index)
     {
       var cssSelector = string.Format (
           ".bocListTable .bocListTableBody .bocListDataRow[{0}='{1}']",

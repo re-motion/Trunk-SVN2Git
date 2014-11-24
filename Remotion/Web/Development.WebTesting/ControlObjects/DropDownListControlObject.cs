@@ -26,7 +26,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="DropDownList"/>.
   /// </summary>
-  public class DropDownListControlObject : WebFormsControlObject, IControlObjectWithSelectableOptions, IControlObjectWithText
+  public class DropDownListControlObject
+      : WebFormsControlObject, IControlObjectWithSelectableOptions, IFluentControlObjectWithSelectableOptions, IControlObjectWithText
   {
     public DropDownListControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -40,7 +41,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithSelectableOptions SelectOption ()
+    public IFluentControlObjectWithSelectableOptions SelectOption ()
     {
       return this;
     }
@@ -57,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (
         string value,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -69,7 +70,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (
         int index,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -79,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithDisplayText (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)

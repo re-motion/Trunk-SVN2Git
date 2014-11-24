@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.WebTabStrip"/>.
   /// </summary>
-  public class WebTabStripControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithTabs
+  public class WebTabStripControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithTabs, IFluentControlObjectWithTabs
   {
     public WebTabStripControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithTabs SwitchTo ()
+    public IFluentControlObjectWithTabs SwitchTo ()
     {
       return this;
     }
@@ -52,7 +52,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithTabs.WithItemID (string itemID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithItemID (
+        string itemID,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -61,7 +64,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithIndex (
+        int index,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       var xPathSelector = string.Format (
           "(.//span{0})[{1}]",
@@ -72,7 +78,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithHtmlID (
+        string htmlID,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
@@ -81,7 +90,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithTabs.WithDisplayText (string displayText, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayText (
+        string displayText,
+        ICompletionDetection completionDetection,
+        IModalDialogHandler modalDialogHandler)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

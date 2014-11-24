@@ -29,13 +29,20 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Start of the fluent interface for selecting a cell.
     /// </summary>
-    IControlObjectWithCells<TCellControlObject> GetCell ();
+    IFluentControlObjectWithCells<TCellControlObject> GetCell ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="WithColumnItemID"/>.
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithCells{TCellControlObject}.WithColumnItemID"/>.
     /// </summary>
     TCellControlObject GetCell ([NotNull] string columnItemID);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithCells{TCellControlObject}.GetCell()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithCells<TCellControlObject>
+      where TCellControlObject : ControlObject
+  {
     /// <summary>
     /// Selects the cell using the given <paramref name="columnItemID"/>.
     /// </summary>

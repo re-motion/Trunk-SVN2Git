@@ -24,7 +24,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
-  public class WebTreeViewControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithNodes<WebTreeViewNodeControlObject>
+  public class WebTreeViewControlObject
+      : WebFormsControlObjectWithDiagnosticMetadata,
+          IControlObjectWithNodes<WebTreeViewNodeControlObject>,
+          IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>
   {
     private readonly WebTreeViewNodeControlObject _metaRootNode;
 
@@ -43,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
+    public IFluentControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
@@ -57,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -65,13 +68,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
     /// <inheritdoc/>
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayText (string displayText)
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

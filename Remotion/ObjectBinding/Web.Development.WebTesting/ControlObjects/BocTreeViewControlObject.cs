@@ -26,7 +26,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
-  public class BocTreeViewControlObject : BocControlObject, IControlObjectWithNodes<BocTreeViewNodeControlObject>
+  public class BocTreeViewControlObject
+      : BocControlObject, IControlObjectWithNodes<BocTreeViewNodeControlObject>, IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>
   {
     private readonly BocTreeViewNodeControlObject _metaRootNode;
 
@@ -45,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
+    public IFluentControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
@@ -59,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -67,13 +68,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
     {
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
     /// <inheritdoc/>
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

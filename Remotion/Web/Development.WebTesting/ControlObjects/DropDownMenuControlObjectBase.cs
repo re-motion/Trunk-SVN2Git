@@ -26,7 +26,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Base class for all control objects representing a <see cref="T:Remotion.Web.UI.Controls.DropDownMenu"/>.
   /// </summary>
-  public abstract class DropDownMenuControlObjectBase : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems
+  public abstract class DropDownMenuControlObjectBase
+      : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems, IFluentControlObjectWithSelectableItems
   {
     protected DropDownMenuControlObjectBase ([NotNull] ControlObjectContext context)
         : base (context)
@@ -38,7 +39,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     protected abstract void OpenDropDownMenu ();
 
-    public IControlObjectWithSelectableItems SelectItem ()
+    public IFluentControlObjectWithSelectableItems SelectItem ()
     {
       return this;
     }
@@ -55,7 +56,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -68,7 +69,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (
         int index,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -79,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (
         string htmlID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -92,7 +93,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)

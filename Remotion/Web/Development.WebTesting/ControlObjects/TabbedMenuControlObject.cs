@@ -27,7 +27,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object for form grids created with <see cref="T:Remotion.Web.UI.Controls.TabbedMenu"/>.
   /// </summary>
   [UsedImplicitly]
-  public class TabbedMenuControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems
+  public class TabbedMenuControlObject
+      : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems, IFluentControlObjectWithSelectableItems
   {
     public TabbedMenuControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -43,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithSelectableItems SelectItem ()
+    public IFluentControlObjectWithSelectableItems SelectItem ()
     {
       return this;
     }
@@ -68,7 +69,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -80,7 +81,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (
         int index,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -90,7 +91,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (
         string htmlID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -102,7 +103,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -129,14 +130,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return Scope.FindCss ("td.tabbedMainMenuCell");
     }
 
-    private class SubMenuItems : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems
+    private class SubMenuItems
+        : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems, IFluentControlObjectWithSelectableItems
     {
       public SubMenuItems ([NotNull] ControlObjectContext context)
           : base (context)
       {
       }
 
-      public IControlObjectWithSelectableItems SelectItem ()
+      public IFluentControlObjectWithSelectableItems SelectItem ()
       {
         return this;
       }
@@ -151,7 +153,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         return SelectItem().WithItemID (itemID, completionDetection, modalDialogHandler);
       }
 
-      UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
+      UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (
           string itemID,
           ICompletionDetection completionDetection,
           IModalDialogHandler modalDialogHandler)
@@ -162,7 +164,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
       }
 
-      UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
+      UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (
           int index,
           ICompletionDetection completionDetection,
           IModalDialogHandler modalDialogHandler)
@@ -171,7 +173,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
       }
 
-      UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
+      UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (
           string htmlID,
           ICompletionDetection completionDetection,
           IModalDialogHandler modalDialogHandler)
@@ -182,7 +184,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         return SelectMenuOrSubMenuItem (Context, menuItemScope, completionDetection, modalDialogHandler);
       }
 
-      UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+      UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (
           string displayText,
           ICompletionDetection completionDetection,
           IModalDialogHandler modalDialogHandler)

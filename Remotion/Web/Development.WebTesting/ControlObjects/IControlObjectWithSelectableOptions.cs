@@ -28,16 +28,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Start of the fluent interface for selecting an option.
     /// </summary>
-    IControlObjectWithSelectableOptions SelectOption ();
+    IFluentControlObjectWithSelectableOptions SelectOption ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithSelectableOptions.WithItemID"/>.
     /// </summary>
     UnspecifiedPageObject SelectOption (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithSelectableOptions.SelectOption()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithSelectableOptions
+  {
     /// <summary>
     /// Selects the option using the given <paramref name="itemID"/>.
     /// </summary>

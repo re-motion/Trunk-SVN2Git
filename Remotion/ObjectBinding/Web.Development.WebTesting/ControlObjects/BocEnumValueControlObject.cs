@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue"/> control.
   /// </summary>
-  public class BocEnumValueControlObject : BocControlObject, IControlObjectWithSelectableOptions
+  public class BocEnumValueControlObject : BocControlObject, IControlObjectWithSelectableOptions, IFluentControlObjectWithSelectableOptions
   {
     private readonly IBocEnumValueControlObjectVariant _variantImpl;
 
@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithSelectableOptions SelectOption ()
+    public IFluentControlObjectWithSelectableOptions SelectOption ()
     {
       return this;
     }
@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithItemID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithIndex (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (
         int index,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -86,7 +86,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableOptions.WithDisplayText (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)

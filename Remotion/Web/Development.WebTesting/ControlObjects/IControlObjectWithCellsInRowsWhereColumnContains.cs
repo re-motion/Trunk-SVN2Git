@@ -25,17 +25,26 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// cells.
   /// </summary>
   public interface IControlObjectWithCellsInRowsWhereColumnContains<TCellControlObject>
+    where TCellControlObject : ControlObject
   {
     /// <summary>
     /// Start of the fluent interface for selecting a cell.
     /// </summary>
-    IControlObjectWithCellsInRowsWhereColumnContains<TCellControlObject> GetCellWhere ();
+    IFluentControlObjectWithCellsInRowsWhereColumnContains<TCellControlObject> GetCellWhere ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="ColumnWithItemIDContains"/>.
+    /// Short for explicitly implemented
+    /// <see cref="IFluentControlObjectWithCellsInRowsWhereColumnContains{TCellControlObject}.ColumnWithItemIDContains"/>.
     /// </summary>
     TCellControlObject GetCellWhere ([NotNull] string columnItemID, [NotNull] string containsCellText);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithCellsInRowsWhereColumnContains{TCellControlObject}.GetCellWhere()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithCellsInRowsWhereColumnContains<TCellControlObject>
+      where TCellControlObject : ControlObject
+  {
     /// <summary>
     /// Selects the cell which contains the <paramref name="containsCellText"/> in the column given by <paramref name="itemID"/>.
     /// </summary>

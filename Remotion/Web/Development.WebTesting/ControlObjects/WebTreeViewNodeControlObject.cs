@@ -26,7 +26,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/>.
   /// </summary>
-  public class WebTreeViewNodeControlObject : WebFormsControlObject, IControlObjectWithNodes<WebTreeViewNodeControlObject>, IControlObjectWithText
+  public class WebTreeViewNodeControlObject
+      : WebFormsControlObject,
+          IControlObjectWithNodes<WebTreeViewNodeControlObject>,
+          IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>,
+          IControlObjectWithText
   {
     public WebTreeViewNodeControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -56,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
+    public IFluentControlObjectWithNodes<WebTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
@@ -70,7 +74,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -79,14 +83,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithIndex (int index)
     {
       var nodeScope = Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.IndexInCollection, index.ToString());
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
     /// <inheritdoc/>
-    WebTreeViewNodeControlObject IControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayText (string displayText)
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

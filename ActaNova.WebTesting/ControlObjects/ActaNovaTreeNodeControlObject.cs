@@ -12,7 +12,10 @@ namespace ActaNova.WebTesting.ControlObjects
   /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
   public class ActaNovaTreeNodeControlObject
-      : ActaNovaMainFrameControlObject, IControlObjectWithNodes<ActaNovaTreeNodeControlObject>, IControlObjectWithText
+      : ActaNovaMainFrameControlObject,
+          IControlObjectWithNodes<ActaNovaTreeNodeControlObject>,
+          IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>,
+          IControlObjectWithText
   {
     private readonly BocTreeViewNodeControlObject _bocTreeViewNode;
 
@@ -54,7 +57,7 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
+    public IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
     {
       return this;
     }
@@ -68,7 +71,7 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithItemID (string itemID)
+    ActaNovaTreeNodeControlObject IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -77,14 +80,14 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithIndex (int index)
+    ActaNovaTreeNodeControlObject IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithIndex (int index)
     {
       var bocTreeViewNode = _bocTreeViewNode.GetNode().WithIndex (index);
       return new ActaNovaTreeNodeControlObject (bocTreeViewNode);
     }
 
     /// <inheritdoc/>
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithDisplayText (string displayText)
+    ActaNovaTreeNodeControlObject IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

@@ -26,7 +26,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
-  public class BocTreeViewNodeControlObject : BocControlObject, IControlObjectWithNodes<BocTreeViewNodeControlObject>, IControlObjectWithText
+  public class BocTreeViewNodeControlObject
+      : BocControlObject,
+          IControlObjectWithNodes<BocTreeViewNodeControlObject>,
+          IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>,
+          IControlObjectWithText
   {
     private readonly WebTreeViewNodeControlObject _webTreeViewNode;
 
@@ -66,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
+    public IFluentControlObjectWithNodes<BocTreeViewNodeControlObject> GetNode ()
     {
       return this;
     }
@@ -80,7 +84,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -89,14 +93,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithIndex (int index)
     {
       var webTreeViewNode = _webTreeViewNode.GetNode().WithIndex (index);
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
     /// <inheritdoc/>
-    BocTreeViewNodeControlObject IControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

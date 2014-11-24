@@ -34,7 +34,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   public class BocListControlObject
       : BocListControlObjectBase<BocListRowControlObject, BocListCellControlObject>,
           IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>,
-          IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>
+          IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject>,
+          IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>,
+          IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>
   {
     public BocListControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -110,7 +112,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithRowsWhereColumnContains<BocListRowControlObject> GetRowWhere ()
+    public IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject> GetRowWhere ()
     {
       return this;
     }
@@ -125,7 +127,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithItemIDContains (
+    BocListRowControlObject IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithItemIDContains (
         string itemID,
         string containsCellText)
     {
@@ -137,7 +139,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithIndexContains (
+    BocListRowControlObject IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithIndexContains (
         int index,
         string containsCellText)
     {
@@ -148,7 +150,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListRowControlObject IControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithTitleContains (
+    BocListRowControlObject IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithTitleContains (
         string title,
         string containsCellText)
     {
@@ -166,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject> GetCellWhere ()
+    public IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject> GetCellWhere ()
     {
       return this;
     }
@@ -181,7 +183,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithItemIDContains (
+    BocListCellControlObject IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithItemIDContains (
         string itemID,
         string containsCellText)
     {
@@ -193,7 +195,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithIndexContains (
+    BocListCellControlObject IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithIndexContains (
         int index,
         string containsCellText)
     {
@@ -204,7 +206,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListCellControlObject IControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
+    BocListCellControlObject IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
         string title,
         string containsCellText)
     {
@@ -262,7 +264,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       var sortColumnLinkScope = sortColumnClickScope.FindLink();
       // Note: explicit hovering is required: Selenium does not correctly bring the fake table head into view.
-      if(HasFakeTableHead)
+      if (HasFakeTableHead)
         sortColumnLinkScope.Hover();
       sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
     }
@@ -351,7 +353,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       return new BocListCellControlObject (Context.CloneForControl (cellScope));
     }
-    
+
     /// <summary>
     /// Allows derived classes to override the scope in which the available views select box resides.
     /// </summary>

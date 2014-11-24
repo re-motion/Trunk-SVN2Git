@@ -29,13 +29,20 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Start of the fluent interface for selecting a row.
     /// </summary>
-    IControlObjectWithRows<TRowControlObject> GetRow ();
+    IFluentControlObjectWithRows<TRowControlObject> GetRow ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithRows{TRowControlObject}.WithItemID"/>.
     /// </summary>
     TRowControlObject GetRow ([NotNull] string itemID);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithRows{TRowControlObject}.GetRow()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithRows<TRowControlObject>
+      where TRowControlObject : ControlObject
+  {
     /// <summary>
     /// Selects the row using the given <paramref name="itemID"/>.
     /// </summary>

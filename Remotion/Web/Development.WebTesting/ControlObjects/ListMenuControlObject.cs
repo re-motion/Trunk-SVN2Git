@@ -26,7 +26,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="T:Remotion.Web.UI.Controls.ListMenu"/>.
   /// </summary>
-  public class ListMenuControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems
+  public class ListMenuControlObject
+      : WebFormsControlObjectWithDiagnosticMetadata, IControlObjectWithSelectableItems, IFluentControlObjectWithSelectableItems
   {
     public ListMenuControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -34,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithSelectableItems SelectItem ()
+    public IFluentControlObjectWithSelectableItems SelectItem ()
     {
       return this;
     }
@@ -51,7 +52,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithItemID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (
         string itemID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -61,7 +62,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithIndex (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (
         int index,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -71,7 +72,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithHtmlID (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (
         string htmlID,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)
@@ -81,7 +82,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IControlObjectWithSelectableItems.WithDisplayText (
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (
         string displayText,
         ICompletionDetection completionDetection,
         IModalDialogHandler modalDialogHandler)

@@ -29,13 +29,20 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Start of the fluent interface for selecting a row.
     /// </summary>
-    IControlObjectWithRowsWhereColumnContains<TRowControlObject> GetRowWhere ();
+    IFluentControlObjectWithRowsWhereColumnContains<TRowControlObject> GetRowWhere ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="ColumnWithItemIDContains"/>.
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithRowsWhereColumnContains{TRowControlObject}.ColumnWithItemIDContains"/>.
     /// </summary>
     TRowControlObject GetRowWhere ([NotNull] string columnItemID, [NotNull] string containsCellText);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithRowsWhereColumnContains{TCellControlObject}.GetRowWhere()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithRowsWhereColumnContains<TRowControlObject>
+      where TRowControlObject : ControlObject
+  {
     /// <summary>
     /// Selects the row which contains the <paramref name="containsCellText"/> in the column given by <paramref name="itemID"/>.
     /// </summary>

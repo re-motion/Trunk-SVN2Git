@@ -26,7 +26,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a row in edit-mode within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  public class BocListEditableRowControlObject : BocControlObject, IControlObjectWithCells<BocListEditableCellControlObject>
+  public class BocListEditableRowControlObject
+      : BocControlObject, IControlObjectWithCells<BocListEditableCellControlObject>, IFluentControlObjectWithCells<BocListEditableCellControlObject>
   {
     private readonly BocListRowFunctionality _impl;
 
@@ -53,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithCells<BocListEditableCellControlObject> GetCell ()
+    public IFluentControlObjectWithCells<BocListEditableCellControlObject> GetCell ()
     {
       return this;
     }
@@ -67,7 +68,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithColumnItemID (string columnItemID)
+    BocListEditableCellControlObject IFluentControlObjectWithCells<BocListEditableCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
@@ -75,7 +76,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListEditableCellControlObject IControlObjectWithCells<BocListEditableCellControlObject>.WithIndex (int index)
+    BocListEditableCellControlObject IFluentControlObjectWithCells<BocListEditableCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListEditableCellControlObject> (index);
     }

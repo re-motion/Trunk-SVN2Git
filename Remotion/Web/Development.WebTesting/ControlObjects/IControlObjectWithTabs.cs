@@ -28,16 +28,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Start of the fluent interface for switching to a tab.
     /// </summary>
-    IControlObjectWithTabs SwitchTo ();
+    IFluentControlObjectWithTabs SwitchTo ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithTabs.WithItemID"/>.
     /// </summary>
     UnspecifiedPageObject SwitchTo (
         [NotNull] string itemID,
         [CanBeNull] ICompletionDetection completionDetection = null,
         [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithTabs.SwitchTo()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithTabs
+  {
     /// <summary>
     /// Switches to the tab using the given <paramref name="itemID"/>.
     /// </summary>

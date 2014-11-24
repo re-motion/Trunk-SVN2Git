@@ -26,7 +26,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  public class BocListRowControlObject : BocControlObject, IDropDownMenuHost, IControlObjectWithCells<BocListCellControlObject>
+  public class BocListRowControlObject
+      : BocControlObject,
+          IDropDownMenuHost,
+          IControlObjectWithCells<BocListCellControlObject>,
+          IFluentControlObjectWithCells<BocListCellControlObject>
   {
     private readonly BocListRowFunctionality _impl;
 
@@ -53,7 +57,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithCells<BocListCellControlObject> GetCell ()
+    public IFluentControlObjectWithCells<BocListCellControlObject> GetCell ()
     {
       return this;
     }
@@ -67,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListCellControlObject IControlObjectWithCells<BocListCellControlObject>.WithColumnItemID (string columnItemID)
+    BocListCellControlObject IFluentControlObjectWithCells<BocListCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
@@ -75,7 +79,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    BocListCellControlObject IControlObjectWithCells<BocListCellControlObject>.WithIndex (int index)
+    BocListCellControlObject IFluentControlObjectWithCells<BocListCellControlObject>.WithIndex (int index)
     {
       return _impl.GetCell<BocListCellControlObject> (index);
     }

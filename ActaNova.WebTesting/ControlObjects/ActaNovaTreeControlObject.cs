@@ -9,7 +9,10 @@ namespace ActaNova.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the ActaNova tree.
   /// </summary>
-  public class ActaNovaTreeControlObject : ActaNovaMainFrameControlObject, IControlObjectWithNodes<ActaNovaTreeNodeControlObject>
+  public class ActaNovaTreeControlObject
+      : ActaNovaMainFrameControlObject,
+          IControlObjectWithNodes<ActaNovaTreeNodeControlObject>,
+          IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>
   {
     private readonly ActaNovaTreeNodeControlObject _metaRootNode;
 
@@ -20,7 +23,7 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public IControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
+    public IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject> GetNode ()
     {
       return this;
     }
@@ -34,7 +37,7 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithItemID (string itemID)
+    ActaNovaTreeNodeControlObject IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
@@ -42,13 +45,13 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithIndex (int index)
+    ActaNovaTreeNodeControlObject IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithIndex (int index)
     {
       return _metaRootNode.GetNode().WithIndex (index);
     }
 
     /// <inheritdoc/>
-    ActaNovaTreeNodeControlObject IControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithDisplayText (string displayText)
+    ActaNovaTreeNodeControlObject IFluentControlObjectWithNodes<ActaNovaTreeNodeControlObject>.WithDisplayText (string displayText)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 

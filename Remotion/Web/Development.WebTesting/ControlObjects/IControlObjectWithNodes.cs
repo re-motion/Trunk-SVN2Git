@@ -29,13 +29,20 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Start of the fluent interface for selecting a node.
     /// </summary>
-    IControlObjectWithNodes<TNodeControlObject> GetNode ();
+    IFluentControlObjectWithNodes<TNodeControlObject> GetNode ();
 
     /// <summary>
-    /// Short for explicitly implemented <see cref="WithItemID"/>.
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithNodes{TCellControlObject}.WithItemID"/>.
     /// </summary>
     TNodeControlObject GetNode ([NotNull] string itemID);
+  }
 
+  /// <summary>
+  /// Fluent interface for completing the <see cref="IControlObjectWithNodes{TNodeControlObject}.GetNode()"/> call.
+  /// </summary>
+  public interface IFluentControlObjectWithNodes<TNodeControlObject>
+      where TNodeControlObject : ControlObject
+  {
     /// <summary>
     /// Selects the node using the given <paramref name="itemID"/>.
     /// </summary>
