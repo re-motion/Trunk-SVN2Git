@@ -144,6 +144,7 @@ namespace ActaNova.WebTesting.PageObjects
       return additionalCommandsMenu;
     }
 
+    /// <inheritdoc/>
     protected override ICompletionDetection GetDefaultCompletionDetectionForPerform ()
     {
       return Continue.When (Wxe.PostBackCompletedInParent (this));

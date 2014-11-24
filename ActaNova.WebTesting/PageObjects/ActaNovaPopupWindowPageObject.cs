@@ -21,12 +21,10 @@ namespace ActaNova.WebTesting.PageObjects
       return Scope.FindId ("TitleLabel").Text;
     }
 
-    /// <summary>
-    /// Closes the popup window.
-    /// </summary>
-    public void Close ()
+    /// <inheritdoc/>
+    protected override ICompletionDetection GetDefaultCompletionDetectionForPerform ()
     {
-      Context.CloseWindow();
+      return Continue.When (Wxe.PostBackCompletedInParent (this));
     }
   }
 }

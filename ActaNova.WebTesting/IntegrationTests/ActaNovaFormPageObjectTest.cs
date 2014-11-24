@@ -28,7 +28,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var weiterleitenWindow = editIncomingPage.FormPage.HoverWorkStepsControl()
           .ClickItem ("Weiterleiten")
           .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Aktivität weiterleiten");
-      weiterleitenWindow.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(weiterleitenWindow.Context.ParentContext)));
+      weiterleitenWindow.Perform ("Cancel");
 
       editIncomingPage.FormPage.PressPinButton();
       Assert.That (editIncomingPage.Tree.GetNode().WithDisplayText ("Favoriten").Expand().GetNumberOfChildren(), Is.EqualTo (3));

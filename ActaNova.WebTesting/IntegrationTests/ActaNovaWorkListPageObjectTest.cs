@@ -31,7 +31,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           .SelectItem()
           .WithDisplayText ("Weiterleiten")
           .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Aktivität weiterleiten");
-      weiterleitenPopup.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(weiterleitenPopup.Context.ParentContext)));
+      weiterleitenPopup.Perform ("Cancel");
     }
   }
 }
