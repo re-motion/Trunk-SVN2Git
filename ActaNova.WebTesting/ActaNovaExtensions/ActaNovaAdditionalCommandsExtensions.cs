@@ -12,14 +12,14 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
   /// </summary>
   public static class ActaNovaAdditionalCommandsExtensions
   {
-    public static ActaNovaPopupWindowPageObject Abschliessen ([NotNull] this ActaNovaFormPageObject formPage)
+    public static ActaNovaSignaturePopupWindowPageObject Abschliessen ([NotNull] this ActaNovaFormPageObject formPage)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
       return formPage.SelectItem ("Abschlie&#223;en").ExpectSignaturePage();
     }
 
-    public static ActaNovaPopupWindowPageObject Umprotokollieren ([NotNull] this ActaNovaFormPageObject formPage)
+    public static ActaNovaSignaturePopupWindowPageObject Umprotokollieren ([NotNull] this ActaNovaFormPageObject formPage)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
@@ -37,7 +37,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
               .ExpectMainPage();
     }
 
-    public static ActaNovaPopupWindowPageObject Stornieren ([NotNull] this ActaNovaFormPageObject formPage)
+    public static ActaNovaSignaturePopupWindowPageObject Stornieren ([NotNull] this ActaNovaFormPageObject formPage)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
@@ -47,14 +47,14 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
               .ExpectSignaturePage();
     }
 
-    public static ActaNovaPopupWindowPageObject Unterschreiben ([NotNull] this ActaNovaFormPageObject formPage)
+    public static ActaNovaSignaturePopupWindowPageObject Unterschreiben ([NotNull] this ActaNovaFormPageObject formPage)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
       return formPage.SelectItem ("Unterschreiben").ExpectSignaturePage();
     }
 
-    public static ActaNovaPopupWindowPageObject Heranholen ([NotNull] this ActaNovaFormPageObject formPage)
+    public static ActaNovaSignaturePopupWindowPageObject Heranholen ([NotNull] this ActaNovaFormPageObject formPage)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
@@ -75,7 +75,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       return formPage.SelectItem ("Mail versenden", Continue.When (Wxe.PostBackCompletedInParent (formPage))).ExpectMainPage();
     }
 
-    public static ActaNovaPopupWindowPageObject Sperren ([NotNull] this ActaNovaFormPageObject formPage)
+    public static ActaNovaSignaturePopupWindowPageObject Sperren ([NotNull] this ActaNovaFormPageObject formPage)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
@@ -135,9 +135,9 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       return formPage.GetAdditionalCommandsMenu().SelectItem().WithDisplayText (displayText, completionDetection);
     }
 
-    private static ActaNovaPopupWindowPageObject ExpectSignaturePage ([NotNull] this UnspecifiedPageObject page)
+    private static ActaNovaSignaturePopupWindowPageObject ExpectSignaturePage ([NotNull] this UnspecifiedPageObject page)
     {
-      return page.ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Unterschreiben");
+      return page.ExpectNewPopupWindow<ActaNovaSignaturePopupWindowPageObject> ("Unterschreiben");
     }
   }
 }

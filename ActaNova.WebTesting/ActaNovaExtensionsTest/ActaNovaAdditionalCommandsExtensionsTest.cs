@@ -16,19 +16,19 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       var editCitizenConcern = home.WorkListPage.GetWorkList().GetCellWhere ("WorkItem", "04.06.2009/1").OpenWorkListItem();
 
       var signaturePopup = editCitizenConcern.FormPage.Abschliessen();
-      signaturePopup.Perform ("Cancel");
+      signaturePopup.Cancel();
 
       var searchFile = editCitizenConcern.FormPage.Protokollieren();
       editCitizenConcern = searchFile.FormPage.Perform ("Cancel").ExpectMainPage();
 
       signaturePopup = editCitizenConcern.FormPage.Stornieren();
-      signaturePopup.Perform ("Cancel");
+      signaturePopup.Cancel();
 
       signaturePopup = editCitizenConcern.FormPage.Unterschreiben();
-      signaturePopup.Perform ("Cancel");
+      signaturePopup.Cancel();
 
       signaturePopup = editCitizenConcern.FormPage.Heranholen();
-      signaturePopup.Perform ("Cancel");
+      signaturePopup.Cancel();
 
       editCitizenConcern = editCitizenConcern.FormPage.BarcodeDrucken();
 
@@ -36,7 +36,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       editCitizenConcern = createOutgoingMail.FormPage.PerformAndConfirmDataLoss ("Cancel").ExpectMainPage();
 
       signaturePopup = editCitizenConcern.FormPage.Sperren();
-      signaturePopup.Perform ("Cancel");
+      signaturePopup.Cancel();
 
       var saveAndForward = editCitizenConcern.FormPage.SpeichernUndWeiterleiten();
       editCitizenConcern = saveAndForward.FormPage.Perform ("Cancel", Continue.When(Wxe.PostBackCompleted)).ExpectMainPage();
@@ -60,7 +60,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       editCitizenConcern.FormPage.NextActivity();
 
       signaturePopup = editCitizenConcern.FormPage.Umprotokollieren();
-      signaturePopup.Perform ("Cancel");
+      signaturePopup.Cancel();
     }
   }
 }
