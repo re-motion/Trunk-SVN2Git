@@ -12,6 +12,14 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
   /// </summary>
   public static class ActaNovaConvinienceExtensions
   {
+    public static ActaNovaMainPageObject OpenWorkListItem ([NotNull] this BocListRowControlObject workListItem)
+    {
+      ArgumentUtility.CheckNotNull ("workListItem", workListItem);
+
+      var cell = workListItem.GetCell ("WorkItem");
+      return cell.OpenWorkListItem();
+    }
+
     public static ActaNovaMainPageObject OpenWorkListItem ([NotNull] this BocListCellControlObject workListItem)
     {
       ArgumentUtility.CheckNotNull ("workListItem", workListItem);
