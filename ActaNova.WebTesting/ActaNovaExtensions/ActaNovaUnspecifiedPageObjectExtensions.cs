@@ -1,4 +1,5 @@
-﻿using ActaNova.WebTesting.PageObjects;
+﻿using System;
+using ActaNova.WebTesting.PageObjects;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -15,6 +16,26 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("unspecifiedPageObject", unspecifiedPageObject);
 
       return unspecifiedPageObject.Expect<ActaNovaMainPageObject>();
+    }
+
+    public static ActaNovaWindowPageObject ExpectNewActaNovaWindow (
+        [NotNull] this UnspecifiedPageObject unspecifiedPageObject,
+        [NotNull] string windowLocator)
+    {
+      ArgumentUtility.CheckNotNull ("unspecifiedPageObject", unspecifiedPageObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
+
+      return unspecifiedPageObject.ExpectNewWindow<ActaNovaWindowPageObject> (windowLocator);
+    }
+
+    public static ActaNovaPopupWindowPageObject ExpectNewActaNovaPopupWindow (
+        [NotNull] this UnspecifiedPageObject unspecifiedPageObject,
+        [NotNull] string windowLocator)
+    {
+      ArgumentUtility.CheckNotNull ("unspecifiedPageObject", unspecifiedPageObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("windowLocator", windowLocator);
+
+      return unspecifiedPageObject.ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> (windowLocator);
     }
   }
 }
