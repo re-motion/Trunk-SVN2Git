@@ -27,7 +27,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class EditGroupForm : BaseEditPage<Group>
   {
     [ResourceIdentifiersAttribute]
-    [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditGroupFormResources")]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.OrganizationalStructureResources")]
     public enum ResourceIdentifier
     {
       Title,

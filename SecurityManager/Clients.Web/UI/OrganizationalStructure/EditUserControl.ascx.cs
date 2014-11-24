@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class EditUserControl : BaseEditControl<EditUserControl>
   {
     [ResourceIdentifiers]
-    [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditUserControlResources")]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.OrganizationalStructureResources")]
     public enum ResourceIdentifier
     {
       UserLabelText,

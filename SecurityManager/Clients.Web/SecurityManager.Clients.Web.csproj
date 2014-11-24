@@ -538,144 +538,15 @@
     <EmbeddedResource Include="Globalization\UI\AccessControl\SecurableClassDefinitionListFormResources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\TenantListControlResources.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\TenantListControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\TenantListFormResources.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\TenantListFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditTenantControlResources.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditTenantControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditTenantFormResources.de.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditTenantFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\UserListFormResources.de.resx">
-      <LastGenOutput>UserListFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\UserListControlResources.de.resx">
-      <LastGenOutput>UserListControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\PositionListFormResources.de.resx">
-      <LastGenOutput>PositionListFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\PositionListControlResources.de.resx">
-      <LastGenOutput>PositionListControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupTypeListFormResources.de.resx">
-      <LastGenOutput>GroupTypeListFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupTypeListControlResources.de.resx">
-      <LastGenOutput>GroupTypeListControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupListFormResources.de.resx">
-      <LastGenOutput>GroupListFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupListControlResources.de.resx">
-      <LastGenOutput>GroupListControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditUserFormResources.de.resx">
-      <LastGenOutput>EditUserFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditUserControlResources.de.resx">
-      <LastGenOutput>EditUserControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditPositionFormResources.de.resx">
-      <LastGenOutput>EditPositionFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditPositionControlResources.de.resx">
-      <LastGenOutput>EditPositionControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupTypeFormResources.de.resx">
-      <LastGenOutput>EditGroupTypeFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupTypeControlResources.de.resx">
-      <LastGenOutput>EditGroupTypeControlResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupFormResources.de.resx">
-      <LastGenOutput>EditGroupFormResources.de.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupControlResources.de.resx">
+    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\OrganizationalStructureResources.de.resx">
       <LastGenOutput>EditGroupControlResources.de.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditPositionFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditPositionControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupControlResources.resx">
+    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\OrganizationalStructureResources.resx">
       <LastGenOutput>EditGroupControlResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupTypeControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditGroupTypeFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditUserControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\EditUserFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Globalization\UI\GlobalResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupListControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupListFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupTypeListControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\GroupTypeListFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\PositionListControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\PositionListFormResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\UserListControlResources.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Globalization\UI\OrganizationalStructure\UserListFormResources.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

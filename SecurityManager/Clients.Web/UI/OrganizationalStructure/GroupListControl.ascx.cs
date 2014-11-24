@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class GroupListControl : BaseListControl<Group>
   {
     [ResourceIdentifiers]
-    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.GroupListControlResources")]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.OrganizationalStructureResources")]
     public enum ResourceIdentifier
     {
       GroupListLabelText,

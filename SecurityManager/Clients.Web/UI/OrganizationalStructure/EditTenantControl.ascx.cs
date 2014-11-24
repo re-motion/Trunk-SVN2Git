@@ -32,7 +32,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
   public partial class EditTenantControl : BaseEditControl<EditTenantControl>
   {
     [ResourceIdentifiers]
-    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.EditTenantControlResources")]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.OrganizationalStructure.OrganizationalStructureResources")]
     public enum ResourceIdentifier
     {
       ParentValidatorErrorMessage ,

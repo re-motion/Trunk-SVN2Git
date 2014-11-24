@@ -112,15 +112,90 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditGroupControl.GroupLabelText" xml:space="preserve">
+    <value>Edit Group</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditGroupControl.ParentValidatorErrorMessage" xml:space="preserve">
+    <value>The selected group cannot be used as parent because it would result in a circular hierarchy with the group being edited.</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditGroupForm.Title" xml:space="preserve">
+    <value>Edit Group</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditGroupTypeControl.GroupTypeLabelText" xml:space="preserve">
+    <value>Edit Group Type</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.UserListForm.Title" xml:space="preserve">
+    <value>Administrate Users</value>
+  </data>
   <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.UserListControl.UserListLabelText" xml:space="preserve">
-    <value>Benutzer verwalten</value>
+    <value>Administrate Users</value>
   </data>
   <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.UserListControl.NewUserButtonText" xml:space="preserve">
-    <value>Neuen Benutzer anlegen</value>
-  </data> 
+    <value>Create New User</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListForm.Title" xml:space="preserve">
+    <value>Administrate Tenants</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListControl.TenantListLabelText" xml:space="preserve">
+    <value>Administrate Tenants</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.TenantListControl.NewTenantButtonText" xml:space="preserve">
+    <value>Create New Tenant</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.PositionListForm.Title" xml:space="preserve">
+    <value>Administrate Positions</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.PositionListControl.PositionListLabelText" xml:space="preserve">
+    <value>Administrate Postions</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.PositionListControl.NewPositionButtonText" xml:space="preserve">
+    <value>Create New Position</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupTypeListForm.Title" xml:space="preserve">
+    <value>Administrate Group Types</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupTypeListControl.GroupTypeListLabelText" xml:space="preserve">
+    <value>Administrate Group Types</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupTypeListControl.NewGroupTypeButtonText" xml:space="preserve">
+    <value>Create New Group Type</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupListForm.Title" xml:space="preserve">
+    <value>Administrate Groups</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupListControl.GroupListLabelText" xml:space="preserve">
+    <value>Administrate Groups</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupListControl.NewGroupButtonText" xml:space="preserve">
+    <value>Create New Group</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditUserForm.Title" xml:space="preserve">
+    <value>Edit User</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditUserControl.UserLabelText" xml:space="preserve">
+    <value>Edit User</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditTenantForm.Title" xml:space="preserve">
+    <value>Edit Tenant</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditTenantControl.ParentValidatorErrorMessage" xml:space="preserve">
+    <value>The selected tenant cannot be used as parent because it would result in a circular hierarchy with the tenant being edited.</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditTenantControl.TenantLabelText" xml:space="preserve">
+    <value>Edit Tenant</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditPositionForm.Title" xml:space="preserve">
+    <value>Edit Position</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditPositionControl.PositionLabelText" xml:space="preserve">
+    <value>Edit Position</value>
+  </data>
+  <data name="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.EditGroupTypeForm.Title" xml:space="preserve">
+    <value>Edit Group Type</value>
+  </data>
 </root>
