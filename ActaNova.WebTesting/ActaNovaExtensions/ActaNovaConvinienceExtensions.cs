@@ -19,11 +19,23 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       return workListItem.ExecuteCommand (Continue.When (Wxe.PostBackCompletedInParent (workListItem.Context.PageObject))).ExpectMainPage();
     }
 
-    public static ActaNovaMainPageObject SwitchTo ([NotNull] this ActaNovaFormPageObject formPage, string tabItemID)
+    public static ActaNovaMainPageObject SwitchTo ([NotNull] this ActaNovaFormPageObject formPage, [NotNull] string tabItemID)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
+      ArgumentUtility.CheckNotNullOrEmpty ("tabItemID", tabItemID);
 
       return formPage.GetOnlyTabbedMultiView().SwitchTo (tabItemID, Continue.When(Wxe.PostBackCompletedInParent(formPage))).ExpectMainPage();
+    }
+
+    public static ActaNovaMainPageObject SetApplicationContextTo ([NotNull] this ActaNovaFormPageObject formPage, [NotNull] string applicationContext)
+    {
+      ArgumentUtility.CheckNotNull ("formPage", formPage);
+      ArgumentUtility.CheckNotNull ("applicationContext", applicationContext);
+
+      var applicationContextAutoComplete = formPage.GetAutoComplete("ApplicationContext");
+      return
+          applicationContextAutoComplete.FillWith (applicationContext, FinishInput.WithTab, Continue.When (Wxe.PostBackCompletedInParent (formPage)))
+              .ExpectMainPage();
     }
   }
 }

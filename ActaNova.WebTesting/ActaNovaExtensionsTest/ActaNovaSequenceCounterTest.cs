@@ -20,7 +20,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
 
       editCitizenConcern.Tree.GetNode().WithDisplayText ("Gruppen AV").Expand();
 
-      var editPerson = editCitizenConcern.Tree.GetNode()
+      editCitizenConcern.Tree.GetNode()
           .WithDisplayText ("04.06.2009/1")
           .GetNode ("ActualSubmitters")
           .Expand();
@@ -49,6 +49,17 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       home = editCitizenConcern.FormPage.Perform ("Cancel").ExpectMainPage();
 
       Assert.That (home.Header.GetNumberOfBreadCrumbs(), Is.EqualTo (1));
+    }
+
+    [Test]
+    public void TestOuterFrameUsageAfterNewApplicationContext ()
+    {
+      var home = Start();
+
+      var createIncoming = home.MainMenu.Neu_Eingangsstueck();
+      createIncoming.FormPage.SetApplicationContextTo ("BW - Bauen und Wohnen");
+
+      Assert.That (createIncoming.Header.GetCurrentApplicationContext(), Is.EqualTo ("Verfahrensbereich BW"));
     }
   }
 }
