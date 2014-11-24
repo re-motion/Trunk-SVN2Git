@@ -9,7 +9,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
   public class ActaNovaSequenceCounterTest : ActaNovaWebTestBase
   {
     [Test]
-    public void TestOuterFrameUsageAfterTabbedMultiViewTabSwitchAndAfterAdditionalCommandsMenuSelect ()
+    public void TestOuterFrameUsageAfterTabbedMultiViewTabSwitch ()
     {
       var home = Start();
 
@@ -26,6 +26,15 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
           .Expand();
 
       editCitizenConcern.Tree.GetNode().WithDisplayText ("Gruppen AV").Collapse();
+    }
+
+    [Test]
+    public void TestOuterFrameUsageAfterAdditionalCommandsMenuSelect ()
+    {
+      var home = Start();
+
+      var editCitizenConcern = home.WorkListPage.GetWorkList().GetCellWhere ("WorkItem", "04.06.2009/1").OpenWorkListItem();
+      Assert.That (home.Header.GetNumberOfBreadCrumbs(), Is.EqualTo (2));
 
       var createMail = editCitizenConcern.FormPage.GetAdditionalCommandsMenu()
           .SelectItem()
