@@ -148,6 +148,7 @@
     <Compile Include="IntegrationTests\ActaNovaHeaderControlObjectTest.cs" />
     <Compile Include="ActaNovaWebTestBase.cs" />
     <Compile Include="IntegrationTests\FluentExpectExtensionsForActaNovaWebTests.cs" />
+    <Compile Include="SampleTests\SampleTests.cs" />
     <Compile Include="SetUpFixture.cs" />
   </ItemGroup>
   <ItemGroup>
