@@ -20,14 +20,11 @@ using System.Web.UI.HtmlControls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditAccessControlEntryHeaderControl : BaseControl
   {
     public override IBusinessObjectDataSourceControl DataSource

@@ -48,6 +48,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected override void OnPreRender (EventArgs e)
     {
       Title = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.Title);
+      SaveButton.Text = GlobalResourcesHelper.GetString (GlobalResources.Save);
+      CancelButton.Text = GlobalResourcesHelper.GetString (GlobalResources.Cancel);
 
       base.OnPreRender (e);
     }

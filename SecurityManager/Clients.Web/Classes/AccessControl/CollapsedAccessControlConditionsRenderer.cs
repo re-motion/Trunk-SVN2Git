@@ -19,7 +19,6 @@ using System;
 using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -32,6 +31,27 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
   /// </summary>
   public class CollapsedAccessControlConditionsRenderer
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum ResourceIdentifier
+    {
+      TenantHierarchyCondition_This,
+      TenantHierarchyCondition_ThisAndParent,
+      GroupHierarchyCondition_This,
+      GroupHierarchyCondition_ThisAndParent,
+      GroupHierarchyCondition_ThisAndChildren,
+      GroupHierarchyCondition_ThisAndParentAndChildren,
+      TenantCondition_None,
+      UserCondition_None,
+      GroupCondition_None,
+      BranchOfOwningGroupLabel,
+    }
+
+    private IResourceManager ResourceManager
+    {
+      get { return _globalizationService.GetResourceManager (typeof (ResourceIdentifier)); }
+    }
+
     private readonly AccessControlEntry _accessControlEntry;
     private readonly IResourceUrlFactory _resourceUrlFactory;
     private readonly IGlobalizationService _globalizationService;
@@ -63,7 +83,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.TenantCondition)
       {
         case TenantCondition.None:
-          writer.WriteEncodedText (AccessControlResources.TenantCondition_None);  //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+          writer.WriteEncodedText (ResourceManager.GetString (ResourceIdentifier.TenantCondition_None));
           break;
         case TenantCondition.OwningTenant:
           RenderTenantHierarchyIcon (writer, container);
@@ -86,7 +106,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.GroupCondition)
       {
         case GroupCondition.None:
-          writer.WriteEncodedText (AccessControlResources.GroupCondition_None); //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+          writer.WriteEncodedText (ResourceManager.GetString (ResourceIdentifier.GroupCondition_None));
           break;
         case GroupCondition.OwningGroup:
           RenderGroupHierarchyIcon (writer, container);
@@ -97,7 +117,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           RenderLabelAfterPropertyPathString (writer, "SpecificGroup.ShortName");
           break;
         case GroupCondition.BranchOfOwningGroup:
-          RenderLabelBeforePropertyPathString (writer, AccessControlResources.BranchOfOwningGroupLabel, "SpecificGroupType.DisplayName");
+          RenderLabelBeforePropertyPathString (writer, ResourceManager.GetString (ResourceIdentifier.BranchOfOwningGroupLabel), "SpecificGroupType.DisplayName");
           break;
         case GroupCondition.AnyGroupWithSpecificGroupType:
           RenderLabelAfterPropertyPathString (writer, "SpecificGroupType.DisplayName");
@@ -115,7 +135,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
       switch (_accessControlEntry.UserCondition)
       {
         case UserCondition.None:
-          writer.WriteEncodedText (AccessControlResources.UserCondition_None); //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+          writer.WriteEncodedText (ResourceManager.GetString (ResourceIdentifier.UserCondition_None));
           break;
         case UserCondition.Owner:
           RenderPropertyPathString (writer, "UserCondition");
@@ -188,13 +208,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new InvalidOperationException();
         case TenantHierarchyCondition.This:
           url = "HierarchyThis.gif";
-          text = AccessControlResources.TenantHierarchyCondition_This; //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+          text = ResourceManager.GetString (ResourceIdentifier.TenantHierarchyCondition_This);
           break;
         case TenantHierarchyCondition.Parent:
           throw new InvalidOperationException();
         case TenantHierarchyCondition.ThisAndParent:
           url = "HierarchyThisAndParent.gif";
-          text = AccessControlResources.TenantHierarchyCondition_ThisAndParent;
+          text = ResourceManager.GetString (ResourceIdentifier.TenantHierarchyCondition_ThisAndParent);
           break;
         default:
           throw new ArgumentOutOfRangeException();
@@ -214,7 +234,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new InvalidOperationException();
         case GroupHierarchyCondition.This:
           url = "HierarchyThis.gif";
-          text = AccessControlResources.GroupHierarchyCondition_This; //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+          text = ResourceManager.GetString (ResourceIdentifier.GroupHierarchyCondition_This);
           break;
         case GroupHierarchyCondition.Parent:
           throw new InvalidOperationException();
@@ -222,15 +242,15 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
           throw new InvalidOperationException();
         case GroupHierarchyCondition.ThisAndParent:
           url = "HierarchyThisAndParent.gif";
-          text = AccessControlResources.GroupHierarchyCondition_ThisAndParent;
+          text = ResourceManager.GetString (ResourceIdentifier.GroupHierarchyCondition_ThisAndParent);
           break;
         case GroupHierarchyCondition.ThisAndChildren:
           url = "HierarchyThisAndChildren.gif";
-          text = AccessControlResources.GroupHierarchyCondition_ThisAndChildren;
+          text = ResourceManager.GetString (ResourceIdentifier.GroupHierarchyCondition_ThisAndChildren);
           break;
         case GroupHierarchyCondition.ThisAndParentAndChildren:
           url = "HierarchyThisAndParentAndChildren.gif";
-          text = AccessControlResources.GroupHierarchyCondition_ThisAndParentAndChildren;
+          text = ResourceManager.GetString (ResourceIdentifier.GroupHierarchyCondition_ThisAndParentAndChildren);
           break;
         default:
           throw new ArgumentOutOfRangeException();

@@ -16,17 +16,24 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditPermissionControl : BaseControl
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum ResourceIdentifier
+    {
+      PermissionDeniedText,
+      PermissionGrantedText,
+      PermissionUndefinedText,
+    }
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }
@@ -39,12 +46,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected override void OnPreRender (EventArgs e)
     {
-      base.OnPreRender (e);
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+      string accessTypeName = ((Permission)CurrentObject.BusinessObject).AccessType.DisplayName;
+      AllowedField.TrueDescription = string.Format(resourceManager.GetString (ResourceIdentifier.PermissionGrantedText), accessTypeName);
+      AllowedField.FalseDescription = string.Format(resourceManager.GetString (ResourceIdentifier.PermissionDeniedText), accessTypeName);
+      AllowedField.NullDescription = string.Format(resourceManager.GetString (ResourceIdentifier.PermissionUndefinedText), accessTypeName);
 
-      string accessTypeName = ((Permission) CurrentObject.BusinessObject).AccessType.DisplayName;
-      AllowedField.TrueDescription = string.Format (AccessControlResources.PermissionGranted_Text, accessTypeName);
-      AllowedField.FalseDescription = string.Format (AccessControlResources.PermissionDenied_Text, accessTypeName);
-      AllowedField.NullDescription = string.Format (AccessControlResources.PermissionUndefined_Text, accessTypeName);
+      base.OnPreRender (e);
     }
   }
 }

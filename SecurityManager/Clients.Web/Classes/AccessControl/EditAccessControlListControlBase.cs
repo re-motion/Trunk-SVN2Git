@@ -21,6 +21,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Data.DomainObjects;
+using Remotion.Globalization;
 using Remotion.SecurityManager.Clients.Web.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 
@@ -28,6 +29,14 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
 {
   public abstract class EditAccessControlListControlBase : BaseControl
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum ResourceIdentifier
+    {
+      DeleteAccessControlListButtonText,
+      NewAccessControlEntryButtonText,
+    }
+
     private static readonly object s_deleteEvent = new object();
 
     public event EventHandler Delete

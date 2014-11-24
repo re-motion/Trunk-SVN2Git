@@ -17,7 +17,6 @@
 // 
 using System;
 using Remotion.Globalization;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.ServiceLocation;
 using Remotion.Web;
@@ -28,7 +27,6 @@ using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes
 {
-  [WebMultiLingualResources (typeof (GlobalResources))]
   public abstract class BasePage : WxePage, IObjectWithResources 
   {
     // types

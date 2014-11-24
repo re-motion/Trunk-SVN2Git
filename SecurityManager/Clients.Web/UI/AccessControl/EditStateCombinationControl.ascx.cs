@@ -19,20 +19,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditStateCombinationControl : BaseControl
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum ResourceIdentifier
+    {
+      RequiredStateCombinationValidatorErrorMessage,
+      DeleteStateCombinationButtonText,
+    }
+
     private static readonly object s_deleteEvent = new object ();
 
     public override IBusinessObjectDataSourceControl DataSource
@@ -51,7 +57,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       DeleteStateDefinitionButton.Icon = new IconInfo (
           ResourceUrlFactory.CreateThemedResourceUrl (typeof (EditStateCombinationControl), ResourceType.Image, "DeleteItem.gif").GetUrl());
-      DeleteStateDefinitionButton.Icon.AlternateText = Globalization.UI.AccessControl.AccessControlResources.DeleteStateCombinationButton_Text;
+      DeleteStateDefinitionButton.Icon.AlternateText =
+          GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.DeleteStateCombinationButtonText);
     }
 
     public override void LoadValues (bool interim)
@@ -71,6 +78,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       {
         StateDefinitionContainer.Visible = false;
       }
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      RequiredStateCombinationValidator.ErrorMessage =
+          GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.RequiredStateCombinationValidatorErrorMessage);
+      
+      base.OnPreRender (e);
     }
 
     private void FillStateDefinitionField ()

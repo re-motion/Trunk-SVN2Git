@@ -17,7 +17,7 @@
 // 
 using System;
 using System.Web.UI;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI;
+using Remotion.Globalization.Implementation;
 using Remotion.Web.Compilation;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
@@ -35,10 +35,11 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
     // methods and properties
 
-    protected override void OnLoad (EventArgs e)
+    protected override void OnPreRender (EventArgs e)
     {
-      base.OnLoad (e);
-      ErrorsOnPageLabel.Text = GlobalResources.ErrorMessage;
+      ErrorsOnPageLabel.Text = GlobalResourcesHelper.GetString (GlobalResources.ErrorMessage);
+
+      base.OnPreRender (e);
     }
 
     public void ShowError ()

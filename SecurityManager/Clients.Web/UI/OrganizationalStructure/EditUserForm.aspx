@@ -29,10 +29,10 @@
   <table cellpadding="0" cellspacing="0">
     <tr>
       <td>
-        <remotion:WebButton ID="SaveButton" runat="server" Text="$res:Save" OnClick="SaveButton_Click" CausesValidation="false"/>
+        <remotion:WebButton ID="SaveButton" runat="server" OnClick="SaveButton_Click" CausesValidation="false"/>
       </td>
       <td>
-        <remotion:WebButton ID="CancelButton" runat="server" Text="$res:Cancel" style="margin-left: 5px;" 
+        <remotion:WebButton ID="CancelButton" runat="server" style="margin-left: 5px;" 
           OnClick="CancelButton_Click" CausesValidation="false"/>
       </td>
     </tr>

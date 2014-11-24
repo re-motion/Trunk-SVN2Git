@@ -21,26 +21,38 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditPermissionsForm : BaseEditPage<SecurableClassDefinition>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum ResourceIdentifier
+    {
+      StatefulAccessControlListsTitle,
+      StatelessAccessControlListTitle,
+      DuplicateStateCombinationsValidatorErrorMessage,
+      NewStatefulAccessControlListButtonText,
+      NewStatelessAccessControlListButtonText,
+      Title,
+    }
+
     private readonly List<EditAccessControlListControlBase> _editAccessControlListControls = new List<EditAccessControlListControlBase>();
 
     protected override void OnPreRenderComplete (EventArgs e)
     {
-      string title = string.Format (AccessControlResources.Title, CurrentSecurableClassDefinition.DisplayName);
+      string title = string.Format (
+          GlobalizationService.GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.Title),
+          CurrentSecurableClassDefinition.DisplayName);
       TitleLabel.InnerText = title;
       HtmlHeadAppender.Current.SetTitle (title);
       base.OnPreRenderComplete (e);
@@ -78,6 +90,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void CreateEditAccessControlListControls (AccessControlList[] accessControlLists)
     {
+      var resourceManager = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier));
+
       AccessControlListsPlaceHolder.Controls.Clear();
       PlaceHolder statelessAccessControlListsPlaceHolder = new PlaceHolder();
       AccessControlListsPlaceHolder.Controls.Add (statelessAccessControlListsPlaceHolder);
@@ -111,7 +125,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           if (statelessAccessControlListsPlaceHolder.Controls.Count == 0)
           {
             statelessAccessControlListsPlaceHolder.Controls.Add (
-                CreateAccessControlListTitle (AccessControlResources.StatelessAccessControlListTitle));
+                CreateAccessControlListTitle(resourceManager.GetString (ResourceIdentifier.StatelessAccessControlListTitle)));
           }
           statelessAccessControlListsPlaceHolder.Controls.Add (updatePanel);
         }
@@ -120,7 +134,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
           if (statefulAccessControlListsPlaceHolder.Controls.Count == 0)
           {
             statefulAccessControlListsPlaceHolder.Controls.Add (
-                CreateAccessControlListTitle (AccessControlResources.StatefulAccessControlListsTitle));
+                CreateAccessControlListTitle (resourceManager.GetString (ResourceIdentifier.StatefulAccessControlListsTitle)));
           }
           statefulAccessControlListsPlaceHolder.Controls.Add (updatePanel);
         }
@@ -270,6 +284,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected override void OnPreRender (EventArgs e)
     {
+      var resourceManager = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier));
+      DuplicateStateCombinationsValidator.ErrorMessage = resourceManager.GetString (
+          ResourceIdentifier.DuplicateStateCombinationsValidatorErrorMessage);
+
+      NewStatefulAccessControlListButton.Text = resourceManager.GetString (
+          ResourceIdentifier.NewStatefulAccessControlListButtonText);
+
+      NewStatelessAccessControlListButton.Text = resourceManager.GetString (
+          ResourceIdentifier.NewStatelessAccessControlListButtonText);
+
+      SaveButton.Text = GlobalResourcesHelper.GetString (GlobalResources.Save);
+      CancelButton.Text = GlobalResourcesHelper.GetString (GlobalResources.Cancel);
+
       base.OnPreRender (e);
 
       EnableNewAccessControlListButton();

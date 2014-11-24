@@ -21,7 +21,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Data.DomainObjects;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI;
+using Remotion.SecurityManager.Clients.Web.UI;
 using Remotion.SecurityManager.Domain;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -67,9 +67,9 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
             new BocRowEditModeColumnDefinition
             {
                 Width = Unit.Pixel (40),
-                EditIcon = GetIcon ("EditItem.gif", GlobalResources.Edit), //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
-                SaveIcon = GetIcon ("ApplyButton.gif", GlobalResources.Apply),
-                CancelIcon = GetIcon ("CancelButton.gif", GlobalResources.Cancel)
+                EditIcon = GetIcon ("EditItem.gif", GlobalResourcesHelper.GetString (_globalizationService, GlobalResources.Edit)),
+                SaveIcon = GetIcon("ApplyButton.gif", GlobalResourcesHelper.GetString (_globalizationService, GlobalResources.Apply)),
+                CancelIcon = GetIcon("CancelButton.gif", GlobalResourcesHelper.GetString (_globalizationService, GlobalResources.Cancel))
             });
 
         bocList.EditableRowChangesCanceled += HandleEditableRowChangesCanceled;
@@ -77,13 +77,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
         bocList.ListMenuItems.Add (
             new BocMenuItem
             {
-                Text = GlobalResources.New, //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+              Text = GlobalResourcesHelper.GetString (_globalizationService, GlobalResources.New),
                 Command = new InlineEditingNewItemMenuItemCommand<TBusinessObject> (newObjectFactory)
             });
         bocList.ListMenuItems.Add (
             new BocMenuItem
             {
-                Text = GlobalResources.Delete, //TODO RM-6362: Use _globalizationService.GetResourceManager(...)
+              Text = GlobalResourcesHelper.GetString (_globalizationService, GlobalResources.Delete),
                 RequiredSelection = RequiredSelection.OneOrMore,
                 Command = new InlineEditingDeleteItemMenuItemCommand<TBusinessObject>()
             });

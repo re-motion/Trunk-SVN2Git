@@ -17,17 +17,24 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditStatelessAccessControlListControl : EditAccessControlListControlBase<StatelessAccessControlList>
   {
+    protected override void OnPreRender (EventArgs e)
+    {
+      var resourceManager = GetResourceManager(typeof(ResourceIdentifier));
+      DeleteAccessControlListButton.Text = resourceManager.GetString(ResourceIdentifier.DeleteAccessControlListButtonText);
+      NewAccessControlEntryButton.Text = resourceManager.GetString(ResourceIdentifier.NewAccessControlEntryButtonText);
+
+      base.OnPreRender (e);
+    }
+
     public override IBusinessObjectDataSourceControl DataSource
     {
       get { return CurrentObject; }

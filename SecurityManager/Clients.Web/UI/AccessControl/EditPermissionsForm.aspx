@@ -34,10 +34,10 @@
 <asp:Content ID="ActualBottomControlsPlaceHolder" runat="server" ContentPlaceHolderID="BottomControlsPlaceHolder">
   <asp:UpdatePanel ID="BottomControlsUpdatePanel" runat="server" UpdateMode="Always" RenderMode="Inline">
     <ContentTemplate>
-      <remotion:WebButton ID="SaveButton" runat="server" Text="$res:Save" OnClick="SaveButton_Click" CausesValidation="false" RequiresSynchronousPostBack="true" />
-      <remotion:WebButton ID="CancelButton" runat="server" Text="$res:Cancel" OnClick="CancelButton_Click" CausesValidation="false" RequiresSynchronousPostBack="true" />
-      <remotion:WebButton ID="NewStatefulAccessControlListButton" runat="server" Text="$res:NewStatefulAccessControlListButton:Text" OnClick="NewStatefulAccessControlListButton_Click" CausesValidation="False" RequiresSynchronousPostBack="true"/>
-      <remotion:WebButton ID="NewStatelessAccessControlListButton" runat="server" Text="$res:NewStatelessAccessControlListButton:Text" OnClick="NewStatelessAccessControlListButton_Click" CausesValidation="False" RequiresSynchronousPostBack="true" />
+      <remotion:WebButton ID="SaveButton" runat="server" OnClick="SaveButton_Click" CausesValidation="false" RequiresSynchronousPostBack="true" />
+      <remotion:WebButton ID="CancelButton" runat="server" OnClick="CancelButton_Click" CausesValidation="false" RequiresSynchronousPostBack="true" />
+      <remotion:WebButton ID="NewStatefulAccessControlListButton" runat="server" OnClick="NewStatefulAccessControlListButton_Click" CausesValidation="False" RequiresSynchronousPostBack="true"/>
+      <remotion:WebButton ID="NewStatelessAccessControlListButton" runat="server" OnClick="NewStatelessAccessControlListButton_Click" CausesValidation="False" RequiresSynchronousPostBack="true" />
     </ContentTemplate> 
   </asp:UpdatePanel>
 </asp:Content>

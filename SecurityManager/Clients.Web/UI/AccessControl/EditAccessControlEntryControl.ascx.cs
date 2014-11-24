@@ -19,22 +19,39 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI.HtmlControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Security;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditAccessControlEntryControl : BaseControl
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum ResourceIdentifier
+    {
+      SpecificGroupFieldRequiredFieldErrorMessage,
+      SpecificGroupTypeFieldRequiredFieldErrorMessage,
+      SpecificPositionFieldRequiredFieldErrorMessage,
+      SpecificTenantFieldRequiredFieldErrorMessage,
+      SpecificUserFieldRequiredFieldErrorMessage,
+      SpecificGroupFieldInvalidItemErrorMessage,
+      SpecificUserFieldInvalidItemErrorMessage,
+      DeleteAccessControlEntryButtonText,
+      CollapseAccessControlEntryButtonText,
+      ExpandAccessControlEntryButtonText,
+      AllPermissionsMenu_ClearAllPermissions_Text,
+      AllPermissionsMenu_DenyAllPermissions_Text,
+      AllPermissionsMenu_GrantAllPermissions_Text,
+    }
+
     // types
 
     // static members and constants
@@ -81,26 +98,27 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
 
       AllPermisionsMenu.MenuItems.Add (
           new WebMenuItem
           {
               ItemID = c_clearAllMenuItemID,
-              Text = AccessControlResources.AllPermissionsMenu_ClearAllPermissions_Text,
+              Text = resourceManager.GetString (ResourceIdentifier.AllPermissionsMenu_ClearAllPermissions_Text),
               Icon = new IconInfo (GetIconUrl ("PermissionUndefined.gif").GetUrl())
           });
       AllPermisionsMenu.MenuItems.Add (
           new WebMenuItem
           {
               ItemID = c_grantAllMenuItemID,
-              Text = AccessControlResources.AllPermissionsMenu_GrantAllPermissions_Text,
+              Text = resourceManager.GetString (ResourceIdentifier.AllPermissionsMenu_GrantAllPermissions_Text),
               Icon = new IconInfo (GetIconUrl ("PermissionGranted.gif").GetUrl())
           });
       AllPermisionsMenu.MenuItems.Add (
           new WebMenuItem
           {
               ItemID = c_denyAllMenuItemID,
-              Text = AccessControlResources.AllPermissionsMenu_DenyAllPermissions_Text,
+              Text = resourceManager.GetString (ResourceIdentifier.AllPermissionsMenu_DenyAllPermissions_Text),
               Icon = new IconInfo (GetIconUrl ("PermissionDenied.gif").GetUrl())
           });
       AllPermisionsMenu.EventCommandClick += AllPermisionsMenu_EventCommandClick;
@@ -126,6 +144,16 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected override void OnPreRender (EventArgs e)
     {
+      var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+      SpecificGroupField.NullItemErrorMessage = resourceManager.GetString (ResourceIdentifier.SpecificGroupFieldRequiredFieldErrorMessage);
+      SpecificGroupTypeField.NullItemErrorMessage = resourceManager.GetString (ResourceIdentifier.SpecificGroupTypeFieldRequiredFieldErrorMessage);
+      SpecificPositionField.NullItemErrorMessage = resourceManager.GetString (ResourceIdentifier.SpecificPositionFieldRequiredFieldErrorMessage);
+      SpecificTenantField.NullItemErrorMessage = resourceManager.GetString(ResourceIdentifier.SpecificTenantFieldRequiredFieldErrorMessage);
+      SpecificUserField.NullItemErrorMessage = resourceManager.GetString (ResourceIdentifier.SpecificUserFieldRequiredFieldErrorMessage);
+
+      SpecificGroupField.InvalidItemErrorMessage = resourceManager.GetString (ResourceIdentifier.SpecificGroupFieldInvalidItemErrorMessage);
+      SpecificUserField.InvalidItemErrorMessage = resourceManager.GetString (ResourceIdentifier.SpecificUserFieldRequiredFieldErrorMessage);
+
       base.OnPreRender (e);
 
       if (IsCollapsed)
@@ -144,18 +172,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       DetailsCell.Attributes.Add ("colspan", (4 + CurrentAccessControlEntry.AccessControlList.Class.AccessTypes.Count + 3).ToString());
 
       DeleteAccessControlEntryButton.Icon = new IconInfo (GetIconUrl ("DeleteItem.gif").GetUrl());
-      DeleteAccessControlEntryButton.Icon.AlternateText = AccessControlResources.DeleteAccessControlEntryButton_Text;
+
+      DeleteAccessControlEntryButton.Icon.AlternateText = resourceManager.GetString (ResourceIdentifier.DeleteAccessControlEntryButtonText);
 
       if (IsCollapsed)
       {
         ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Expand.gif").GetUrl();
-        ToggleAccessControlEntryButton.Icon.AlternateText = AccessControlResources.ExpandAccessControlEntryButton_Text;
+        ToggleAccessControlEntryButton.Icon.AlternateText = resourceManager.GetString (ResourceIdentifier.ExpandAccessControlEntryButtonText);
         DetailsView.Visible = false;
       }
       else
       {
         ToggleAccessControlEntryButton.Icon.Url = GetIconUrl ("Collapse.gif").GetUrl();
-        ToggleAccessControlEntryButton.Icon.AlternateText = AccessControlResources.CollapseAccessControlEntryButton_Text;
+        ToggleAccessControlEntryButton.Icon.AlternateText = resourceManager.GetString (ResourceIdentifier.CollapseAccessControlEntryButtonText);
         DetailsView.Visible = true;
       }
     }

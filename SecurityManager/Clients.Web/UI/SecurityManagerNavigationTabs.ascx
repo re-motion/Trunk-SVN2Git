@@ -23,44 +23,44 @@
 </div>
 <remotion:TabbedMenu ID="TabbedMenu" runat="server">
   <Tabs>
-    <remotion:MainMenuTab ItemID="OrganizationalStructureTab" Text="$res:OrganizationalStructure">
+    <remotion:MainMenuTab ItemID="OrganizationalStructureTab">
       <PersistedCommand>
         <remotion:NavigationCommand Type="None" />
       </PersistedCommand>
       <SubMenuTabs>
-        <remotion:SubMenuTab ItemID="UserTab" Text="$res:User">
+        <remotion:SubMenuTab ItemID="UserTab">
           <PersistedCommand>
             <remotion:NavigationCommand Type="WxeFunction" WxeFunctionCommand-MappingID="UserList" />
           </PersistedCommand>
         </remotion:SubMenuTab>
-        <remotion:SubMenuTab ItemID="GroupTab" Text="$res:Group">
+        <remotion:SubMenuTab ItemID="GroupTab">
           <PersistedCommand>
             <remotion:NavigationCommand Type="WxeFunction" WxeFunctionCommand-MappingID="GroupList" />
           </PersistedCommand>
         </remotion:SubMenuTab>
-        <remotion:SubMenuTab ItemID="TenantTab" Text="$res:Tenant">
+        <remotion:SubMenuTab ItemID="TenantTab">
           <PersistedCommand>
             <remotion:NavigationCommand Type="WxeFunction" WxeFunctionCommand-MappingID="TenantList" />
           </PersistedCommand>
         </remotion:SubMenuTab>
-        <remotion:SubMenuTab ItemID="PositionTab" Text="$res:Position">
+        <remotion:SubMenuTab ItemID="PositionTab">
           <PersistedCommand>
             <remotion:NavigationCommand Type="WxeFunction" WxeFunctionCommand-MappingID="PositionList" />
           </PersistedCommand>
         </remotion:SubMenuTab>
-        <remotion:SubMenuTab ItemID="GroupTypeTab" Text="$res:GroupType">
+        <remotion:SubMenuTab ItemID="GroupTypeTab">
           <PersistedCommand>
             <remotion:NavigationCommand Type="WxeFunction" WxeFunctionCommand-MappingID="GroupTypeList" />
           </PersistedCommand>
         </remotion:SubMenuTab>
       </SubMenuTabs>
     </remotion:MainMenuTab>
-    <remotion:MainMenuTab ItemID="AccessControlTab" Text="$res:AccessControl">
+    <remotion:MainMenuTab ItemID="AccessControlTab">
       <PersistedCommand>
         <remotion:NavigationCommand Type="None" />
       </PersistedCommand>
       <SubMenuTabs>
-        <remotion:SubMenuTab ItemID="SecurableClassDefinitionTab" Text="$res:SecurableClassDefinition">
+        <remotion:SubMenuTab ItemID="SecurableClassDefinitionTab">
           <PersistedCommand>
             <remotion:NavigationCommand Type="WxeFunction" WxeFunctionCommand-MappingID="SecurableClassDefinitionList" WxeFunctionCommand-Parameters="&quot;Tenant|00000001-0000-0000-0000-000000000001|System.Guid&quot;" />
           </PersistedCommand>

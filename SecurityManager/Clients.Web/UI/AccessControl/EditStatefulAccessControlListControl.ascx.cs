@@ -19,17 +19,23 @@ using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes.AccessControl;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Domain.AccessControl;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (AccessControlResources))]
   public partial class EditStatefulAccessControlListControl : EditAccessControlListControlBase<StatefulAccessControlList>
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.AccessControlResources")]
+    public enum StatefulAccessResourceIdentifier
+    {
+      MissingStateCombinationsValidatorErrorMessage,
+      NewStateCombinationButtonText,
+    }
+
     // types
 
     // static members and constants
@@ -55,6 +61,19 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected override void OnPreRender (EventArgs e)
     {
+      { // Base
+        var resourceManager = GetResourceManager (typeof (ResourceIdentifier));
+        DeleteAccessControlListButton.Text = resourceManager.GetString (ResourceIdentifier.DeleteAccessControlListButtonText);
+        NewAccessControlEntryButton.Text = resourceManager.GetString (ResourceIdentifier.NewAccessControlEntryButtonText);
+      }
+
+      {// This
+        var resourceManager = GetResourceManager (typeof (StatefulAccessResourceIdentifier));
+        MissingStateCombinationsValidator.ErrorMessage =
+            resourceManager.GetString (StatefulAccessResourceIdentifier.MissingStateCombinationsValidatorErrorMessage);
+        NewStateCombinationButton.Text = resourceManager.GetString (StatefulAccessResourceIdentifier.NewStateCombinationButtonText);
+      }
+
       base.OnPreRender (e);
 
       EnableNewStateCombinationButton ();

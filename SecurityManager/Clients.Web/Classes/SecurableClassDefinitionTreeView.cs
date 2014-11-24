@@ -19,7 +19,6 @@ using System;
 using Remotion.Globalization;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.SecurityManager.Clients.Web.Globalization.Classes;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Utilities;
 
@@ -31,6 +30,9 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     [MultiLingualResources ("Remotion.SecurityManager.Clients.Web.Globalization.Classes.SecurableClassDefinitionTreeViewResources")]
     public enum ResourceIdentifier
     {
+      NoAclsText,
+      SingleAclText,
+      MultipleAclsText,
     }
 
     public SecurableClassDefinitionTreeView ()
@@ -57,15 +59,13 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
         aclCount++;
       aclCount += classDefinition.StatefulAccessControlLists.Count;
 
-      //TODO RM-6362
-      var resourceManager = GetResourceManager();
-
+      var resourceManager = GetResourceManager(typeof(ResourceIdentifier));
       if (aclCount == 0)
-        return string.Format (SecurableClassDefinitionTreeViewResources.NoAclsText, text);
+        return string.Format (resourceManager.GetString (ResourceIdentifier.NoAclsText), text);
       if (aclCount == 1)
-        return string.Format (SecurableClassDefinitionTreeViewResources.SingleAclText, text);
+        return string.Format (resourceManager.GetString (ResourceIdentifier.SingleAclText), text);
       else
-        return string.Format (SecurableClassDefinitionTreeViewResources.MultipleAclsText, text, aclCount);
+        return string.Format (resourceManager.GetString (ResourceIdentifier.MultipleAclsText), text, aclCount);
     }
   }
 }

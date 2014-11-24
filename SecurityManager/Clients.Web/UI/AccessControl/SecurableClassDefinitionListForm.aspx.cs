@@ -20,22 +20,26 @@ using System.Web.UI;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
-using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions;
 using Remotion.SecurityManager.Clients.Web.WxeFunctions.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.Web.UI.Globalization;
 
 namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 {
-  [WebMultiLingualResources (typeof (SecurableClassDefinitionListFormResources))]
   public partial class SecurableClassDefinitionListForm : BasePage
   {
+    [ResourceIdentifiers]
+    [MultiLingualResources("Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl.SecurableClassDefinitionListFormResources")]
+    public enum ResourceIdentifier
+    {
+      Title,
+    }
 
     protected new SecurableClassDefinitionListFormFunction CurrentFunction
     {
@@ -53,7 +57,8 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     protected override void OnPreRenderComplete (EventArgs e)
     {
-      HtmlHeadAppender.Current.SetTitle (SecurableClassDefinitionListFormResources.Title);
+      var title = GlobalizationService.GetResourceManager (typeof (ResourceIdentifier)).GetString (ResourceIdentifier.Title);
+      HtmlHeadAppender.Current.SetTitle (title);
       base.OnPreRenderComplete (e);
     }
 
