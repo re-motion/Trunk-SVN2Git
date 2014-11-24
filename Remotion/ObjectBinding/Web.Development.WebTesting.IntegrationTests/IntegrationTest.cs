@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Diagnostics;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
@@ -34,6 +35,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     public void IntegrationTestTestFixtureSetUp ()
     {
       _webTestHelper.OnFixtureSetUp();
+
+      // Prevent failing IE tests due to topmost windows
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        KillAnyExistingWindowsErrorReportingProcesses();
     }
 
     [SetUp]
@@ -63,7 +68,24 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.MainBrowserSession.Visit (url);
       _webTestHelper.AcceptPossibleModalDialog();
 
-      return _webTestHelper.CreateInitialPageObject<RemotionPageObject>(_webTestHelper.MainBrowserSession);
+      return _webTestHelper.CreateInitialPageObject<RemotionPageObject> (_webTestHelper.MainBrowserSession);
+    }
+
+    private static void KillAnyExistingWindowsErrorReportingProcesses ()
+    {
+      var windowsErrorReportingProcesses = Process.GetProcessesByName ("werfault");
+      foreach (var werProcess in windowsErrorReportingProcesses)
+      {
+        try
+        {
+          werProcess.Kill();
+        }
+            // ReSharper disable once EmptyGeneralCatchClause
+        catch
+        {
+          // Ignore, process is already closing or we do not have the required privileges anyway.
+        }
+      }
     }
   }
 }
