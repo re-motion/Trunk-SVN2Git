@@ -53,10 +53,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActaNovaExtensionsTest\ActaNovaAdditionalCommandsExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaClickExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaMainMenuExtensionsTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaSequenceCounterTest.cs" />
     <Compile Include="ActaNovaExtensionsTest\ActaNovaTreeExtensionsTest.cs" />
+    <Compile Include="ActaNovaExtensions\ActaNovaAdditionalCommandsExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaClickExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaControlHostExtensions.cs" />
     <Compile Include="ActaNovaExtensions\ActaNovaConvinienceExtensions.cs" />
