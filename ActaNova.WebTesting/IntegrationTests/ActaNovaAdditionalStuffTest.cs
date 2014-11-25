@@ -26,7 +26,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (
           visibleObjectSpecificSecurtiyEntries.GetTopBlock().Scope.Text,
           Is.StringContaining ("Besitzer Muster Max, Ing. (EG/1) ist immer am Objekt berechtigt"));
-      Assert.That (visibleObjectSpecificSecurtiyEntries.GetRowCount(), Is.EqualTo (1));
+      Assert.That (visibleObjectSpecificSecurtiyEntries.GetNumberOfRows(), Is.EqualTo (1));
 
       editIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (editIncoming)), HandleModalDialog.Accept());
     }

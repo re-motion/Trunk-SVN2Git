@@ -118,12 +118,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestGetRowCount ()
+    public void TestGetNumberOfRows ()
     {
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      Assert.That (bocList.GetRowCount(), Is.EqualTo (2));
+      Assert.That (bocList.GetNumberOfRows(), Is.EqualTo (2));
     }
 
     [Test]
@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Empty");
-      Assert.That (bocList.GetRowCount(), Is.EqualTo (0));
+      Assert.That (bocList.GetNumberOfRows(), Is.EqualTo (0));
       Assert.That (bocList.IsEmpty(), Is.True);
       Assert.That (bocList.GetEmptyMessage(), Is.EqualTo ("A wonderful empty list."));
     }
@@ -153,7 +153,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       bocList.GoToLastPage();
       Assert.That (bocList.GetCurrentPage(), Is.EqualTo (3));
-      Assert.That (bocList.GetRowCount(), Is.EqualTo (1));
+      Assert.That (bocList.GetNumberOfRows(), Is.EqualTo (1));
 
       bocList.GoToFirstPage();
       Assert.That (bocList.GetCurrentPage(), Is.EqualTo (1));

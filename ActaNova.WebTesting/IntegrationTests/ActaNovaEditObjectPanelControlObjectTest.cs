@@ -42,7 +42,7 @@ namespace ActaNova.WebTesting.IntegrationTests
               .Select()
               .ExpectMainPage();
 
-      Assert.That (personBearbeiten.FormPage.GetList ("Links").GetRowCount(), Is.EqualTo (2));
+      Assert.That (personBearbeiten.FormPage.GetList ("Links").GetNumberOfRows(), Is.EqualTo (2));
     }
   }
 }

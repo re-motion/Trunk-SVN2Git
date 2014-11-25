@@ -166,7 +166,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public bool IsEmpty ()
     {
-      return GetRowCount() == 0;
+      return GetNumberOfRows() == 0;
     }
 
     /// <summary>
@@ -181,7 +181,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the number of rows in the list.
     /// </summary>
-    public int GetRowCount ()
+    public int GetNumberOfRows ()
     {
       return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody > tr.bocListDataRow").Count());
     }

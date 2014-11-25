@@ -1,7 +1,6 @@
 ﻿using System;
 using ActaNova.WebTesting.ActaNovaExtensions;
 using ActaNova.WebTesting.ControlObjects;
-using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
 
@@ -30,20 +29,20 @@ namespace ActaNova.WebTesting.SampleTests
 
       incomingPage.FormPage.SwitchTo ("SignaturesFormPage_view");
       var signaturesList = incomingPage.FormPage.GetList ("Signatures");
-      Assert.That (signaturesList.GetRowCount(), Is.EqualTo (0));
+      Assert.That (signaturesList.GetNumberOfRows(), Is.EqualTo (0));
 
       incomingPage.FormPage.Perform ("Save");
 
       var signaturePopup = incomingPage.FormPage.Unterschreiben();
       signaturePopup.Sign ("Test1", "Meine Anmerkung");
 
-      Assert.That (signaturesList.GetRowCount(), Is.EqualTo (1));
+      Assert.That (signaturesList.GetNumberOfRows(), Is.EqualTo (1));
       Assert.That (signaturesList.GetRow().WithIndex (1).GetCell ("SignatureAnnotation").GetText(), Is.EqualTo ("Meine Anmerkung"));
 
       home = incomingPage.FormPage.Perform ("SaveAndReturn").ExpectMainPage();
 
       var eigenerAv = home.WorkListPage.GetWorkList();
-      Assert.That (eigenerAv.GetRowCount(), Is.EqualTo (5));
+      Assert.That (eigenerAv.GetNumberOfRows(), Is.EqualTo (5));
 
       incomingPage = eigenerAv.GetRow().WithIndex (1).OpenWorkListItem();
       Assert.That (incomingPage.FormPage.GetTitle(), Is.StringStarting (string.Format ("Eingangsstück \"{0}/", date.ToShortDateString())));
@@ -60,7 +59,7 @@ namespace ActaNova.WebTesting.SampleTests
       weiterleitenPopup.GetAutoComplete ("User").FillWith ("Pan Peter (EG/2)");
       weiterleitenPopup.Perform ("Save");
 
-      Assert.That (eigenerAv.GetRowCount(), Is.EqualTo (4));
+      Assert.That (eigenerAv.GetNumberOfRows(), Is.EqualTo (4));
     }
   }
 }

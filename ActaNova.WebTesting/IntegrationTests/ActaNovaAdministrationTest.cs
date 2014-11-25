@@ -25,7 +25,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       classificationTypeField.SelectOption().WithDisplayText ("Adressart");
 
       var classificationTypeList = administration.GetList().Single();
-      Assert.That (classificationTypeList.GetRowCount(), Is.EqualTo (4));
+      Assert.That (classificationTypeList.GetNumberOfRows(), Is.EqualTo (4));
 
       var downloadNotification = administration.GetImageButton ("ExcelExportButton").Click().Expect<ActaNovaMessageBoxPageObject>();
       downloadNotification.Confirm();
@@ -34,12 +34,12 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var tempExportDokumente = home.MainMenu.Select ("Extras", "Temp. Export Dokumente").ExpectMainPage();
       var itemsList = tempExportDokumente.FormPage.GetList ("Items");
-      Assert.That (itemsList.GetRowCount(), Is.EqualTo (1));
+      Assert.That (itemsList.GetNumberOfRows(), Is.EqualTo (1));
 
       var deletionConfirmation = itemsList.GetRow().WithIndex (1).GetCell().WithIndex (2).ExecuteCommand().Expect<ActaNovaMessageBoxPageObject>();
       deletionConfirmation.Yes();
 
-      Assert.That (itemsList.GetRowCount(), Is.EqualTo (0));
+      Assert.That (itemsList.GetNumberOfRows(), Is.EqualTo (0));
     }
 
     [Test]

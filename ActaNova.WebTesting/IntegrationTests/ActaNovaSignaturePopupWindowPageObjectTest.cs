@@ -32,7 +32,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       editIncomingPage.FormPage.GetOnlyTabbedMultiView().SwitchTo ("SignaturesFormPage_view");
       var signaturesList = editIncomingPage.FormPage.GetList ("Signatures");
-      var rowCount = signaturesList.GetRowCount();
+      var rowCount = signaturesList.GetNumberOfRows();
       var signatureAnnotationCell = signaturesList.GetRow().WithIndex (rowCount).GetCell ("SignatureAnnotation");
       Assert.That (signatureAnnotationCell.GetText(), Is.EqualTo (annotation));
     }
@@ -55,7 +55,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var batchedCommands = editIncomingPage.MainMenu.Select ("Extras", "Vorgemerkte Befehle").ExpectMainPage();
       var batchedCommandsList = batchedCommands.FormPage.GetList ("BatchedCommands");
       batchedCommandsList.GetListMenu().SelectItem ("DeleteAllExecuted");
-      Assert.That (batchedCommandsList.GetRowCount(), Is.EqualTo (1));
+      Assert.That (batchedCommandsList.GetNumberOfRows(), Is.EqualTo (1));
       Assert.That (batchedCommandsList.GetRow().WithIndex (1).GetCell ("BatchedCommandState").GetText(), Is.EqualTo ("Vorgemerkt"));
 
       batchedCommandsList.GetRow().WithIndex (1).ClickSelectCheckbox();

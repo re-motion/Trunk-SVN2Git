@@ -49,10 +49,10 @@ namespace ActaNova.WebTesting.IntegrationTests
       var activityList = home.WorkListPage.GetWorkList();
 
       activityList.Filter ("Geschäftsfall");
-      Assert.That (activityList.GetRowCount(), Is.EqualTo (2));
+      Assert.That (activityList.GetNumberOfRows(), Is.EqualTo (2));
 
       activityList.ClearFilter();
-      Assert.That (activityList.GetRowCount(), Is.EqualTo (4));
+      Assert.That (activityList.GetNumberOfRows(), Is.EqualTo (4));
     }
 
     [Test]
