@@ -36,7 +36,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var itemsList = tempExportDokumente.FormPage.GetList ("Items");
       Assert.That (itemsList.GetNumberOfRows(), Is.EqualTo (1));
 
-      var deletionConfirmation = itemsList.GetRow (1).GetCell().WithIndex (2).ExecuteCommand().Expect<ActaNovaMessageBoxPageObject>();
+      var deletionConfirmation = itemsList.GetRow (1).GetCell (2).ExecuteCommand().Expect<ActaNovaMessageBoxPageObject>();
       deletionConfirmation.Yes();
 
       Assert.That (itemsList.GetNumberOfRows(), Is.EqualTo (0));

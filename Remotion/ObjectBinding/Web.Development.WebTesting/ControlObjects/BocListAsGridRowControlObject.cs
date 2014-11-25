@@ -63,6 +63,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
+    public BocListAsGridCellControlObject GetCell (int index)
+    {
+      return GetCell().WithIndex (index);
+    }
+
+    /// <inheritdoc/>
     BocListAsGridCellControlObject IFluentControlObjectWithCells<BocListAsGridCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);

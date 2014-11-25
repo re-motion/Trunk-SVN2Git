@@ -145,10 +145,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
 
       var row = bocList.GetRow ("0ba19f5c-f2a2-4c9f-83c9-e6d25b461d98");
-      Assert.That (row.GetCell().WithIndex (8).GetText(), Is.EqualTo ("CEO"));
+      Assert.That (row.GetCell (8).GetText(), Is.EqualTo ("CEO"));
 
       row = bocList.GetRow (1);
-      Assert.That (row.GetCell().WithIndex (8).GetText(), Is.EqualTo ("Programmer"));
+      Assert.That (row.GetCell (8).GetText(), Is.EqualTo ("Programmer"));
     }
 
     [Test]
@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var cell = row.GetCell ("DisplayName");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
 
-      cell = row.GetCell().WithIndex (8);
+      cell = row.GetCell (8);
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -205,7 +205,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var row = bocList.GetRow (2);
 
       row.ClickSelectCheckbox();
-      row.GetCell().WithIndex (3).ExecuteCommand();
+      row.GetCell (3).ExecuteCommand();
 
       Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("1"));
     }
@@ -232,7 +232,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var cell = bocList.GetRow (2).GetCell().WithIndex (8);
+      var cell = bocList.GetRow (2).GetCell (8);
 
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
@@ -243,7 +243,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var cell = bocList.GetRow (2).GetCell().WithIndex (3);
+      var cell = bocList.GetRow (2).GetCell (3);
 
       cell.ExecuteCommand();
 
@@ -260,7 +260,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
       var editableRow = bocList.GetRow (2);
-      var editableCell = editableRow.GetCell().WithIndex (5);
+      var editableCell = editableRow.GetCell (5);
 
       var bocText = editableCell.GetTextValue().First();
       bocText.FillWith ("NewTitle");

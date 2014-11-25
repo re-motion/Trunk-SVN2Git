@@ -68,6 +68,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
+    public BocListEditableCellControlObject GetCell (int index)
+    {
+      return GetCell().WithIndex (index);
+    }
+
+    /// <inheritdoc/>
     BocListEditableCellControlObject IFluentControlObjectWithCells<BocListEditableCellControlObject>.WithColumnItemID (string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
