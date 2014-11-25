@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.PageObjects;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -35,16 +36,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     public void IntegrationTestTestFixtureSetUp ()
     {
       _webTestHelper.OnFixtureSetUp();
-
-      // Prevent failing IE tests due to topmost windows
-      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        KillAnyExistingWindowsErrorReportingProcesses();
     }
 
     [SetUp]
     public void IntegrationTestSetUp ()
     {
       _webTestHelper.OnSetUp (GetType().Name + "_" + TestContext.CurrentContext.Test.Name);
+
+      // Prevent failing IE tests due to topmost windows
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        KillAnyExistingWindowsErrorReportingProcesses();
     }
 
     [TearDown]
@@ -73,19 +74,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
     private static void KillAnyExistingWindowsErrorReportingProcesses ()
     {
-      var windowsErrorReportingProcesses = Process.GetProcessesByName ("werfault");
-      foreach (var werProcess in windowsErrorReportingProcesses)
-      {
-        try
-        {
-          werProcess.Kill();
-        }
-            // ReSharper disable once EmptyGeneralCatchClause
-        catch
-        {
-          // Ignore, process is already closing or we do not have the required privileges anyway.
-        }
-      }
+      ProcessUtils.KillAllProcessesWithName ("WerFault");
     }
   }
 }

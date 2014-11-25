@@ -222,6 +222,7 @@
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
     <Compile Include="Utilities\EnumerableExtensions.cs" />
     <Compile Include="Utilities\PerformanceTimer.cs" />
+    <Compile Include="Utilities\ProcessUtils.cs" />
     <Compile Include="Utilities\RetryUntilTimeout.cs" />
     <Compile Include="Utilities\ScreenshotCapturer.cs" />
     <Compile Include="Utilities\SeleniumSendKeysToWindowsFormsSendKeysTransformer.cs" />
