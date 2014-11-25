@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using Coypu;
@@ -192,6 +191,17 @@ namespace Remotion.Web.Development.WebTesting
       {
         // It's okay.
       }
+    }
+
+    /// <summary>
+    /// Returns a new <see cref="DownloadHelper"/> for the given <paramref name="fileName"/>.
+    /// </summary>
+    /// <param name="fileName">The name of the downloaded file (not the path).</param>
+    public DownloadHelper NewDownloadHelper ([NotNull] string fileName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+
+      return new DownloadHelper (_browserConfiguration, fileName, _coypuConfiguration.SearchTimeout);
     }
 
     /// <summary>

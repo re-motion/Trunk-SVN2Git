@@ -30,6 +30,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   {
     private readonly WebTestHelper _webTestHelper = WebTestHelper.CreateFromConfiguration();
 
+    protected WebTestHelper Helper
+    {
+      get { return _webTestHelper; }
+    }
+
     [TestFixtureSetUp]
     public void IntegrationTestTestFixtureSetUp ()
     {
@@ -65,6 +70,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.MainBrowserSession.Visit (url);
 
       return _webTestHelper.CreateInitialPageObject<RemotionPageObject> (_webTestHelper.MainBrowserSession);
+    }
+
+    protected DownloadHelper NewDownloadHelper (string fileName)
+    {
+      return _webTestHelper.NewDownloadHelper (fileName);
     }
 
     private static void KillAnyExistingWindowsErrorReportingProcesses ()

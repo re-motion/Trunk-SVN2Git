@@ -48,6 +48,11 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     bool CloseBrowserWindowsOnSetUpAndTearDown { get; }
 
     /// <summary>
+    /// Returns whether the <see cref="Browser"/> is set to <see cref="Coypu.Drivers.Browser.InternetExplorer"/>.
+    /// </summary>
+    bool BrowserIsInternetExplorer ();
+
+    /// <summary>
     /// Returns the process name of the configured browser.
     /// </summary>
     /// <returns>The process name without the file extension.</returns>
