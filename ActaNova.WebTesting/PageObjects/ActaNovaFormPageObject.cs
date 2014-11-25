@@ -127,10 +127,12 @@ namespace ActaNova.WebTesting.PageObjects
     /// <summary>
     /// Presses the create bug report button.
     /// </summary>
-    public ActaNovaWindowPageObject CreateBugReport ()
+    public ActaNovaPopupWindowPageObject CreateBugReport ()
     {
       var bugReportButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
-      return bugReportButton.Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Fehlerberichte/Wünsche");
+      return
+          bugReportButton.Click (Continue.When (Wxe.PostBackCompleted))
+              .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Fehlerbericht/Wunsch erzeugen");
     }
 
     /// <summary>

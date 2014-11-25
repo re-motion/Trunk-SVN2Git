@@ -1,4 +1,5 @@
-﻿using ActaNova.WebTesting.PageObjects;
+﻿using System;
+using ActaNova.WebTesting.PageObjects;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 
@@ -20,9 +21,8 @@ namespace ActaNova.WebTesting.IntegrationTests
       //var helpPage = home.WorkListPage.OpenHelp();
       //helpPage.Close();
 
-      // Todo EVB-8268: Enable as soon as the bug report window does not show a yellow page anymore.
-      //var bugReportWindow = home.WorkListPage.CreateBugReport();
-      //bugReportWindow.Close();
+      var bugReportWindow = home.WorkListPage.CreateBugReport();
+      bugReportWindow.Perform ("Cancel", Continue.Immediately(), HandleModalDialog.Accept());
 
       var workList = home.WorkListPage.GetWorkList();
       workList.GetRowWhere ("WorkItem", "04.06.2009/1").ClickSelectCheckbox();
