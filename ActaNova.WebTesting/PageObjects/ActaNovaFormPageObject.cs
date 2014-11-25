@@ -74,11 +74,10 @@ namespace ActaNova.WebTesting.PageObjects
     /// </summary>
     public ActaNovaTreePopupListControlObject HoverWorkStepsControl ()
     {
-      var workStepsControlScope = GetControl (new HtmlIDControlSelectionCommand<ScopeControlObject> (new ScopeSelector(), "WorkStepsControl"));
-      workStepsControlScope.Scope.Hover();
+      var workStepsControl = GetControl (new HtmlIDControlSelectionCommand<ScopeControlObject> (new ScopeSelector(), "WorkStepsControl_PopupControl"));
+      workStepsControl.Scope.Hover();
 
-      return workStepsControlScope.GetControl (
-          new SingleControlSelectionCommand<ActaNovaTreePopupListControlObject> (new ActaNovaTreePopupListSelector()));
+      return workStepsControl.GetControl (new SingleControlSelectionCommand<ActaNovaTreePopupListControlObject> (new ActaNovaTreePopupListSelector()));
     }
 
     /// <summary>
