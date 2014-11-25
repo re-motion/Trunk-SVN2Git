@@ -52,5 +52,11 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// </summary>
     /// <returns>The process name without the file extension.</returns>
     string GetBrowserExecutableName ();
+
+    /// <summary>
+    /// Returns the process name of the configured browser's web driver implementation.
+    /// </summary>
+    /// <returns>The process name without the file extension.</returns>
+    string GetWebDriverExecutableName ();
   }
 }

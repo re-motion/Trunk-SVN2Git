@@ -225,6 +225,7 @@ namespace Remotion.Web.Development.WebTesting
 
       // Note: otherwise the sytem may get clogged, if the Selenium web driver implementation does not properly close all windows in all situations.
       EnsureAllBrowserWindowsAreClosed();
+      EnsureAllWebDriverInstancesAreClosed();
     }
 
     private void EnsureAllBrowserWindowsAreClosed ()
@@ -236,18 +237,17 @@ namespace Remotion.Web.Development.WebTesting
       if (browserProcessName == null)
         return;
 
-      foreach (var process in Process.GetProcessesByName (browserProcessName))
-      {
-        try
-        {
-          process.Kill();
-        }
-            // ReSharper disable once EmptyGeneralCatchClause
-        catch
-        {
-          // Ignore, process is already closing or we do not have the required privileges anyway.
-        }
-      }
+      ProcessUtils.KillAllProcessesWithName (browserProcessName);
+    }
+
+
+    private void EnsureAllWebDriverInstancesAreClosed ()
+    {
+      var webDriverProcessName = _browserConfiguration.GetWebDriverExecutableName();
+      if (webDriverProcessName == null)
+        return;
+
+      ProcessUtils.KillAllProcessesWithName (webDriverProcessName);
     }
 
     private void EnsureCursorIsOutsideBrowserWindow ()

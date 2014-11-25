@@ -88,6 +88,20 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     }
 
     /// <summary>
+    /// Returns the process name of the configured browser's web driver implementation.
+    /// </summary>
+    /// <returns>The process name without the file extension.</returns>
+    public string GetWebDriverExecutableName ()
+    {
+      if (Browser == Browser.InternetExplorer)
+        return "IEDriverServer";
+      if (Browser == Browser.Chrome)
+        return "chromedriver";
+
+      throw new NotSupportedException (string.Format ("Only browsers '{0}' and '{1}' are supported.", Browser.Chrome, Browser.InternetExplorer));
+    }
+
+    /// <summary>
     /// Returns whether the <see cref="Browser"/> is set to <see cref="Coypu.Drivers.Browser.InternetExplorer"/>.
     /// </summary>
     public bool BrowserIsInternetExplorer ()
