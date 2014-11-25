@@ -94,12 +94,12 @@ namespace Remotion.Web.Development.WebTesting
       else
         handleModalDialogAction();
 
-      // Prevent IE driver crash after window change & possible close with non-Coypu means.
-      browser.EnsureWindowIsActive();
-
       // Unfortunately, we run into a race condition *after* accepting the modal dialog again, so we need to do some waiting here.
       // Todo RM-6297: Try to get rid of waiting. See https://groups.google.com/forum/#!topic/selenium-users/NrtJnq7b678 for more information.
       Thread.Sleep (TimeSpan.FromMilliseconds (250));
+
+      // Prevent IE driver crash after window change & possible close with non-Coypu means.
+      browser.EnsureWindowIsActive();
     }
   }
 }
