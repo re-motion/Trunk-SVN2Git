@@ -199,6 +199,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
+    public TRowControlObject GetRow (int index)
+    {
+      return GetRow().WithIndex (index);
+    }
+
+    /// <inheritdoc/>
     TRowControlObject IFluentControlObjectWithRows<TRowControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);

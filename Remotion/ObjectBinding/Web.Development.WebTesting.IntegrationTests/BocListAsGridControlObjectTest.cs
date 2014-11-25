@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var row = bocList.GetRow ("0ba19f5c-f2a2-4c9f-83c9-e6d25b461d98");
       Assert.That (row.GetCell().WithIndex (8).GetText(), Is.EqualTo ("CEO"));
 
-      row = bocList.GetRow().WithIndex (1);
+      row = bocList.GetRow (1);
       Assert.That (row.GetCell().WithIndex (8).GetText(), Is.EqualTo ("Programmer"));
     }
 
@@ -187,7 +187,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow().WithIndex (2);
+      var row = bocList.GetRow (2);
 
       var cell = row.GetCell ("DisplayName");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
@@ -202,7 +202,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow().WithIndex (2);
+      var row = bocList.GetRow (2);
 
       row.ClickSelectCheckbox();
       row.GetCell().WithIndex (3).ExecuteCommand();
@@ -216,7 +216,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow().WithIndex (2);
+      var row = bocList.GetRow (2);
       var dropDownMenu = row.GetDropDownMenu();
       dropDownMenu.SelectItem ("RowMenuItemCmd2");
 
@@ -232,7 +232,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var cell = bocList.GetRow().WithIndex (2).GetCell().WithIndex (8);
+      var cell = bocList.GetRow (2).GetCell().WithIndex (8);
 
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
@@ -243,7 +243,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var cell = bocList.GetRow().WithIndex (2).GetCell().WithIndex (3);
+      var cell = bocList.GetRow (2).GetCell().WithIndex (3);
 
       cell.ExecuteCommand();
 
@@ -259,7 +259,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
-      var editableRow = bocList.GetRow().WithIndex (2);
+      var editableRow = bocList.GetRow (2);
       var editableCell = editableRow.GetCell().WithIndex (5);
 
       var bocText = editableCell.GetTextValue().First();

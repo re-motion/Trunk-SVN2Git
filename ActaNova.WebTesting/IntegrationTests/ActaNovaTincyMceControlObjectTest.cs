@@ -14,13 +14,13 @@ namespace ActaNova.WebTesting.IntegrationTests
       var page = GotoCreateMailPageWithTinyMce (home);
 
       var tinyMce = page.FormPage.GetTinyMce ("EmailBody");
-      Assert.That(tinyMce.GetText(), Is.Empty);
+      Assert.That (tinyMce.GetText(), Is.Empty);
       Assert.That (tinyMce.GetMarkup(), Is.EqualTo ("<p><br data-mce-bogus=\"1\"></p>").Or.EqualTo ("<p></p>"));
 
       tinyMce.FillWithMarkup ("My<br>text<br>is<br>great.");
 
-      Assert.That(tinyMce.GetText(), Is.EqualTo(string.Format ("My{0}text{0}is{0}great.", Environment.NewLine)));
-      Assert.That(tinyMce.GetMarkup(), Is.EqualTo("<p>My<br>text<br>is<br>great.</p>"));
+      Assert.That (tinyMce.GetText(), Is.EqualTo (string.Format ("My{0}text{0}is{0}great.", Environment.NewLine)));
+      Assert.That (tinyMce.GetMarkup(), Is.EqualTo ("<p>My<br>text<br>is<br>great.</p>"));
     }
 
     [Test]
@@ -32,11 +32,11 @@ namespace ActaNova.WebTesting.IntegrationTests
       var tinyMce = page.FormPage.GetTinyMce ("EmailBody");
 
       tinyMce.FillWith (string.Format ("My{0}text{0}is{0}great.", Environment.NewLine));
-      Assert.That(tinyMce.GetMarkup(), Is.EqualTo("<p>My<br>text<br>is<br>great.</p>"));
+      Assert.That (tinyMce.GetMarkup(), Is.EqualTo ("<p>My<br>text<br>is<br>great.</p>"));
 
       tinyMce.FillWithMarkup ("My<br><strong>text</strong><br>is<br>great.");
-      Assert.That(tinyMce.GetText(), Is.EqualTo(string.Format ("My{0}text{0}is{0}great.", Environment.NewLine)));
-      Assert.That(tinyMce.GetMarkup(), Is.EqualTo("<p>My<br><strong>text</strong><br>is<br>great.</p>"));
+      Assert.That (tinyMce.GetText(), Is.EqualTo (string.Format ("My{0}text{0}is{0}great.", Environment.NewLine)));
+      Assert.That (tinyMce.GetMarkup(), Is.EqualTo ("<p>My<br><strong>text</strong><br>is<br>great.</p>"));
     }
 
     private ActaNovaMainPageObject GotoCreateMailPageWithTinyMce (ActaNovaMainPageObject home)
@@ -45,7 +45,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       editIncomingPage.FormPage.GetOnlyTabbedMultiView().SwitchTo ("IncomingEnclosuresFormPage_view");
 
       var documentsHierarchyList = editIncomingPage.FormPage.GetList ("DocumentsHierarchy");
-      documentsHierarchyList.GetRow().WithIndex (1).ClickSelectCheckbox();
+      documentsHierarchyList.GetRow (1).ClickSelectCheckbox();
       var createMailPage = documentsHierarchyList.GetListMenu().SelectItem ("DocumentSendFinalContentCommand").ExpectMainPage();
       return createMailPage;
     }

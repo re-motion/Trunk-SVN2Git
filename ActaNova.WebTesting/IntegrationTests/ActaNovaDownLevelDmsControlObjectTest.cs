@@ -13,7 +13,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var home = Start();
 
-      var editPage = home.FormPage.GetList ("Activities").GetRow().WithIndex (1).GetCell ("WorkItem").ExecuteCommand().ExpectMainPage();
+      var editPage = home.FormPage.GetList ("Activities").GetRow (1).GetCell ("WorkItem").ExecuteCommand().ExpectMainPage();
       editPage.FormPage.GetOnlyTabbedMultiView().SwitchTo ("IncomingEnclosuresFormPage_view");
       var documentsHierarchyList = editPage.FormPage.GetList ("DocumentsHierarchy");
       var rowCount = documentsHierarchyList.GetNumberOfRows();
@@ -24,7 +24,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       dialog.GetOnlyDownLevelDms().UploadFile (fileName);
       dialog.Perform ("TakeOverDetails");
 
-      Assert.That (documentsHierarchyList.GetNumberOfRows(), Is.EqualTo(rowCount + 1));
+      Assert.That (documentsHierarchyList.GetNumberOfRows(), Is.EqualTo (rowCount + 1));
     }
   }
 }

@@ -35,6 +35,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Short for explicitly implemented <see cref="IFluentControlObjectWithRows{TRowControlObject}.WithItemID"/>.
     /// </summary>
     TRowControlObject GetRow ([NotNull] string itemID);
+
+    /// <summary>
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithRows{TRowControlObject}.WithIndex"/>.
+    /// </summary>
+    TRowControlObject GetRow (int index);
   }
 
   /// <summary>

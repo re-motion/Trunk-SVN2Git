@@ -39,14 +39,14 @@ namespace ActaNova.WebTesting.SampleTests
       signaturePopup.Sign ("Test1", "Meine Anmerkung");
 
       Assert.That (signaturesList.GetNumberOfRows(), Is.EqualTo (1));
-      Assert.That (signaturesList.GetRow().WithIndex (1).GetCell ("SignatureAnnotation").GetText(), Is.EqualTo ("Meine Anmerkung"));
+      Assert.That (signaturesList.GetRow (1).GetCell ("SignatureAnnotation").GetText(), Is.EqualTo ("Meine Anmerkung"));
 
       home = incomingPage.FormPage.Perform ("SaveAndReturn").ExpectMainPage();
 
       var eigenerAv = home.WorkListPage.GetWorkList();
       Assert.That (eigenerAv.GetNumberOfRows(), Is.EqualTo (5));
 
-      incomingPage = eigenerAv.GetRow().WithIndex (1).OpenWorkListItem();
+      incomingPage = eigenerAv.GetRow (1).OpenWorkListItem();
       Assert.That (incomingPage.FormPage.GetTitle(), Is.StringStarting (string.Format ("Eingangsstück \"{0}/", date.ToShortDateString())));
       Assert.That (incomingPage.FormPage.GetTextValue ("DisplayName").GetText(), Is.StringStarting (string.Format ("{0}", date.ToShortDateString())));
       incomingPage.FormPage.Perform ("Cancel").ExpectMainPage();
@@ -105,7 +105,7 @@ namespace ActaNova.WebTesting.SampleTests
 
       var home = Start();
 
-      var citizenConcernPage = home.WorkListPage.GetWorkList().GetRow().WithIndex (1).OpenWorkListItem();
+      var citizenConcernPage = home.WorkListPage.GetWorkList().GetRow (1).OpenWorkListItem();
       var incomingPage = citizenConcernPage.FormPage.NextActivity().ExpectMainPage();
 
       incomingPage.FormPage.SwitchTo ("IncomingEnclosuresFormPage_view");
@@ -121,7 +121,7 @@ namespace ActaNova.WebTesting.SampleTests
       var newNumberOfDocuments = documentsList.GetNumberOfRows();
       Assert.That (newNumberOfDocuments, Is.EqualTo (oldNumberOfDocuments + 1));
 
-      var newDocument = documentsList.GetRow().WithIndex (newNumberOfDocuments);
+      var newDocument = documentsList.GetRow (newNumberOfDocuments);
 
       var signaturePopup = newDocument.GetDropDownMenu()
           .SelectItem()

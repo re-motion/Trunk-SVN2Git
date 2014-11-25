@@ -36,7 +36,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var itemsList = tempExportDokumente.FormPage.GetList ("Items");
       Assert.That (itemsList.GetNumberOfRows(), Is.EqualTo (1));
 
-      var deletionConfirmation = itemsList.GetRow().WithIndex (1).GetCell().WithIndex (2).ExecuteCommand().Expect<ActaNovaMessageBoxPageObject>();
+      var deletionConfirmation = itemsList.GetRow (1).GetCell().WithIndex (2).ExecuteCommand().Expect<ActaNovaMessageBoxPageObject>();
       deletionConfirmation.Yes();
 
       Assert.That (itemsList.GetNumberOfRows(), Is.EqualTo (0));
@@ -66,14 +66,14 @@ namespace ActaNova.WebTesting.IntegrationTests
       var objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
       objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Beim Objekt nur lesend berechtigt");
-      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompletedInContext(permissions.Context.ParentContext)));
+      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompletedInContext (permissions.Context.ParentContext)));
 
       permissions = securableClassesTree.GetRootNode().GetNode().WithIndex (1).Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Berechtigungen");
 
       objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
       objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Standard");
-      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompletedInContext(permissions.Context.ParentContext)));
+      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompletedInContext (permissions.Context.ParentContext)));
 
       administration.Close();
     }
