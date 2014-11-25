@@ -16,13 +16,9 @@
 // 
 
 using System;
-using System.Threading;
 using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
-using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.Configuration;
-using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -38,90 +34,6 @@ namespace Remotion.Web.Development.WebTesting
     {
       var webDriver = (IWebDriver) browser.Native;
       webDriver.Manage().Cookies.DeleteAllCookies();
-    }
-
-    /// <summary>
-    /// IE-compatible version for Selenium's <see cref="BrowserWindow.AcceptModalDialog"/> method.
-    /// </summary>
-    /// <param name="browser">The <see cref="BrowserSession"/> on which the action is performed.</param>
-    public static void AcceptModalDialogFixed ([NotNull] this BrowserSession browser)
-    {
-      ArgumentUtility.CheckNotNull ("browser", browser);
-
-      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        browser.AcceptModalDialog();
-      else
-        browser.AcceptModalDialogFixedInternetExplorer();
-    }
-
-    /// <summary>
-    /// See <see cref="AcceptModalDialogFixed"/>, however, the <see cref="WebTestingConfiguration.SearchTimeout"/> and
-    /// <see cref="WebTestingConfiguration.RetryInterval"/> do not apply.
-    /// </summary>
-    public static void AcceptModalDialogImmediatelyFixed ([NotNull] this BrowserSession browser)
-    {
-      ArgumentUtility.CheckNotNull ("browser", browser);
-
-      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        browser.AcceptModalDialog (Options.NoWait);
-      else
-        browser.AcceptModalDialogImmediatelyFixedInternetExplorer();
-    }
-
-    /// <summary>
-    /// IE-compatible version for Selenium's <see cref="BrowserWindow.CancelModalDialog"/> method.
-    /// </summary>
-    /// <param name="browser">The <see cref="BrowserSession"/> on which the action is performed.</param>
-    public static void CancelModalDialogFixed ([NotNull] this BrowserSession browser)
-    {
-      ArgumentUtility.CheckNotNull ("browser", browser);
-
-      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        browser.CancelModalDialog();
-      else
-        browser.CancelModalDialogFixedInternetExplorer();
-    }
-
-    /// <summary>
-    /// Unfortunately, Selenium's Internet Explorer driver (with native events enabled) runs into a race condition when accepting modal browser
-    /// dialogs.
-    /// </summary>
-    private static void AcceptModalDialogFixedInternetExplorer ([NotNull] this BrowserSession browser)
-    {
-      ArgumentUtility.CheckNotNull ("browser", browser);
-
-      RetryUntilTimeout.Run (browser.AcceptModalDialogImmediatelyFixedInternetExplorer);
-    }
-
-    private static void AcceptModalDialogImmediatelyFixedInternetExplorer ([NotNull] this BrowserSession browser)
-    {
-      var webDriver = (IWebDriver) browser.Native;
-      webDriver.SwitchTo().Alert().Accept();
-
-      // Note: unfortunately, we run into a race condition *after* accepting the modal dialog again, so we need to do some waiting here.
-      // Todo RM-6297: Try to get rid of this. See https://groups.google.com/forum/#!topic/selenium-users/NrtJnq7b678 for more information.
-      Thread.Sleep (TimeSpan.FromMilliseconds (250));
-    }
-
-    /// <summary>
-    /// Unfortunately, Selenium's Internet Explorer driver (with native events enabled) runs into a race condition when canceling modal browser
-    /// dialogs.
-    /// </summary>
-    private static void CancelModalDialogFixedInternetExplorer ([NotNull] this BrowserSession browser)
-    {
-      ArgumentUtility.CheckNotNull ("browser", browser);
-
-      RetryUntilTimeout.Run (browser.CancelModalDialogImmediatelyFixedInternetExplorer);
-    }
-
-    private static void CancelModalDialogImmediatelyFixedInternetExplorer ([NotNull] this BrowserSession browser)
-    {
-      var webDriver = (IWebDriver) browser.Native;
-      webDriver.SwitchTo().Alert().Dismiss();
-
-      // Note: unfortunately, we run into a race condition *after* accepting the modal dialog again, so we need to do some waiting here.
-      // Todo RM-6297: Try to get rid of this. See https://groups.google.com/forum/#!topic/selenium-users/NrtJnq7b678 for more information.
-      Thread.Sleep (TimeSpan.FromMilliseconds (250));
     }
   }
 }

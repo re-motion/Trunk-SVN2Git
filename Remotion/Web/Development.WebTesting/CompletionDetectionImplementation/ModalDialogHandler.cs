@@ -37,9 +37,9 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       ArgumentUtility.CheckNotNull ("context", context);
 
       if (_acceptModalDialog)
-        context.Browser.AcceptModalDialogFixed();
+        context.Window.AcceptModalDialogFixed(context.Browser);
       else
-        context.Browser.CancelModalDialogFixed();
+        context.Window.CancelModalDialogFixed(context.Browser);
     }
   }
 }

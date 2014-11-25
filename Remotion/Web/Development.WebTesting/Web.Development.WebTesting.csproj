@@ -186,6 +186,7 @@
     <Compile Include="ControlSelection\SingleControlSelectionCommand.cs" />
     <Compile Include="CoypuBrowserSessionExtensions.cs" />
     <Compile Include="CoypuBrowserWindowExtensions.cs" />
+    <Compile Include="CoypuBrowserWindowModalDialogExtensions.cs" />
     <Compile Include="CoypuElementScopeExtensions.cs" />
     <Compile Include="CoypuElementScopeSelectExtensions.cs" />
     <Compile Include="CoypuElementScopeClickAndFocusExtensions.cs" />
