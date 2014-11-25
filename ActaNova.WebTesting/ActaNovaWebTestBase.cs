@@ -67,7 +67,7 @@ namespace ActaNova.WebTesting
       _webTestHelper.AcceptPossibleModalDialog();
 
       _webTestHelper.MainBrowserSession.Visit (url);
-      return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject>(_webTestHelper.MainBrowserSession);
+      return _webTestHelper.CreateInitialPageObject<ActaNovaMainPageObject> (_webTestHelper.MainBrowserSession);
     }
 
     /// <summary>
@@ -75,22 +75,36 @@ namespace ActaNova.WebTesting
     /// </summary>
     protected BrowserSession CreateNewBrowser ()
     {
-      return _webTestHelper.CreateNewBrowserSession ();
+      return _webTestHelper.CreateNewBrowserSession();
     }
 
     /// <summary>
     /// Starts another ActaNova web test session for a second browser instance.
     /// </summary>
     protected TPageObject StartAgain<TPageObject> ([NotNull] BrowserSession browser, [NotNull] string url)
-      where TPageObject : PageObject
+        where TPageObject : PageObject
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
       ArgumentUtility.CheckNotNullOrEmpty ("url", url);
 
       browser.Visit (url);
-      return _webTestHelper.CreateInitialPageObject<TPageObject>(browser);
+      return _webTestHelper.CreateInitialPageObject<TPageObject> (browser);
     }
 
+    /// <summary>
+    /// Returns a new <see cref="DownloadHelper"/> for the given <paramref name="fileName"/>.
+    /// </summary>
+    /// <param name="fileName">The name of the downloaded file (not the path).</param>
+    protected DownloadHelper NewDownloadHelper ([NotNull] string fileName)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("fileName", fileName);
+
+      return _webTestHelper.NewDownloadHelper (fileName);
+    }
+
+    /// <summary>
+    /// Enabled sequence counter debug output in the main window's title bar.
+    /// </summary>
     protected void ActivateWxeSequenceCounterDebugging ()
     {
       var script =
