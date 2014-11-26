@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
+using log4net;
 using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Utilities
@@ -27,6 +28,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   /// </summary>
   public static class ProcessUtils
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ProcessUtils));
+
     /// <summary>
     /// Kills all processes with the given <paramref name="processName"/>. All exceptions are swallowed => this method is a best-effort approach.
     /// </summary>
@@ -35,16 +38,19 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("processName", processName);
 
+      s_log.DebugFormat ("Process killing has been called for '{0}'...", processName);
+
       foreach (var process in Process.GetProcessesByName (processName))
       {
         try
         {
+          s_log.DebugFormat ("Killing process '{0}'...", processName);
           process.Kill();
         }
-            // ReSharper disable once EmptyGeneralCatchClause
-        catch
+        catch (Exception ex)
         {
-          // Ignore, process is already closing or we do not have the required privileges anyway.
+          s_log.Warn (string.Format ("Killing process '{0}' failed.", processName), ex);
+          // Ignore exception, process is already closing or we do not have the required privileges anyway.
         }
       }
     }
