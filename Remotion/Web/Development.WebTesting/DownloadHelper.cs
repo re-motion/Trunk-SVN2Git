@@ -73,10 +73,13 @@ namespace Remotion.Web.Development.WebTesting
     {
       s_log.DebugFormat ("Performing download of '{0}'...", _fileName);
 
+      // Todo RM-6297: Find a better way to handle the yellow download bar in IE11.
+
       if (_browserConfiguration.BrowserIsInternetExplorer())
       {
+        Thread.Sleep (1500); // do not press too fast, IE-security in place
         SendKeys.SendWait ("{F6}{TAB}");
-        Thread.Sleep (1000); // do not press too fast, IE-security in place
+        Thread.Sleep (1500); // do not press too fast, IE-security in place
         SendKeys.SendWait ("{ENTER}");
       }
 
@@ -87,7 +90,10 @@ namespace Remotion.Web.Development.WebTesting
           TimeSpan.FromMilliseconds (250)).Run();
 
       if (_browserConfiguration.BrowserIsInternetExplorer())
+      {
+        Thread.Sleep (1500); // do not press too fast, IE-security in place
         SendKeys.SendWait ("{F6}{TAB}{TAB}{TAB}{ENTER}");
+      }
 
       s_log.DebugFormat ("Download to '{0}' successfully completed", _fullFilePath);
 
