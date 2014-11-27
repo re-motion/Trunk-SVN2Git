@@ -33,5 +33,16 @@ namespace Remotion.Web.Development.WebTesting.ControlSelection
         : base (pageObject, scope)
     {
     }
+
+    /// <summary>
+    /// Clones the context for another <see cref="ControlObject"/> which resides within the same <see cref="BrowserSession"/>, on the same
+    /// <see cref="BrowserWindow"/> and on the given <paramref name="pageObject"/>.
+    /// </summary>
+    /// <param name="pageObject">The <see cref="PageObject"/> on which the <see cref="ControlObject"/> resides.</param>
+    /// <param name="scope">The scope of the other <see cref="ControlObject"/>.</param>
+    public ControlObjectContext CloneForControl ([NotNull] PageObject pageObject, [NotNull] ElementScope scope)
+    {
+      return pageObject.Context.CloneForControl (pageObject, scope);
+    }
   }
 }

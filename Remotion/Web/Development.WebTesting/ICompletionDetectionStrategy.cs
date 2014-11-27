@@ -21,33 +21,30 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Zero or more completion detection strategies are utilized each time a <see cref="ICompletionDetector"/> is run. A completion detection strategy
-  /// blocks until the DOM fulfills certain characteristics (i.e. a page sequence counter has been increased). Note that completion detection
-  /// strategies are re-used and therefore must be stateless.
+  /// Completion detection ensures that an action (e.g. a click on a button) and all its effects (e.g. a postback, an AJAX request, etc.) have been
+  /// completed and execution of the next action can begin safely.
   /// </summary>
+  /// <remarks>
+  /// Completion detection is an important part of race condition prevention in web tests. When beginning a new action, we must be sure that the
+  /// previous action has completed and the DOM is not modified anymore. Most other frameworks simply wait until the query for the DOM element in
+  /// question succeeds and immediately start the interaction. However, that is especially not safe for ASP.NET WebForms pages where postbacks often
+  /// display the very same DOM elements again.
+  /// </remarks>
   public interface ICompletionDetectionStrategy
   {
     /// <summary>
-    /// Called immediately before the action is performed. The strategy should capture all state (e.g. a page sequence number) required for
+    /// Called immediately before the action is performed. This method should capture all state (e.g. a page sequence number) required for
     /// subsequently determining whether the action has completed.
     /// </summary>
-    /// <param name="context">
-    /// The <see cref="WebTestObjectContext"/> of the <see cref="ControlObject"/> with which the interaction takes place. Warning: the executed
-    /// <see cref="ICompletionDetector"/> may decide to pass a different <see cref="WebTestObjectContext"/> to this method (e.g. the context of the
-    /// parent window if the action closes the current window).
-    /// </param>
+    /// <param name="context">The reloading page's <see cref="PageObjectContext"/>.</param>
     /// <returns>A state object which is subsequently passed to <see cref="WaitForCompletion"/>. May be null.</returns>
     object PrepareWaitForCompletion ([NotNull] PageObjectContext context);
 
     /// <summary>
     /// Called immediately after the action has been performed. This method should block until the DOM fulfills certain characteristics (i.e. a page
-    /// sequence number has been increased). The object returned by <see cref="PrepareWaitForCompletion"/> is passed as <paramref name="state"/>.
+    /// sequence number has been increased).
     /// </summary>
-    /// <param name="context">
-    /// The <see cref="WebTestObjectContext"/> of the <see cref="ControlObject"/> with which the interaction takes place. Warning: the executed
-    /// <see cref="ICompletionDetector"/> may decide to pass a different <see cref="WebTestObjectContext"/> to this method (e.g. the context of the
-    /// parent window if the action closes the current window).
-    /// </param>
+    /// <param name="context">The reloading page's <see cref="PageObjectContext"/>.</param>
     /// <param name="state">The state object obtained from <see cref="PrepareWaitForCompletion"/>.</param>
     void WaitForCompletion ([NotNull] PageObjectContext context, [CanBeNull] object state);
   }

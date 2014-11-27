@@ -41,61 +41,46 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SelectItem (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SelectItem (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SelectItem().WithItemID (itemID, completionDetection, modalDialogHandler);
+      return SelectItem().WithItemID (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (
-        string itemID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
       var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
-      return ClickItem (itemScope, completionDetection, modalDialogHandler);
+      return ClickItem (itemScope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (
-        int index,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
       var itemScope = Scope.FindChild ((index - 1).ToString());
-      return ClickItem (itemScope, completionDetection, modalDialogHandler);
+      return ClickItem (itemScope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (
-        string htmlID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (string htmlID, IWebTestActionOptions actionOptions)
     {
       var itemScope = Scope.FindId (htmlID);
-      return ClickItem (itemScope, completionDetection, modalDialogHandler);
+      return ClickItem (itemScope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (
-        string displayText,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Content, displayText);
-      return ClickItem (itemScope, completionDetection, modalDialogHandler);
+      return ClickItem (itemScope, actionOptions);
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope itemScope, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject ClickItem (ElementScope itemScope, IWebTestActionOptions actionOptions)
     {
       var itemCommandScope = itemScope.FindLink();
       var itemCommand = new CommandControlObject (Context.CloneForControl (itemCommandScope));
-      return itemCommand.Click (completionDetection, modalDialogHandler);
+      return itemCommand.Click (actionOptions);
     }
   }
 }

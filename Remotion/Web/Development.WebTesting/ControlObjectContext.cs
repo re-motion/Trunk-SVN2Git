@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting
     private readonly PageObject _pageObject;
 
     /// <summary>
-    /// Private constructor, may be obtained only via a <see cref="PageObjectContext"/>.
+    /// Private constructor, may be obtained via a <see cref="PageObjectContext"/> or via control selection.
     /// </summary>
     internal ControlObjectContext ([NotNull] PageObject pageObject, [NotNull] ElementScope scope)
         : base (scope)
@@ -68,41 +68,15 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns a <see cref="ControlSelectionContext"/> based upon the control object context at hand.
-    /// </summary>
-    public ControlSelectionContext CloneForControlSelection ()
-    {
-      return new ControlSelectionContext (PageObject, Scope);
-    }
-
-    /// <summary>
     /// Clones the context for another <see cref="ControlObject"/> which resides within the same <see cref="BrowserSession"/>, on the same
     /// <see cref="BrowserWindow"/> and on the same page.
     /// </summary>
     /// <param name="scope">The scope of the other <see cref="ControlObject"/>.</param>
-    public ControlObjectContext CloneForControl (ElementScope scope)
+    public ControlObjectContext CloneForControl ([NotNull] ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      return CloneForControl (PageObject, scope);
-    }
-
-    /// <inheritdoc/>
-    public override ControlObjectContext CloneForControl (PageObject pageObject, ElementScope scope)
-    {
-      ArgumentUtility.CheckNotNull ("pageObject", pageObject);
-      ArgumentUtility.CheckNotNull ("scope", scope);
-
-      return new ControlObjectContext (pageObject, scope);
-    }
-
-    /// <inheritdoc/>
-    public override PageObjectContext CloneForFrame (ElementScope frameScope)
-    {
-      ArgumentUtility.CheckNotNull ("frameScope", frameScope);
-
-      var frameRootScope = frameScope.FindCss ("html");
-      return new PageObjectContext (Browser, Window, frameRootScope, PageObject.Context);
+      return new ControlObjectContext (PageObject, scope);
     }
 
     /// <summary>
@@ -116,8 +90,8 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Clones the context for a new <see cref="PageObject"/> which resides on a new window (specified by <paramref name="windowLocator"/>) within the same
-    /// <see cref="BrowserSession"/>.
+    /// Clones the context for a new <see cref="PageObject"/> which resides on a new window (specified by <paramref name="windowLocator"/>) within the
+    /// same <see cref="BrowserSession"/>.
     /// </summary>
     public PageObjectContext CloneForNewWindow ([NotNull] string windowLocator)
     {
@@ -129,8 +103,8 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Clones the context for a new <see cref="PageObject"/> which resides on a new popup window (specified by <paramref name="windowLocator"/>) within the
-    /// same <see cref="BrowserSession"/>. In contrast to <see cref="CloneForNewWindow"/>, the window is not maximized.
+    /// Clones the context for a new <see cref="PageObject"/> which resides on a new popup window (specified by <paramref name="windowLocator"/>)
+    /// within the same <see cref="BrowserSession"/>. In contrast to <see cref="CloneForNewWindow"/>, the window is not maximized.
     /// </summary>
     public PageObjectContext CloneForNewPopupWindow ([NotNull] string windowLocator)
     {
@@ -144,6 +118,14 @@ namespace Remotion.Web.Development.WebTesting
       var window = Browser.FindWindow (windowLocator);
       var rootScope = window.GetRootScope();
       return new PageObjectContext (Browser, window, rootScope, PageObject.Context);
+    }
+
+    /// <summary>
+    /// Returns a <see cref="ControlSelectionContext"/> based upon the control object context at hand.
+    /// </summary>
+    public ControlSelectionContext CloneForControlSelection ()
+    {
+      return new ControlSelectionContext (PageObject, Scope);
     }
   }
 }

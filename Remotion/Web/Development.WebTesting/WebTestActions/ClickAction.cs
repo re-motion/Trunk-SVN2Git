@@ -16,22 +16,34 @@
 // 
 
 using System;
+using Coypu;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
+namespace Remotion.Web.Development.WebTesting.WebTestActions
 {
   /// <summary>
-  /// Does not host any web application. E.g. used for web tests on already deployed and running web applications.
+  /// Represents a click.
   /// </summary>
-  public class NullHostingStrategy : IHostingStrategy
+  public class ClickAction : WebTestAction
   {
-    /// <inheritdoc/>
-    public void DeployAndStartWebApplication ()
+    public ClickAction ([NotNull] ControlObject control, [NotNull] ElementScope scope)
+        : base (control, scope)
     {
     }
 
     /// <inheritdoc/>
-    public void StopAndUndeployWebApplication ()
+    protected override string ActionName
     {
+      get { return "Click"; }
+    }
+
+    /// <inheritdoc/>
+    protected override void ExecuteInteraction (ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      scope.FocusClick();
     }
   }
 }

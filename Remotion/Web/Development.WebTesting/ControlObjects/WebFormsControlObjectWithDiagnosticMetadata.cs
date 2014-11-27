@@ -32,24 +32,23 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
+    protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy (ElementScope scope)
     {
       if (scope[DiagnosticMetadataAttributes.TriggersPostBack] != null)
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
-          return Continue.When (Wxe.PostBackCompleted);
+          return Wxe.PostBackCompleted;
       }
 
       if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return Continue.When (Wxe.Reset);
+          return Wxe.Reset;
       }
 
-      return Continue.Immediately();
+      return Continue.Immediately;
     }
   }
 }

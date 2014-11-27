@@ -16,25 +16,22 @@
 // 
 
 using System;
-using JetBrains.Annotations;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations bearing a <see cref="T:Remotion.Web.UI.Controls.Command"/>.
+  /// Encapsulates options for a <see cref="WebTestAction"/>.
   /// </summary>
-  public interface ICommandHost
+  public interface IWebTestActionOptions
   {
     /// <summary>
-    /// Returns the <see cref="T:Remotion.Web.UI.Controls.Command"/> control object.
+    /// The <see cref="ICompletionDetectionStrategy"/> to use.
     /// </summary>
-    CommandControlObject GetCommand ();
+    ICompletionDetectionStrategy CompletionDetectionStrategy { get; set; }
 
     /// <summary>
-    /// Shortcut, directly executes the command retrieved by <see cref="GetCommand"/>. See <see cref="CommandControlObject.Click"/> for more
-    /// information.
+    /// The <see cref="IModalDialogHandler"/> to use.
     /// </summary>
-    /// <param name="actionOptions">See <see cref="IWebTestActionOptions"/> for more information.</param>
-    UnspecifiedPageObject ExecuteCommand ([CanBeNull] IWebTestActionOptions actionOptions = null);
+    IModalDialogHandler ModalDialogHandler { get; set; }
   }
 }

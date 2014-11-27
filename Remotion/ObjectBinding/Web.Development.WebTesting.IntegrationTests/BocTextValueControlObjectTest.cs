@@ -145,7 +145,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("Doe"));
 
       bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
-      bocText.FillWith ("Blubba", Continue.Immediately()); // same value, does not trigger post back
+      bocText.FillWith ("Blubba", Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("Doe"));
 
       bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");

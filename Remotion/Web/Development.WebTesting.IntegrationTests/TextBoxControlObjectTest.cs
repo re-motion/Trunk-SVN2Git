@@ -117,7 +117,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       // Check WaitFor.Nothing once before default behavior usage...
 
       var aspTextBoxNoAutoPostback = home.GetTextBox().ByLocalID ("MyAspTextBoxNoAutoPostBack");
-      aspTextBoxNoAutoPostback.FillWith ("Blubba4", Continue.Immediately());
+      aspTextBoxNoAutoPostback.FillWith ("Blubba4", Opt.ContinueImmediately());
       Assert.That (aspTextBoxNoAutoPostback.GetText(), Is.EqualTo ("Blubba4"));
 
       var editableTextBox = home.GetTextBox().ByLocalID ("MyEditableTextBox");
@@ -131,7 +131,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (aspTextBox.GetText(), Is.EqualTo ("Blubba2"));
 
       var htmlTextBox = home.GetTextBox().ByLocalID ("MyHtmlTextBox");
-      htmlTextBox.FillWith ("Blubba3", Continue.Immediately());
+      htmlTextBox.FillWith ("Blubba3", Opt.ContinueImmediately());
       Assert.That (htmlTextBox.GetText(), Is.EqualTo ("Blubba3"));
     }
 

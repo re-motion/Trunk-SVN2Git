@@ -16,25 +16,21 @@
 // 
 
 using System;
-using JetBrains.Annotations;
+using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting.ModalDialogHandlers
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations bearing a <see cref="T:Remotion.Web.UI.Controls.Command"/>.
+  /// Accepts the modal browser dialog.
   /// </summary>
-  public interface ICommandHost
+  internal class AcceptModalDialogHandler : IModalDialogHandler
   {
-    /// <summary>
-    /// Returns the <see cref="T:Remotion.Web.UI.Controls.Command"/> control object.
-    /// </summary>
-    CommandControlObject GetCommand ();
+    /// <inheritdoc/>
+    public void HandleModalDialog (PageObjectContext context)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
 
-    /// <summary>
-    /// Shortcut, directly executes the command retrieved by <see cref="GetCommand"/>. See <see cref="CommandControlObject.Click"/> for more
-    /// information.
-    /// </summary>
-    /// <param name="actionOptions">See <see cref="IWebTestActionOptions"/> for more information.</param>
-    UnspecifiedPageObject ExecuteCommand ([CanBeNull] IWebTestActionOptions actionOptions = null);
+      context.Window.AcceptModalDialogFixed (context.Browser);
+    }
   }
 }

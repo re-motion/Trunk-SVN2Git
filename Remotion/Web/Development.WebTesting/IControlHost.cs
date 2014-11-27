@@ -23,18 +23,18 @@ using Remotion.Web.Development.WebTesting.ControlSelection;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Interface for all <see cref="WebTestObject{TWebTestObjectContext}"/>s which host controls within their scope.
+  /// Interface for all <see cref="WebTestObject{TWebTestObjectContext}"/>s which host child controls within their scope.
   /// </summary>
   public interface IControlHost
   {
     /// <summary>
-    /// Tries to find a <see cref="ControlObject"/> within the scope of the control host, using the given <paramref name="controlSelectionCommand"/>.
+    /// Finds a child <see cref="ControlObject"/> within the host's scope as specified by the given <paramref name="controlSelectionCommand"/>.
     /// </summary>
-    /// <typeparam name="TControlObject">The type of the control to be found.</typeparam>
-    /// <param name="controlSelectionCommand">Encapsulating the <see cref="IControlSelector"/> implementation and all necessary selection parameters.</param>
-    /// <returns>The control object.</returns>
-    /// <exception cref="AmbiguousException">If the selection command cannot unambiguously identify the control.</exception>
-    /// <exception cref="MissingHtmlException">If the element cannot be found.</exception>
+    /// <typeparam name="TControlObject">The type of the child control to be found.</typeparam>
+    /// <param name="controlSelectionCommand">Specifies the child control, see <see cref="IControlSelectionCommand{TControlObject}"/> for more information.</param>
+    /// <returns>The specified child <see cref="ControlObject"/>.</returns>
+    /// <exception cref="AmbiguousException">If the selection command cannot unambiguously identify the child control.</exception>
+    /// <exception cref="MissingHtmlException">If the selection command cannot find the child control.</exception>
     TControlObject GetControl<TControlObject> ([NotNull] IControlSelectionCommand<TControlObject> controlSelectionCommand)
         where TControlObject : ControlObject;
   }

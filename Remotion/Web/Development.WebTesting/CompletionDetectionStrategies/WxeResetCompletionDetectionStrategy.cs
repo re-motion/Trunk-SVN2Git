@@ -16,34 +16,25 @@
 // 
 
 using System;
-using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 {
   /// <summary>
-  /// Blocks until the WXE function token is different and the WXE post back sequence number (for the given <see cref="PageObjectContext"/>) has been
-  /// reset.
+  /// Blocks until the WXE function token is different and the WXE post back sequence number (for the current <see cref="PageObjectContext"/>) has
+  /// been reset.
   /// </summary>
-  public class WxeResetInCompletionDetectionStrategy : ICompletionDetectionStrategy
+  public class WxeResetCompletionDetectionStrategy : ICompletionDetectionStrategy
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeResetInCompletionDetectionStrategy));
-    private readonly PageObjectContext _context;
-
-    public WxeResetInCompletionDetectionStrategy ([NotNull] PageObjectContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      _context = context;
-    }
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeResetCompletionDetectionStrategy));
 
     /// <inheritdoc/>
     public object PrepareWaitForCompletion (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      return WxeCompletionDetectionHelpers.GetWxeFunctionToken (_context);
+      return WxeCompletionDetectionHelpers.GetWxeFunctionToken (context);
     }
 
     /// <inheritdoc/>
@@ -53,10 +44,10 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       ArgumentUtility.CheckNotNull ("state", state);
 
       var oldWxeFunctionToken = (string) state;
-      WxeCompletionDetectionHelpers.WaitForNewWxeFunctionToken (s_log, _context, oldWxeFunctionToken);
+      WxeCompletionDetectionHelpers.WaitForNewWxeFunctionToken (s_log, context, oldWxeFunctionToken);
 
       const int expectedWxePostBackSequenceNumber = 2;
-      WxeCompletionDetectionHelpers.WaitForExpectedWxePostBackSequenceNumber (s_log, _context, expectedWxePostBackSequenceNumber);
+      WxeCompletionDetectionHelpers.WaitForExpectedWxePostBackSequenceNumber (s_log, context, expectedWxePostBackSequenceNumber);
     }
   }
 }

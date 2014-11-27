@@ -39,7 +39,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
+    protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy (ElementScope scope)
     {
       throw new NotSupportedException ("The LabelControlObject does not support any interaction.");
     }

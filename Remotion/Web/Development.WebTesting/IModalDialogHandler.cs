@@ -17,17 +17,20 @@
 
 using System;
 using JetBrains.Annotations;
+using OpenQA.Selenium;
 
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Modal dialogs must be handled before an action may be completed, as all DOM interaction is blocked.
+  /// Responsible for dealing with a modal browser dialog (a browser alert). Modal browser dialogs must be handled before an action is able to finish,
+  /// as all DOM interaction is completely blocked.
   /// </summary>
   public interface IModalDialogHandler
   {
     /// <summary>
-    /// Handles the modal dialog (either accept or cancel it) as specified.
+    /// Accepts or cancels the modal browser dialog.
     /// </summary>
+    /// <exception cref="NoAlertPresentException">Thrown if no modal browser dialog is present.</exception>
     void HandleModalDialog ([NotNull] PageObjectContext context);
   }
 }

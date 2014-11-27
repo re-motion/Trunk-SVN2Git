@@ -50,9 +50,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    public UnspecifiedPageObject ExecuteCommand (IWebTestActionOptions actionOptions)
     {
-      return GetCommand().Click (completionDetection, modalDialogHandler);
+      return GetCommand().Click (actionOptions);
     }
 
     /// <inheritdoc/>

@@ -15,31 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting.ModalDialogHandlers
 {
   /// <summary>
-  /// Default implementation for <see cref="IModalDialogHandler"/>.
+  /// Cancels the modal browser dialog.
   /// </summary>
-  internal class ModalDialogHandler : IModalDialogHandler
+  internal class CancelModalDialogHandler : IModalDialogHandler
   {
-    private readonly bool _acceptModalDialog;
-
-    public ModalDialogHandler (bool acceptModalDialog)
-    {
-      _acceptModalDialog = acceptModalDialog;
-    }
-
     /// <inheritdoc/>
     public void HandleModalDialog (PageObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (_acceptModalDialog)
-        context.Window.AcceptModalDialogFixed(context.Browser);
-      else
-        context.Window.CancelModalDialogFixed(context.Browser);
+      context.Window.CancelModalDialogFixed (context.Browser);
     }
   }
 }

@@ -21,7 +21,7 @@ using System.IO;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
+namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
   /// <summary>
   /// Wraps an IIS Express instance hosting the web application under test.

@@ -41,71 +41,56 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SwitchTo (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SwitchTo (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SwitchTo().WithItemID (itemID, completionDetection, modalDialogHandler);
+      return SwitchTo().WithItemID (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithItemID (
-        string itemID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var itemScope = Scope.FindTagWithAttribute ("span.tabStripTab", DiagnosticMetadataAttributes.ItemID, itemID);
-      return SwitchTo (itemScope, completionDetection, modalDialogHandler);
+      return SwitchTo (itemScope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithIndex (
-        int index,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
       var xPathSelector = string.Format (
           "(.//span{0})[{1}]",
           XPathUtils.CreateHasOneOfClassesCheck ("tabStripTab", "tabStripTabSelected"),
           index);
       var itemScope = Scope.FindXPath (xPathSelector);
-      return SwitchTo (itemScope, completionDetection, modalDialogHandler);
+      return SwitchTo (itemScope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithHtmlID (
-        string htmlID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithHtmlID (string htmlID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       var itemScope = Scope.FindId (htmlID);
-      return SwitchTo (itemScope, completionDetection, modalDialogHandler);
+      return SwitchTo (itemScope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayText (
-        string displayText,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
       var itemScope = Scope.FindTagWithAttribute ("span.tabStripTab", DiagnosticMetadataAttributes.Content, displayText);
-      return SwitchTo (itemScope, completionDetection, modalDialogHandler);
+      return SwitchTo (itemScope, actionOptions);
     }
 
-    private UnspecifiedPageObject SwitchTo (ElementScope tabScope, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject SwitchTo (ElementScope tabScope, IWebTestActionOptions actionOptions)
     {
       var tabCommandScope = tabScope.FindLink();
       var tabCommand = new CommandControlObject (Context.CloneForControl (tabCommandScope));
-      return tabCommand.Click (completionDetection, modalDialogHandler);
+      return tabCommand.Click (actionOptions);
     }
   }
 }

@@ -16,25 +16,23 @@
 // 
 
 using System;
-using JetBrains.Annotations;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations bearing a <see cref="T:Remotion.Web.UI.Controls.Command"/>.
+  /// Null implementation of <see cref="ICompletionDetectionStrategy"/> which does not wait at all.
   /// </summary>
-  public interface ICommandHost
+  public class NullCompletionDetectionStrategy : ICompletionDetectionStrategy
   {
-    /// <summary>
-    /// Returns the <see cref="T:Remotion.Web.UI.Controls.Command"/> control object.
-    /// </summary>
-    CommandControlObject GetCommand ();
+    /// <inheritdoc/>
+    public object PrepareWaitForCompletion (PageObjectContext context)
+    {
+      return null;
+    }
 
-    /// <summary>
-    /// Shortcut, directly executes the command retrieved by <see cref="GetCommand"/>. See <see cref="CommandControlObject.Click"/> for more
-    /// information.
-    /// </summary>
-    /// <param name="actionOptions">See <see cref="IWebTestActionOptions"/> for more information.</param>
-    UnspecifiedPageObject ExecuteCommand ([CanBeNull] IWebTestActionOptions actionOptions = null);
+    /// <inheritdoc/>
+    public void WaitForCompletion (PageObjectContext context, object state)
+    {
+    }
   }
 }

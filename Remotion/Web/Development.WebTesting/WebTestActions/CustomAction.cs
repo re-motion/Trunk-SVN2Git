@@ -16,23 +16,39 @@
 // 
 
 using System;
+using Coypu;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting.WebTestActions
 {
   /// <summary>
-  /// Null implementation of <see cref="ICompletionDetectionStrategy"/>, which does not block.
+  /// Represents a click.
   /// </summary>
-  public class NullCompletionDetectionStrategy : ICompletionDetectionStrategy
+  public class CustomAction : WebTestAction
   {
-    /// <inheritdoc/>
-    public object PrepareWaitForCompletion (PageObjectContext context)
+    private readonly Action<ElementScope> _action;
+
+    public CustomAction ([NotNull] ControlObject control, [NotNull] ElementScope scope, [NotNull] Action<ElementScope> action)
+        : base (control, scope)
     {
-      return null;
+      ArgumentUtility.CheckNotNull ("action", action);
+
+      _action = action;
     }
 
     /// <inheritdoc/>
-    public void WaitForCompletion (PageObjectContext context, object state)
+    protected override string ActionName
     {
+      get { return "Custom"; }
+    }
+
+    /// <inheritdoc/>
+    protected override void ExecuteInteraction (ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      _action (scope);
     }
   }
 }

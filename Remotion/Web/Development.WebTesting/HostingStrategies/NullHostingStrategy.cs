@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,37 +16,22 @@
 // 
 
 using System;
-using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
   /// <summary>
-  /// Entry point of the fluent interface for building <see cref="IModalDialogHandler"/> instances.
+  /// Does not host any web application. Used for web tests on already deployed and running web applications.
   /// </summary>
-  public static class HandleModalDialog
+  public class NullHostingStrategy : IHostingStrategy
   {
-    /// <summary>
-    /// Accept the modal dialog.
-    /// </summary>
-    public static IModalDialogHandler Accept ()
+    /// <inheritdoc/>
+    public void DeployAndStartWebApplication ()
     {
-      return new ModalDialogHandler (true);
     }
 
-    /// <summary>
-    /// Cancel the modal dialog.
-    /// </summary>
-    public static IModalDialogHandler Cancel ()
+    /// <inheritdoc/>
+    public void StopAndUndeployWebApplication ()
     {
-      return new ModalDialogHandler (false);
-    }
-
-    /// <summary>
-    /// No modal dialog handling required.
-    /// </summary>
-    public static IModalDialogHandler None ()
-    {
-      return null;
     }
   }
 }

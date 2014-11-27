@@ -17,9 +17,9 @@
 
 using System;
 using System.Web.UI.WebControls;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -40,50 +40,36 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
+      return FillWith (text, FinishInput.WithTab, actionOptions);
     }
 
     /// <inheritdoc/>
     /// <remarks>
-    /// The default <see cref="ICompletionDetection"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
+    /// The default <see cref="ICompletionDetectionStrategy"/> for <see cref="TextBoxControlObject"/> does expect a WXE auto postback!
     /// </remarks>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
+      new FillWithAction (this, Scope, text, finishInputWith).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 
-    private ICompletionDetector GetActualCompletionDetector (
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection userDefinedCompletionDetection)
+    private IWebTestActionOptions MergeWithDefaultActionOptions (IWebTestActionOptions userDefinedActionOptions, FinishInputWithAction finishInputWith)
     {
       if (finishInputWith == FinishInput.Promptly)
-        return Continue.Immediately().Build();
+      {
+        userDefinedActionOptions = userDefinedActionOptions ?? new WebTestActionOptions();
+        userDefinedActionOptions.CompletionDetectionStrategy = Continue.Immediately;
+      }
 
-      return GetActualCompletionDetector (userDefinedCompletionDetection);
-    }
-
-    /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
-    {
-      ArgumentUtility.CheckNotNull ("scope", scope);
-
-      return Continue.When (Wxe.PostBackCompleted);
+      return MergeWithDefaultActionOptions (Scope, userDefinedActionOptions);
     }
   }
 }

@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -47,66 +48,45 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SelectOption (
-        string value,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SelectOption (string value, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("value", value);
 
-      return SelectOption().WithItemID (value, completionDetection);
+      return SelectOption().WithItemID (value, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (
-        string value,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (string value, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
       Action<ElementScope> selectAction = s => s.SelectOptionByValue (value);
-      return SelectOption (selectAction, completionDetection, modalDialogHandler);
+      return SelectOption (selectAction, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (
-        int index,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
       Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
-      return SelectOption (selectAction, completionDetection, modalDialogHandler);
+      return SelectOption (selectAction, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (
-        string displayText,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNull ("displayText", displayText);
 
       Action<ElementScope> selectAction = s => s.SelectOption (displayText);
-      return SelectOption (selectAction, completionDetection, modalDialogHandler);
+      return SelectOption (selectAction, actionOptions);
     }
 
-    private UnspecifiedPageObject SelectOption (
-        [NotNull] Action<ElementScope> selectAction,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.PerformAction (selectAction, Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      new CustomAction (this, Scope, selectAction).Execute (actualActionOptions);
       return UnspecifiedPage();
-    }
-
-    /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
-    {
-      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }

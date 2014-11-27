@@ -70,8 +70,13 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
+    <Compile Include="ModalDialogHandlers\AcceptModalDialogHandler.cs" />
+    <Compile Include="ModalDialogHandlers\CancelModalDialogHandler.cs" />
+    <Compile Include="WebTestActionOptions.cs" />
+    <Compile Include="WebTestActionOptionsFluentInterface.cs" />
+    <Compile Include="WebTestActions\ClickAction.cs" />
     <Compile Include="CommonJavaScripts.cs" />
-    <Compile Include="CompletionDetectionImplementation\CompletionDetector.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionType.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionMethodAttribute.cs" />
@@ -99,13 +104,11 @@
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
-    <Compile Include="CompletionDetectionImplementation\CompletionDetectorBuilder.cs" />
-    <Compile Include="CompletionDetectionImplementation\ModalDialogHandler.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxeCompletionDetectionHelpers.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxeResetInCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxePostBackCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxePostBackInCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionImplementation\WxeResetCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxeCompletionDetectionHelpers.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxeResetInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxePostBackCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxePostBackInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxeResetCompletionDetectionStrategy.cs" />
     <Compile Include="Configuration\WebTestingConstants.cs" />
     <Compile Include="ControlObjectContext.cs" />
     <Compile Include="ControlObjects\ImageButtonControlObject.cs" />
@@ -208,17 +211,15 @@
     <Compile Include="FluentControlSelection\HtmlIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\TitleControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\SingleControlSelectionCommandBuilder.cs" />
-    <Compile Include="CompletionDetectionBuilderFluentInterface.cs" />
-    <Compile Include="ModalDialogHandlerFluentInterface.cs" />
     <Compile Include="IModalDialogHandler.cs" />
     <Compile Include="PageObjects\HtmlPageObject.cs" />
-    <Compile Include="ICompletionDetector.cs" />
+    <Compile Include="ICompletionDetectionStrategy.cs" />
     <Compile Include="Configuration\IBrowserConfiguration.cs" />
     <Compile Include="Configuration\ICoypuConfiguration.cs" />
     <Compile Include="IHostingStrategy.cs" />
-    <Compile Include="HostingStrategyImplementation\IisExpressHostingStrategy.cs" />
+    <Compile Include="HostingStrategies\IisExpressHostingStrategy.cs" />
     <Compile Include="Configuration\IWebTestConfiguration.cs" />
-    <Compile Include="HostingStrategyImplementation\NullHostingStrategy.cs" />
+    <Compile Include="HostingStrategies\NullHostingStrategy.cs" />
     <Compile Include="PageObjectContext.cs" />
     <Compile Include="Utilities\ActionsWithWaitSupport.cs" />
     <Compile Include="Utilities\EnumerableExtensions.cs" />
@@ -229,23 +230,25 @@
     <Compile Include="Utilities\SeleniumSendKeysToWindowsFormsSendKeysTransformer.cs" />
     <Compile Include="Utilities\XPathUtils.cs" />
     <Compile Include="CoypuElementScopeFindExtensions.cs" />
-    <Compile Include="CoypuWaitingElementScopeExtensions.cs" />
     <Compile Include="IControlHost.cs" />
-    <Compile Include="HostingStrategyImplementation\IisExpressProcessWrapper.cs" />
+    <Compile Include="HostingStrategies\IisExpressProcessWrapper.cs" />
     <Compile Include="FinishInputWithFluentInterface.cs" />
-    <Compile Include="Wxe.cs" />
-    <Compile Include="CompletionDetectionImplementation\NullCompletionDetectionStrategy.cs" />
-    <Compile Include="ICompletionDetectionStrategy.cs" />
+    <Compile Include="WebTestAction.cs" />
+    <Compile Include="IWebTestActionOptions.cs" />
+    <Compile Include="CompletionDetectionStrategiesFluentInterface.cs" />
+    <Compile Include="CompletionDetectionStrategies\NullCompletionDetectionStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="Configuration\WebTestingConfiguration.cs" />
+    <Compile Include="WebTestActions\CustomAction.cs" />
     <Compile Include="WebTestObject.cs" />
     <Compile Include="WebTestObjectContext.cs" />
     <Compile Include="ControlObject.cs" />
     <Compile Include="PageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebTestSetUpFixtureHelper.cs" />
+    <Compile Include="WebTestActions\FillWithAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\packages\WebDriver.ChromeDriver.win32.2.12.0.0\content\chromedriver.exe">

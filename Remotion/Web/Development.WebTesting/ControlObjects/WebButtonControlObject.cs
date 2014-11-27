@@ -17,6 +17,7 @@
 
 using System;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -31,10 +32,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Click (IWebTestActionOptions actionOptions = null)
     {
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      new ClickAction (this, Scope).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
   }

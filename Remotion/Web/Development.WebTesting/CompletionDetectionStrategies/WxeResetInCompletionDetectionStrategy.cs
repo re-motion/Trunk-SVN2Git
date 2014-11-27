@@ -16,22 +16,26 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 {
   /// <summary>
-  /// Blocks until the WXE postback sequence number (for the current <see cref="PageObjectContext"/>) has increased by the given amount.
+  /// Blocks until the WXE function token is different and the WXE post back sequence number (for the given <see cref="PageObjectContext"/>) has been
+  /// reset.
   /// </summary>
-  public class WxePostBackCompletionDetectionStrategy : ICompletionDetectionStrategy
+  public class WxeResetInCompletionDetectionStrategy : ICompletionDetectionStrategy
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxePostBackCompletionDetectionStrategy));
-    private readonly int _expectedWxePostBackSequenceNumberIncrease;
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeResetInCompletionDetectionStrategy));
+    private readonly PageObjectContext _context;
 
-    public WxePostBackCompletionDetectionStrategy (int expectedWxePostBackSequenceNumberIncrease)
+    public WxeResetInCompletionDetectionStrategy ([NotNull] PageObjectContext context)
     {
-      _expectedWxePostBackSequenceNumberIncrease = expectedWxePostBackSequenceNumberIncrease;
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      _context = context;
     }
 
     /// <inheritdoc/>
@@ -39,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      return WxeCompletionDetectionHelpers.GetWxePostBackSequenceNumber (context);
+      return WxeCompletionDetectionHelpers.GetWxeFunctionToken (_context);
     }
 
     /// <inheritdoc/>
@@ -48,13 +52,11 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("state", state);
 
-      var oldWxePostBackSequenceNumber = (int) state;
+      var oldWxeFunctionToken = (string) state;
+      WxeCompletionDetectionHelpers.WaitForNewWxeFunctionToken (s_log, _context, oldWxeFunctionToken);
 
-      WxeCompletionDetectionHelpers.WaitForExpectedWxePostBackSequenceNumber (
-          s_log,
-          context,
-          oldWxePostBackSequenceNumber,
-          _expectedWxePostBackSequenceNumberIncrease);
+      const int expectedWxePostBackSequenceNumber = 2;
+      WxeCompletionDetectionHelpers.WaitForExpectedWxePostBackSequenceNumber (s_log, _context, expectedWxePostBackSequenceNumber);
     }
   }
 }

@@ -22,7 +22,7 @@ using System.IO;
 using Coypu.Drivers;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.HostingStrategyImplementation;
+using Remotion.Web.Development.WebTesting.HostingStrategies;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {

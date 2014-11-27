@@ -21,7 +21,7 @@ using log4net;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 {
   /// <summary>
   /// Various helper methods for all WXE-based <see cref="ICompletionDetectionStrategy"/> implementations.
@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // Note: use RetryUntilTimeout until Coypu secured its attribute access (https://github.com/featurist/coypu/issues/117).
+      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
       return RetryUntilTimeout.Run (() => int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value));
     }
 
@@ -49,12 +49,12 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // Note: use RetryUntilTimeout until Coypu secured its attribute access (https://github.com/featurist/coypu/issues/117).
+      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
       return RetryUntilTimeout.Run (() => context.Scope.FindId (c_wxeFunctionToken).Value);
     }
 
     /// <summary>
-    /// Waits for the WXE postback sequence number in the given <paramref name="context"/> to reach
+    /// Waits for the WXE postback sequence number in the given <paramref name="context"/> to reach the
     /// <paramref name="expectedWxePostBackSequenceNumber"/>.
     /// </summary>
     public static void WaitForExpectedWxePostBackSequenceNumber (
@@ -117,9 +117,11 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
 
     private static string GetPageTitle ([NotNull] PageObjectContext context)
     {
+      // Note: do not use page.GetTitle() instead, it may be specifically overloaded for a certain type of page which is not yet fully loaded!
+
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // Note: use RetryUntilTimeout until Coypu secured its attribute access (https://github.com/featurist/coypu/issues/117).
+      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
       return RetryUntilTimeout.Run (() => context.Scope.FindCss ("title").InnerHTML);
     }
   }

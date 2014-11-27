@@ -20,6 +20,7 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -45,64 +46,49 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SelectItem (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SelectItem (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SelectItem().WithItemID (itemID, completionDetection);
+      return SelectItem().WithItemID (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (
-        string itemID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindTagWithAttribute ("li.DropDownMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
-      return ClickItem (scope, completionDetection, modalDialogHandler);
+      return ClickItem (scope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (
-        int index,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindXPath (string.Format ("li[{0}]", index));
-      return ClickItem (scope, completionDetection, modalDialogHandler);
+      return ClickItem (scope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (
-        string htmlID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (string htmlID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindId (htmlID);
-      return ClickItem (scope, completionDetection, modalDialogHandler);
+      return ClickItem (scope, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (
-        string displayText,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
       var dropDownMenuScope = GetDropDownMenuScope();
       var scope = dropDownMenuScope.FindTagWithAttribute ("li.DropDownMenuItem", DiagnosticMetadataAttributes.Content, displayText);
-      return ClickItem (scope, completionDetection, modalDialogHandler);
+      return ClickItem (scope, actionOptions);
     }
 
     private ElementScope GetDropDownMenuScope ()
@@ -113,12 +99,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return dropDownMenuOptionsScope;
     }
 
-    private UnspecifiedPageObject ClickItem (ElementScope item, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject ClickItem (ElementScope item, IWebTestActionOptions actionOptions)
     {
-      var actualCompletionDetector = GetActualCompletionDetector (item, completionDetection);
+      var actualActionOptions = MergeWithDefaultActionOptions (item, actionOptions);
 
       var anchorScope = item.FindLink();
-      anchorScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
+      new ClickAction (this, anchorScope).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
   }

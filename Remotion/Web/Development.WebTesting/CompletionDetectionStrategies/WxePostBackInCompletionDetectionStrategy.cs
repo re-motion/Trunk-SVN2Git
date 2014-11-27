@@ -20,7 +20,7 @@ using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionImplementation
+namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 {
   /// <summary>
   /// Blocks until the WXE post back sequence number (for the given <see cref="PageObjectContext"/>) has increased by the given amount.

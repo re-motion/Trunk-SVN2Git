@@ -14,11 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -46,27 +47,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (
-        bool newState,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SetTo (bool newState, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       if (GetState() == newState)
         return UnspecifiedPage();
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.FindChild ("Value").PerformAction (
-          s =>
-          {
-            if (newState)
-              s.Check();
-            else
-              s.Uncheck();
-          },
-          Context,
-          actualCompletionDetector,
-          modalDialogHandler);
-
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      Action<ElementScope> checkAction = s => s.Check();
+      Action<ElementScope> uncheckAction = s => s.Uncheck();
+      new CustomAction (this, Scope.FindChild ("Value"), newState ? checkAction : uncheckAction).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 

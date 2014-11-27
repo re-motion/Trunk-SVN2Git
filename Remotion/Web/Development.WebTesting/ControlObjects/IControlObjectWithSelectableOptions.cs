@@ -33,10 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Short for explicitly implemented <see cref="IFluentControlObjectWithSelectableOptions.WithItemID"/>.
     /// </summary>
-    UnspecifiedPageObject SelectOption (
-        [NotNull] string itemID,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+    UnspecifiedPageObject SelectOption ([NotNull] string itemID, [CanBeNull] IWebTestActionOptions actionOptions = null);
   }
 
   /// <summary>
@@ -47,25 +44,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Selects the option using the given <paramref name="itemID"/>.
     /// </summary>
-    UnspecifiedPageObject WithItemID (
-        [NotNull] string itemID,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+    UnspecifiedPageObject WithItemID ([NotNull] string itemID, [CanBeNull] IWebTestActionOptions actionOptions = null);
 
     /// <summary>
     /// Selects the option using the given <paramref name="index"/>.
     /// </summary>
-    UnspecifiedPageObject WithIndex (
-        int index,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+    UnspecifiedPageObject WithIndex (int index, [CanBeNull] IWebTestActionOptions actionOptions = null);
 
     /// <summary>
     /// Selects the option using the given <paramref name="displayText"/>.
     /// </summary>
-    UnspecifiedPageObject WithDisplayText (
-        [NotNull] string displayText,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+    UnspecifiedPageObject WithDisplayText ([NotNull] string displayText, [CanBeNull] IWebTestActionOptions actionOptions = null);
   }
 }

@@ -23,7 +23,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Base class of <see cref="PageObject"/> and <see cref="ControlObject"/>, providing common state and logic.
+  /// Base class of <see cref="ControlObject"/>, <see cref="PageObject"/> and <see cref="UnspecifiedPageObject"/>, holding common state.
   /// </summary>
   public abstract class WebTestObject<TWebTestObjectContext>
       where TWebTestObjectContext : WebTestObjectContext

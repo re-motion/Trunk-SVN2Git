@@ -76,12 +76,40 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns the <see cref="PageObject"/>'s parent context, e.g. a <see cref="PageObject"/> respresenting the parent frame or the parent window. This
-    /// property returns <see langword="null"/> for root contexts.
+    /// Returns the <see cref="PageObject"/>'s parent context, e.g. a <see cref="PageObject"/> respresenting the parent frame or the parent window.
+    /// This property returns <see langword="null"/> for root contexts.
     /// </summary>
     public PageObjectContext ParentContext
     {
       get { return _parentContext; }
+    }
+
+    /// <summary>
+    /// Clones the context for a child <see cref="PageObject"/> which represents an IFRAME on the page.
+    /// </summary>
+    /// <param name="frameScope">The scope of the <see cref="PageObject"/> representing the IFRAME.</param>
+    public PageObjectContext CloneForFrame ([NotNull] ElementScope frameScope)
+    {
+      ArgumentUtility.CheckNotNull ("frameScope", frameScope);
+
+      var frameRootElement = frameScope.FindCss ("html");
+      return new PageObjectContext (Browser, Window, frameRootElement, this);
+    }
+
+    /// <summary>
+    /// Creates a <see cref="ControlObjectContext"/> for a <see cref="ControlObject"/> which resides on the page.
+    /// </summary>
+    /// <param name="pageObject">
+    /// As the <see cref="PageObjectContext"/> does not know about the <see cref="PageObject"/> it belongs to, the <paramref name="pageObject"/> must
+    /// be specified.
+    /// </param>
+    /// <param name="scope">The scope of the <see cref="ControlObject"/>.</param>
+    public ControlObjectContext CloneForControl ([NotNull] PageObject pageObject, [NotNull] ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("pageObject", pageObject);
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      return new ControlObjectContext (pageObject, scope);
     }
 
     /// <summary>
@@ -91,24 +119,6 @@ namespace Remotion.Web.Development.WebTesting
     public ControlSelectionContext CloneForControlSelection (PageObject pageObject)
     {
       return new ControlSelectionContext (pageObject, Scope);
-    }
-
-    /// <inheritdoc/>
-    public override ControlObjectContext CloneForControl (PageObject pageObject, ElementScope scope)
-    {
-      ArgumentUtility.CheckNotNull ("pageObject", pageObject);
-      ArgumentUtility.CheckNotNull ("scope", scope);
-
-      return new ControlObjectContext (pageObject, scope);
-    }
-
-    /// <inheritdoc/>
-    public override PageObjectContext CloneForFrame (ElementScope frameScope)
-    {
-      ArgumentUtility.CheckNotNull ("frameScope", frameScope);
-
-      var frameRootElement = frameScope.FindCss ("html");
-      return new PageObjectContext (Browser, Window, frameRootElement, this);
     }
   }
 }

@@ -22,6 +22,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -57,59 +58,44 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SelectOption (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SelectOption (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SelectOption().WithItemID (itemID, completionDetection);
+      return SelectOption().WithItemID (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (
-        string itemID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
       Action<ElementScope> selectAction = s => s.SelectOptionByValue (itemID);
-      return SelectOption (selectAction, completionDetection, modalDialogHandler);
+      return SelectOption (selectAction, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (
-        int index,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
       Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
-      return SelectOption (selectAction, completionDetection, modalDialogHandler);
+      return SelectOption (selectAction, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (
-        string displayText,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNull ("displayText", displayText);
 
       Action<ElementScope> selectAction = s => s.SelectOption (displayText);
-      return SelectOption (selectAction, completionDetection, modalDialogHandler);
+      return SelectOption (selectAction, actionOptions);
     }
 
-    private UnspecifiedPageObject SelectOption (
-        [NotNull] Action<ElementScope> selectAction,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.FindChild ("Value").PerformAction (selectAction, Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      new CustomAction (this, Scope.FindChild ("Value"), selectAction).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 
@@ -121,9 +107,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject ExecuteCommand (IWebTestActionOptions actionOptions = null)
     {
-      return GetCommand().Click (completionDetection, modalDialogHandler);
+      return GetCommand().Click (actionOptions);
     }
 
     /// <inheritdoc/>

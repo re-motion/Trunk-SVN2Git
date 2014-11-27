@@ -67,44 +67,41 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SwitchTo (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SwitchTo (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SwitchTo().WithItemID (itemID, completionDetection, modalDialogHandler);
+      return SwitchTo().WithItemID (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithItemID (string itemID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return GetTabStrip().SwitchTo (itemID + "_Tab", completionDetection, modalDialogHandler);
+      return GetTabStrip().SwitchTo (itemID + "_Tab", actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithIndex (int index, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
-      return GetTabStrip().SwitchTo().WithIndex (index, completionDetection, modalDialogHandler);
+      return GetTabStrip().SwitchTo().WithIndex (index, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithHtmlID (string htmlID, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithHtmlID (string htmlID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
-      return GetTabStrip().SwitchTo().WithHtmlID (htmlID, completionDetection, modalDialogHandler);
+      return GetTabStrip().SwitchTo().WithHtmlID (htmlID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayText (string displayText, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return GetTabStrip().SwitchTo().WithDisplayText (displayText, completionDetection, modalDialogHandler);
+      return GetTabStrip().SwitchTo().WithDisplayText (displayText, actionOptions);
     }
 
     private WebTabStripControlObject GetTabStrip ()

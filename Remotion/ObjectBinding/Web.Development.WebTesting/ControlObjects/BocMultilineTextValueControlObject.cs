@@ -21,6 +21,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -46,67 +47,59 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
+      return FillWith (text, FinishInput.WithTab, actionOptions);
     }
 
     /// <summary>
-    /// Calls <see cref="FillWith(string,ICompletionDetection,IModalDialogHandler)"/> by joining the given lines with new line characters.
+    /// Calls <see cref="FillWith(string,IWebTestActionOptions)"/> by joining the given lines with new line characters.
     /// </summary>
-    public UnspecifiedPageObject FillWith (
-        [NotNull] string[] lines,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith ([NotNull] string[] lines, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("lines", lines);
 
-      return FillWith (string.Join (Environment.NewLine, lines), completionDetection, modalDialogHandler);
+      return FillWith (string.Join (Environment.NewLine, lines), actionOptions);
     }
 
-     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    /// <inheritdoc/>
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FindChild ("Value").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
+      new FillWithAction (this, Scope.FindChild ("Value"), text, finishInputWith).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 
     /// <summary>
-    /// Calls <see cref="FillWith(string,FinishInputWithAction,ICompletionDetection,IModalDialogHandler)"/> by joining the given lines with new line
+    /// Calls <see cref="FillWith(string,FinishInputWithAction,IWebTestActionOptions)"/> by joining the given lines with new line
     /// characters.
     /// </summary>
     public UnspecifiedPageObject FillWith (
         [NotNull] string[] lines,
         FinishInputWithAction finishInputWith,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+        IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("lines", lines);
 
-      return FillWith (string.Join (Environment.NewLine, lines), finishInputWith, completionDetection, modalDialogHandler);
+      return FillWith (string.Join (Environment.NewLine, lines), finishInputWith, actionOptions);
     }
 
-    private ICompletionDetector GetActualCompletionDetector (
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection userDefinedCompletionDetection)
+    private IWebTestActionOptions MergeWithDefaultActionOptions (
+        IWebTestActionOptions userDefinedActionOptions,
+        FinishInputWithAction finishInputWith)
     {
       if (finishInputWith == FinishInput.Promptly)
-        return Continue.Immediately().Build();
+      {
+        userDefinedActionOptions = userDefinedActionOptions ?? new WebTestActionOptions();
+        userDefinedActionOptions.CompletionDetectionStrategy = Continue.Immediately;
+      }
 
-      return GetActualCompletionDetector (userDefinedCompletionDetection);
+      return MergeWithDefaultActionOptions (Scope, userDefinedActionOptions);
     }
   }
 }

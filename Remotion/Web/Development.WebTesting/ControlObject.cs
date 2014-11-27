@@ -20,12 +20,13 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
   /// Base class for all control objects. Much like <see cref="PageObject"/>s, control objects hide the actual HTML structure from the web test
-  /// developer and instead provide a semantic interface. In contrast to <see cref="PageObject"/>s, control objects represent a specific
+  /// developer and provide a semantic interface instead. In contrast to <see cref="PageObject"/>s, control objects represent a specific
   /// ASP.NET (custom) control and not a whole page.
   /// </summary>
   public abstract class ControlObject : WebTestObject<ControlObjectContext>
@@ -38,14 +39,15 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Return's the control's HTML ID.
     /// </summary>
-    /// <exception cref="MissingHtmlException">If the DOM element does not bear the ID attribute.</exception>
+    /// <exception cref="MissingHtmlException">If the <see cref="Scope"/>'s root DOM element does not have an ID attribute.</exception>
     public string GetHtmlID ()
     {
-      return Scope.Id;
+      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
+      return RetryUntilTimeout.Run (() => Scope.Id);
     }
 
     /// <summary>
-    /// Provides access to child controls of the control.
+    /// Allows accessing child controls of the control.
     /// </summary>
     public IControlHost Children
     {
@@ -53,41 +55,39 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns the actual <see cref="ICompletionDetector"/> to be used when acting on the control object's scope.
+    /// Merges the <paramref name="userDefinedWebTestActionOptions"/> with the given <paramref name="scope"/>'s default
+    /// <see cref="IWebTestActionOptions"/>.
     /// </summary>
-    /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
-    /// <returns>The <see cref="ICompletionDetector"/> to be used.</returns>
-    protected ICompletionDetector GetActualCompletionDetector ([CanBeNull] ICompletionDetection userDefinedCompletionDetection)
-    {
-      return GetActualCompletionDetector (Scope, userDefinedCompletionDetection);
-    }
-
-    /// <summary>
-    /// Returns the actual <see cref="ICompletionDetector"/>, which should be used when interacting with the given <paramref name="scope"/>.
-    /// </summary>
-    /// <param name="scope">The scope of the DOM element on which the interaction is going to take place.</param>
-    /// <param name="userDefinedCompletionDetection">User-provided <see cref="ICompletionDetection"/>.</param>
-    /// <returns>The <see cref="ICompletionDetector"/> to be used.</returns>
-    protected ICompletionDetector GetActualCompletionDetector (
+    /// <param name="scope">The <see cref="ElementScope"/> with which the subsequent action is going to interact.</param>
+    /// <param name="userDefinedWebTestActionOptions">User-defined <see cref="IWebTestActionOptions"/>.</param>
+    protected IWebTestActionOptions MergeWithDefaultActionOptions (
         [NotNull] ElementScope scope,
-        [CanBeNull] ICompletionDetection userDefinedCompletionDetection)
+        [CanBeNull] IWebTestActionOptions userDefinedWebTestActionOptions)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      var actualCompletionDetection = userDefinedCompletionDetection ?? GetDefaultCompletionDetection (scope);
-      return actualCompletionDetection.Build();
+      if (userDefinedWebTestActionOptions == null) // prevent complicated null handling
+        userDefinedWebTestActionOptions = new WebTestActionOptions();
+
+      return new WebTestActionOptions
+             {
+                 CompletionDetectionStrategy =
+                     userDefinedWebTestActionOptions.CompletionDetectionStrategy ?? GetDefaultCompletionDetectionStrategy (scope),
+                 ModalDialogHandler = userDefinedWebTestActionOptions.ModalDialogHandler
+             };
     }
 
     /// <summary>
-    /// Returns the control's default <see cref="ICompletionDetection"/> builder configuration, which should be used when interacting with the given
-    /// <paramref name="scope"/>.
+    /// Returns a sensible default <see cref="ICompletionDetectionStrategy"/> for the given <paramref name="scope"/>. This allows the user to omit
+    /// passing a user-defined strategy in most cases.
     /// </summary>
-    protected abstract ICompletionDetection GetDefaultCompletionDetection ([NotNull] ElementScope scope);
+    /// <param name="scope">The <see cref="ElementScope"/> with which the subsequent action is going to interact.</param>
+    /// <returns>A sensible default <see cref="ICompletionDetectionStrategy"/> or <see langword="null" /> if none exists.</returns>
+    protected abstract ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy ([NotNull] ElementScope scope);
 
     /// <summary>
-    /// Convinience method which returns a new <see cref="UnspecifiedPageObject"/>.
+    /// Convinience method for creating a new <see cref="UnspecifiedPageObject"/>.
     /// </summary>
-    /// <returns>A new unspecified page object.</returns>
     protected UnspecifiedPageObject UnspecifiedPage ()
     {
       return new UnspecifiedPageObject (Context);

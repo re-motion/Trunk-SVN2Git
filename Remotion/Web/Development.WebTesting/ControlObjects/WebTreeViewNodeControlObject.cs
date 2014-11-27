@@ -20,6 +20,7 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -103,13 +104,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public WebTreeViewNodeControlObject Expand ()
     {
-      var actualCompletionDetector = GetActualCompletionDetector (null);
+      var actionOptions = MergeWithDefaultActionOptions (Scope, null);
 
       var expandAnchorScope = Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
-      expandAnchorScope.ClickAndWait (Context, actualCompletionDetector, null);
+      new ClickAction (this, expandAnchorScope).Execute (actionOptions);
       return this;
     }
 
@@ -118,44 +119,40 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public WebTreeViewNodeControlObject Collapse ()
     {
-      var actualCompletionDetector = GetActualCompletionDetector (null);
+      var actionOptions = MergeWithDefaultActionOptions (Scope, null);
 
       var collapseAnchorScope = Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
-      collapseAnchorScope.ClickAndWait (Context, actualCompletionDetector, null);
+      new ClickAction (this, collapseAnchorScope).Execute (actionOptions);
       return this;
     }
 
     /// <summary>
     /// Selects the node by clicking on it, returns the node.
     /// </summary>
-    public WebTreeViewNodeControlObject Select (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public WebTreeViewNodeControlObject Select ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      ClickNode (completionDetection, modalDialogHandler);
+      ClickNode (actionOptions);
       return this;
     }
 
     /// <summary>
     /// Selects the node by clicking on it, returns the following page.
     /// </summary>
-    public UnspecifiedPageObject Click (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Click ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      ClickNode (completionDetection, modalDialogHandler);
+      ClickNode (actionOptions);
       return UnspecifiedPage();
     }
 
-    private void ClickNode (ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    private void ClickNode (IWebTestActionOptions actionOptions)
     {
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      var actualCompletionDetector = MergeWithDefaultActionOptions (Scope, actionOptions);
 
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
-      selectAnchorScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
+      new ClickAction (this, selectAnchorScope).Execute (actualCompletionDetector);
     }
 
     public ContextMenuControlObject OpenContextMenu ()
@@ -170,12 +167,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);
-    }
-
-    /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
-    {
-      return Continue.When (Wxe.PostBackCompleted);
     }
   }
 }

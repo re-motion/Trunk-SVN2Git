@@ -177,7 +177,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (baLabel, Continue.Immediately()); // same value, does not trigger post back
+      bocReferenceValue.SelectOption (baLabel, Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");

@@ -16,10 +16,27 @@
 // 
 
 using System;
-using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
+using JetBrains.Annotations;
+using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.CompletionDetectionStrategies;
 
 namespace Remotion.Web.Development.WebTesting
 {
+  /// <summary>
+  /// Non-WXE-based <see cref="ICompletionDetectionStrategy"/> implementations which are directly supported by the framework.
+  /// </summary>
+  public static class Continue
+  {
+    public static readonly NullCompletionDetectionStrategy Immediately = new NullCompletionDetectionStrategy();
+
+    public static CompoundCompletionDetectionStrategy WhenAll ([NotNull] params ICompletionDetectionStrategy[] strategies)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("strategies", strategies);
+
+      return new CompoundCompletionDetectionStrategy (strategies);
+    }
+  }
+
   /// <summary>
   /// WXE-based <see cref="ICompletionDetectionStrategy"/> implementations which are directly supported by the framework.
   /// </summary>

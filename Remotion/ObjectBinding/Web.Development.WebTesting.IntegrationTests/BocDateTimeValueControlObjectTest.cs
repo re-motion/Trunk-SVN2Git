@@ -154,7 +154,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
-      bocDateTimeValue.SetDateTime (dateTime, Continue.Immediately()); // same value, does not trigger post back
+      bocDateTimeValue.SetDateTime (dateTime, Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
-      bocDateTimeValue.SetDate (dateTime, Continue.Immediately()); // same value, does not trigger post back
+      bocDateTimeValue.SetDate (dateTime, Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (initDateTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
@@ -229,7 +229,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (setInitTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
-      bocDateTimeValue.SetTime (time, Continue.Immediately()); // same value, does not trigger post back
+      bocDateTimeValue.SetTime (time, Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text), Is.EqualTo (setInitTime));
 
       bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");

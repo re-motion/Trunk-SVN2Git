@@ -155,7 +155,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
-      bocAutoComplete.FillWith ("B, A", Continue.Immediately()); // same value, does not trigger post back
+      bocAutoComplete.FillWith ("B, A", Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
 
       bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");

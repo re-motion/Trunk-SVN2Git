@@ -25,6 +25,7 @@ using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -67,12 +68,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToSpecificPage (int page)
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
-      currentPageTextInputScope.FillInWithAndWait (
-          Keys.Backspace + page,
-          FinishInput.WithTab,
-          Context,
-          Continue.When (Wxe.PostBackCompleted).Build(),
-          null);
+      new FillWithAction (this, currentPageTextInputScope, Keys.Backspace + page, FinishInput.WithTab).Execute (
+          Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <summary>
@@ -81,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = Scope.FindChild ("Navigation_First");
-      firstPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+      new ClickAction (this, firstPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <summary>
@@ -90,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
-      previousPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+      new ClickAction (this, previousPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <summary>
@@ -99,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToNextPage ()
     {
       var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
-      nextPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+      new ClickAction (this, nextPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <summary>
@@ -108,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToLastPage ()
     {
       var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
-      lastPageLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+      new ClickAction (this, lastPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <inheritdoc/>
@@ -266,7 +263,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       // Note: explicit hovering is required: Selenium does not correctly bring the fake table head into view.
       if (HasFakeTableHead)
         sortColumnLinkScope.Hover();
-      sortColumnLinkScope.ClickAndWait (Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+
+      new ClickAction (this, sortColumnLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <summary>
@@ -283,53 +281,38 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Changes the list's view to the view given by <paramref name="itemID"/>.
     /// </summary>
-    public void ChangeViewTo (
-        [NotNull] string itemID,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public void ChangeViewTo ([NotNull] string itemID, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID), actualCompletionDetector, modalDialogHandler);
+      ChangeViewTo (scope => scope.SelectOptionByDMA (DiagnosticMetadataAttributes.ItemID, itemID), actionOptions);
     }
 
     /// <summary>
     /// Changes the list's view to the view given by <paramref name="index"/>.
     /// </summary>
-    public void ChangeViewTo (
-        int index,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public void ChangeViewTo (int index, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      ChangeViewTo (scope => scope.SelectOptionByIndex (index), actualCompletionDetector, modalDialogHandler);
+      ChangeViewTo (scope => scope.SelectOptionByIndex (index), actionOptions);
     }
 
     /// <summary>
     /// Changes the list's view to the view given by <paramref name="label"/>.
     /// </summary>
-    public void ChangeViewToByLabel (
-        [NotNull] string label,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public void ChangeViewToByLabel ([NotNull] string label, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("label", label);
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      ChangeViewTo (scope => scope.SelectOption (label), actualCompletionDetector, modalDialogHandler);
+      ChangeViewTo (scope => scope.SelectOption (label), actionOptions);
     }
 
-    private void ChangeViewTo (
-        [NotNull] Action<ElementScope> selectAction,
-        [NotNull] ICompletionDetector completionDetector,
-        [CanBeNull] IModalDialogHandler modalDialogHandler)
+    private void ChangeViewTo ([NotNull] Action<ElementScope> selectAction, [CanBeNull] IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
-      ArgumentUtility.CheckNotNull ("completionDetector", completionDetector);
 
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
       var availableViewsScope = GetAvailableViewsScope();
-      availableViewsScope.PerformAction (selectAction, Context, completionDetector, modalDialogHandler);
+      new CustomAction (this, availableViewsScope, selectAction).Execute (actualActionOptions);
     }
 
     /// <inheritdoc/>

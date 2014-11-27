@@ -23,6 +23,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -55,45 +56,33 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject SelectOption (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SelectOption (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return SelectOption().WithItemID (itemID, completionDetection, modalDialogHandler);
+      return SelectOption().WithItemID (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (
-        string itemID,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return _variantImpl.SelectOption (itemID, completionDetection, modalDialogHandler);
+      return _variantImpl.SelectOption (itemID, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (
-        int index,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (int index, IWebTestActionOptions actionOptions)
     {
-      return _variantImpl.SelectOption (index, completionDetection, modalDialogHandler);
+      return _variantImpl.SelectOption (index, actionOptions);
     }
 
     /// <inheritdoc/>
-    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (
-        string displayText,
-        ICompletionDetection completionDetection,
-        IModalDialogHandler modalDialogHandler)
+    UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return _variantImpl.SelectOptionByText (displayText, completionDetection, modalDialogHandler);
+      return _variantImpl.SelectOptionByText (displayText, actionOptions);
     }
 
     /// <summary>
@@ -128,20 +117,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       string GetSelectedOption ();
 
-      UnspecifiedPageObject SelectOption (
-          [NotNull] string itemID,
-          [CanBeNull] ICompletionDetection completionDetection = null,
-          [CanBeNull] IModalDialogHandler modalDialogHandler = null);
-
-      UnspecifiedPageObject SelectOption (
-          int index,
-          [CanBeNull] ICompletionDetection completionDetection = null,
-          [CanBeNull] IModalDialogHandler modalDialogHandler = null);
-
-      UnspecifiedPageObject SelectOptionByText (
-          [NotNull] string text,
-          [CanBeNull] ICompletionDetection completionDetection = null,
-          [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+      UnspecifiedPageObject SelectOption ([NotNull] string itemID, IWebTestActionOptions actionOptions);
+      UnspecifiedPageObject SelectOption (int index, IWebTestActionOptions actionOptions);
+      UnspecifiedPageObject SelectOptionByText ([NotNull] string text, IWebTestActionOptions actionOptions);
     }
 
     /// <summary>
@@ -168,46 +146,34 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return _controlObject.Scope.FindChild ("Value").GetSelectedOptionText();
       }
 
-      public UnspecifiedPageObject SelectOption (
-          string itemID,
-          ICompletionDetection completionDetection = null,
-          IModalDialogHandler modalDialogHandler = null)
+      public UnspecifiedPageObject SelectOption (string itemID, IWebTestActionOptions actionOptions)
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
         Action<ElementScope> selectAction = s => s.SelectOptionByValue (itemID);
-        return SelectOption (selectAction, completionDetection, modalDialogHandler);
+        return SelectOption (selectAction, actionOptions);
       }
 
-      public UnspecifiedPageObject SelectOption (
-          int index,
-          ICompletionDetection completionDetection = null,
-          IModalDialogHandler modalDialogHandler = null)
+      public UnspecifiedPageObject SelectOption (int index, IWebTestActionOptions actionOptions)
       {
         Action<ElementScope> selectAction = s => s.SelectOptionByIndex (index);
-        return SelectOption (selectAction, completionDetection, modalDialogHandler);
+        return SelectOption (selectAction, actionOptions);
       }
 
-      public UnspecifiedPageObject SelectOptionByText (
-          string text,
-          ICompletionDetection completionDetection = null,
-          IModalDialogHandler modalDialogHandler = null)
+      public UnspecifiedPageObject SelectOptionByText (string text, IWebTestActionOptions actionOptions)
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
         Action<ElementScope> selectAction = s => s.SelectOption (text);
-        return SelectOption (selectAction, completionDetection, modalDialogHandler);
+        return SelectOption (selectAction, actionOptions);
       }
 
-      private UnspecifiedPageObject SelectOption (
-          [NotNull] Action<ElementScope> selectAction,
-          ICompletionDetection completionDetection,
-          IModalDialogHandler modalDialogHandler)
+      private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, IWebTestActionOptions actionOptions)
       {
         ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
-        var actualCompletionDetector = _controlObject.GetActualCompletionDetector (completionDetection);
-        _controlObject.Scope.FindChild ("Value").PerformAction (selectAction, _controlObject.Context, actualCompletionDetector, modalDialogHandler);
+        var actualActionOptions = _controlObject.MergeWithDefaultActionOptions (_controlObject.Scope, actionOptions);
+        new CustomAction(_controlObject, _controlObject.Scope.FindChild ("Value"), selectAction).Execute(actualActionOptions);
         return _controlObject.UnspecifiedPage();
       }
     }
@@ -235,47 +201,35 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return _controlObject.Scope.FindCss ("input[type='radio'][checked='checked']").Value;
       }
 
-      public UnspecifiedPageObject SelectOption (
-          string itemID,
-          ICompletionDetection completionDetection = null,
-          IModalDialogHandler modalDialogHandler = null)
+      public UnspecifiedPageObject SelectOption (string itemID, IWebTestActionOptions actionOptions)
       {
         ArgumentUtility.CheckNotNull ("itemID", itemID);
 
         var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.ItemID, itemID).FindCss ("input");
-        return CheckScope (scope, completionDetection, modalDialogHandler);
+        return CheckScope (scope, actionOptions);
       }
 
-      public UnspecifiedPageObject SelectOption (
-          int index,
-          ICompletionDetection completionDetection = null,
-          IModalDialogHandler modalDialogHandler = null)
+      public UnspecifiedPageObject SelectOption (int index, IWebTestActionOptions actionOptions)
       {
         var scope =
             _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.IndexInCollection, index.ToString()).FindCss ("input");
-        return CheckScope (scope, completionDetection, modalDialogHandler);
+        return CheckScope (scope, actionOptions);
       }
 
-      public UnspecifiedPageObject SelectOptionByText (
-          string text,
-          ICompletionDetection completionDetection = null,
-          IModalDialogHandler modalDialogHandler = null)
+      public UnspecifiedPageObject SelectOptionByText (string text, IWebTestActionOptions actionOptions)
       {
         ArgumentUtility.CheckNotNull ("text", text);
 
         var scope = _controlObject.Scope.FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, text).FindCss ("input");
-        return CheckScope (scope, completionDetection, modalDialogHandler);
+        return CheckScope (scope, actionOptions);
       }
 
-      private UnspecifiedPageObject CheckScope (
-          [NotNull] ElementScope scope,
-          ICompletionDetection completionDetection,
-          IModalDialogHandler modalDialogHandler)
+      private UnspecifiedPageObject CheckScope ([NotNull] ElementScope scope, IWebTestActionOptions actionOptions)
       {
         ArgumentUtility.CheckNotNull ("scope", scope);
 
-        var actualCompletionDetector = _controlObject.GetActualCompletionDetector (completionDetection);
-        scope.PerformAction (s => s.Check(), _controlObject.Context, actualCompletionDetector, modalDialogHandler);
+        var actualActionOptions = _controlObject.MergeWithDefaultActionOptions (_controlObject.Scope, actionOptions);
+        new CustomAction(_controlObject, scope, s => s.Check()).Execute(actualActionOptions);
         return _controlObject.UnspecifiedPage();
       }
     }

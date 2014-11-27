@@ -20,6 +20,7 @@ using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -55,10 +56,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Sets the state of the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> to <paramref name="newState"/>.
     /// </summary>
-    public UnspecifiedPageObject SetTo (
-        bool? newState,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject SetTo (bool? newState, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       if (!IsTriState() && !newState.HasValue)
         throw new ArgumentException ("Must not be null for non-tri-state BocBooleanValue controls.", "newState");
@@ -67,21 +65,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return UnspecifiedPage();
 
       if (!IsTriState())
-        return Click (1, completionDetection, modalDialogHandler);
+        return Click (1, actionOptions);
 
       var states = new bool?[] { false, null, true, false, null };
       var numberOfClicks = Array.LastIndexOf (states, newState) - Array.IndexOf (states, GetState());
-      return Click (numberOfClicks, completionDetection, modalDialogHandler);
+      return Click (numberOfClicks, actionOptions);
     }
 
-    private UnspecifiedPageObject Click (int numberOfClicks, ICompletionDetection completionDetection, IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject Click (int numberOfClicks, IWebTestActionOptions actionOptions)
     {
       var linkScope = Scope.FindChild ("DisplayValue");
 
       for (var i = 0; i < numberOfClicks; ++i)
       {
-        var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-        linkScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
+        var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+        new ClickAction (this, linkScope).Execute (actualActionOptions);
       }
 
       return UnspecifiedPage();

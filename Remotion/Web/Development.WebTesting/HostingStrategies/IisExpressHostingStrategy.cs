@@ -23,14 +23,14 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
 
-namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
+namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
   /// <summary>
   /// Hosts the web application using IIS Express.
   /// </summary>
   public class IisExpressHostingStrategy : IHostingStrategy
   {
-    private readonly IisExpressProcessWrapper _webApplicationHost;
+    private readonly IisExpressProcessWrapper _iisExpressInstance;
 
     /// <param name="webApplicationPath">Absolute or relative path to the web application source.</param>
     /// <param name="port">Port to be used.</param>
@@ -39,7 +39,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
       ArgumentUtility.CheckNotNullOrEmpty ("webApplicationPath", webApplicationPath);
 
       var absoluteWebApplicationPath = Path.GetFullPath (webApplicationPath);
-      _webApplicationHost = new IisExpressProcessWrapper (absoluteWebApplicationPath, port);
+      _iisExpressInstance = new IisExpressProcessWrapper (absoluteWebApplicationPath, port);
     }
 
     /// <summary>
@@ -47,23 +47,25 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategyImplementation
     /// </summary>
     /// <param name="properties">The configuration properties.</param>
     [UsedImplicitly]
-    public IisExpressHostingStrategy (NameValueCollection properties)
-        : this (properties["path"], int.Parse (properties["port"]))
+    public IisExpressHostingStrategy ([NotNull] NameValueCollection properties)
+        : this (
+            ArgumentUtility.CheckNotNull ("properties", properties)["path"],
+            int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
     {
     }
 
     /// <inheritdoc/>
     public void DeployAndStartWebApplication ()
     {
-      var iisExpressThread = new Thread (() => _webApplicationHost.Run()) { IsBackground = true };
+      var iisExpressThread = new Thread (() => _iisExpressInstance.Run()) { IsBackground = true };
       iisExpressThread.Start();
     }
 
     /// <inheritdoc/>
     public void StopAndUndeployWebApplication ()
     {
-      if (_webApplicationHost != null)
-        _webApplicationHost.Dispose();
+      if (_iisExpressInstance != null)
+        _iisExpressInstance.Dispose();
     }
   }
 }

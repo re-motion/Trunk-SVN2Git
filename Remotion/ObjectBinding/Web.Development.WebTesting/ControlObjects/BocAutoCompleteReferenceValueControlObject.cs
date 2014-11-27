@@ -21,6 +21,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -44,28 +45,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
+      return FillWith (text, FinishInput.WithTab, actionOptions);
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
-      Scope.FindChild ("TextValue").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      new FillWithAction (this, Scope.FindChild ("TextValue"), text, finishInputWith).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 
@@ -77,9 +71,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject ExecuteCommand (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject ExecuteCommand (IWebTestActionOptions acitonOptions = null)
     {
-      return GetCommand().Click (completionDetection, modalDialogHandler);
+      return GetCommand().Click (acitonOptions);
     }
 
     /// <inheritdoc/>

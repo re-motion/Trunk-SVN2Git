@@ -21,6 +21,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -46,39 +47,35 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
 
-      return FillWith (text, FinishInput.WithTab, completionDetection, modalDialogHandler);
+      return FillWith (text, FinishInput.WithTab, actionOptions);
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject FillWith (
-        string text,
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject FillWith (string text, FinishInputWithAction finishInputWith, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("text", text);
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
-      var actualCompletionDetector = GetActualCompletionDetector (finishInputWith, completionDetection);
-      Scope.FindChild ("Value").FillInWithAndWait (text, finishInputWith, Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
+      new FillWithAction (this, Scope.FindChild ("Value"), text, finishInputWith).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 
-    private ICompletionDetector GetActualCompletionDetector (
-        FinishInputWithAction finishInputWith,
-        ICompletionDetection userDefinedCompletionDetection)
+    private IWebTestActionOptions MergeWithDefaultActionOptions (
+        IWebTestActionOptions userDefinedActionOptions,
+        FinishInputWithAction finishInputWith)
     {
       if (finishInputWith == FinishInput.Promptly)
-        return Continue.Immediately().Build();
+      {
+        userDefinedActionOptions = userDefinedActionOptions ?? new WebTestActionOptions();
+        userDefinedActionOptions.CompletionDetectionStrategy = Continue.Immediately;
+      }
 
-      return GetActualCompletionDetector (userDefinedCompletionDetection);
+      return MergeWithDefaultActionOptions (Scope, userDefinedActionOptions);
     }
   }
 }

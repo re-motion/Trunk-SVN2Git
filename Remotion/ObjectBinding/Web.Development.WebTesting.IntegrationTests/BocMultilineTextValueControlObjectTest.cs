@@ -140,7 +140,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("<Test 1> NL Test 2 NL Test 3"));
 
       bocMultilineText = home.GetMultilineTextValue().ByLocalID ("CVField_Normal");
-      bocMultilineText.FillWith ("Blubba", Continue.Immediately()); // same value, does not trigger post back
+      bocMultilineText.FillWith ("Blubba", Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("<Test 1> NL Test 2 NL Test 3"));
 
       bocMultilineText = home.GetMultilineTextValue().ByLocalID ("CVField_Normal");

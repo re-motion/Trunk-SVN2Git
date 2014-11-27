@@ -139,7 +139,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       noAutoPostBackBocBooleanValue.SetTo (true);
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("False"));
 
-      normalBocBooleanValue.SetTo (true, Continue.Immediately()); // same value, does not trigger post back
+      normalBocBooleanValue.SetTo (true, Opt.ContinueImmediately()); // same value, does not trigger post back
       Assert.That (home.Scope.FindIdEndingWith ("NoAutoPostBackCurrentValueLabel").Text, Is.EqualTo ("False"));
 
       normalBocBooleanValue.SetTo (false);

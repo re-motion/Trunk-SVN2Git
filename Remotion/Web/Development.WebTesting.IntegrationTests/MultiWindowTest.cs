@@ -43,12 +43,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       var loadFrameFunctionAsSubInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionAsSubInFrame");
-      loadFrameFunctionAsSubInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)));
+      loadFrameFunctionAsSubInFrameButton.Click (Opt.ContinueWhen(Wxe.PostBackCompletedIn (home.Frame)));
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 3);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)));
+      loadFrameFunctionInFrameButton.Click (Opt.ContinueWhen (Wxe.ResetIn (home.Frame)));
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 4);
 
@@ -58,16 +58,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 4);
 
       var refreshMainUpdatePanelButton = home.Frame.GetWebButton().ByID ("RefreshMainUpdatePanel");
-      refreshMainUpdatePanelButton.Click (Continue.When (Wxe.PostBackCompletedIn (home)));
+      refreshMainUpdatePanelButton.Click (Opt.ContinueWhen (Wxe.PostBackCompletedIn (home)));
       AssertPostBackSequenceNumber (frameLabel, 3);
       AssertPostBackSequenceNumber (mainLabel, 5);
 
       var loadMainAutoRefreshingFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadMainAutoRefreshingFrameFunctionInFrame");
-      loadMainAutoRefreshingFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)));
+      loadMainAutoRefreshingFrameFunctionInFrameButton.Click (Opt.ContinueWhen (Wxe.ResetIn (home.Frame)));
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 6);
 
-      simplePostBackButtonInFrameButton.Click (Continue.When (Wxe.PostBackCompleted).And (Wxe.PostBackCompletedIn (home)));
+      simplePostBackButtonInFrameButton.Click (Opt.ContinueWhenAll (Wxe.PostBackCompleted, Wxe.PostBackCompletedIn (home)));
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 7);
     }
@@ -97,7 +97,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       var closeButton = window.GetWebButton().ByID ("Close");
-      closeButton.Click (Continue.When (Wxe.PostBackCompletedInContext (window.Context.ParentContext)));
+      closeButton.Click (Opt.ContinueWhen (Wxe.PostBackCompletedInContext (window.Context.ParentContext)));
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 3);
 
@@ -108,8 +108,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       AssertPostBackSequenceNumber (mainLabel, 3);
 
       var closeAndRefreshMainAsWellButton = window.GetWebButton().ByID ("CloseAndRefreshMainAsWell");
-      closeAndRefreshMainAsWellButton.Click (
-          Continue.When (Wxe.PostBackCompletedIn (home.Frame)).And (Wxe.PostBackCompletedInContext (window.Context.ParentContext)));
+      var options = Opt.ContinueWhenAll (Wxe.PostBackCompletedIn (home.Frame), Wxe.PostBackCompletedInContext (window.Context.ParentContext));
+      closeAndRefreshMainAsWellButton.Click (options);
       AssertPostBackSequenceNumber (frameLabel, 3);
       AssertPostBackSequenceNumber (mainLabel, 4);
     }
@@ -128,7 +128,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", FinishInput.Promptly);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.ResetIn (home.Frame)), HandleModalDialog.Accept());
+      loadFrameFunctionInFrameButton.Click (Opt.ContinueWhen (Wxe.ResetIn (home.Frame)).AcceptModalDialog());
       AssertPostBackSequenceNumber (frameLabel, 1);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
@@ -152,13 +152,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       home.Frame.GetTextBox().ByLocalID ("MyTextBox").FillWith ("MyText", FinishInput.Promptly);
 
       var loadFrameFunctionInFrameButton = home.GetWebButton().ByID ("LoadFrameFunctionInFrame");
-      loadFrameFunctionInFrameButton.Click (Continue.When (Wxe.PostBackCompletedIn (home.Frame)), HandleModalDialog.Cancel());
+      loadFrameFunctionInFrameButton.Click (Opt.ContinueWhen (Wxe.PostBackCompletedIn (home.Frame)).CancelModalDialog());
       AssertPostBackSequenceNumber (frameLabel, 2);
       AssertPostBackSequenceNumber (mainLabel, 2);
 
       // Ensure that page can still be used
       var navigatieAwayButton = home.GetWebButton().ByID ("NavigateAway");
-      var defaultPage = navigatieAwayButton.Click (Continue.Immediately(), HandleModalDialog.Accept()).Expect<RemotionPageObject>();
+      var defaultPage = navigatieAwayButton.Click (Opt.ContinueImmediately().AcceptModalDialog()).Expect<RemotionPageObject>();
       Assert.That (defaultPage.GetTitle(), Is.EqualTo ("Web.Development.WebTesting.TestSite"));
     }
 

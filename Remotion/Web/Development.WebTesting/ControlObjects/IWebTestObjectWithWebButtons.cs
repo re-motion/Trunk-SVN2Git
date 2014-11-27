@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
+using System;
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -26,16 +27,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   public interface IWebTestObjectWithWebButtons
   {
     /// <summary>
-    /// Presses the button given by <paramref name="itemID"/>, using a given <paramref name="completionDetection"/> to wait for the triggered
-    /// action's results.
+    /// Presses the button given by <paramref name="itemID"/>.
     /// </summary>
     /// <param name="itemID">The button's item ID without the trailing "Button", e.g. "Save" for "SaveButton".</param>
-    /// <param name="completionDetection">Required <see cref="ICompletionDetection"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
-    /// <param name="modalDialogHandler">Required <see cref="IModalDialogHandler"/>, implementation uses default behavior if <see langword="null" /> is passed.</param>
+    /// <param name="actionOptions">See <see cref="IWebTestActionOptions"/> for more information.</param>
     /// <returns>An unspecified page object, may be used in case a new page is expected after clicking the control object.</returns>
-    UnspecifiedPageObject Perform (
-        [NotNull] string itemID,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null);
+    UnspecifiedPageObject Perform ([NotNull] string itemID, [CanBeNull] IWebTestActionOptions actionOptions = null);
   }
 }
