@@ -61,7 +61,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return UnspecifiedPage();
     }
 
-    private IWebTestActionOptions MergeWithDefaultActionOptions (IWebTestActionOptions userDefinedActionOptions, FinishInputWithAction finishInputWith)
+    private IWebTestActionOptions MergeWithDefaultActionOptions (
+        IWebTestActionOptions userDefinedActionOptions,
+        FinishInputWithAction finishInputWith)
     {
       if (finishInputWith == FinishInput.Promptly)
       {

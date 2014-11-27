@@ -16,25 +16,25 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("breadCrumb", breadCrumb);
 
-      var confirmPage = breadCrumb.Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Confirm (Continue.When (Wxe.PostBackCompletedIn (breadCrumb.Context.PageObject)));
+      var confirmPage = breadCrumb.Click (Opt.ContinueWhen (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+      return confirmPage.Confirm (Opt.ContinueWhen (Wxe.PostBackCompletedIn (breadCrumb.Context.PageObject)));
     }
 
     public static UnspecifiedPageObject ClickAndPreventDataLoss ([NotNull] this ActaNovaBreadCrumbControlObject breadCrumb)
     {
       ArgumentUtility.CheckNotNull ("breadCrumb", breadCrumb);
 
-      var confirmPage = breadCrumb.Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Cancel(Continue.When(Wxe.PostBackCompletedIn(breadCrumb.Context.PageObject)));
+      var confirmPage = breadCrumb.Click (Opt.ContinueWhen (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+      return confirmPage.Cancel (Opt.ContinueWhen (Wxe.PostBackCompletedIn (breadCrumb.Context.PageObject)));
     }
 
     public static UnspecifiedPageObject SelectAndConfirmDataLoss ([NotNull] this ActaNovaTreeNodeControlObject treeNode)
     {
       ArgumentUtility.CheckNotNull ("treeNode", treeNode);
 
-      var completionDetection = treeNode.IsSelected() ? null : Continue.When (Wxe.PostBackCompletedIn (treeNode.Context.PageObject));
+      var completionDetection = treeNode.IsSelected() ? null : Opt.ContinueWhen (Wxe.PostBackCompletedIn (treeNode.Context.PageObject));
 
-      var confirmPage = treeNode.Select (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+      var confirmPage = treeNode.Select (Opt.ContinueWhen (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
       return confirmPage.Confirm (completionDetection);
     }
 
@@ -42,8 +42,8 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("treeNode", treeNode);
 
-      var confirmPage = treeNode.Select (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
-      return confirmPage.Cancel(Continue.When(Wxe.PostBackCompletedIn(treeNode.Context.PageObject)));
+      var confirmPage = treeNode.Select (Opt.ContinueWhen (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+      return confirmPage.Cancel (Opt.ContinueWhen (Wxe.PostBackCompletedIn (treeNode.Context.PageObject)));
     }
 
     public static UnspecifiedPageObject PerformAndConfirmDataLoss ([NotNull] this ActaNovaFormPageObject page, [NotNull] string itemID)
@@ -51,7 +51,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (itemID, Continue.When (Wxe.PostBackCompletedInContext (page.Context.ParentContext)), HandleModalDialog.Accept());
+      return page.Perform (itemID, Opt.ContinueWhen (Wxe.PostBackCompletedInContext (page.Context.ParentContext)).AcceptModalDialog());
     }
 
     public static UnspecifiedPageObject PerformAndPreventDataLoss ([NotNull] this ActaNovaFormPageObject page, [NotNull] string itemID)
@@ -59,7 +59,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (itemID, Continue.Immediately(), HandleModalDialog.Cancel());
+      return page.Perform (itemID, Opt.ContinueImmediately().CancelModalDialog());
     }
 
     public static UnspecifiedPageObject PerformAndCloseWindow ([NotNull] this ActaNovaPageObject page, [NotNull] string itemID)
@@ -67,7 +67,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("page", page);
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
-      return page.Perform (itemID, Continue.When (Wxe.PostBackCompletedInContext (page.Context.ParentContext)));
+      return page.Perform (itemID, Opt.ContinueWhen (Wxe.PostBackCompletedInContext (page.Context.ParentContext)));
     }
   }
 }

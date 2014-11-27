@@ -305,7 +305,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
       return
-          mainMenu.Select (new[] { "Extras", "Administration" }, Continue.When (Wxe.PostBackCompleted))
+          mainMenu.Select (new[] { "Extras", "Administration" }, Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Administration");
     }
 
@@ -328,7 +328,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
       return
-          mainMenu.Select (new[] { "Extras", "Fehlerberichte/Wünsche" }, Continue.When (Wxe.PostBackCompleted))
+          mainMenu.Select (new[] { "Extras", "Fehlerberichte/Wünsche" }, Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Fehlerberichte/Wünsche");
     }
 
@@ -351,7 +351,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
       return
-          mainMenu.Select (new[] { "Extras", "Skartierung" }, Continue.When (Wxe.PostBackCompleted))
+          mainMenu.Select (new[] { "Extras", "Skartierung" }, Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Skartierungspakete");
     }
 
@@ -373,7 +373,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Extras", "Befehle vormerken" }, Continue.When (Wxe.PostBackCompleted)).ExpectMainPage();
+      return mainMenu.Select (new[] { "Extras", "Befehle vormerken" }, Opt.ContinueWhen (Wxe.PostBackCompleted)).ExpectMainPage();
     }
 
     public static ActaNovaMainPageObject Extras_VorgemerkteBefehle ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
@@ -387,7 +387,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Extras", "Befehle sofort ausführen" }, Continue.When (Wxe.PostBackCompleted)).ExpectMainPage();
+      return mainMenu.Select (new[] { "Extras", "Befehle sofort ausführen" }, Opt.ContinueWhen (Wxe.PostBackCompleted)).ExpectMainPage();
     }
 
     public static ActaNovaMainPageObject Extras_GruppeZuweisen ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
@@ -406,12 +406,13 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
 
     public static HtmlPageObject Hilfe_Gesamthilfe ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
     {
-      throw new NotSupportedException ("Hilfe_Gesamthilfe cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
+      throw new NotSupportedException (
+          "Hilfe_Gesamthilfe cannot be implemented at the moment due to technical reasons: the new window does not have a title.");
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Hilfe", "Gesamthilfe" }, Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
+      return mainMenu.Select (new[] { "Hilfe", "Gesamthilfe" }, Opt.ContinueImmediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
 
@@ -419,21 +420,21 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Hilfe", "Index" }, Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("Index of Help");
+      return mainMenu.Select (new[] { "Hilfe", "Index" }, Opt.ContinueImmediately()).ExpectNewWindow<HtmlPageObject> ("Index of Help");
     }
 
     public static ActaNovaMainPageObject Hilfe_HilfesymboleAnzeigen ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
     {
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Hilfe", "Hilfesymbole anzeigen" }, Continue.When (Wxe.PostBackCompleted)).ExpectMainPage();
+      return mainMenu.Select (new[] { "Hilfe", "Hilfesymbole anzeigen" }, Opt.ContinueWhen (Wxe.PostBackCompleted)).ExpectMainPage();
     }
 
     public static ActaNovaMainPageObject Hilfe_HilfesymboleVerbergen ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
     {
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Hilfe", "Hilfesymbole verbergen" }, Continue.When (Wxe.PostBackCompleted)).ExpectMainPage();
+      return mainMenu.Select (new[] { "Hilfe", "Hilfesymbole verbergen" }, Opt.ContinueWhen (Wxe.PostBackCompleted)).ExpectMainPage();
     }
 
     public static ActaNovaWindowPageObject Hilfe_Leistungskatalog ([NotNull] this ActaNovaMainMenuControlObject mainMenu)
@@ -441,7 +442,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
       return
-          mainMenu.Select (new[] { "Hilfe", "Leistungskatalog" }, Continue.When (Wxe.PostBackCompleted))
+          mainMenu.Select (new[] { "Hilfe", "Leistungskatalog" }, Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Leistungsbeschreibung");
     }
 
@@ -449,7 +450,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("mainMenu", mainMenu);
 
-      return mainMenu.Select (new[] { "Hilfe", "Info" }, Continue.Immediately()).ExpectNewWindow<ActaNovaWindowPageObject> ("Information");
+      return mainMenu.Select (new[] { "Hilfe", "Info" }, Opt.ContinueImmediately()).ExpectNewWindow<ActaNovaWindowPageObject> ("Information");
     }
   }
 }

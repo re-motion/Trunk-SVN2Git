@@ -22,7 +22,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       //helpPage.Close();
 
       var bugReportWindow = home.WorkListPage.CreateBugReport();
-      bugReportWindow.Perform ("Cancel", Continue.Immediately(), HandleModalDialog.Accept());
+      bugReportWindow.Perform ("Cancel", Opt.ContinueImmediately().AcceptModalDialog());
 
       var workList = home.WorkListPage.GetWorkList();
       workList.GetRowWhere ("WorkItem", "04.06.2009/1").ClickSelectCheckbox();

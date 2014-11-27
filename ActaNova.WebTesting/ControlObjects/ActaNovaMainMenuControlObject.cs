@@ -7,6 +7,7 @@ using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -31,18 +32,17 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="Select(string[])"/>, however, a <paramref name="completionDetection"/> may be given which is used instead of the default one.
+    /// See <see cref="Select(string[])"/>, however, <paramref name="actionOptions"/> may be given which are used instead of the default one.
     /// </summary>
-    public UnspecifiedPageObject Select (
-        [NotNull] IEnumerable<string> menuItems,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Select ([NotNull] IEnumerable<string> menuItems, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("menuItems", menuItems);
 
-      var actualCompletionDetector = GetActualCompletionDetector (completionDetection);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
 
-      Scope.PerformAction (
+      var customAction = new CustomAction (
+          this,
+          Scope,
           s => RetryUntilTimeout.Run (
               () =>
               {
@@ -57,10 +57,8 @@ namespace ActaNova.WebTesting.ControlObjects
                 actions.Click (nativeLastMenuItemScope);
 
                 actions.Perform();
-              }),
-          Context,
-          actualCompletionDetector,
-          modalDialogHandler);
+              }));
+      customAction.Execute (actualActionOptions);
 
       return UnspecifiedPage();
     }

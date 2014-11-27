@@ -20,51 +20,40 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Confirms the ActaNova message box (presses the "OK" button on an ActaNova message box).
     /// </summary>
-    public UnspecifiedPageObject Okay (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Okay ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      return ClickButton ("OK", completionDetection, modalDialogHandler);
+      return ClickButton ("OK", actionOptions);
     }
 
     /// <summary>
     /// Cancels the ActaNova message box (presses the "Cancel" button on an ActaNova message box).
     /// </summary>
-    public UnspecifiedPageObject Cancel (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Cancel ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      return ClickButton ("Cancel", completionDetection, modalDialogHandler);
+      return ClickButton ("Cancel", actionOptions);
     }
 
     /// <summary>
     /// Presses the "Yes" button on an ActaNova message box.
     /// </summary>
-    public UnspecifiedPageObject Yes (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Yes ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      return ClickButton ("Yes", completionDetection, modalDialogHandler);
+      return ClickButton ("Yes", actionOptions);
     }
 
     /// <summary>
     /// Presses the "No" button on an ActaNova message box.
     /// </summary>
-    public UnspecifiedPageObject No (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject No ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      return ClickButton ("No", completionDetection, modalDialogHandler);
+      return ClickButton ("No", actionOptions);
     }
 
-    private UnspecifiedPageObject ClickButton (
-        string buttonId,
-        ICompletionDetection userDefinedCompletionDetection,
-        IModalDialogHandler modalDialogHandler)
+    private UnspecifiedPageObject ClickButton (string buttonId, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var itemID = string.Format ("Popup{0}Button", buttonId);
       var webButton = Children.GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), itemID));
-      return webButton.Click (userDefinedCompletionDetection, modalDialogHandler);
+      return webButton.Click (actionOptions);
     }
   }
 }

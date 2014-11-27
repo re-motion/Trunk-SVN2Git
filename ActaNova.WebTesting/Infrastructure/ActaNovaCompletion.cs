@@ -1,6 +1,6 @@
 ﻿using System;
 using Remotion.Web.Development.WebTesting;
-using Remotion.Web.Development.WebTesting.CompletionDetectionImplementation;
+using Remotion.Web.Development.WebTesting.CompletionDetectionStrategies;
 
 namespace ActaNova.WebTesting.Infrastructure
 {

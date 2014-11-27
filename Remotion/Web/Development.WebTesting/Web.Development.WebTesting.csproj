@@ -239,6 +239,7 @@
     <Compile Include="CompletionDetectionStrategies\NullCompletionDetectionStrategy.cs" />
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
+    <Compile Include="WebTestActions\SimpleClickAction.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="Configuration\WebTestingConfiguration.cs" />
     <Compile Include="WebTestActions\CustomAction.cs" />

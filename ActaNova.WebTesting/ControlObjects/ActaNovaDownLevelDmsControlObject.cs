@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -21,10 +22,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Uploads the file given by <paramref name="filePath"/> to the server using the down-level DMS control.
     /// </summary>
-    public UnspecifiedPageObject UploadFile (
-        [NotNull] string filePath,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject UploadFile ([NotNull] string filePath, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("filePath", filePath);
 
@@ -37,7 +35,8 @@ namespace ActaNova.WebTesting.ControlObjects
       fileScope.SendKeys (fullFilePath);
 
       var uploadButton = scope.FindCss ("input.UploadButton");
-      uploadButton.ClickAndWait (Context, GetActualCompletionDetector (completionDetection), modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      new ClickAction (this, uploadButton).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 

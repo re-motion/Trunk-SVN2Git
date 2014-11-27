@@ -19,16 +19,13 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject Perform (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Perform (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       var fullItemID = string.Format ("{0}Button", itemID);
       var webButton = GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), fullItemID));
-      return webButton.Click (completionDetection, modalDialogHandler);
+      return webButton.Click (actionOptions);
     }
   }
 }

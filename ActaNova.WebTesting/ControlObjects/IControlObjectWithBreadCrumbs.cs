@@ -1,4 +1,5 @@
-﻿using Remotion.Web.Development.WebTesting;
+﻿using System;
+using Remotion.Web.Development.WebTesting;
 
 namespace ActaNova.WebTesting.ControlObjects
 {

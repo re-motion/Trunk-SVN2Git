@@ -22,29 +22,25 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Clears the reference value.
     /// </summary>
-    public UnspecifiedPageObject Clear (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Clear ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var additionalButtonsScope = GetAdditionalButtonsScope();
       var clearValueButton =
           additionalButtonsScope.GetControl (new LocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "ClearValueButton"));
 
-      return clearValueButton.Click (completionDetection, modalDialogHandler);
+      return clearValueButton.Click (actionOptions);
     }
 
     /// <summary>
     /// Presses the "Edit" button for the reference value.
     /// </summary>
-    public UnspecifiedPageObject Edit (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Edit ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var additionalButtonsScope = GetAdditionalButtonsScope();
       var editButton =
           additionalButtonsScope.GetControl (new LocalIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "EditButton"));
 
-      return editButton.Click (completionDetection, modalDialogHandler);
+      return editButton.Click (actionOptions);
     }
 
     /// <summary>
@@ -59,9 +55,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Presses the "Search" button for the reference value search class.
     /// </summary>
-    public UnspecifiedPageObject Search (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Search ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var scope = GetParentScope();
       var searchButton =
@@ -69,22 +63,20 @@ namespace ActaNova.WebTesting.ControlObjects
               new LocalIDControlSelectionCommand<WebButtonControlObject> (
                   new WebButtonSelector(),
                   "SelectRelatedObjectControlSearchReferencedObjectButton"));
-      return searchButton.Click (completionDetection, modalDialogHandler);
+      return searchButton.Click (actionOptions);
     }
 
     /// <summary>
     /// Presses the "New" button for the reference value search class.
     /// </summary>
-    public UnspecifiedPageObject New (
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject New ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var scope = GetParentScope();
       var newButton = scope.GetControl (
           new LocalIDControlSelectionCommand<WebButtonControlObject> (
               new WebButtonSelector(),
               "SelectRelatedObjectControlCreateReferencedObjectButton"));
-      return newButton.Click (completionDetection, modalDialogHandler);
+      return newButton.Click (actionOptions);
     }
 
     /// <summary>

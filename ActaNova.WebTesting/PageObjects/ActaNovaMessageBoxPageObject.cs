@@ -19,37 +19,37 @@ namespace ActaNova.WebTesting.PageObjects
     /// <summary>
     /// Confirms the message box by pressing the OK button.
     /// </summary>
-    public UnspecifiedPageObject Confirm (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Confirm ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
-      return mesageBox.Okay (completionDetection);
+      return mesageBox.Okay (actionOptions);
     }
 
     /// <summary>
     /// Cancels the message box by pressing the Cancel button.
     /// </summary>
-    public UnspecifiedPageObject Cancel (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Cancel ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
-      return mesageBox.Cancel (completionDetection);
+      return mesageBox.Cancel (actionOptions);
     }
 
     /// <summary>
     /// Confirms the message box by pressing the Yes button.
     /// </summary>
-    public UnspecifiedPageObject Yes (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Yes ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
-      return mesageBox.Yes (completionDetection);
+      return mesageBox.Yes (actionOptions);
     }
 
     /// <summary>
     /// Cancels the message box by pressing the No button.
     /// </summary>
-    public UnspecifiedPageObject No (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject No ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       var mesageBox = GetActaNovaMessageBoxControlObject();
-      return mesageBox.No (completionDetection);
+      return mesageBox.No (actionOptions);
     }
 
     private ActaNovaMessageBoxControlObject GetActaNovaMessageBoxControlObject ()

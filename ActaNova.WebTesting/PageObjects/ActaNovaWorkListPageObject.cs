@@ -54,7 +54,7 @@ namespace ActaNova.WebTesting.PageObjects
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
       var openRssFeedButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OpenRssFeedLink"));
-      return openRssFeedButton.Click (Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
+      return openRssFeedButton.Click (Opt.ContinueImmediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
 
@@ -67,7 +67,7 @@ namespace ActaNova.WebTesting.PageObjects
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
       var openHelpButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OnlineHelpLink"));
-      return openHelpButton.Click (Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
+      return openHelpButton.Click (Opt.ContinueImmediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
 
@@ -78,7 +78,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var bugReportButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
       return
-          bugReportButton.Click (Continue.When (Wxe.PostBackCompleted))
+          bugReportButton.Click (Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Fehlerbericht/Wunsch erzeugen");
     }
   }

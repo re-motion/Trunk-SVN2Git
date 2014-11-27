@@ -3,6 +3,7 @@ using ActaNova.WebTesting.ControlObjects.Selectors;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlSelection;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -11,14 +12,14 @@ namespace ActaNova.WebTesting.ControlObjects
   /// </summary>
   public static class ActaNovaListControlObjectExtensions
   {
-     // Note: if the number of extension methods is getting too high, it is better to refactor ActaNovaList to return ActaNova-specific rows & cells.
+    // Note: if the number of extension methods is getting too high, it is better to refactor ActaNovaList to return ActaNova-specific rows & cells.
 
     /// <summary>
     /// Presses the expand/collapse button on the hierarchy row.
     /// </summary>
     public static void ExpandHierarchyRow (this BocListCellControlObject cell)
     {
-      cell.Scope.FindCss ("img").PerformAction (s => s.Click(), cell.Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+      new SimpleClickAction (cell, cell.Scope.FindCss ("img")).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
     }
 
     /// <summary>
@@ -26,7 +27,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// </summary>
     public static void CollapseHierarchyRow (this BocListCellControlObject cell)
     {
-      cell.Scope.FindCss ("img").PerformAction (s => s.Click(), cell.Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+      cell.ExpandHierarchyRow();
     }
 
     /// <summary>

@@ -15,12 +15,11 @@ namespace ActaNova.WebTesting.ControlObjects
     {
     }
 
-    /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetection (ElementScope scope)
+    protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy (ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      return Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
+      return ActaNovaCompletion.OuterInnerOuterUpdated;
     }
   }
 }

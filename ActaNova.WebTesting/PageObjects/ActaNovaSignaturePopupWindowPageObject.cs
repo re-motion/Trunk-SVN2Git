@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Utilities;
@@ -13,7 +14,7 @@ namespace ActaNova.WebTesting.PageObjects
   public class ActaNovaSignaturePopupWindowPageObject : ActaNovaPopupWindowPageObject
   {
     public ActaNovaSignaturePopupWindowPageObject ([NotNull] PageObjectContext context)
-        : base(context)
+        : base (context)
     {
     }
 
@@ -49,12 +50,12 @@ namespace ActaNova.WebTesting.PageObjects
       return Sign ("Batch", password, annotation);
     }
 
-    private ActaNovaMainPageObject Sign(string command, string password, string annotation)
+    private ActaNovaMainPageObject Sign (string command, string password, string annotation)
     {
       var passwordTextValue = GetControl (new HtmlIDControlSelectionCommand<BocTextValueControlObject> (new BocTextValueSelector(), "PasswordField"));
       passwordTextValue.FillWith (password, FinishInput.Promptly);
 
-      if(annotation != null)
+      if (annotation != null)
       {
         var annotationTextValue =
             GetControl (new HtmlIDControlSelectionCommand<BocTextValueControlObject> (new BocTextValueSelector(), "SignatureAnnotationField"));
@@ -63,7 +64,7 @@ namespace ActaNova.WebTesting.PageObjects
 
       Perform (command);
 
-      return new ActaNovaMainPageObject(Context.ParentContext.ParentContext);
+      return new ActaNovaMainPageObject (Context.ParentContext.ParentContext);
     }
   }
 }

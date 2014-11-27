@@ -10,6 +10,7 @@ using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -109,8 +110,8 @@ namespace ActaNova.WebTesting.ControlObjects
         var openButtonScope = Scope.FindId (buttonId);
         openButtonScope.Now();
 
-        // Do not use ClickAndWait() here, it uses FocusClick() internally, which fails (at least using Chrome) for unknown reasons.
-        openButtonScope.PerformAction (s => s.Click(), Context, Continue.When (Wxe.PostBackCompleted).Build(), null);
+        // ClickAction fails (at least using Chrome) for unknown reasons.
+        new SimpleClickAction (this, openButtonScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
       }
 
       return GetControl (

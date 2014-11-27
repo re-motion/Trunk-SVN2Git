@@ -18,7 +18,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
 
       var cancelConfirmation =
-          createCitizenConcernPage.Header.GetBreadCrumb(1).Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+          createCitizenConcernPage.Header.GetBreadCrumb(1).Click (Opt.ContinueWhen (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
       cancelConfirmation.Confirm();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Eigener AV"));
@@ -34,7 +34,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));
 
       var cancelConfirmation =
-          createCitizenConcernPage.Header.GetBreadCrumb(1).Click (Continue.When (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
+          createCitizenConcernPage.Header.GetBreadCrumb(1).Click (Opt.ContinueWhen (Wxe.PostBackCompleted)).Expect<ActaNovaMessageBoxPageObject>();
       cancelConfirmation.Cancel();
 
       Assert.That (home.GetTitle(), Is.EqualTo ("Bürgeranliegen erzeugen"));

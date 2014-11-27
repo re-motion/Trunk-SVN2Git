@@ -19,27 +19,34 @@ namespace ActaNova.WebTesting.PageObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject Perform (
-        string itemID,
-        ICompletionDetection completionDetection = null,
-        IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Perform (string itemID, IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
-      var defaultCompletionDetectionForPerform = GetDefaultCompletionDetectionForPerform();
+      var actualActionOptions = MergeWithDefaultActionOptions (actionOptions);
 
       var fullItemID = string.Format ("{0}Button", itemID);
       var webButton = GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), fullItemID));
-      return webButton.Click (completionDetection ?? defaultCompletionDetectionForPerform, modalDialogHandler);
+      return webButton.Click (actualActionOptions);
     }
 
     /// <summary>
-    /// Overrides the default <see cref="ICompletionDetection"/> used by <see cref="Perform"/>. Return <see langword="null" /> if you want to keep
-    /// the <see cref="WebButtonControlObject"/>'s default completion detection.
+    /// Overrides the default <see cref="ICompletionDetectionStrategy"/> used by <see cref="Perform"/>. Return <see langword="null" /> if you want to
+    /// keep the <see cref="WebButtonControlObject"/>'s default completion detection.
     /// </summary>
-    protected virtual ICompletionDetection GetDefaultCompletionDetectionForPerform ()
+    protected virtual ICompletionDetectionStrategy GetDefaultCompletionDetectionForPerform ()
     {
       return null;
+    }
+
+    private IWebTestActionOptions MergeWithDefaultActionOptions (IWebTestActionOptions actionOptions)
+    {
+      if (actionOptions == null)
+        actionOptions = new WebTestActionOptions();
+      if (actionOptions.CompletionDetectionStrategy == null)
+        actionOptions.CompletionDetectionStrategy = GetDefaultCompletionDetectionForPerform();
+
+      return actionOptions;
     }
   }
 }

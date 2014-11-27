@@ -33,7 +33,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       return
           formPage.SelectItem (
               "Protokollieren zu bestehendem Gesch&#228;ftsfall (<img border=\"0\" title=\"Erledigt zugeordnete Aktivität &#39;Bürgeranliegen prüfen und bearbeiten&#39; in &#39;Eigener AV&#39;\" alt=\"Erledigt zugeordnete Aktivität &#39;Bürgeranliegen prüfen und bearbeiten&#39; in &#39;Eigener AV&#39;\" src=\"/ActaNova_trunk_com/web/res/Rubicon.Workflow.Web/Image/CompletesActivity.gif\" />)",
-              Continue.When (Wxe.PostBackCompletedInParent (formPage)))
+              Opt.ContinueWhen (Wxe.PostBackCompletedInParent (formPage)))
               .ExpectMainPage();
     }
 
@@ -72,7 +72,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
-      return formPage.SelectItem ("Mail versenden", Continue.When (Wxe.PostBackCompletedInParent (formPage))).ExpectMainPage();
+      return formPage.SelectItem ("Mail versenden", Opt.ContinueWhen (Wxe.PostBackCompletedInParent (formPage))).ExpectMainPage();
     }
 
     public static ActaNovaSignaturePopupWindowPageObject Sperren ([NotNull] this ActaNovaFormPageObject formPage)
@@ -93,7 +93,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
-      return formPage.SelectItem ("Gesamtdruck", Continue.When (Wxe.PostBackCompletedInParent (formPage))).ExpectMainPage();
+      return formPage.SelectItem ("Gesamtdruck", Opt.ContinueWhen (Wxe.PostBackCompletedInParent (formPage))).ExpectMainPage();
     }
 
     public static ActaNovaPopupWindowPageObject ExportierenNachEDIAKT ([NotNull] this ActaNovaFormPageObject formPage)
@@ -127,12 +127,12 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     private static UnspecifiedPageObject SelectItem (
         [NotNull] this ActaNovaFormPageObject formPage,
         [NotNull] string displayText,
-        [CanBeNull] ICompletionDetection completionDetection = null)
+        [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
-      return formPage.GetAdditionalCommandsMenu().SelectItem().WithDisplayText (displayText, completionDetection);
+      return formPage.GetAdditionalCommandsMenu().SelectItem().WithDisplayText (displayText, actionOptions);
     }
 
     private static ActaNovaSignaturePopupWindowPageObject ExpectSignaturePage ([NotNull] this UnspecifiedPageObject page)

@@ -39,7 +39,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       signaturePopup.Cancel();
 
       var saveAndForward = editCitizenConcern.FormPage.SpeichernUndWeiterleiten();
-      editCitizenConcern = saveAndForward.FormPage.Perform ("Cancel", Continue.When(Wxe.PostBackCompleted)).ExpectMainPage();
+      editCitizenConcern = saveAndForward.FormPage.Perform ("Cancel", Opt.ContinueWhen(Wxe.PostBackCompleted)).ExpectMainPage();
 
       var print = editCitizenConcern.FormPage.Gesamtdruck();
       editCitizenConcern = print.FormPage.Perform ("Cancel").ExpectMainPage();
@@ -54,7 +54,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
       dialog.Perform ("CancelDetails");
 
       var editSecurtiyInheritance = editCitizenConcern.FormPage.SicherheitsvererbungBearbeiten();
-      editCitizenConcern = editSecurtiyInheritance.FormPage.Perform ("Cancel", Continue.When(Wxe.PostBackCompleted)).ExpectMainPage();
+      editCitizenConcern = editSecurtiyInheritance.FormPage.Perform ("Cancel", Opt.ContinueWhen(Wxe.PostBackCompleted)).ExpectMainPage();
 
       editCitizenConcern.FormPage.NextActivity();
       editCitizenConcern.FormPage.NextActivity();

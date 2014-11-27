@@ -39,10 +39,10 @@ namespace ActaNova.WebTesting.IntegrationTests
       var permalink = editIncomingPage.FormPage.GetPermalink();
 
       var printWindow = editIncomingPage.FormPage.Print();
-      printWindow.Perform ("CancelDetails", Continue.When (Wxe.PostBackCompletedInContext(printWindow.Context.ParentContext)));
+      printWindow.Perform ("CancelDetails", Opt.ContinueWhen (Wxe.PostBackCompletedInContext(printWindow.Context.ParentContext)));
 
       var bugReportWindow = editIncomingPage.FormPage.CreateBugReport();
-      bugReportWindow.Perform ("Cancel", Continue.Immediately(), HandleModalDialog.Accept());
+      bugReportWindow.Perform ("Cancel", Opt.ContinueImmediately().AcceptModalDialog());
 
       // Todo EVB-8268: Enable as soon as the help window does have a title.
       //var helpPage = editIncomingPage.FormPage.OpenHelp();
@@ -50,7 +50,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var createMailPage = editIncomingPage.FormPage.GetAdditionalCommandsMenu().SelectItem().WithDisplayText ("Mail versenden").ExpectMainPage();
       editIncomingPage =
-          createMailPage.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (createMailPage)), HandleModalDialog.Accept())
+          createMailPage.FormPage.Perform ("Cancel", Opt.ContinueWhen (Wxe.PostBackCompletedIn (createMailPage)).AcceptModalDialog())
               .ExpectMainPage();
 
       editIncomingPage.FormPage.Perform ("Cancel");

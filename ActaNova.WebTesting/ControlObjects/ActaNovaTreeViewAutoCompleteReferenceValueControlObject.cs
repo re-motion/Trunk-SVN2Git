@@ -33,10 +33,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Selects a node in the tree view auto complete given by its path (nodes are referenced by display text) <paramref name="treeNodes"/>.
     /// </summary>
-    public UnspecifiedPageObject Select (
-        [NotNull] IEnumerable<string> treeNodes,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Select ([NotNull] IEnumerable<string> treeNodes, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNull ("treeNodes", treeNodes);
 
@@ -47,7 +44,7 @@ namespace ActaNova.WebTesting.ControlObjects
       var treePopupTable =
           scope.GetControl (new SingleControlSelectionCommand<ActaNovaTreePopupTableControlObject> (new ActaNovaTreePopupTableSelector()));
       var node = treePopupTable.GetNode (treeNodes);
-      return node.Click (completionDetection, modalDialogHandler);
+      return node.Click (actionOptions);
     }
 
     private ScopeControlObject GetParentScope ()

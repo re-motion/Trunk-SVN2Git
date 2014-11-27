@@ -24,10 +24,10 @@ namespace ActaNova.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public UnspecifiedPageObject Click (ICompletionDetection completionDetection = null, IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject Click (IWebTestActionOptions actionOptions = null)
     {
       var anchorControl = Children.GetControl (new SingleControlSelectionCommand<AnchorControlObject> (new AnchorSelector()));
-      return anchorControl.Click (completionDetection, modalDialogHandler);
+      return anchorControl.Click (actionOptions);
     }
   }
 }

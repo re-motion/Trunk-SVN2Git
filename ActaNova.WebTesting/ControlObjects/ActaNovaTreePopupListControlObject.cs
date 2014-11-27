@@ -3,6 +3,7 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace ActaNova.WebTesting.ControlObjects
 {
@@ -19,17 +20,14 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Clicks an item in the popup list given by its display text <paramref name="item"/>.
     /// </summary>
-    public UnspecifiedPageObject ClickItem (
-        [NotNull] string item,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject ClickItem ([NotNull] string item, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("item", item);
 
       var itemScope = Scope.FindXPath (string.Format (".//a[normalize-space(.)='{0}']", item));
 
-      var actualCompletionDetector = GetActualCompletionDetector (itemScope, completionDetection);
-      itemScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (itemScope, actionOptions);
+      new ClickAction (this, itemScope).Execute (actualActionOptions);
 
       Scope.Unhover();
       EnsurePopupIsClosed();
@@ -40,10 +38,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Checks an item in the popup list given by its display text <paramref name="item"/>.
     /// </summary>
-    public UnspecifiedPageObject CheckItem (
-        [NotNull] string item,
-        [CanBeNull] ICompletionDetection completionDetection = null,
-        [CanBeNull] IModalDialogHandler modalDialogHandler = null)
+    public UnspecifiedPageObject CheckItem ([NotNull] string item, [CanBeNull] IWebTestActionOptions actionOptions = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("item", item);
 
@@ -52,8 +47,8 @@ namespace ActaNova.WebTesting.ControlObjects
       // Note: without hover before the click, the check item action does not work, we don't know why yet.
       itemScope.Hover();
 
-      var actualCompletionDetector = GetActualCompletionDetector (itemScope, completionDetection);
-      itemScope.ClickAndWait (Context, actualCompletionDetector, modalDialogHandler);
+      var actualActionOptions = MergeWithDefaultActionOptions (itemScope, actionOptions);
+      new ClickAction (this, itemScope).Execute (actualActionOptions);
 
       Scope.Unhover();
       EnsurePopupIsClosed();

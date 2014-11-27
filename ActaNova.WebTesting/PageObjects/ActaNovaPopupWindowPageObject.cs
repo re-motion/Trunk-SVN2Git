@@ -21,9 +21,9 @@ namespace ActaNova.WebTesting.PageObjects
     }
 
     /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetectionForPerform ()
+    protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionForPerform ()
     {
-      return Continue.When (Wxe.PostBackCompletedInParent (this));
+      return Wxe.PostBackCompletedInParent (this);
     }
   }
 }

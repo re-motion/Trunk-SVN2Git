@@ -77,7 +77,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var editIncoming = home.WorkListPage.GetWorkList().GetCellWhere ("WorkItem", "04.04.2001/1").ExecuteCommand().ExpectMainPage();
       editIncoming.FormPage.GetOnlyTabbedMultiView().SwitchTo ("SpecialdataFormPage_view");
 
-      editIncoming.FormPage.GetList().ByDisplayName ("Referenzliste").ChangeViewToByLabel ("Standard", Continue.Immediately());
+      editIncoming.FormPage.GetList().ByDisplayName ("Referenzliste").ChangeViewToByLabel ("Standard", Opt.ContinueImmediately());
     }
 
     [Test]
@@ -141,7 +141,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var workStepsCell = home.WorkListPage.GetWorkList().GetRowWhere ("WorkItem", "04.06.2009/1").GetCell ("WorkSteps");
       var editProcess =
           workStepsCell.HoverAndGetListPopup().ClickItem ("Prozess öffnen").ExpectNewWindow<ActaNovaWindowPageObject> ("Prozess bearbeiten");
-      editProcess.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedInContext(editProcess.Context.ParentContext)));
+      editProcess.Perform ("Cancel", Opt.ContinueWhen (Wxe.PostBackCompletedInContext(editProcess.Context.ParentContext)));
     }
   }
 }

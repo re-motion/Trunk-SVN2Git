@@ -38,7 +38,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensionsTest
 
       var createMail = editCitizenConcern.FormPage.GetAdditionalCommandsMenu()
           .SelectItem()
-          .WithDisplayText ("Mail versenden", Continue.When (Wxe.PostBackCompletedInParent(editCitizenConcern)))
+          .WithDisplayText ("Mail versenden", Opt.ContinueWhen (Wxe.PostBackCompletedInParent(editCitizenConcern)))
           .ExpectMainPage();
 
       Assert.That (home.Header.GetNumberOfBreadCrumbs(), Is.EqualTo (3));

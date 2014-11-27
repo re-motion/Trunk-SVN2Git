@@ -28,7 +28,7 @@ namespace ActaNova.WebTesting.IntegrationTests
           Is.StringContaining ("Besitzer Muster Max, Ing. (EG/1) ist immer am Objekt berechtigt"));
       Assert.That (visibleObjectSpecificSecurtiyEntries.GetNumberOfRows(), Is.EqualTo (1));
 
-      editIncoming.FormPage.Perform ("Cancel", Continue.When (Wxe.PostBackCompletedIn (editIncoming)), HandleModalDialog.Accept());
+      editIncoming.FormPage.Perform ("Cancel", Opt.ContinueWhen (Wxe.PostBackCompletedIn (editIncoming)).AcceptModalDialog());
     }
   }
 }

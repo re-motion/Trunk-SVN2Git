@@ -1,5 +1,5 @@
 ﻿using System;
-using ActaNova.WebTesting.Infrastructure;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.Utilities;
@@ -120,10 +120,10 @@ namespace ActaNova.WebTesting.ControlObjects
     /// This API is not symmetrical to <see cref="WebTreeViewNodeControlObject"/>'s and <see cref="BocTreeViewNodeControlObject"/>'s Select/Click
     /// methods - it behaves like Click.
     /// </remarks>
-    public UnspecifiedPageObject Select ([CanBeNull] ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Select ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      var actualCompletionDetection = GetActualCompletionDetection (completionDetection);
-      return _bocTreeViewNode.Click (actualCompletionDetection);
+      var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
+      return _bocTreeViewNode.Click (actualActionOptions);
     }
 
     /// <summary>
@@ -134,15 +134,13 @@ namespace ActaNova.WebTesting.ControlObjects
       return _bocTreeViewNode.OpenContextMenu();
     }
 
-    private ICompletionDetection GetActualCompletionDetection (ICompletionDetection completionDetection)
+    /// <inheritdoc/>
+    protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy (ElementScope scope)
     {
-      if (completionDetection != null)
-        return completionDetection;
-
       if (IsSelected())
-        return Continue.When (Wxe.PostBackCompleted);
+        return Wxe.PostBackCompleted;
 
-      return Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
+      return base.GetDefaultCompletionDetectionStrategy (scope);
     }
   }
 }

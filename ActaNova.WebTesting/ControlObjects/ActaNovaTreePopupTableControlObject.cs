@@ -31,9 +31,7 @@ namespace ActaNova.WebTesting.ControlObjects
     /// <summary>
     /// Retrieves a node in the popup tree given by its path (nodes are referenced by display text) <paramref name="treeNodes"/>.
     /// </summary>
-    public ActaNovaTreePopupTableNodeControlObject GetNode (
-        [NotNull] IEnumerable<string> treeNodes,
-        [CanBeNull] ICompletionDetection completionDetection = null)
+    public ActaNovaTreePopupTableNodeControlObject GetNode ([NotNull] IEnumerable<string> treeNodes)
     {
       ArgumentUtility.CheckNotNull ("treeNodes", treeNodes);
 
@@ -51,7 +49,8 @@ namespace ActaNova.WebTesting.ControlObjects
     {
       foreach (var node in treeNodesToExpand)
       {
-        var nodeExpandLinkScope = Scope.FindXPath (string.Format (".//a[@class='NodeLink' and following-sibling::a//span[normalize-space(.)='{0}']]", node));
+        var nodeExpandLinkScope =
+            Scope.FindXPath (string.Format (".//a[@class='NodeLink' and following-sibling::a//span[normalize-space(.)='{0}']]", node));
         if (nodeExpandLinkScope["onclick"].Contains ("collapse"))
           continue;
 

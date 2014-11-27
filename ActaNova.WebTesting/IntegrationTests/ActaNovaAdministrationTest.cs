@@ -15,7 +15,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var home = Start();
 
       var administration =
-          home.MainMenu.Select (new[] { "Extras", "Administration" }, Continue.When (Wxe.PostBackCompleted))
+          home.MainMenu.Select (new[] { "Extras", "Administration" }, Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Administration");
 
       var tabbedMenu = administration.GetOnlyTabbedMenu();
@@ -48,7 +48,7 @@ namespace ActaNova.WebTesting.IntegrationTests
       var home = Start();
 
       var administration =
-          home.MainMenu.Select (new[] { "Extras", "Administration" }, Continue.When (Wxe.PostBackCompleted))
+          home.MainMenu.Select (new[] { "Extras", "Administration" }, Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewWindow<ActaNovaWindowPageObject> ("Administration");
 
       var tabbedMenu = administration.GetOnlyTabbedMenu();
@@ -66,14 +66,14 @@ namespace ActaNova.WebTesting.IntegrationTests
       var objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
       objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Beim Objekt nur lesend berechtigt");
-      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompletedInContext (permissions.Context.ParentContext)));
+      permissions.Perform ("Save", Opt.ContinueWhen (Wxe.PostBackCompletedInContext (permissions.Context.ParentContext)));
 
       permissions = securableClassesTree.GetRootNode().GetNode().WithIndex (1).Click().ExpectNewWindow<ActaNovaWindowPageObject> ("Berechtigungen");
 
       objectPermissions = permissions.GetScope().ByID ("MainContentPlaceHolder_UpdatePanel_1");
       objectPermissions.GetWebButton ("ToggleAccessControlEntryButton").Click();
       objectPermissions.GetAutoComplete ("SpecificAbstractRole").FillWith ("Standard");
-      permissions.Perform ("Save", Continue.When (Wxe.PostBackCompletedInContext (permissions.Context.ParentContext)));
+      permissions.Perform ("Save", Opt.ContinueWhen (Wxe.PostBackCompletedInContext (permissions.Context.ParentContext)));
 
       administration.Close();
     }

@@ -34,9 +34,9 @@ namespace ActaNova.WebTesting.PageObjects
     /// <summary>
     /// Presses the refresh button.
     /// </summary>
-    public UnspecifiedPageObject Refresh (ICompletionDetection completionDetection = null)
+    public UnspecifiedPageObject Refresh ([CanBeNull] IWebTestActionOptions actionOptions = null)
     {
-      var actualActionBehavior = completionDetection ?? Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated);
+      var actualActionBehavior = MergeWithDefaultActionOptions (actionOptions);
 
       var webButton = GetControl (new ItemIDControlSelectionCommand<WebButtonControlObject> (new WebButtonSelector(), "RefreshButton"));
       return webButton.Click (actualActionBehavior);
@@ -108,6 +108,16 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var frameScope = Scope.FindFrame ("RightFrameContent");
       return Context.CloneForFrame (frameScope);
+    }
+
+    private IWebTestActionOptions MergeWithDefaultActionOptions (IWebTestActionOptions actionOptions)
+    {
+      if (actionOptions == null)
+        actionOptions = new WebTestActionOptions();
+      if (actionOptions.CompletionDetectionStrategy == null)
+        actionOptions.CompletionDetectionStrategy = ActaNovaCompletion.OuterInnerOuterUpdated;
+
+      return actionOptions;
     }
   }
 }

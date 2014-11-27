@@ -59,12 +59,12 @@ namespace ActaNova.WebTesting.IntegrationTests
       var currentTenantControl = home.Header.OpenCurrentTenantControl();
       Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));
 
-      currentTenantControl.SelectOption().WithDisplayText ("Acta Nova Ortsteil 1", Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
+      currentTenantControl.SelectOption().WithDisplayText ("Acta Nova Ortsteil 1", Opt.ContinueWhen (ActaNovaCompletion.OuterInnerOuterUpdated));
 
       currentTenantControl = home.Header.OpenCurrentTenantControl();
       Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Ortsteil 1"));
 
-      currentTenantControl.SelectOption().WithIndex (1, Continue.When (ActaNovaCompletion.OuterInnerOuterUpdated));
+      currentTenantControl.SelectOption().WithIndex (1, Opt.ContinueWhen (ActaNovaCompletion.OuterInnerOuterUpdated));
 
       currentTenantControl = home.Header.OpenCurrentTenantControl();
       Assert.That (currentTenantControl.GetText(), Is.EqualTo ("Acta Nova Gemeinde"));

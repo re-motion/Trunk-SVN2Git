@@ -55,7 +55,7 @@ namespace ActaNova.WebTesting.PageObjects
       var gotoPreviousButton =
           GetControl (
               new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoPreviousButton"));
-      return gotoPreviousButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
+      return gotoPreviousButton.Click (Opt.ContinueWhen (Wxe.PostBackCompletedInParent (this)));
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ namespace ActaNova.WebTesting.PageObjects
       var gotoNextButton =
           GetControl (
               new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "NavigationControl_GotoNextButton"));
-      return gotoNextButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
+      return gotoNextButton.Click (Opt.ContinueWhen (Wxe.PostBackCompletedInParent (this)));
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ namespace ActaNova.WebTesting.PageObjects
     public UnspecifiedPageObject PressPinButton ()
     {
       var pinButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "PinButton"));
-      return pinButton.Click (Continue.When (Wxe.PostBackCompletedInParent (this)));
+      return pinButton.Click (Opt.ContinueWhen (Wxe.PostBackCompletedInParent (this)));
     }
 
     /// <summary>
@@ -95,7 +95,7 @@ namespace ActaNova.WebTesting.PageObjects
     public string GetPermalink ()
     {
       var permalinkButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "PermalinkButton"));
-      permalinkButton.Click (Continue.Immediately(), HandleModalDialog.Accept());
+      permalinkButton.Click (Opt.ContinueImmediately().AcceptModalDialog());
 
       var permalink = permalinkButton.Scope["href"].Replace ("/?", "/Main.wxe?");
       return permalink;
@@ -119,7 +119,7 @@ namespace ActaNova.WebTesting.PageObjects
 
 #pragma warning disable 162 // unreachable code, can be dropped as soon as NotSupportedException has been removed.
       var openHelpButton = GetControl (new HtmlIDControlSelectionCommand<AnchorControlObject> (new AnchorSelector(), "OnlineHelpLink"));
-      return openHelpButton.Click (Continue.Immediately()).ExpectNewWindow<HtmlPageObject> ("");
+      return openHelpButton.Click (Opt.ContinueImmediately()).ExpectNewWindow<HtmlPageObject> ("");
 #pragma warning restore 162
     }
 
@@ -130,7 +130,7 @@ namespace ActaNova.WebTesting.PageObjects
     {
       var bugReportButton = GetControl (new HtmlIDControlSelectionCommand<ImageButtonControlObject> (new ImageButtonSelector(), "BugReportButton"));
       return
-          bugReportButton.Click (Continue.When (Wxe.PostBackCompleted))
+          bugReportButton.Click (Opt.ContinueWhen (Wxe.PostBackCompleted))
               .ExpectNewPopupWindow<ActaNovaPopupWindowPageObject> ("Fehlerbericht/Wunsch erzeugen");
     }
 
@@ -146,9 +146,9 @@ namespace ActaNova.WebTesting.PageObjects
     }
 
     /// <inheritdoc/>
-    protected override ICompletionDetection GetDefaultCompletionDetectionForPerform ()
+    protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionForPerform ()
     {
-      return Continue.When (Wxe.PostBackCompletedInParent (this));
+      return Wxe.PostBackCompletedInParent (this);
     }
   }
 }
