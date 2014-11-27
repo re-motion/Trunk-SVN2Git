@@ -26,7 +26,6 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSu
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ServiceLocation;
 using Remotion.Web.Contract.DiagnosticMetadata;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
@@ -151,7 +150,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.ItemID, Column.ItemID);
-      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitle);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
       Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 7.ToString());
       Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata, "true");
     }
