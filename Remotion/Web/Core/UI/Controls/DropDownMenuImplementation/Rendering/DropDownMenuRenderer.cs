@@ -340,7 +340,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
             DiagnosticMetadataAttributes.ItemID,
             menuItem.ItemID,
             DiagnosticMetadataAttributes.Content,
-            HtmlUtility.StripHtmlTags (diagnosticMetadataText));
+            HtmlUtility.StripHtmlTags (diagnosticMetadataText ?? ""));
       }
 
       bool isDisabled = !menuItem.EvaluateEnabled() || !isCommandEnabled;
