@@ -46,7 +46,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       var signaturePopup = editIncomingPage.FormPage.GetAdditionalCommandsMenu()
           .SelectItem()
-          .WithDisplayText ("Unterschreiben")
+          .WithDisplayText ("Unterschreiben ()")
           .ExpectNewPopupWindow<ActaNovaSignaturePopupWindowPageObject> ("Unterschreiben");
 
       var annotation = Guid.NewGuid().ToString();

@@ -18,7 +18,7 @@ namespace ActaNova.WebTesting.IntegrationTests
 
       personErzeugen.FormPage.GetOnlyTabbedMultiView().SwitchTo ("LegalEntityLinksFormPage_view");
 
-      personErzeugen.FormPage.GetList ("Links").GetListMenu().SelectItem ("NewEmailCommand_2");
+      personErzeugen.FormPage.GetList ("Links").GetListMenu().SelectItem ("NewEmailCommand_1");
 
       var dialog = personErzeugen.FormPage.GetDialog();
       dialog.GetAutoComplete ("LinkClassification").FillWith ("Inhaber");

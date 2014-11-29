@@ -31,9 +31,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
       return
-          formPage.SelectItem (
-              "Protokollieren zu bestehendem Gesch&#228;ftsfall (<img border=\"0\" title=\"Erledigt zugeordnete Aktivität &#39;Bürgeranliegen prüfen und bearbeiten&#39; in &#39;Eigener AV&#39;\" alt=\"Erledigt zugeordnete Aktivität &#39;Bürgeranliegen prüfen und bearbeiten&#39; in &#39;Eigener AV&#39;\" src=\"/ActaNova_trunk_com/web/res/Rubicon.Workflow.Web/Image/CompletesActivity.gif\" />)",
-              Opt.ContinueWhen (Wxe.PostBackCompletedInParent (formPage)))
+          formPage.SelectItem ("Protokollieren zu bestehendem Gesch&#228;ftsfall ()", Opt.ContinueWhen (Wxe.PostBackCompletedInParent (formPage)))
               .ExpectMainPage();
     }
 
@@ -41,10 +39,7 @@ namespace ActaNova.WebTesting.ActaNovaExtensions
     {
       ArgumentUtility.CheckNotNull ("formPage", formPage);
 
-      return
-          formPage.SelectItem (
-              "Stornieren (<img border=\"0\" title=\"Erledigt zugeordnete Aktivität &#39;Bürgeranliegen prüfen und bearbeiten&#39; in &#39;Eigener AV&#39;\" alt=\"Erledigt zugeordnete Aktivität &#39;Bürgeranliegen prüfen und bearbeiten&#39; in &#39;Eigener AV&#39;\" src=\"/ActaNova_trunk_com/web/res/Rubicon.Workflow.Web/Image/CompletesActivity.gif\" />)")
-              .ExpectSignaturePage();
+      return formPage.SelectItem ("Stornieren ()").ExpectSignaturePage();
     }
 
     public static ActaNovaSignaturePopupWindowPageObject Unterschreiben ([NotNull] this ActaNovaFormPageObject formPage)
