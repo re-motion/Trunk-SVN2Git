@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Specialized;
 using System.Web.UI;
@@ -40,7 +41,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("hotkeyFormatter", hotkeyFormatter);
       ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
-      
+
       _hotkeyFormatter = hotkeyFormatter;
       _renderingFeatures = renderingFeatures;
     }
@@ -63,7 +64,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("style", style);
 
-      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + GetTabClientID(renderingContext, tab) + " > *:first");
+      ScriptUtility.Instance.RegisterElementForBorderSpans (renderingContext.Control, "#" + GetTabClientID (renderingContext, tab) + " > *:first");
 
       RenderTabBegin (renderingContext);
       RenderSeperator (renderingContext);
@@ -73,17 +74,17 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       RenderContents (renderingContext, tab);
       RenderEndTagForCommand (renderingContext, command);
 
-      renderingContext.Writer.RenderEndTag (); // End tab span
-      renderingContext.Writer.RenderEndTag (); // End tab wrapper span
+      renderingContext.Writer.RenderEndTag(); // End tab span
+      renderingContext.Writer.RenderEndTag(); // End tab wrapper span
 
       if (isLast)
       {
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassTabLast);
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-        renderingContext.Writer.RenderEndTag ();
+        renderingContext.Writer.RenderEndTag();
       }
 
-      renderingContext.Writer.RenderEndTag (); // End list item
+      renderingContext.Writer.RenderEndTag(); // End list item
     }
 
     private string GetTabClientID (WebTabStripRenderingContext renderingContext, IWebTab tab)
@@ -93,13 +94,13 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 
     private void RenderWrapperBegin (WebTabStripRenderingContext renderingContext, IWebTab tab)
     {
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetTabClientID(renderingContext, tab));
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetTabClientID (renderingContext, tab));
       string cssClass;
       if (tab.IsSelected)
         cssClass = CssClassTabSelected;
       else
         cssClass = CssClassTab;
-      if (!tab.EvaluateEnabled ())
+      if (!tab.EvaluateEnabled())
         cssClass += " " + CssClassDisabled;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
 
@@ -109,7 +110,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
           renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, tab.ItemID);
 
         if (!string.IsNullOrEmpty (tab.Text))
-          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, tab.Text);
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (tab.Text));
       }
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin tab span
@@ -135,8 +136,8 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassSeparator);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-      renderingContext.Writer.RenderEndTag ();
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
+      renderingContext.Writer.RenderEndTag();
     }
 
     protected virtual Command RenderBeginTagForCommand (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, WebTabStyle style)
@@ -156,9 +157,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
           command.AccessKey = _hotkeyFormatter.FormatHotkey (textWithHotkey);
       }
       else
-      {
         command.Type = CommandType.None;
-      }
 
       command.RenderBegin (
           renderingContext.Writer,
@@ -178,7 +177,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("command", command);
-      
+
       command.RenderEnd (renderingContext.Writer);
     }
 
@@ -203,7 +202,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       if (!hasIcon && !hasText)
         renderingContext.Writer.Write ("&nbsp;");
 
-      renderingContext.Writer.RenderEndTag (); // End anchor body span
+      renderingContext.Writer.RenderEndTag(); // End anchor body span
     }
 
     /// <summary> Gets the CSS-Class applied to a <c>span</c> intended for formatting the inside of the anchor element. </summary>

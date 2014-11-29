@@ -52,5 +52,23 @@ namespace Remotion.Web.UnitTests.Core.Utilities
     {
       Assert.That (HtmlUtility.HtmlEncode ("a\r\nb"), Is.EqualTo ("a<br />b"));
     }
+
+    [Test]
+    public void StripHtmlTags ()
+    {
+      Assert.That (HtmlUtility.StripHtmlTags ("SimpleString"), Is.EqualTo ("SimpleString"));
+    }
+
+    [Test]
+    public void StripHtmlTags_OpenedAndClosedTagRemoval ()
+    {
+      Assert.That (HtmlUtility.StripHtmlTags ("<span>SimpleS<i>tr<b>i</b>n</i></span>g"), Is.EqualTo ("SimpleString"));
+    }
+
+    [Test]
+    public void StripHtmlTags_SelfClosingTagRemoval ()
+    {
+      Assert.That (HtmlUtility.StripHtmlTags ("Simple<br/>Stri<img src=\"WithAttributes.html\"/>ng"), Is.EqualTo ("SimpleString"));
+    }
   }
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -81,7 +82,7 @@ namespace Remotion.Web.UI.Controls
 
     protected virtual IWebButtonRenderer CreateRenderer ()
     {
-      return SafeServiceLocator.Current.GetInstance<IWebButtonRenderer> ();
+      return SafeServiceLocator.Current.GetInstance<IWebButtonRenderer>();
     }
 
     void IPostBackDataHandler.RaisePostDataChangedEvent ()
@@ -207,7 +208,7 @@ namespace Remotion.Web.UI.Controls
       ControlStyle.CssClass = computedCssClass;
 
       base.AddAttributesToRender (writer);
-      
+
       ControlStyle.CssClass = cssClassBackup;
 
       OnClientClick = backUpOnClientClick;
@@ -225,9 +226,9 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (DiagnosticMetadataAttributes.ControlType, controlWithDiagnosticMetadata.ControlType);
 
       if (!string.IsNullOrEmpty (Text))
-        writer.AddAttribute (DiagnosticMetadataAttributes.Content, Text);
-      
-      if(!string.IsNullOrEmpty(CommandName))
+        writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (Text));
+
+      if (!string.IsNullOrEmpty (CommandName))
         writer.AddAttribute (DiagnosticMetadataAttributes.CommandName, CommandName);
 
       if (!string.IsNullOrEmpty (ID))

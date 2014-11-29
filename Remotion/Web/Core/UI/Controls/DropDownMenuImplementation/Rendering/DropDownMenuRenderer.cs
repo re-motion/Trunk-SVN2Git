@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Text;
 using System.Web.UI;
@@ -48,7 +49,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
-      htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude ();
+      htmlHeadAppender.RegisterJQueryIFrameShimJavaScriptInclude();
 
       string scriptKey = typeof (DropDownMenuRenderer).FullName + "_Script";
       var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (DropDownMenuRenderer), ResourceType.Html, "DropDownMenu.js");
@@ -72,7 +73,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
 
       RenderHead (renderingContext);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     public void RenderAsContextMenu (DropDownMenuRenderingContext renderingContext)
@@ -94,14 +95,14 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Title, renderingContext.Control.TitleText);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      if (HasCustomTitle(renderingContext))
+      if (HasCustomTitle (renderingContext))
         renderingContext.Control.RenderHeadTitleMethod (renderingContext.Writer);
       else if (HasDefaultTitle (renderingContext))
         RenderDefaultTitle (renderingContext);
 
       RenderDropdownButton (renderingContext);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private void RenderDefaultTitle (DropDownMenuRenderingContext renderingContext)
@@ -115,15 +116,15 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
-      if (HasTitleIcon(renderingContext))
+      if (HasTitleIcon (renderingContext))
         renderingContext.Control.TitleIcon.Render (renderingContext.Writer, renderingContext.Control);
 
-      if (HasTitleText(renderingContext))
+      if (HasTitleText (renderingContext))
       {
         renderingContext.Writer.Write (renderingContext.Control.TitleText);
         renderingContext.Writer.Write (c_whiteSpace);
       }
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private void RenderDropdownButton (DropDownMenuRenderingContext renderingContext)
@@ -188,7 +189,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (renderingContext.Control.ControlStyle.Width.IsEmpty)
       {
         if (!renderingContext.Control.Width.IsEmpty)
-          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString ());
+          renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString());
       }
     }
 
@@ -196,7 +197,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     {
       base.AddDiagnosticMetadataAttributes (renderingContext);
 
-      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, renderingContext.Control.TitleText);
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (renderingContext.Control.TitleText));
     }
 
     private void RegisterEventHandlerScripts (DropDownMenuRenderingContext renderingContext)
@@ -205,7 +206,9 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
         return;
 
       string key = renderingContext.Control.ClientID + "_KeyDownEventHandlerBindScript";
-      string getSelectionCount = (string.IsNullOrEmpty (renderingContext.Control.GetSelectionCount) ? "null" : renderingContext.Control.GetSelectionCount);
+      string getSelectionCount = (string.IsNullOrEmpty (renderingContext.Control.GetSelectionCount)
+          ? "null"
+          : renderingContext.Control.GetSelectionCount);
       string script = string.Format (
           "$('#{0}').keydown( function(event){{ DropDownMenu_OnKeyDown(event, document.getElementById('{0}'), {1}); }} );",
           renderingContext.Control.ClientID,
@@ -226,9 +229,10 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
     private void RegisterMenuItems (DropDownMenuRenderingContext renderingContext)
     {
       string key = renderingContext.Control.UniqueID;
-      if (renderingContext.Control.Enabled && !renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
+      if (renderingContext.Control.Enabled
+          && !renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (DropDownMenuRenderer), key))
       {
-        StringBuilder script = new StringBuilder ();
+        StringBuilder script = new StringBuilder();
         script.Append ("DropDownMenu_AddMenuInfo" + " (\r\n\t");
         script.AppendFormat ("new DropDownMenu_MenuInfo ('{0}', new Array (\r\n", renderingContext.Control.ClientID);
         bool isFirstItem = true;
@@ -237,7 +241,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
         if (renderingContext.Control.EnableGrouping)
           menuItems = renderingContext.Control.MenuItems.GroupMenuItems (true);
         else
-          menuItems = renderingContext.Control.MenuItems.ToArray ();
+          menuItems = renderingContext.Control.MenuItems.ToArray();
 
         string category = null;
         bool isCategoryVisible = false;
@@ -249,7 +253,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
             category = menuItem.Category;
             isCategoryVisible = false;
           }
-          if (!menuItem.EvaluateVisible ())
+          if (!menuItem.EvaluateVisible())
             continue;
           if (renderingContext.Control.EnableGrouping && menuItem.IsSeparator && !isCategoryVisible)
             continue;
@@ -264,7 +268,11 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
         script.Append (" )"); // Close Array
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );"); // Close AddMenuInfo
-        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (DropDownMenuRenderer), key, script.ToString ());
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+            renderingContext.Control,
+            typeof (DropDownMenuRenderer),
+            key,
+            script.ToString());
       }
     }
 
@@ -290,7 +298,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           if (isPostBackCommand)
           {
             // Clientside script creates an anchor with href="#" and onclick=function
-            string argument = menuItemIndex.ToString ();
+            string argument = menuItemIndex.ToString();
             href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, argument);
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
@@ -299,7 +307,7 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
           }
           else if (menuItem.Command.Type == CommandType.Href)
           {
-            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
+            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString(), menuItem.ItemID);
             href = "'" + renderingContext.Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
 
@@ -332,10 +340,10 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
             DiagnosticMetadataAttributes.ItemID,
             menuItem.ItemID,
             DiagnosticMetadataAttributes.Content,
-            diagnosticMetadataText);
+            HtmlUtility.StripHtmlTags (diagnosticMetadataText));
       }
 
-      bool isDisabled = !menuItem.EvaluateEnabled () || !isCommandEnabled;
+      bool isDisabled = !menuItem.EvaluateEnabled() || !isCommandEnabled;
       stringBuilder.AppendFormat (
           "\t\tnew DropDownMenu_ItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})",
           menuItemIndex,

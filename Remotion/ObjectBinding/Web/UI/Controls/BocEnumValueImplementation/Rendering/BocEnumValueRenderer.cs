@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -26,6 +27,7 @@ using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering
 {
@@ -70,7 +72,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
       AddAttributesToRender (renderingContext);
-      var tag = renderingContext.Control.ListControlStyle.ControlType == ListControlType.RadioButtonList ? HtmlTextWriterTag.Div : HtmlTextWriterTag.Span;
+      var tag = renderingContext.Control.ListControlStyle.ControlType == ListControlType.RadioButtonList
+          ? HtmlTextWriterTag.Div
+          : HtmlTextWriterTag.Span;
       renderingContext.Writer.RenderBeginTag (tag);
 
       bool isControlHeightEmpty = renderingContext.Control.Height.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["height"]);
@@ -93,7 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
           if (renderingContext.Control.IsReadOnly)
           {
             if (!renderingContext.Control.Width.IsEmpty)
-              renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString ());
+              renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Width.ToString());
             else
               renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.Style["width"]);
           }
@@ -102,7 +106,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
 
       innerControl.RenderControl (renderingContext.Writer);
 
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     protected override void AddDiagnosticMetadataAttributes (RenderingContext<IBocEnumValue> renderingContext)
@@ -132,23 +136,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
 
       var oneBasedIndex = 1;
 
-      bool needsNullValueItem = (renderingContext.Control.Value == null) && (renderingContext.Control.ListControlStyle.ControlType != ListControlType.RadioButtonList);
+      bool needsNullValueItem = (renderingContext.Control.Value == null)
+                                && (renderingContext.Control.ListControlStyle.ControlType != ListControlType.RadioButtonList);
       if (!renderingContext.Control.IsRequired || needsNullValueItem)
       {
         var nullItem = CreateNullItem (renderingContext);
-        
+
         if (IsDiagnosticMetadataRenderingEnabled)
         {
           nullItem.Attributes[DiagnosticMetadataAttributes.ItemID] = "==null==";
           nullItem.Attributes[DiagnosticMetadataAttributes.IndexInCollection] = oneBasedIndex.ToString();
-          nullItem.Attributes[DiagnosticMetadataAttributes.Content] = renderingContext.Control.GetNullItemText();
+          nullItem.Attributes[DiagnosticMetadataAttributes.Content] = HtmlUtility.StripHtmlTags (renderingContext.Control.GetNullItemText());
         }
-        
+
         listControl.Items.Add (nullItem);
         oneBasedIndex++;
       }
 
-      IEnumerationValueInfo[] valueInfos = renderingContext.Control.GetEnabledValues ();
+      IEnumerationValueInfo[] valueInfos = renderingContext.Control.GetEnabledValues();
 
       for (int i = 0; i < valueInfos.Length; i++, oneBasedIndex++)
       {
@@ -161,7 +166,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
         {
           item.Attributes[DiagnosticMetadataAttributes.ItemID] = valueInfo.Identifier;
           item.Attributes[DiagnosticMetadataAttributes.IndexInCollection] = oneBasedIndex.ToString();
-          item.Attributes[DiagnosticMetadataAttributes.Content] = valueInfo.DisplayName;
+          item.Attributes[DiagnosticMetadataAttributes.Content] = HtmlUtility.StripHtmlTags (valueInfo.DisplayName);
         }
 
         listControl.Items.Add (item);
@@ -174,17 +179,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
     /// <returns> A <see cref="ListItem"/>. </returns>
     private ListItem CreateNullItem (BocEnumValueRenderingContext renderingContext)
     {
-      ListItem emptyItem = new ListItem (renderingContext.Control.GetNullItemText (), renderingContext.Control.NullIdentifier);
+      ListItem emptyItem = new ListItem (renderingContext.Control.GetNullItemText(), renderingContext.Control.NullIdentifier);
       if (renderingContext.Control.Value == null)
+      {
         if (renderingContext.Control.Value == null)
-        emptyItem.Selected = true;
+          emptyItem.Selected = true;
+      }
 
       return emptyItem;
     }
 
     private Label GetLabel (BocEnumValueRenderingContext renderingContext)
     {
-      Label label = new Label { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static};
+      Label label = new Label { ID = renderingContext.Control.GetValueName(), ClientIDMode = ClientIDMode.Static };
       string text;
       if (renderingContext.Control.IsDesignMode && renderingContext.Control.EnumerationValueInfo == null)
       {
@@ -198,9 +205,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
         label.Attributes.Add ("data-value", renderingContext.Control.EnumerationValueInfo.Identifier);
       }
       else
-      {
         text = null;
-      }
 
       label.Text = text;
 
@@ -211,7 +216,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       return label;
     }
 
-    public override string GetCssClassBase(IBocEnumValue control)
+    public override string GetCssClassBase (IBocEnumValue control)
     {
       return "bocEnumValue";
     }

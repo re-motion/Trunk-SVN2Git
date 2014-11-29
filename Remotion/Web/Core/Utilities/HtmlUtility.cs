@@ -14,43 +14,54 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Utilities
 {
-public class HtmlUtility
-{
-  public static string Format (string htmlFormatString, params object[] nonHtmlParameters)
+  public class HtmlUtility
   {
-    string[] htmlParameters = new string[nonHtmlParameters.Length];
-    for (int i = 0; i < nonHtmlParameters.Length; ++i)
+    public static string Format (string htmlFormatString, params object[] nonHtmlParameters)
     {
-      htmlParameters[i] = HtmlEncode (nonHtmlParameters[i].ToString());
+      string[] htmlParameters = new string[nonHtmlParameters.Length];
+      for (int i = 0; i < nonHtmlParameters.Length; ++i)
+        htmlParameters[i] = HtmlEncode (nonHtmlParameters[i].ToString());
+      return string.Format (htmlFormatString, (object[]) htmlParameters);
     }
-    return string.Format (htmlFormatString, (object[]) htmlParameters);
-  }
 
-  public static string HtmlEncode (string nonHtmlString)
-  {
-    string html = HttpUtility.HtmlEncode (nonHtmlString);
-    if (html != null)
+    public static string HtmlEncode (string nonHtmlString)
     {
-      html = html.Replace ("\r\n", "<br />");
-      html = html.Replace ("\n", "<br />");
-      html = html.Replace ("\r", "<br />");
+      string html = HttpUtility.HtmlEncode (nonHtmlString);
+      if (html != null)
+      {
+        html = html.Replace ("\r\n", "<br />");
+        html = html.Replace ("\n", "<br />");
+        html = html.Replace ("\r", "<br />");
+      }
+      return html;
     }
-    return html;
-  }
 
-  public static void HtmlEncode (string nonHtmlString, HtmlTextWriter writer)
-  {
-    writer.Write (HtmlUtility.HtmlEncode (nonHtmlString));
-  }
+    public static void HtmlEncode (string nonHtmlString, HtmlTextWriter writer)
+    {
+      writer.Write (HtmlEncode (nonHtmlString));
+    }
 
-  private HtmlUtility()
-  {
+    private static readonly Regex s_stripHtmlTagsRegex = new Regex ("<.*?>", RegexOptions.Compiled);
+
+    public static string StripHtmlTags ([NotNull] string text)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+
+      return s_stripHtmlTagsRegex.Replace (text, string.Empty);
+    }
+
+    private HtmlUtility ()
+    {
+    }
   }
-}
 }

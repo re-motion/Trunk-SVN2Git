@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,10 +52,10 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
-      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude ();
+      htmlHeadAppender.RegisterUtilitiesJavaScriptInclude();
 
       string scriptFileKey = typeof (ListMenuRenderer).FullName + "_Script";
-      var scriptFileUrl = ResourceUrlFactory.CreateResourceUrl(typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.js");
+      var scriptFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (ListMenuRenderer), ResourceType.Html, "ListMenu.js");
       htmlHeadAppender.RegisterJavaScriptInclude (scriptFileKey, scriptFileUrl);
 
       string styleSheetKey = typeof (ListMenuRenderer).FullName + "_Style";
@@ -120,7 +121,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       //  if (isFirstItem)
       //    isFirstItem = false;
       //}
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag();
     }
 
     private IEnumerable<IEnumerable<WebMenuItem>> GetVisibleMenuItemsInGroups (ListMenuRenderingContext renderingContext)
@@ -150,12 +151,12 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, GetMenuItemClientID (renderingContext, index));
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "listMenuItem");
-      if(IsDiagnosticMetadataRenderingEnabled)
-        RenderDiagnosticMetadataAttributesForListMenuItem(renderingContext, menuItem);
+      if (IsDiagnosticMetadataRenderingEnabled)
+        RenderDiagnosticMetadataAttributesForListMenuItem (renderingContext, menuItem);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
       var command = !menuItem.IsDisabled ? menuItem.Command : new Command (CommandType.None) { OwnerControl = menuItem.OwnerControl };
-      if (string.IsNullOrEmpty (command.ItemID ))
+      if (string.IsNullOrEmpty (command.ItemID))
         command.ItemID = "MenuItem_" + index + "_Command";
 
       command.RenderBegin (
@@ -184,7 +185,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.ItemID, menuItem.ItemID);
 
       if (!string.IsNullOrEmpty (menuItem.Text))
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, menuItem.Text);
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (menuItem.Text));
     }
 
     private void RegisterMenuItems (ListMenuRenderingContext renderingContext)
@@ -197,7 +198,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       string key = renderingContext.Control.UniqueID + "_MenuItems";
       if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (ListMenuRenderer), key))
       {
-        StringBuilder script = new StringBuilder ();
+        StringBuilder script = new StringBuilder();
         script.AppendFormat ("ListMenu_AddMenuInfo (document.getElementById ('{0}'), \r\n\t", renderingContext.Control.ClientID);
         script.AppendFormat ("new ListMenu_MenuInfo ('{0}', new Array (\r\n", renderingContext.Control.ClientID);
         bool isFirstItemInGroup = true;
@@ -205,7 +206,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
         for (int idxItems = 0; idxItems < groupedListMenuItems.Length; idxItems++)
         {
           WebMenuItem currentItem = groupedListMenuItems[idxItems];
-          if (!currentItem.EvaluateVisible ())
+          if (!currentItem.EvaluateVisible())
             continue;
 
           if (isFirstItemInGroup)
@@ -220,7 +221,11 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
 
         script.Append (renderingContext.Control.GetUpdateScriptReference ("null"));
 
-        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (ListMenuRenderer), key, script.ToString ());
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+            renderingContext.Control,
+            typeof (ListMenuRenderer),
+            key,
+            script.ToString());
       }
     }
 
@@ -244,14 +249,14 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
           if (isPostBackCommand)
           {
             // Clientside script creates an anchor with href="#" and onclick=function
-            string argument = menuItemIndex.ToString ();
+            string argument = menuItemIndex.ToString();
             href = renderingContext.Control.Page.ClientScript.GetPostBackClientHyperlink (renderingContext.Control, argument) + ";";
             href = ScriptUtility.EscapeClientScript (href);
             href = "'" + href + "'";
           }
           else if (menuItem.Command.Type == CommandType.Href)
           {
-            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString (), menuItem.ItemID);
+            href = menuItem.Command.HrefCommand.FormatHref (menuItemIndex.ToString(), menuItem.ItemID);
             href = "'" + renderingContext.Control.ResolveClientUrl (href) + "'";
             target = "'" + menuItem.Command.HrefCommand.Target + "'";
           }
@@ -269,7 +274,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
       string text = showText ? "'" + menuItem.Text + "'" : "null";
 
       bool isDisabled = !renderingContext.Control.Enabled
-                        || !menuItem.EvaluateEnabled ()
+                        || !menuItem.EvaluateEnabled()
                         || !isCommandEnabled;
       stringBuilder.AppendFormat (
           "\t\tnew ListMenuItemInfo ('{0}', '{1}', {2}, {3}, {4}, {5}, {6}, {7}, {8})",

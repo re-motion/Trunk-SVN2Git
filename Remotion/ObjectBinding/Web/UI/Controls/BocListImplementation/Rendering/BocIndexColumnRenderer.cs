@@ -14,14 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -55,7 +56,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (!renderingContext.Control.IsIndexEnabled)
         return;
 
-      string selectorControlID = renderingContext.Control.GetSelectorControlName ().Replace('$', '_') + "_" + originalRowIndex;
+      string selectorControlID = renderingContext.Control.GetSelectorControlName().Replace ('$', '_') + "_" + originalRowIndex;
       string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
@@ -79,13 +80,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       {
         var columnTitle = renderingContext.Control.IndexColumnTitle;
         if (!string.IsNullOrEmpty (columnTitle))
-          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, columnTitle);
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (columnTitle));
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       string indexColumnTitle = renderingContext.Control.IndexColumnTitle;
       if (string.IsNullOrEmpty (renderingContext.Control.IndexColumnTitle))
-        indexColumnTitle = renderingContext.Control.GetResourceManager().GetString (Controls.BocList.ResourceIdentifier.IndexColumnTitle);
+        indexColumnTitle = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.IndexColumnTitle);
 
       // Do not HTML encode.
       renderingContext.Writer.Write (indexColumnTitle);
@@ -117,7 +118,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.Write (renderedIndex);
       renderingContext.Writer.RenderEndTag();
     }
-
-
   }
 }
