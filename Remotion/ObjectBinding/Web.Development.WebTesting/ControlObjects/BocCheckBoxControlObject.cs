@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
@@ -53,9 +53,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         return UnspecifiedPage();
 
       var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
-      Action<ElementScope> checkAction = s => s.Check();
-      Action<ElementScope> uncheckAction = s => s.Uncheck();
-      new CustomAction (this, Scope.FindChild ("Value"), newState ? checkAction : uncheckAction).Execute (actualActionOptions);
+
+      if (newState)
+        new CheckAction (this, Scope.FindChild ("Value")).Execute (actualActionOptions);
+      else
+        new UncheckAction (this, Scope.FindChild ("Value")).Execute (actualActionOptions);
+
       return UnspecifiedPage();
     }
 

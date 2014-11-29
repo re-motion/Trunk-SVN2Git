@@ -87,7 +87,7 @@ namespace ActaNova.WebTesting.ControlObjects
       Context.Browser.Driver.ExecuteScript (script, GetTinyMceFrameBodyScope());
 
       var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
-      new CustomAction (this, GetTinyMceFrameBodyScope(), s => s.SendKeysFixed (Keys.Tab)).Execute (actualActionOptions);
+      new CustomAction (this, GetTinyMceFrameBodyScope(), "SendKeys", s => s.SendKeysFixed (Keys.Tab)).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 

@@ -173,7 +173,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
         var actualActionOptions = _controlObject.MergeWithDefaultActionOptions (_controlObject.Scope, actionOptions);
-        new CustomAction(_controlObject, _controlObject.Scope.FindChild ("Value"), selectAction).Execute(actualActionOptions);
+        new CustomAction (_controlObject, _controlObject.Scope.FindChild ("Value"), "Select", selectAction).Execute (actualActionOptions);
         return _controlObject.UnspecifiedPage();
       }
     }
@@ -229,7 +229,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         ArgumentUtility.CheckNotNull ("scope", scope);
 
         var actualActionOptions = _controlObject.MergeWithDefaultActionOptions (_controlObject.Scope, actionOptions);
-        new CustomAction(_controlObject, scope, s => s.Check()).Execute(actualActionOptions);
+        new CheckAction (_controlObject, scope).Execute (actualActionOptions);
         return _controlObject.UnspecifiedPage();
       }
     }

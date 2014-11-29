@@ -43,6 +43,7 @@ namespace ActaNova.WebTesting.ControlObjects
       var customAction = new CustomAction (
           this,
           Scope,
+          "SelectMainMenu",
           s => RetryUntilTimeout.Run (
               () =>
               {

@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("selectAction", selectAction);
 
       var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
-      new CustomAction (this, Scope.FindChild ("Value"), selectAction).Execute (actualActionOptions);
+      new CustomAction (this, Scope.FindChild ("Value"), "Select", selectAction).Execute (actualActionOptions);
       return UnspecifiedPage();
     }
 

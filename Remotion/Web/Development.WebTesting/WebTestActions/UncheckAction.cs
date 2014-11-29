@@ -23,31 +23,19 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting.WebTestActions
 {
   /// <summary>
-  /// Fills a text box with a value.
+  /// Unchecks a check box.
   /// </summary>
-  public class FillWithAction : WebTestAction
+  public class UncheckAction : WebTestAction
   {
-    private readonly string _value;
-    private readonly FinishInputWithAction _finishInputWithAction;
-
-    public FillWithAction (
-        [NotNull] ControlObject control,
-        [NotNull] ElementScope scope,
-        [NotNull] string value,
-        [NotNull] FinishInputWithAction finishInputWithAction)
+    public UncheckAction ([NotNull] ControlObject control, [NotNull] ElementScope scope)
         : base (control, scope)
     {
-      ArgumentUtility.CheckNotNull ("value", value);
-      ArgumentUtility.CheckNotNull ("finishInputWithAction", finishInputWithAction);
-
-      _value = value;
-      _finishInputWithAction = finishInputWithAction;
     }
 
     /// <inheritdoc/>
     protected override string ActionName
     {
-      get { return "FillWith"; }
+      get { return "Uncheck"; }
     }
 
     /// <inheritdoc/>
@@ -55,8 +43,7 @@ namespace Remotion.Web.Development.WebTesting.WebTestActions
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      OutputDebugMessage (string.Format ("New value: '{0}'", _value));
-      scope.FillInWithFixed (_value, _finishInputWithAction);
+      scope.Uncheck();
     }
   }
 }

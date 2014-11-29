@@ -23,24 +23,27 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting.WebTestActions
 {
   /// <summary>
-  /// Represents a click.
+  /// Custom <see cref="WebTestAction"/> which allows the developer to execute an arbitrary action.
   /// </summary>
   public class CustomAction : WebTestAction
   {
+    private readonly string _name;
     private readonly Action<ElementScope> _action;
 
-    public CustomAction ([NotNull] ControlObject control, [NotNull] ElementScope scope, [NotNull] Action<ElementScope> action)
+    public CustomAction ([NotNull] ControlObject control, [NotNull] ElementScope scope, [NotNull] string name, [NotNull] Action<ElementScope> action)
         : base (control, scope)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("action", action);
 
+      _name = name;
       _action = action;
     }
 
     /// <inheritdoc/>
     protected override string ActionName
     {
-      get { return "Custom"; }
+      get { return _name; }
     }
 
     /// <inheritdoc/>

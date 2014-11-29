@@ -75,6 +75,7 @@
     <Compile Include="ModalDialogHandlers\CancelModalDialogHandler.cs" />
     <Compile Include="WebTestActionOptions.cs" />
     <Compile Include="WebTestActionOptionsFluentInterface.cs" />
+    <Compile Include="WebTestActions\CheckAction.cs" />
     <Compile Include="WebTestActions\ClickAction.cs" />
     <Compile Include="CommonJavaScripts.cs" />
     <Compile Include="App_Packages\Remotion.JetBrains.Annotations.Sources.1.15.23.0\AssertionConditionAttribute.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="PageObjects\RemotionPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
     <Compile Include="WebTestActions\SimpleClickAction.cs" />
+    <Compile Include="WebTestActions\UncheckAction.cs" />
     <Compile Include="WebTestHelper.cs" />
     <Compile Include="Configuration\WebTestingConfiguration.cs" />
     <Compile Include="WebTestActions\CustomAction.cs" />

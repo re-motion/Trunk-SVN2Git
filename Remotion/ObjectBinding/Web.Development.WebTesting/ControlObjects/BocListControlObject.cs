@@ -312,7 +312,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
       var availableViewsScope = GetAvailableViewsScope();
-      new CustomAction (this, availableViewsScope, selectAction).Execute (actualActionOptions);
+      new CustomAction (this, availableViewsScope, "Select", selectAction).Execute (actualActionOptions);
     }
 
     /// <inheritdoc/>
