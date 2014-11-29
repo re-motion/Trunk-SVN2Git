@@ -55,7 +55,7 @@ namespace Remotion.Web.Utilities
 
     public static string StripHtmlTags ([NotNull] string text)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("text", text);
+      ArgumentUtility.CheckNotNull ("text", text);
 
       return s_stripHtmlTagsRegex.Replace (text, string.Empty);
     }

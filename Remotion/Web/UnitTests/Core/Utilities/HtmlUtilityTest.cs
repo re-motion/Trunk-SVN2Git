@@ -60,6 +60,12 @@ namespace Remotion.Web.UnitTests.Core.Utilities
     }
 
     [Test]
+    public void StripHtmlTags_Empty ()
+    {
+      Assert.That (HtmlUtility.StripHtmlTags (""), Is.EqualTo (""));
+    }
+
+    [Test]
     public void StripHtmlTags_OpenedAndClosedTagRemoval ()
     {
       Assert.That (HtmlUtility.StripHtmlTags ("<span>SimpleS<i>tr<b>i</b>n</i></span>g"), Is.EqualTo ("SimpleString"));
