@@ -17,6 +17,7 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
@@ -27,6 +28,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void Test ()
     {
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        Assert.Ignore ("Not working on TeamCity yet.");
+
       const string fileName = "SampleFile.txt";
 
       var downloadHelper = NewDownloadHelper (fileName);
