@@ -19,7 +19,6 @@ using System;
 using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
-using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 {
@@ -38,8 +37,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
-      return RetryUntilTimeout.Run (() => int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value));
+      return int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
     }
 
     /// <summary>
@@ -49,8 +47,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
-      return RetryUntilTimeout.Run (() => context.Scope.FindId (c_wxeFunctionToken).Value);
+      return context.Scope.FindId (c_wxeFunctionToken).Value;
     }
 
     /// <summary>
@@ -121,8 +118,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
 
       ArgumentUtility.CheckNotNull ("context", context);
 
-      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
-      return RetryUntilTimeout.Run (() => context.Scope.FindCss ("title").InnerHTML);
+      return context.Scope.FindCss ("title").InnerHTML;
     }
   }
 }

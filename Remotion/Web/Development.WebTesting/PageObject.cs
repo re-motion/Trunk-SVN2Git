@@ -19,7 +19,6 @@ using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlSelection;
-using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -45,8 +44,7 @@ namespace Remotion.Web.Development.WebTesting
     public virtual string GetTitle ()
     {
       // Note: do not use Context.Window.Title - this would return wrong titles for page objects representing the contents of an IFRAME.
-      // Todo RM-6384: Remove RetryUntilTimeout-encapsulation as soon as Coypu has fixed the implementation.
-      return RetryUntilTimeout.Run (() => Scope.FindCss ("title").InnerHTML).Trim();
+      return Scope.FindCss ("title").InnerHTML.Trim();
     }
 
     /// <inheritdoc/>
