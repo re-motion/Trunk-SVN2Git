@@ -41,10 +41,10 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("window", window);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        window.AcceptModalDialog();
-      else
-        HandleModalDialogFixedForInternetExplorer (browser, window, a => a.Accept(), true);
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        Thread.Sleep (TimeSpan.FromMilliseconds (250));
+
+      window.AcceptModalDialog();
     }
 
     /// <summary>
@@ -54,11 +54,12 @@ namespace Remotion.Web.Development.WebTesting
     public static void AcceptModalDialogImmediatelyFixed ([NotNull] this BrowserWindow window, [NotNull] BrowserSession browser)
     {
       ArgumentUtility.CheckNotNull ("window", window);
+      ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        window.AcceptModalDialog (Options.NoWait);
-      else
-        HandleModalDialogFixedForInternetExplorer (browser, window, a => a.Accept(), false);
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        Thread.Sleep (TimeSpan.FromMilliseconds (250));
+
+      window.AcceptModalDialog (Options.NoWait);
     }
 
     /// <summary>
@@ -71,35 +72,10 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("window", window);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (!WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        window.CancelModalDialog();
-      else
-        HandleModalDialogFixedForInternetExplorer (browser, window, a => a.Dismiss(), true);
-    }
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        Thread.Sleep (TimeSpan.FromMilliseconds (250));
 
-    private static void HandleModalDialogFixedForInternetExplorer (
-        [NotNull] BrowserSession browser,
-        [NotNull] BrowserWindow window,
-        [NotNull] Action<IAlert> modalDialogAction,
-        bool retryUntilTimeout)
-    {
-      ArgumentUtility.CheckNotNull ("browser", browser);
-      ArgumentUtility.CheckNotNull ("window", window);
-      ArgumentUtility.CheckNotNull ("modalDialogAction", modalDialogAction);
-
-      Action handleModalDialogAction = () => modalDialogAction (window.GetNativeFromBrowserWindow().SwitchTo().Alert());
-
-      if (retryUntilTimeout)
-        RetryUntilTimeout.Run (handleModalDialogAction);
-      else
-        handleModalDialogAction();
-
-      // Unfortunately, we run into a race condition *after* accepting the modal dialog again, so we need to do some waiting here.
-      // Todo RM-6297: Try to get rid of waiting. See https://groups.google.com/forum/#!topic/selenium-users/NrtJnq7b678 for more information.
-      Thread.Sleep (TimeSpan.FromMilliseconds (250));
-
-      // Prevent IE driver crash after window change & possible close with non-Coypu means.
-      browser.EnsureWindowIsActive();
+      window.CancelModalDialog();
     }
   }
 }
