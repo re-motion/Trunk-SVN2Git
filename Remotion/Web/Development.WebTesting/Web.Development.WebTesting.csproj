@@ -44,9 +44,9 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Coypu, Version=2.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Coypu, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\Coypu.2.5.1\lib\net40\Coypu.dll</HintPath>
+      <HintPath>..\..\..\packages\Coypu.2.6.0\lib\net40\Coypu.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
