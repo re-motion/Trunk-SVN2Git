@@ -18,6 +18,7 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using JetBrains.Annotations;
 using log4net;
@@ -64,23 +65,24 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Performs the actual download (after the start has been triggered in the browser). The download is only allowed to take at most the configured
-    /// time before PerformDownload throws an <see cref="InvalidOperationException"/>.
+    /// Performs the actual download (triggered by the given <paramref name="downloadTrigger"/>). The download is only allowed to take at most the
+    /// configured maximum donwload time before PerformDownload throws an <see cref="InvalidOperationException"/>.
     /// </summary>
+    /// <param name="downloadTrigger">An action triggering the start of the download.</param>
     /// <returns>The full path of the downloaded file.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the completion of the download takes too long.</exception>
-    public string PerformDownload ()
+    public string PerformDownload ([NotNull] Action downloadTrigger)
     {
       s_log.DebugFormat ("Performing download of '{0}'...", _fileName);
 
-      // Todo RM-6297: Find a better way to handle the yellow download bar in IE11.
+      // Note: run download trigger in different thread - Selenium does not return until the IE download handling has been performed.
+      Task.Factory.StartNew(downloadTrigger);
 
+      // Todo RM-6297: Find a better way to handle the yellow download bar in IE11.
       if (_browserConfiguration.BrowserIsInternetExplorer())
       {
         Thread.Sleep (1500); // do not press too fast, IE-security in place
-        SendKeys.SendWait ("{F6}{TAB}");
-        Thread.Sleep (1500); // do not press too fast, IE-security in place
-        SendKeys.SendWait ("{ENTER}");
+        SendKeys.SendWait ("{F6}{TAB}{ENTER}");
       }
 
       var errorMessage = string.Format ("File download of '{0}' failed.", _fileName);
