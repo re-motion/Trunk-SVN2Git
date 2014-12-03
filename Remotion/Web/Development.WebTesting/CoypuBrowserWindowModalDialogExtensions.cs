@@ -16,13 +16,10 @@
 // 
 
 using System;
-using System.Threading;
 using Coypu;
 using JetBrains.Annotations;
-using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
-using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -41,9 +38,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("window", window);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Thread.Sleep (TimeSpan.FromMilliseconds (250));
-
+      // Note: currently we have no IE-specific compatibility requirements.
       window.AcceptModalDialog();
     }
 
@@ -56,9 +51,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("window", window);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Thread.Sleep (TimeSpan.FromMilliseconds (250));
-
+      // Note: currently we have no IE-specific compatibility requirements.
       window.AcceptModalDialog (Options.NoWait);
     }
 
@@ -72,9 +65,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("window", window);
       ArgumentUtility.CheckNotNull ("browser", browser);
 
-      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
-        Thread.Sleep (TimeSpan.FromMilliseconds (250));
-
+      // Note: currently we have no IE-specific compatibility requirements.
       window.CancelModalDialog();
     }
   }
