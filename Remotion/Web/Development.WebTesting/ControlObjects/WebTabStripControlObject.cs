@@ -86,6 +86,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SwitchTo (itemScope, actionOptions);
     }
 
+    /// <inheritdoc/>
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayTextContains (string containsDisplayText, IWebTestActionOptions actionOptions)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      var itemScope = Scope.FindTagWithAttributeUsingOperator (
+          "span.tabStripTab",
+          CssComparisonOperator.SubstringMatch,
+          DiagnosticMetadataAttributes.Content,
+          containsDisplayText);
+      return SwitchTo (itemScope, actionOptions);
+    }
+
     private UnspecifiedPageObject SwitchTo (ElementScope tabScope, IWebTestActionOptions actionOptions)
     {
       var tabCommandScope = tabScope.FindLink();

@@ -104,6 +104,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return GetTabStrip().SwitchTo().WithDisplayText (displayText, actionOptions);
     }
 
+    /// <inheritdoc/>
+    UnspecifiedPageObject IFluentControlObjectWithTabs.WithDisplayTextContains (string containsDisplayText, IWebTestActionOptions actionOptions)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      return GetTabStrip().SwitchTo().WithDisplayText (containsDisplayText, actionOptions);
+    }
+
     private WebTabStripControlObject GetTabStrip ()
     {
       var scope = Scope.FindChild ("TabStrip");

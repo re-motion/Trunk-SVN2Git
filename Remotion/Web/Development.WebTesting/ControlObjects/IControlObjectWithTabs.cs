@@ -60,5 +60,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Switches to the tab using the given <paramref name="displayText"/>.
     /// </summary>
     UnspecifiedPageObject WithDisplayText ([NotNull] string displayText, [CanBeNull] IWebTestActionOptions actionOptions = null);
+
+    /// <summary>
+    /// Switches to the tab using the given <paramref name="containsDisplayText"/>.
+    /// </summary>
+    UnspecifiedPageObject WithDisplayTextContains ([NotNull] string containsDisplayText, [CanBeNull] IWebTestActionOptions actionOptions = null);
   }
 }
