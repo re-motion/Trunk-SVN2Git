@@ -130,6 +130,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       rootNode.GetNode().WithDisplayText ("B, B").Select();
       Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("a97d84b0-c1c9-4580-a6c1-1fed1ee8c041|B, B"));
+
+      rootNode.GetNode().WithDisplayTextContains (", B").Select();
+      Assert.That (home.Scope.FindIdEndingWith ("NormalSelectedNodeLabel").Text, Is.EqualTo ("a97d84b0-c1c9-4580-a6c1-1fed1ee8c041|B, B"));
     }
 
     [Test]

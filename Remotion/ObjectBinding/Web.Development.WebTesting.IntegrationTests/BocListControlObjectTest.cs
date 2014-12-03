@@ -189,7 +189,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       row = bocList.GetRowWhere().ColumnWithIndexContains (6, "CEO");
       Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
 
-      row = bocList.GetRowWhere().ColumnWithTitleContains ("Title", "CEO");
+      row = bocList.GetRowWhere().ColumnWithTitleContainsExactly ("Title", "CEO");
+      Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
+
+      row = bocList.GetRowWhere().ColumnWithTitleContains ("Title", "EO");
       Assert.That (row.GetCell (6).GetText(), Is.EqualTo ("CEO"));
     }
 
@@ -206,7 +209,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       cell = bocList.GetCellWhere().ColumnWithIndexContains (6, "CEO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
 
-      cell = bocList.GetCellWhere().ColumnWithTitleContains ("Title", "CEO");
+      cell = bocList.GetCellWhere().ColumnWithTitleContainsExactly ("Title", "CEO");
+      Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
+
+      cell = bocList.GetCellWhere().ColumnWithTitleContains ("Title", "EO");
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
 

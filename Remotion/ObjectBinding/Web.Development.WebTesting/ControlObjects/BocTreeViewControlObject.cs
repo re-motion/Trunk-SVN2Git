@@ -80,5 +80,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       return _metaRootNode.GetNode().WithDisplayText (displayText);
     }
+
+    /// <inheritdoc/>
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayTextContains (string containsDisplayText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      return _metaRootNode.GetNode().WithDisplayTextContains (containsDisplayText);
+    }
   }
 }

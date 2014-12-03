@@ -57,5 +57,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Selects the node using the given <paramref name="displayText"/>.
     /// </summary>
     TNodeControlObject WithDisplayText ([NotNull] string displayText);
+
+    /// <summary>
+    /// Selects the node using the given <paramref name="containsDisplayText"/>.
+    /// </summary>
+    TNodeControlObject WithDisplayTextContains ([NotNull] string containsDisplayText);
   }
 }

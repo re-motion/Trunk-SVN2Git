@@ -65,6 +65,32 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// Find an element with the given <paramref name="tagSelector"/> bearing a given attribute name/value combination (value is compared using the
+    /// given <paramref name="op"/>).
+    /// </summary>
+    /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>
+    /// <param name="tagSelector">The CSS selector for the HTML tags to check for the attributes.</param>
+    /// <param name="op">The CSS operator to use when comparing the <paramref name="attributeValue"/>.</param>
+    /// <param name="attributeName">The attribute name.</param>
+    /// <param name="attributeValue">The attribute value.</param>
+    /// <returns>The <see cref="ElementScope"/> of the found element.</returns>
+    public static ElementScope FindTagWithAttributeUsingOperator (
+        [NotNull] this ElementScope scope,
+        [NotNull] string tagSelector,
+        CssComparisonOperator op,
+        [NotNull] string attributeName,
+        [NotNull] string attributeValue)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+      ArgumentUtility.CheckNotNullOrEmpty ("tagSelector", tagSelector);
+      ArgumentUtility.CheckNotNullOrEmpty ("attributeName", attributeName);
+      ArgumentUtility.CheckNotNullOrEmpty ("attributeValue", attributeValue);
+
+      var cssSelector = string.Format ("{0}[{1}{2}'{3}']", tagSelector, attributeName, op.ToCssString(), attributeValue);
+      return scope.FindCss (cssSelector);
+    }
+
+    /// <summary>
     /// Find an element with the given <paramref name="tagSelector"/> bearing one or more given attribute name/value combinations.
     /// </summary>
     /// <param name="scope">The parent <see cref="ElementScope"/> which serves as the root element for the search.</param>

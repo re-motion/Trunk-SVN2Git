@@ -49,12 +49,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     TRowControlObject ColumnWithItemIDContains ([NotNull] string itemID, [NotNull] string containsCellText);
 
     /// <summary>
-    /// Selects the cell which contains the <paramref name="containsCellText"/> in the column given by <paramref name="index"/>.
+    /// Selects the row which contains the <paramref name="containsCellText"/> in the column given by <paramref name="index"/>.
     /// </summary>
     TRowControlObject ColumnWithIndexContains (int index, [NotNull] string containsCellText);
 
     /// <summary>
-    /// Selects the cell which contains the <paramref name="containsCellText"/> in the column given by <paramref name="title"/>.
+    /// Selects the row which contains exactly the <paramref name="containsCellText"/> in the column given by <paramref name="title"/>.
+    /// </summary>
+    TRowControlObject ColumnWithTitleContainsExactly ([NotNull] string title, [NotNull] string containsCellText);
+
+    /// <summary>
+    /// Selects the row which contains the <paramref name="containsCellText"/> in the column given by <paramref name="title"/>.
     /// </summary>
     TRowControlObject ColumnWithTitleContains ([NotNull] string title, [NotNull] string containsCellText);
   }

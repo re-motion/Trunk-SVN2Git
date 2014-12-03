@@ -99,6 +99,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
     }
 
+    /// <inheritdoc/>
+    WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithDisplayTextContains (string containsDisplayText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      var nodeScope = Scope.FindTagWithAttributeUsingOperator (
+          "ul li",
+          CssComparisonOperator.SubstringMatch,
+          DiagnosticMetadataAttributes.Content,
+          containsDisplayText);
+      return new WebTreeViewNodeControlObject (Context.CloneForControl (nodeScope));
+    }
+
     /// <summary>
     /// Expands the node.
     /// </summary>

@@ -56,6 +56,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     TCellControlObject ColumnWithIndexContains (int index, [NotNull] string containsCellText);
 
     /// <summary>
+    /// Selects the cell which contains exactly the <paramref name="cellText"/> in the column given by <paramref name="title"/>.
+    /// </summary>
+    TCellControlObject ColumnWithTitleContainsExactly ([NotNull] string title, [NotNull] string cellText);
+
+    /// <summary>
     /// Selects the cell which contains the <paramref name="containsCellText"/> in the column given by <paramref name="title"/>.
     /// </summary>
     TCellControlObject ColumnWithTitleContains ([NotNull] string title, [NotNull] string containsCellText);

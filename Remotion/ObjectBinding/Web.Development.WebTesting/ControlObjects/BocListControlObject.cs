@@ -147,6 +147,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
+    BocListRowControlObject IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithTitleContainsExactly (
+        string title,
+        string containsCellText)
+    {
+      ArgumentUtility.CheckNotNull ("title", title);
+      ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
+
+      var cell = GetCellWhere().ColumnWithTitleContainsExactly (title, containsCellText);
+      return GetRowFromCell (cell);
+    }
+
+    /// <inheritdoc/>
     BocListRowControlObject IFluentControlObjectWithRowsWhereColumnContains<BocListRowControlObject>.ColumnWithTitleContains (
         string title,
         string containsCellText)
@@ -188,7 +200,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
       var column = GetColumnByItemID (itemID);
-      return GetCellWhereColumnContains (column, containsCellText);
+      return GetCellWhereColumnContainsExactly (column, containsCellText);
     }
 
     /// <inheritdoc/>
@@ -199,13 +211,23 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
 
       var column = GetColumnByIndex (index);
-      return GetCellWhereColumnContains (column, containsCellText);
+      return GetCellWhereColumnContainsExactly (column, containsCellText);
     }
 
     /// <inheritdoc/>
-    BocListCellControlObject IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
+    BocListCellControlObject IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContainsExactly (
         string title,
-        string containsCellText)
+        string cellText)
+    {
+      ArgumentUtility.CheckNotNull ("title", title);
+      ArgumentUtility.CheckNotNull ("cellText", cellText);
+
+      var column = GetColumnByTitle (title);
+      return GetCellWhereColumnContainsExactly (column, cellText);
+    }
+
+    /// <inheritdoc/>
+    public BocListCellControlObject ColumnWithTitleContains (string title, string containsCellText)
     {
       ArgumentUtility.CheckNotNull ("title", title);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);
@@ -214,7 +236,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCellWhereColumnContains (column, containsCellText);
     }
 
-    private BocListCellControlObject GetCellWhereColumnContains (ColumnDefinition column, string containsCellText)
+    private BocListCellControlObject GetCellWhereColumnContainsExactly (ColumnDefinition column, string containsCellText)
     {
       if (column.HasDiagnosticMetadata)
       {
@@ -231,6 +253,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         var xPathSelector = string.Format (
             ".//tbody{0}/tr/td[.//*='{1}']",
+            XPathUtils.CreateHasClassCheck ("bocListTableBody"),
+            containsCellText);
+        var cellScope = Scope.FindXPath (xPathSelector);
+        return CreateCellControlObject (GetHtmlID(), cellScope);
+      }
+    }
+
+    private BocListCellControlObject GetCellWhereColumnContains (ColumnDefinition column, string containsCellText)
+    {
+      if (column.HasDiagnosticMetadata)
+      {
+        var cssSelector = string.Format (
+            ".bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[{0}='{1}'] span[{2}*='{3}']",
+            DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex,
+            column.Index,
+            DiagnosticMetadataAttributesForObjectBinding.BocListCellContents,
+            containsCellText);
+        var cellScope = Scope.FindCss (cssSelector).FindXPath ("../..");
+        return CreateCellControlObject (GetHtmlID(), cellScope);
+      }
+      else
+      {
+        var xPathSelector = string.Format (
+            ".//tbody{0}/tr/td[contains(.//*,'{1}')]",
             XPathUtils.CreateHasClassCheck ("bocListTableBody"),
             containsCellText);
         var cellScope = Scope.FindXPath (xPathSelector);

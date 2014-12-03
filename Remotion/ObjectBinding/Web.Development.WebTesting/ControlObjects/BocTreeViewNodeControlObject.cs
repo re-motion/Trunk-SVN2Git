@@ -108,6 +108,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return new BocTreeViewNodeControlObject (webTreeViewNode);
     }
 
+    /// <inheritdoc/>
+    BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithDisplayTextContains (string containsDisplayText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      var webTreeViewNode = _webTreeViewNode.GetNode().WithDisplayTextContains (containsDisplayText);
+      return new BocTreeViewNodeControlObject (webTreeViewNode);
+    }
+
     /// <summary>
     /// Expands the node.
     /// </summary>
