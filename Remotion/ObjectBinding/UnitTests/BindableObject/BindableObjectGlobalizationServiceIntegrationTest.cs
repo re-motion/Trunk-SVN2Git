@@ -248,14 +248,36 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    public void GetPropertyDisplayName_WithPropertyAddedByMixin_NoMixinResource ()
+    public void GetPropertyDisplayName_WithPropertyAddedByMixin_MixinResourceDeclaredWithShortName ()
     {
       BindableObjectClass bindableClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithMixedPropertyAndResources));
-      PropertyBase property = (PropertyBase) bindableClass.GetPropertyDefinition ("MixedReadOnlyProperty");
+      PropertyBase property = (PropertyBase) bindableClass.GetPropertyDefinition ("MixedPropertyWithNotWorkingLocalization");
 
       Assert.That (
           _globalizationService.GetPropertyDisplayName (property.PropertyInfo, TypeAdapter.Create (bindableClass.TargetType)),
-          Is.EqualTo ("MixedReadOnlyProperty"));
+          Is.EqualTo ("Resourced!"));
+    }
+
+    [Test]
+    public void GetPropertyDisplayName_WithPropertyAddedByMixin_NoMixinResource ()
+    {
+      BindableObjectClass bindableClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithMixedPropertyAndResources));
+      PropertyBase property = (PropertyBase) bindableClass.GetPropertyDefinition ("MixedPropertyWithoutLocalization");
+
+      Assert.That (
+          _globalizationService.GetPropertyDisplayName (property.PropertyInfo, TypeAdapter.Create (bindableClass.TargetType)),
+          Is.EqualTo ("MixedPropertyWithoutLocalization"));
+    }
+
+    [Test]
+    public void GetPropertyDisplayName_WithExplicitPropertyAddedByMixin_MixinResourceDeclaredWithShortName ()
+    {
+      BindableObjectClass bindableClass = BindableObjectProviderTestHelper.GetBindableObjectClass (typeof (ClassWithMixedPropertyAndResources));
+      PropertyBase property = (PropertyBase) bindableClass.GetPropertyDefinition ("ExplicitMixedPropertyWithShortNameInLocalization");
+
+      Assert.That (
+          _globalizationService.GetPropertyDisplayName (property.PropertyInfo, TypeAdapter.Create (bindableClass.TargetType)),
+          Is.EqualTo ("Resourced!"));
     }
   }
 }

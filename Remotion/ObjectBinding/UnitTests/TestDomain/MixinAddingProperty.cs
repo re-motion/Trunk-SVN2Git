@@ -22,20 +22,37 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
   public interface IMixinAddingProperty
   {
     string MixedProperty { get; set; }
+    string MixedPropertyWithoutLocalization { get; set; }
+    string MixedPropertyWithShortNameInLocalization { get; set; }
     string MixedReadOnlyPropertyHavingSetterOnMixin { get; }
     string MixedReadOnlyProperty { get; }
     string ExplicitMixedProperty { get; set; }
+    string ExplicitMixedPropertyWithShortNameInLocalization { get; set; }
   }
 
   [Serializable]
   public class MixinAddingProperty : BaseOfMixinAddingProperty, IMixinAddingProperty
   {
     private string _mixedProperty;
-    
+    private string _mixedPropertyWithShortNameInLocalization;
+    private string _mixedPropertyWithoutLocalization;
+
     public string MixedProperty
     {
       get { return _mixedProperty; }
       set { _mixedProperty = value; }
+    }
+    
+    public string MixedPropertyWithShortNameInLocalization
+    {
+      get { return _mixedPropertyWithShortNameInLocalization; }
+      set { _mixedPropertyWithShortNameInLocalization = value; }
+    }
+    
+    public string MixedPropertyWithoutLocalization
+    {
+      get { return _mixedPropertyWithoutLocalization; }
+      set { _mixedPropertyWithoutLocalization = value; }
     }
 
     public string MixedReadOnlyProperty
@@ -53,6 +70,12 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
     {
       get { return _mixedProperty; }
       set { _mixedProperty = value; }
+    }
+
+    string IMixinAddingProperty.ExplicitMixedPropertyWithShortNameInLocalization
+    {
+      get { return _mixedPropertyWithShortNameInLocalization; }
+      set { _mixedPropertyWithShortNameInLocalization = value; }
     }
   }
 }
