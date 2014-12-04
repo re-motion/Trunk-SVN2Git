@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -35,7 +36,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           IDropDownMenuHost,
           IControlObjectWithSelectableOptions,
           IFluentControlObjectWithSelectableOptions,
-          IControlObjectWithText
+          IControlObjectWithText,
+          IControlObjectWithLoadTestingSupport
   {
     public BocReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -117,6 +119,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
       return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the select (value) as only element.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }
   }
 }

@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocMultilineTextValue"/>.
   /// </summary>
-  public class BocMultilineTextValueControlObject : BocControlObject, IFillableControlObject
+  public class BocMultilineTextValueControlObject : BocControlObject, IFillableControlObject, IControlObjectWithLoadTestingSupport
   {
     public BocMultilineTextValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -87,6 +88,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("lines", lines);
 
       return FillWith (string.Join (Environment.NewLine, lines), finishInputWith, actionOptions);
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the textarea (value) as only element.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }
 
     private IWebTestActionOptions MergeWithDefaultActionOptions (

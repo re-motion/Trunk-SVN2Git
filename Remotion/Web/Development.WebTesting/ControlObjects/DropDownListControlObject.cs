@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using Coypu;
 using JetBrains.Annotations;
@@ -28,7 +29,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object for <see cref="DropDownList"/>.
   /// </summary>
   public class DropDownListControlObject
-      : WebFormsControlObject, IControlObjectWithSelectableOptions, IFluentControlObjectWithSelectableOptions, IControlObjectWithText
+      : WebFormsControlObject,
+          IControlObjectWithSelectableOptions,
+          IFluentControlObjectWithSelectableOptions,
+          IControlObjectWithText,
+          IControlObjectWithLoadTestingSupport
   {
     public DropDownListControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -78,6 +83,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
       Action<ElementScope> selectAction = s => s.SelectOption (displayText);
       return SelectOption (selectAction, actionOptions);
+    }
+
+    /// <inheritdoc/>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { Scope.Name };
     }
 
     private UnspecifiedPageObject SelectOption ([NotNull] Action<ElementScope> selectAction, IWebTestActionOptions actionOptions = null)

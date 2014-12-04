@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -26,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="TextBox"/> and all its derivatives (none in re-motion).
   /// </summary>
-  public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject
+  public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject, IControlObjectWithLoadTestingSupport
   {
     public TextBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -59,6 +60,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
       new FillWithAction (this, Scope, text, finishInputWith).Execute (actualActionOptions);
       return UnspecifiedPage();
+    }
+
+    /// <inheritdoc/>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { Scope.Name };
     }
 
     private IWebTestActionOptions MergeWithDefaultActionOptions (

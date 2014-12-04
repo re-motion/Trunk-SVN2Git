@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -28,7 +29,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>.
   /// </summary>
-  public class BocAutoCompleteReferenceValueControlObject : BocControlObject, IFillableControlObject, ICommandHost, IDropDownMenuHost
+  public class BocAutoCompleteReferenceValueControlObject
+      : BocControlObject, IFillableControlObject, ICommandHost, IDropDownMenuHost, IControlObjectWithLoadTestingSupport
   {
     public BocAutoCompleteReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -81,6 +83,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var dropDownMenuScope = Scope.FindChild ("Boc_OptionsMenu");
       return new DropDownMenuControlObject (Context.CloneForControl (dropDownMenuScope));
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=text] (text value) as first element, the
+    /// input[type=hidden] (key value) as second element.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      var htmlID = GetHtmlID();
+      return new[] { string.Format ("{0}_TextValue", htmlID), string.Format ("{0}_KeyValue", htmlID) };
     }
   }
 }

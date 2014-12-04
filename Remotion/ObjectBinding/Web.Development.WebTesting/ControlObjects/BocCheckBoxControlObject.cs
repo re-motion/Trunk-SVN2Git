@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
@@ -26,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox"/> control.
   /// </summary>
-  public class BocCheckBoxControlObject : BocControlObject
+  public class BocCheckBoxControlObject : BocControlObject, IControlObjectWithLoadTestingSupport
   {
     public BocCheckBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -60,6 +61,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         new UncheckAction (this, Scope.FindChild ("Value")).Execute (actualActionOptions);
 
       return UnspecifiedPage();
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=checkbox] (value) as only element.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }
 
     private bool ParseState (string state)

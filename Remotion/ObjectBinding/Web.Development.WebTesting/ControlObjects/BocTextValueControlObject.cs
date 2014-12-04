@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -28,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue"/>.
   /// </summary>
-  public class BocTextValueControlObject : BocControlObject, IFillableControlObject
+  public class BocTextValueControlObject : BocControlObject, IFillableControlObject, IControlObjectWithLoadTestingSupport
   {
     public BocTextValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -63,6 +64,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
       new FillWithAction (this, Scope.FindChild ("Value"), text, finishInputWith).Execute (actualActionOptions);
       return UnspecifiedPage();
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=text] (value) as only element.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }
 
     private IWebTestActionOptions MergeWithDefaultActionOptions (

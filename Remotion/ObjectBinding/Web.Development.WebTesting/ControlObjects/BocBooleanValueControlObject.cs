@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -27,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> control.
   /// </summary>
-  public class BocBooleanValueControlObject : BocControlObject
+  public class BocBooleanValueControlObject : BocControlObject, IControlObjectWithLoadTestingSupport
   {
     public BocBooleanValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -70,6 +71,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var states = new bool?[] { false, null, true, false, null };
       var numberOfClicks = Array.LastIndexOf (states, newState) - Array.IndexOf (states, GetState());
       return Click (numberOfClicks, actionOptions);
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=hidden] (value) as only element.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }
 
     private UnspecifiedPageObject Click (int numberOfClicks, IWebTestActionOptions actionOptions)

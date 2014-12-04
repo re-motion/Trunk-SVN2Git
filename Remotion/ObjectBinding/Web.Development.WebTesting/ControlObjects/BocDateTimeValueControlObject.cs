@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
@@ -29,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue"/> control.
   /// </summary>
-  public class BocDateTimeValueControlObject : BocControlObject
+  public class BocDateTimeValueControlObject : BocControlObject, IControlObjectWithLoadTestingSupport
   {
     private readonly bool _hasTimeField;
 
@@ -37,6 +38,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         : base (context)
     {
       _hasTimeField = Scope[DiagnosticMetadataAttributesForObjectBinding.BocDateTimeValueHasTimeField] == "true";
+    }
+
+    /// <summary>
+    /// Returns whether the control has a time field as well.
+    /// </summary>
+    public bool HasTimeField ()
+    {
+      return _hasTimeField;
     }
 
     /// <summary>
@@ -130,6 +139,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (_hasTimeField)
         SetTime (newDateTime.TimeOfDay, actionOptions);
       return UnspecifiedPage();
+    }
+
+    /// <summary>
+    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=text] (date value) as first element, the
+    /// input[type=text] (time value) as second element. Make sure to use the time value only if <see cref="HasTimeField"/> returns
+    /// <see langword="true" />.
+    /// </summary>
+    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    {
+      var htmlID = GetHtmlID();
+      return new[] { string.Format ("{0}_DateValue", htmlID), string.Format ("{0}_TimeValue", htmlID) };
     }
 
     private ElementScope GetDateScope ()

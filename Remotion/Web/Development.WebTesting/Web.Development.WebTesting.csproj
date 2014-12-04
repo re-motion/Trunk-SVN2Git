@@ -72,6 +72,7 @@
     </Compile>
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
     <Compile Include="CssComparisonOperator.cs" />
+    <Compile Include="IControlObjectWithLoadTestingSupport.cs" />
     <Compile Include="ModalDialogHandlers\AcceptModalDialogHandler.cs" />
     <Compile Include="ModalDialogHandlers\CancelModalDialogHandler.cs" />
     <Compile Include="WebTestActionOptions.cs" />

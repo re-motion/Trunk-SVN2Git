@@ -109,6 +109,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestHasTimeField ()
+    {
+      var home = Start();
+
+      var bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
+      Assert.That (bocDateTimeValue.HasTimeField(), Is.True);
+
+      bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_ReadOnlyDateOnly");
+      Assert.That (bocDateTimeValue.HasTimeField(), Is.False);
+    }
+
+    [Test]
     public void TestGetDateTime ()
     {
       var home = Start();
