@@ -95,6 +95,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       {
         return _bocList.GetColumnByItemID (columnItemID).Index;
       }
+
+      public int GetZeroBasedAbsoluteRowIndexOfFirstRow ()
+      {
+        return int.Parse (_bocList.GetRow (1).Scope.FindCss ("input[type='checkbox']").Id.Split ('_').Last());
+      }
     }
 
     private readonly ILog _log;

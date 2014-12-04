@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
@@ -34,13 +35,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   internal class BocListRowFunctionality : BocControlObject
   {
     private readonly IBocListRowControlObjectHostAccessor _accessor;
-    private readonly int _rowIndex;
+    private readonly int _rowIndexOnPage;
 
     public BocListRowFunctionality (IBocListRowControlObjectHostAccessor accessor, [NotNull] ControlObjectContext context)
         : base (context)
     {
       _accessor = accessor;
-      _rowIndex = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
+      _rowIndexOnPage = int.Parse (Scope[DiagnosticMetadataAttributesForObjectBinding.BocListRowIndex]);
     }
 
     /// <summary>
@@ -48,8 +49,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public void ClickSelectCheckbox ()
     {
-      var zeroBasedRowIndex = _rowIndex - 1;
-      var rowSelectorCheckboxScope = _accessor.ParentScope.FindChild (string.Format ("RowSelector_{0}", zeroBasedRowIndex));
+      var _zeroBasedAbsoluteRowIndexOfFirstRow = _accessor.GetZeroBasedAbsoluteRowIndexOfFirstRow();
+
+      var zeroBasedAbsoluteRowIndex = _zeroBasedAbsoluteRowIndexOfFirstRow + _rowIndexOnPage - 1;
+      var rowSelectorCheckboxScope = _accessor.ParentScope.FindChild (string.Format ("RowSelector_{0}", zeroBasedAbsoluteRowIndex));
       rowSelectorCheckboxScope.Click();
     }
 

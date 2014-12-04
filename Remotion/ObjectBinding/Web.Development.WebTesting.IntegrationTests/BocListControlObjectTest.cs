@@ -347,6 +347,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestRowClickSelectCheckboxOnSpecificPage ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      bocList.GoToSpecificPage (3);
+      bocList.GetRow (1).ClickSelectCheckbox();
+      bocList.GetRow (1).GetCell (4).ExecuteCommand(); // trigger postback
+
+      Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("4"));
+    }
+
+    [Test]
     public void TestRowGetRowDropDownMenu ()
     {
       var home = Start();
