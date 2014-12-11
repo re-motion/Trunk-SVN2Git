@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="TextBox"/> and all its derivatives (none in re-motion).
   /// </summary>
-  public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject, IControlObjectWithLoadTestingSupport
+  public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject, IControlObjectWithFormElements
   {
     public TextBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -63,7 +63,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { Scope.Name };
     }

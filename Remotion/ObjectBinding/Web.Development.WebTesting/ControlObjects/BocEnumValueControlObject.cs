@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue"/> control.
   /// </summary>
   public class BocEnumValueControlObject
-      : BocControlObject, IControlObjectWithSelectableOptions, IFluentControlObjectWithSelectableOptions, IControlObjectWithLoadTestingSupport
+      : BocControlObject, IControlObjectWithSelectableOptions, IFluentControlObjectWithSelectableOptions, IControlObjectWithFormElements
   {
     private readonly IBocEnumValueControlObjectVariant _variantImpl;
 
@@ -88,12 +88,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the select (value) as only element if the display style is
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the select (value) as only element if the display style is
     /// either <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.ListControlType.DropDownList"/> or
     /// <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.ListControlType.ListBox"/>. Returns the common name of the input[type=radio] elements if
     /// the display style is <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.ListControlType.RadioButtonList"/>.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }

@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>.
   /// </summary>
   public class BocAutoCompleteReferenceValueControlObject
-      : BocControlObject, IFillableControlObject, ICommandHost, IDropDownMenuHost, IControlObjectWithLoadTestingSupport
+      : BocControlObject, IFillableControlObject, ICommandHost, IDropDownMenuHost, IControlObjectWithFormElements
   {
     public BocAutoCompleteReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -86,10 +86,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=text] (text value) as first element, the
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the input[type=text] (text value) as first element, the
     /// input[type=hidden] (key value) as second element.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       var htmlID = GetHtmlID();
       return new[] { string.Format ("{0}_TextValue", htmlID), string.Format ("{0}_KeyValue", htmlID) };

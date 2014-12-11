@@ -21,14 +21,14 @@ using System.Collections.Generic;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Gives access to a control object's &lt;input&gt; and &lt;select&gt; HTML element names. This is required for POST request duplication in
-  /// load/performance testing.
-  /// frameworks.
+  /// Gives access to a control object's &lt;input&gt; and &lt;select&gt; HTML element names. In some scenarios direct access to the control's
+  /// underlying form elements is required (e.g. POST request duplication in load/performance testing scenarios).
   /// </summary>
-  public interface IControlObjectWithLoadTestingSupport
+  public interface IControlObjectWithFormElements
   {
     /// <summary>
-    /// Returns a collection of the control object's form element names (= value of the name attribute).
+    /// Returns a collection of the control object's form element names (= value of the name attribute). See implementation documentation for
+    /// information on the ordering.
     /// </summary>
     ICollection<string> GetFormElementNames ();
   }

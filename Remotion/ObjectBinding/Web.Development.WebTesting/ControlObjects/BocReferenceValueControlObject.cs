@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           IControlObjectWithSelectableOptions,
           IFluentControlObjectWithSelectableOptions,
           IControlObjectWithText,
-          IControlObjectWithLoadTestingSupport
+          IControlObjectWithFormElements
   {
     public BocReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -122,9 +122,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the select (value) as only element.
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the select (value) as only element.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }

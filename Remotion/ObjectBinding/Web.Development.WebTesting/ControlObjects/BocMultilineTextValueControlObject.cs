@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocMultilineTextValue"/>.
   /// </summary>
-  public class BocMultilineTextValueControlObject : BocControlObject, IFillableControlObject, IControlObjectWithLoadTestingSupport
+  public class BocMultilineTextValueControlObject : BocControlObject, IFillableControlObject, IControlObjectWithFormElements
   {
     public BocMultilineTextValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -91,9 +91,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the textarea (value) as only element.
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the textarea (value) as only element.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }

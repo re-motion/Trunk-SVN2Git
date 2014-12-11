@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue"/> control.
   /// </summary>
-  public class BocBooleanValueControlObject : BocControlObject, IControlObjectWithLoadTestingSupport
+  public class BocBooleanValueControlObject : BocControlObject, IControlObjectWithFormElements
   {
     public BocBooleanValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -74,9 +74,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=hidden] (value) as only element.
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the input[type=hidden] (value) as only element.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }

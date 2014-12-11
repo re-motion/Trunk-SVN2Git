@@ -33,7 +33,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
           IControlObjectWithSelectableOptions,
           IFluentControlObjectWithSelectableOptions,
           IControlObjectWithText,
-          IControlObjectWithLoadTestingSupport
+          IControlObjectWithFormElements
   {
     public DropDownListControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -86,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { Scope.Name };
     }

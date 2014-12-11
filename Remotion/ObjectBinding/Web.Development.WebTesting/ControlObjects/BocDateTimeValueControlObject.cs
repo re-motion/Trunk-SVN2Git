@@ -30,7 +30,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValue"/> control.
   /// </summary>
-  public class BocDateTimeValueControlObject : BocControlObject, IControlObjectWithLoadTestingSupport
+  public class BocDateTimeValueControlObject : BocControlObject, IControlObjectWithFormElements
   {
     private readonly bool _hasTimeField;
 
@@ -142,11 +142,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=text] (date value) as first element, the
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the input[type=text] (date value) as first element, the
     /// input[type=text] (time value) as second element. Make sure to use the time value only if <see cref="HasTimeField"/> returns
     /// <see langword="true" />.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       var htmlID = GetHtmlID();
       return new[] { string.Format ("{0}_DateValue", htmlID), string.Format ("{0}_TimeValue", htmlID) };

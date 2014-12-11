@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTextValue"/>.
   /// </summary>
-  public class BocTextValueControlObject : BocControlObject, IFillableControlObject, IControlObjectWithLoadTestingSupport
+  public class BocTextValueControlObject : BocControlObject, IFillableControlObject, IControlObjectWithFormElements
   {
     public BocTextValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -67,9 +67,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=text] (value) as only element.
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the input[type=text] (value) as only element.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }

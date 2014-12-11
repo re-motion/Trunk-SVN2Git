@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox"/> control.
   /// </summary>
-  public class BocCheckBoxControlObject : BocControlObject, IControlObjectWithLoadTestingSupport
+  public class BocCheckBoxControlObject : BocControlObject, IControlObjectWithFormElements
   {
     public BocCheckBoxControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -64,9 +64,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// See <see cref="IControlObjectWithLoadTestingSupport.GetFormElementNames"/>. Returns the input[type=checkbox] (value) as only element.
+    /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the input[type=checkbox] (value) as only element.
     /// </summary>
-    ICollection<string> IControlObjectWithLoadTestingSupport.GetFormElementNames ()
+    ICollection<string> IControlObjectWithFormElements.GetFormElementNames ()
     {
       return new[] { string.Format ("{0}_Value", GetHtmlID()) };
     }
