@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
   /// Interface for all <see cref="ControlObject"/> or <see cref="PageObject"/> implementations hosting a collection of
-  /// <see cref="WebButtonControlObject"/>s.
+  /// <see cref="WebButtonControlObject"/>s, e.g. page objects in projects bearing a button bar.
   /// </summary>
   public interface IWebTestObjectWithWebButtons
   {

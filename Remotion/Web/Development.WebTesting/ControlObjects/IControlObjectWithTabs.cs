@@ -23,6 +23,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Interface for all <see cref="ControlObject"/> implementations representing a tab strip.
   /// </summary>
+  /// <seealso cref="WebTabStripControlObject"/>
+  /// <seealso cref="TabbedMultiViewControlObject"/>
   public interface IControlObjectWithTabs
   {
     /// <summary>

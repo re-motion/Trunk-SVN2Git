@@ -21,8 +21,8 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of rows which themselves represent a collection of
-  /// cells.
+  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of rows with cells, e.g. a BOC list. The interface
+  /// allows to query a cell by the contents of a certain column, e.g. "give me the cell of the list where the column 'xyz' contains the text 'abc'".
   /// </summary>
   public interface IControlObjectWithCellsInRowsWhereColumnContains<TCellControlObject>
     where TCellControlObject : ControlObject

@@ -21,8 +21,9 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Interface which must be supported by all control objects holding <see cref="T:Remotion.Web.UI.Controls.WebTreeView"/> nodes.
+  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of nodes, e.g. a web tree view.
   /// </summary>
+  /// <seealso cref="WebTreeViewControlObject"/>
   public interface IControlObjectWithNodes<TNodeControlObject>
       where TNodeControlObject : ControlObject
   {

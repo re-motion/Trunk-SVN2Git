@@ -21,7 +21,7 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of cells.
+  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of cells, e.g. a row within a BOC list.
   /// </summary>
   public interface IControlObjectWithCells<TCellControlObject>
       where TCellControlObject : ControlObject

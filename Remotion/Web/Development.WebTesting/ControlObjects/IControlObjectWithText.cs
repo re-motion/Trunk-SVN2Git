@@ -18,8 +18,9 @@
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations representing text.
+  /// Interface for all <see cref="ControlObject"/> implementations displaying text in some way, e.g. a web tree view node.
   /// </summary>
+  /// <seealso cref="WebTreeViewNodeControlObject"/>
   public interface IControlObjectWithText
   {
     /// <summary>

@@ -21,8 +21,9 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of selectable options.
+  /// Interface for all <see cref="ControlObject"/> implementations representing a collection of selectable options, e.g. a BOC reference value.
   /// </summary>
+  /// <seealso cref="DropDownListControlObject"/>
   public interface IControlObjectWithSelectableOptions
   {
     /// <summary>
