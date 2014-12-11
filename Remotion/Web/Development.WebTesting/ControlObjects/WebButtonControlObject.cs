@@ -31,6 +31,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns whether the web button is enabled.
+    /// </summary>
+    /// <returns>True if the web button is enabled, otherwise false.</returns>
+    public bool IsEnabled ()
+    {
+      return Scope.IsEnabled();
+    }
+
     /// <inheritdoc/>
     public UnspecifiedPageObject Click (IWebTestActionOptions actionOptions = null)
     {

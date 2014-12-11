@@ -19,7 +19,7 @@
   <asp:UpdatePanel ID="UpdatePanel" runat="server">
     <ContentTemplate>
       <h3>WebButton1</h3>
-      <remotion:WebButton ID="MyWebButton1Sync" Text="SyncButton" CommandName="Sync" RequiresSynchronousPostBack="true"  runat="server" />
+      <remotion:WebButton ID="MyWebButton1Sync" Text="SyncButton" CommandName="Sync" RequiresSynchronousPostBack="true" runat="server" />
       <h3>WebButton2</h3>
       <remotion:WebButton ID="MyWebButton2Async" Text="AsyncButton" CommandName="Async" runat="server" />
       <div id="scope">
@@ -27,6 +27,8 @@
         <%-- ReSharper disable once Html.PathError --%>
         <remotion:WebButton ID="MyWebButton3Href" Text="HrefButton" PostBackUrl="WebButtonTest.wxe" runat="server" />
       </div>
+      <h3>Disabled WebButton</h3>
+      <remotion:WebButton ID="MyDisabledWebButton" Text="DisabledWebButton" CommandName="Disabled" Enabled="False" runat="server"/>
     </ContentTemplate>
   </asp:UpdatePanel>
 </asp:Content>
