@@ -20,6 +20,13 @@ using System.Timers;
 using NUnit.Framework;
 using Remotion.Utilities;
 
+internal class RootType
+{
+  internal class RootNestedType
+  {
+  }
+}
+
 namespace Remotion.UnitTests.Utilities
 {
   [TestFixture]
@@ -27,6 +34,24 @@ namespace Remotion.UnitTests.Utilities
   {
     private class NestedType
     {
+      internal class NestedNestedType
+      {
+      }
+    }
+
+    // ReSharper disable once UnusedTypeParameter
+    private class NestedGenericType<T>
+    {
+      internal class NestedGenericNestedType
+      {
+      }
+
+      internal class NestedGenericNestedGenericType<TQ>
+      {
+        // _x introduced to get rid of R# warning
+        // ReSharper disable once UnusedMember.Local
+        private Type _x = typeof (TQ);
+      }
     }
 
     [Test]
@@ -94,10 +119,56 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    public void TestGetType()
+    public void TestGetType ()
     {
       Type t = TypeUtility.GetType ("Remotion.UnitTests::Utilities.TypeUtilityTests", true);
       Assert.That (t, Is.EqualTo (typeof (TypeUtilityTests)));
+    }
+
+    [Test]
+    public void TestGetType_WithNestedNestedType ()
+    {
+      Type t = TypeUtility.GetType ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedType+NestedNestedType", true);
+      Assert.That (t, Is.EqualTo (typeof (NestedType.NestedNestedType)));
+    }
+
+    [Test]
+    public void TestGetType_WithRootNestedType ()
+    {
+      Type t = TypeUtility.GetType ("RootType+RootNestedType, Remotion.UnitTests", true);
+      Assert.That (t, Is.EqualTo (typeof (RootType.RootNestedType)));
+    }
+
+    [Test]
+    public void TestGetType_WithGenericAbbreviatedClosedNestedGenericType ()
+    {
+      Type t = TypeUtility.GetType (
+          "Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1[Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1[[System.Int32, mscorlib]]]",
+          true);
+      Assert.That (t, Is.EqualTo (typeof (NestedGenericType<NestedGenericType<int>>)));
+    }
+
+    [Test]
+    public void TestGetType_WithNestedGenericNestedType ()
+    {
+      Type t = TypeUtility.GetType ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedType", true);
+      Assert.That (t, Is.EqualTo (typeof (NestedGenericType<>.NestedGenericNestedType)));
+    }
+
+    [Test]
+    public void TestGetType_WithNestedGenericNestedGenericType ()
+    {
+      Type t = TypeUtility.GetType("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedGenericType`1", true);
+      Assert.That (t, Is.EqualTo (typeof (NestedGenericType<>.NestedGenericNestedGenericType<>)));
+    }
+
+    [Test]
+    public void TestGetType_WithClosedNestedGenericNestedGenericType ()
+    {
+      Type t = TypeUtility.GetType (
+          "Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedGenericType`1[[System.Int32, mscorlib], [System.Double, mscorlib]]",
+          true);
+      Assert.That (t, Is.EqualTo (typeof (NestedGenericType<int>.NestedGenericNestedGenericType<double>)));
     }
 
     [Test]
@@ -209,11 +280,82 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void GetAbbreviatedTypeName_WithNestedType ()
     {
-      // https://www.re-motion.org/jira/browse/RM-6063
-      Assert.That (() => TypeUtility.GetAbbreviatedTypeName (typeof (NestedType), true), Throws.Exception.TypeOf<NotSupportedException>());
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedType), false);
+      Assert.That (name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedType"));
     }
 
-    private void AssertTransformation (string abbreviatedName, string fullName)
+    [Test]
+    public void GetAbbreviatedTypeName_WithNestedNestedType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedType.NestedNestedType), false);
+      Assert.That (name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedType+NestedNestedType"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithRootType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (RootType), false);
+      Assert.That (name, Is.EqualTo ("RootType, Remotion.UnitTests"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithRootNestedType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (RootType.RootNestedType), false);
+      Assert.That (name, Is.EqualTo ("RootType+RootNestedType, Remotion.UnitTests"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithNestedGenericType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<>), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithClosedNestedGenericType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<int>), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1[[System.Int32, mscorlib]]"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithGenericAbbreviatedClosedNestedGenericType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<NestedGenericType<int>>), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1[Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1[[System.Int32, mscorlib]]]"));
+    }
+
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithNestedGenericNestedType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<>.NestedGenericNestedType), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedType"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithClosedNestedGenericNestedType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<int>.NestedGenericNestedType), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedType[[System.Int32, mscorlib]]"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithNestedGenericNestedGenericType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<>.NestedGenericNestedGenericType<>), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedGenericType`1"));
+    }
+
+    [Test]
+    public void GetAbbreviatedTypeName_WithClosedNestedGenericNestedGenericType ()
+    {
+      string name = TypeUtility.GetAbbreviatedTypeName (typeof (NestedGenericType<int>.NestedGenericNestedGenericType<double>), false);
+      Assert.That(name, Is.EqualTo ("Remotion.UnitTests::Utilities.TypeUtilityTests+NestedGenericType`1+NestedGenericNestedGenericType`1[[System.Int32, mscorlib], [System.Double, mscorlib]]"));
+    }
+
+    private void AssertTransformation(string abbreviatedName, string fullName)
     {
       string result = TypeUtility.ParseAbbreviatedTypeName (abbreviatedName);
       Assert.That (result, Is.EqualTo (fullName));

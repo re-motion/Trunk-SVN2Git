@@ -20,7 +20,6 @@ using System.ComponentModel.Design;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using Remotion.Collections;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Utilities
@@ -220,32 +219,31 @@ namespace Remotion.Utilities
 
     private static void BuildAbbreviatedTypeName (StringBuilder sb, Type type, bool includeVersionAndCulture, bool isTypeParameter)
     {
-      if (type.IsNested)
-        throw new NotSupportedException ("Nested types are not supported with abbrivated typename construction.");
-
-      string ns = type.Namespace;
+      string ns = type.Namespace ?? string.Empty;
       string asm = type.Assembly.GetName().Name;
       bool canAbbreviate = ns.StartsWith (asm);
 
       // put type paramters in [brackets] if they include commas, so the commas cannot be confused with type parameter separators
-      bool needsBrackets = isTypeParameter && (includeVersionAndCulture || ! canAbbreviate);
+      bool needsBrackets = isTypeParameter && (includeVersionAndCulture || !canAbbreviate);
       if (needsBrackets)
         sb.Append ("[");
 
       if (canAbbreviate)
       {
+        var nsLength = string.IsNullOrEmpty (ns) ? 0 : ns.Length + 1;
+        var name = StripTypeParametersFromName (type.FullName.Substring (nsLength));
         sb.Append (asm).Append ("::");
 
         if (ns.Length > asm.Length)
-          sb.Append (ns.Substring (asm.Length + 1)).Append ('.').Append (type.Name);
+          sb.Append (ns.Substring (asm.Length + 1)).Append ('.').Append (name);
         else
-          sb.Append (type.Name);
+          sb.Append (name);
 
         BuildAbbreviatedTypeParameters (sb, type, includeVersionAndCulture);
       }
       else
       {
-        sb.Append (ns).Append (".").Append (type.Name);
+        sb.Append (StripTypeParametersFromName (type.FullName));
         BuildAbbreviatedTypeParameters (sb, type, includeVersionAndCulture);
         sb.Append (", ").Append (asm);
       }
@@ -257,21 +255,30 @@ namespace Remotion.Utilities
         sb.Append ("]");
     }
 
+    private static string StripTypeParametersFromName (string typeName)
+    {
+      var p = typeName.IndexOf ('[');
+      return p < 0 ? typeName : typeName.Substring (0, p);
+    }
+
     private static void BuildAbbreviatedTypeParameters (StringBuilder sb, Type type, bool includeVersionAndCulture)
     {
-      if (type.ContainsGenericParameters)
+      if (type.IsGenericType && !type.IsGenericTypeDefinition)
       {
-        sb.Append ("[");
         Type[] typeParams = type.GetGenericArguments();
-        for (int i = 0; i < typeParams.Length; ++i)
+        if (typeParams.Length > 0)
         {
-          if (i > 0)
-            sb.Append (", ");
+          sb.Append ("[");
+          for (int i = 0; i < typeParams.Length; ++i)
+          {
+            if (i > 0)
+              sb.Append (", ");
 
-          Type typeParam = typeParams[i];
-          BuildAbbreviatedTypeName (sb, typeParam, includeVersionAndCulture, true);
+            Type typeParam = typeParams[i];
+            BuildAbbreviatedTypeName (sb, typeParam, includeVersionAndCulture, true);
+          }
+          sb.Append ("]");
         }
-        sb.Append ("]");
       }
     }
   }
