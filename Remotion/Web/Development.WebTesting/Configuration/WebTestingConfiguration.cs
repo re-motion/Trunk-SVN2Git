@@ -35,6 +35,16 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     private static readonly Lazy<WebTestingConfiguration> s_current;
     private static readonly Dictionary<string, Type> s_wellKnownHostingStrategyTypes;
 
+    private readonly ConfigurationPropertyCollection _properties;
+    private readonly ConfigurationProperty _browserProperty;
+    private readonly ConfigurationProperty _searchTimeoutProperty;
+    private readonly ConfigurationProperty _retryIntervalProperty;
+    private readonly ConfigurationProperty _webApplicationRootProperty;
+    private readonly ConfigurationProperty _screenshotDirectoryProperty;
+    private readonly ConfigurationProperty _logsDirectoryProperty;
+    private readonly ConfigurationProperty _closeBrowserWindowsOnSetUpAndTearDownProperty;
+    private readonly ConfigurationProperty _hostingProperty;
+
     static WebTestingConfiguration ()
     {
       s_current = new Lazy<WebTestingConfiguration> (
@@ -48,6 +58,47 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       s_wellKnownHostingStrategyTypes = new Dictionary<string, Type> { { "IisExpress", typeof (IisExpressHostingStrategy) } };
     }
 
+    public WebTestingConfiguration ()
+    {
+      _browserProperty = new ConfigurationProperty (
+          "browser",
+          typeof (string),
+          null,
+          null,
+          new StringValidator (minLength: 1),
+          ConfigurationPropertyOptions.IsRequired);
+      _searchTimeoutProperty = new ConfigurationProperty ("searchTimeout", typeof (TimeSpan), null, ConfigurationPropertyOptions.IsRequired);
+      _retryIntervalProperty = new ConfigurationProperty ("retryInterval", typeof (TimeSpan), null, ConfigurationPropertyOptions.IsRequired);
+      _webApplicationRootProperty = new ConfigurationProperty (
+          "webApplicationRoot",
+          typeof (string),
+          null,
+          null,
+          new StringValidator (minLength: 1),
+          ConfigurationPropertyOptions.IsRequired);
+      _screenshotDirectoryProperty = new ConfigurationProperty ("screenshotDirectory", typeof (string));
+      _logsDirectoryProperty = new ConfigurationProperty ("logsDirectory", typeof (string), ".");
+      _closeBrowserWindowsOnSetUpAndTearDownProperty = new ConfigurationProperty ("closeBrowserWindowsOnSetUpAndTearDown", typeof (bool), false);
+      _hostingProperty = new ConfigurationProperty("hosting", typeof(ProviderSettings));
+
+      _properties = new ConfigurationPropertyCollection
+                    {
+                        _browserProperty,
+                        _searchTimeoutProperty,
+                        _retryIntervalProperty,
+                        _webApplicationRootProperty,
+                        _screenshotDirectoryProperty,
+                        _logsDirectoryProperty,
+                        _closeBrowserWindowsOnSetUpAndTearDownProperty,
+                        _hostingProperty
+                    };
+    }
+
+    protected override ConfigurationPropertyCollection Properties
+    {
+      get { return _properties; }
+    }
+
     /// <summary>
     /// Returns the current <see cref="WebTestingConfiguration"/>.
     /// </summary>
@@ -59,11 +110,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// <summary>
     /// Browser in which the web tests are run.
     /// </summary>
-    [ConfigurationProperty ("browser", IsRequired = true)]
-    [StringValidator (MinLength = 1)]
     public string BrowserName
     {
-      get { return (string) this["browser"]; }
+      get { return (string) this[_browserProperty]; }
     }
 
     /// <summary>
@@ -113,49 +162,43 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// <summary>
     /// Specifies how long the Coypu engine should maximally search for a web element or try to interact with a web element before it fails.
     /// </summary>
-    [ConfigurationProperty ("searchTimeout", IsRequired = true)]
     public TimeSpan SearchTimeout
     {
-      get { return (TimeSpan) this["searchTimeout"]; }
+      get { return (TimeSpan) this[_searchTimeoutProperty]; }
     }
 
     /// <summary>
     /// Whenever the element to be interacted with is not ready, visible or otherwise not present, the Coypu engine automatically retries the action
     /// after the given <see cref="RetryInterval"/> until the <see cref="SearchTimeout"/> has been reached.
     /// </summary>
-    [ConfigurationProperty ("retryInterval", IsRequired = true)]
     public TimeSpan RetryInterval
     {
-      get { return (TimeSpan) this["retryInterval"]; }
+      get { return (TimeSpan) this[_retryIntervalProperty]; }
     }
 
     /// <summary>
     /// URL to which the web application under test has been published.
     /// </summary>
-    [ConfigurationProperty ("webApplicationRoot", IsRequired = true)]
-    [StringValidator (MinLength = 1)]
     public string WebApplicationRoot
     {
-      get { return (string) this["webApplicationRoot"]; }
+      get { return (string) this[_webApplicationRootProperty]; }
     }
 
     /// <summary>
     /// Absolute or relative path to the screenshot directory. The web testing framework automatically takes two screenshots (one of the whole desktop
     /// and one of the browser window) in case a web test failed.
     /// </summary>
-    [ConfigurationProperty ("screenshotDirectory", IsRequired = false)]
     public string ScreenshotDirectory
     {
-      get { return Path.GetFullPath ((string) this["screenshotDirectory"]); }
+      get { return Path.GetFullPath ((string) this[_screenshotDirectoryProperty]); }
     }
 
     /// <summary>
     /// Absolute or relative path to the logs directory. Some web driver implementations write log files for debugging reasons.
     /// </summary>
-    [ConfigurationProperty ("logsDirectory", DefaultValue = ".")]
     public string LogsDirectory
     {
-      get { return (string) this["logsDirectory"]; }
+      get { return (string) this[_logsDirectoryProperty]; }
     }
 
     /// <summary>
@@ -163,10 +206,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// you want to turn this auto-close option on when running web tests, on developer machines, however, this may unexpectedly close important
     /// browser windows, which is why the default value is set to <see langword="false" />.
     /// </summary>
-    [ConfigurationProperty ("closeBrowserWindowsOnSetUpAndTearDown", DefaultValue = false)]
     public bool CloseBrowserWindowsOnSetUpAndTearDown
     {
-      get { return (bool) this["closeBrowserWindowsOnSetUpAndTearDown"]; }
+      get { return (bool) this[_closeBrowserWindowsOnSetUpAndTearDownProperty]; }
     }
 
     /// <summary>
@@ -185,10 +227,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       return hostingStrategy;
     }
 
-    [ConfigurationProperty ("hosting", IsRequired = false)]
     private ProviderSettings HostingProviderSettings
     {
-      get { return (ProviderSettings) this["hosting"]; }
+      get { return (ProviderSettings) this[_hostingProperty]; }
     }
 
     private static Type GetHostingStrategyType (string hostingStrategyTypeName)
