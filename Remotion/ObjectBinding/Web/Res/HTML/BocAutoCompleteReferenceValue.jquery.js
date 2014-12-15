@@ -67,6 +67,17 @@
         flushCache: function() {
             return this.trigger("flushCache");
         },
+        getAutoCompleteSearchParameters: function (searchString, completionSetCount)
+        {
+          var collectedOptions = {};
+          this.trigger("collectOptions", [collectedOptions]);
+
+          collectedOptions.searchString = searchString;
+          if(completionSetCount)
+            collectedOptions.completionSetCount = completionSetCount;
+
+          return collectedOptions;
+        },
         setOptions: function(options) {
             return this.trigger("setOptions", [options]);
         },
@@ -349,7 +360,19 @@
             requestData(value, findValueCallback, findValueCallback);
         }).bind("flushCache", function() {
             cache.flush();
-        }).bind("setOptions", function() {
+        }).bind("collectOptions", function () {
+            var publicOptions = {
+              serviceUrl: options.serviceUrl,
+              serviceMethodSearch: options.serviceMethodSearch,
+              serviceMethodSearchExact: options.serviceMethodSearchExact,
+              params : {}
+            };
+            
+            for (var propName in options.extraParams)
+              publicOptions.params[propName] = options.extraParams[propName];
+            
+            $.extend(arguments[1], publicOptions);
+        }).bind("setOptions", function () {
             $.extend(options, arguments[1]);
             // if we've updated the data, repopulate
             if ("data" in arguments[1])
