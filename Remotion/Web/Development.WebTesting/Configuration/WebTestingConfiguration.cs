@@ -60,6 +60,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// Browser in which the web tests are run.
     /// </summary>
     [ConfigurationProperty ("browser", IsRequired = true)]
+    [StringValidator (MinLength = 1)]
     public string BrowserName
     {
       get { return (string) this["browser"]; }
@@ -132,6 +133,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// URL to which the web application under test has been published.
     /// </summary>
     [ConfigurationProperty ("webApplicationRoot", IsRequired = true)]
+    [StringValidator (MinLength = 1)]
     public string WebApplicationRoot
     {
       get { return (string) this["webApplicationRoot"]; }
