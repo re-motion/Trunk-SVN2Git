@@ -109,7 +109,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
 
-      return GetTabStrip().SwitchTo().WithDisplayText (containsDisplayText, actionOptions);
+      return GetTabStrip().SwitchTo().WithDisplayTextContains (containsDisplayText, actionOptions);
     }
 
     private WebTabStripControlObject GetTabStrip ()
