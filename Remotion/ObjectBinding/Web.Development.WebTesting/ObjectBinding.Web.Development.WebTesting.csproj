@@ -118,6 +118,7 @@
     <Compile Include="ControlObjects\BocListControlObject.cs" />
     <Compile Include="ControlObjects\BocTreeViewNodeControlObject.cs" />
     <Compile Include="ControlObjects\IBocListRowControlObjectHostAccessor.cs" />
+    <Compile Include="ControlObjects\SearchServiceResultItem.cs" />
     <Compile Include="ControlObjects\Selectors\BocDateTimeValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocEnumValueSelector.cs" />
     <Compile Include="ControlObjects\Selectors\BocCheckBoxSelector.cs" />

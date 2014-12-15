@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -35,6 +36,40 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public BocAutoCompleteReferenceValueControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <summary>
+    /// Invokes the associated search service of the represented <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>
+    /// and returns its results.
+    /// </summary>
+    /// <param name="searchText">Text to search for.</param>
+    /// <param name="completionSetCount">Auto completion set count.</param>
+    /// <returns>The completion set as list of <see cref="SearchServiceResultItem"/> or an empty list if the completion set has been empty.</returns>
+    public IReadOnlyList<SearchServiceResultItem> GetSearchServiceResults ([NotNull] string searchText, int completionSetCount)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
+
+      var inputScopeId = GetHtmlID() + "_TextValue";
+
+      var response =
+          Context.Browser.ExecuteScript (CommonJavaScripts.CreateAutoCompleteWebServiceRequest (inputScopeId, searchText, completionSetCount));
+      var responseAsCollection = (IReadOnlyCollection<object>) response;
+      return responseAsCollection.Cast<IDictionary<string, object>>().Select (
+          d => new SearchServiceResultItem
+               {
+                   DisplayName = (string) d["DisplayName"],
+                   IconUrl = (string) d["IconUrl"],
+                   UniqueIdentifier = (string) d["UniqueIdentifier"],
+                   Type = (string) d["__type"]
+               }).ToList();
+    }
+
+    public SearchServiceResultItem GetExactSearchServiceResult ([NotNull] string value)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
+
+      // Todo RM-6297: Implement GetExactSearchResult
+      throw new NotImplementedException ("TODO RM-6297: Implement GetExactSearchServiceResult() + docs + integration test.");
     }
 
     /// <inheritdoc/>

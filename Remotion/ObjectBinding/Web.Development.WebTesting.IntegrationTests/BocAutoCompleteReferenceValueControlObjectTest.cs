@@ -228,6 +228,25 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("OptCmd2|My menu command 2"));
     }
 
+    [Test]
+    public void TestGetSearchResults ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      
+      var searchResults = bocAutoComplete.GetSearchServiceResults ("D", 1); // Todo RM-6297: completionSetCount for nothing?
+      Assert.That (searchResults.Count, Is.EqualTo (3));
+      Assert.That (searchResults[0].DisplayName, Is.EqualTo ("D, "));
+
+      searchResults = bocAutoComplete.GetSearchServiceResults ("D", 5);
+      Assert.That (searchResults.Count, Is.EqualTo (3));
+      Assert.That (searchResults[0].DisplayName, Is.EqualTo ("D, "));
+
+      searchResults = bocAutoComplete.GetSearchServiceResults ("unexistentValue", 5);
+      Assert.That (searchResults.Count, Is.EqualTo (0));
+    }
+
     private RemotionPageObject Start ()
     {
       return Start ("BocAutoCompleteReferenceValue");

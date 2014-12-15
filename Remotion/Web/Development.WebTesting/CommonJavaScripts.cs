@@ -16,6 +16,8 @@
 // 
 
 using System;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -28,5 +30,43 @@ namespace Remotion.Web.Development.WebTesting
     /// Closes the current window.
     /// </summary>
     public static readonly string SelfClose = "self.close();";
+
+    public static string CreateAutoCompleteWebServiceRequest (
+        [NotNull] string autoCompleteTextValueInputFieldId,
+        [NotNull] string searchText,
+        int completionSetCount)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("autoCompleteTextValueInputFieldId", autoCompleteTextValueInputFieldId);
+      ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
+
+      return string.Format (@"
+CallWebService = function() {{
+  var input = $('#{0}');
+  var options = input.getAutoCompleteSearchParameters('{1}');
+  
+  var data = options.params;
+  data['searchString'] = options.searchString;
+  data['completionSetCount'] = {2};
+
+  data = Sys.Serialization.JavaScriptSerializer.serialize(data);
+  console.log(data);
+
+  var result = null;
+  var request = {{
+    async:false,
+    type:'POST',
+    contentType:'application/json; charset=utf-8',
+    url:options.serviceUrl + '/' + options.serviceMethodSearch,
+    data:data,
+    dataType:'json',
+    success:function(res, ctx, methodName){{ console.log('RETURN' + res.d); result = res.d; }},
+    error:function(err, ctx, methodName){{ console.log('ERRRETURN'); console.log(err); console.log(request.data); console.log(request.url); }}
+  }};
+
+  $.ajax(request);
+  return result;
+}};
+return CallWebService();", autoCompleteTextValueInputFieldId, searchText, completionSetCount);
+    }
   }
 }
