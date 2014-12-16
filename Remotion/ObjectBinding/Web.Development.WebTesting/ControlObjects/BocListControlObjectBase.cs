@@ -121,6 +121,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     /// <summary>
     /// Returns the list's columns.
+    /// Warning: this method does not wait until "the element" is available but detects all available columns at the moment of calling.
     /// </summary>
     public IReadOnlyList<BocListColumnDefinition<TRowControlObject, TCellControlObject>> GetColumnDefinitions ()
     {
@@ -129,6 +130,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     /// <summary>
     /// Returns the list's rows.
+    /// Warning: this method does not wait until "the element" is available but detects all available rows at the moment of calling.
     /// </summary>
     public IReadOnlyList<TRowControlObject> GetDisplayedRows ()
     {
