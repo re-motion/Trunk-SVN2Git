@@ -83,8 +83,6 @@ namespace Remotion.Web.Development.WebTesting
         [NotNull] FinishInputWithAction finishInputWithAction,
         bool clearValue)
     {
-      // Todo RM-6297: Get rid of ugly clearValue flag in method parameters.
-
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("finishInputWithAction", finishInputWithAction);

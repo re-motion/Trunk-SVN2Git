@@ -89,7 +89,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   /// </remarks>
   public class RetryUntilTimeout<TReturnType>
   {
-    // Todo RM-6297: Find out why DriverScope.RetryUntilTimeout is so slow.
+    // Todo RM-6337: Find out why DriverScope.RetryUntilTimeout is so slow.
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (RetryUntilTimeout<TReturnType>));
 

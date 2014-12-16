@@ -56,7 +56,7 @@ namespace Remotion.Web.Development.WebTesting
 
       if (sessionConfiguration.Browser == Browser.Chrome)
       {
-        // Todo RM-6297: Switch back to always using the default Chrome driver as soon as the ActaNova language problem has been solved.
+        // Todo RM-6337: Switch back to always using the default Chrome driver as soon as the ActaNova language problem has been solved.
         if (ConfigurationManager.AppSettings["CustomChromeUserDataDir"] != null)
         {
           sessionConfiguration.Driver = typeof (CustomChromeDriver);

@@ -31,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   /// </summary>
   public static class SeleniumSendKeysToWindowsFormsSendKeysTransformer
   {
-    // Todo RM-6297: Add excessive unit testing!
+    // Todo RM-6337: Add excessive unit testing!
 
     /// <summary>
     /// Converts a Selenium <see cref="IWebElement.SendKeys"/> text parameter to a <see cref="SendKeys.SendWait"/> keys parameter.
@@ -117,7 +117,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       foreach (var replacement in replacementDictionary)
       {
-        // Todo RM-6297: TransformModifierKeys
+        // Todo RM-6337: TransformModifierKeys
 
         // Replace: Keys.Shift + ABC + Keys.Shift + DEF + Keys.Shift + GHI
         //    with: +(ABC)DEF+(GHI)

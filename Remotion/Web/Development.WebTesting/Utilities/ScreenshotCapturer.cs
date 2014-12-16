@@ -75,7 +75,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       try
       {
-        // Todo RM-6297: Capture the mouse cursor as well.
+        // Todo RM-6337: Capture the mouse cursor as well.
         using (var bitmap = new Bitmap (s_screenSize.Width, s_screenSize.Height))
         {
           using (var gfx = Graphics.FromImage (bitmap))
@@ -121,7 +121,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     private static class ScreenshotCapturerFileNameGenerator
     {
-      // Todo RM-6297: Add unit testing!
+      // Todo RM-6337: Add unit testing!
 
       /// <summary>
       /// Combines the given <paramref name="screenshotDirectory"/> with the <paramref name="baseFileName"/>, the suffix <paramref name="suffix"/> and
