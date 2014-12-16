@@ -108,6 +108,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocText = home.GetTextValue().ByLocalID ("LastNameField_Normal");
+      Assert.That (bocText.IsReadOnly(), Is.False);
+
+      bocText = home.GetTextValue().ByLocalID ("LastNameField_ReadOnly");
+      Assert.That (bocText.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestGetText ()
     {
       var home = Start();

@@ -107,6 +107,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      Assert.That (bocList.IsReadOnly(), Is.False);
+
+      bocList = home.GetList().ByLocalID ("JobList_ReadOnly");
+      Assert.That (bocList.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestGetColumnTitles ()
     {
       var home = Start();

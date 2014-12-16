@@ -127,6 +127,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var dropDownListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_DropDownListNormal");
+      Assert.That (dropDownListBocEnumValue.IsReadOnly(), Is.False);
+
+      dropDownListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_DropDownListReadOnly");
+      Assert.That (dropDownListBocEnumValue.IsReadOnly(), Is.True);
+
+      var listBoxBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_ListBoxNormal");
+      Assert.That (listBoxBocEnumValue.IsReadOnly(), Is.False);
+
+      listBoxBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_ListBoxReadOnly");
+      Assert.That (listBoxBocEnumValue.IsReadOnly(), Is.True);
+
+      var radioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListNormal");
+      Assert.That (radioButtonListBocEnumValue.IsReadOnly(), Is.False);
+
+      radioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListReadOnly");
+      Assert.That (radioButtonListBocEnumValue.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestGetSelectedOption ()
     {
       var home = Start();

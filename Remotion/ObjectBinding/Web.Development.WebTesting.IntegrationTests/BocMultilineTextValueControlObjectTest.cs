@@ -109,6 +109,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocMultilineText = home.GetMultilineTextValue().ByLocalID ("CVField_Normal");
+      Assert.That (bocMultilineText.IsReadOnly(), Is.False);
+
+      bocMultilineText = home.GetMultilineTextValue().ByLocalID ("CVField_ReadOnly");
+      Assert.That (bocMultilineText.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestGetText ()
     {
       var home = Start();

@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/> in grid mode.
   /// </summary>
   public class BocListAsGridRowControlObject
-      : BocControlObject,
+      : WebFormsControlObjectWithDiagnosticMetadata,
           IDropDownMenuHost,
           IControlObjectWithCells<BocListAsGridCellControlObject>,
           IFluentControlObjectWithCells<BocListAsGridCellControlObject>

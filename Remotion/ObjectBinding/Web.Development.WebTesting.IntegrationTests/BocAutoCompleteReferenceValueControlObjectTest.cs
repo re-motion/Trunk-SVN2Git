@@ -109,6 +109,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      Assert.That (bocAutoComplete.IsReadOnly(), Is.False);
+
+      bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_ReadOnly");
+      Assert.That (bocAutoComplete.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestGetText ()
     {
       var home = Start();
@@ -235,7 +247,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
-      
+
       var searchResults = bocAutoComplete.GetSearchServiceResults ("D", 1);
       Assert.That (searchResults.Count, Is.EqualTo (1));
       Assert.That (searchResults[0].UniqueIdentifier, Is.EqualTo ("a2752869-e46b-4cfa-b89f-0b824e42b250"));
@@ -267,13 +279,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [ExpectedException(typeof(WebServiceExceutionException))]
+    [ExpectedException (typeof (WebServiceExceutionException))]
     public void TestGetSearchServiceResultsException ()
     {
       var home = Start();
 
       var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
-      
+
       bocAutoComplete.GetSearchServiceResults ("throw", 1);
     }
 

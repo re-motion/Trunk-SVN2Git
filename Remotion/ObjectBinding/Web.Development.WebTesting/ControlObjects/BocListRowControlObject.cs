@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing a row within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListRowControlObject
-      : BocControlObject,
+      : WebFormsControlObjectWithDiagnosticMetadata,
           IDropDownMenuHost,
           IControlObjectWithCells<BocListCellControlObject>,
           IFluentControlObjectWithCells<BocListCellControlObject>

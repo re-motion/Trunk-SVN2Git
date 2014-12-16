@@ -27,7 +27,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing a row in edit-mode within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
   public class BocListEditableRowControlObject
-      : BocControlObject, IControlObjectWithCells<BocListEditableCellControlObject>, IFluentControlObjectWithCells<BocListEditableCellControlObject>
+      : WebFormsControlObjectWithDiagnosticMetadata,
+          IControlObjectWithCells<BocListEditableCellControlObject>,
+          IFluentControlObjectWithCells<BocListEditableCellControlObject>
   {
     private readonly BocListRowFunctionality _impl;
 

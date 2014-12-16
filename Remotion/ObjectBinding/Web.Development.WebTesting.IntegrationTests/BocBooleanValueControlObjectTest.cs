@@ -109,7 +109,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestState ()
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_Normal");
+      Assert.That (bocBooleanValue.IsReadOnly(), Is.False);
+
+      bocBooleanValue = home.GetBooleanValue().ByLocalID ("DeceasedField_ReadOnly");
+      Assert.That (bocBooleanValue.IsReadOnly(), Is.True);
+    }
+
+    [Test]
+    public void TestGetState ()
     {
       var home = Start();
 

@@ -17,6 +17,7 @@
 
 using System;
 using JetBrains.Annotations;
+using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 
@@ -30,6 +31,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     protected BocControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <summary>
+    /// Returns whether the control is read-only.
+    /// </summary>
+    public bool IsReadOnly ()
+    {
+      return Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true";
     }
   }
 }

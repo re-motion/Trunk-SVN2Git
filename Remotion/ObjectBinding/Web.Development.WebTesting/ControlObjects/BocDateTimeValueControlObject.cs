@@ -21,7 +21,6 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
@@ -56,7 +55,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       DateTime result;
       string dateTimeString;
 
-      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+      if (IsReadOnly())
       {
         dateTimeString = Scope.FindCss ("span:nth-child(1)").Text;
         if (_hasTimeField)

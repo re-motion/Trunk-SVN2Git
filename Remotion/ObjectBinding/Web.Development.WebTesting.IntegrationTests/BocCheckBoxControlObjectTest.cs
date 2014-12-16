@@ -108,7 +108,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestState ()
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocCheckBox = home.GetCheckBox().ByLocalID ("DeceasedField_Normal");
+      Assert.That (bocCheckBox.IsReadOnly(), Is.False);
+
+      bocCheckBox = home.GetCheckBox().ByLocalID ("DeceasedField_ReadOnly");
+      Assert.That (bocCheckBox.IsReadOnly(), Is.True);
+    }
+
+    [Test]
+    public void TestGetState ()
     {
       var home = Start();
 

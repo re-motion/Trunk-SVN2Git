@@ -32,7 +32,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// classes (<see cref="BocListRowControlObject"/>, <see cref="BocListEditableRowControlObject"/> and
   /// <see cref="BocListAsGridRowControlObject"/>) serve only as different interfaces.
   /// </summary>
-  internal class BocListRowFunctionality : BocControlObject
+  internal class BocListRowFunctionality : WebFormsControlObjectWithDiagnosticMetadata
   {
     private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly int _rowIndexOnPage;

@@ -153,7 +153,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       public string GetSelectedOption ()
       {
-        if (_controlObject.Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+        if (_controlObject.IsReadOnly())
           return _controlObject.Scope.FindChild ("Value").Text; // do not trim
 
         return _controlObject.Scope.FindChild ("Value").GetSelectedOptionText();
@@ -208,7 +208,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       public string GetSelectedOption ()
       {
-        if (_controlObject.Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+        if (_controlObject.IsReadOnly())
           return _controlObject.Scope.FindChild ("Value").Text; // do not trim
 
         return _controlObject.Scope.FindCss ("input[type='radio'][checked='checked']").Value;

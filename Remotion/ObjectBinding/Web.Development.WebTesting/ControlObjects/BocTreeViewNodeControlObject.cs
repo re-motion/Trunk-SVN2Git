@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Control object representing a node within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocTreeView"/>.
   /// </summary>
   public class BocTreeViewNodeControlObject
-      : BocControlObject,
+      : WebFormsControlObjectWithDiagnosticMetadata,
           IControlObjectWithNodes<BocTreeViewNodeControlObject>,
           IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>,
           IControlObjectWithText
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       return _webTreeViewNode.GetText();
     }
-    
+
     /// <summary>
     /// Returns whether the node is currently selected.
     /// </summary>

@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.WebTestActions;
@@ -47,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     public string GetText ()
     {
-      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+      if (IsReadOnly())
         return Scope.FindChild ("Label").Text; // do not trim
 
       return Scope.FindChild ("Value").GetSelectedOptionText();

@@ -109,6 +109,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_Normal");
+      Assert.That (bocDateTimeValue.IsReadOnly(), Is.False);
+
+      bocDateTimeValue = home.GetDateTimeValue().ByLocalID ("DateOfBirthField_ReadOnly");
+      Assert.That (bocDateTimeValue.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestHasTimeField ()
     {
       var home = Start();

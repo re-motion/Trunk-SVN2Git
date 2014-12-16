@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a cell within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/> in grid mode.
   /// </summary>
-  public class BocListAsGridCellControlObject : BocControlObject, IControlHost, ICommandHost
+  public class BocListAsGridCellControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlHost, ICommandHost
   {
     private readonly BocListCellFunctionality _impl;
 

@@ -113,6 +113,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestIsReadOnly ()
+    {
+      var home = Start();
+
+      var bocTreeView = home.GetTextValue().ByLocalID ("Normal");
+      Assert.That (bocTreeView.IsReadOnly(), Is.True);
+    }
+
+    [Test]
     public void TestGetNode ()
     {
       var home = Start();

@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.WebTestActions;
@@ -41,7 +40,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var valueScope = Scope.FindChild ("Value");
 
-      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+      if (IsReadOnly())
         return valueScope.Text; // do not trim
 
       return valueScope.Value; // do not trim

@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// classes (<see cref="BocListCellControlObject"/>, <see cref="BocListEditableCellControlObject"/> and
   /// <see cref="BocListAsGridCellControlObject"/>) serve only as different interfaces.
   /// </summary>
-  internal class BocListCellFunctionality : BocControlObject, ICommandHost, IControlHost, IControlObjectWithText
+  internal class BocListCellFunctionality : WebFormsControlObjectWithDiagnosticMetadata, ICommandHost, IControlHost, IControlObjectWithText
   {
     public BocListCellFunctionality ([NotNull] ControlObjectContext context)
         : base (context)

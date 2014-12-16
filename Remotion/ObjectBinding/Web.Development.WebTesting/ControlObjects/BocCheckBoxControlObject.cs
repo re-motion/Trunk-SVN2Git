@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
@@ -39,7 +38,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public bool GetState ()
     {
-      if (Scope[DiagnosticMetadataAttributes.IsReadOnly] == "true")
+      if (IsReadOnly())
         return ParseState (Scope.FindChild ("Value")["data-value"]);
 
       return Scope.FindChild ("Value")["checked"] != null;
