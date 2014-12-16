@@ -103,6 +103,7 @@
     <Compile Include="ControlObjects\BocListAsGridControlObject.cs" />
     <Compile Include="ControlObjects\BocListAsGridRowControlObject.cs" />
     <Compile Include="ControlObjects\BocListCellFunctionality.cs" />
+    <Compile Include="ControlObjects\BocListColumnDefinition.cs" />
     <Compile Include="ControlObjects\BocListControlObjectBase.cs" />
     <Compile Include="ControlObjects\BocListRowFunctionality.cs" />
     <Compile Include="ControlObjects\BocReferenceValueControlObject.cs" />

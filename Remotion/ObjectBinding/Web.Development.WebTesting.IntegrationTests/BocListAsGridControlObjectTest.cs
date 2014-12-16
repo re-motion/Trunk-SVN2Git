@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
@@ -122,7 +123,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetListAsGrid().ByLocalID ("JobList_Normal");
       Assert.That (
-          bocList.GetColumnTitles(),
+          bocList.GetColumnDefinitions().Select(cd => cd.Title),
           Is.EquivalentTo (new[] { "I_ndex", null, "Command", "Menu", "Title", "StartDate", "EndDate", "DisplayName", "TitleWithCmd" }));
     }
 

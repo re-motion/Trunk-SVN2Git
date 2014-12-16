@@ -236,7 +236,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCellWhereColumnContains (column, containsCellText);
     }
 
-    private BocListCellControlObject GetCellWhereColumnContainsExactly (ColumnDefinition column, string containsCellText)
+    private BocListCellControlObject GetCellWhereColumnContainsExactly (BocListColumnDefinition<BocListRowControlObject, BocListCellControlObject> column, string containsCellText)
     {
       if (column.HasDiagnosticMetadata)
       {
@@ -260,7 +260,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
     }
 
-    private BocListCellControlObject GetCellWhereColumnContains (ColumnDefinition column, string containsCellText)
+    private BocListCellControlObject GetCellWhereColumnContains (BocListColumnDefinition<BocListRowControlObject, BocListCellControlObject> column, string containsCellText)
     {
       if (column.HasDiagnosticMetadata)
       {

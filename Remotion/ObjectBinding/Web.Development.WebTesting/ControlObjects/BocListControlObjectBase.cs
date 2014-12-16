@@ -38,45 +38,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       where TRowControlObject : ControlObject
       where TCellControlObject : ControlObject
   {
-    /// <summary>
-    /// Defines a list's column.
-    /// </summary>
-    protected class ColumnDefinition
-    {
-      private readonly string _itemID;
-      private readonly int _index;
-      private readonly string _title;
-      private readonly bool _hasDiagnosticMetadata;
-
-      public ColumnDefinition (string itemID, int index, string title, bool hasDiagnosticMetadata)
-      {
-        _itemID = itemID;
-        _index = index;
-        _title = title;
-        _hasDiagnosticMetadata = hasDiagnosticMetadata;
-      }
-
-      public string ItemID
-      {
-        get { return _itemID; }
-      }
-
-      public int Index
-      {
-        get { return _index; }
-      }
-
-      public string Title
-      {
-        get { return _title; }
-      }
-
-      public bool HasDiagnosticMetadata
-      {
-        get { return _hasDiagnosticMetadata; }
-      }
-    }
-
     private class BocListRowControlObjectHostAccessor : IBocListRowControlObjectHostAccessor
     {
       private readonly BocListControlObjectBase<TRowControlObject, TCellControlObject> _bocList;
@@ -105,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private readonly ILog _log;
     private readonly IBocListRowControlObjectHostAccessor _accessor;
     private readonly bool _hasFakeTableHead;
-    private readonly List<ColumnDefinition> _columns;
+    private readonly List<BocListColumnDefinition<TRowControlObject, TCellControlObject>> _columns;
 
     protected BocListControlObjectBase ([NotNull] ControlObjectContext context)
         : base (context)
@@ -120,7 +81,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
           () => Scope.FindAllCss (_hasFakeTableHead ? ".bocListFakeTableHead th" : ".bocListTableContainer th")
               .Select (
                   (s, i) =>
-                      new ColumnDefinition (
+                      new BocListColumnDefinition<TRowControlObject, TCellControlObject> (
                           s[DiagnosticMetadataAttributes.ItemID],
                           i + 1,
                           s[DiagnosticMetadataAttributes.Content],
@@ -159,11 +120,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     protected abstract TCellControlObject CreateCellControlObject ([NotNull] string id, [NotNull] ElementScope cellScope);
 
     /// <summary>
-    /// Returns the list's column titles. Columns without titles are represented as <see langword="null" /> strings.
+    /// Returns the list's columns.
     /// </summary>
-    public IReadOnlyCollection<string> GetColumnTitles ()
+    public IReadOnlyCollection<BocListColumnDefinition<TRowControlObject, TCellControlObject>> GetColumnDefinitions ()
     {
-      return _columns.Select (cd => cd.Title).ToList();
+      return _columns;
     }
 
     /// <summary>
@@ -254,7 +215,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the column defintion given by <paramref name="columnItemID"/>.
     /// </summary>
-    protected ColumnDefinition GetColumnByItemID (string columnItemID)
+    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByItemID (string columnItemID)
     {
       return _columns.Single (cd => cd.ItemID == columnItemID);
     }
@@ -262,7 +223,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the column defintion given by <paramref name="index"/>.
     /// </summary>
-    protected ColumnDefinition GetColumnByIndex (int index)
+    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByIndex (int index)
     {
       return _columns.Single (cd => cd.Index == index);
     }
@@ -270,7 +231,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the column defintion given by <paramref name="columnTitle"/>.
     /// </summary>
-    protected ColumnDefinition GetColumnByTitle (string columnTitle)
+    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByTitle (string columnTitle)
     {
       return _columns.Single (cd => cd.Title == columnTitle);
     }
