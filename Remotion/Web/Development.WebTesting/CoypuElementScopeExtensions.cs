@@ -62,19 +62,6 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Returns whether the given <paramref name="scope"/> is currently enabled. The given <paramref name="scope"/> must exist, otherwise this method
-    /// will throw an <see cref="MissingHtmlException"/>.
-    /// </summary>
-    /// <returns>True if the given <paramref name="scope"/> is enabled, otherwise false.</returns>
-    public static bool IsEnabled ([NotNull] this ElementScope scope)
-    {
-      ArgumentUtility.CheckNotNull ("scope", scope);
-
-      var webElement = (IWebElement) scope.Native;
-      return webElement.Enabled;
-    }
-
-    /// <summary>
     /// Returns whether the given <paramref name="scope"/> is currently displayed (visible). The given <paramref name="scope"/> must exist, otherwise
     /// this method will throw an <see cref="MissingHtmlException"/>.
     /// </summary>

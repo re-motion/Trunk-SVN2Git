@@ -122,7 +122,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     public void TestIsEnabled ()
     {
       var home = Start();
-      
+
       var webButton = home.GetWebButton().ByLocalID ("MyWebButton1Sync");
       Assert.That (webButton.IsEnabled(), Is.True);
 

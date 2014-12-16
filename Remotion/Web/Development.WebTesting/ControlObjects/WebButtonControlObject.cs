@@ -45,7 +45,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <returns>True if the web button is enabled, otherwise false.</returns>
     public bool IsEnabled ()
     {
-      return Scope.IsEnabled();
+      return !Scope.Disabled;
     }
 
     /// <inheritdoc/>
