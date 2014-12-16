@@ -25,14 +25,13 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// Exception is thrown whenever the web service call in <see cref="BocAutoCompleteReferenceValueControlObject.GetSearchServiceResults"/> or
   /// <see cref="BocAutoCompleteReferenceValueControlObject.GetExactSearchServiceResult"/> fails.
   /// </summary>
-  public class WebServiceExceutionException : Exception
+  public sealed class WebServiceExceutionException : Exception
   {
     private readonly long _readyState;
     private readonly string _responseText;
     private readonly long _status;
     private readonly string _statusText;
 
-    // Todo RM-6297: Exception class does not feature the three "default" exception constructors yet.
     public WebServiceExceutionException (long readyState, [NotNull] string responseText, long status, [NotNull] string statusText)
         : base (
             string.Format (
