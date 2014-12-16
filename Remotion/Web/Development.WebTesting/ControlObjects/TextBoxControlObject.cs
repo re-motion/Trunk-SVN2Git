@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web.UI.WebControls;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.WebTestActions;
@@ -25,7 +24,7 @@ using Remotion.Web.Development.WebTesting.WebTestActions;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="TextBox"/> and all its derivatives (none in re-motion).
+  /// Control object for <see cref="T:System.Web.UI.WebControls.TextBox"/> and all its derivatives (none in re-motion).
   /// </summary>
   public class TextBoxControlObject : WebFormsControlObject, IFillableControlObject, IControlObjectWithFormElements
   {

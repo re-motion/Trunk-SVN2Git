@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Web.UI.WebControls;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -25,9 +24,9 @@ using Remotion.Web.Development.WebTesting.WebTestActions;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="LinkButton"/>, <see cref="HyperLink"/> and all their derivatives (e.g.
-  /// <see cref="T:Remotion.Web.UI.Controls.WebLinkButton"/> or <see cref="T:Remotion.Web.UI.Controls.SmartHyperLink"/>). Also represents a simple
-  /// HTML anchor &lt;a&gt; control within a re-motion applicaiton.
+  /// Control object for <see cref="T:System.Web.UI.WebControls.LinkButton"/>, <see cref="T:System.Web.UI.WebControls.HyperLink"/> and all their
+  /// derivatives (e.g. <see cref="T:Remotion.Web.UI.Controls.WebLinkButton"/> or <see cref="T:Remotion.Web.UI.Controls.SmartHyperLink"/>). Also
+  /// represents a simple HTML anchor &lt;a&gt; control within a re-motion applicaiton.
   /// </summary>
   public class AnchorControlObject : WebFormsControlObject, IClickableControlObject
   {

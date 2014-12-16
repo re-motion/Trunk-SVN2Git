@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Web.UI.WebControls;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -25,7 +24,7 @@ using Remotion.Web.Development.WebTesting.WebTestActions;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Control object for <see cref="ImageButton"/>.
+  /// Control object for <see cref="T:System.Web.UI.WebControls.ImageButton"/>.
   /// </summary>
   public class ImageButtonControlObject : WebFormsControlObject, IClickableControlObject
   {
