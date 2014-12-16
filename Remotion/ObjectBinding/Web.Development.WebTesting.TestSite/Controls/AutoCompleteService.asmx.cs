@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -47,6 +48,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
         string businessObject,
         string args)
     {
+      if (searchString == "throw")
+        throw new InvalidOperationException ("I'm always going to throw an exception if you search for 'throw'!");
+
       var persons = new List<BusinessObjectWithIdentityProxy>();
       foreach (var person in XmlReflectionBusinessObjectStorageProvider.Current.GetObjects (typeof (Person)))
       {
@@ -60,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
 
       filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
 
-      return filteredPersons.ToArray();
+      return filteredPersons.Take(completionSetCount ?? int.MaxValue).ToArray();
     }
 
     private IResourceUrlFactory ResourceUrlFactory
@@ -77,6 +81,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.Controls
         string businessObject,
         string args)
     {
+      if (searchString == "throw")
+        throw new InvalidOperationException ("I'm always going to throw an exception if you search for 'throw'!");
+
       var result = Search (searchString, 2, businessObjectClass, businessObjectProperty, businessObject, args);
       if (result.Length == 0)
         return null;
