@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -32,6 +34,34 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public WebTabStripControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <summary>
+    /// Returns the currently selected tab. Note that the <see cref="WebTabStripTabDefinition.Index"/> is set to -1.
+    /// </summary>
+    public WebTabStripTabDefinition GetSelectedTab ()
+    {
+      var tabScope = Scope.FindCss ("span.tabStripTabSelected");
+      return new WebTabStripTabDefinition (tabScope[DiagnosticMetadataAttributes.ItemID], -1, tabScope[DiagnosticMetadataAttributes.Content]);
+    }
+
+    /// <summary>
+    /// Returns all available tabs. 
+    /// Warning: this method does not wait until "the element" is available but detects all available tabs at the moment of calling.
+    /// </summary>
+    public IReadOnlyList<WebTabStripTabDefinition> GetTabDefinitions ()
+    {
+      const string cssSelector = "span.tabStripTab, span.tabStripTabSelected";
+      return RetryUntilTimeout.Run (
+          () =>
+              Scope.FindAllCss (cssSelector)
+                  .Select (
+                      (tabScope, i) =>
+                          new WebTabStripTabDefinition (
+                              tabScope[DiagnosticMetadataAttributes.ItemID],
+                              i + 1,
+                              tabScope[DiagnosticMetadataAttributes.Content]))
+                  .ToList());
     }
 
     /// <inheritdoc/>

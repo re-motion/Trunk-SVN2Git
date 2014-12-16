@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlSelection;
@@ -58,6 +60,33 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var scope = Scope.FindChild ("BottomControl");
       return new ScopeControlObject (Context.CloneForControl (scope));
+    }
+
+    /// <summary>
+    /// <see cref="WebTabStripControlObject.GetSelectedTab"/>.
+    /// </summary>
+    public WebTabStripTabDefinition GetSelectedTab ()
+    {
+      var tabDefinition = GetTabStrip().GetSelectedTab();
+      return ConvertToTabbedMultiViewTab(tabDefinition);
+    }
+
+    /// <summary>
+    /// <see cref="WebTabStripControlObject.GetTabDefinitions"/>.
+    /// </summary>
+    public IReadOnlyList<WebTabStripTabDefinition> GetTabDefinitions ()
+    {
+      return GetTabStrip().GetTabDefinitions().Select(ConvertToTabbedMultiViewTab).ToList();
+    }
+
+    private WebTabStripTabDefinition ConvertToTabbedMultiViewTab ([NotNull] WebTabStripTabDefinition tabDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("tabDefinition", tabDefinition);
+
+      return new WebTabStripTabDefinition (
+          tabDefinition.ItemID.Substring (0, tabDefinition.ItemID.Length - "_Tab".Length),
+          tabDefinition.Index,
+          tabDefinition.Title);
     }
 
     /// <inheritdoc/>

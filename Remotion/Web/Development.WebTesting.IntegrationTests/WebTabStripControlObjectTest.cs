@@ -83,6 +83,35 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetSelectedTab ()
+    {
+      var home = Start();
+
+      var tabStrip = home.GetWebTabStrip().First();
+      Assert.That (tabStrip.GetSelectedTab().ItemID, Is.EqualTo ("Tab1"));
+      Assert.That (tabStrip.GetSelectedTab().Index, Is.EqualTo (-1));
+      Assert.That (tabStrip.GetSelectedTab().Title, Is.EqualTo ("Tab1Label"));
+
+      tabStrip.SwitchTo ("Tab2");
+      Assert.That (tabStrip.GetSelectedTab().ItemID, Is.EqualTo ("Tab2"));
+      Assert.That (tabStrip.GetSelectedTab().Index, Is.EqualTo (-1));
+      Assert.That (tabStrip.GetSelectedTab().Title, Is.EqualTo ("Tab2Label"));
+    }
+
+    [Test]
+    public void TestGetTabDefinitions ()
+    {
+      var home = Start();
+
+      var tabStrip = home.GetWebTabStrip().First();
+      var tabs = tabStrip.GetTabDefinitions();
+      Assert.That (tabs.Count, Is.EqualTo (2));
+      Assert.That (tabs[1].ItemID, Is.EqualTo ("Tab2"));
+      Assert.That (tabs[1].Index, Is.EqualTo (2));
+      Assert.That (tabs[1].Title, Is.EqualTo ("Tab2Label"));
+    }
+
+    [Test]
     public void TestSwitchTo ()
     {
       var home = Start();
