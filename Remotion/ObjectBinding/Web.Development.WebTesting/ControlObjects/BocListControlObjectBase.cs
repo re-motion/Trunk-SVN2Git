@@ -122,9 +122,19 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the list's columns.
     /// </summary>
-    public IReadOnlyCollection<BocListColumnDefinition<TRowControlObject, TCellControlObject>> GetColumnDefinitions ()
+    public IReadOnlyList<BocListColumnDefinition<TRowControlObject, TCellControlObject>> GetColumnDefinitions ()
     {
       return _columns;
+    }
+
+    /// <summary>
+    /// Returns the list's rows.
+    /// </summary>
+    public IReadOnlyList<TRowControlObject> GetDisplayedRows ()
+    {
+      var cssSelector = string.Format (".bocListTable .bocListTableBody .bocListDataRow");
+      return RetryUntilTimeout.Run (
+          () => Scope.FindAllCss (cssSelector).Select (rowScope => CreateRowControlObject (GetHtmlID(), rowScope, _accessor)).ToList());
     }
 
     /// <summary>
