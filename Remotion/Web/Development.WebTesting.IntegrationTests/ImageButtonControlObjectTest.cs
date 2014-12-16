@@ -83,6 +83,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetImageSourceUrl ()
+    {
+      var home = Start();
+
+      var imageButton = home.GetImageButton().ByLocalID ("MyImageButton");
+      Assert.That (imageButton.GetImageSourceUrl(), Is.StringEnding ("/Images/SampleIcon.gif"));
+    }
+
+    [Test]
     public void TestClick ()
     {
       var home = Start();

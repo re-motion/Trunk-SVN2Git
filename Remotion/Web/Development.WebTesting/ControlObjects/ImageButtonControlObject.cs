@@ -33,6 +33,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
+    /// <summary>
+    /// Returns the src URL of the button's image.
+    /// </summary>
+    /// <returns></returns>
+    public string GetImageSourceUrl ()
+    {
+      return Scope["src"];
+    }
+
     /// <inheritdoc/>
     public UnspecifiedPageObject Click (IWebTestActionOptions actionOptions = null)
     {
