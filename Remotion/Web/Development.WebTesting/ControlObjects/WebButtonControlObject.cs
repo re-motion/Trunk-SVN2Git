@@ -24,11 +24,19 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="T:Remotion.Web.UI.Controls.WebButton"/>.
   /// </summary>
-  public class WebButtonControlObject : WebFormsControlObjectWithDiagnosticMetadata, IClickableControlObject
+  public class WebButtonControlObject : WebFormsControlObjectWithDiagnosticMetadata, IClickableControlObject, IControlObjectWithText
   {
     public WebButtonControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <summary>
+    /// Returns the text diplayed on the button.
+    /// </summary>
+    public string GetText ()
+    {
+      return Scope.Text.Trim();
     }
 
     /// <summary>
