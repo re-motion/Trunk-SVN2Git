@@ -38,40 +38,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    /// <summary>
-    /// Invokes the associated search service of the represented <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>
-    /// and returns its results.
-    /// </summary>
-    /// <param name="searchText">Text to search for.</param>
-    /// <param name="completionSetCount">Auto completion set count.</param>
-    /// <returns>The completion set as list of <see cref="SearchServiceResultItem"/> or an empty list if the completion set has been empty.</returns>
-    public IReadOnlyList<SearchServiceResultItem> GetSearchServiceResults ([NotNull] string searchText, int completionSetCount)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
-
-      var inputScopeId = GetHtmlID() + "_TextValue";
-
-      var response =
-          Context.Browser.ExecuteScript (CommonJavaScripts.CreateAutoCompleteWebServiceRequest (inputScopeId, searchText, completionSetCount));
-      var responseAsCollection = (IReadOnlyCollection<object>) response;
-      return responseAsCollection.Cast<IDictionary<string, object>>().Select (
-          d => new SearchServiceResultItem
-               {
-                   DisplayName = (string) d["DisplayName"],
-                   IconUrl = (string) d["IconUrl"],
-                   UniqueIdentifier = (string) d["UniqueIdentifier"],
-                   Type = (string) d["__type"]
-               }).ToList();
-    }
-
-    public SearchServiceResultItem GetExactSearchServiceResult ([NotNull] string value)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-
-      // Todo RM-6297: Implement GetExactSearchResult
-      throw new NotImplementedException ("TODO RM-6297: Implement GetExactSearchServiceResult() + docs + integration test.");
-    }
-
     /// <inheritdoc/>
     public string GetText ()
     {
@@ -121,6 +87,69 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
+    /// Invokes the associated search service of the represented <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/>
+    /// and returns its results.
+    /// </summary>
+    /// <param name="searchText">Text to search for.</param>
+    /// <param name="completionSetCount">Auto completion set count.</param>
+    /// <returns>The completion set as list of <see cref="SearchServiceResultItem"/> or an empty list if the completion set has been empty.</returns>
+    public IReadOnlyList<SearchServiceResultItem> GetSearchServiceResults ([NotNull] string searchText, int completionSetCount)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
+
+      var inputScopeID = GetInputScopeID();
+
+      var searchServiceRequestScript = CommonJavaScripts.CreateAutoCompleteSearchServiceRequest (inputScopeID, searchText, completionSetCount);
+      var response = (IReadOnlyDictionary<string, object>) Context.Window.ExecuteScript (searchServiceRequestScript);
+      return ParseSearchServiceResponse (response);
+    }
+
+    /// <summary>
+    /// Invokes the associated exact search service of the represented
+    /// <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue"/> and returns its result.
+    /// </summary>
+    /// <param name="searchText">Text to search for.</param>
+    /// <returns>The exact search result as <see cref="SearchServiceResultItem"/> or null if no result has been found.</returns>
+    public SearchServiceResultItem GetExactSearchServiceResult ([NotNull] string searchText)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
+
+      var inputScopeId = GetInputScopeID();
+
+      var searchServiceRequestScript = CommonJavaScripts.CreateAutoCompleteExactSearchServiceRequest (inputScopeId, searchText);
+      var response = (IReadOnlyDictionary<string, object>) Context.Window.ExecuteScript (searchServiceRequestScript);
+      return ParseSearchServiceResponse (response).SingleOrDefault();
+    }
+
+    private IReadOnlyList<SearchServiceResultItem> ParseSearchServiceResponse ([NotNull] IReadOnlyDictionary<string, object> response)
+    {
+      ArgumentUtility.CheckNotNull ("response", response);
+
+      var state = (string) response[CommonJavaScripts.AutoCompleteSearchService.State];
+      var data = response[CommonJavaScripts.AutoCompleteSearchService.Data];
+      switch (state)
+      {
+        case CommonJavaScripts.AutoCompleteSearchService.Success:
+          var successData = (IReadOnlyCollection<object>) data;
+          return successData.Cast<IDictionary<string, object>>()
+              .Where (d => d != null) // empty JSON object (= no result) is converted to null
+              .Select (d => new SearchServiceResultItem ((string) d["UniqueIdentifier"], (string) d["DisplayName"], (string) d["IconUrl"]))
+              .ToList();
+
+        case CommonJavaScripts.AutoCompleteSearchService.Error:
+          var errorData = (IDictionary<string, object>) data;
+          throw new WebServiceExceutionException (
+              (long) errorData["readyState"],
+              (string) errorData["responseText"],
+              (long) errorData["status"],
+              (string) errorData["statusText"]);
+
+        default:
+          throw new NotSupportedException (string.Format ("The script returned the unknown state '{0}'.", state));
+      }
+    }
+
+    /// <summary>
     /// See <see cref="IControlObjectWithFormElements.GetFormElementNames"/>. Returns the input[type=text] (text value) as first element, the
     /// input[type=hidden] (key value) as second element.
     /// </summary>
@@ -128,6 +157,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var htmlID = GetHtmlID();
       return new[] { string.Format ("{0}_TextValue", htmlID), string.Format ("{0}_KeyValue", htmlID) };
+    }
+
+    private string GetInputScopeID ()
+    {
+      return GetHtmlID() + "_TextValue";
     }
   }
 }

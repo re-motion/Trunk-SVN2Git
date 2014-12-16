@@ -132,6 +132,7 @@
     <Compile Include="ControlObjects\Selectors\BocAutoCompleteReferenceValueSelector.cs" />
     <Compile Include="ControlObjects\BocControlObject.cs" />
     <Compile Include="ControlObjects\Selectors\BocControlSelectorBase.cs" />
+    <Compile Include="ControlObjects\WebServiceExceutionException.cs" />
     <Compile Include="ControlSelection\IDisplayNameControlSelector.cs" />
     <Compile Include="ControlSelection\IDomainPropertyControlSelector.cs" />
     <Compile Include="ControlSelection\DisplayNameControlSelectionCommand.cs" />

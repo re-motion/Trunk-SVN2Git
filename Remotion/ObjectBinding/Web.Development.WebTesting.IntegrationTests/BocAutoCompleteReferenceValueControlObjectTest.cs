@@ -18,6 +18,7 @@
 using System;
 using Coypu;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -229,15 +230,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestGetSearchResults ()
+    public void TestGetSearchServiceResults ()
     {
       var home = Start();
 
       var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
       
-      var searchResults = bocAutoComplete.GetSearchServiceResults ("D", 1); // Todo RM-6297: completionSetCount for nothing?
-      Assert.That (searchResults.Count, Is.EqualTo (3));
+      var searchResults = bocAutoComplete.GetSearchServiceResults ("D", 1);
+      Assert.That (searchResults.Count, Is.EqualTo (1));
+      Assert.That (searchResults[0].UniqueIdentifier, Is.EqualTo ("a2752869-e46b-4cfa-b89f-0b824e42b250"));
       Assert.That (searchResults[0].DisplayName, Is.EqualTo ("D, "));
+      Assert.That (searchResults[0].IconUrl, Is.EqualTo ("/Images/Remotion.ObjectBinding.Sample.Person.gif"));
 
       searchResults = bocAutoComplete.GetSearchServiceResults ("D", 5);
       Assert.That (searchResults.Count, Is.EqualTo (3));
@@ -245,6 +248,33 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       searchResults = bocAutoComplete.GetSearchServiceResults ("unexistentValue", 5);
       Assert.That (searchResults.Count, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void TestGetExactSearchServiceResult ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+
+      var searchResult = bocAutoComplete.GetExactSearchServiceResult ("D, ");
+      Assert.That (searchResult.UniqueIdentifier, Is.EqualTo ("a2752869-e46b-4cfa-b89f-0b824e42b250"));
+      Assert.That (searchResult.DisplayName, Is.EqualTo ("D, "));
+      Assert.That (searchResult.IconUrl, Is.EqualTo ("/Images/Remotion.ObjectBinding.Sample.Person.gif"));
+
+      searchResult = bocAutoComplete.GetExactSearchServiceResult ("D");
+      Assert.That (searchResult, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException(typeof(WebServiceExceutionException))]
+    public void TestGetSearchServiceResultsException ()
+    {
+      var home = Start();
+
+      var bocAutoComplete = home.GetAutoComplete().ByLocalID ("PartnerField_Normal");
+      
+      bocAutoComplete.GetSearchServiceResults ("throw", 1);
     }
 
     private RemotionPageObject Start ()
