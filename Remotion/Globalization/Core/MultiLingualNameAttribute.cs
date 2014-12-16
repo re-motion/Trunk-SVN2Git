@@ -37,7 +37,7 @@ namespace Remotion.Globalization
   /// </item>
   /// </list>
   /// </remarks>
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method,
+  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method | AttributeTargets.Enum |AttributeTargets.Struct,
       AllowMultiple = true,
       Inherited = true)]
   public class MultiLingualNameAttribute : Attribute

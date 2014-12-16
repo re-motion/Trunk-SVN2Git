@@ -127,6 +127,30 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
             Is.False);
         Assert.That (resourceValue, Is.Null);
       }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (EnumWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (EnumWithMultiLingualNameAttribute)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("The Invariant Enum Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (StructWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (StructWithMultiLingualNameAttribute)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("The Invariant Struct Name"));
+      }
     }
 
     [Test]

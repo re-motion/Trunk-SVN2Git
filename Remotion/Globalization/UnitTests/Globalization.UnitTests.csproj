@@ -114,6 +114,7 @@
     <Compile Include="TestDomain\Resources\EnumWithResources.Designer.cs">
       <DependentUpon>EnumWithResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TestDomain\StructWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\TestEnum.cs" />
   </ItemGroup>
   <ItemGroup>

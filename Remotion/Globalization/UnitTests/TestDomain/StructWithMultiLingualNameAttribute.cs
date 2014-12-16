@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,17 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 
 namespace Remotion.Globalization.UnitTests.TestDomain
 {
-  [MultiLingualName ("The Invariant Enum Name", "")]
-  [MultiLingualName ("The en-US Enum Name", "en-US")]
-  public enum EnumWithMultiLingualNameAttribute
+  [MultiLingualName ("The Invariant Struct Name", "")]
+  [MultiLingualName ("The en-US Struct Name", "en-US")]
+  public struct StructWithMultiLingualNameAttribute
   {
-    [MultiLingualName ("The Invariant Name", "")]
-    [MultiLingualName ("The en-US Name", "en-US")]
-    ValueWithLocalizedName,
-    ValueWithoutLocalizedName
+     
   }
 }
