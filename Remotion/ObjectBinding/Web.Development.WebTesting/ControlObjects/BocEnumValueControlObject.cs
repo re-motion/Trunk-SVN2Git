@@ -59,6 +59,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
     {
+      if (IsReadOnly())
+        throw new InvalidOperationException ("Cannot obtain option definitions on read-only control.");
+
       return _variantImpl.GetOptionDefinitions();
     }
 

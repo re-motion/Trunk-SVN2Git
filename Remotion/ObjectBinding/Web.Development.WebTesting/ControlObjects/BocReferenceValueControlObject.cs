@@ -21,7 +21,6 @@ using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
@@ -66,6 +65,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
     {
+      if (IsReadOnly())
+        throw new InvalidOperationException ("Cannot obtain option definitions on read-only control.");
+
       return RetryUntilTimeout.Run (
           () => Scope.FindChild("Value").FindAllCss ("option")
               .Select ((optionScope, i) => new OptionDefinition (optionScope.Value, i + 1, optionScope.Text))

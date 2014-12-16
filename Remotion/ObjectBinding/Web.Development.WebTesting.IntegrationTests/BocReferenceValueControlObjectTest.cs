@@ -155,6 +155,16 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void TestGetOptionDefinitionsException ()
+    {
+      var home = Start();
+
+      var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_ReadOnly");
+      bocReferenceValue.GetOptionDefinitions();
+    }
+
+    [Test]
     public void TestGetText ()
     {
       var home = Start();

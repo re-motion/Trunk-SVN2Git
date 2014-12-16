@@ -272,6 +272,36 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void TestGetOptionDefinitionsExceptionOnDropDownListBocEnumValue ()
+    {
+      var home = Start();
+
+      var dropDownListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_DropDownListReadOnly");
+      dropDownListBocEnumValue.GetOptionDefinitions();
+    }
+
+    [Test]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void TestGetOptionDefinitionsExceptionOnListBoxBocEnumValue ()
+    {
+      var home = Start();
+
+      var listBoxBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_ListBoxReadOnly");
+      listBoxBocEnumValue.GetOptionDefinitions();
+    }
+
+    [Test]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void TestGetOptionDefinitionsExceptionOnRadioButtonListBocEnumValue ()
+    {
+      var home = Start();
+
+      var radioButtonListBocEnumValue = home.GetEnumValue().ByLocalID ("MarriageStatusField_RadioButtonListReadOnly");
+      radioButtonListBocEnumValue.GetOptionDefinitions();
+    }
+
+    [Test]
     public void TestSelectOption ()
     {
       var home = Start();
