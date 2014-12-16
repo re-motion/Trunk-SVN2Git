@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -27,8 +30,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     private readonly int _index;
     private readonly string _title;
 
-    public WebTabStripTabDefinition (string itemID, int index, string title)
+    public WebTabStripTabDefinition ([NotNull] string itemID, int index, [NotNull] string title)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+      ArgumentUtility.CheckNotNullOrEmpty ("title", title);
+
       _itemID = itemID;
       _index = index;
       _title = title;
