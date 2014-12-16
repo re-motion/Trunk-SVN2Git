@@ -83,6 +83,36 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetSelectedOption ()
+    {
+      var home = Start();
+
+      var dropDownList = home.GetDropDownList().ByLocalID ("MyDropDownList");
+      Assert.That (dropDownList.GetSelectedOption().ItemID, Is.EqualTo ("Item1Value"));
+      Assert.That (dropDownList.GetSelectedOption().Index, Is.EqualTo (-1));
+      Assert.That (dropDownList.GetSelectedOption().Text, Is.EqualTo ("Item1"));
+    }
+
+    [Test]
+    public void TestGetOptionDefinitions ()
+    {
+      var home = Start();
+
+      var dropDownList = home.GetDropDownList().ByLocalID ("MyDropDownList");
+
+      var options = dropDownList.GetOptionDefinitions();
+      Assert.That (options.Count, Is.EqualTo (3));
+
+      Assert.That (options[0].ItemID, Is.EqualTo ("Item1Value"));
+      Assert.That (options[0].Index, Is.EqualTo (1));
+      Assert.That (options[0].Text, Is.EqualTo ("Item1"));
+
+      Assert.That (options[2].ItemID, Is.EqualTo ("Item3Value"));
+      Assert.That (options[2].Index, Is.EqualTo (3));
+      Assert.That (options[2].Text, Is.EqualTo ("Item3"));
+    }
+
+    [Test]
     public void TestGetText ()
     {
       var home = Start();

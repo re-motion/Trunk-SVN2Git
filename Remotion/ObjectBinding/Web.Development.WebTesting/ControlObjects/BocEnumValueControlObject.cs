@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
@@ -24,6 +25,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
@@ -44,11 +46,20 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Returns the currently selected option's value.
+    /// Returns the currently selected option. Note that the <see cref="OptionDefinition.Index"/> is set to -1.
     /// </summary>
-    public string GetSelectedOption ()
+    public OptionDefinition GetSelectedOption ()
     {
       return _variantImpl.GetSelectedOption();
+    }
+
+    /// <summary>
+    /// Returns all available options. 
+    /// Warning: this method does not wait until "the element" is available but detects all available options at the moment of calling.
+    /// </summary>
+    public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
+    {
+      return _variantImpl.GetOptionDefinitions();
     }
 
     /// <inheritdoc/>
@@ -128,8 +139,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     private interface IBocEnumValueControlObjectVariant
     {
-      string GetSelectedOption ();
-
+      OptionDefinition GetSelectedOption ();
+      IReadOnlyList<OptionDefinition> GetOptionDefinitions ();
+        
       UnspecifiedPageObject SelectOption ([NotNull] string itemID, IWebTestActionOptions actionOptions);
       UnspecifiedPageObject SelectOption (int index, IWebTestActionOptions actionOptions);
       UnspecifiedPageObject SelectOptionByText ([NotNull] string text, IWebTestActionOptions actionOptions);
@@ -151,12 +163,22 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         _controlObject = controlObject;
       }
 
-      public string GetSelectedOption ()
+      public OptionDefinition GetSelectedOption ()
       {
-        if (_controlObject.IsReadOnly())
-          return _controlObject.Scope.FindChild ("Value").Text; // do not trim
+        var scope = _controlObject.Scope.FindChild ("Value");
 
-        return _controlObject.Scope.FindChild ("Value").GetSelectedOptionText();
+        if (_controlObject.IsReadOnly())
+          return new OptionDefinition (scope["data-value"], -1, scope.Text);
+
+        return scope.GetSelectedOption();
+      }
+
+      public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
+      {
+        return RetryUntilTimeout.Run (
+            () => _controlObject.Scope.FindChild ("Value").FindAllCss ("option")
+                .Select ((optionScope, i) => new OptionDefinition (optionScope.Value, i + 1, optionScope.Text))
+                .ToList());
       }
 
       public UnspecifiedPageObject SelectOption (string itemID, IWebTestActionOptions actionOptions)
@@ -206,12 +228,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         _controlObject = controlObject;
       }
 
-      public string GetSelectedOption ()
+      public OptionDefinition GetSelectedOption ()
       {
         if (_controlObject.IsReadOnly())
-          return _controlObject.Scope.FindChild ("Value").Text; // do not trim
+        {
+          var scope = _controlObject.Scope.FindChild ("Value");
+          return new OptionDefinition (scope["data-value"], -1, scope.Text);
+        }
 
-        return _controlObject.Scope.FindCss ("input[type='radio'][checked='checked']").Value;
+        var radioScope = _controlObject.Scope.FindCss ("input[type='radio'][checked='checked']");
+        return CreateOptionDefinitionFromRadioScope (radioScope, -1);
+      }
+
+      public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
+      {
+        return RetryUntilTimeout.Run (
+            () => _controlObject.Scope.FindAllCss ("input[type='radio']")
+                .Select ((radioScope, i) => CreateOptionDefinitionFromRadioScope (radioScope, i + 1))
+                .ToList());
+      }
+
+      private OptionDefinition CreateOptionDefinitionFromRadioScope (ElementScope radioScope, int oneBasedIndex)
+      {
+        return new OptionDefinition (radioScope.Value, oneBasedIndex, radioScope.FindXPath("../label").Text);
       }
 
       public UnspecifiedPageObject SelectOption (string itemID, IWebTestActionOptions actionOptions)

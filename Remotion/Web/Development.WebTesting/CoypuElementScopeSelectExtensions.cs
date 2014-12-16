@@ -22,6 +22,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
@@ -36,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
     /// <returns>The text of the currently selected option.</returns>
-    public static string GetSelectedOptionText ([NotNull] this ElementScope scope)
+    public static OptionDefinition GetSelectedOption ([NotNull] this ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
@@ -47,7 +48,7 @@ namespace Remotion.Web.Development.WebTesting
             var webElement = (IWebElement) scope.Native;
 
             var select = new SelectElement (webElement);
-            return select.SelectedOption.Text;
+            return new OptionDefinition (select.SelectedOption.GetAttribute ("value"), -1, select.SelectedOption.Text);
           });
     }
 

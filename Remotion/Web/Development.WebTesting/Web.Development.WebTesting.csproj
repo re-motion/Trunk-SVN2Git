@@ -70,6 +70,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
+    <Compile Include="ControlObjects\OptionDefinition.cs" />
     <Compile Include="ControlObjects\WebTabStripTabDefinition.cs" />
     <Compile Include="CssComparisonOperator.cs" />
     <Compile Include="IControlObjectWithFormElements.cs" />

@@ -121,6 +121,40 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetSelectedOption ()
+    {
+      var home = Start();
+
+      const string daLabel = "00000000-0000-0000-0000-000000000009";
+
+      var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
+      Assert.That (bocReferenceValue.GetSelectedOption().ItemID, Is.EqualTo (daLabel));
+      Assert.That (bocReferenceValue.GetSelectedOption().Index, Is.EqualTo (-1));
+      Assert.That (bocReferenceValue.GetSelectedOption().Text, Is.EqualTo ("D, A"));
+    }
+
+    [Test]
+    public void TestGetOptionDefinitions ()
+    {
+      var home = Start();
+
+      const string fLabel = "ef898bb1-7095-46d2-872b-5f732a7c0036";
+
+      var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
+      
+      var options = bocReferenceValue.GetOptionDefinitions();
+      Assert.That (options.Count, Is.EqualTo (16));
+      
+      Assert.That (options[0].ItemID, Is.EqualTo ("==null=="));
+      Assert.That (options[0].Index, Is.EqualTo (1));
+      Assert.That (options[0].Text, Is.Empty);
+
+      Assert.That (options[15].ItemID, Is.EqualTo (fLabel));
+      Assert.That (options[15].Index, Is.EqualTo (16));
+      Assert.That (options[15].Text, Is.EqualTo("F, "));
+    }
+
+    [Test]
     public void TestGetText ()
     {
       var home = Start();
