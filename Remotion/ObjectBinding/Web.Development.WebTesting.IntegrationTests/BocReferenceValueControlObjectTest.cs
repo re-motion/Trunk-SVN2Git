@@ -20,6 +20,7 @@ using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting;
+using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
@@ -125,10 +126,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      const string daLabel = "00000000-0000-0000-0000-000000000009";
+      const string daValue = "00000000-0000-0000-0000-000000000009";
 
       var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      Assert.That (bocReferenceValue.GetSelectedOption().ItemID, Is.EqualTo (daLabel));
+      Assert.That (bocReferenceValue.GetSelectedOption().ItemID, Is.EqualTo (daValue));
       Assert.That (bocReferenceValue.GetSelectedOption().Index, Is.EqualTo (-1));
       Assert.That (bocReferenceValue.GetSelectedOption().Text, Is.EqualTo ("D, A"));
     }
@@ -138,7 +139,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      const string fLabel = "ef898bb1-7095-46d2-872b-5f732a7c0036";
+      const string fValue = "ef898bb1-7095-46d2-872b-5f732a7c0036";
 
       var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       
@@ -149,9 +150,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (options[0].Index, Is.EqualTo (1));
       Assert.That (options[0].Text, Is.Empty);
 
-      Assert.That (options[15].ItemID, Is.EqualTo (fLabel));
+      Assert.That (options[15].ItemID, Is.EqualTo (fValue));
       Assert.That (options[15].Index, Is.EqualTo (16));
-      Assert.That (options[15].Text, Is.EqualTo("F, "));
+      if (WebTestingConfiguration.Current.BrowserIsInternetExplorer())
+        Assert.That (options[15].Text, Is.EqualTo ("F,"));
+      else
+        Assert.That (options[15].Text, Is.EqualTo ("F, "));
     }
 
     [Test]
@@ -196,12 +200,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      const string baLabel = "c8ace752-55f6-4074-8890-130276ea6cd1";
-      const string daLabel = "00000000-0000-0000-0000-000000000009";
+      const string baValue = "c8ace752-55f6-4074-8890-130276ea6cd1";
+      const string daValue = "00000000-0000-0000-0000-000000000009";
 
       var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (baLabel);
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (baLabel));
+      bocReferenceValue.SelectOption (baValue);
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (baValue));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       bocReferenceValue.SelectOption().WithIndex (1);
@@ -209,7 +213,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       bocReferenceValue.SelectOption().WithDisplayText ("D, A");
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daValue));
     }
 
     [Test]
@@ -217,29 +221,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      const string baLabel = "c8ace752-55f6-4074-8890-130276ea6cd1";
-      const string daLabel = "00000000-0000-0000-0000-000000000009";
+      const string baValue = "c8ace752-55f6-4074-8890-130276ea6cd1";
+      const string daValue = "00000000-0000-0000-0000-000000000009";
 
       var bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
       bocReferenceValue.SelectOption ("==null==");
       Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.Empty);
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (baLabel);
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (baLabel));
+      bocReferenceValue.SelectOption (baValue);
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (baValue));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_NoAutoPostBack");
-      bocReferenceValue.SelectOption (baLabel); // no auto post back
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
+      bocReferenceValue.SelectOption (baValue); // no auto post back
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daValue));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (baLabel, Opt.ContinueImmediately()); // same value, does not trigger post back
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daLabel));
+      bocReferenceValue.SelectOption (baValue, Opt.ContinueImmediately()); // same value, does not trigger post back
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (daValue));
 
       bocReferenceValue = home.GetReferenceValue().ByLocalID ("PartnerField_Normal");
-      bocReferenceValue.SelectOption (daLabel);
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daLabel));
-      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (baLabel));
+      bocReferenceValue.SelectOption (daValue);
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINormalLabel").Text, Is.EqualTo (daValue));
+      Assert.That (home.Scope.FindIdEndingWith ("BOUINoAutoPostBackLabel").Text, Is.EqualTo (baValue));
     }
 
     [Test]
