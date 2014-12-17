@@ -113,7 +113,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       string href = WxeContext.Current.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
       // Execute after Smart-Page was restored
-      string functionName = "ExecuteFunctonExternal_" + Guid.NewGuid().ToString().Replace ('-', '_');
+      string functionName = "ExecuteFunctionExternal_" + Guid.NewGuid().ToString().Replace ('-', '_');
       string openScript = string.Format (
           "function {0} () {{ setTimeout( function () {{ window.open('{1}', '{2}', '{3}'); }}, 0); }}",
           functionName,
