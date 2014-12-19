@@ -81,7 +81,7 @@ namespace Remotion.Security.UnitTests
           () => guard.HasAccess (_securityProviderStub, _principalStub, accessTypesOnFirstCall),
           Throws.InvalidOperationException
               .With.Message.StartsWith (
-                  "Multiple reentrancies on InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion."));
+                  "Multiple reentrancies on InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion."));
 
       Assert.That (isExceptionThrownBySecondHasAccess, Is.True);
     }
