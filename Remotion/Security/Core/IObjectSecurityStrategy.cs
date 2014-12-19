@@ -29,8 +29,7 @@ namespace Remotion.Security
   /// <note type="inotes">Implementations are free to decide whether they provide caching.</note>
   /// </remarks>
   /// <seealso cref="ObjectSecurityStrategy"/>
-  /// <seealso cref="ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator"/>
-  /// <seealso cref="InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator"/>
+  /// <seealso cref="InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator"/>
   public interface IObjectSecurityStrategy
   {
     /// <summary>Determines whether the requested access is granted.</summary>

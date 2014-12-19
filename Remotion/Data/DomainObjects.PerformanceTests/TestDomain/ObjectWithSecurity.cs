@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests.TestDomain
       if (_domainObjectSecurityStrategy == null)
       {
         _domainObjectSecurityStrategy =
-            new ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator (
+            new InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (
                 new DomainObjectSecurityStrategyDecorator (
                     new ObjectSecurityStrategy (this, CacheInvalidationToken.Create()),
                     this,

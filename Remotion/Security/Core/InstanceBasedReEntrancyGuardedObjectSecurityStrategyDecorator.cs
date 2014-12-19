@@ -21,7 +21,7 @@ using Remotion.Utilities;
 namespace Remotion.Security
 {
   /// <summary>
-  /// The <see cref="InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator"/> can be used to guard against nested security checks on the same instnace.
+  /// The <see cref="InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator"/> can be used to guard against nested security checks on the same instnace.
   /// </summary>
   /// <remarks>
   /// This guard is intended to discover missing dependencies on <see cref="SecurityFreeSection"/>.<see cref="SecurityFreeSection.IsActive"/> when
@@ -29,13 +29,13 @@ namespace Remotion.Security
   /// </remarks>
   /// <threadsafety static="true" instance="false" />
   [Serializable]
-  public class InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator : IObjectSecurityStrategy
+  public class InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator : IObjectSecurityStrategy
   {
     private bool _isEvaluatingAccess;
 
     private readonly IObjectSecurityStrategy _objectSecurityStrategy;
 
-    public InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (IObjectSecurityStrategy objectSecurityStrategy)
+    public InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (IObjectSecurityStrategy objectSecurityStrategy)
     {
       ArgumentUtility.CheckNotNull ("objectSecurityStrategy", objectSecurityStrategy);
       
@@ -54,7 +54,7 @@ namespace Remotion.Security
       if (_isEvaluatingAccess)
       {
         throw new InvalidOperationException (
-            "Multiple reentrancies on InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
+            "Multiple reentrancies on InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
             + "Use SecurityFreeSection.IsActive to guard the computation of the SecurityContext returned by ISecurityContextFactory.CreateSecurityContext().");
       }
 

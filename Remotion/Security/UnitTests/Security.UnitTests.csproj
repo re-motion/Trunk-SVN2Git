@@ -163,8 +163,7 @@
     <Compile Include="SecurityClientTests\SecurityClientIntegrationTest.cs" />
     <Compile Include="SecurityPrincipalRoleTest.cs" />
     <Compile Include="SecurityPrincipalTest.cs" />
-    <Compile Include="InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecoratorTest.cs" />
-    <Compile Include="ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecoratorTest.cs" />
+    <Compile Include="InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecoratorTest.cs" />
     <Compile Include="XmlAsserter\XmlDocumentBaseConstraint.cs" />
     <Compile Include="XmlAsserter\XmlDocumentEqualConstraint.cs" />
     <Compile Include="XmlAsserter\XmlDocumentEqualConstraintTest.cs" />

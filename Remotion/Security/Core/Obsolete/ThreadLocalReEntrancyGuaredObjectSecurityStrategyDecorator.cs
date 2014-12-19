@@ -14,10 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
-using Remotion.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Security
 {
   /// <summary>
@@ -28,19 +29,11 @@ namespace Remotion.Security
   /// performing additional secured operations as part of a security check.
   /// </remarks>
   /// <threadsafety static="true" instance="false" />
-  [Serializable]
+  [Obsolete ("Use InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator instead. (Version 1.15.26.0)", true)]
   public class ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator : IObjectSecurityStrategy
   {
-    [ThreadStatic]
-    private static bool s_isEvaluatingAccess;
-
-    private readonly IObjectSecurityStrategy _objectSecurityStrategy;
-
     public ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator (IObjectSecurityStrategy objectSecurityStrategy)
     {
-      ArgumentUtility.CheckNotNull ("objectSecurityStrategy", objectSecurityStrategy);
-      
-      _objectSecurityStrategy = objectSecurityStrategy;
     }
 
     public bool HasAccess (
@@ -48,26 +41,7 @@ namespace Remotion.Security
         ISecurityPrincipal principal,
         IReadOnlyList<AccessType> requiredAccessTypes)
     {
-      ArgumentUtility.DebugCheckNotNull ("securityProvider", securityProvider);
-      ArgumentUtility.DebugCheckNotNull ("principal", principal);
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("requiredAccessTypes", requiredAccessTypes);
-
-      if (s_isEvaluatingAccess)
-      {
-        throw new InvalidOperationException (
-            "Multiple reentrancies on ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator.HasAccess(...) are not allowed as they can indicate a possible infinite recursion. "
-            + "Use SecurityFreeSection.IsActive to guard the computation of the SecurityContext returned by ISecurityContextFactory.CreateSecurityContext().");
-      }
-
-      try
-      {
-        s_isEvaluatingAccess = true;
-        return _objectSecurityStrategy.HasAccess (securityProvider, principal, requiredAccessTypes);
-      }
-      finally
-      {
-        s_isEvaluatingAccess = false;
-      }
+      throw new NotSupportedException ("Use InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator instead. (Version 1.15.26.0)");
     }
   }
 }

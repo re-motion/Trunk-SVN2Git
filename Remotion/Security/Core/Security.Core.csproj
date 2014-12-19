@@ -148,8 +148,8 @@
     <Compile Include="Metadata\StatePropertyInfo.cs" />
     <Compile Include="Metadata\StatePropertyReflector.cs" />
     <Compile Include="NullPrincipalProvider.cs" />
-    <Compile Include="InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator.cs" />
-    <Compile Include="ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator.cs" />
+    <Compile Include="InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator.cs" />
+    <Compile Include="Obsolete\ThreadLocalReEntrancyGuaredObjectSecurityStrategyDecorator.cs" />
     <Compile Include="ObjectSecurityStrategy.cs" />
     <Compile Include="PermissionDeniedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

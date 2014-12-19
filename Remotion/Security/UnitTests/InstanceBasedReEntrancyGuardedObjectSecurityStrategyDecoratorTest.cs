@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Remotion.Security.UnitTests
 {
   [TestFixture]
-  public class InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecoratorTest
+  public class InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecoratorTest
   {
     private ISecurityProvider _securityProviderStub;
     private ISecurityPrincipal _principalStub;
@@ -41,7 +41,7 @@ namespace Remotion.Security.UnitTests
     public void HasAccess_DelegatesToDecoratedStrategy_ReturnsResult ()
     {
       var objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
+      var guard = new InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
       var accessTypes = new[] { AccessType.Get (GeneralAccessTypes.Find) };
 
       bool expectedResult = BooleanObjectMother.GetRandomBoolean();
@@ -61,7 +61,7 @@ namespace Remotion.Security.UnitTests
     public void HasAccess_WithReEntrancyOnSameGuard_ThrowsInvalidOperationException ()
     {
       var objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
+      var guard = new InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
       var accessTypesOnFirstCall = new[] { AccessType.Get (GeneralAccessTypes.Find) };
 
       bool isExceptionThrownBySecondHasAccess = false;
@@ -90,7 +90,7 @@ namespace Remotion.Security.UnitTests
     public void HasAccess_WithReEntrancyOnDifferentGuard_ReturnsResult ()
     {
       var firstObjectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var firstGuard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (firstObjectSecurityStrategyStub);
+      var firstGuard = new InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (firstObjectSecurityStrategyStub);
       var accessTypesOnFirstCall = new[] { AccessType.Get (GeneralAccessTypes.Find) };
       bool expectedResultOnFirstCall = BooleanObjectMother.GetRandomBoolean();
 
@@ -102,7 +102,7 @@ namespace Remotion.Security.UnitTests
               mi =>
               {
                 var secondObjectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-                var secondGuard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (secondObjectSecurityStrategyStub);
+                var secondGuard = new InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (secondObjectSecurityStrategyStub);
                 var accessTypesOnSecondCall = new[] { AccessType.Get (GeneralAccessTypes.Read) };
                 bool expectedResultOnSecondCall = BooleanObjectMother.GetRandomBoolean();
 
@@ -128,7 +128,7 @@ namespace Remotion.Security.UnitTests
     public void HasAccess_WithExceptionDuringDecoratedCall_ResetsReentrancyForSubsequentCalls ()
     {
       var objectSecurityStrategyStub = MockRepository.GenerateStub<IObjectSecurityStrategy>();
-      var guard = new InstanceBasedReEntrancyGuaredObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
+      var guard = new InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecorator (objectSecurityStrategyStub);
 
       var accessTypesOnFirstCall = new[] { AccessType.Get (GeneralAccessTypes.Find) };
       var exception = new Exception();
