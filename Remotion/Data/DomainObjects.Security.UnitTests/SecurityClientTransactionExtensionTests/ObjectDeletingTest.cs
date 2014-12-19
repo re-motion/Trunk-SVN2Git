@@ -47,11 +47,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_AccessGranted ()
+    public void Test_AccessGranted_DowsNotThrow ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
       _testHelper.ReplayAll ();
 
@@ -62,11 +61,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
 
     [Test]
     [ExpectedException (typeof (PermissionDeniedException))]
-    public void Test_AccessDenied ()
+    public void Test_AccessDenied_ThrowsPermissionDeniedException ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, false);
       _testHelper.ReplayAll ();
 
@@ -74,11 +72,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_AccessGranted_WithinSecurityFreeSection ()
+    public void Test_AccessGranted_WithinSecurityFreeSection_DoesNotPerformSecurityCheck ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       using (SecurityFreeSection.Create())
@@ -90,11 +87,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithNonSecurableObject ()
+    public void Test_WithNonSecurableObject_DoesNotPerformSecurityCheck ()
     {
       NonSecurableObject nonSecurableObject = _testHelper.CreateNonSecurableObject ();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       _extension.ObjectDeleting (_testHelper.Transaction, nonSecurableObject);
@@ -103,18 +99,18 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_RecursiveSecurity ()
+    public void Test_RecursiveSecurity_ChecksAccessOnNestedCall ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       SecurableObject otherObject = _testHelper.CreateSecurableObject ();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       HasAccessDelegate hasAccess = delegate
       {
-        otherObject.Delete ();
+        _extension.ObjectDeleting (_testHelper.Transaction, otherObject);
         return true;
       };
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, hasAccess);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (otherObject, GeneralAccessTypes.Delete, true);
       _testHelper.ReplayAll ();
 
       _extension.ObjectDeleting (_testHelper.Transaction, securableObject);
@@ -137,10 +133,9 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithNewObject ()
+    public void Test_WithNewObject_DoesNotPerformSecurityCheck ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       _extension.ObjectDeleting (_testHelper.Transaction, securableObject);
@@ -155,7 +150,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper.Transaction.Commit ();
       using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
       {
-        _testHelper.AddExtension (_extension);
         _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
         _testHelper.ReplayAll();
 
@@ -170,7 +164,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
       _testHelper.ReplayAll();
 
@@ -187,7 +180,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.Transaction.Commit ();
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Delete, true);
       _testHelper.ReplayAll ();
 

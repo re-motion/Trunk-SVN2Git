@@ -29,6 +29,10 @@ namespace Remotion.Data.DomainObjects.Security
   /// <summary>
   /// Adds security checks to the following re-store operations: object creation and deletion, queries, relation and property reads and writes.
   /// </summary>
+  /// <remarks>
+  /// The operations are not guarded against re-entry. Instead, the security implementation itself is responsible for not performing recursive 
+  /// checks on the same object instance.
+  /// </remarks>
   [Serializable]
   public class SecurityClientTransactionExtension : ClientTransactionExtensionBase
   {
@@ -41,7 +45,6 @@ namespace Remotion.Data.DomainObjects.Security
       get { return typeof (SecurityClientTransactionExtension).FullName; }
     }
 
-    private bool _isActive;
     [NonSerialized]
     private SecurityClient _securityClient;
 
@@ -64,9 +67,6 @@ namespace Remotion.Data.DomainObjects.Security
       if (clientTransaction.ParentTransaction != null)
         return queryResult; // filtering already done in parent transaction
 
-      if (_isActive)
-        return queryResult;
-
       if (SecurityFreeSection.IsActive)
         return queryResult;
 
@@ -81,16 +81,7 @@ namespace Remotion.Data.DomainObjects.Security
           if (securableObject == null)
             continue;
 
-          bool hasAccess;
-          try
-          {
-            _isActive = true;
-            hasAccess = securityClient.HasAccess (securableObject, s_findAccessType);
-          }
-          finally
-          {
-            _isActive = false;
-          }
+          var hasAccess = securityClient.HasAccess (securableObject, s_findAccessType);
           if (!hasAccess)
             queryResultList.RemoveAt (i);
         }
@@ -107,9 +98,6 @@ namespace Remotion.Data.DomainObjects.Security
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("type", type);
 
-      if (_isActive)
-        return;
-
       if (!(typeof (ISecurableObject).IsAssignableFrom (type)))
         return;
 
@@ -117,17 +105,9 @@ namespace Remotion.Data.DomainObjects.Security
         return;
 
       var securityClient = GetSecurityClient ();
-      try
+      using (EnterScopeOnDemand (clientTransaction))
       {
-        _isActive = true;
-        using (EnterScopeOnDemand (clientTransaction))
-        {
-          securityClient.CheckConstructorAccess (type);
-        }
-      }
-      finally
-      {
-        _isActive = false;
+        securityClient.CheckConstructorAccess (type);
       }
     }
 
@@ -135,9 +115,6 @@ namespace Remotion.Data.DomainObjects.Security
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-      if (_isActive)
-        return;
 
       if (SecurityFreeSection.IsActive)
         return;
@@ -150,18 +127,9 @@ namespace Remotion.Data.DomainObjects.Security
         return;
 
       var securityClient = GetSecurityClient ();
-      try
+      using (EnterScopeOnDemand (clientTransaction))
       {
-        _isActive = true;
-
-        using (EnterScopeOnDemand (clientTransaction))
-        {
-          securityClient.CheckAccess (securableObject, s_deleteAccessType);
-        }
-      }
-      finally
-      {
-        _isActive = false;
+        securityClient.CheckAccess (securableObject, s_deleteAccessType);
       }
     }
 
@@ -189,9 +157,6 @@ namespace Remotion.Data.DomainObjects.Security
 
     private void PropertyReading (ClientTransaction clientTransaction, DomainObject domainObject, IPropertyInformation propertyInfo)
     {
-      if (_isActive)
-        return;
-
       if (SecurityFreeSection.IsActive)
         return;
 
@@ -200,18 +165,10 @@ namespace Remotion.Data.DomainObjects.Security
         return;
 
       var securityClient = GetSecurityClient();
-      try
+      var methodInformation = propertyInfo.GetGetMethod (true) ?? s_nullMethodInformation;
+      using (EnterScopeOnDemand (clientTransaction))
       {
-        _isActive = true;
-        var methodInformation = propertyInfo.GetGetMethod (true) ?? s_nullMethodInformation;
-        using (EnterScopeOnDemand (clientTransaction))
-        {
-          securityClient.CheckPropertyReadAccess (securableObject, methodInformation);
-        }
-      }
-      finally
-      {
-        _isActive = false;
+        securityClient.CheckPropertyReadAccess (securableObject, methodInformation);
       }
     }
 
@@ -248,9 +205,6 @@ namespace Remotion.Data.DomainObjects.Security
 
     private void PropertyChanging (ClientTransaction clientTransaction, DomainObject domainObject, IPropertyInformation propertyInfo)
     {
-      if (_isActive)
-        return;
-
       if (SecurityFreeSection.IsActive)
         return;
 
@@ -259,18 +213,10 @@ namespace Remotion.Data.DomainObjects.Security
         return;
 
       var securityClient = GetSecurityClient ();
-      try
+      var methodInformation = propertyInfo.GetSetMethod (true) ?? s_nullMethodInformation;
+      using (EnterScopeOnDemand (clientTransaction))
       {
-        _isActive = true;
-        var methodInformation = propertyInfo.GetSetMethod (true) ?? s_nullMethodInformation;
-        using (EnterScopeOnDemand (clientTransaction))
-        {
-          securityClient.CheckPropertyWriteAccess (securableObject, methodInformation);
-        }
-      }
-      finally
-      {
-        _isActive = false;
+        securityClient.CheckPropertyWriteAccess (securableObject, methodInformation);
       }
     }
 

@@ -49,11 +49,10 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithNullObject ()
+    public void Test_WithNullValue_ReturnsNullValue ()
     {
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { null });
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
@@ -63,12 +62,11 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithOneAllowedObject ()
+    public void Test_WithOneAllowedObject_ReturnsObject ()
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { allowedObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll ();
 
@@ -79,83 +77,72 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
     }
 
     [Test]
-    public void Test_WithNoObjects ()
+    public void Test_WithNoObjects_ReturnsNoObjects ()
     {
       _extension = new SecurityClientTransactionExtension ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[0]);
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.That (finalResult, Is.SameAs (queryResult));
-      Assert.That (finalResult.Count, Is.EqualTo (0));
+      Assert.That (finalResult.ToArray(), Is.Empty);
     }
 
     [Test]
-    public void Test_WithOneDeniedObject ()
+    public void Test_WithOneDeniedObject_ReturnsEmptyResult ()
     {
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { deniedObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
       _testHelper.ReplayAll ();
 
       var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.That (finalResult, Is.Not.SameAs (queryResult));
-      Assert.That (finalResult.Count, Is.EqualTo (0));
+      Assert.That (finalResult.ToArray(), Is.Empty);
     }
 
     [Test]
-    public void Test_WithOneAllowedAndOneDeniedObject ()
+    public void Test_WithOneAllowedAndOneDeniedObject_ReturnsOnlyAllowedObject ()
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
-      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { allowedObject, deniedObject });
-      _testHelper.AddExtension (_extension);
-      _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
+      var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { deniedObject, allowedObject });
       _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll ();
 
       var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.That (finalResult, Is.Not.SameAs (queryResult));
-      Assert.That (finalResult.Count, Is.EqualTo (1));
-      Assert.That (finalResult.ToArray(), Has.Member (allowedObject));
+      Assert.That (finalResult.ToArray(), Is.EqualTo (new[] { allowedObject }));
     }
 
     [Test]
-    public void Test_WithNonSecurableObject ()
+    public void Test_WithNonSecurableObject_ReturnsObjects ()
     {
       NonSecurableObject nonSecurableObject = _testHelper.CreateNonSecurableObject ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { nonSecurableObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
-      Assert.That (finalResult, Is.SameAs (queryResult));
-      Assert.That (finalResult.Count, Is.EqualTo (1));
-      Assert.That (finalResult.ToArray(), Has.Member (nonSecurableObject));
+      Assert.That (finalResult.ToArray(), Is.EqualTo (new[] { nonSecurableObject }));
     }
 
     [Test]
-    public void Test_WithinSecurityFreeSection ()
+    public void Test_WithinSecurityFreeSection_ReturnsQueryResultUnchanged ()
     {
       SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { allowedObject, deniedObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       QueryResult<DomainObject> finalResult;
@@ -166,31 +153,36 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
 
       _testHelper.VerifyAll ();
       Assert.That (finalResult, Is.SameAs (queryResult));
-      Assert.That (queryResult.Count, Is.EqualTo (2));
-      Assert.That (queryResult.ToArray(), Has.Member (allowedObject));
-      Assert.That (queryResult.ToArray (), Has.Member (deniedObject));
     }
 
     [Test]
-    public void Test_RecursiveSecurity ()
+    public void Test_RecursiveSecurity_ChecksAccessOnNestedCall ()
     {
+      SecurableObject allowedObject = _testHelper.CreateSecurableObject ();
+      SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
+      IQuery nestedQuery = _testHelper.CreateSecurableObjectQuery();
+      var nestedQueryResult = new QueryResult<DomainObject> (nestedQuery, new DomainObject[] { allowedObject, deniedObject });
+      HasAccessDelegate hasAccess = delegate
+      {
+        var filteredResult = _extension.FilterQueryResult (_testHelper.Transaction, nestedQueryResult);
+        Assert.That (filteredResult.ToArray(), Is.EqualTo (new[] { allowedObject }));
+        return true;
+      };
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (allowedObject, GeneralAccessTypes.Find, true);
+      _testHelper.ExpectObjectSecurityStrategyHasAccess (deniedObject, GeneralAccessTypes.Find, false);
+
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       IQuery query = _testHelper.CreateSecurableObjectQuery();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
-      _testHelper.AddExtension (_extension);
-      HasAccessDelegate hasAccess = delegate
-      {
-        _testHelper.Transaction.QueryManager.GetCollection (query);
-        return true;
-      };
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, hasAccess);
+
       _testHelper.ReplayAll ();
 
       var finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
 
       _testHelper.VerifyAll ();
 
-      Assert.That (finalResult, Is.SameAs (queryResult));
+      Assert.That (finalResult.ToArray(), Is.EqualTo (new[] { securableObject }));
     }
 
     [Test]
@@ -211,7 +203,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       SecurableObject deniedObject = _testHelper.CreateSecurableObject ();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { deniedObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       var subTransaction = _testHelper.Transaction.CreateSubTransaction ();
@@ -243,7 +234,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
 
       using (var scope = _testHelper.Transaction.EnterNonDiscardingScope())
       {
-        _testHelper.AddExtension (_extension);
         _testHelper.ExpectObjectSecurityStrategyHasAccessWithMatchingScope (securableObject, scope);
         _testHelper.ReplayAll();
 
@@ -259,7 +249,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll();
 
@@ -277,7 +266,6 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject();
       IQuery query = MockRepository.GenerateStub<IQuery>();
       var queryResult = new QueryResult<DomainObject> (query, new DomainObject[] { securableObject });
-      _testHelper.AddExtension (_extension);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Find, true);
       _testHelper.ReplayAll();
 
