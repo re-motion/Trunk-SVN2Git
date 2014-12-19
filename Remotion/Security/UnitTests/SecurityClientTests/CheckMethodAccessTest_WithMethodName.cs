@@ -74,7 +74,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
       }
@@ -105,7 +105,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
       }
@@ -148,7 +148,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
       }

@@ -207,7 +207,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
     public override bool SaveValues (bool interim)
     {
       bool hasSaved;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasSaved = base.SaveValues (interim);
       }

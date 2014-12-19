@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _extension.PropertyValueReading (_testHelper.Transaction, securableObject, _stringPropertyDefinition, ValueAccess.Current);
       }

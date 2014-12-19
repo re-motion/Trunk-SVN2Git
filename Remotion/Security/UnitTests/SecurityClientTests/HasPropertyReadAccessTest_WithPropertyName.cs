@@ -76,7 +76,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
       }
@@ -121,7 +121,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
       }
@@ -167,7 +167,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, "InstanceProperty");
       }

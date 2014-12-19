@@ -49,7 +49,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "IsValid");
       }

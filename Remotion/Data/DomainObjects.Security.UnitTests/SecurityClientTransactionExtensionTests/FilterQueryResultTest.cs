@@ -146,7 +146,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests.SecurityClientTransacti
       _testHelper.ReplayAll ();
 
       QueryResult<DomainObject> finalResult;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         finalResult = _extension.FilterQueryResult (_testHelper.Transaction, queryResult);
       }

@@ -25,10 +25,10 @@ namespace Remotion.Security.UnitTests
   public class SecurityFreeSectionTest
   {
     [Test]
-    public void Create_IsActive_Dispose_WithSingleSecurityFreeSection ()
+    public void Activate_IsActive_Dispose_WithSingleSecurityFreeSection ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      var scope = SecurityFreeSection.Create();
+      var scope = SecurityFreeSection.Activate();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
@@ -37,14 +37,14 @@ namespace Remotion.Security.UnitTests
     }
 
     [Test]
-    public void Create_IsActive_Dispose_WithNestedSecurityFreeSections ()
+    public void Activate_IsActive_Dispose_WithNestedSecurityFreeSections ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      var scope = SecurityFreeSection.Create();
+      var scope = SecurityFreeSection.Activate();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         Assert.That (SecurityFreeSection.IsActive, Is.True);
       }
@@ -56,14 +56,14 @@ namespace Remotion.Security.UnitTests
     }
 
     [Test]
-    public void Create_IsActive_Dispose_WithNestedSecurityFreeSectionsUnorderd_ThrowsInvalidOperationException ()
+    public void Activate_IsActive_Dispose_WithNestedSecurityFreeSectionsUnorderd_ThrowsInvalidOperationException ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      IDisposable scope1 = SecurityFreeSection.Create(); // scope1 is boxed to make sure no value-copy errors are introduced.
+      IDisposable scope1 = SecurityFreeSection.Activate(); // scope1 is boxed to make sure no value-copy errors are introduced.
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
-      var scope2 = SecurityFreeSection.Create();
+      var scope2 = SecurityFreeSection.Activate();
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       Assert.That (
@@ -93,7 +93,7 @@ namespace Remotion.Security.UnitTests
     public void Leave ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      var scope = SecurityFreeSection.Create();
+      var scope = SecurityFreeSection.Activate();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
@@ -102,10 +102,10 @@ namespace Remotion.Security.UnitTests
     }
 
     [Test]
-    public void Create_IsActive_Dispose_Create ()
+    public void Activate_IsActive_Dispose_NotIsActive_Activate_IsActive ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      var scope = SecurityFreeSection.Create();
+      var scope = SecurityFreeSection.Activate();
 
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
@@ -113,24 +113,64 @@ namespace Remotion.Security.UnitTests
 
       Assert.That (SecurityFreeSection.IsActive, Is.False);
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         Assert.That (SecurityFreeSection.IsActive, Is.True);
       }
     }
 
     [Test]
+    public void Activate_IsActive_Deactivate_NotIsActive_Activate_IsActive_Dispose_NotIsActive_Dispose_IsActive_Dispose_NotIsActive ()
+    {
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+
+      using (SecurityFreeSection.Activate())
+      {
+        Assert.That (SecurityFreeSection.IsActive, Is.True);
+
+        using (SecurityFreeSection.Deactivate())
+        {
+          Assert.That (SecurityFreeSection.IsActive, Is.False);
+
+          using (SecurityFreeSection.Activate())
+          {
+            Assert.That (SecurityFreeSection.IsActive, Is.True);
+          }
+
+          Assert.That (SecurityFreeSection.IsActive, Is.False);
+        }
+
+        Assert.That (SecurityFreeSection.IsActive, Is.True);
+      }
+
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+    }
+
+    [Test]
+    public void Deactivate_WithoutActiveSection_StaysDeactivated()
+    {
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+
+      using (SecurityFreeSection.Deactivate())
+      {
+        Assert.That (SecurityFreeSection.IsActive, Is.False);
+      }
+
+      Assert.That (SecurityFreeSection.IsActive, Is.False);
+    }
+
+    [Test]
     public void Threading ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
-      var scope = SecurityFreeSection.Create();
+      var scope = SecurityFreeSection.Activate();
       Assert.That (SecurityFreeSection.IsActive, Is.True);
 
       ThreadRunner.Run (
           delegate
           {
             Assert.That (SecurityFreeSection.IsActive, Is.False);
-            using (SecurityFreeSection.Create())
+            using (SecurityFreeSection.Activate())
             {
               Assert.That (SecurityFreeSection.IsActive, Is.True);
             }

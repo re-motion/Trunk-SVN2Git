@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl.AccessEvaluation
       ArgumentUtility.CheckNotNull ("aclHandle", aclHandle);
       ArgumentUtility.CheckNotNull ("token", token);
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
         {

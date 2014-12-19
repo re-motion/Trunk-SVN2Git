@@ -76,7 +76,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
       }
@@ -108,7 +108,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.HasMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
       }
@@ -164,7 +164,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.HasMethodAccess (_testHelper.SecurableObject, "InstanceMethod");
       }

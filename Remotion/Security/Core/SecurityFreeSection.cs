@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Security
 {
   /// <summary>
-  /// Represents a scope within no security will be evaluated. Use <see cref="SecurityFreeSection"/>.<see cref="Create"/> to enter the scope 
+  /// Represents a scope within no security will be evaluated. Use <see cref="SecurityFreeSection"/>.<see cref="Activate"/> to enter the scope 
   /// and <see cref="Scope.Dispose"/> to leave the scope.
   /// </summary>
   public static class SecurityFreeSection
@@ -34,14 +34,16 @@ namespace Remotion.Security
     [CannotApplyEqualityOperator]
     public struct Scope : IDisposable
     {
-      private readonly int _activeSectionsCount;
+      private readonly int _currentSectionCount;
+      private readonly bool _previousIsActive;
       private bool _isDisposed;
 
-      internal Scope (int activeSectionsCount)
+      internal Scope (int currentSectionCount, bool previousIsActive)
       {
-        Assertion.DebugAssert (activeSectionsCount > 0);
+        Assertion.DebugAssert (currentSectionCount > 0);
 
-        _activeSectionsCount = activeSectionsCount;
+        _currentSectionCount = currentSectionCount;
+        _previousIsActive = previousIsActive;
         _isDisposed = false;
       }
 
@@ -57,10 +59,10 @@ namespace Remotion.Security
       {
         if (!_isDisposed)
         {
-          if (_activeSectionsCount == 0)
+          if (_currentSectionCount == 0)
             throw new InvalidOperationException ("The SecurityFreeSection scope has not been entered by invoking SecurityFreeSection.Create().");
 
-          DecrementActiveSections (_activeSectionsCount);
+          PopSectionState (_currentSectionCount, _previousIsActive);
           _isDisposed = true;
         }
       }
@@ -72,63 +74,116 @@ namespace Remotion.Security
       }
     }
 
-    private class ActiveSections
+    private struct PushResult
     {
-      // Mutable to avoid object allocation during increment and decrement
-      public int Count { get; set; }
+      private readonly int _currentSectionCount;
+      private readonly bool _previousIsActive;
 
-      public ActiveSections ()
+      public PushResult (int currentSectionCount, bool previousIsActive)
       {
-        Count = 0;
+        _currentSectionCount = currentSectionCount;
+        _previousIsActive = previousIsActive;
+      }
+
+      public int CurrentSectionCount
+      {
+        get { return _currentSectionCount; }
+      }
+
+      public bool PreviousIsActive
+      {
+        get { return _previousIsActive; }
       }
     }
 
-    private static readonly SafeContextSingleton<ActiveSections> s_activeSections =
-        new SafeContextSingleton<ActiveSections> (SafeContextKeys.SecuritySecurityFreeSection, () => new ActiveSections());
+    private class State
+    {
+      // Mutable to avoid object allocation during increment and decrement
+      public int CurrentSectionCount { get; set; }
+
+      // Mutable to avoid object allocation during increment and decrement
+      public bool IsActive { get; set; }
+
+      public State ()
+      {
+        CurrentSectionCount = 0;
+        IsActive = false;
+      }
+    }
+
+    private static readonly SafeContextSingleton<State> s_sectionState =
+        new SafeContextSingleton<State> (SafeContextKeys.SecuritySecurityFreeSection, () => new State());
+
+    /// <summary>
+    /// Enables a <see cref="SecurityFreeSection"/> until the <see cref="Scope"/> is disabled. 
+    /// The <see cref="Scope"/> should always be used via a using-block, or if that is not possible, disposed inside a finally-block.
+    /// </summary>
+    public static Scope Activate ()
+    {
+      var result = PushSectionState (newIsActive: true);
+      return new Scope (result.CurrentSectionCount, result.PreviousIsActive);
+    }
+    
+    /// <summary>
+    /// Disables any active <see cref="SecurityFreeSection"/> until the <see cref="Scope"/> is disposed. 
+    /// The <see cref="Scope"/> should always be used via a using-block, or if that is not possible, disposed inside a finally-block.
+    /// </summary>
+    public static Scope Deactivate ()
+    {
+      var result = PushSectionState (newIsActive: false);
+      return new Scope (result.CurrentSectionCount, result.PreviousIsActive);
+    }
 
     /// <summary>
     /// Enters a new <see cref="SecurityFreeSection"/> <see cref="Scope"/>. 
     /// The <see cref="Scope"/> should always be used via a using-block, or if that is not possible, disposed inside a finally-block.
     /// </summary>
+    [Obsolete ("Use Activate() instead. (Version 1.15.26.0)")]
     public static Scope Create ()
     {
-      var activeSectionsCount = IncrementActiveSections();
-      return new Scope (activeSectionsCount);
+      return Activate();
     }
 
     public static bool IsActive
     {
       get
       {
-        var activeSections = GetActiveSections();
-        return activeSections.Count > 0;
+        var sectionState = GetSectionState();
+        return sectionState.IsActive;
       }
     }
 
-    private static ActiveSections GetActiveSections ()
+    private static State GetSectionState ()
     {
-      return s_activeSections.Current;
+      return s_sectionState.Current;
     }
 
-    private static int IncrementActiveSections ()
+    private static PushResult PushSectionState (bool newIsActive)
     {
-      var activeSections = GetActiveSections();
-      activeSections.Count++;
-      return activeSections.Count;
+      var sectionState = GetSectionState();
+
+      var newSectionCount = sectionState.CurrentSectionCount + 1;
+      var previousIsActive = sectionState.IsActive;
+
+      sectionState.CurrentSectionCount = newSectionCount;
+      sectionState.IsActive = newIsActive;
+
+      return new PushResult (newSectionCount, previousIsActive);
     }
 
-    private static void DecrementActiveSections (int numberOfActiveSectionsExpected)
+    private static void PopSectionState (int numberOfSectionsExpected, bool previousIsActive)
     {
-      var activeSections = GetActiveSections();
+      var sectionState = GetSectionState();
 
-      if (activeSections.Count != numberOfActiveSectionsExpected)
+      if (sectionState.CurrentSectionCount != numberOfSectionsExpected)
       {
         throw new InvalidOperationException (
             "Nested SecurityFreeSection scopes have been exited out-of-sequence. "
             + "Entering a SecurityFreeSection should always be combined with a using-block for the scope, or if this is not possible, a finally-block for leaving the scope.");
       }
 
-      activeSections.Count--;
+      sectionState.CurrentSectionCount--;
+      sectionState.IsActive = previousIsActive;
     }
   }
 }

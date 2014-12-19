@@ -76,7 +76,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckMethodAccess (_testHelper.SecurableObject, "Show");
       }
@@ -89,7 +89,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckMethodAccess (_testHelper.SecurableObject, _methodInfo);
       }
@@ -102,7 +102,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
     {
       _testHelper.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityClient.CheckMethodAccess (_testHelper.SecurableObject, _methodInformation);
       }

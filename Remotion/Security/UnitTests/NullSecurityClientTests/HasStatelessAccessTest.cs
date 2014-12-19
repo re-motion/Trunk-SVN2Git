@@ -77,7 +77,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasStatelessAccess (
             typeof (SecurableObject),

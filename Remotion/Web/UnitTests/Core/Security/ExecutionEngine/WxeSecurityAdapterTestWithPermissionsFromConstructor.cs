@@ -106,7 +106,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
     {
       _mocks.ReplayAll ();
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         _securityAdapter.CheckAccess (new TestFunctionWithPermissionsFromConstructor ());
       }
@@ -144,7 +144,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       _mocks.ReplayAll ();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityAdapter.HasAccess (new TestFunctionWithPermissionsFromConstructor ());
       }
@@ -183,7 +183,7 @@ namespace Remotion.Web.UnitTests.Core.Security.ExecutionEngine
       _mocks.ReplayAll ();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityAdapter.HasStatelessAccess (typeof (TestFunctionWithPermissionsFromConstructor));
       }

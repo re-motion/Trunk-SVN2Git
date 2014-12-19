@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
           .Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -117,7 +117,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -133,7 +133,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -149,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
           .Return (new[] { AccessType.Get (TestAccessTypes.First) });
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -181,7 +181,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -197,7 +197,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       _securityProviderStub.Stub (mock => mock.GetAccess (_securityContextStub, _securityPrincipalStub)).Return (new AccessType[0]);
 
       SecurableObject securableObject;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         securableObject = CreateSecurableObject (_securityContextFactoryStub);
       }
@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
       using (subTransaction.EnterDiscardingScope ())
       {
         SecurableObject securableObject;
-        using (SecurityFreeSection.Create())
+        using (SecurityFreeSection.Activate())
         {
           securableObject = CreateSecurableObject (_securityContextFactoryStub, clientTransaction: subTransaction);
         }

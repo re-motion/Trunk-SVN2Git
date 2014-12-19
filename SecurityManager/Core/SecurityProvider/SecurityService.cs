@@ -57,7 +57,7 @@ namespace Remotion.SecurityManager
       ArgumentUtility.CheckNotNull ("context", context);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         IDomainObjectHandle<AccessControlList> acl;
         SecurityToken token;

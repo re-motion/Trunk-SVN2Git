@@ -83,7 +83,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
       _testHelper.ReplayAll();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, "IsVisible");
       }
@@ -98,7 +98,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }
@@ -113,7 +113,7 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
       _testHelper.ReplayAll ();
 
       bool hasAccess;
-      using (SecurityFreeSection.Create())
+      using (SecurityFreeSection.Activate())
       {
         hasAccess = _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation);
       }

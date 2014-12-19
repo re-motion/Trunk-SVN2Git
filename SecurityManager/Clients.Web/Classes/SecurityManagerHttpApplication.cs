@@ -99,7 +99,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        using (SecurityFreeSection.Create())
+        using (SecurityFreeSection.Activate())
         {
           var user = SecurityManagerUser.FindByUserName (principal.Identity.Name);
           if (user == null)
