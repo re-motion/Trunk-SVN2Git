@@ -90,6 +90,16 @@ namespace Remotion.Security.UnitTests
 
     [Test]
     [Obsolete]
+    public void Create ()
+    {
+      using (SecurityFreeSection.Create())
+      {
+        Assert.That (SecurityFreeSection.IsActive, Is.True);
+      }
+    }
+
+    [Test]
+    [Obsolete]
     public void Leave ()
     {
       Assert.That (SecurityFreeSection.IsActive, Is.False);
