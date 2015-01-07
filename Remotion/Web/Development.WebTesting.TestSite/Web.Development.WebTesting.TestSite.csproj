@@ -71,6 +71,7 @@
     <Content Include="Images\SampleIcon.gif" />
     <Content Include="DropDownMenuTest.aspx" />
     <Content Include="FileDownloadTest.aspx" />
+    <Content Include="ImageTest.aspx" />
     <Content Include="SampleFile.txt" />
     <Content Include="ScopeTest.aspx" />
     <Content Include="DropDownListTest.aspx" />
@@ -118,9 +119,17 @@
     <Compile Include="ImageButtonTestFunction.cs" />
     <Compile Include="FileDownloadTest.aspx.cs">
       <DependentUpon>FileDownloadTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="FileDownloadTest.aspx.designer.cs">
       <DependentUpon>FileDownloadTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ImageTest.aspx.cs">
+      <DependentUpon>ImageTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ImageTest.aspx.designer.cs">
+      <DependentUpon>ImageTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="ScopeTest.aspx.cs">
       <DependentUpon>ScopeTest.aspx</DependentUpon>
