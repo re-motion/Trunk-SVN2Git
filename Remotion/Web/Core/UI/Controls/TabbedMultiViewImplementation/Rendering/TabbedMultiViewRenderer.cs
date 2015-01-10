@@ -51,9 +51,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (TabbedMultiViewRenderer), ResourceType.Html, "TabbedMultiView.css");
       htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
-      string keyScript = typeof (TabbedMultiViewRenderer).FullName + "_Script";
-      var scriptFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (TabbedMultiViewRenderer), ResourceType.Html, "ViewLayout.js");
-      htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptFileUrl);
+      htmlHeadAppender.RegisterViewLayoutScript();
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }

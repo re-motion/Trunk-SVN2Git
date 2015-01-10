@@ -52,9 +52,7 @@ namespace Remotion.Web.UI.Controls.SingleViewImplementation.Rendering
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "SingleView.css");
       htmlHeadAppender.RegisterStylesheetLink (keyStyle, styleSheetUrl, HtmlHeadAppender.Priority.Library);
 
-      string keyScript = typeof (SingleViewRenderer).FullName + "_Script";
-      var scriptUrl = ResourceUrlFactory.CreateResourceUrl (typeof (SingleViewRenderer), ResourceType.Html, "ViewLayout.js");
-      htmlHeadAppender.RegisterJavaScriptInclude (keyScript, scriptUrl);
+      htmlHeadAppender.RegisterViewLayoutScript();
 
       ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }
