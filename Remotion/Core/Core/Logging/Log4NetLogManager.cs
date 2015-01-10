@@ -32,6 +32,8 @@ namespace Remotion.Logging
   [ImplementationFor (typeof(ILogManager), Lifetime = LifetimeKind.Singleton)]
   public class Log4NetLogManager : ILogManager
   {
+    private readonly WrapperMap _wrapperMap = new WrapperMap (logger => new Log4NetLog (logger));
+
     /// <summary>
     /// Creates a new instance of the <see cref="Log4NetLog"/> type.
     /// </summary>
@@ -41,7 +43,7 @@ namespace Remotion.Logging
     {
       ArgumentUtility.CheckNotNull ("name", name);
 
-      return new Log4NetLog (LoggerManager.GetLogger (Assembly.GetCallingAssembly (), name));
+      return WrapLogger (LoggerManager.GetLogger (Assembly.GetCallingAssembly(), name));
     }
 
     /// <summary>
@@ -53,7 +55,7 @@ namespace Remotion.Logging
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return new Log4NetLog (LoggerManager.GetLogger (Assembly.GetCallingAssembly (), type));
+      return WrapLogger (LoggerManager.GetLogger (Assembly.GetCallingAssembly(), type));
     }
 
     /// <summary>
@@ -118,6 +120,11 @@ namespace Remotion.Logging
 
         log4netLogger.Level = Log4NetLog.Convert (logThreshold.Threshold);
       }
+    }
+
+    private ILog WrapLogger (ILogger logger)
+    {
+      return (Log4NetLog) _wrapperMap.GetWrapper (logger);
     }
 
     private ConsoleAppender CreateConsoleAppender ()

@@ -59,6 +59,14 @@ namespace Remotion.UnitTests.Logging
     }
 
     [Test]
+    public void GetLogger_WithNameAsString_ReturnsSameLoggerTwice ()
+    {
+      var log = _logManager.GetLogger ("The Name");
+
+      Assert.That (_logManager.GetLogger ("The Name"), Is.SameAs (log));
+    }
+
+    [Test]
     public void GetLogger_WithNameFromType ()
     {
       var log = _logManager.GetLogger (typeof (SampleType));
@@ -67,6 +75,14 @@ namespace Remotion.UnitTests.Logging
      
       var log4NetLog = (Log4NetLog) log;
       Assert.That (log4NetLog.Logger.Name, Is.EqualTo ("Remotion.UnitTests.Logging.SampleType"));
+    }
+
+    [Test]
+    public void GetLogger_WithNameFromType_ReturnsSameLoggerTwice ()
+    {
+      var log = _logManager.GetLogger (typeof (SampleType));
+
+      Assert.That (_logManager.GetLogger (typeof (SampleType)), Is.SameAs (log));
     }
 
     [Test]
