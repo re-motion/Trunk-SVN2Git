@@ -69,9 +69,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>
-    /// 	<see langword="true"/> if the specified <paramref name="type"/> has a mixin derived from 
-    /// 	<see cref="BindableObjectMixinBase{TBindableObject}"/> applied or is itself derived from a bindable object base class; otherwise 
-    /// 	<see langword="false"/>.
+    ///   <see langword="true"/> if the specified <paramref name="type"/> has a mixin derived from <see cref="BindableObjectMixinBase{TBindableObject}"/> 
+    ///   or the <see cref="BindableObjectBaseClassAttribute"/> applied; otherwise <see langword="false"/>.
     /// </returns>
     /// <remarks>
     /// <note type="caution">This check is not cached by the implemention. The result should be cached.</note>
@@ -79,12 +78,12 @@ namespace Remotion.ObjectBinding.BindableObject
     public static bool IsBindableObjectImplementation (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return HasBindableObjectMixin (type) || IsDerivedFromBindableObjectBase (type);
+      return HasBindableObjectMixin (type) || IsBindableObjectBaseClass (type);
     }
 
-    private static bool IsDerivedFromBindableObjectBase (Type type)
+    private static bool IsBindableObjectBaseClass (Type type)
     {
-      return AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
+      return typeof (IBusinessObject).IsAssignableFrom (type) && AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);
     }
 
     private static bool HasBindableObjectMixin (Type type)
@@ -161,8 +160,8 @@ namespace Remotion.ObjectBinding.BindableObject
     /// that has the <see cref="BindableObjectMixinBase{T}"/> applied or is derived from a bindable object base class.
     /// </summary>
     /// <param name="type">The type to get a <see cref="BindableObjectClass"/> for. This type must have a mixin derived from
-    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> configured or it must be derived from a bindable object class class, and it is 
-    /// recommended to specify the simple target type rather then the generated mixed type.</param>
+    /// <see cref="BindableObjectMixinBase{TBindableObject}"/> or the <see cref="BindableObjectBaseClassAttribute"/> applied,
+    /// and it is recommended to specify the simple target type rather then the generated mixed type.</param>
     /// <returns>Returns the <see cref="BindableObjectClass"/> for the <paramref name="type"/>.</returns>
     public BindableObjectClass GetBindableObjectClass (Type type)
     {
@@ -173,6 +172,16 @@ namespace Remotion.ObjectBinding.BindableObject
 
     private BindableObjectClass CreateBindableObjectClass (Type type)
     {
+      if (!IsBindableObjectImplementation (type))
+      {
+        throw new ArgumentException (
+            string.Format (
+                "The type '{0}' is not a bindable object implementation. It must either have a mixin derived from BindableObjectMixinBase<T> applied "
+                + "or implement the IBusinessObject interface and apply the BindableObjectBaseClassAttribute.",
+                type.FullName),
+            "type");
+      }
+
       IClassReflector classReflector = _metadataFactory.CreateClassReflector (type, this);
       Assertion.IsNotNull (classReflector, "The IMetadataFactory.CreateClassReflector method evaluated and returned null.");
 

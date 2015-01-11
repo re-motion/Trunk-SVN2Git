@@ -75,8 +75,12 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       if (typeof (IBusinessObjectWithIdentity).IsAssignableFrom (_concreteType))
         return new BindableObjectClassWithIdentity (_concreteType, _businessObjectProvider, _bindableObjectGlobalizationService, GetProperties ());
-      else
-        return new BindableObjectClass (_concreteType, _businessObjectProvider, _bindableObjectGlobalizationService, GetProperties ());
+
+      if (typeof (IBusinessObject).IsAssignableFrom (_concreteType))
+        return new BindableObjectClass (_concreteType, _businessObjectProvider, _bindableObjectGlobalizationService, GetProperties());
+
+      throw new NotSupportedException (
+          string.Format ("Type '{0}' does not implement the required IBusinessObject interface.", _concreteType.FullName));
     }
 
     protected IEnumerable<PropertyBase> GetProperties ()

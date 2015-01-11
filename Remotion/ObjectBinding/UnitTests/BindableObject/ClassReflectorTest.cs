@@ -140,6 +140,18 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       mockRepository.VerifyAll ();
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Type 'Remotion.ObjectBinding.UnitTests.TestDomain.SimpleReferenceType' does not implement the required IBusinessObject interface.")]
+    public void GetMetadata_ForTypeWithoutBusinessObjectInterface ()
+    {
+      var classReflector = new ClassReflector (
+          typeof (SimpleReferenceType),
+          _businessObjectProvider,
+          _metadataFactory,
+          _bindableObjectGlobalizationService);
+      classReflector.GetMetadata();
+    }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type '.*ClassWithMixedPropertyOfSameName' has two properties called "

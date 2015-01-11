@@ -269,6 +269,9 @@
     <Compile Include="TestDomain\SampleAttribute.cs" />
     <Compile Include="TestDomain\SimpleReferenceTypeProperty.cs" />
     <Compile Include="TestDomain\SimpleReferenceTypePropertyReflectorMixin.cs" />
+    <Compile Include="TestDomain\StubBindableObject.cs" />
+    <Compile Include="TestDomain\StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass.cs" />
+    <Compile Include="TestDomain\StubBusinessObjectWithoutBusinessObjectInterface.cs" />
     <Compile Include="TestDomain\TestFlags.cs" />
     <Compile Include="TestDomain\EnumerationValueFilter.cs" />
     <Compile Include="TestDomain\DerivedBusinessObjectClassWithSpecificBusinessObjectProviderAttributeFromMixin.cs" />

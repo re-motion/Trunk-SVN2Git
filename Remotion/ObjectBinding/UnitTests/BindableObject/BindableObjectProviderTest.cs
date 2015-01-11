@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The type 'Remotion.ObjectBinding.UnitTests.TestDomain.ManualBusinessObject' does not have the "
         + "'Remotion.ObjectBinding.BusinessObjectProviderAttribute' applied.\r\nParameter name: type")]
-    public void GetProviderForBindableObjectType_WithMissingAttributeType ()
+    public void GetProviderForBindableObjectType_WithMissingProviderAttribute ()
     {
       BindableObjectProvider.GetProviderForBindableObjectType (typeof (ManualBusinessObject));
     }
@@ -113,6 +113,30 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     public void GetProviderForBindableObjectType_WithInvalidProviderType ()
     {
       BindableObjectProvider.GetProviderForBindableObjectType (typeof (StubBusinessObject));
+    }
+
+    [Test]
+    public void GetBindableObjectClass_WithMissingBindableObjectBaseClassAttribute ()
+    {
+      var provider = (BindableObjectProvider) BindableObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute));
+      Assert.That (
+          () => provider.GetBindableObjectClass (typeof (StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass)),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The type 'Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass' "
+              + "is not a bindable object implementation. It must either have a mixin derived from BindableObjectMixinBase<T> applied "
+              + "or implement the IBusinessObject interface and apply the BindableObjectBaseClassAttribute.\r\nParameter name: type"));
+    }
+
+    [Test]
+    public void GetBindableObjectClass_WithMissingBusinessObjectInterace ()
+    {
+      var provider = (BindableObjectProvider) BindableObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute));
+      Assert.That (
+          () => provider.GetBindableObjectClass (typeof (StubBusinessObjectWithoutBusinessObjectInterface)),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The type 'Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObjectWithoutBusinessObjectInterface' "
+              + "is not a bindable object implementation. It must either have a mixin derived from BindableObjectMixinBase<T> applied "
+              + "or implement the IBusinessObject interface and apply the BindableObjectBaseClassAttribute.\r\nParameter name: type"));
     }
 
     [Test]
@@ -169,11 +193,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    public void GetBindableObjectClass_WithTypeNotUsingBindableObjectMixin ()
+    public void GetBindableObjectClass_WithTypeNotUsingBindableObjectBaseClassAttribute ()
     {
-      var bindableObjectClass = _provider.GetBindableObjectClass (typeof (SimpleReferenceType));
-      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (SimpleReferenceType)));
-      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (SimpleReferenceType)));
+      var bindableObjectClass = _provider.GetBindableObjectClass (typeof (StubBindableObject));
+      Assert.That (bindableObjectClass.TargetType, Is.EqualTo (typeof (StubBindableObject)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.EqualTo (typeof (StubBindableObject)));
     }
 
     [Test]

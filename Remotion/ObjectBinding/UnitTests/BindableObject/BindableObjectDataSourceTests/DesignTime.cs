@@ -146,20 +146,20 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage =
-        "The type 'Remotion.ObjectBinding.UnitTests.TestDomain.ManualBusinessObject' is not a bindable object implementation. It must either "
-        + "have an BindableObject mixin or be derived from a BindableObject base class to be used with this data source.")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The type 'Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass' is not a bindable object implementation. "
+        +"It must either have a mixin derived from BindableObjectMixinBase<T> applied "
+        +"or implement the IBusinessObject interface and apply the BindableObjectBaseClassAttribute.\r\nParameter name: type")]
     public void GetBusinessObjectClass_WithNonBindableType ()
     {
       Expect.Call (
           _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.TestDomain.ManualBusinessObject, Remotion.ObjectBinding.UnitTests"))
-          .Return (typeof (ManualBusinessObject))
+              "Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass, Remotion.ObjectBinding.UnitTests"))
+          .Return (typeof (StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass))
           .Repeat.AtLeastOnce();
       _mockRepository.ReplayAll();
 
-      _dataSource.Type = typeof (ManualBusinessObject);
+      _dataSource.Type = typeof (StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass);
       Dev.Null = _dataSource.BusinessObjectClass;
 
       _mockRepository.VerifyAll();
