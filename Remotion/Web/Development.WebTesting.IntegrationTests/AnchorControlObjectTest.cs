@@ -113,6 +113,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestSelection_Text ()
+    {
+      var home = Start();
+
+      var htmlAnchor = home.GetAnchor().ByTextContent ("MyHtmlAnchor");
+      Assert.That (htmlAnchor.Scope.Id, Is.EqualTo ("body_MyHtmlAnchor"));
+    }
+
+    [Test]
     public void TestClick ()
     {
       var home = Start();

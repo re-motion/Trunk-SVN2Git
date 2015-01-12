@@ -29,7 +29,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       : ControlSelectorBase<AnchorControlObject>,
           IFirstControlSelector<AnchorControlObject>,
           IIndexControlSelector<AnchorControlObject>,
-          ISingleControlSelector<AnchorControlObject>
+          ISingleControlSelector<AnchorControlObject>,
+          ITextContentControlSelector<AnchorControlObject>
   {
     private const string c_htmlAnchorTag = "a";
 
@@ -57,6 +58,16 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
       ArgumentUtility.CheckNotNull ("context", context);
 
       var scope = context.Scope.FindXPath (string.Format ("(.//{0})[{1}]", c_htmlAnchorTag, index));
+      return CreateControlObject (context, scope);
+    }
+
+    /// <inheritdoc/>
+    public AnchorControlObject SelectPerTextContent (ControlSelectionContext context, string textContent)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+      ArgumentUtility.CheckNotNullOrEmpty ("textContent", textContent);
+
+      var scope = context.Scope.FindXPath (string.Format ("(.//{0})[.='{1}']", c_htmlAnchorTag, textContent));
       return CreateControlObject (context, scope);
     }
 
