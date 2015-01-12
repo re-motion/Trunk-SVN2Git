@@ -415,26 +415,23 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestCellGetBackgroundColor ()
+    public void TestRowGetBackgroundColor ()
     {
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
-      var cell1 = bocList.GetRow (1).GetCell (1);
-      Assert.That (cell1.GetBackgroundColor(), Is.EqualTo (Color.White));
-
-      var cell2 = bocList.GetRow (2).GetCell (1);
-      Assert.That (cell2.GetBackgroundColor(), Is.EqualTo (Color.FromRgb(244, 244, 244)));
+      var row1 = bocList.GetRow (1);
+      Assert.That (row1.GetBackgroundColor(), Is.EqualTo (Color.Transparent)); // yep, style information is on the cells only!
     }
 
     [Test]
-    public void TestGetTextColor ()
+    public void TestRowGetTextColor ()
     {
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
-      var row = bocList.GetRow (1).GetCell (1);
+      var row = bocList.GetRow (1);
       Assert.That (row.GetTextColor(), Is.EqualTo (Color.Black));
     }
 
@@ -508,6 +505,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderRowLabel").Text, Is.EqualTo ("1"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("CellCommandClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("RowCmd"));
+    }
+
+    [Test]
+    public void TestCellGetBackgroundColor ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+
+      var cell1 = bocList.GetRow (1).GetCell (1);
+      Assert.That (cell1.GetBackgroundColor(), Is.EqualTo (Color.White));
+
+      var cell2 = bocList.GetRow (2).GetCell (1);
+      Assert.That (cell2.GetBackgroundColor(), Is.EqualTo (Color.FromRgb(244, 244, 244)));
+    }
+
+    [Test]
+    public void TestCellGetTextColor ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      var cell = bocList.GetRow (1).GetCell (1);
+      Assert.That (cell.GetTextColor(), Is.EqualTo (Color.Black));
     }
 
     [Test]

@@ -30,7 +30,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       : WebFormsControlObjectWithDiagnosticMetadata,
           IDropDownMenuHost,
           IControlObjectWithCells<BocListCellControlObject>,
-          IFluentControlObjectWithCells<BocListCellControlObject>
+          IFluentControlObjectWithCells<BocListCellControlObject>,
+          IStyledControlObject
   {
     private readonly BocListRowFunctionality _impl;
 
