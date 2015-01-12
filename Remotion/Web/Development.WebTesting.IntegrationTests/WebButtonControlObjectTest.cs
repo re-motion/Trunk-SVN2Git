@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Drawing;
 using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -155,7 +154,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
-      Assert.That (webButton.GetBackgroundColor(), Is.EqualTo (new Color (221, 221, 221)));
+      Assert.That (webButton.GetBackgroundColor(), Is.EqualTo (Color.FromRgb (221, 221, 221)));
     }
 
     [Test]

@@ -37,20 +37,17 @@ namespace Remotion.Web.Development.WebTesting
     private readonly byte _blue;
     private readonly bool _isTransparent;
 
-    public Color (byte r, byte g, byte b)
+    public static Color FromRgb (byte r, byte g, byte b)
+    {
+      return new Color (r, g, b);
+    }
+
+    private Color (byte r, byte g, byte b)
     {
       _red = r;
       _green = g;
       _blue = b;
       _isTransparent = false;
-    }
-
-    public Color (System.Drawing.Color other)
-    {
-      _red = other.R;
-      _green = other.G;
-      _blue = other.B;
-      _isTransparent = other.A > 0;
     }
 
     private Color (bool isTransparent)

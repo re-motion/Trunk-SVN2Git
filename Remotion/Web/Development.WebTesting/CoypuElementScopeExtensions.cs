@@ -122,7 +122,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       var rgbArgs = color.Split (new[] { '(', ',', ')' });
       var rgb = rgbArgs.Skip (1).Take (3).Select (byte.Parse).ToArray();
-      return new Color (rgb[0], rgb[1], rgb[2]);
+      return Color.FromRgb (rgb[0], rgb[1], rgb[2]);
     }
 
     /// <summary>
