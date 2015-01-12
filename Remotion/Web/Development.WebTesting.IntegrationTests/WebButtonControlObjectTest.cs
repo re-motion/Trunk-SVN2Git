@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Drawing;
 using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -146,6 +147,24 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var hrefWebButton = home.GetWebButton().ByTextContent ("HrefButton");
       home = hrefWebButton.Click().Expect<RemotionPageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
+    }
+
+    [Test]
+    public void TestGetBackgroundColor ()
+    {
+      var home = Start();
+
+      var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
+      Assert.That (webButton.GetBackgroundColor(), Is.EqualTo (Color.FromArgb (255, 221, 221, 221)));
+    }
+
+    [Test]
+    public void TestGetTextColor ()
+    {
+      var home = Start();
+
+      var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
+      Assert.That (webButton.GetTextColor(), Is.EqualTo (Color.FromArgb (255, 0, 0, 0)));
     }
 
     private RemotionPageObject Start ()

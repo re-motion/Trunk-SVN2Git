@@ -16,6 +16,7 @@
 // 
 
 using System;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
@@ -24,7 +25,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object for <see cref="T:Remotion.Web.UI.Controls.WebButton"/>.
   /// </summary>
-  public class WebButtonControlObject : WebFormsControlObjectWithDiagnosticMetadata, IClickableControlObject, IControlObjectWithText
+  public class WebButtonControlObject
+      : WebFormsControlObjectWithDiagnosticMetadata,
+          IClickableControlObject,
+          IControlObjectWithText,
+          IStyledControlObject,
+          IStyledControlObjectWithCustomStyleScope
   {
     public WebButtonControlObject ([NotNull] ControlObjectContext context)
         : base (context)
@@ -54,6 +60,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
       new ClickAction (this, Scope).Execute (actualActionOptions);
       return UnspecifiedPage();
+    }
+
+    /// <inheritdoc/>
+    ElementScope IStyledControlObjectWithCustomStyleScope.GetStyleScope ()
+    {
+      return Scope.FindCss ("span.buttonBody");
     }
   }
 }
