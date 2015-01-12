@@ -20,6 +20,7 @@ using System.Linq;
 using Coypu;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Development.WebTesting.FluentControlSelection;
+using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
@@ -411,6 +412,30 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       row.Edit();
       Assert.That (home.Scope.FindIdEndingWith ("EditModeLabel").Text, Is.EqualTo ("True"));
+    }
+
+    [Test]
+    public void TestCellGetBackgroundColor ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+
+      var cell1 = bocList.GetRow (1).GetCell (1);
+      Assert.That (cell1.GetBackgroundColor(), Is.EqualTo (Color.White));
+
+      var cell2 = bocList.GetRow (2).GetCell (1);
+      Assert.That (cell2.GetBackgroundColor(), Is.EqualTo (Color.FromRgb(244, 244, 244)));
+    }
+
+    [Test]
+    public void TestGetTextColor ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      var row = bocList.GetRow (1).GetCell (1);
+      Assert.That (row.GetTextColor(), Is.EqualTo (Color.Black));
     }
 
     [Test]

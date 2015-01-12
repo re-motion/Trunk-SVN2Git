@@ -25,7 +25,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Control object representing a cell within a <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList"/>.
   /// </summary>
-  public class BocListCellControlObject : WebFormsControlObjectWithDiagnosticMetadata, ICommandHost
+  public class BocListCellControlObject : WebFormsControlObjectWithDiagnosticMetadata, ICommandHost, IStyledControlObject
   {
     private readonly BocListCellFunctionality _impl;
 
