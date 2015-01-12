@@ -29,7 +29,18 @@ namespace Remotion.Web.Development.WebTesting
     /// <summary>
     /// Closes the current window.
     /// </summary>
+    // ReSharper disable once ConvertToConstant.Global
     public static readonly string SelfClose = "self.close();";
+
+    /// <summary>
+    /// Returns the HTML element's computed background color. You must provide the ElementScope as the first parameter to the JavaScript call.
+    /// </summary>
+    public static readonly string GetComputedBackgroundColor = CreateGetComputedCssValueScript ("background-color");
+
+    /// <summary>
+    /// Returns the HTML element's computed text color. You must provide the ElementScope as the first parameter to the JavaScript call.
+    /// </summary>
+    public static readonly string GetComputedTextColor = CreateGetComputedCssValueScript ("color");
 
     /// <summary>
     /// JavaScript for calling the auto completion SearchExact web service method.
@@ -43,7 +54,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNullOrEmpty ("autoCompleteTextValueInputFieldId", autoCompleteTextValueInputFieldId);
       ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
 
-      return CreateAutoCompleteSearchServiceRequest (autoCompleteTextValueInputFieldId, searchText, "serviceMethodSearchExact", null);
+      return CreateAutoCompleteSearchServiceRequestScript (autoCompleteTextValueInputFieldId, searchText, "serviceMethodSearchExact", null);
     }
 
     /// <summary>
@@ -60,7 +71,7 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNullOrEmpty ("autoCompleteTextValueInputFieldId", autoCompleteTextValueInputFieldId);
       ArgumentUtility.CheckNotNullOrEmpty ("searchText", searchText);
 
-      return CreateAutoCompleteSearchServiceRequest (autoCompleteTextValueInputFieldId, searchText, "serviceMethodSearch", completionSetCount);
+      return CreateAutoCompleteSearchServiceRequestScript (autoCompleteTextValueInputFieldId, searchText, "serviceMethodSearch", completionSetCount);
     }
 
     /// <summary>
@@ -74,7 +85,14 @@ namespace Remotion.Web.Development.WebTesting
       public const string Error = "error";
     }
 
-    private static string CreateAutoCompleteSearchServiceRequest (
+    private static string CreateGetComputedCssValueScript ([NotNull] string cssProperty)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("cssProperty", cssProperty);
+
+      return string.Format ("return $(arguments[0]).css('{0}');", cssProperty);
+    }
+
+    private static string CreateAutoCompleteSearchServiceRequestScript (
         [NotNull] string autoCompleteTextValueInputFieldId,
         [NotNull] string searchText,
         [NotNull] string searchMethod,

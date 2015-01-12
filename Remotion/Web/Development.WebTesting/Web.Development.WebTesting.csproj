@@ -76,8 +76,11 @@
     <Compile Include="ControlObjects\WebTabStripTabDefinition.cs" />
     <Compile Include="CssComparisonOperator.cs" />
     <Compile Include="IControlObjectWithFormElements.cs" />
+    <Compile Include="IStyledControlObject.cs" />
+    <Compile Include="IStyledControlObjectWithCustomStyleScope.cs" />
     <Compile Include="ModalDialogHandlers\AcceptModalDialogHandler.cs" />
     <Compile Include="ModalDialogHandlers\CancelModalDialogHandler.cs" />
+    <Compile Include="StyledControlObjectDefaultImplementation.cs" />
     <Compile Include="WebTestActionOptions.cs" />
     <Compile Include="WebTestActionOptionsFluentInterface.cs" />
     <Compile Include="WebTestActions\CheckAction.cs" />
