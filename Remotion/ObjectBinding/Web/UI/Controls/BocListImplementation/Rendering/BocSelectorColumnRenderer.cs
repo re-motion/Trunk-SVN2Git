@@ -18,8 +18,10 @@
 using System;
 using System.Web.UI;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -31,12 +33,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
   {
     private const string c_whiteSpace = "&nbsp;";
 
+    private readonly IRenderingFeatures _renderingFeatures;
     private readonly BocListCssClassDefinition _cssClasses;
 
-    public BocSelectorColumnRenderer (BocListCssClassDefinition cssClasses)
+    public BocSelectorColumnRenderer (IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
-
+      
+      _renderingFeatures = renderingFeatures;
       _cssClasses = cssClasses;
     }
 
@@ -60,6 +65,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       var isChecked = rowRenderingContext.IsSelected;
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+        AddDiagnosticMetadataListCellIndex (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       RenderDataRowSelectorControl (renderingContext, selectorControlID, selectorControlName, selectorControlValue, isChecked);
       renderingContext.Writer.RenderEndTag();
@@ -73,17 +80,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         return;
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TitleCell);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+        AddDiagnosticMetadataListCellIndex (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       if (renderingContext.Control.Selection == RowSelection.Multiple)
       {
         string selectorControlName = renderingContext.Control.GetSelectAllControlName();
+        if (_renderingFeatures.EnableDiagnosticMetadata)
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownSelectAllControl, "true");
         RenderTitleRowSelectorControl (renderingContext, selectorControlName);
       }
       else
         renderingContext.Writer.Write (c_whiteSpace);
       renderingContext.Writer.RenderEndTag();
     }
-    
+
     private void RenderTitleRowSelectorControl (BocListRenderingContext renderingContext, string name)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
@@ -143,6 +154,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Input);
       renderingContext.Writer.RenderEndTag();
+    }
+
+    private static void AddDiagnosticMetadataListCellIndex (BocListRenderingContext renderingContext)
+    {
+      var oneBasedCellIndex = renderingContext.Control.IsIndexEnabled ? 2 : 1;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
     }
   }
 }

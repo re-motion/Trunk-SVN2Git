@@ -49,5 +49,6 @@ namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
     public static readonly string BocListRowIndex = "data-boclist-row-index";
     public static readonly string BocListWellKnownEditCell = "data-boclist-wellknown-cell-edit";
     public static readonly string BocListWellKnownRowDropDownMenuCell = "data-boclist-wellknown-cell-dropdownmenu";
+    public static readonly string BocListWellKnownSelectAllControl = "data-boclist-wellknown-selectall-control";
   }
 }

@@ -17,8 +17,10 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation.Rendering
@@ -44,7 +46,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public void RenderTitleCellForMultiSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (_bocListRenderingContext);
 
       var document = Html.GetResultDocument();
@@ -65,7 +67,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var row = new BocListRow (1, BusinessObject);
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderDataCell (
           _bocListRenderingContext,
           new BocListRowRenderingContext (row, 0, false),
@@ -88,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public void RenderTitleCellForSingleSelect ()
     {
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderTitleCell (_bocListRenderingContext);
 
       var document = Html.GetResultDocument();
@@ -105,7 +107,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var row = new BocListRow (1, BusinessObject);
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
       List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
-      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
       renderer.RenderDataCell (
           _bocListRenderingContext,
           new BocListRowRenderingContext (row, 0, false),
@@ -121,6 +123,39 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertAttribute (input, "name", "SelectRowControl$UnqiueID");
       Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row");
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRenderingInTitleCell ()
+    {
+      List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
+      renderer.RenderTitleCell (_bocListRenderingContext);
+
+      var document = Html.GetResultDocument();
+
+      var th = Html.GetAssertedChildElement (document, "th", 0);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 1.ToString());
+
+      var input = Html.GetAssertedChildElement (th, "input", 0);
+      Html.AssertAttribute (input, DiagnosticMetadataAttributesForObjectBinding.BocListWellKnownSelectAllControl, "true");
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRenderingInDataCell ()
+    {
+      var row = new BocListRow (1, BusinessObject);
+      List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
+      List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
+      IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
+      renderer.RenderDataCell (
+          _bocListRenderingContext,
+          new BocListRowRenderingContext (row, 0, false),
+          "bocListTableCell");
+      var document = Html.GetResultDocument();
+
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      Html.AssertAttribute (td, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 1.ToString());
     }
   }
 }
