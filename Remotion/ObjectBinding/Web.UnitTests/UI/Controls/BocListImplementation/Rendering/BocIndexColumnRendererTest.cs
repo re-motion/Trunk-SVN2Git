@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void TestDiagnosticMetadataRenderingInTitle ()
+    public void TestDiagnosticMetadataRenderingInTitleCell ()
     {
       List.Stub (mock => mock.Index).Return (RowIndex.InitialOrder);
       List.Stub (mock => mock.IndexColumnTitle).Return ("My_IndexColumn");
