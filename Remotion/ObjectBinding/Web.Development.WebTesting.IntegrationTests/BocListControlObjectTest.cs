@@ -188,6 +188,34 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestSelectAllAndDeselectAll ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      
+      var firstRow = bocList.GetRow (1);
+      var lastRow = bocList.GetRow (bocList.GetNumberOfRows());
+      Assert.That (firstRow.IsSelected, Is.False);
+      Assert.That (lastRow.IsSelected, Is.False);
+
+      bocList.SelectAll();
+
+      Assert.That (firstRow.IsSelected, Is.True);
+      Assert.That (lastRow.IsSelected, Is.True);
+
+      bocList.SelectAll();
+
+      Assert.That (firstRow.IsSelected, Is.True);
+      Assert.That (lastRow.IsSelected, Is.True);
+
+      bocList.DeselectAll();
+
+      Assert.That (firstRow.IsSelected, Is.False);
+      Assert.That (lastRow.IsSelected, Is.False);
+    }
+
+    [Test]
     public void TestGetRow ()
     {
       var home = Start();
@@ -358,17 +386,24 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestRowClickSelectCheckbox ()
+    public void TestRowSelectAndDeselect ()
     {
       var home = Start();
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var row = bocList.GetRow (2);
 
-      row.ClickSelectCheckbox();
+      row.Select();
       row.GetCell (4).ExecuteCommand();
-
       Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("1"));
+
+      row.Select();
+      row.GetCell (4).ExecuteCommand();
+      Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("1"));
+
+      row.Deselect();
+      row.GetCell (4).ExecuteCommand();
+      Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("NoneSelected"));
     }
 
     [Test]
@@ -378,7 +413,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       bocList.GoToSpecificPage (3);
-      bocList.GetRow (1).ClickSelectCheckbox();
+      bocList.GetRow (1).Select();
       bocList.GetRow (1).GetCell (4).ExecuteCommand(); // trigger postback
 
       Assert.That (home.Scope.FindIdEndingWith ("SelectedIndicesLabel").Text, Is.EqualTo ("4"));

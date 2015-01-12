@@ -27,6 +27,7 @@ using Remotion.Web.Contract.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -157,11 +158,35 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <summary>
-    /// Returns the number of rows in the list.
+    /// Returns the number of rows in the list (on the current page).
     /// </summary>
     public int GetNumberOfRows ()
     {
       return RetryUntilTimeout.Run (() => Scope.FindAllCss (".bocListTable .bocListTableBody > tr.bocListDataRow").Count());
+    }
+
+    /// <summary>
+    /// Selects all rows by checking the table's select all checkbox.
+    /// </summary>
+    public void SelectAll ()
+    {
+      var scope = GetSelectAllCheckboxScope();
+      new CheckAction (this, scope).Execute (Opt.ContinueImmediately());
+    }
+
+    /// <summary>
+    /// Deselect all rows by checking the table's select all checkbox.
+    /// </summary>
+    public void DeselectAll ()
+    {
+      var scope = GetSelectAllCheckboxScope();
+      new UncheckAction (this, scope).Execute (Opt.ContinueImmediately());
+    }
+
+    private ElementScope GetSelectAllCheckboxScope ()
+    {
+      var selectAllCheckboxID = GetHtmlID() + "_AllRowsSelector";
+      return Scope.FindCss (string.Format ("input[name='{0}']", selectAllCheckboxID));
     }
 
     /// <inheritdoc/>

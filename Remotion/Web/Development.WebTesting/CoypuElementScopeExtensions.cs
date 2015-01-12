@@ -23,6 +23,7 @@ using Coypu;
 using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -75,7 +76,8 @@ namespace Remotion.Web.Development.WebTesting
 
       // Todo RM-6337: Coypu does not support JavaScript executions with arguments by now, simplify as soon as https://github.com/featurist/coypu/issues/128 has been implemented.
       var javaScriptExecutor = (IJavaScriptExecutor) context.Browser.Driver.Native;
-      var computedBackgroundColor = (string) javaScriptExecutor.ExecuteScript (CommonJavaScripts.GetComputedBackgroundColor, scope.Native);
+      var computedBackgroundColor =
+          RetryUntilTimeout.Run (() => (string) javaScriptExecutor.ExecuteScript (CommonJavaScripts.GetComputedBackgroundColor, scope.Native));
 
       if (IsTransparent (computedBackgroundColor))
         return Color.Transparent;
@@ -95,7 +97,8 @@ namespace Remotion.Web.Development.WebTesting
 
       // Todo RM-6337: Coypu does not support JavaScript executions with arguments by now, simplify as soon as https://github.com/featurist/coypu/issues/128 has been implemented.
       var javaScriptExecutor = (IJavaScriptExecutor) context.Browser.Driver.Native;
-      var computedTextColor = (string) javaScriptExecutor.ExecuteScript (CommonJavaScripts.GetComputedTextColor, scope.Native);
+      var computedTextColor =
+          RetryUntilTimeout.Run (() => (string) javaScriptExecutor.ExecuteScript (CommonJavaScripts.GetComputedTextColor, scope.Native));
 
       if (IsTransparent (computedTextColor))
         return Color.Transparent;
@@ -126,6 +129,22 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
+    /// Returns whether the given <paramref name="scope"/>, which must represent a suitable HTML element (e.g. a checkbox), is currently selected.
+    /// </summary>
+    /// <returns>True if the HTML element is selected, otherwise false.</returns>
+    public static bool IsSelected ([NotNull] this ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      return RetryUntilTimeout.Run (
+          () =>
+          {
+            var webElement = (IWebElement) scope.Native;
+            return webElement.Selected;
+          });
+    }
+
+    /// <summary>
     /// Returns whether the given <paramref name="scope"/> is currently displayed (visible). The given <paramref name="scope"/> must exist, otherwise
     /// this method will throw an <see cref="MissingHtmlException"/>.
     /// </summary>
@@ -134,8 +153,12 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      var webElement = (IWebElement) scope.Native;
-      return webElement.Displayed;
+      return RetryUntilTimeout.Run (
+          () =>
+          {
+            var webElement = (IWebElement) scope.Native;
+            return webElement.Displayed;
+          });
     }
 
     /// <summary>
