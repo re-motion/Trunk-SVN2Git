@@ -69,6 +69,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Color.cs" />
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
     <Compile Include="ControlObjects\ImageControlObject.cs" />
     <Compile Include="ControlObjects\OptionDefinition.cs" />

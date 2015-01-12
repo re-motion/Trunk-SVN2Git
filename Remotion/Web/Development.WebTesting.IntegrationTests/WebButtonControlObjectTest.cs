@@ -155,7 +155,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
-      Assert.That (webButton.GetBackgroundColor(), Is.EqualTo (Color.FromArgb (255, 221, 221, 221)));
+      Assert.That (webButton.GetBackgroundColor(), Is.EqualTo (new Color (221, 221, 221)));
     }
 
     [Test]
@@ -164,7 +164,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
-      Assert.That (webButton.GetTextColor(), Is.EqualTo (Color.FromArgb (255, 0, 0, 0)));
+      Assert.That (webButton.GetTextColor(), Is.EqualTo (Color.Black));
     }
 
     private RemotionPageObject Start ()

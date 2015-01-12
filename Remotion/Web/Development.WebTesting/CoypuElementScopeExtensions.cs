@@ -80,9 +80,7 @@ namespace Remotion.Web.Development.WebTesting
       if (IsTransparent (computedBackgroundColor))
         return Color.Transparent;
 
-      var rgbArgs = computedBackgroundColor.Split (new[] { '(', ',', ')' });
-      var rgb = rgbArgs.Skip (1).Take (3).Select (int.Parse).ToArray();
-      return Color.FromArgb (rgb[0], rgb[1], rgb[2]);
+      return ParseColorFromBrowserReturnedString (computedBackgroundColor);
     }
 
     /// <summary>
@@ -102,24 +100,29 @@ namespace Remotion.Web.Development.WebTesting
       if (IsTransparent (computedTextColor))
         return Color.Transparent;
 
-      var rgbArgs = computedTextColor.Split (new[] { '(', ',', ')' });
-      var rgb = rgbArgs.Skip (1).Take (3).Select (int.Parse).ToArray();
-      return Color.FromArgb (rgb[0], rgb[1], rgb[2]);
+      return ParseColorFromBrowserReturnedString (computedTextColor);
     }
 
-    private static bool IsTransparent ([NotNull] string backgroundColor)
+    private static bool IsTransparent ([NotNull] string color)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("backgroundColor", backgroundColor);
+      ArgumentUtility.CheckNotNullOrEmpty ("color", color);
 
       // Chrome
-      if (backgroundColor == "rgba(0, 0, 0, 0)")
+      if (color == "rgba(0, 0, 0, 0)")
         return true;
 
       // IE11
-      if (backgroundColor == "transparent")
+      if (color == "transparent")
         return true;
 
       return false;
+    }
+
+    private static Color ParseColorFromBrowserReturnedString ([NotNull] string color)
+    {
+      var rgbArgs = color.Split (new[] { '(', ',', ')' });
+      var rgb = rgbArgs.Skip (1).Take (3).Select (byte.Parse).ToArray();
+      return new Color (rgb[0], rgb[1], rgb[2]);
     }
 
     /// <summary>
