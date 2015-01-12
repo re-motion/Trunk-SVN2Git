@@ -38,6 +38,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     public BocIndexColumnRenderer (IRenderingFeatures renderingFeatures, BocListCssClassDefinition cssClasses)
     {
+      ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
       ArgumentUtility.CheckNotNull ("cssClasses", cssClasses);
 
       _renderingFeatures = renderingFeatures;
@@ -61,16 +62,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       if (_renderingFeatures.EnableDiagnosticMetadata)
-      {
-        var oneBasedCellIndex = 1;
-        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
-      }
+        AddDiagnosticMetadataListCellIndex (renderingContext);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       if (renderingContext.Control.Index == RowIndex.InitialOrder)
         RenderRowIndex (renderingContext, originalRowIndex, selectorControlID);
       else if (renderingContext.Control.Index == RowIndex.SortedOrder)
         RenderRowIndex (renderingContext, absoluteRowIndex, selectorControlID);
       renderingContext.Writer.RenderEndTag();
+    }
+
+    private static void AddDiagnosticMetadataListCellIndex (BocListRenderingContext renderingContext)
+    {
+      const int oneBasedCellIndex = 1;
+      renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
     }
 
     public void RenderTitleCell (BocListRenderingContext renderingContext)
@@ -87,6 +91,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         var columnTitle = renderingContext.Control.IndexColumnTitle;
         if (!string.IsNullOrEmpty (columnTitle))
           renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (columnTitle));
+
+        AddDiagnosticMetadataListCellIndex (renderingContext);
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);

@@ -17,13 +17,11 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.Development.Web.UnitTesting.UI.Controls.Rendering;
 using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.Contract.DiagnosticMetadata;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 
@@ -91,6 +89,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, "My_IndexColumn");
+      Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 1.ToString());
     }
 
     private void RenderIndexDataCell (int indexOffset)
