@@ -18,6 +18,7 @@
 using System;
 using System.Web.UI;
 using Remotion.Globalization;
+using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
@@ -59,6 +60,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       string selectorControlID = renderingContext.Control.GetSelectorControlName().Replace ('$', '_') + "_" + originalRowIndex;
       string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
+      if (_renderingFeatures.EnableDiagnosticMetadata)
+      {
+        var oneBasedCellIndex = 1;
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, oneBasedCellIndex.ToString());
+      }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
       if (renderingContext.Control.Index == RowIndex.InitialOrder)
         RenderRowIndex (renderingContext, originalRowIndex, selectorControlID);

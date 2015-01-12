@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
     private void RenderIndexDataCell (int indexOffset)
     {
-      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (RenderingFeatures.Default, _bocListCssClassDefinition);
+      IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
       const string cssClassTableCell = "bocListTableCell";
       renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, 0, cssClassTableCell);
 
@@ -104,6 +104,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var td = Html.GetAssertedChildElement (document, "td", 0);
       Html.AssertAttribute (td, "class", cssClassTableCell, HtmlHelperBase.AttributeValueCompareMode.Contains);
       Html.AssertAttribute (td, "class", _bocListCssClassDefinition.DataCellIndex, HtmlHelperBase.AttributeValueCompareMode.Contains);
+      Html.AssertAttribute (td, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, 1.ToString());
 
       var label = Html.GetAssertedChildElement (td, "label", 0);
       Html.AssertAttribute (label, "class", _bocListCssClassDefinition.Content);
