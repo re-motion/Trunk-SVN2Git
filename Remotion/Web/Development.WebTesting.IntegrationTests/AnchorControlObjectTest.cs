@@ -122,6 +122,30 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetText ()
+    {
+      var home = Start();
+
+      var webLinkButton = home.GetAnchor().ByLocalID ("MyWebLinkButton");
+      Assert.That (webLinkButton.GetText(), Is.EqualTo ("MyWebLinkButton"));
+
+      var smartHyperLink = home.GetAnchor().ByLocalID ("MySmartHyperLink");
+      Assert.That (smartHyperLink.GetText(), Is.EqualTo("MySmartHyperLink"));
+
+      var aspLinkButton = home.GetAnchor().ByLocalID ("MyAspLinkButton");
+      Assert.That (aspLinkButton.GetText(), Is.EqualTo ("MyAspLinkButton"));
+
+      var aspHyperLink = home.GetAnchor().ByLocalID ("MyAspHyperLink");
+      Assert.That (aspHyperLink.GetText(), Is.EqualTo("MyAspHyperLink"));
+
+      var htmlAnchor = home.GetAnchor().ByLocalID ("MyHtmlAnchor");
+      Assert.That (htmlAnchor.GetText(), Is.EqualTo ("MyHtmlAnchor"));
+
+      var htmlAnchorWithJavaScriptLink = home.GetAnchor().ByLocalID ("MyHtmlAnchorWithJavaScriptLink");
+      Assert.That (htmlAnchorWithJavaScriptLink.GetText(), Is.EqualTo ("MyHtmlAnchorWithJavaScriptLink"));
+    }
+
+    [Test]
     public void TestClick ()
     {
       var home = Start();

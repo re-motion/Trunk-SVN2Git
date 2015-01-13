@@ -28,11 +28,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// derivatives (e.g. <see cref="T:Remotion.Web.UI.Controls.WebLinkButton"/> or <see cref="T:Remotion.Web.UI.Controls.SmartHyperLink"/>). Also
   /// represents a simple HTML anchor &lt;a&gt; control within a re-motion applicaiton.
   /// </summary>
-  public class AnchorControlObject : WebFormsControlObject, IClickableControlObject
+  public class AnchorControlObject : WebFormsControlObject, IClickableControlObject, IControlObjectWithText
   {
     public AnchorControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <inheritdoc/>
+    public string GetText ()
+    {
+      return Scope.Text;
     }
 
     /// <inheritdoc/>
