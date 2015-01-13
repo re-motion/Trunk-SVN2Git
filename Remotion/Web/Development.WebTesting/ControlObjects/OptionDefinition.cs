@@ -22,7 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Defines an option of an select HTML element.
+  /// Defines an option of a select HTML element.
   /// </summary>
   public class OptionDefinition
   {
