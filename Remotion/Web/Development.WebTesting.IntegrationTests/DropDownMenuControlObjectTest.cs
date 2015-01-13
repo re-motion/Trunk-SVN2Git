@@ -94,6 +94,29 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetItemDefinitions ()
+    {
+      var home = Start();
+
+      var dropDownMenu = home.GetDropDownMenu().ByLocalID ("MyDropDownMenu");
+      
+      var items = dropDownMenu.GetItemDefinitions();
+      Assert.That (items.Count, Is.EqualTo (5));
+      
+      Assert.That (items[0].ItemID, Is.EqualTo ("ItemID1"));
+      Assert.That (items[0].Index, Is.EqualTo (1));
+      Assert.That (items[0].Text, Is.EqualTo ("EventItem"));
+      Assert.That (items[0].IsEnabled, Is.True);
+
+      Assert.That (items[2].IsEnabled, Is.False);
+
+      Assert.That (items[4].ItemID, Is.EqualTo ("ItemID5"));
+      Assert.That (items[4].Index, Is.EqualTo (5));
+      Assert.That (items[4].Text, Is.EqualTo (""));
+      Assert.That (items[4].IsEnabled, Is.True);
+    }
+
+    [Test]
     public void TestClickItem ()
     {
       var home = Start();

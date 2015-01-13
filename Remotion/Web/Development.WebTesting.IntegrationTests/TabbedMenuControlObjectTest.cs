@@ -95,6 +95,29 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestGetItemDefinitions ()
+    {
+      var home = Start();
+
+      var tabbedMenu = home.GetTabbedMenu().ByLocalID ("MyTabbedMenu");
+      
+      var items = tabbedMenu.GetItemDefinitions();
+      Assert.That (items.Count, Is.EqualTo (5));
+      
+      Assert.That (items[0].ItemID, Is.EqualTo ("EventCommandTab"));
+      Assert.That (items[0].Index, Is.EqualTo (1));
+      Assert.That (items[0].Text, Is.EqualTo ("EventCommandTabTitle"));
+      Assert.That (items[0].IsEnabled, Is.True);
+
+      Assert.That (items[2].IsEnabled, Is.True); // yep, currently we have no way to determine if a menu item is really enabled or not
+
+      Assert.That (items[4].ItemID, Is.EqualTo ("TabWithSubMenu"));
+      Assert.That (items[4].Index, Is.EqualTo (5));
+      Assert.That (items[4].Text, Is.EqualTo ("TabWithSubMenuTitle"));
+      Assert.That (items[4].IsEnabled, Is.True);
+    }
+
+    [Test]
     public void TestSelectMenuItem ()
     {
       var home = Start();
@@ -132,6 +155,32 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       tabbedMenu.SelectItem ("WxeFunctionCommandTab");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
+    }
+
+    [Test]
+    public void TestGetSubItemDefinitions ()
+    {
+      var home = Start();
+
+      var tabbedMenu = home.GetTabbedMenu().ByLocalID ("MyTabbedMenu");
+
+      var subMenuItems = tabbedMenu.SubMenu.GetItemDefinitions();
+      Assert.That (subMenuItems, Is.Empty);
+
+      tabbedMenu.SelectItem ("TabWithSubMenu");
+      subMenuItems = tabbedMenu.SubMenu.GetItemDefinitions();
+
+      Assert.That (subMenuItems.Count, Is.EqualTo (3));
+      
+      Assert.That (subMenuItems[0].ItemID, Is.EqualTo ("SubMenuTab1"));
+      Assert.That (subMenuItems[0].Index, Is.EqualTo (1));
+      Assert.That (subMenuItems[0].Text, Is.EqualTo ("SubMenuTab1Title"));
+      Assert.That (subMenuItems[0].IsEnabled, Is.True);
+
+      Assert.That (subMenuItems[2].ItemID, Is.EqualTo ("SubMenuTab3"));
+      Assert.That (subMenuItems[2].Index, Is.EqualTo (3));
+      Assert.That (subMenuItems[2].Text, Is.EqualTo ("SubMenuTab3Title"));
+      Assert.That (subMenuItems[2].IsEnabled, Is.True);
     }
 
     [Test]

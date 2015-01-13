@@ -16,10 +16,13 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -32,6 +35,23 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public ListMenuControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<ItemDefinition> GetItemDefinitions ()
+    {
+      return
+          RetryUntilTimeout.Run (
+              () =>
+                  Scope.FindAllCss ("span.listMenuItem, span.listMenuItemDisabled")
+                      .Select (
+                          (itemScope, i) =>
+                              new ItemDefinition (
+                                  itemScope[DiagnosticMetadataAttributes.ItemID],
+                                  i + 1,
+                                  itemScope.Text.Trim(),
+                                  !itemScope["class"].Contains ("listMenuItemDisabled")))
+                      .ToList());
     }
 
     /// <inheritdoc/>

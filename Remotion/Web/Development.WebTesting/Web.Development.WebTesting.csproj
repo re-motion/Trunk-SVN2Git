@@ -72,6 +72,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
     <Compile Include="ControlObjects\ImageControlObject.cs" />
+    <Compile Include="ControlObjects\ItemDefinition.cs" />
     <Compile Include="ControlObjects\OptionDefinition.cs" />
     <Compile Include="ControlObjects\Selectors\ImageSelector.cs" />
     <Compile Include="ControlObjects\WebTabStripTabDefinition.cs" />

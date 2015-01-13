@@ -16,10 +16,13 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -33,6 +36,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public TabbedMenuControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<ItemDefinition> GetItemDefinitions ()
+    {
+      return GetMenuItemOrSubMenuItemDefinitions (GetMainMenuScope());
     }
 
     /// <summary>
@@ -99,6 +108,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (Context, menuItemScope, actionOptions);
     }
 
+    private static IReadOnlyList<ItemDefinition> GetMenuItemOrSubMenuItemDefinitions (ElementScope scope)
+    {
+      return
+          RetryUntilTimeout.Run (
+              () =>
+                  scope.FindAllXPath (".//li/span/span[2]")
+                      .Select (
+                          (itemScope, i) =>
+                              new ItemDefinition (
+                                  itemScope[DiagnosticMetadataAttributes.ItemID],
+                                  i + 1,
+                                  itemScope.Text.Trim(),
+                                  true /* currently we have no way to determine if a menu item is enabled or not */))
+                      .ToList());
+    }
+
     private static UnspecifiedPageObject SelectMenuOrSubMenuItem (
         ControlObjectContext context,
         ElementScope menuItemScope,
@@ -120,6 +145,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       public SubMenuItems ([NotNull] ControlObjectContext context)
           : base (context)
       {
+      }
+
+      public IReadOnlyList<ItemDefinition> GetItemDefinitions ()
+      {
+        return GetMenuItemOrSubMenuItemDefinitions (GetSubMenuScope());
       }
 
       public IFluentControlObjectWithSelectableItems SelectItem ()

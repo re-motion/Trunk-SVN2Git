@@ -16,10 +16,13 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -40,6 +43,24 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     protected abstract void OpenDropDownMenu ();
 
+    /// <inheritdoc/>
+    public IReadOnlyList<ItemDefinition> GetItemDefinitions ()
+    {
+      var dropDownMenuScope = GetDropDownMenuScope();
+
+      return RetryUntilTimeout.Run (
+          () => dropDownMenuScope.FindAllCss ("li.DropDownMenuItem, li.DropDownMenuItemDisabled")
+              .Select (
+                  (itemScope, i) =>
+                      new ItemDefinition (
+                          itemScope[DiagnosticMetadataAttributes.ItemID],
+                          i + 1,
+                          itemScope.Text.Trim(),
+                          !itemScope["class"].Contains ("DropDownMenuItemDisabled")))
+              .ToList());
+    }
+
+    /// <inheritdoc/>
     public IFluentControlObjectWithSelectableItems SelectItem ()
     {
       return this;

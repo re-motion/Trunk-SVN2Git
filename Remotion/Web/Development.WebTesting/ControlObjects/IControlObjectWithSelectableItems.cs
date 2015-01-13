@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -28,6 +29,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <seealso cref="TabbedMenuControlObject"/>
   public interface IControlObjectWithSelectableItems
   {
+    /// <summary>
+    /// Returns all selectable items. 
+    /// Warning: this method does not wait until "the element" is available but detects all available items at the moment of calling.
+    /// </summary>
+    IReadOnlyList<ItemDefinition> GetItemDefinitions ();
+
     /// <summary>
     /// Start of the fluent interface for selecting an item.
     /// </summary>
