@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -27,6 +28,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <seealso cref="TabbedMultiViewControlObject"/>
   public interface IControlObjectWithTabs
   {
+    /// <summary>
+    /// Returns the currently selected tab. Note that the <see cref="WebTabStripTabDefinition.Index"/> is set to -1.
+    /// </summary>
+    WebTabStripTabDefinition GetSelectedTab ();
+
+    /// <summary>
+    /// Returns all available tabs. 
+    /// Warning: this method does not wait until "the element" is available but detects all available tabs at the moment of calling.
+    /// </summary>
+    IReadOnlyList<WebTabStripTabDefinition> GetTabDefinitions ();
+
     /// <summary>
     /// Start of the fluent interface for switching to a tab.
     /// </summary>

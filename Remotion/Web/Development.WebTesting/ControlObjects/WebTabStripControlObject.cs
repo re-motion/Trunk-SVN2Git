@@ -36,19 +36,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    /// <summary>
-    /// Returns the currently selected tab. Note that the <see cref="WebTabStripTabDefinition.Index"/> is set to -1.
-    /// </summary>
+     /// <inheritdoc/>
     public WebTabStripTabDefinition GetSelectedTab ()
     {
       var tabScope = Scope.FindCss ("span.tabStripTabSelected");
       return new WebTabStripTabDefinition (tabScope[DiagnosticMetadataAttributes.ItemID], -1, tabScope[DiagnosticMetadataAttributes.Content]);
     }
 
-    /// <summary>
-    /// Returns all available tabs. 
-    /// Warning: this method does not wait until "the element" is available but detects all available tabs at the moment of calling.
-    /// </summary>
+    /// <inheritdoc/>
     public IReadOnlyList<WebTabStripTabDefinition> GetTabDefinitions ()
     {
       const string cssSelector = "span.tabStripTab, span.tabStripTabSelected";

@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -26,6 +27,17 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <seealso cref="DropDownListControlObject"/>
   public interface IControlObjectWithSelectableOptions
   {
+    /// <summary>
+    /// Returns the currently selected option. Note that the <see cref="OptionDefinition.Index"/> is set to -1.
+    /// </summary>
+    OptionDefinition GetSelectedOption ();
+
+    /// <summary>
+    /// Returns all available options. 
+    /// Warning: this method does not wait until "the element" is available but detects all available options at the moment of calling.
+    /// </summary>
+    IReadOnlyList<OptionDefinition> GetOptionDefinitions ();
+
     /// <summary>
     /// Start of the fluent interface for selecting an option.
     /// </summary>

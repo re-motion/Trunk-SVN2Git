@@ -62,18 +62,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return new ScopeControlObject (Context.CloneForControl (scope));
     }
 
-    /// <summary>
-    /// <see cref="WebTabStripControlObject.GetSelectedTab"/>.
-    /// </summary>
+    /// <inheritdoc/>
     public WebTabStripTabDefinition GetSelectedTab ()
     {
       var tabDefinition = GetTabStrip().GetSelectedTab();
       return ConvertToTabbedMultiViewTab(tabDefinition);
     }
 
-    /// <summary>
-    /// <see cref="WebTabStripControlObject.GetTabDefinitions"/>.
-    /// </summary>
+    /// <inheritdoc/>
     public IReadOnlyList<WebTabStripTabDefinition> GetTabDefinitions ()
     {
       return GetTabStrip().GetTabDefinitions().Select(ConvertToTabbedMultiViewTab).ToList();

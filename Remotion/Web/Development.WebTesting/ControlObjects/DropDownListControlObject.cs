@@ -41,18 +41,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-    /// <summary>
-    /// Returns the currently selected option. Note that the <see cref="OptionDefinition.Index"/> is set to -1.
-    /// </summary>
+    /// <inheritdoc/>
     public OptionDefinition GetSelectedOption ()
     {
       return Scope.GetSelectedOption();
     }
 
-    /// <summary>
-    /// Returns all available options. 
-    /// Warning: this method does not wait until "the element" is available but detects all available options at the moment of calling.
-    /// </summary>
+    /// <inheritdoc/>
     public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
     {
       return RetryUntilTimeout.Run (
