@@ -149,6 +149,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestHasClass ()
+    {
+      var home = Start();
+
+      var webButton = home.GetWebButton().ByID ("body_MyWebButton1Sync");
+      Assert.That (webButton.HasCssClass ("buttonBody"), Is.True);
+      Assert.That (webButton.HasCssClass ("doesNotHaveThisClass"), Is.False);
+    }
+
+    [Test]
     public void TestGetBackgroundColor ()
     {
       var home = Start();

@@ -450,6 +450,24 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    public void TestRowHasClass ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      
+      var row1 = bocList.GetRow (1);
+      Assert.That (row1.HasCssClass ("bocListDataRow"), Is.True);
+      Assert.That (row1.HasCssClass ("odd"), Is.True);
+      Assert.That (row1.HasCssClass ("oddDoesNotHaveThisClass"), Is.False);
+
+      var row2 = bocList.GetRow (2);
+      Assert.That (row2.HasCssClass ("bocListDataRow"), Is.True);
+      Assert.That (row2.HasCssClass ("even"), Is.True);
+      Assert.That (row2.HasCssClass ("evenDoesNotHaveThisClass"), Is.False);
+    }
+
+    [Test]
     public void TestRowGetBackgroundColor ()
     {
       var home = Start();
@@ -540,6 +558,18 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedSenderRowLabel").Text, Is.EqualTo ("1"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedLabel").Text, Is.EqualTo ("CellCommandClick"));
       Assert.That (home.Scope.FindIdEndingWith ("ActionPerformedParameterLabel").Text, Is.EqualTo ("RowCmd"));
+    }
+
+    [Test]
+    public void TestCellHasClass ()
+    {
+      var home = Start();
+
+      var bocList = home.GetList().ByLocalID ("JobList_Normal");
+      var cell = bocList.GetRow (1).GetCell (1);
+
+      Assert.That (cell.HasCssClass ("bocListDataCell"), Is.True);
+      Assert.That (cell.HasCssClass ("doesNotHaveThisClass"), Is.False);
     }
 
     [Test]

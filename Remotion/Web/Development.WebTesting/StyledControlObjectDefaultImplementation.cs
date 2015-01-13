@@ -16,7 +16,7 @@
 // 
 
 using System;
-using System.Drawing;
+using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -28,6 +28,20 @@ namespace Remotion.Web.Development.WebTesting
   /// </summary>
   public static class StyledControlObjectDefaultImplementation
   {
+    /// <summary>
+    /// Returns whether the control has the given <paramref name="cssClass"/>.
+    /// </summary>
+    /// <returns>True if the control has the given <paramref name="cssClass"/>, false otherwise.</returns>
+    public static bool HasCssClass ([NotNull] this IStyledControlObject styledControlObject, string cssClass)
+    {
+      ArgumentUtility.CheckNotNull ("styledControlObject", styledControlObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("cssClass", cssClass);
+
+      var controlObject = GetControlObject (styledControlObject);
+      var scope = GetStyleScope (controlObject);
+      return scope["class"].Split (' ').Contains (cssClass);
+    }
+
     /// <summary>
     /// Returns the computed background color of the control. This method ignores background images as well as transparencies - the first
     /// non-transparent color set in the node's DOM hierarchy is returned. The returned color's alpha value is always 255 (opaque).

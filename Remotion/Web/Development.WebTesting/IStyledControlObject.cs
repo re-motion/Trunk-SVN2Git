@@ -30,6 +30,12 @@ namespace Remotion.Web.Development.WebTesting
   public interface IStyledControlObject
   {
     ///// <summary>
+    ///// Returns whether the control has the given <paramref name="cssClass"/>.
+    ///// </summary>
+    ///// <returns>True if the control has the given <paramref name="cssClass"/>, false otherwise.</returns>
+    //bool HasCssClass (string cssClass);
+
+    ///// <summary>
     ///// Returns the computed background color of the control. This method ignores background images as well as transparencies - the first
     ///// non-transparent color set in the node's DOM hierarchy is returned. The returned color's alpha value is always 255 (opaque).
     ///// </summary>
