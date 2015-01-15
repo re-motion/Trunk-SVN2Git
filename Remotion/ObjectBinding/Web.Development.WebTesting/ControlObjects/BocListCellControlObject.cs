@@ -35,6 +35,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _impl = new BocListCellFunctionality (context);
     }
 
+    /// <inheritdoc/>
+    public IStyleInformation StyleInfo
+    {
+      get { return new DefaultStyleInformation (this, Scope); }
+    }
+
     /// <summary>
     /// Returns the text content of the cell.
     /// </summary>

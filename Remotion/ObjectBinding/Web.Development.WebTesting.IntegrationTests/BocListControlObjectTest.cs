@@ -457,14 +457,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       
       var row1 = bocList.GetRow (1);
-      Assert.That (row1.HasCssClass ("bocListDataRow"), Is.True);
-      Assert.That (row1.HasCssClass ("odd"), Is.True);
-      Assert.That (row1.HasCssClass ("oddDoesNotHaveThisClass"), Is.False);
+      Assert.That (row1.StyleInfo.HasCssClass ("bocListDataRow"), Is.True);
+      Assert.That (row1.StyleInfo.HasCssClass ("odd"), Is.True);
+      Assert.That (row1.StyleInfo.HasCssClass ("oddDoesNotHaveThisClass"), Is.False);
 
       var row2 = bocList.GetRow (2);
-      Assert.That (row2.HasCssClass ("bocListDataRow"), Is.True);
-      Assert.That (row2.HasCssClass ("even"), Is.True);
-      Assert.That (row2.HasCssClass ("evenDoesNotHaveThisClass"), Is.False);
+      Assert.That (row2.StyleInfo.HasCssClass ("bocListDataRow"), Is.True);
+      Assert.That (row2.StyleInfo.HasCssClass ("even"), Is.True);
+      Assert.That (row2.StyleInfo.HasCssClass ("evenDoesNotHaveThisClass"), Is.False);
     }
 
     [Test]
@@ -475,7 +475,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
       var row1 = bocList.GetRow (1);
-      Assert.That (row1.GetBackgroundColor(), Is.EqualTo (Color.Transparent)); // yep, style information is on the cells only!
+      Assert.That (row1.StyleInfo.GetBackgroundColor(), Is.EqualTo (Color.Transparent)); // yep, style information is on the cells only!
     }
 
     [Test]
@@ -485,7 +485,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var row = bocList.GetRow (1);
-      Assert.That (row.GetTextColor(), Is.EqualTo (Color.Black));
+      Assert.That (row.StyleInfo.GetTextColor(), Is.EqualTo (Color.Black));
     }
 
     [Test]
@@ -568,8 +568,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var cell = bocList.GetRow (1).GetCell (1);
 
-      Assert.That (cell.HasCssClass ("bocListDataCell"), Is.True);
-      Assert.That (cell.HasCssClass ("doesNotHaveThisClass"), Is.False);
+      Assert.That (cell.StyleInfo.HasCssClass ("bocListDataCell"), Is.True);
+      Assert.That (cell.StyleInfo.HasCssClass ("doesNotHaveThisClass"), Is.False);
     }
 
     [Test]
@@ -580,10 +580,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
       var cell1 = bocList.GetRow (1).GetCell (1);
-      Assert.That (cell1.GetBackgroundColor(), Is.EqualTo (Color.White));
+      Assert.That (cell1.StyleInfo.GetBackgroundColor(), Is.EqualTo (Color.White));
 
       var cell2 = bocList.GetRow (2).GetCell (1);
-      Assert.That (cell2.GetBackgroundColor(), Is.EqualTo (Color.FromRgb(244, 244, 244)));
+      Assert.That (cell2.StyleInfo.GetBackgroundColor(), Is.EqualTo (Color.FromRgb(244, 244, 244)));
     }
 
     [Test]
@@ -593,7 +593,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var cell = bocList.GetRow (1).GetCell (1);
-      Assert.That (cell.GetTextColor(), Is.EqualTo (Color.Black));
+      Assert.That (cell.StyleInfo.GetTextColor(), Is.EqualTo (Color.Black));
     }
 
     [Test]

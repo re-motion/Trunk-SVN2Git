@@ -16,7 +16,6 @@
 // 
 
 using System;
-using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
@@ -35,27 +34,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (webButton.GetHtmlID(), Is.EqualTo ("body_MyWebButton1Sync"));
     }
 
-    [Test]
-    [ExpectedException (typeof (NotSupportedException),
-        ExpectedMessage =
-            "The IStyledControlObject interface may only be put on classes derived from Remotion.Web.Development.WebTesting.ControlObject.")]
-    public void TestStyledControlObjectDefaultImplementation ()
-    {
-      var noControlObject = new NoControlObject();
-      noControlObject.GetBackgroundColor();
-    }
-
     private RemotionPageObject Start ()
     {
       return Start ("WebButtonTest.wxe");
-    }
-  }
-
-  public class NoControlObject : IStyledControlObject, IStyledControlObjectWithCustomStyleScope
-  {
-    public ElementScope GetStyleScope ()
-    {
-      throw new NotImplementedException();
     }
   }
 }

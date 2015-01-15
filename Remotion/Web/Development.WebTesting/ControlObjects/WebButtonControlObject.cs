@@ -26,15 +26,21 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Control object for <see cref="T:Remotion.Web.UI.Controls.WebButton"/>.
   /// </summary>
   public class WebButtonControlObject
-      : WebFormsControlObjectWithDiagnosticMetadata,
-          IClickableControlObject,
-          IControlObjectWithText,
-          IStyledControlObject,
-          IStyledControlObjectWithCustomStyleScope
+      : WebFormsControlObjectWithDiagnosticMetadata, IClickableControlObject, IControlObjectWithText, IStyledControlObject
   {
     public WebButtonControlObject ([NotNull] ControlObjectContext context)
         : base (context)
     {
+    }
+
+    /// <inheritdoc/>
+    public IStyleInformation StyleInfo
+    {
+      get
+      {
+        var styledScope = Scope.FindCss ("span.buttonBody");
+        return new DefaultStyleInformation (this, styledScope);
+      }
     }
 
     /// <summary>
@@ -60,12 +66,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var actualActionOptions = MergeWithDefaultActionOptions (Scope, actionOptions);
       new ClickAction (this, Scope).Execute (actualActionOptions);
       return UnspecifiedPage();
-    }
-
-    /// <inheritdoc/>
-    ElementScope IStyledControlObjectWithCustomStyleScope.GetStyleScope ()
-    {
-      return Scope.FindCss ("span.buttonBody");
     }
   }
 }

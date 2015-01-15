@@ -41,6 +41,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       _impl = new BocListRowFunctionality (accessor, context);
     }
 
+    /// <inheritdoc/>
+    public IStyleInformation StyleInfo
+    {
+      get { return new DefaultStyleInformation (this, Scope); }
+    }
+
     /// <summary>
     /// Selects all rows by checking the table's select all checkbox.
     /// </summary>
