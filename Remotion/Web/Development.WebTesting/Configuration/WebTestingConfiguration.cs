@@ -79,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       _screenshotDirectoryProperty = new ConfigurationProperty ("screenshotDirectory", typeof (string));
       _logsDirectoryProperty = new ConfigurationProperty ("logsDirectory", typeof (string), ".");
       _closeBrowserWindowsOnSetUpAndTearDownProperty = new ConfigurationProperty ("closeBrowserWindowsOnSetUpAndTearDown", typeof (bool), false);
-      _hostingProperty = new ConfigurationProperty("hosting", typeof(ProviderSettings));
+      _hostingProperty = new ConfigurationProperty ("hosting", typeof (ProviderSettings));
 
       _properties = new ConfigurationPropertyCollection
                     {

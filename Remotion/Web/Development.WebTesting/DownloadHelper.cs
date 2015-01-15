@@ -76,7 +76,7 @@ namespace Remotion.Web.Development.WebTesting
       s_log.DebugFormat ("Performing download of '{0}'...", _fileName);
 
       // Note: run download trigger in different thread - Selenium does not return until the IE download handling has been performed.
-      Task.Factory.StartNew(downloadTrigger);
+      Task.Factory.StartNew (downloadTrigger);
 
       // Todo RM-6337: Find a better way to handle the yellow download bar in IE11.
       if (_browserConfiguration.BrowserIsInternetExplorer())

@@ -25,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// allows to query a cell by the contents of a certain column, e.g. "give me the cell of the list where the column 'xyz' contains the text 'abc'".
   /// </summary>
   public interface IControlObjectWithCellsInRowsWhereColumnContains<TCellControlObject>
-    where TCellControlObject : ControlObject
+      where TCellControlObject : ControlObject
   {
     /// <summary>
     /// Start of the fluent interface for selecting a cell.

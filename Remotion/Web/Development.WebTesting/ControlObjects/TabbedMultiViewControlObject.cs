@@ -66,13 +66,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public WebTabStripTabDefinition GetSelectedTab ()
     {
       var tabDefinition = GetTabStrip().GetSelectedTab();
-      return ConvertToTabbedMultiViewTab(tabDefinition);
+      return ConvertToTabbedMultiViewTab (tabDefinition);
     }
 
     /// <inheritdoc/>
     public IReadOnlyList<WebTabStripTabDefinition> GetTabDefinitions ()
     {
-      return GetTabStrip().GetTabDefinitions().Select(ConvertToTabbedMultiViewTab).ToList();
+      return GetTabStrip().GetTabDefinitions().Select (ConvertToTabbedMultiViewTab).ToList();
     }
 
     private WebTabStripTabDefinition ConvertToTabbedMultiViewTab ([NotNull] WebTabStripTabDefinition tabDefinition)

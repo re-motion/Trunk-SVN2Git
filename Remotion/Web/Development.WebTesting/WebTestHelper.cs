@@ -170,7 +170,7 @@ namespace Remotion.Web.Development.WebTesting
     /// Returns a new <typeparamref name="TPageObject"/> for the initial page displayed by <paramref name="browser"/>.
     /// </summary>
     public TPageObject CreateInitialPageObject<TPageObject> ([NotNull] BrowserSession browser)
-      where TPageObject : PageObject
+        where TPageObject : PageObject
     {
       ArgumentUtility.CheckNotNull ("browser", browser);
 
@@ -185,7 +185,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       try
       {
-        MainBrowserSession.AcceptModalDialogImmediatelyFixed(MainBrowserSession);
+        MainBrowserSession.AcceptModalDialogImmediatelyFixed (MainBrowserSession);
       }
       catch (MissingDialogException)
       {

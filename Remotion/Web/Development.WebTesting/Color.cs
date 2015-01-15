@@ -58,10 +58,25 @@ namespace Remotion.Web.Development.WebTesting
       _isTransparent = isTransparent;
     }
 
-    public byte R { get { return _red; } }
-    public byte G { get { return _green; } }
-    public byte B { get { return _blue; } }
-    public bool IsTransparent { get { return _isTransparent; } }
+    public byte R
+    {
+      get { return _red; }
+    }
+
+    public byte G
+    {
+      get { return _green; }
+    }
+
+    public byte B
+    {
+      get { return _blue; }
+    }
+
+    public bool IsTransparent
+    {
+      get { return _isTransparent; }
+    }
 
     public bool Equals (Color other)
     {

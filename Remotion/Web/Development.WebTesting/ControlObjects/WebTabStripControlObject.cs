@@ -36,7 +36,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
     }
 
-     /// <inheritdoc/>
+    /// <inheritdoc/>
     public WebTabStripTabDefinition GetSelectedTab ()
     {
       var tabScope = Scope.FindCss ("span.tabStripTabSelected");
