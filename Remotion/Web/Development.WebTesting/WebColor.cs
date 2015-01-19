@@ -23,8 +23,8 @@ namespace Remotion.Web.Development.WebTesting
   /// Represents an RGB color (possiblity transparent) without any known-color-handling (like <see cref="System.Drawing.Color"/>).
   /// </summary>
   /// <remarks>
-  /// This struct mainly exists because of some very confusing behaviors of <see cref="System.Drawing.Color"/>. Web test developers often do not have
-  /// the sufficient coding skills to understand why <c>Color.FromArgb(255, 0, 0, 0) != Color.Black</c>.
+  /// This struct has been created due to some very special behavior in .NET's <see cref="System.Drawing.Color"/> struct (namely: well-known colors,
+  /// e.g. <c>Color.FromArgb(255, 0, 0, 0) != Color.Black</c>). By using our own WebColor struct we enable straightforward use in web tests.
   /// </remarks>
   public struct WebColor : IEquatable<WebColor>
   {
