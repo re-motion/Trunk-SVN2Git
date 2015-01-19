@@ -475,7 +475,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
       var row1 = bocList.GetRow (1);
-      Assert.That (row1.StyleInfo.GetBackgroundColor(), Is.EqualTo (Color.Transparent)); // yep, style information is on the cells only!
+      Assert.That (row1.StyleInfo.GetBackgroundColor(), Is.EqualTo (WebColor.Transparent)); // yep, style information is on the cells only!
     }
 
     [Test]
@@ -485,7 +485,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var row = bocList.GetRow (1);
-      Assert.That (row.StyleInfo.GetTextColor(), Is.EqualTo (Color.Black));
+      Assert.That (row.StyleInfo.GetTextColor(), Is.EqualTo (WebColor.Black));
     }
 
     [Test]
@@ -580,10 +580,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
 
       var cell1 = bocList.GetRow (1).GetCell (1);
-      Assert.That (cell1.StyleInfo.GetBackgroundColor(), Is.EqualTo (Color.White));
+      Assert.That (cell1.StyleInfo.GetBackgroundColor(), Is.EqualTo (WebColor.White));
 
       var cell2 = bocList.GetRow (2).GetCell (1);
-      Assert.That (cell2.StyleInfo.GetBackgroundColor(), Is.EqualTo (Color.FromRgb(244, 244, 244)));
+      Assert.That (cell2.StyleInfo.GetBackgroundColor(), Is.EqualTo (WebColor.FromRgb(244, 244, 244)));
     }
 
     [Test]
@@ -593,7 +593,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var bocList = home.GetList().ByLocalID ("JobList_Normal");
       var cell = bocList.GetRow (1).GetCell (1);
-      Assert.That (cell.StyleInfo.GetTextColor(), Is.EqualTo (Color.Black));
+      Assert.That (cell.StyleInfo.GetTextColor(), Is.EqualTo (WebColor.Black));
     }
 
     [Test]

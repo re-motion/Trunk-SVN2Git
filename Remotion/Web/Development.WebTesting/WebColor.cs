@@ -26,23 +26,23 @@ namespace Remotion.Web.Development.WebTesting
   /// This struct mainly exists because of some very confusing behaviors of <see cref="System.Drawing.Color"/>. Web test developers often do not have
   /// the sufficient coding skills to understand why <c>Color.FromArgb(255, 0, 0, 0) != Color.Black</c>.
   /// </remarks>
-  public struct Color : IEquatable<Color>
+  public struct WebColor : IEquatable<WebColor>
   {
-    public static readonly Color Transparent = new Color (true);
-    public static readonly Color White = new Color (255, 255, 255);
-    public static readonly Color Black = new Color (0, 0, 0);
+    public static readonly WebColor Transparent = new WebColor (true);
+    public static readonly WebColor White = new WebColor (255, 255, 255);
+    public static readonly WebColor Black = new WebColor (0, 0, 0);
 
     private readonly byte _red;
     private readonly byte _green;
     private readonly byte _blue;
     private readonly bool _isTransparent;
 
-    public static Color FromRgb (byte r, byte g, byte b)
+    public static WebColor FromRgb (byte r, byte g, byte b)
     {
-      return new Color (r, g, b);
+      return new WebColor (r, g, b);
     }
 
-    private Color (byte r, byte g, byte b)
+    private WebColor (byte r, byte g, byte b)
     {
       _red = r;
       _green = g;
@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting
       _isTransparent = false;
     }
 
-    private Color (bool isTransparent)
+    private WebColor (bool isTransparent)
     {
       _red = 0;
       _green = 0;
@@ -78,7 +78,7 @@ namespace Remotion.Web.Development.WebTesting
       get { return _isTransparent; }
     }
 
-    public bool Equals (Color other)
+    public bool Equals (WebColor other)
     {
       return _red == other._red && _green == other._green && _blue == other._blue && _isTransparent == other._isTransparent;
     }
@@ -87,7 +87,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       if (ReferenceEquals (null, obj))
         return false;
-      return obj is Color && Equals ((Color) obj);
+      return obj is WebColor && Equals ((WebColor) obj);
     }
 
     public override int GetHashCode ()
@@ -102,12 +102,12 @@ namespace Remotion.Web.Development.WebTesting
       }
     }
 
-    public static bool operator == (Color left, Color right)
+    public static bool operator == (WebColor left, WebColor right)
     {
       return left.Equals (right);
     }
 
-    public static bool operator != (Color left, Color right)
+    public static bool operator != (WebColor left, WebColor right)
     {
       return !left.Equals (right);
     }

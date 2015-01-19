@@ -49,13 +49,13 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <inheritdoc/>
-    public Color GetBackgroundColor ()
+    public WebColor GetBackgroundColor ()
     {
       return _styledScope.GetComputedBackgroundColor (_controlObject.Context);
     }
 
     /// <inheritdoc/>
-    public Color GetTextColor ()
+    public WebColor GetTextColor ()
     {
       return _styledScope.GetComputedTextColor (_controlObject.Context);
     }

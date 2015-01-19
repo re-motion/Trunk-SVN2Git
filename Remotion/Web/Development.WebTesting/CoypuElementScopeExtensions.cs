@@ -68,8 +68,8 @@ namespace Remotion.Web.Development.WebTesting
     /// Returns the computed background color of the control. This method ignores background images as well as transparencies - the first
     /// non-transparent color set in the node's hierarchy is returned. The returned color's alpha value is always 255 (opaque).
     /// </summary>
-    /// <returns>The background color or <see cref="Color.Transparent"/> if no background color is set (not even on any parent node).</returns>
-    public static Color GetComputedBackgroundColor ([NotNull] this ElementScope scope, [NotNull] ControlObjectContext context)
+    /// <returns>The background color or <see cref="WebColor.Transparent"/> if no background color is set (not even on any parent node).</returns>
+    public static WebColor GetComputedBackgroundColor ([NotNull] this ElementScope scope, [NotNull] ControlObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -80,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting
           RetryUntilTimeout.Run (() => (string) javaScriptExecutor.ExecuteScript (CommonJavaScripts.GetComputedBackgroundColor, scope.Native));
 
       if (IsTransparent (computedBackgroundColor))
-        return Color.Transparent;
+        return WebColor.Transparent;
 
       return ParseColorFromBrowserReturnedString (computedBackgroundColor);
     }
@@ -89,8 +89,8 @@ namespace Remotion.Web.Development.WebTesting
     /// Returns the computed text color of the control. This method ignores transparencies - the first non-transparent color set in the node's
     /// DOM hierarchy is returned. The returned color's alpha value is always 255 (opaque).
     /// </summary>
-    /// <returns>The text color or <see cref="Color.Transparent"/> if no text color is set (not even on any parent node).</returns>
-    public static Color GetComputedTextColor ([NotNull] this ElementScope scope, [NotNull] ControlObjectContext context)
+    /// <returns>The text color or <see cref="WebColor.Transparent"/> if no text color is set (not even on any parent node).</returns>
+    public static WebColor GetComputedTextColor ([NotNull] this ElementScope scope, [NotNull] ControlObjectContext context)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -101,7 +101,7 @@ namespace Remotion.Web.Development.WebTesting
           RetryUntilTimeout.Run (() => (string) javaScriptExecutor.ExecuteScript (CommonJavaScripts.GetComputedTextColor, scope.Native));
 
       if (IsTransparent (computedTextColor))
-        return Color.Transparent;
+        return WebColor.Transparent;
 
       return ParseColorFromBrowserReturnedString (computedTextColor);
     }
@@ -121,11 +121,11 @@ namespace Remotion.Web.Development.WebTesting
       return false;
     }
 
-    private static Color ParseColorFromBrowserReturnedString ([NotNull] string color)
+    private static WebColor ParseColorFromBrowserReturnedString ([NotNull] string color)
     {
       var rgbArgs = color.Split (new[] { '(', ',', ')' });
       var rgb = rgbArgs.Skip (1).Take (3).Select (byte.Parse).ToArray();
-      return Color.FromRgb (rgb[0], rgb[1], rgb[2]);
+      return WebColor.FromRgb (rgb[0], rgb[1], rgb[2]);
     }
 
     /// <summary>

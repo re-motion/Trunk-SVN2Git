@@ -18,14 +18,14 @@ namespace Remotion.Web.Development.WebTesting
     /// Returns the computed background color of the control. This method ignores background images as well as transparencies - the first
     /// non-transparent color set in the node's DOM hierarchy is returned.
     /// </summary>
-    /// <returns>The background color or <see cref="Color.Transparent"/> if no background color is set (not even on any parent node).</returns>
-    Color GetBackgroundColor ();
+    /// <returns>The background color or <see cref="WebColor.Transparent"/> if no background color is set (not even on any parent node).</returns>
+    WebColor GetBackgroundColor ();
 
     /// <summary>
     /// Returns the computed text color of the control. This method ignores transparencies - the first non-transparent color set in the node's
     /// DOM hierarchy is returned.
     /// </summary>
-    /// <returns>The text color or <see cref="Color.Transparent"/> if no text color is set (not even on any parent node).</returns>
-    Color GetTextColor ();
+    /// <returns>The text color or <see cref="WebColor.Transparent"/> if no text color is set (not even on any parent node).</returns>
+    WebColor GetTextColor ();
   }
 }
