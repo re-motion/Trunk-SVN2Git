@@ -112,6 +112,22 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return ClickItem (scope, actionOptions);
     }
 
+    /// <inheritdoc/>
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayTextContains (
+        string containsDisplayText,
+        IWebTestActionOptions actionOptions)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      var dropDownMenuScope = GetDropDownMenuScope();
+      var scope = dropDownMenuScope.FindTagWithAttributeUsingOperator (
+          "li.DropDownMenuItem",
+          CssComparisonOperator.SubstringMatch,
+          DiagnosticMetadataAttributes.Content,
+          containsDisplayText);
+      return ClickItem (scope, actionOptions);
+    }
+
     private ElementScope GetDropDownMenuScope ()
     {
       OpenDropDownMenu();

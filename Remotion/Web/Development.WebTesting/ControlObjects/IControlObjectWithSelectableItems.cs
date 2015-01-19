@@ -70,5 +70,10 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Selects item row using the given <paramref name="displayText"/>.
     /// </summary>
     UnspecifiedPageObject WithDisplayText ([NotNull] string displayText, [CanBeNull] IWebTestActionOptions actionOptions = null);
+
+    /// <summary>
+    /// Selects item row using the given <paramref name="containsDisplayText"/>.
+    /// </summary>
+    UnspecifiedPageObject WithDisplayTextContains ([NotNull] string containsDisplayText, [CanBeNull] IWebTestActionOptions actionOptions = null);
   }
 }

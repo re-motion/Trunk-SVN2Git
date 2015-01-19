@@ -71,6 +71,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithItemID (string itemID, IWebTestActionOptions actionOptions)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
+
       var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.ItemID, itemID);
       return ClickItem (itemScope, actionOptions);
     }
@@ -85,6 +87,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithHtmlID (string htmlID, IWebTestActionOptions actionOptions)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
+
       var itemScope = Scope.FindId (htmlID);
       return ClickItem (itemScope, actionOptions);
     }
@@ -92,7 +96,24 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayText (string displayText, IWebTestActionOptions actionOptions)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
+
       var itemScope = Scope.FindTagWithAttribute ("span.listMenuItem", DiagnosticMetadataAttributes.Content, displayText);
+      return ClickItem (itemScope, actionOptions);
+    }
+
+    /// <inheritdoc/>
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayTextContains (
+        string containsDisplayText,
+        IWebTestActionOptions actionOptions)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      var itemScope = Scope.FindTagWithAttributeUsingOperator (
+          "span.listMenuItem",
+          CssComparisonOperator.SubstringMatch,
+          DiagnosticMetadataAttributes.Content,
+          containsDisplayText);
       return ClickItem (itemScope, actionOptions);
     }
 

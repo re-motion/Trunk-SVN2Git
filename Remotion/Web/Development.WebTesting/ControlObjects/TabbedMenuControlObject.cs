@@ -108,6 +108,18 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       return SelectMenuOrSubMenuItem (Context, menuItemScope, actionOptions);
     }
 
+    /// <inheritdoc/>
+    UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayTextContains (
+        string containsDisplayText,
+        IWebTestActionOptions actionOptions)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+      var menuItemScope = GetMainMenuScope()
+          .FindTagWithAttributeUsingOperator ("span", CssComparisonOperator.SubstringMatch, DiagnosticMetadataAttributes.Content, containsDisplayText);
+      return SelectMenuOrSubMenuItem (Context, menuItemScope, actionOptions);
+    }
+
     private static IReadOnlyList<ItemDefinition> GetMenuItemOrSubMenuItemDefinitions (ElementScope scope)
     {
       return
@@ -191,6 +203,21 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
         var menuItemScope = GetSubMenuScope().FindTagWithAttribute ("span", DiagnosticMetadataAttributes.Content, displayText);
+        return SelectMenuOrSubMenuItem (Context, menuItemScope, actionOptions);
+      }
+
+      UnspecifiedPageObject IFluentControlObjectWithSelectableItems.WithDisplayTextContains (
+          string containsDisplayText,
+          IWebTestActionOptions actionOptions)
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
+
+        var menuItemScope = GetSubMenuScope()
+            .FindTagWithAttributeUsingOperator (
+                "span",
+                CssComparisonOperator.SubstringMatch,
+                DiagnosticMetadataAttributes.Content,
+                containsDisplayText);
         return SelectMenuOrSubMenuItem (Context, menuItemScope, actionOptions);
       }
 

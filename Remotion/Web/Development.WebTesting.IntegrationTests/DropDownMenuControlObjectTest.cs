@@ -134,6 +134,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       dropDownMenu.SelectItem().WithDisplayText ("EventItem");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID1|Event"));
+
+      dropDownMenu.SelectItem().WithDisplayTextContains ("xeFun");
+      Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("ItemID4|WxeFunction"));
     }
 
     private RemotionPageObject Start ()

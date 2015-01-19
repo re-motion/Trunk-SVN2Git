@@ -135,6 +135,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       tabbedMenu.SelectItem().WithDisplayText ("EventCommandTabTitle");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
+
+      tabbedMenu.SelectItem().WithDisplayTextContains ("ntCom");
+      Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("EventCommandTab|Event"));
     }
 
     [Test]
@@ -202,6 +205,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       tabbedMenu.SubMenu.SelectItem().WithDisplayText ("SubMenuTab2Title");
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab2|Event"));
+
+      tabbedMenu.SubMenu.SelectItem().WithDisplayTextContains ("nuTab1");
+      Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
     }
 
     private RemotionPageObject Start ()
