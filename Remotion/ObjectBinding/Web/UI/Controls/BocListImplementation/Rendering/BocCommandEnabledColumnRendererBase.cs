@@ -17,7 +17,7 @@
 
 using System;
 using System.Web.UI;
-using Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata;
+using Remotion.ObjectBinding.Web.Contracts.DiagnosticMetadata;
 using Remotion.Security;
 using Remotion.Utilities;
 using Remotion.Web;

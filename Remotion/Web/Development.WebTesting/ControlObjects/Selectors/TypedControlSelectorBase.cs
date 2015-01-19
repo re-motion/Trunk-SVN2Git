@@ -18,7 +18,7 @@
 using System;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
 

@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors

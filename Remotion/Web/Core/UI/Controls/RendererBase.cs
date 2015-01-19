@@ -22,7 +22,7 @@ using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.UI.Controls.Rendering;
 using Remotion.Web.Utilities;
 

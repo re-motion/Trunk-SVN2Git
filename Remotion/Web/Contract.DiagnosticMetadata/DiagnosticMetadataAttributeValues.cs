@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Remotion.Web.Contract.DiagnosticMetadata
+namespace Remotion.Web.Contracts.DiagnosticMetadata
 {
   /// <summary>
   /// Possible values for certain diagnostic metadata attributes.

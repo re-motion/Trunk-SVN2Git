@@ -98,9 +98,9 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Web.Contract.DiagnosticMetadata\ObjectBinding.Web.Contract.DiagnosticMetadata.csproj">
+    <ProjectReference Include="..\Web.Contract.DiagnosticMetadata\ObjectBinding.Web.Contracts.DiagnosticMetadata.csproj">
       <Project>{AD7D0683-130E-4064-8EB7-D9981DCB22BC}</Project>
-      <Name>ObjectBinding.Web.Contract.DiagnosticMetadata</Name>
+      <Name>ObjectBinding.Web.Contracts.DiagnosticMetadata</Name>
     </ProjectReference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -159,9 +159,9 @@
       <Project>{98E7F7AA-12B2-4A6B-8922-52C8E53B378E}</Project>
       <Name>TypePipe.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Web\Contract.DiagnosticMetadata\Web.Contract.DiagnosticMetadata.csproj">
+    <ProjectReference Include="..\..\Web\Contract.DiagnosticMetadata\Web.Contracts.DiagnosticMetadata.csproj">
       <Project>{B119DB72-9073-401B-8EC9-C8885A2D4800}</Project>
-      <Name>Web.Contract.DiagnosticMetadata</Name>
+      <Name>Web.Contracts.DiagnosticMetadata</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Name>Web.Core</Name>

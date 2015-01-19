@@ -29,7 +29,7 @@ using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.FormGridManagerImplementation;
 using Remotion.Web.UI.Controls.Hotkey;

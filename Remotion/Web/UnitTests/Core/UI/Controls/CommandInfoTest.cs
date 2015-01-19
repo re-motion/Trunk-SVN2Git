@@ -19,7 +19,7 @@ using System;
 using System.IO;
 using System.Web.UI;
 using NUnit.Framework;
-using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 

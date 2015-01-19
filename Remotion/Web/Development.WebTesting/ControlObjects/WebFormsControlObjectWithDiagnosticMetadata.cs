@@ -18,7 +18,7 @@
 using System;
 using Coypu;
 using JetBrains.Annotations;
-using Remotion.Web.Contract.DiagnosticMetadata;
+using Remotion.Web.Contracts.DiagnosticMetadata;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {

@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Remotion.ObjectBinding.Web.Contract.DiagnosticMetadata
+namespace Remotion.ObjectBinding.Web.Contracts.DiagnosticMetadata
 {
   /// <summary>
   /// Diagnostic metadata attribute names used by various renderers.
