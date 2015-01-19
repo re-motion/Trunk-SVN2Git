@@ -383,6 +383,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       cell = row.GetCell (6);
       Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
+
+      cell = row.GetCell().WithColumnTitle ("Title");
+      Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
+
+      cell = row.GetCell().WithColumnTitleContains ("ithCm");
+      Assert.That (cell.GetText(), Is.EqualTo ("CEO"));
     }
 
     [Test]

@@ -80,13 +80,29 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      return _impl.GetCell<BocListEditableCellControlObject> (columnItemID);
+      return _impl.GetCellWithColumnItemID<BocListEditableCellControlObject> (columnItemID);
     }
 
     /// <inheritdoc/>
     BocListEditableCellControlObject IFluentControlObjectWithCells<BocListEditableCellControlObject>.WithIndex (int index)
     {
-      return _impl.GetCell<BocListEditableCellControlObject> (index);
+      return _impl.GetCellWithColumnIndex<BocListEditableCellControlObject> (index);
+    }
+
+    /// <inheritdoc/>
+    BocListEditableCellControlObject IFluentControlObjectWithCells<BocListEditableCellControlObject>.WithColumnTitle (string columnTitle)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnTitle", columnTitle);
+
+      return _impl.GetCellWithColumnTitle<BocListEditableCellControlObject> (columnTitle);
+    }
+
+    /// <inheritdoc/>
+    BocListEditableCellControlObject IFluentControlObjectWithCells<BocListEditableCellControlObject>.WithColumnTitleContains (string columnTitleContains)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnTitleContains", columnTitleContains);
+
+      return _impl.GetCellWithColumnTitleContains<BocListEditableCellControlObject> (columnTitleContains);
     }
   }
 }

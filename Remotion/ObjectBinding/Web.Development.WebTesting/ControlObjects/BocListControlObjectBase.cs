@@ -53,9 +53,25 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         get { return _bocList.Context.Scope; }
       }
 
-      public int GetColumnIndex (string columnItemID)
+      public int GetColumnIndexForItemID (string columnItemID)
       {
+        ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+
         return _bocList.GetColumnByItemID (columnItemID).Index;
+      }
+
+      public int GetColumnIndexForTitle (string columnTitle)
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("columnTitle", columnTitle);
+
+        return _bocList.GetColumnByTitle (columnTitle).Index;
+      }
+
+      public int GetColumnIndexForTitleContains (string columnTitleContains)
+      {
+        ArgumentUtility.CheckNotNullOrEmpty ("columnTitleContains", columnTitleContains);
+
+        return _bocList.GetColumnByTitleContains (columnTitleContains).Index;
       }
 
       public int GetZeroBasedAbsoluteRowIndexOfFirstRow ()
@@ -252,8 +268,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the column defintion given by <paramref name="columnItemID"/>.
     /// </summary>
-    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByItemID (string columnItemID)
+    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByItemID ([NotNull] string columnItemID)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
+
       return _columns.Single (cd => cd.ItemID == columnItemID);
     }
 
@@ -268,9 +286,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the column defintion given by <paramref name="columnTitle"/>.
     /// </summary>
-    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByTitle (string columnTitle)
+    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByTitle ([NotNull] string columnTitle)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnTitle", columnTitle);
+
       return _columns.Single (cd => cd.Title == columnTitle);
+    }
+
+    /// <summary>
+    /// Returns the column defintion given by <paramref name="columnTitleContains"/>.
+    /// </summary>
+    protected BocListColumnDefinition<TRowControlObject, TCellControlObject> GetColumnByTitleContains ([NotNull] string columnTitleContains)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnTitleContains", columnTitleContains);
+
+      return _columns.Where (cd => cd.Title != null).Single (cd => cd.Title.Contains (columnTitleContains));
     }
 
     private bool ColumnHasDiagnosticMetadata (ElementScope scope)

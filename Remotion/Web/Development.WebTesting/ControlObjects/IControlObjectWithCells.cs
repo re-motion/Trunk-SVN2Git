@@ -57,5 +57,15 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Selects the cell using the given <paramref name="index"/>.
     /// </summary>
     TCellControlObject WithIndex (int index);
+
+    /// <summary>
+    /// Selects the cell using the given <paramref name="columnTitle"/>.
+    /// </summary>
+    TCellControlObject WithColumnTitle ([NotNull] string columnTitle);
+
+    /// <summary>
+    /// Selects the cell using the given <paramref name="columnTitleContains"/>.
+    /// </summary>
+    TCellControlObject WithColumnTitleContains ([NotNull] string columnTitleContains);
   }
 }

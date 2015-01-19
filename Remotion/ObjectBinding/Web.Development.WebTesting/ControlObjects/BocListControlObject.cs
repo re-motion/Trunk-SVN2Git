@@ -227,7 +227,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public BocListCellControlObject ColumnWithTitleContains (string title, string containsCellText)
+    BocListCellControlObject IFluentControlObjectWithCellsInRowsWhereColumnContains<BocListCellControlObject>.ColumnWithTitleContains (
+        string title,
+        string containsCellText)
     {
       ArgumentUtility.CheckNotNull ("title", title);
       ArgumentUtility.CheckNotNull ("containsCellText", containsCellText);

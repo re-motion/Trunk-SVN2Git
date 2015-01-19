@@ -85,19 +85,37 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
-    public TCellControlObject GetCell<TCellControlObject> ([NotNull] string columnItemID)
+    public TCellControlObject GetCellWithColumnItemID<TCellControlObject> ([NotNull] string columnItemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("columnItemID", columnItemID);
 
-      var index = _accessor.GetColumnIndex (columnItemID);
-      return GetCell<TCellControlObject> (index);
+      var index = _accessor.GetColumnIndexForItemID (columnItemID);
+      return GetCellWithColumnIndex<TCellControlObject> (index);
     }
 
     /// <inheritdoc/>
-    public TCellControlObject GetCell<TCellControlObject> (int index)
+    public TCellControlObject GetCellWithColumnIndex<TCellControlObject> (int index)
     {
       var cellScope = Scope.FindTagWithAttribute ("td", DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, index.ToString());
       return (TCellControlObject) Activator.CreateInstance (typeof (TCellControlObject), new object[] { Context.CloneForControl (cellScope) });
+    }
+
+    /// <inheritdoc/>
+    public TCellControlObject GetCellWithColumnTitle<TCellControlObject> ([NotNull] string columnTitle)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnTitle", columnTitle);
+
+      var index = _accessor.GetColumnIndexForTitle (columnTitle);
+      return GetCellWithColumnIndex<TCellControlObject> (index);
+    }
+
+    /// <inheritdoc/>
+    public TCellControlObject GetCellWithColumnTitleContains<TCellControlObject> ([NotNull] string columnTitleContains)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("columnTitleContains", columnTitleContains);
+
+      var index = _accessor.GetColumnIndexForTitleContains (columnTitleContains);
+      return GetCellWithColumnIndex<TCellControlObject> (index);
     }
 
     /// <inheritdoc/>

@@ -17,6 +17,7 @@
 
 using System;
 using Coypu;
+using JetBrains.Annotations;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 {
@@ -33,7 +34,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <summary>
     /// Returns the one-based column index of the given <paramref name="columnItemID"/> within the parent control.
     /// </summary>
-    int GetColumnIndex (string columnItemID);
+    int GetColumnIndexForItemID ([NotNull] string columnItemID);
+
+    /// <summary>
+    /// Returns the one-based column index of the given <paramref name="columnTitle"/> within the parent control.
+    /// </summary>
+    int GetColumnIndexForTitle ([NotNull] string columnTitle);
+
+    /// <summary>
+    /// Returns the one-based column index of the given <paramref name="columnTitleContains"/> within the parent control.
+    /// </summary>
+    int GetColumnIndexForTitleContains ([NotNull] string columnTitleContains);
 
     /// <summary>
     /// Returns the zero-based absolute row index of the first row on the current page.
