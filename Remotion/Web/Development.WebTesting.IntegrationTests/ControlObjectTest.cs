@@ -34,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (webButton.GetHtmlID(), Is.EqualTo ("body_MyWebButton1Sync"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("WebButtonTest.wxe");
     }

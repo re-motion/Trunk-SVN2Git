@@ -289,7 +289,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       bocAutoComplete.GetSearchServiceResults ("throw", 1);
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("BocAutoCompleteReferenceValue");
     }

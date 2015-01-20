@@ -330,7 +330,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (bocText.GetText(), Is.EqualTo ("NewTitle"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("BocListAsGrid");
     }

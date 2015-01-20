@@ -20,19 +20,19 @@ using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
-  public class MultiWindowTestPageObject : RemotionPageObject
+  public class MultiWindowTestPageObject : WxePageObject
   {
     public MultiWindowTestPageObject (PageObjectContext context)
         : base (context)
     {
     }
 
-    public RemotionPageObject Frame
+    public WxePageObject Frame
     {
       get
       {
         var frameScope = Scope.FindFrame ("frame");
-        return new RemotionPageObject (Context.CloneForFrame (frameScope));
+        return new WxePageObject (Context.CloneForFrame (frameScope));
       }
     }
   }

@@ -29,25 +29,5 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
         : base (context)
     {
     }
-
-    /// <summary>
-    /// Closes the window.
-    /// </summary>
-    public void Close ()
-    {
-      Context.CloseWindow();
-    }
-
-    /// <inheritdoc/>
-    public override ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
-    {
-      get { return Continue.Immediately; }
-    }
-
-    /// <inheritdoc/>
-    public override ICompletionDetectionStrategy NavigationCompletionDetectionStrategy
-    {
-      get { return Continue.Immediately; }
-    }
   }
 }

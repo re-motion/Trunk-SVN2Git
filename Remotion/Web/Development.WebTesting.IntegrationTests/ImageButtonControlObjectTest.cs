@@ -97,11 +97,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var imageButton = home.GetImageButton().ByLocalID ("MyImageButton2");
-      home = imageButton.Click().Expect<RemotionPageObject>();
+      home = imageButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyImageButton2|MyImageButton2Command"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("ImageButtonTest.wxe");
     }

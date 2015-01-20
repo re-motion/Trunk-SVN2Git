@@ -106,7 +106,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (image2.GetAltText(), Is.Empty);
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("ImageTest.aspx");
     }

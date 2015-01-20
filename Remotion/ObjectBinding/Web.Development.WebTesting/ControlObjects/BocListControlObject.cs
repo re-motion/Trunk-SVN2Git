@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ControlObjects;
+using Remotion.Web.Development.WebTesting.PageObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
@@ -69,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
       new FillWithAction (this, currentPageTextInputScope, Keys.Backspace + page, FinishInput.WithTab).Execute (
-          Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -78,7 +79,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = Scope.FindChild ("Navigation_First");
-      new ClickAction (this, firstPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
+      new ClickAction (this, firstPageLinkScope).Execute (
+          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -87,7 +89,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
-      new ClickAction (this, previousPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
+      new ClickAction (this, previousPageLinkScope).Execute (
+          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -96,7 +99,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToNextPage ()
     {
       var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
-      new ClickAction (this, nextPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
+      new ClickAction (this, nextPageLinkScope).Execute (
+          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -105,7 +109,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToLastPage ()
     {
       var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
-      new ClickAction (this, lastPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
+      new ClickAction (this, lastPageLinkScope).Execute (
+          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <inheritdoc/>
@@ -238,7 +243,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return GetCellWhereColumnContains (column, containsCellText);
     }
 
-    private BocListCellControlObject GetCellWhereColumnContainsExactly (BocListColumnDefinition<BocListRowControlObject, BocListCellControlObject> column, string containsCellText)
+    private BocListCellControlObject GetCellWhereColumnContainsExactly (
+        BocListColumnDefinition<BocListRowControlObject, BocListCellControlObject> column,
+        string containsCellText)
     {
       if (column.HasDiagnosticMetadata)
       {
@@ -262,7 +269,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
     }
 
-    private BocListCellControlObject GetCellWhereColumnContains (BocListColumnDefinition<BocListRowControlObject, BocListCellControlObject> column, string containsCellText)
+    private BocListCellControlObject GetCellWhereColumnContains (
+        BocListColumnDefinition<BocListRowControlObject, BocListCellControlObject> column,
+        string containsCellText)
     {
       if (column.HasDiagnosticMetadata)
       {
@@ -312,7 +321,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (HasFakeTableHead)
         sortColumnLinkScope.Hover();
 
-      new ClickAction (this, sortColumnLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
+      new ClickAction (this, sortColumnLinkScope).Execute (
+          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>

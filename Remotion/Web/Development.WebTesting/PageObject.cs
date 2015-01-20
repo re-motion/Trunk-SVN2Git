@@ -48,14 +48,12 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Default completion detection strategy to be used for postbacks on this page.
+    /// Closes the window.
     /// </summary>
-    public abstract ICompletionDetectionStrategy PostBackCompletionDetectionStrategy { get; }
-
-    /// <summary>
-    /// Default completion detection strategy to be used for navigation on this page.
-    /// </summary>
-    public abstract ICompletionDetectionStrategy NavigationCompletionDetectionStrategy { get; }
+    public void Close ()
+    {
+      Context.CloseWindow();
+    }
 
     /// <inheritdoc/>
     public TControlObject GetControl<TControlObject> (IControlSelectionCommand<TControlObject> controlSelectionCommand)

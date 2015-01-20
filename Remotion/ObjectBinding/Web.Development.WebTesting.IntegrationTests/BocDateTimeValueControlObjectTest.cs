@@ -294,7 +294,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (DateTime.Parse (home.Scope.FindIdEndingWith ("WithSecondsCurrentValueLabel").Text), Is.EqualTo (setWithSeconds));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("BocDateTimeValue");
     }

@@ -135,7 +135,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (htmlTextBox.GetText(), Is.EqualTo ("Blubba3"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("TextBoxTest.wxe");
     }

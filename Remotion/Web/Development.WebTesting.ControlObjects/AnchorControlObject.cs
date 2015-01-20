@@ -19,6 +19,7 @@ using System;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.PageObjects;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
@@ -55,12 +56,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       if (IsPostBackLink (scope))
-        return Context.PageObject.PostBackCompletionDetectionStrategy;
+        return ((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy;
 
       if (IsSimpleJavaScriptLink (scope))
         return Continue.Immediately;
 
-      return Context.PageObject.NavigationCompletionDetectionStrategy;
+      return ((WebFormsPageObject) Context.PageObject).NavigationCompletionDetectionStrategy;
     }
 
     private bool IsPostBackLink (ElementScope scope)

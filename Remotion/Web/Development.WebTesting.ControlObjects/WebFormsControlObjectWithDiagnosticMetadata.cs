@@ -19,6 +19,7 @@ using System;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Contracts.DiagnosticMetadata;
+using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -38,14 +39,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
-          return Context.PageObject.PostBackCompletionDetectionStrategy;
+          return ((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy;
       }
 
       if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return Context.PageObject.NavigationCompletionDetectionStrategy;
+          return ((WebFormsPageObject) Context.PageObject).NavigationCompletionDetectionStrategy;
       }
 
       return Continue.Immediately;

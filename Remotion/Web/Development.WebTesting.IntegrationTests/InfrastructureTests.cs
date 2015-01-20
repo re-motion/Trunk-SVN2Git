@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (textBox.GetText(), Is.EqualTo (input));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("InfrastructureTests.wxe");
     }

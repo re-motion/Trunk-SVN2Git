@@ -88,15 +88,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var command1 = home.GetCommand().ByLocalID ("Command1");
-      home = command1.Click().Expect<RemotionPageObject>();
+      home = command1.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Command1ItemID"));
 
       var command2 = home.GetCommand().ByLocalID ("Command2");
-      home = command2.Click().Expect<RemotionPageObject>();
+      home = command2.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("CommandTest.wxe");
     }

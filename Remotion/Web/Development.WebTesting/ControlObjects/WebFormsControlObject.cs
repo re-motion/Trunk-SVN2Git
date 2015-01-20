@@ -18,6 +18,7 @@
 using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
@@ -34,7 +35,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy (ElementScope scope)
     {
-      return Context.PageObject.PostBackCompletionDetectionStrategy;
+      var webFormsPageObject = (WebFormsPageObject) Context.PageObject;
+
+      // We assume that ASP.NET WebForms control objects have auto-postback enabled per default.
+      // Todo RM-6400: Actually, the default 
+      return webFormsPageObject.PostBackCompletionDetectionStrategy;
     }
   }
 }

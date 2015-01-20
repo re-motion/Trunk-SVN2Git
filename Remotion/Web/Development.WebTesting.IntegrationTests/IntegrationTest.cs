@@ -64,12 +64,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.OnFixtureTearDown();
     }
 
-    protected RemotionPageObject Start (string page)
+    protected WxePageObject Start (string page)
     {
       var url = WebTestingConfiguration.Current.WebApplicationRoot + page;
       _webTestHelper.MainBrowserSession.Visit (url);
 
-      return _webTestHelper.CreateInitialPageObject<RemotionPageObject> (_webTestHelper.MainBrowserSession);
+      return _webTestHelper.CreateInitialPageObject<WxePageObject> (_webTestHelper.MainBrowserSession);
     }
 
     protected DownloadHelper NewDownloadHelper (string fileName)

@@ -151,31 +151,31 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var webLinkButton = home.GetAnchor().ByLocalID ("MyWebLinkButton");
-      home = webLinkButton.Click().Expect<RemotionPageObject>();
+      home = webLinkButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyWebLinkButton|MyWebLinkButtonCommand"));
 
       var smartHyperLink = home.GetAnchor().ByLocalID ("MySmartHyperLink");
-      home = smartHyperLink.Click().Expect<RemotionPageObject>();
+      home = smartHyperLink.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
       var aspLinkButton = home.GetAnchor().ByLocalID ("MyAspLinkButton");
-      home = aspLinkButton.Click().Expect<RemotionPageObject>();
+      home = aspLinkButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyAspLinkButton|MyAspLinkButtonCommand"));
 
       var aspHyperLink = home.GetAnchor().ByLocalID ("MyAspHyperLink");
-      home = aspHyperLink.Click().Expect<RemotionPageObject>();
+      home = aspHyperLink.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
 
       var htmlAnchor = home.GetAnchor().ByLocalID ("MyHtmlAnchor");
-      home = htmlAnchor.Click().Expect<RemotionPageObject>();
+      home = htmlAnchor.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyHtmlAnchor"));
 
       var htmlAnchorWithJavaScriptLink = home.GetAnchor().ByLocalID ("MyHtmlAnchorWithJavaScriptLink");
-      home = htmlAnchorWithJavaScriptLink.Click().Expect<RemotionPageObject>();
+      home = htmlAnchorWithJavaScriptLink.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyHtmlAnchorWithJavaScriptLink"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("AnchorTest.wxe");
     }

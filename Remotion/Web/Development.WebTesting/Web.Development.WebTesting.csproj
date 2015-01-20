@@ -69,6 +69,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="PageObjects\WxePageObject.cs" />
     <Compile Include="WebColor.cs" />
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
     <Compile Include="ControlObjects\ItemDefinition.cs" />
@@ -205,7 +206,7 @@
     <Compile Include="IWebTestActionOptions.cs" />
     <Compile Include="CompletionDetectionStrategiesFluentInterface.cs" />
     <Compile Include="CompletionDetectionStrategies\NullCompletionDetectionStrategy.cs" />
-    <Compile Include="PageObjects\RemotionPageObject.cs" />
+    <Compile Include="PageObjects\WebFormsPageObject.cs" />
     <Compile Include="UnspecifiedPageObject.cs" />
     <Compile Include="WebTestActions\SimpleClickAction.cs" />
     <Compile Include="WebTestActions\UncheckAction.cs" />

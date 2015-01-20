@@ -210,7 +210,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("SubMenuTab1|Event"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("TabbedMenuTest.wxe");
     }

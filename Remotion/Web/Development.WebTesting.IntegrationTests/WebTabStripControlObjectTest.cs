@@ -119,23 +119,23 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var tabStrip1 = home.GetWebTabStrip().First();
       var tabStrip2 = home.GetWebTabStrip().ByIndex (2);
 
-      home = tabStrip1.SwitchTo ("Tab2").Expect<RemotionPageObject>();
+      home = tabStrip1.SwitchTo ("Tab2").Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip1/Tab2"));
 
-      home = tabStrip1.SwitchTo().WithDisplayText ("Tab1Label").Expect<RemotionPageObject>();
+      home = tabStrip1.SwitchTo().WithDisplayText ("Tab1Label").Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip1/Tab1"));
 
-      home = tabStrip1.SwitchTo().WithDisplayTextContains ("b2L").Expect<RemotionPageObject>();
+      home = tabStrip1.SwitchTo().WithDisplayTextContains ("b2L").Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip1/Tab2"));
 
-      home = tabStrip2.SwitchTo().WithIndex (2).Expect<RemotionPageObject>();
+      home = tabStrip2.SwitchTo().WithIndex (2).Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip2/Tab2"));
 
-      home = tabStrip2.SwitchTo().WithHtmlID ("body_MyTabStrip2_Tab1").Expect<RemotionPageObject>();
+      home = tabStrip2.SwitchTo().WithHtmlID ("body_MyTabStrip2_Tab1").Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("MyTabStrip2/Tab1"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("WebTabStripTest.wxe");
     }

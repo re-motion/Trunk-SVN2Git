@@ -192,7 +192,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (home.Scope.FindIdEndingWith ("TriStateCurrentValueLabel").Text, Is.EqualTo ("True"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("BocBooleanValue");
     }

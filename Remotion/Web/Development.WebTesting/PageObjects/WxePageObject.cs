@@ -21,26 +21,32 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting.PageObjects
 {
   /// <summary>
-  /// Page object representing an arbitrary re-motion-based page.
+  /// Page object representing an arbitrary WXE page.
   /// </summary>
-  public class RemotionPageObject : PageObject
+  public class WxePageObject : WebFormsPageObject
   {
     // ReSharper disable once MemberCanBeProtected.Global
-    public RemotionPageObject ([NotNull] PageObjectContext context)
+    public WxePageObject ([NotNull] PageObjectContext context)
         : base (context)
     {
-    }
-
-    /// <inheritdoc/>
-    public override ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
-    {
-      get { return Wxe.PostBackCompleted; }
     }
 
     /// <inheritdoc/>
     public override ICompletionDetectionStrategy NavigationCompletionDetectionStrategy
     {
       get { return Wxe.Reset; }
+    }
+
+    /// <inheritdoc/>
+    public override ICompletionDetectionStrategy SynchronousPostBackCompletionDetectionStrategy
+    {
+      get { return Wxe.PostBackCompleted; }
+    }
+
+    /// <inheritdoc/>
+    public override ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
+    {
+      get { return Wxe.PostBackCompleted; }
     }
   }
 }

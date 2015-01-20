@@ -136,15 +136,15 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var syncWebButton = home.GetWebButton().ByCommandName ("Sync");
-      home = syncWebButton.Click().Expect<RemotionPageObject>();
+      home = syncWebButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Sync"));
 
       var asyncWebButton = home.GetWebButton().ByCommandName ("Async");
-      home = asyncWebButton.Click().Expect<RemotionPageObject>();
+      home = asyncWebButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Async"));
 
       var hrefWebButton = home.GetWebButton().ByTextContent ("HrefButton");
-      home = hrefWebButton.Click().Expect<RemotionPageObject>();
+      home = hrefWebButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.Empty);
     }
 
@@ -176,7 +176,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (webButton.StyleInfo.GetTextColor(), Is.EqualTo (WebColor.Black));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("WebButtonTest.wxe");
     }

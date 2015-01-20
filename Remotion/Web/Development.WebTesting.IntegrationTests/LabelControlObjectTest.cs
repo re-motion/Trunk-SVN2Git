@@ -79,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (htmlLabel.GetText(), Is.EqualTo ("MyHtmlLabelContent"));
     }
 
-    private RemotionPageObject Start ()
+    private WxePageObject Start ()
     {
       return Start ("LabelTest.aspx");
     }
