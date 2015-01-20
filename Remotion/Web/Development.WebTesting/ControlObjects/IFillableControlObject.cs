@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Interface for all <see cref="ControlObject"/> implementations representing something fillable, e.g. a text box.
   /// </summary>
-  /// <seealso cref="TextBoxControlObject"/>
+  /// <seealso cref="T:Remotion.Web.Development.WebTesting.ControlObjects.TextBoxControlObject"/>
   public interface IFillableControlObject
   {
     /// <summary>

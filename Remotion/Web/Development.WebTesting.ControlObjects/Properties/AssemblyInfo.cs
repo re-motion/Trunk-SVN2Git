@@ -15,17 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
-{
-  /// <summary>
-  /// Interface for all <see cref="ControlObject"/> implementations displaying text in some way, e.g. a web tree view node.
-  /// </summary>
-  /// <seealso cref="T:Remotion.Web.Development.WebTesting.ControlObjects.WebTreeViewNodeControlObject"/>
-  public interface IControlObjectWithText
-  {
-    /// <summary>
-    /// Returns the text content of the control.
-    /// </summary>
-    string GetText ();
-  }
-}
+using System;
+using System.Reflection;
+using System.Resources;
+
+[assembly: NeutralResourcesLanguage ("en")]
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+
+[assembly: AssemblyTitle ("Remotion WebTesting Framework")]
+[assembly: AssemblyDescription ("WebTesting framework for Remotion applications.")]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]

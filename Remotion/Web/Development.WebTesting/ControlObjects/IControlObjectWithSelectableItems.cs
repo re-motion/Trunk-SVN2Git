@@ -25,8 +25,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// Interface for all <see cref="ControlObject"/> implementations representing a collection of selectable items, e.g. all kinds of menus like a
   /// list menu or a tabbed menu.
   /// </summary>
-  /// <seealso cref="ListMenuControlObject"/>
-  /// <seealso cref="TabbedMenuControlObject"/>
+  /// <seealso cref="T:Remotion.Web.Development.WebTesting.ControlObjects.ListMenuControlObject"/>
+  /// <seealso cref="T:Remotion.Web.Development.WebTesting.ControlObjects.TabbedMenuControlObject"/>
   public interface IControlObjectWithSelectableItems
   {
     /// <summary>

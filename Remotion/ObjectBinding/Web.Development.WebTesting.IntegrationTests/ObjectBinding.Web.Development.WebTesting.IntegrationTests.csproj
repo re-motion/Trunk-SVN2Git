@@ -88,6 +88,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Web\Development.WebTesting.ControlObjects\Web.Development.WebTesting.ControlObjects.csproj">
+      <Project>{712e5631-9bc0-44de-bf20-fb3bfecad9b2}</Project>
+      <Name>Web.Development.WebTesting.ControlObjects</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Web\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5B5EC73A-B796-4D2D-A781-E889EE9EC4DF}</Project>
       <Name>Web.Development.WebTesting</Name>

@@ -99,6 +99,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Development.WebTesting.ControlObjects\Web.Development.WebTesting.ControlObjects.csproj">
+      <Project>{712e5631-9bc0-44de-bf20-fb3bfecad9b2}</Project>
+      <Name>Web.Development.WebTesting.ControlObjects</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting.TestSite\Web.Development.WebTesting.TestSite.csproj">
       <Project>{e660cf09-930b-4381-9ac6-7a349e899d3b}</Project>
       <Name>Web.Development.WebTesting.TestSite</Name>

@@ -24,7 +24,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Interface for all <see cref="ControlObject"/> implementations representing a collection of selectable options, e.g. a BOC reference value.
   /// </summary>
-  /// <seealso cref="DropDownListControlObject"/>
+  /// <seealso cref="T:Remotion.Web.Development.WebTesting.ControlObjects.DropDownListControlObject"/>
   public interface IControlObjectWithSelectableOptions
   {
     /// <summary>

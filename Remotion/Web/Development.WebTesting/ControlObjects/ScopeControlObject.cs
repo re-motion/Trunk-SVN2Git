@@ -25,9 +25,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// This control object represents controls (or areas within a control) which do not have any additional features than hosting other
   /// controls (<see cref="IControlHost"/>). Typcially this control object is returned by other control objects in order to scope into a specific
-  /// area (e.g. top controls or bottom controls in <see cref="TabbedMultiViewControlObject"/>.
+  /// area (e.g. top controls or bottom controls in <see cref="T:Remotion.Web.Development.WebTesting.ControlObjects.TabbedMultiViewControlObject"/>.
   /// </summary>
-  public class ScopeControlObject : WebFormsControlObjectWithDiagnosticMetadata, IControlHost
+  public class ScopeControlObject : WebFormsControlObject, IControlHost
   {
     public ScopeControlObject ([NotNull] ControlObjectContext context)
         : base (context)
