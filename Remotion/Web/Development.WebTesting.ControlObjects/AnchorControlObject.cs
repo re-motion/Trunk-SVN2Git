@@ -55,12 +55,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       if (IsPostBackLink (scope))
-        return Wxe.PostBackCompleted;
+        return Context.PageObject.PostBackCompletionDetectionStrategy;
 
       if (IsSimpleJavaScriptLink (scope))
         return Continue.Immediately;
 
-      return Wxe.Reset;
+      return Context.PageObject.NavigationCompletionDetectionStrategy;
     }
 
     private bool IsPostBackLink (ElementScope scope)

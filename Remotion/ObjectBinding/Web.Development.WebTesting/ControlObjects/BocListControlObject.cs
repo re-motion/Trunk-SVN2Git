@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
       new FillWithAction (this, currentPageTextInputScope, Keys.Backspace + page, FinishInput.WithTab).Execute (
-          Opt.ContinueWhen (Wxe.PostBackCompleted));
+          Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToFirstPage ()
     {
       var firstPageLinkScope = Scope.FindChild ("Navigation_First");
-      new ClickAction (this, firstPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
+      new ClickAction (this, firstPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToPreviousPage ()
     {
       var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
-      new ClickAction (this, previousPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
+      new ClickAction (this, previousPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToNextPage ()
     {
       var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
-      new ClickAction (this, nextPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
+      new ClickAction (this, nextPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public void GoToLastPage ()
     {
       var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
-      new ClickAction (this, lastPageLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
+      new ClickAction (this, lastPageLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
     }
 
     /// <inheritdoc/>
@@ -312,7 +312,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (HasFakeTableHead)
         sortColumnLinkScope.Hover();
 
-      new ClickAction (this, sortColumnLinkScope).Execute (Opt.ContinueWhen (Wxe.PostBackCompleted));
+      new ClickAction (this, sortColumnLinkScope).Execute (Opt.ContinueWhen (Context.PageObject.PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>

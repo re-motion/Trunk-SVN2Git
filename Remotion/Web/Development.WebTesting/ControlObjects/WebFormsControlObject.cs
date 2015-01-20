@@ -34,7 +34,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     protected override ICompletionDetectionStrategy GetDefaultCompletionDetectionStrategy (ElementScope scope)
     {
-      return Wxe.PostBackCompleted;
+      return Context.PageObject.PostBackCompletionDetectionStrategy;
     }
   }
 }

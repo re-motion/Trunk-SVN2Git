@@ -37,5 +37,17 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
     {
       Context.CloseWindow();
     }
+
+    /// <inheritdoc/>
+    public override ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
+    {
+      get { return Continue.Immediately; }
+    }
+
+    /// <inheritdoc/>
+    public override ICompletionDetectionStrategy NavigationCompletionDetectionStrategy
+    {
+      get { return Continue.Immediately; }
+    }
   }
 }
