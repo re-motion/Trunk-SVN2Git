@@ -46,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
     {
       get
       {
-        throw new NotSupportedException ("WebFormsPageObject does not support deterministic waiting for asynchronous post back completion yet.");
+        throw new NotSupportedException ("WebFormsPageObject does not support deterministic waiting for post back completion yet.");
       }
     }
   }
