@@ -18,8 +18,9 @@
 using System;
 using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
 {
   /// <summary>
   /// Control object for <see cref="T:System.Web.UI.WebControls.Label"/> and all its derivatives (e.g.

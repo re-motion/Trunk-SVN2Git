@@ -21,10 +21,11 @@ using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
 {
   /// <summary>
   /// Control object for <see cref="T:System.Web.UI.WebControls.DropDownList"/>.

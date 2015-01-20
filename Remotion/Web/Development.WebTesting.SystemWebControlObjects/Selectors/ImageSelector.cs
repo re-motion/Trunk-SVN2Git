@@ -17,9 +17,10 @@
 
 using System;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
+namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects.Selectors
 {
   /// <summary>
   /// Control object selector for <see cref="ImageControlObject"/>.
