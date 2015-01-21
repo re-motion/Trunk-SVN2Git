@@ -48,12 +48,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\Coypu.2.7.0\lib\net40\Coypu.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="WebDriver, Version=2.44.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\Selenium.WebDriver.2.44.0\lib\net40\WebDriver.dll</HintPath>
@@ -123,10 +119,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Contract.DiagnosticMetadata\Web.Contracts.DiagnosticMetadata.csproj">
-      <Project>{B119DB72-9073-401B-8EC9-C8885A2D4800}</Project>
-      <Name>Web.Contracts.DiagnosticMetadata</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5b5ec73a-b796-4d2d-a781-e889ee9ec4df}</Project>
       <Name>Web.Development.WebTesting</Name>
