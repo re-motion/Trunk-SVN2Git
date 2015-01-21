@@ -36,6 +36,11 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// Short for explicitly implemented <see cref="IFluentControlObjectWithNodes{TCellControlObject}.WithItemID"/>.
     /// </summary>
     TNodeControlObject GetNode ([NotNull] string itemID);
+
+    /// <summary>
+    /// Short for explicitly implemented <see cref="IFluentControlObjectWithNodes{TNodeControlObject}.WithIndex"/>.
+    /// </summary>
+    TNodeControlObject GetNode (int index);
   }
 
   /// <summary>

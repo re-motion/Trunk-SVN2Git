@@ -60,6 +60,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
+    public BocTreeViewNodeControlObject GetNode (int index)
+    {
+      return GetNode().WithIndex (index);
+    }
+
+    /// <inheritdoc/>
     BocTreeViewNodeControlObject IFluentControlObjectWithNodes<BocTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);

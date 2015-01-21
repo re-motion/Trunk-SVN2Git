@@ -60,6 +60,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     }
 
     /// <inheritdoc/>
+    public WebTreeViewNodeControlObject GetNode (int index)
+    {
+
+      return GetNode().WithIndex (index);
+    }
+
+    /// <inheritdoc/>
     WebTreeViewNodeControlObject IFluentControlObjectWithNodes<WebTreeViewNodeControlObject>.WithItemID (string itemID)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
