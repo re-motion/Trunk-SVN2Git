@@ -36,7 +36,7 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
     /// </summary>
     public virtual ICompletionDetectionStrategy NavigationCompletionDetectionStrategy
     {
-      get { throw new NotSupportedException ("WebFormsPageObject does not support deterministic waiting for navigation completion yet."); }
+      get { throw new NotSupportedException ("The WebFormsPageObject does not support deterministic waiting for navigation completion yet."); }
     }
 
     /// <summary>
@@ -44,10 +44,7 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
     /// </summary>
     public virtual ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
     {
-      get
-      {
-        throw new NotSupportedException ("WebFormsPageObject does not support deterministic waiting for post back completion yet.");
-      }
+      get { throw new NotSupportedException ("The WebFormsPageObject does not support deterministic waiting for post back completion yet."); }
     }
   }
 }
