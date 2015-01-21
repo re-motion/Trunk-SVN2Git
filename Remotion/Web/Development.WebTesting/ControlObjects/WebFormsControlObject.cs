@@ -37,8 +37,8 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var webFormsPageObject = (WebFormsPageObject) Context.PageObject;
 
-      // We assume that ASP.NET WebForms control objects have auto-postback enabled per default.
-      // Todo RM-6400: Actually, the default 
+      // Note: we assume that ASP.NET WebForms control objects have auto-postback enabled, that is no the default value, however, it is the 90% case
+      // in re-motion-based projects.
       return webFormsPageObject.PostBackCompletionDetectionStrategy;
     }
   }
