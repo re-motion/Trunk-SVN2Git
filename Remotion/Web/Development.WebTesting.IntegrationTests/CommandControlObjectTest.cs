@@ -98,7 +98,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("CommandTest.wxe");
+      return Start<WxePageObject> ("CommandTest.wxe");
     }
   }
 }

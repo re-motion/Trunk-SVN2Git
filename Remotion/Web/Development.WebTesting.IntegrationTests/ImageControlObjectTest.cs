@@ -106,9 +106,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (image2.GetAltText(), Is.Empty);
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("ImageTest.aspx");
+      return Start<WebFormsPageObject> ("ImageTest.aspx");
     }
   }
 }

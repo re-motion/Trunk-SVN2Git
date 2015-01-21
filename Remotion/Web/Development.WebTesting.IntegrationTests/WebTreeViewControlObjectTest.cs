@@ -84,9 +84,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       }
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("WebTreeViewTest.aspx");
+      return Start<WebFormsPageObject> ("WebTreeViewTest.aspx");
     }
   }
 }

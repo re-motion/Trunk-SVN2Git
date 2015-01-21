@@ -44,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("InfrastructureTests.wxe");
+      return Start<WxePageObject> ("InfrastructureTests.wxe");
     }
   }
 }

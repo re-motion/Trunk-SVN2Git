@@ -122,9 +122,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (bottomControls.Scope.Text, Is.Not.StringContaining ("Content"));
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("SingleViewTest.aspx");
+      return Start<WebFormsPageObject> ("SingleViewTest.aspx");
     }
   }
 }

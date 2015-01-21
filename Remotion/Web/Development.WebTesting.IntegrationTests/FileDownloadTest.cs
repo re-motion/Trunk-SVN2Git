@@ -38,9 +38,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       downloadHelper.DeleteFile();
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("FileDownloadTest.aspx");
+      return Start<WebFormsPageObject> ("FileDownloadTest.aspx");
     }
   }
 }

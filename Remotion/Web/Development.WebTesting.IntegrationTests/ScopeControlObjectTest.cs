@@ -51,9 +51,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (scope.Scope.Text, Is.Not.StringContaining ("DoNotFindMe"));
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("ScopeTest.aspx");
+      return Start<WebFormsPageObject> ("ScopeTest.aspx");
     }
   }
 }

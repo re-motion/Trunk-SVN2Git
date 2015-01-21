@@ -36,7 +36,7 @@ namespace Remotion.Web.Development.WebTesting.PageObjects
     {
       get { return Wxe.Reset; }
     }
-    
+
     /// <inheritdoc/>
     public override ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
     {

@@ -177,7 +177,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("AnchorTest.wxe");
+      return Start<WxePageObject> ("AnchorTest.wxe");
     }
   }
 }

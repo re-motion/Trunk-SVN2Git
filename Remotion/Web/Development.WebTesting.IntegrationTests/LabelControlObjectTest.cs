@@ -79,9 +79,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (htmlLabel.GetText(), Is.EqualTo ("MyHtmlLabelContent"));
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("LabelTest.aspx");
+      return Start<WebFormsPageObject> ("LabelTest.aspx");
     }
   }
 }

@@ -137,7 +137,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("WebTabStripTest.wxe");
+      return Start<WxePageObject> ("WebTabStripTest.wxe");
     }
   }
 }

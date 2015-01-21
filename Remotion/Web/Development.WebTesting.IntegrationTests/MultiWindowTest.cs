@@ -170,8 +170,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private MultiWindowTestPageObject Start ()
     {
-      var home = Start ("MultiWindowTest/Main.wxe");
-      return new MultiWindowTestPageObject (home.Context);
+      return Start<MultiWindowTestPageObject> ("MultiWindowTest/Main.wxe");
     }
   }
 }

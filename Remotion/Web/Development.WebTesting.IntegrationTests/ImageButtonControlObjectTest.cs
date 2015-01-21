@@ -103,7 +103,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("ImageButtonTest.wxe");
+      return Start<WxePageObject> ("ImageButtonTest.wxe");
     }
   }
 }

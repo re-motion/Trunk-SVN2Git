@@ -141,7 +141,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("DropDownListTest.wxe");
+      return Start<WxePageObject> ("DropDownListTest.wxe");
     }
   }
 }

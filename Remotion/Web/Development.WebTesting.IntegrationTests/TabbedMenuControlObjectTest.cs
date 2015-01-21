@@ -212,7 +212,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("TabbedMenuTest.wxe");
+      return Start<WxePageObject> ("TabbedMenuTest.wxe");
     }
   }
 }

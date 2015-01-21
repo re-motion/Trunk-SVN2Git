@@ -97,9 +97,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       }
     }
 
-    private WxePageObject Start ()
+    private WebFormsPageObject Start ()
     {
-      return Start ("FormGridTest.aspx");
+      return Start<WebFormsPageObject> ("FormGridTest.aspx");
     }
   }
 }

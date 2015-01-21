@@ -186,7 +186,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private WxePageObject Start ()
     {
-      return Start ("TabbedMultiViewTest.wxe");
+      return Start<WxePageObject> ("TabbedMultiViewTest.wxe");
     }
   }
 }
