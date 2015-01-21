@@ -32,6 +32,7 @@
   <add id="TabbedMenuTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMenuTestFunction" resource="~/TabbedMenuTest.wxe" />
   <add id="TabbedMultiViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TabbedMultiViewTestFunction" resource="~/TabbedMultiViewTest.wxe" />
   <add id="TextBoxTest" type="Remotion.Web.Development.WebTesting.TestSite::TextBoxTestFunction" resource="~/TextBoxTest.wxe" />
+  <add id="TreeViewTest" type="Remotion.Web.Development.WebTesting.TestSite::TreeViewTestFunction" resource="~/TreeViewTest.wxe" />
   <add id="WebButtonTest" type="Remotion.Web.Development.WebTesting.TestSite::WebButtonTestFunction" resource="~/WebButtonTest.wxe" />
   <add id="WebTabStripTest" type="Remotion.Web.Development.WebTesting.TestSite::WebTabStripTestFunction" resource="~/WebTabStripTest.wxe" />
 

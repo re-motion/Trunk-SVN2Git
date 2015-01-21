@@ -99,7 +99,10 @@
     <Compile Include="Selectors\ImageSelector.cs" />
     <Compile Include="Selectors\LabelSelector.cs" />
     <Compile Include="Selectors\TextBoxSelector.cs" />
+    <Compile Include="Selectors\TreeViewSelector.cs" />
     <Compile Include="TextBoxControlObject.cs" />
+    <Compile Include="TreeViewControlObject.cs" />
+    <Compile Include="TreeViewNodeControlObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\remotion.snk">

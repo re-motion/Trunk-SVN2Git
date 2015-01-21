@@ -99,6 +99,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       return new FluentControlSelector<TextBoxSelector, TextBoxControlObject> (host, new TextBoxSelector());
     }
 
+    public static FluentControlSelector<TreeViewSelector, TreeViewControlObject> GetTreeView (this IControlHost host)
+    {
+      return new FluentControlSelector<TreeViewSelector, TreeViewControlObject> (host, new TreeViewSelector());
+    }
+
     public static FluentControlSelector<WebButtonSelector, WebButtonControlObject> GetWebButton (this IControlHost host)
     {
       return new FluentControlSelector<WebButtonSelector, WebButtonControlObject> (host, new WebButtonSelector());

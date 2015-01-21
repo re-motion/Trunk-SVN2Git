@@ -75,6 +75,7 @@
     <Content Include="SampleFile.txt" />
     <Content Include="ScopeTest.aspx" />
     <Content Include="DropDownListTest.aspx" />
+    <Content Include="TreeViewTest.aspx" />
     <Content Include="WebTreeViewTest.aspx" />
     <Content Include="TabbedMenuTest.aspx" />
     <Content Include="TextBoxTest.aspx" />
@@ -146,6 +147,13 @@
       <DependentUpon>DropDownListTest.aspx</DependentUpon>
     </Compile>
     <Compile Include="DropDownListTestFunction.cs" />
+    <Compile Include="TreeViewTestFunction.cs" />
+    <Compile Include="TreeViewTest.aspx.cs">
+      <DependentUpon>TreeViewTest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="TreeViewTest.aspx.designer.cs">
+      <DependentUpon>TreeViewTest.aspx</DependentUpon>
+    </Compile>
     <Compile Include="WebTreeViewTest.aspx.cs">
       <DependentUpon>WebTreeViewTest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
