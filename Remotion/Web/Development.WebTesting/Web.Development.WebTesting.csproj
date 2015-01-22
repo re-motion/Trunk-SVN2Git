@@ -127,7 +127,6 @@
     <Compile Include="ControlObjects\IControlObjectWithNodes.cs" />
     <Compile Include="ControlObjects\Selectors\ControlSelectorBase.cs" />
     <Compile Include="ControlObjects\Selectors\ScopeSelector.cs" />
-    <Compile Include="ControlObjects\WebFormsControlObject.cs" />
     <Compile Include="ControlSelection\ControlSelectionContext.cs" />
     <Compile Include="ControlSelection\FirstControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\IControlSelectionCommand.cs" />

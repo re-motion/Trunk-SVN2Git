@@ -20,7 +20,7 @@ using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
-namespace Remotion.Web.Development.WebTesting.ControlObjects
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
 {
   /// <summary>
   /// Base class for control objects representing an ASP.NET WebForms control.

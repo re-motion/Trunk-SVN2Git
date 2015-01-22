@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
   /// <summary>
   /// Base class for control objects representing Remotion WebForms controls which features diagnostic metadata rendering.
   /// </summary>
-  public abstract class WebFormsControlObjectWithDiagnosticMetadata : WebFormsControlObject
+  public abstract class WebFormsControlObjectWithDiagnosticMetadata : ControlObject
   {
     protected WebFormsControlObjectWithDiagnosticMetadata ([NotNull] ControlObjectContext context)
         : base (context)
