@@ -120,6 +120,16 @@ namespace Remotion.Security.UnitTests
     }
 
     [Test]
+    public void Equals_WithRoleNotEqual_RoleIsNull ()
+    {
+      var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
+      var right = CreatePrincipal ("TheUser", null, "SomeUser", "SomeGroup");
+
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
+    }
+
+    [Test]
     public void Equals_WithSubstitutedUserNotEqual ()
     {
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
@@ -134,6 +144,16 @@ namespace Remotion.Security.UnitTests
     {
       var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
       var right = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "OtherGroup");
+
+      Assert.That (left.Equals (right), Is.False);
+      Assert.That (right.Equals (left), Is.False);
+    }
+
+    [Test]
+    public void Equals_WithSubstitutedRoleNotEqual_RoleIsNull ()
+    {
+      var left = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", "SomeGroup");
+      var right = CreatePrincipal ("TheUser", "TheGroup", "SomeUser", null);
 
       Assert.That (left.Equals (right), Is.False);
       Assert.That (right.Equals (left), Is.False);
