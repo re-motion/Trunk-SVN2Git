@@ -126,6 +126,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.VerifyAll ();
     }
 
+#if !DEBUG
+    [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
@@ -139,6 +142,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.VerifyAll ();
     }
 
+#if !DEBUG
+    [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
@@ -152,6 +158,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.VerifyAll ();
     }
 
+#if !DEBUG
+    [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()

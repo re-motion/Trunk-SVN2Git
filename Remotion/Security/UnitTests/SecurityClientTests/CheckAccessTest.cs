@@ -94,6 +94,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.VerifyAll();
     }
 
+#if !DEBUG
+    [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()

@@ -115,6 +115,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.VerifyAll ();
     }
 
+#if !DEBUG
+    [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
@@ -128,6 +131,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.VerifyAll ();
     }
 
+#if !DEBUG
+    [Ignore ("Skipped unless DEBUG build")]
+#endif
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
