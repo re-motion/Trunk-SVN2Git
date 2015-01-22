@@ -20,7 +20,7 @@ using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
+namespace Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectionStrategies
 {
   /// <summary>
   /// Various helper methods for all WXE-based <see cref="ICompletionDetectionStrategy"/> implementations.

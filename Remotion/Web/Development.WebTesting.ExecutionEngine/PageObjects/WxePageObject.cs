@@ -17,9 +17,10 @@
 
 using System;
 using JetBrains.Annotations;
-using Remotion.Web.Development.WebTesting.CompletionDetectionStrategies;
+using Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectionStrategies;
+using Remotion.Web.Development.WebTesting.PageObjects;
 
-namespace Remotion.Web.Development.WebTesting.PageObjects
+namespace Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects
 {
   /// <summary>
   /// Page object representing an arbitrary WXE page.

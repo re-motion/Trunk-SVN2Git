@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
+namespace Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectionStrategies
 {
   /// <summary>
   /// WXE-based <see cref="ICompletionDetectionStrategy"/> implementations which are directly supported by the framework.
