@@ -20,7 +20,6 @@ using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
-using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -93,15 +92,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void TestSelection_CommandName ()
-    {
-      var home = Start();
-
-      var webButton = home.GetWebButton().ByCommandName ("Sync");
-      Assert.That (webButton.Scope.Id, Is.EqualTo ("body_MyWebButton1Sync"));
-    }
-
-    [Test]
     public void TestSelection_ItemID ()
     {
       var home = Start();
@@ -136,11 +126,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var home = Start();
 
-      var syncWebButton = home.GetWebButton().ByCommandName ("Sync");
+      var syncWebButton = home.GetWebButton().ByLocalID ("MyWebButton1Sync");
       home = syncWebButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Sync"));
 
-      var asyncWebButton = home.GetWebButton().ByCommandName ("Async");
+      var asyncWebButton = home.GetWebButton().ByLocalID ("MyWebButton2Async");
       home = asyncWebButton.Click().Expect<WxePageObject>();
       Assert.That (home.Scope.FindId ("TestOutputLabel").Text, Is.EqualTo ("Async"));
 

@@ -29,7 +29,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
   public class WebButtonSelector
       : TypedControlSelectorBase<WebButtonControlObject>,
           ITextContentControlSelector<WebButtonControlObject>,
-          ICommandNameControlSelector<WebButtonControlObject>,
           IItemIDControlSelector<WebButtonControlObject>
   {
     public WebButtonSelector ()
@@ -49,22 +48,6 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects.Selectors
           {
               { DiagnosticMetadataAttributes.ControlType, ControlType },
               { DiagnosticMetadataAttributes.Content, textContent }
-          });
-      return CreateControlObject (context, scope);
-    }
-
-    /// <inheritdoc/>
-    public WebButtonControlObject SelectPerCommandName (ControlSelectionContext context, string commandName)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-      ArgumentUtility.CheckNotNull ("commandName", commandName);
-
-      var scope = context.Scope.FindTagWithAttributes (
-          "*",
-          new Dictionary<string, string>
-          {
-              { DiagnosticMetadataAttributes.ControlType, ControlType },
-              { DiagnosticMetadataAttributes.CommandName, commandName }
           });
       return CreateControlObject (context, scope);
     }

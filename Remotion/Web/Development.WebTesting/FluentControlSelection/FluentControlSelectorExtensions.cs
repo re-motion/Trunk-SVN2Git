@@ -114,21 +114,6 @@ namespace Remotion.Web.Development.WebTesting.FluentControlSelection
     }
 
     /// <summary>
-    /// Extension method for selecting a control by command name (using the
-    /// <see cref="CommandNameControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
-    /// </summary>
-    public static TControlObject ByCommandName<TControlSelector, TControlObject> (
-        [NotNull] this IFluentControlSelector<TControlSelector, TControlObject> fluentControlSelector,
-        [NotNull] string commandName)
-        where TControlSelector : ICommandNameControlSelector<TControlObject> where TControlObject : ControlObject
-    {
-      ArgumentUtility.CheckNotNull ("fluentControlSelector", fluentControlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("commandName", commandName);
-
-      return fluentControlSelector.GetControl (new CommandNameControlSelectionCommandBuilder<TControlSelector, TControlObject> (commandName));
-    }
-
-    /// <summary>
     /// Extension method for selecting a control by item ID (using the
     /// <see cref="ItemIDControlSelectionCommandBuilder{TControlSelector,TControlObject}"/>).
     /// </summary>
