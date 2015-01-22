@@ -107,13 +107,13 @@
       <Project>{febe7c1a-2cd5-4543-b0f1-de224d340f51}</Project>
       <Name>Web.Development.WebTesting.ExecutionEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Development.WebTesting.SystemWebControlObjects\Web.Development.WebTesting.SystemWebControlObjects.csproj">
-      <Project>{d2835d55-18c5-427b-a574-3d348a2c1dcc}</Project>
-      <Name>Web.Development.WebTesting.SystemWebControlObjects</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting.TestSite\Web.Development.WebTesting.TestSite.csproj">
       <Project>{e660cf09-930b-4381-9ac6-7a349e899d3b}</Project>
       <Name>Web.Development.WebTesting.TestSite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Development.WebTesting.WebFormsControlObjects\Web.Development.WebTesting.WebFormsControlObjects.csproj">
+      <Project>{d2835d55-18c5-427b-a574-3d348a2c1dcc}</Project>
+      <Name>Web.Development.WebTesting.WebFormsControlObjects</Name>
     </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5b5ec73a-b796-4d2d-a781-e889ee9ec4df}</Project>
