@@ -71,13 +71,13 @@ namespace Remotion.Security
       if (!string.Equals (this._user, other._user, StringComparison.Ordinal))
         return false;
 
-      if (ReferenceEquals (this._role, other._role) && this._role != null && !this._role.Equals (other._role))
+      if (!ReferenceEquals (this._role, other._role) && this._role != null && !this._role.Equals (other._role))
         return false;
 
       if (!string.Equals (this._substitutedUser, other._substitutedUser, StringComparison.Ordinal))
         return false;
 
-      if (ReferenceEquals (this._substitutedRole, other._substitutedRole) && this._substitutedRole != null && !this._substitutedRole.Equals (other._substitutedRole))
+      if (!ReferenceEquals (this._substitutedRole, other._substitutedRole) && this._substitutedRole != null && !this._substitutedRole.Equals (other._substitutedRole))
         return false;
 
       return true;
