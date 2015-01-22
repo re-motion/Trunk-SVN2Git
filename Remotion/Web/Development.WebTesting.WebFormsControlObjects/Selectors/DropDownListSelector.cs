@@ -21,7 +21,7 @@ using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects.Selectors
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects.Selectors
 {
   /// <summary>
   /// Control object selector for <see cref="DropDownListControlObject"/>.

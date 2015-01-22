@@ -21,7 +21,7 @@ using Remotion.Web.Development.WebTesting.ControlObjects.Selectors;
 using Remotion.Web.Development.WebTesting.ControlSelection;
 using Remotion.Web.Development.WebTesting.Utilities;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects.Selectors
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects.Selectors
 {
   /// <summary>
   /// Control object selector for <see cref="TextBoxControlObject"/>.

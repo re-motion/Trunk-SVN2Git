@@ -20,7 +20,7 @@ using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
 {
   /// <summary>
   /// Control object for <see cref="T:System.Web.UI.WebControls.TreeView"/>.

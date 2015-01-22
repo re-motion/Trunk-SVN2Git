@@ -19,7 +19,7 @@ using System;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
 {
   /// <summary>
   /// Control object representing simple HTML &lt;img&gt; tags.

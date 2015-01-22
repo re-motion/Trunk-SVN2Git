@@ -24,7 +24,7 @@ using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
 {
   /// <summary>
   /// Control object representing a node within a <see cref="T:System.Web.UI.WebControls.TreeView"/>.

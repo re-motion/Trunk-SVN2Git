@@ -22,7 +22,7 @@ using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
 {
   /// <summary>
   /// Control object for <see cref="T:System.Web.UI.WebControls.TextBox"/> and all its derivatives (none in re-motion).

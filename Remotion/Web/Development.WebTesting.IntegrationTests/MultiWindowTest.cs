@@ -22,7 +22,7 @@ using Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectionStr
 using Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.PageObjects;
-using Remotion.Web.Development.WebTesting.SystemWebControlObjects;
+using Remotion.Web.Development.WebTesting.WebFormsControlObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {

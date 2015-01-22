@@ -23,7 +23,7 @@ using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.PageObjects;
 using Remotion.Web.Development.WebTesting.WebTestActions;
 
-namespace Remotion.Web.Development.WebTesting.SystemWebControlObjects
+namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
 {
   /// <summary>
   /// Control object for <see cref="T:System.Web.UI.WebControls.LinkButton"/>, <see cref="T:System.Web.UI.WebControls.HyperLink"/> and all their

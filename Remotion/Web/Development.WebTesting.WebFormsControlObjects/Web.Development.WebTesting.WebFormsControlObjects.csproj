@@ -7,8 +7,8 @@
     <ProjectGuid>{D2835D55-18C5-427B-A574-3D348A2C1DCC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Web.Development.WebTesting.SystemWebControlObjects</RootNamespace>
-    <AssemblyName>Remotion.Web.Development.WebTesting.SystemWebControlObjects</AssemblyName>
+    <RootNamespace>Remotion.Web.Development.WebTesting.WebFormsControlObjects</RootNamespace>
+    <AssemblyName>Remotion.Web.Development.WebTesting.WebFormsControlObjects</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Remotion.Web.Development.WebTesting.SystemWebControlObjects.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Remotion.Web.Development.WebTesting.WebFormsControlObjects.xml</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Release\Remotion.Web.Development.WebTesting.SystemWebControlObjects.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Remotion.Web.Development.WebTesting.WebFormsControlObjects.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
