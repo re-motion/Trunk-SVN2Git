@@ -27,7 +27,7 @@ using System.Resources;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle ("Remotion WebTesting Framework")]
-[assembly: AssemblyDescription ("WebTesting framework for Remotion applications.")]
+[assembly: AssemblyTitle ("Remotion WebTesting Framework WebForms Control Objects")]
+[assembly: AssemblyDescription ("ASP.NET WebForms control objects for the WebTesting framework.")]
 [assembly: AssemblyCulture ("")]
 [assembly: CLSCompliant (true)]
