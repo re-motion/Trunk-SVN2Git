@@ -69,7 +69,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-
     <Compile Include="WebColor.cs" />
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
     <Compile Include="ControlObjects\ItemDefinition.cs" />
@@ -135,16 +134,12 @@
     <Compile Include="ControlSelection\IFirstControlSelector.cs" />
     <Compile Include="ControlObjects\ScopeControlObject.cs" />
     <Compile Include="ControlSelection\IControlSelector.cs" />
-    <Compile Include="ControlSelection\IItemIDControlSelector.cs" />
-    <Compile Include="ControlSelection\ICommandNameControlSelector.cs" />
     <Compile Include="ControlSelection\ITextContentControlSelector.cs" />
     <Compile Include="ControlSelection\IHtmlIDControlSelector.cs" />
     <Compile Include="ControlSelection\IIndexControlSelector.cs" />
     <Compile Include="ControlSelection\ILocalIDControlSelector.cs" />
     <Compile Include="ControlSelection\ITitleControlSelector.cs" />
     <Compile Include="ControlSelection\ISingleControlSelector.cs" />
-    <Compile Include="ControlSelection\ItemIDControlSelectionCommand.cs" />
-    <Compile Include="ControlSelection\CommandNameControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\TextContentControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\LocalIDControlSelectionCommand.cs" />
     <Compile Include="ControlSelection\HtmlIDControlSelectionCommand.cs" />
@@ -166,8 +161,6 @@
     <Compile Include="FluentControlSelection\FirstControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelector.cs" />
     <Compile Include="FluentControlSelection\FluentControlSelectorExtensions.cs" />
-    <Compile Include="FluentControlSelection\ItemIDControlSelectionCommandBuilder.cs" />
-    <Compile Include="FluentControlSelection\CommandNameControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\TextContentControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\LocalIDControlSelectionCommandBuilder.cs" />
     <Compile Include="FluentControlSelection\IndexControlSelectionCommandBuilder.cs" />

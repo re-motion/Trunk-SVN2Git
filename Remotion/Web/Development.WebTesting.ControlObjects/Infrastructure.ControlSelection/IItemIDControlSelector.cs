@@ -16,37 +16,26 @@
 // 
 
 using System;
+using Coypu;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 
+// ReSharper disable once CheckNamespace (assembly should have a more general name like ".Remotion", however, we have not found a good name yet)
 namespace Remotion.Web.Development.WebTesting.ControlSelection
 {
   /// <summary>
-  /// Represents a control selection, selecting the control of the given <typeparamref name="TControlObject"/> type bearing the given item ID
-  /// within the given scope.
+  /// Interface for <see cref="IControlSelector"/> implementations which provide the possibility to select their supported
+  /// type of <typeparamref name="TControlObject"/> via their item ID.
   /// </summary>
   /// <typeparam name="TControlObject">The specific <see cref="ControlObject"/> type to select.</typeparam>
-  public class ItemIDControlSelectionCommand<TControlObject> : IControlSelectionCommand<TControlObject>
+  public interface IItemIDControlSelector<out TControlObject> : IControlSelector
       where TControlObject : ControlObject
   {
-    private readonly IItemIDControlSelector<TControlObject> _controlSelector;
-    private readonly string _itemID;
-
-    public ItemIDControlSelectionCommand (
-        [NotNull] IItemIDControlSelector<TControlObject> controlSelector,
-        [NotNull] string itemID)
-    {
-      ArgumentUtility.CheckNotNull ("controlSelector", controlSelector);
-      ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
-
-      _controlSelector = controlSelector;
-      _itemID = itemID;
-    }
-
-    /// <inheritdoc/>
-    public TControlObject Select (ControlSelectionContext context)
-    {
-      return _controlSelector.SelectPerItemID (context, _itemID);
-    }
+    /// <summary>
+    /// Selects the control within the given <paramref name="context"/> using the given <paramref name="itemID"/>.
+    /// </summary>
+    /// <returns>The control object.</returns>
+    /// <exception cref="AmbiguousException">If multiple controls with the given <paramref name="itemID"/> are found.</exception>
+    /// <exception cref="MissingHtmlException">If the control cannot be found.</exception>
+    TControlObject SelectPerItemID ([NotNull] ControlSelectionContext context, [NotNull] string itemID);
   }
 }
