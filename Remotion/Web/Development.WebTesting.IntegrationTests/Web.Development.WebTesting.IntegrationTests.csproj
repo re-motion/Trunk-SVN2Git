@@ -103,6 +103,10 @@
       <Project>{712e5631-9bc0-44de-bf20-fb3bfecad9b2}</Project>
       <Name>Web.Development.WebTesting.ControlObjects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Development.WebTesting.ExecutionEngine\Web.Development.WebTesting.ExecutionEngine.csproj">
+      <Project>{febe7c1a-2cd5-4543-b0f1-de224d340f51}</Project>
+      <Name>Web.Development.WebTesting.ExecutionEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Development.WebTesting.SystemWebControlObjects\Web.Development.WebTesting.SystemWebControlObjects.csproj">
       <Project>{d2835d55-18c5-427b-a574-3d348a2c1dcc}</Project>
       <Name>Web.Development.WebTesting.SystemWebControlObjects</Name>

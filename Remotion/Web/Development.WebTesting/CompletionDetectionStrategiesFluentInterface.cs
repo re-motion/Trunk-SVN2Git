@@ -23,7 +23,7 @@ using Remotion.Web.Development.WebTesting.CompletionDetectionStrategies;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Non-WXE-based <see cref="ICompletionDetectionStrategy"/> implementations which are directly supported by the framework.
+  /// <see cref="ICompletionDetectionStrategy"/> implementations which are directly supported by the framework.
   /// </summary>
   public static class Continue
   {
@@ -35,32 +35,5 @@ namespace Remotion.Web.Development.WebTesting
 
       return new CompoundCompletionDetectionStrategy (strategies);
     }
-  }
-
-  /// <summary>
-  /// WXE-based <see cref="ICompletionDetectionStrategy"/> implementations which are directly supported by the framework.
-  /// </summary>
-  public static class Wxe
-  {
-    public static readonly WxePostBackCompletionDetectionStrategy PostBackCompleted = new WxePostBackCompletionDetectionStrategy (1);
-
-    public static readonly Func<PageObject, WxePostBackInCompletionDetectionStrategy> PostBackCompletedIn =
-        po => PostBackCompletedInContext (po.Context);
-
-    public static readonly Func<PageObjectContext, WxePostBackInCompletionDetectionStrategy> PostBackCompletedInContext =
-        ctx => new WxePostBackInCompletionDetectionStrategy (ctx, 1);
-
-    public static readonly Func<PageObject, WxePostBackInCompletionDetectionStrategy> PostBackCompletedInParent =
-        po => PostBackCompletedInContext (po.Context.ParentContext);
-
-    public static readonly WxeResetCompletionDetectionStrategy Reset = new WxeResetCompletionDetectionStrategy();
-
-    public static readonly Func<PageObject, WxeResetInCompletionDetectionStrategy> ResetIn = po => ResetInContext (po.Context);
-
-    public static readonly Func<PageObjectContext, WxeResetInCompletionDetectionStrategy> ResetInContext =
-        ctx => new WxeResetInCompletionDetectionStrategy (ctx);
-
-    public static readonly Func<PageObject, WxeResetInCompletionDetectionStrategy> ResetInParent =
-        po => ResetInContext (po.Context.ParentContext);
   }
 }

@@ -91,6 +91,10 @@
       <Project>{712e5631-9bc0-44de-bf20-fb3bfecad9b2}</Project>
       <Name>Web.Development.WebTesting.ControlObjects</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Web\Development.WebTesting.ExecutionEngine\Web.Development.WebTesting.ExecutionEngine.csproj">
+      <Project>{febe7c1a-2cd5-4543-b0f1-de224d340f51}</Project>
+      <Name>Web.Development.WebTesting.ExecutionEngine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Web\Development.WebTesting\Web.Development.WebTesting.csproj">
       <Project>{5B5EC73A-B796-4D2D-A781-E889EE9EC4DF}</Project>
       <Name>Web.Development.WebTesting</Name>

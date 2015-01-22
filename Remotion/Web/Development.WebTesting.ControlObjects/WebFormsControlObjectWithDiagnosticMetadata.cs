@@ -24,7 +24,7 @@ using Remotion.Web.Development.WebTesting.PageObjects;
 namespace Remotion.Web.Development.WebTesting.ControlObjects
 {
   /// <summary>
-  /// Base class for control objects representing an ASP.NET WebForms control which features diagnostic metadata rendering.
+  /// Base class for control objects representing Remotion WebForms controls which features diagnostic metadata rendering.
   /// </summary>
   public abstract class WebFormsControlObjectWithDiagnosticMetadata : WebFormsControlObject
   {

@@ -17,6 +17,7 @@
 
 using System;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.CompletionDetectionStrategies;
 
 namespace Remotion.Web.Development.WebTesting.PageObjects
 {

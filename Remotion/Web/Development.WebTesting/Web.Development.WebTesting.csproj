@@ -69,7 +69,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="PageObjects\WxePageObject.cs" />
+
     <Compile Include="WebColor.cs" />
     <Compile Include="CompletionDetectionStrategies\CompoundCompletionDetectionStrategy.cs" />
     <Compile Include="ControlObjects\ItemDefinition.cs" />
@@ -113,11 +113,6 @@
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
     <Compile Include="BrowserFactory.cs" />
-    <Compile Include="CompletionDetectionStrategies\WxeCompletionDetectionHelpers.cs" />
-    <Compile Include="CompletionDetectionStrategies\WxeResetInCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionStrategies\WxePostBackCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionStrategies\WxePostBackInCompletionDetectionStrategy.cs" />
-    <Compile Include="CompletionDetectionStrategies\WxeResetCompletionDetectionStrategy.cs" />
     <Compile Include="Configuration\WebTestingConstants.cs" />
     <Compile Include="ControlObjectContext.cs" />
     <Compile Include="ControlObjects\ControlHost.cs" />

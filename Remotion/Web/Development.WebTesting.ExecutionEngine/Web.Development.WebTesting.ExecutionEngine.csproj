@@ -7,8 +7,8 @@
     <ProjectGuid>{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remotion.Web.Development.WebTesting.ControlObjects</RootNamespace>
-    <AssemblyName>Remotion.Web.Development.WebTesting.ControlObjects</AssemblyName>
+    <RootNamespace>Remotion.Web.Development.WebTesting.ExecutionEngine</RootNamespace>
+    <AssemblyName>Remotion.Web.Development.WebTesting.ExecutionEngine</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Debug\Remotion.Web.Development.WebTesting.ControlObjects.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\Remotion.Web.Development.WebTesting.ExecutionEngine.xml</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DocumentationFile>bin\Release\Remotion.Web.Development.WebTesting.ControlObjects.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Remotion.Web.Development.WebTesting.ExecutionEngine.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
@@ -47,6 +47,10 @@
     <Reference Include="Coypu, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\Coypu.2.7.0\lib\net40\Coypu.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -89,6 +93,13 @@
     <Compile Include="App_Packages\Remotion.Utilities.ArgumentUtility.Sources.1.25.23.0\ArgumentUtility.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.Assertion.Sources.1.15.23.0\Assertion.cs" />
     <Compile Include="App_Packages\Remotion.Utilities.NullableTypeUtility.Sources.1.15.23.0\NullableTypeUtility.cs" />
+    <Compile Include="CompletionDetectionStrategies\Wxe.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxeCompletionDetectionHelpers.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxePostBackCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxePostBackInCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxeResetCompletionDetectionStrategy.cs" />
+    <Compile Include="CompletionDetectionStrategies\WxeResetInCompletionDetectionStrategy.cs" />
+    <Compile Include="PageObjects\WxePageObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +125,7 @@
       <Name>Web.Development.WebTesting</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
