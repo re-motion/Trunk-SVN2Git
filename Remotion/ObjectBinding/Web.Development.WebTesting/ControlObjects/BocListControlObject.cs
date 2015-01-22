@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var currentPageTextInputScope = GetCurrentPageTextInputScope();
       new FillWithAction (this, currentPageTextInputScope, Keys.Backspace + page, FinishInput.WithTab).Execute (
-          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var firstPageLinkScope = Scope.FindChild ("Navigation_First");
       new ClickAction (this, firstPageLinkScope).Execute (
-          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var previousPageLinkScope = Scope.FindChild ("Navigation_Previous");
       new ClickAction (this, previousPageLinkScope).Execute (
-          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var nextPageLinkScope = Scope.FindChild ("Navigation_Next");
       new ClickAction (this, nextPageLinkScope).Execute (
-          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>
@@ -110,7 +110,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     {
       var lastPageLinkScope = Scope.FindChild ("Navigation_Last");
       new ClickAction (this, lastPageLinkScope).Execute (
-          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <inheritdoc/>
@@ -322,7 +322,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         sortColumnLinkScope.Hover();
 
       new ClickAction (this, sortColumnLinkScope).Execute (
-          Opt.ContinueWhen (((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
+          Opt.ContinueWhen (((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy));
     }
 
     /// <summary>

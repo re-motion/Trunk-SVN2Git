@@ -25,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects
   /// <summary>
   /// Page object representing an arbitrary WXE page.
   /// </summary>
-  public class WxePageObject : WebFormsPageObject
+  public class WxePageObject : PageObject, IWebFormsPageObject
   {
     // ReSharper disable once MemberCanBeProtected.Global
     public WxePageObject ([NotNull] PageObjectContext context)
@@ -34,13 +34,13 @@ namespace Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects
     }
 
     /// <inheritdoc/>
-    public override ICompletionDetectionStrategy NavigationCompletionDetectionStrategy
+    public ICompletionDetectionStrategy NavigationCompletionDetectionStrategy
     {
       get { return Wxe.Reset; }
     }
 
     /// <inheritdoc/>
-    public override ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
+    public ICompletionDetectionStrategy PostBackCompletionDetectionStrategy
     {
       get { return Wxe.PostBackCompleted; }
     }

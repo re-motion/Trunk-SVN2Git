@@ -19,7 +19,6 @@ using System;
 using Coypu;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
-using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -84,9 +83,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       }
     }
 
-    private WebFormsPageObject Start ()
+    private WebFormsTestPageObject Start ()
     {
-      return Start<WebFormsPageObject> ("WebTreeViewTest.aspx");
+      return Start<WebFormsTestPageObject> ("WebTreeViewTest.aspx");
     }
   }
 }

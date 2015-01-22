@@ -39,14 +39,14 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       {
         var hasAutoPostBack = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersPostBack]);
         if (hasAutoPostBack)
-          return ((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy;
+          return ((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy;
       }
 
       if (scope[DiagnosticMetadataAttributes.TriggersNavigation] != null)
       {
         var triggersNavigation = bool.Parse (scope[DiagnosticMetadataAttributes.TriggersNavigation]);
         if (triggersNavigation)
-          return ((WebFormsPageObject) Context.PageObject).NavigationCompletionDetectionStrategy;
+          return ((IWebFormsPageObject) Context.PageObject).NavigationCompletionDetectionStrategy;
       }
 
       return Continue.Immediately;

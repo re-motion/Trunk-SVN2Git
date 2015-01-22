@@ -17,7 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -38,9 +37,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       downloadHelper.DeleteFile();
     }
 
-    private WebFormsPageObject Start ()
+    private WebFormsTestPageObject Start ()
     {
-      return Start<WebFormsPageObject> ("FileDownloadTest.aspx");
+      return Start<WebFormsTestPageObject> ("FileDownloadTest.aspx");
     }
   }
 }

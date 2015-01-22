@@ -16,17 +16,16 @@
 // 
 
 using System;
-using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.PageObjects;
 
-namespace Remotion.Web.Development.WebTesting.PageObjects
+namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
   /// <summary>
   /// Page object representing an arbitrary ASP.NET WebForms page.
   /// </summary>
-  public class WebFormsPageObject : PageObject
+  public class WebFormsTestPageObject : PageObject, IWebFormsPageObject
   {
-    // ReSharper disable once MemberCanBeProtected.Global
-    public WebFormsPageObject ([NotNull] PageObjectContext context)
+    public WebFormsTestPageObject (PageObjectContext context)
         : base (context)
     {
     }

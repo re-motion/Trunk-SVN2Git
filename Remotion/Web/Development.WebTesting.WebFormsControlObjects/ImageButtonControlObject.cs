@@ -58,9 +58,9 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
       ArgumentUtility.CheckNotNull ("scope", scope);
 
       if (IsPostBackLink (scope))
-        return ((WebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy;
+        return ((IWebFormsPageObject) Context.PageObject).PostBackCompletionDetectionStrategy;
 
-      return ((WebFormsPageObject) Context.PageObject).NavigationCompletionDetectionStrategy;
+      return ((IWebFormsPageObject) Context.PageObject).NavigationCompletionDetectionStrategy;
     }
 
     private bool IsPostBackLink (ElementScope scope)

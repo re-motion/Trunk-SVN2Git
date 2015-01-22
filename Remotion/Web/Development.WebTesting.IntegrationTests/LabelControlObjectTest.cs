@@ -18,7 +18,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
-using Remotion.Web.Development.WebTesting.PageObjects;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests
 {
@@ -79,9 +78,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (htmlLabel.GetText(), Is.EqualTo ("MyHtmlLabelContent"));
     }
 
-    private WebFormsPageObject Start ()
+    private WebFormsTestPageObject Start ()
     {
-      return Start<WebFormsPageObject> ("LabelTest.aspx");
+      return Start<WebFormsTestPageObject> ("LabelTest.aspx");
     }
   }
 }
