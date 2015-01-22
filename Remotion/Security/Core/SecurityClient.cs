@@ -139,7 +139,7 @@ namespace Remotion.Security
         return true;
 
       var objectSecurityStrategy = securableObject.GetSecurityStrategy();
-      Assertion.IsNotNull (objectSecurityStrategy, "The securableObject did not return an IObjectSecurityStrategy.");
+      Assertion.DebugIsNotNull (objectSecurityStrategy, "The securableObject did not return an IObjectSecurityStrategy.");
 
       return objectSecurityStrategy.HasAccess (_securityProvider, principal, requiredAccessTypes);
     }
@@ -265,7 +265,7 @@ namespace Remotion.Security
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
-      Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+      Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
     }
@@ -377,7 +377,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
-      Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+      Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
         requiredAccessTypeEnums = s_readAccessTypeEnumAsArray;
@@ -497,7 +497,7 @@ namespace Remotion.Security
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
-      Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+      Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       if (requiredAccessTypeEnums.Length == 0)
         requiredAccessTypeEnums = s_editAccessTypeEnumAsArray;
@@ -649,7 +649,7 @@ namespace Remotion.Security
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
-      Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+      Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasStatelessAccess (securableClass, methodInformation, requiredAccessTypeEnums, principal);
     }
@@ -769,7 +769,7 @@ namespace Remotion.Security
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
       Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
-      Assertion.IsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
+      Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasStatelessAccess (securableClass, methodInformation, requiredAccessTypeEnums, principal);
     }

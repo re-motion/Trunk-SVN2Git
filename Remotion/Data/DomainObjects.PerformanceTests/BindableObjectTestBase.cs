@@ -26,7 +26,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   public class BindableObjectTestBase
   {
-    public const int TestRepititions = 100 * 1000;
+    public const int TestRepititions = 1000 * 1000;
 
     public virtual void BusinessObject_Property_IsAccessible ()
     {

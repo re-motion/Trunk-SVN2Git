@@ -49,7 +49,7 @@ namespace Remotion.ObjectBinding.Security.BindableObject
     public bool CanRead (IBusinessObject businessObject, PropertyBase bindableProperty)
     {
       // businessObject can be null
-      ArgumentUtility.CheckNotNull ("bindableProperty", bindableProperty);
+      ArgumentUtility.DebugCheckNotNull ("bindableProperty", bindableProperty);
 
       var securableObject = businessObject as ISecurableObject;
       if (securableObject == null)

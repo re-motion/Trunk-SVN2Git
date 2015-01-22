@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -31,18 +32,19 @@ namespace Remotion.ObjectBinding.BindableObject
   [ImplementationFor (typeof (IBindablePropertyReadAccessStrategy), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Compound)]
   public sealed class CompundBindablePropertyReadAccessStrategy : IBindablePropertyReadAccessStrategy
   {
-    private readonly IReadOnlyList<IBindablePropertyReadAccessStrategy> _bindablePropertyReadAccessStrategies;
+    // Using an array instead of IReadOnlyList to support performance critical loop
+    private readonly IBindablePropertyReadAccessStrategy[] _bindablePropertyReadAccessStrategies;
 
     public CompundBindablePropertyReadAccessStrategy (IEnumerable<IBindablePropertyReadAccessStrategy> bindablePropertyReadAccessStrategies)
     {
       ArgumentUtility.CheckNotNull ("bindablePropertyReadAccessStrategies", bindablePropertyReadAccessStrategies);
 
-      _bindablePropertyReadAccessStrategies = bindablePropertyReadAccessStrategies.ToList().AsReadOnly();
+      _bindablePropertyReadAccessStrategies = bindablePropertyReadAccessStrategies.ToArray();
     }
 
     public IReadOnlyList<IBindablePropertyReadAccessStrategy> BindablePropertyReadAccessStrategies
     {
-      get { return _bindablePropertyReadAccessStrategies; }
+      get { return _bindablePropertyReadAccessStrategies.ToList().AsReadOnly(); }
     }
 
 
@@ -55,7 +57,7 @@ namespace Remotion.ObjectBinding.BindableObject
       // return _strategies.All (s => s.CanRead (propertyBase, businessObject));
       // ReSharper disable once LoopCanBeConvertedToQuery
       // ReSharper disable once ForCanBeConvertedToForeach
-      for (int i = 0; i < _bindablePropertyReadAccessStrategies.Count; i++)
+      for (int i = 0; i < _bindablePropertyReadAccessStrategies.Length; i++)
       {
         var bindablePropertyReadAccessStrategy = _bindablePropertyReadAccessStrategies[i];
         if (!bindablePropertyReadAccessStrategy.CanRead (businessObject, bindableProperty))
@@ -76,7 +78,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
       // This section does represent an inherrent hot-path but the for-loop is chosen for symmetry with the CanRead()-method.
       // ReSharper disable once ForCanBeConvertedToForeach
-      for (int i = 0; i < _bindablePropertyReadAccessStrategies.Count; i++)
+      for (int i = 0; i < _bindablePropertyReadAccessStrategies.Length; i++)
       {
         var bindablePropertyReadAccessStrategy = _bindablePropertyReadAccessStrategies[i];
         if (bindablePropertyReadAccessStrategy.IsPropertyAccessException (businessObject, bindableProperty, exception, out propertyAccessException))
