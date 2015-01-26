@@ -658,6 +658,7 @@ namespace Remotion.Web.UI.Controls
         writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         if (_renderingFeatures.EnableDiagnosticMetadata)
         {
+          writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, "true");
           writer.AddAttribute (
               DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
               !node.IsExpanded
@@ -690,6 +691,7 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
       if (_renderingFeatures.EnableDiagnosticMetadata)
       {
+        writer.AddAttribute (DiagnosticMetadataAttributes.TriggersPostBack, "true");
         writer.AddAttribute (
             DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
             DiagnosticMetadataAttributeValues.WebTreeViewWellKnownSelectAnchor);
