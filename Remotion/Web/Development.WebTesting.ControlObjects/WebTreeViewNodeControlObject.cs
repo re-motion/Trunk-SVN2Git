@@ -123,12 +123,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public WebTreeViewNodeControlObject Expand ()
     {
-      var actionOptions = MergeWithDefaultActionOptions (Scope, null);
-
       var expandAnchorScope = Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownExpandAnchor);
+      
+      var actionOptions = MergeWithDefaultActionOptions (expandAnchorScope, null);
       new ClickAction (this, expandAnchorScope).Execute (actionOptions);
       return this;
     }
@@ -138,12 +138,12 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public WebTreeViewNodeControlObject Collapse ()
     {
-      var actionOptions = MergeWithDefaultActionOptions (Scope, null);
-
       var collapseAnchorScope = Scope.FindTagWithAttribute (
           "span a",
           DiagnosticMetadataAttributes.WebTreeViewWellKnownAnchor,
           DiagnosticMetadataAttributeValues.WebTreeViewWellKnownCollapseAnchor);
+
+      var actionOptions = MergeWithDefaultActionOptions (collapseAnchorScope, null);
       new ClickAction (this, collapseAnchorScope).Execute (actionOptions);
       return this;
     }
@@ -168,9 +168,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
     private void ClickNode (IWebTestActionOptions actionOptions)
     {
-      var actualCompletionDetector = MergeWithDefaultActionOptions (Scope, actionOptions);
-
       var selectAnchorScope = GetWellKnownSelectAnchorScope();
+
+      var actualCompletionDetector = MergeWithDefaultActionOptions (selectAnchorScope, actionOptions);
       new ClickAction (this, selectAnchorScope).Execute (actualCompletionDetector);
     }
 
