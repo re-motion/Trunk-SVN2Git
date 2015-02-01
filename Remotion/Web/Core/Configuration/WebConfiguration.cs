@@ -19,6 +19,7 @@ using System.Configuration;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using Remotion.Web.Schemas;
 using Remotion.Xml;
 
 namespace Remotion.Web.Configuration
@@ -36,12 +37,6 @@ public class WebConfiguration: IConfigurationSectionHandler
   /// <summary> The namespace of the configuration section schema. </summary>
   /// <remarks> <c>http://www.re-motion.org/web/configuration</c> </remarks>
   public const string SchemaUri = "http://www.re-motion.org/web/configuration";
-
-  /// <summary> Gets an <see cref="XmlReader"/> reader for the schema embedded in the assembly. </summary>
-  public static XmlReader GetSchemaReader ()
-  {
-    return new XmlTextReader (Assembly.GetExecutingAssembly().GetManifestResourceStream (typeof(WebConfiguration), "WebConfiguration.xsd"));
-  }
 
   private static readonly DoubleCheckedLockingContainer<WebConfiguration> s_current = 
       new DoubleCheckedLockingContainer<WebConfiguration> (CreateConfig);
@@ -62,13 +57,14 @@ public class WebConfiguration: IConfigurationSectionHandler
     XmlNode section = (XmlNode) ConfigurationManager.GetSection (ElementName);
     if (section == null)
       return new WebConfiguration();
-    
+
+    var schema = new WebConfigurationSchema();
     return (WebConfiguration) XmlSerializationUtility.DeserializeUsingSchema (
         new XmlNodeReader (section),
         // "web.config/configuration/" + ElementName,  // TODO: context is no longer supported, verify that node has correct BaseURI
         typeof (WebConfiguration),
         SchemaUri,
-        GetSchemaReader());
+        schema.LoadSchemaSet());
   }
 
   private ExecutionEngineConfiguration _executionEngine = new ExecutionEngineConfiguration();

@@ -24,6 +24,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
+using Remotion.Web.ExecutionEngine.CodeGenerator.Schemas;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {

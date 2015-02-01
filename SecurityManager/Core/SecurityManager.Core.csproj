@@ -62,9 +62,9 @@
     <DocumentationFile>bin\Release\Remotion.SecurityManager.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Remotion.Linq">
       <HintPath>..\..\packages\Remotion.Linq.2.0.0-alpha-001\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.dll</HintPath>
@@ -85,6 +85,9 @@
       <SubType>
       </SubType>
     </EmbeddedResource>
+    <None Include="..\Build\NuSpec\TemplateShared.nuspec">
+      <Link>TemplateShared.nuspec</Link>
+    </None>
     <None Include="..\SecurityManager AGPL.licenseheader">
       <Link>SecurityManager AGPL.licenseheader</Link>
     </None>
@@ -446,15 +449,17 @@
     <EmbeddedResource Include="Globalization\Domain\OrganizationalStructure\Substitution.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="Database\SecurityManagerSetupIndexes.sql" />
-    <Content Include="Database\SecurityManagerSetupConstraints.sql">
-    </Content>
+    <None Include="Database\SecurityManagerSetupIndexes.sql" />
+    <None Include="Database\SecurityManagerSetupConstraints.sql" />
     <None Include="Database\SecurityManagerTearDownDB.sql" />
-    <Content Include="Database\SecurityManagerTearDownDBSpecialTables.sql" />
-    <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
+    <None Include="Database\SecurityManagerTearDownDBSpecialTables.sql" />
+    <None Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FacetManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

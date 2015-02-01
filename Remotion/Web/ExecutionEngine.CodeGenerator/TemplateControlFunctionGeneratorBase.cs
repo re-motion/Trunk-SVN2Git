@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
+using Remotion.Web.ExecutionEngine.CodeGenerator.Schemas;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator

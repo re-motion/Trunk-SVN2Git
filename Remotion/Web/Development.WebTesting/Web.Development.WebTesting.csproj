@@ -48,8 +48,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\Coypu.2.7.0\lib\net40\Coypu.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -209,14 +210,16 @@
     <Compile Include="WebTestActions\FillWithAction.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\packages\WebDriver.ChromeDriver.win32.2.12.0.0\content\chromedriver.exe">
+    <None Include="..\..\..\packages\WebDriver.ChromeDriver.win32.2.12.0.0\content\chromedriver.exe">
       <Link>chromedriver.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\..\remotion.snk">
+    </None>
+    <None Include="FacetManifest.xml" />
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
-    </Content>
-    <Content Include="_WebTestDeveloperTools\WebTestingFramework-WebTestDeveloperTools-TampermonkeyScript.js" />
+    </None>
+    <None Include="Web.Development.WebTesting.nuspec" />
+    <None Include="_WebTestDeveloperTools\WebTestingFramework-WebTestDeveloperTools-TampermonkeyScript.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Remotion LGPL.licenseheader">
@@ -238,10 +241,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Content Include="..\..\..\packages\WebDriver.IEDriverServer.win32.2.44\content\IEDriverServer.exe">
+    <None Include="..\..\..\packages\WebDriver.IEDriverServer.win32.2.44\content\IEDriverServer.exe">
       <Link>IEDriverServer.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

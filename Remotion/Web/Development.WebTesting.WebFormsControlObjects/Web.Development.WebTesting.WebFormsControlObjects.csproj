@@ -108,11 +108,14 @@
     <Compile Include="WebFormsControlObject.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\..\remotion.snk">
+    <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Build\NuSpec\TemplateShared.nuspec">
+      <Link>TemplateShared.nuspec</Link>
+    </None>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
@@ -129,6 +132,9 @@
       <Project>{5b5ec73a-b796-4d2d-a781-e889ee9ec4df}</Project>
       <Name>Web.Development.WebTesting</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FacetManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

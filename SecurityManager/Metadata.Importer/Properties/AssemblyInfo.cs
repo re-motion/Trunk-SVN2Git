@@ -15,15 +15,11 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Reflection;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
 [assembly: AssemblyTitle ("Remotion Security Manager Metadata Importer")]
-//[assembly: AssemblyDescription("")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
+[assembly: AssemblyDescription ("Commandline tool for importing the security metadata.")]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]

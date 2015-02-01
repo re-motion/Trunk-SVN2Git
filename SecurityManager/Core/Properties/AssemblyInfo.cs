@@ -15,18 +15,13 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
 using System;
 using System.Reflection;
 using System.Resources;
 
-[assembly: NeutralResourcesLanguage ("en")]
-
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
 [assembly: AssemblyTitle ("Remotion Security Manager Core Components")]
-//[assembly: AssemblyDescription("")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
+[assembly: AssemblyDescription ("Component for managing an application's security requirements via access control lists.")]
+[assembly: AssemblyCulture ("")]
+[assembly: NeutralResourcesLanguage ("en")]
+[assembly: CLSCompliant (true)]

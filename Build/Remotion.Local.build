@@ -16,52 +16,50 @@
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <Import Project="Remotion.build" />
-  
+  <Import Project="Local.Version.props"/>
+
   <PropertyGroup>
-    <SolutionBuildFile>Remotion.build</SolutionBuildFile>
     <ReleaseType>LOCAL</ReleaseType>
+    <NuGetVersionSuffix>X</NuGetVersionSuffix>
     <SvnBranchFolder>local</SvnBranchFolder>  
     <SvnRevision>0</SvnRevision>
 
-    <DependDBProjectVCSUrlTemplate>http://localost/svn/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</DependDBProjectVCSUrlTemplate>
-    <DependDBProjectImportNotificationMailAddress>noreply@localhost</DependDBProjectImportNotificationMailAddress>
+    <VcsUrlTemplate>http://localost/svn/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</VcsUrlTemplate>
   </PropertyGroup>
-  
-  <Target Name="TestBuild_Configuration">
-    <PropertyGroup>
-      <Platforms>x86</Platforms>
-      <DatabaseSystems>SqlServerDefault</DatabaseSystems>
-      <Browsers></Browsers>
-      <TestCategoriesToExclude>LongRunning</TestCategoriesToExclude>
-    </PropertyGroup>
+
+  <PropertyGroup>
+    <BeforeBuildTargets>
+      CleanFolders;
+      CleanProjects;
+      PrepareBuildProperties;
+    </BeforeBuildTargets>
+  </PropertyGroup>
+
+  <Target Name="TestBuild" DependsOnTargets="$(BeforeBuildTargets)">
+    <MSBuild Projects="@(ProjectsBuildLocal)" Targets="TestBuild" Properties="$(BuildProperties)" BuildInParallel="false"/>
+    <CallTarget Targets="RevertModifiedFiles"/>
   </Target>
-  
-  <Target Name="FullBuild_Configuration">
-    <PropertyGroup>
-      <Platforms>x86+x64</Platforms>
-      <DatabaseSystems>SqlServerDefault</DatabaseSystems>
-      <Browsers>Chrome+InternetExplorer</Browsers>
-      <TestCategoriesToExclude></TestCategoriesToExclude>
-    </PropertyGroup>
+
+  <Target Name="FullBuildWithoutDocumentation" DependsOnTargets="$(BeforeBuildTargets)">
+    <MSBuild Projects="@(ProjectsBuildLocal)" Targets="FullBuildWithoutDocumentation" Properties="$(BuildProperties)" BuildInParallel="false"/>
+    <CallTarget Targets="RevertModifiedFiles"/>
   </Target>
- 
-  <Target Name="TestBuild" DependsOnTargets="TestBuild_Configuration;TestBuildDebugOnly" />
-  <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;TestBuildAllConfigurations" />
-  <Target Name="QuickBuild" DependsOnTargets="QuickBuildDebugOnly" />
-  
-  <Target Name="DocumentationTestBuild">
-    <MSBuild Projects="$(SolutionBuildFile)"
-             BuildInParallel="false"
-             Targets="DocumentationTestBuild"
-             Properties="Platforms=x86;DatabaseSystems=SqlServerDefault;Browsers="/>
+
+  <Target Name="DocumentationBuild" DependsOnTargets="$(BeforeBuildTargets)">
+    <MSBuild Projects="@(ProjectsBuildLocal)" Targets="DocumentationBuild" Properties="$(BuildProperties)" BuildInParallel="false"/>
+    <CallTarget Targets="RevertModifiedFiles"/>
   </Target>
-  
-  <Target Name="ZipPackageAll">
-    <MSBuild Projects="$(SolutionBuildFile)"
-             BuildInParallel="false"
-             Targets="ZipPackageAll"/>
+
+  <Target Name="PackageBuild" DependsOnTargets="$(BeforeBuildTargets)">
+    <MSBuild Projects="@(ProjectsBuildLocal)" Targets="PackageBuild" Properties="$(BuildProperties)" BuildInParallel="false"/>
+    <CallTarget Targets="RevertModifiedFiles"/>
   </Target>
-  
+
+  <Target Name="DependDBBuild" DependsOnTargets="$(BeforeBuildTargets)">
+    <MSBuild Projects="@(ProjectsBuildLocal)" Targets="DependDBBuild" Properties="$(BuildProperties)" BuildInParallel="false"/>
+    <CallTarget Targets="RevertModifiedFiles"/>
+  </Target>
+
 </Project>

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Xml;
 using Remotion.Data.DomainObjects;
 using Remotion.Security.Metadata;
+using Remotion.Security.Schemas;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata

@@ -52,11 +52,33 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="..\..\Build\NuSpec\TemplateShared.nuspec">
+      <Link>TemplateShared.nuspec</Link>
+    </None>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="FacetManifest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ObjectBinding\Web\ObjectBinding.Web.csproj">
+      <Project>{390fbb93-a757-47a7-b769-a64a7465ff84}</Project>
+      <Name>ObjectBinding.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
+      <Project>{df8ba786-9679-4879-8757-16ae2709d83a}</Project>
+      <Name>Web.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Security\Web.Security.csproj">
+      <Project>{9b6f6d1a-a7ea-4ee8-b36e-e31cf7e518e3}</Project>
+      <Name>Web.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain\Integration.Domain.csproj">
+      <Project>{98969947-cafa-4dc3-8c9c-c5d8fea6ce17}</Project>
+      <Name>Integration.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

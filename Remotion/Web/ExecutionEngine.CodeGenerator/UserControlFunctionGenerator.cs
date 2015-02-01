@@ -21,6 +21,7 @@ using System.IO;
 using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
+using Remotion.Web.ExecutionEngine.CodeGenerator.Schemas;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {

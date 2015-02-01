@@ -17,279 +17,115 @@
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Import Project="Remotion.Tasks.include.build" />
-  <Import Project="Remotion.Packages.include.build" />
   <Import Project="Remotion.Projects.include.build" />
-  <Import Project="Remotion.Configurations.include.build" />
-  <Import Project="Remotion.BuildTargets.include.build" />
-  <Import Project="Remotion.BuildTargets.Properties.include.build" />
-  <Import Project="Remotion.BuildTargets.Testing.include.build" />
-  <Import Project="Remotion.AssembleBuildOutput.include.build" />
-  <Import Project="Remotion.DebugSymbols.include.build" />
 
   <PropertyGroup>
     <Version></Version>
     <ReleaseType></ReleaseType>
-    <AdditionalBuildMetadata></AdditionalBuildMetadata>
 
     <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
-    <OutputDirectory>$(MSBuildProjectDirectory)\BuildOutput\$(Version)\</OutputDirectory>
+    <OutputDirectory>$(MSBuildProjectDirectory)\BuildOutput\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
     <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
     <ArchiveDirectory>$(MSBuildProjectDirectory)\BuildOutput\Archive\</ArchiveDirectory>
-    <WebShareDirectory>$(MSBuildProjectDirectory)\BuildOutput\WebShare\</WebShareDirectory>
-    <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
 
     <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
 
-    <CodePlexUsername></CodePlexUsername>
-    <CodePlexPassword></CodePlexPassword>
-
-    <NuGetApiKey></NuGetApiKey>
-
+    <VcsUrlTemplate></VcsUrlTemplate>
     <DependDBProjectBranch></DependDBProjectBranch>
     <DependDBProjectVersion></DependDBProjectVersion>
-    <DependDBProjectVCSUrlTemplate></DependDBProjectVCSUrlTemplate>
     <DependDBProjectImportNotificationMailAddress></DependDBProjectImportNotificationMailAddress>
     <DependDBProjectImportNotificationMailAddressCc></DependDBProjectImportNotificationMailAddressCc>
     <DependDBUploadPath>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBUploadPath>
   </PropertyGroup>
-  
+
   <PropertyGroup>
-    <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit-2.6\bin</NUnitToolPath>
-    <MixinXRefToolPath>$(SolutionDirectory)prereq\Tools\DependDB\DependDB.BuildProcessor\ReportGenerators\XRef45\</MixinXRefToolPath>
-    <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
-    <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
+    <ToolsPath>$(SolutionDirectory)prereq\Tools\</ToolsPath>
+    <PackagesDirectory Condition="'$(PackagesDirectory)' == ''">$(MSBuildProjectDirectory)\..\packages\</PackagesDirectory>
   </PropertyGroup>
 
-  <Target Name="DocumentAll">
+  <Target Name="CleanProjects">
     <ItemGroup>
-      <_allDocumentationDeclarations Remove="@(_allDocumentationDeclarations)" />
-      <_allDocumentationDeclarations Include="%(AllPackages.DocumentationDeclaration)" />
+      <_configurations Remove="@(_configurations)" />
+      <_configurations Include="Release"/>
+      <_configurations Include="Debug"/>
     </ItemGroup>
-
-    <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="false"
-             StopOnFirstFailure="true"
-             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
-             Properties="
-                 SolutionDirectory=$(SolutionDirectory);
-                 BinariesDirectory=$(BinariesDirectory);
-                 TempDirectory=$(TempDirectory);
-                 LogDirectory=$(LogDirectory);
-                 Version=$(Version);"/>
+    <MSBuild Projects="$(SolutionDirectory)Remotion.sln" Targets="Clean" Properties="Configuration=%(_configurations.Identity)" />
   </Target>
 
-  <Target Name="PackageAll">
-    <!-- NuGet package must be created before modifying the debug symbols to allow the creation of proper NuGet source packages. -->
-    <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="CreateNuGetPackage"
-             Properties="SolutionDirectory=$(SolutionDirectory);
-                         BinariesDirectory=$(BinariesDirectory);
-                         OutputDirectory=$(OutputDirectory);
-                         ArchiveDirectory=$(ArchiveDirectory);
-                         TempDirectory=$(TempDirectory);
-                         Version=$(Version);"/>
+  <Target Name="CleanFolders">
+    <Error Text="The property 'OutputDirectory' is not set." Condition="'$(OutputDirectory)' == ''" />
+    <Error Text="The property 'LogDirectory' is not set." Condition="'$(LogDirectory)' == ''" />
+    <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
     
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="UpdateDebugSymbols"
-             Properties="SolutionDirectory=$(SolutionDirectory);
-                         BinariesDirectory=$(BinariesDirectory);
-                         DebugSymbolsVCSUrl=$(DebugSymbolsVCSUrl);
-                         SvnRevision=$(SvnRevision);"/>
-    
-    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="CreatePackages"
-             Properties="
-                 SolutionDirectory=$(SolutionDirectory);
-                 BinariesDirectory=$(BinariesDirectory);
-                 OutputDirectory=$(OutputDirectory);
-                 ArchiveDirectory=$(ArchiveDirectory);
-                 TempDirectory=$(TempDirectory);
-                 Version=$(Version);
-                 JiraVersion=$(JiraVersion);
-                 DependDBProjectBranch=$(DependDBProjectBranch);
-                 DependDBProjectVersion=$(Version);
-                 DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
-                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
-                 DependDBProjectImportNotificationMailAddressCc=$(DependDBProjectImportNotificationMailAddressCc);
-                 DependDBUploadPath=$(DependDBUploadPath);"/>
-  </Target>
-  
-  <Target Name="ZipPackageAll">
-    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="CreateZipPackages"
-             Properties="
-                 SolutionDirectory=$(SolutionDirectory);
-                 BinariesDirectory=$(BinariesDirectory);
-                 OutputDirectory=$(OutputDirectory);
-                 ArchiveDirectory=$(ArchiveDirectory);
-                 TempDirectory=$(TempDirectory);
-                 Version=$(Version);"/>
+    <Exec Command="rmdir /Q /S &quot;$(LogDirectory)&quot;" Condition="Exists ($(LogDirectory))" />
+    <Exec Command="rmdir /Q /S &quot;$(TempDirectory)&quot;" Condition="Exists ($(TempDirectory))" />
+    <Exec Command="rmdir /Q /S &quot;$(OutputDirectory)&quot;" Condition="Exists ($(OutputDirectory))" />
   </Target>
 
-  <Target Name="DeployAll">
-    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="DeployPackages"
-             Properties="
-                 SolutionDirectory=$(SolutionDirectory);
-                 BinariesDirectory=$(BinariesDirectory);
-                 OutputDirectory=$(OutputDirectory);
-                 ArchiveDirectory=$(ArchiveDirectory);
-                 TempDirectory=$(TempDirectory);
-                 Version=$(Version);
-                 ArchiveDirectory=$(ArchiveDirectory);
-                 WebShareDirectory=$(WebShareDirectory);
-                 CodeplexUserName=$(CodePlexUsername);
-                 CodeplexPassword=$(CodePlexPassword);
-                 DependDBUploadPath=$(DependDBUploadPath);"/>
+  <Target Name="PrepareBuildProperties">
+    <PropertyGroup>
+      <BuildProperties>
+          PackagesDirectory=$(PackagesDirectory);
+          SolutionDirectory=$(SolutionDirectory);
+          OutputDirectory=$(OutputDirectory);
+          Version=$(Version);
+          NuGetVersionSuffix=$(NuGetVersionSuffix);
+          ReleaseType=$(ReleaseType);
+          VcsUrlTemplate=$(VcsUrlTemplate);
+      </BuildProperties>
+    </PropertyGroup>
 
-    <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="UploadNuGetPackage"
-             Properties="SolutionDirectory=$(SolutionDirectory);
-                         OutputDirectory=$(OutputDirectory);
-                         ArchiveDirectory=$(ArchiveDirectory);
-                         Version=$(Version);
-                         NuGetApiKey=$(NuGetApiKey)"/>
+    <Message Text="Configured build properties for global build script: $(BuildProperties)" />
   </Target>
 
-  <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
-             Properties="ConfigurationID=%(AllConfigurations.Identity);
-                         SolutionKeyFile=$(SolutionKeyFile);
-                         SolutionDirectory=$(SolutionDirectory);
-                         OutputDirectory=$(OutputDirectory);
-                         TempDirectory=$(TempDirectory);
-                         LogDirectory=$(LogDirectory);
-                         Version=$(Version);
-                         ArchiveDirectory=$(ArchiveDirectory);
-                         ReleaseType=$(ReleaseType);
-                         AdditionalBuildMetadata=$(AdditionalBuildMetadata);
-                         Platforms=$(Platforms);
-                         DatabaseSystems=$(DatabaseSystems);
-                         Browsers=$(Browsers);
-                         TestCategoriesToExclude=$(TestCategoriesToExclude)"/>
-  </Target>
-  
-  <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
-             Properties="
-                  ConfigurationID=Debug;
-                  SolutionKeyFile=$(SolutionKeyFile);
-                  SolutionDirectory=$(SolutionDirectory);
-                  OutputDirectory=$(OutputDirectory);
-                  TempDirectory=$(TempDirectory);
-                  LogDirectory=$(LogDirectory);
-                  Version=$(Version);
-                  ArchiveDirectory=$(ArchiveDirectory);
-                  ReleaseType=$(ReleaseType);
-                  AdditionalBuildMetadata=$(AdditionalBuildMetadata);
-                  Platforms=$(Platforms);
-                  DatabaseSystems=$(DatabaseSystems);
-                  Browsers=$(Browsers);
-                  TestCategoriesToExclude=$(TestCategoriesToExclude)"/>
-  </Target>
-  
-  <Target Name="TestBuildAllConfigurations" DependsOnTargets="CleanFolders">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
-             Properties="
-                  ConfigurationID=%(AllConfigurations.Identity);
-                  SolutionKeyFile=$(SolutionKeyFile);
-                  SolutionDirectory=$(SolutionDirectory);
-                  OutputDirectory=$(OutputDirectory);
-                  TempDirectory=$(TempDirectory);
-                  LogDirectory=$(LogDirectory);
-                  Version=$(Version);
-                  ArchiveDirectory=$(ArchiveDirectory);
-                  ReleaseType=$(ReleaseType);
-                  AdditionalBuildMetadata=$(AdditionalBuildMetadata);
-                  Platforms=$(Platforms);
-                  DatabaseSystems=$(DatabaseSystems);
-                  Browsers=$(Browsers);
-                  TestCategoriesToExclude=$(TestCategoriesToExclude)"/>
-  </Target>
-  
-  <Target Name="QuickBuildDebugOnly" DependsOnTargets="CleanFolders">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="BuildReleaseProjects;AssembleBuildOutput"
-             Properties="
-                  ConfigurationID=Debug;
-                  SolutionKeyFile=$(SolutionKeyFile);
-                  SolutionDirectory=$(SolutionDirectory);
-                  OutputDirectory=$(OutputDirectory);
-                  TempDirectory=$(TempDirectory);
-                  LogDirectory=$(LogDirectory);
-                  Version=$(Version);
-                  ArchiveDirectory=$(ArchiveDirectory);
-                  ReleaseType=$(ReleaseType);
-                  AdditionalBuildMetadata=$(AdditionalBuildMetadata);
-                  Platforms=$(Platforms);
-                  DatabaseSystems=$(DatabaseSystems);
-                  Browsers=$(Browsers)"/>
+  <Target Name="PrepareVersionForMasterScript">
+    <Error Text="The build target 'PrepareVersionForMasterScript' must be defined by the calling build file." />
   </Target>
 
-  <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="BuildReleaseProjects;AssembleBuildOutput;"
-             Properties="
-                 ConfigurationID=Debug;
-                 SolutionKeyFile=$(SolutionKeyFile)"/>
+  <Target Name="RevertModifiedFiles">
+    <Message Text="Deleting files created during build." Importance="High"/>
 
     <ItemGroup>
-      <_allDocumentationDeclarations Remove="@(_allDocumentationDeclarations)" />
-      <_allDocumentationDeclarations Include="%(AllPackages.DocumentationDeclaration)" />
+      <_modifiedFiles Remove="@(_modifiedFiles)"/>
+      <_createdFiles Remove="@(_createdFiles)"/>
+      
+      <_modifiedFilesList Remove="@(_modifiedFilesList)"/>
+      <_modifiedFilesList Include="$(TempDirectory)*/ModifiedFiles.txt"/>
+      
+      <_createdFilesList Remove="@(_createdFilesList)"/>
+      <_createdFilesList Include="$(TempDirectory)*/CreatedFiles.txt"/>
     </ItemGroup>
 
-    <MSBuild Projects="@(_allDocumentationDeclarations)"
-             BuildInParallel="false"
-             StopOnFirstFailure="true"
-             Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
-             Properties="
-                 SolutionDirectory=$(SolutionDirectory);
-                 BinariesDirectory=$(BinariesDirectory);
-                 TempDirectory=$(TempDirectory);
-                 LogDirectory=$(LogDirectory);
-                 Version=0.0.0.0;"/>
+    <ReadLinesFromFile File="%(_modifiedFilesList.Identity)" Condition="'@(_modifiedFilesList)' != ''">
+      <Output TaskParameter="Lines" ItemName="_modifiedFiles"/>
+    </ReadLinesFromFile>
+
+    <PropertyGroup>
+      <_pattern><![CDATA[^(?<original>[^\|]+)\|(?<backup2>[^\|]+)\|(?<backup>[^\|]+)$]]></_pattern>
+      <_originalReplacementPattern>${original}</_originalReplacementPattern>
+      <_backup2ReplacementPattern>${backup2}</_backup2ReplacementPattern>
+      <_backupReplacementPattern>${backup}</_backupReplacementPattern>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_modifiedFiles>
+        <Original>$( [System.Text.RegularExpressions.Regex]::Replace ( %(Identity), $(_pattern), $(_originalReplacementPattern) ) )</Original>
+        <Backup2>$( [System.Text.RegularExpressions.Regex]::Replace ( %(Identity), $(_pattern), $(_backup2ReplacementPattern) ) )</Backup2>
+        <Backup>$( [System.Text.RegularExpressions.Regex]::Replace ( %(Identity), $(_pattern), $(_backupReplacementPattern) ) )</Backup>
+      </_modifiedFiles>
+    </ItemGroup>
+
+    <Move SourceFiles="%(_modifiedFiles.Backup2)" DestinationFiles="%(_modifiedFiles.Original)" />
+    <Delete Files="%(_modifiedFiles.Backup)" />
+
+    <ReadLinesFromFile File="%(_createdFilesList.Identity)" Condition="'@(_createdFilesList)' != ''">
+      <Output TaskParameter="Lines" ItemName="_createdFiles"/>
+    </ReadLinesFromFile>
+
+    <Delete Files="@(_createdFiles)" />
+
+    <Message Text="Done deleting files created during build." Importance="High"/>
   </Target>
 
-  <Target Name="UpdateAssemblyInfosLocalBuild" DependsOnTargets="CheckVersion">
-    <MSBuild Projects="$(MSBuildProjectFile)"
-             BuildInParallel="false"
-             Targets="UpdateAssemblyInfos"
-             Properties="
-                ConfigurationID=Debug;"/>
-  </Target>
-  
-  <Target Name="DependDB" DependsOnTargets="CheckVersion">
-    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
-             BuildInParallel="false"
-             Targets="CreateDependDBPackages;UploadToDependDB"
-             Properties="SolutionDirectory=$(SolutionDirectory);
-                         BinariesDirectory=$(BinariesDirectory);
-                         OutputDirectory=$(OutputDirectory);
-                         ArchiveDirectory=$(ArchiveDirectory);
-                         TempDirectory=$(TempDirectory);
-                         Version=$(Version);
-                         DependDBProjectBranch=$(DependDBProjectBranch);
-                         DependDBProjectVersion=$(DependDBProjectVersion);
-                         DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
-                         DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
-                         DependDBProjectImportNotificationMailAddressCc=$(DependDBProjectImportNotificationMailAddressCc);
-                         DependDBUploadPath=$(DependDBUploadPath)"/>
-  </Target>
-  
 </Project>

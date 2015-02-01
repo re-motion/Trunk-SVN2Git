@@ -19,6 +19,7 @@ using System.Xml;
 using System.Xml.Schema;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine.UrlMapping;
+using Remotion.Web.Schemas;
 
 namespace Remotion.Web.UnitTests.Core.ExecutionEngine.UrlMapping
 {

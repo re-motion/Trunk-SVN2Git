@@ -14,17 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
-
 [assembly: AssemblyTitle ("Remotion DomainObjects Database Tools Console")]
-[assembly: AssemblyDescription ("Console application for the Remotion DomainObjects Database Tools Library")]
-[assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
-
+[assembly: AssemblyDescription ("Commandline tool for generating the database schema and other related metadata for an application.")]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]

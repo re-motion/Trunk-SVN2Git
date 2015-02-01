@@ -70,7 +70,7 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\log4net-1.2\net-4.0 (Client Profile)\log4net.dll</HintPath>
+      <HintPath>..\..\..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Web" />
@@ -89,17 +89,17 @@
     <Compile Include="FileProcessor.cs" />
     <Compile Include="RegexProvider.cs" />
     <Compile Include="SchemaValidationObject.cs" />
-    <Compile Include="Schema\ParameterDeclaration.cs" />
-    <Compile Include="Schema\ReturnValueDeclaration.cs" />
-    <Compile Include="Schema\TemplateMode.cs" />
-    <Compile Include="Schema\VariableDeclaration.cs" />
+    <Compile Include="Schemas\ParameterDeclaration.cs" />
+    <Compile Include="Schemas\ReturnValueDeclaration.cs" />
+    <Compile Include="Schemas\TemplateMode.cs" />
+    <Compile Include="Schemas\VariableDeclaration.cs" />
     <Compile Include="TemplateControlFunctionGeneratorBase.cs" />
     <Compile Include="InputException.cs" />
     <Compile Include="LanguageProvider.cs" />
     <Compile Include="PageFunctionGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Schema\FunctionDeclaration.cs" />
+    <Compile Include="Schemas\FunctionDeclaration.cs" />
     <Compile Include="VBProvider.cs" />
     <Compile Include="XmlFragmentContext.cs" />
   </ItemGroup>
@@ -129,18 +129,25 @@
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Schema\FunctionDeclaration.xsd">
+    <EmbeddedResource Include="Schemas\FunctionDeclaration.xsd">
       <SubType>
       </SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\Build\NuSpec\TemplateSharedForTool.nuspec">
+      <Link>TemplateSharedForTool.nuspec</Link>
+    </None>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FacetManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

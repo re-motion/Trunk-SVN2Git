@@ -104,7 +104,7 @@
     </ProjectReference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -495,96 +495,100 @@
     <EmbeddedResource Include="Globalization\BocListNavigationBlockRenderer.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="..\..\Build\NuSpec\TemplateSharedForWeb.nuspec">
+      <Link>TemplateSharedForWeb.nuspec</Link>
+    </None>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <Content Include="Doc\include\Remotion.ObjectBinding.Web.NamespaceDoc.xml" />
-    <Content Include="Doc\include\UI\Controls\BocBooleanValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocCheckBox.xml" />
-    <Content Include="Doc\include\UI\Controls\BocDateTimeValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocDateTimeValueValidator.xml" />
-    <Content Include="Doc\include\UI\Controls\BocDropDownMenu.xml" />
-    <Content Include="Doc\include\UI\Controls\BocEnumValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocList.xml" />
-    <Content Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml">
+    <None Include="Doc\include\Remotion.ObjectBinding.Web.NamespaceDoc.xml" />
+    <None Include="Doc\include\UI\Controls\BocBooleanValue.xml" />
+    <None Include="Doc\include\UI\Controls\BocCheckBox.xml" />
+    <None Include="Doc\include\UI\Controls\BocDateTimeValue.xml" />
+    <None Include="Doc\include\UI\Controls\BocDateTimeValueValidator.xml" />
+    <None Include="Doc\include\UI\Controls\BocDropDownMenu.xml" />
+    <None Include="Doc\include\UI\Controls\BocEnumValue.xml" />
+    <None Include="Doc\include\UI\Controls\BocList.xml" />
+    <None Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
+    <None Include="Doc\include\UI\Controls\BocReferenceValue.xml">
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Doc\include\UI\Controls\BocReferenceValueBase.xml">
+    </None>
+    <None Include="Doc\include\UI\Controls\BocReferenceValueBase.xml">
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Doc\include\UI\Controls\BocTextValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
-    <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />
-    <Content Include="Doc\include\UI\Controls\BocAutoCompleteReferenceValue.xml">
+    </None>
+    <None Include="Doc\include\UI\Controls\BocTextValue.xml" />
+    <None Include="Doc\include\UI\Controls\BocTreeView.xml" />
+    <None Include="Doc\include\UI\Controls\BocLiteral.xml" />
+    <None Include="Doc\include\UI\Controls\BocAutoCompleteReferenceValue.xml">
       <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
-    <Content Include="Res\HTML\BocReferenceValueBase.js" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocBooleanValue.css" />
-    <Content Include="Res\HTML\BocBooleanValue.js" />
-    <Content Include="Res\HTML\BocCheckBox.js" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocCheckBox.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocEnumValue.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocList.css" />
-    <Content Include="Res\HTML\BocList.js" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocAutoCompleteReferenceValue.css" />
-    <Content Include="Res\HTML\BocAutoCompleteReferenceValue.js" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocDateTimeValue.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocAutoCompleteReferenceValue.jquery.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocMultilineTextValue.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocTextValue.css" />
-    <Content Include="Res\Themes\ClassicBlue\HTML\BocReferenceValue.css" />
-    <Content Include="Res\HTML\BocReferenceValue.js" />
-    <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
-    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownButtonFace.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueErrorIndicator.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\ReferenceValueErrorIndicator.gif" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.jquery.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocBooleanValue.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocCheckBox.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocDateTimeValue.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocEnumValue.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocList.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocMultilineTextValue.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocReferenceValue.css" />
-    <Content Include="Res\Themes\NovaBlue\Html\BocTextValue.css" />
-    <Content Include="Res\HTML\TextBoxStyle.js" />
-    <Content Include="Res\Themes\ClassicBlue\Image\CheckBoxFalse.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\CheckBoxNull.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\CheckBoxTrue.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MoveFirst.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MoveFirstInactive.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MoveLast.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MoveLastInactive.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MoveNext.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MoveNextInactive.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MovePrevious.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\SortAscending.gif" />
-    <Content Include="Res\Themes\ClassicBlue\Image\SortDescending.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownButtonFace.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueErrorIndicator.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MoveFirst.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MoveFirstInactive.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MoveLast.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MoveLastInactive.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MoveNext.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MoveNextInactive.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MovePrevious.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\ReferenceValueErrorIndicator.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\SortAscending.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\SortDescending.gif" />
+    </None>
+    <None Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
+    <None Include="packages.config" />
+    <None Include="Res\HTML\BocReferenceValueBase.js" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocBooleanValue.css" />
+    <None Include="Res\HTML\BocBooleanValue.js" />
+    <None Include="Res\HTML\BocCheckBox.js" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocCheckBox.css" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocEnumValue.css" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocList.css" />
+    <None Include="Res\HTML\BocList.js" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocAutoCompleteReferenceValue.css" />
+    <None Include="Res\HTML\BocAutoCompleteReferenceValue.js" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocDateTimeValue.css" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocAutoCompleteReferenceValue.jquery.css" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocMultilineTextValue.css" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocTextValue.css" />
+    <None Include="Res\Themes\ClassicBlue\HTML\BocReferenceValue.css" />
+    <None Include="Res\HTML\BocReferenceValue.js" />
+    <None Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
+    <None Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownButtonFace.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueErrorIndicator.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\ReferenceValueErrorIndicator.gif" />
+    <None Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.jquery.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocBooleanValue.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocCheckBox.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocDateTimeValue.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocEnumValue.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocList.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocMultilineTextValue.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocReferenceValue.css" />
+    <None Include="Res\Themes\NovaBlue\Html\BocTextValue.css" />
+    <None Include="Res\HTML\TextBoxStyle.js" />
+    <None Include="Res\Themes\ClassicBlue\Image\CheckBoxFalse.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\CheckBoxNull.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\CheckBoxTrue.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MoveFirst.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MoveFirstInactive.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MoveLast.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MoveLastInactive.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MoveNext.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MoveNextInactive.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MovePrevious.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\MovePreviousInactive.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\SortAscending.gif" />
+    <None Include="Res\Themes\ClassicBlue\Image\SortDescending.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownButtonFace.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueErrorIndicator.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MoveFirst.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MoveFirstInactive.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MoveLast.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MoveLastInactive.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MoveNext.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MoveNextInactive.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MovePrevious.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\MovePreviousInactive.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\ReferenceValueErrorIndicator.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\SortAscending.gif" />
+    <None Include="Res\Themes\NovaBlue\Image\SortDescending.gif" />
     <EmbeddedResource Include="Globalization\BocBooleanValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -638,6 +642,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FacetManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

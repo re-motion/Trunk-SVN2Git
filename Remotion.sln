@@ -41,42 +41,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 	ProjectSection(SolutionItems) = preProject
 		Build-Remotion.cmd = Build-Remotion.cmd
 		Build-RemotionOneClick.cmd = Build-RemotionOneClick.cmd
-		build\ContentLayout.content = build\ContentLayout.content
-		build\DependDB.ConfigurationTemplate.xml = build\DependDB.ConfigurationTemplate.xml
 		Generate-Snk.cmd = Generate-Snk.cmd
+		Build\GlobalFacetManifest.xml = Build\GlobalFacetManifest.xml
 		How to build.txt = How to build.txt
+		Build\Local.Version.props = Build\Local.Version.props
 		NuGet.config = NuGet.config
-		build\NuGet.ConfigurationTemplate.nuspec = build\NuGet.ConfigurationTemplate.nuspec
-		build\NUnitErrors.xslt = build\NUnitErrors.xslt
-		build\Remotion.AssembleBuildOutput.include.build = build\Remotion.AssembleBuildOutput.include.build
 		build\Remotion.build = build\Remotion.build
-		build\Remotion.BuildTargets.include.build = build\Remotion.BuildTargets.include.build
-		build\Remotion.BuildTargets.Testing.include.build = build\Remotion.BuildTargets.Testing.include.build
-		build\Remotion.Configurations.include.build = build\Remotion.Configurations.include.build
-		build\Remotion.DebugSymbols.include.build = build\Remotion.DebugSymbols.include.build
-		build\Remotion.DependDB.include.build = build\Remotion.DependDB.include.build
-		build\Remotion.Documentation.Core.build = build\Remotion.Documentation.Core.build
-		build\Remotion.Documentation.Dms.build = build\Remotion.Documentation.Dms.build
-		build\Remotion.Documentation.include.build = build\Remotion.Documentation.include.build
-		build\Remotion.Documentation.Remix.build = build\Remotion.Documentation.Remix.build
-		build\Remotion.Documentation.SecurityManager.build = build\Remotion.Documentation.SecurityManager.build
-		build\Remotion.Documentation.TypePipe.build = build\Remotion.Documentation.TypePipe.build
 		build\Remotion.Local.build = build\Remotion.Local.build
-		build\Remotion.NuGet.Packaging.include.build = build\Remotion.NuGet.Packaging.include.build
-		build\Remotion.NuGet.Packaging.TypePipe.build = build\Remotion.NuGet.Packaging.TypePipe.build
-		build\Remotion.Packages.include.build = build\Remotion.Packages.include.build
-		build\Remotion.Packaging.base.build = build\Remotion.Packaging.base.build
-		build\Remotion.Packaging.Core.build = build\Remotion.Packaging.Core.build
-		build\Remotion.Packaging.Dms.build = build\Remotion.Packaging.Dms.build
-		build\Remotion.Packaging.include.build = build\Remotion.Packaging.include.build
-		build\Remotion.Packaging.Remix.build = build\Remotion.Packaging.Remix.build
-		build\Remotion.Packaging.SecurityManager.build = build\Remotion.Packaging.SecurityManager.build
-		build\Remotion.Packaging.TypePipe.build = build\Remotion.Packaging.TypePipe.build
 		build\Remotion.Projects.include.build = build\Remotion.Projects.include.build
+		Build\Remotion.ReleaseNotes.include.build = Build\Remotion.ReleaseNotes.include.build
 		build\Remotion.Server.build = build\Remotion.Server.build
-		build\Remotion.Tasks.include.build = build\Remotion.Tasks.include.build
-		build\SandcastleProjectTemplate.shfbproj = build\SandcastleProjectTemplate.shfbproj
 		build\SecureFileLoggerRules.rules = build\SecureFileLoggerRules.rules
+		Build\Server.Jira.targets = Build\Server.Jira.targets
+		Build\Server.Subversion.targets = Build\Server.Subversion.targets
+		Build\Server.UpdateAssemblyInfos.targets = Build\Server.UpdateAssemblyInfos.targets
+		Build\Server.VersionNumbers.targets = Build\Server.VersionNumbers.targets
+		Build\Shared.Local.Overrides.targets = Build\Shared.Local.Overrides.targets
+		Build\Shared.Overrides.targets = Build\Shared.Overrides.targets
+		Build\Shared.Server.Extensions.targets = Build\Shared.Server.Extensions.targets
+		Build\Shared.Server.Overrides.targets = Build\Shared.Server.Overrides.targets
+		Build\TestingSetupForBrowser.targets = Build\TestingSetupForBrowser.targets
+		Build\TestingSetupForDatabase.targets = Build\TestingSetupForDatabase.targets
 	EndProjectSection
 	ProjectSection(FolderStartupServices) = postProject
 		{B4F97281-0DBD-4835-9ED8-7DFB966E87FF} = {B4F97281-0DBD-4835-9ED8-7DFB966E87FF}
@@ -362,11 +347,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Contracts.DiagnosticMet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectBinding.Web.Contracts.DiagnosticMetadata", "Remotion\ObjectBinding\Web.Contract.DiagnosticMetadata\ObjectBinding.Web.Contracts.DiagnosticMetadata.csproj", "{AD7D0683-130E-4064-8EB7-D9981DCB22BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.ControlObjects", "Remotion\Web\Development.WebTesting.ControlObjects\Web.Development.WebTesting.ControlObjects.csproj", "{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Build", "Remotion\Build\Core.Build.csproj", "{6CBB099A-DE58-48A4-ADC7-D37725B0181C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypePipe.Build", "TypePipe\Build\TypePipe.Build.csproj", "{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecurityManager.Build", "SecurityManager\Build\SecurityManager.Build.csproj", "{AE475361-8DD6-4DAF-8691-5BB8850093FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dms.Build", "Dms\Build\Dms.Build.csproj", "{5952119C-365A-4614-BD29-58EAB1139438}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8C1706D0-5034-4C35-9F3B-3FBF0C552EE6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+		packages\repositories.config = packages\repositories.config
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.WebDriver", "Remotion\Web\Development.WebTesting.WebDriver\Web.Development.WebTesting.WebDriver.csproj", "{8E332462-ED27-4D67-A9B4-36DB4CAD844D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.WebFormsControlObjects", "Remotion\Web\Development.WebTesting.WebFormsControlObjects\Web.Development.WebTesting.WebFormsControlObjects.csproj", "{D2835D55-18C5-427B-A574-3D348A2C1DCC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.ExecutionEngine", "Remotion\Web\Development.WebTesting.ExecutionEngine\Web.Development.WebTesting.ExecutionEngine.csproj", "{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.WebFormsControlObjects", "Remotion\Web\Development.WebTesting.WebFormsControlObjects\Web.Development.WebTesting.WebFormsControlObjects.csproj", "{D2835D55-18C5-427B-A574-3D348A2C1DCC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Development.WebTesting.ControlObjects", "Remotion\Web\Development.WebTesting.ControlObjects\Web.Development.WebTesting.ControlObjects.csproj", "{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1348,22 +1349,46 @@ Global
 		{AD7D0683-130E-4064-8EB7-D9981DCB22BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD7D0683-130E-4064-8EB7-D9981DCB22BC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AD7D0683-130E-4064-8EB7-D9981DCB22BC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5952119C-365A-4614-BD29-58EAB1139438}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -1372,6 +1397,22 @@ Global
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1499,9 +1540,14 @@ Global
 		{652E65FE-81EF-4D91-9C52-1CB781862957} = {72195525-BF6C-43D6-AC96-39E34D02EA34}
 		{B119DB72-9073-401B-8EC9-C8885A2D4800} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
 		{AD7D0683-130E-4064-8EB7-D9981DCB22BC} = {72195525-BF6C-43D6-AC96-39E34D02EA34}
-		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
-		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
+		{6CBB099A-DE58-48A4-ADC7-D37725B0181C} = {5B3CB3F6-DE69-41D6-8BBC-EFF4932F0F7E}
+		{6A1A04E3-5411-4F8C-BCB8-0FE00884DC5A} = {2E38AD70-ECDF-4722-981C-7388C446A514}
+		{AE475361-8DD6-4DAF-8691-5BB8850093FD} = {E1B271E4-22E6-4936-80A5-F0340AAB20A8}
+		{5952119C-365A-4614-BD29-58EAB1139438} = {41F62020-3A67-4A33-B82A-9442510269E3}
+		{8E332462-ED27-4D67-A9B4-36DB4CAD844D} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
 		{D2835D55-18C5-427B-A574-3D348A2C1DCC} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
+		{FEBE7C1A-2CD5-4543-B0F1-DE224D340F51} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
+		{712E5631-9BC0-44DE-BF20-FB3BFECAD9B2} = {2E32EB1E-B3AA-4ACF-BA20-EC6FD44CC05B}
 	EndGlobalSection
 	GlobalSection(TextTemplating) = postSolution
 		TextTemplating = 1

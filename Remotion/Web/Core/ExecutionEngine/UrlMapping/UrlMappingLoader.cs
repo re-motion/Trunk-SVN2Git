@@ -21,6 +21,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.Schema;
 using Remotion.Utilities;
+using Remotion.Web.Schemas;
 using Remotion.Xml;
 
 namespace Remotion.Web.ExecutionEngine.UrlMapping

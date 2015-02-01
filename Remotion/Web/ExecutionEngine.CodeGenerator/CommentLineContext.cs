@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Web.ExecutionEngine.CodeGenerator.Schema;
+using Remotion.Web.ExecutionEngine.CodeGenerator.Schemas;
 
 namespace Remotion.Web.ExecutionEngine.CodeGenerator
 {

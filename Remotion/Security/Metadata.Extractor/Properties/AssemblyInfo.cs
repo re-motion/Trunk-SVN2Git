@@ -14,16 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
 [assembly: AssemblyTitle ("Remotion Security Metadata Extractor")]
-//[assembly: AssemblyDescription("")]
-[assembly: AssemblyCulture("")]		
-[assembly: CLSCompliant(true)]
-
+[assembly: AssemblyDescription ("Commandline tool for extracting an assembly's security metadata.")]
+[assembly: AssemblyCulture ("")]
+[assembly: CLSCompliant (true)]

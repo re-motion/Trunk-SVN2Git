@@ -7,7 +7,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{558839F6-D762-47BA-A26C-1D4AA75D0994}</ProjectGuid>
-    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectTypeGuids>{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Remotion.SecurityManager.Clients.Web</RootNamespace>
@@ -20,21 +20,16 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Remotion.SecurityManager.Clients.Web.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Remotion.SecurityManager.Clients.Web.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
     <WarningsAsErrors>
     </WarningsAsErrors>
@@ -44,18 +39,19 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\Remotion.SecurityManager.Clients.Web.XML</DocumentationFile>
     <NoWarn>1591;0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -70,11 +66,16 @@
     <Reference Include="System.Web.Services" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Default.aspx" />
-    <Content Include="res\Themes\ClassicBlue\Image\ApplyButton.gif" />
-    <Content Include="res\Themes\Legacy\Image\ApplyButton.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\ApplyButton.gif" />
-    <Content Include="Web.config" />
+    <None Include="Default.aspx" />
+    <None Include="..\Build\NuSpec\TemplateSharedForWeb.nuspec">
+      <Link>TemplateSharedForWeb.nuspec</Link>
+    </None>
+    <None Include="FacetManifest.xml" />
+    <None Include="res\Themes\ClassicBlue\Image\ApplyButton.gif" />
+    <None Include="res\Themes\Legacy\Image\ApplyButton.gif" />
+    <None Include="res\Themes\NovaBlue\Image\ApplyButton.gif" />
+    <None Include="Web.config" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SecurityManager AGPL.licenseheader">
@@ -83,84 +84,84 @@
     <None Include="..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <Content Include="Global.asax" />
-    <Content Include="res\Html\EditPermissionsForm.js" />
-    <Content Include="res\Themes\ClassicBlue\Image\CancelButton.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\Collapse.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\DeleteItem.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\EditItem.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\Expand.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThis.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThisAndChildren.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThisAndParent.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\HierarchyThisAndParentAndChildren.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\PermissionDenied.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\PermissionGranted.gif" />
-    <Content Include="res\Themes\ClassicBlue\Image\PermissionUndefined.gif" />
-    <Content Include="res\Themes\Legacy\Html\Style.css" />
-    <Content Include="res\Themes\Legacy\Image\CancelButton.gif" />
-    <Content Include="res\Themes\Legacy\Image\Collapse.gif" />
-    <Content Include="res\Themes\Legacy\Image\DeleteItem.gif" />
-    <Content Include="res\Themes\Legacy\Image\EditItem.gif" />
-    <Content Include="res\Themes\Legacy\Image\Expand.gif" />
-    <Content Include="res\Themes\Legacy\Image\HierarchyThis.gif" />
-    <Content Include="res\Themes\Legacy\Image\HierarchyThisAndChildren.gif" />
-    <Content Include="res\Themes\Legacy\Image\HierarchyThisAndParent.gif" />
-    <Content Include="res\Themes\Legacy\Image\HierarchyThisAndParentAndChildren.gif" />
-    <Content Include="res\Themes\Legacy\Image\PermissionDenied.gif" />
-    <Content Include="res\Themes\Legacy\Image\PermissionGranted.gif" />
-    <Content Include="res\Themes\Legacy\Image\PermissionUndefined.gif" />
-    <Content Include="res\Themes\NovaBlue\Html\Style.css" />
-    <Content Include="res\Themes\NovaBlue\Image\CancelButton.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\Collapse.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\DeleteItem.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\EditItem.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\Expand.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\HierarchyThis.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\HierarchyThisAndChildren.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\HierarchyThisAndParent.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\HierarchyThisAndParentAndChildren.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\PermissionDenied.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\PermissionGranted.gif" />
-    <Content Include="res\Themes\NovaBlue\Image\PermissionUndefined.gif" />
-    <Content Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
-    <Content Include="UI\SecurityManagerSearchWebService.asmx" />
-    <Content Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
-    <Content Include="UI\AccessControl\EditPermissionControl.ascx" />
-    <Content Include="UI\AccessControl\EditAccessControlEntryControl.ascx" />
-    <Content Include="UI\AccessControl\EditStateCombinationControl.ascx" />
-    <Content Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx" />
-    <Content Include="UI\AccessControl\EditPermissionsForm.aspx" />
-    <Content Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\TenantListForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\TenantListControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\EditTenantForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\EditTenantControl.ascx" />
-    <Content Include="UI\SecurityManagerCurrentTenantControl.ascx" />
-    <Content Include="UI\SecurityManagerMasterPage.Master" />
-    <Content Include="UI\ErrorMessageControl.ascx" />
-    <Content Include="SecurityManagerUrlMapping.xml">
+    <None Include="Global.asax" />
+    <None Include="res\Html\EditPermissionsForm.js" />
+    <None Include="res\Themes\ClassicBlue\Image\CancelButton.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\Collapse.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\DeleteItem.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\EditItem.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\Expand.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\HierarchyThis.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\HierarchyThisAndChildren.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\HierarchyThisAndParent.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\HierarchyThisAndParentAndChildren.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\PermissionDenied.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\PermissionGranted.gif" />
+    <None Include="res\Themes\ClassicBlue\Image\PermissionUndefined.gif" />
+    <None Include="res\Themes\Legacy\Html\Style.css" />
+    <None Include="res\Themes\Legacy\Image\CancelButton.gif" />
+    <None Include="res\Themes\Legacy\Image\Collapse.gif" />
+    <None Include="res\Themes\Legacy\Image\DeleteItem.gif" />
+    <None Include="res\Themes\Legacy\Image\EditItem.gif" />
+    <None Include="res\Themes\Legacy\Image\Expand.gif" />
+    <None Include="res\Themes\Legacy\Image\HierarchyThis.gif" />
+    <None Include="res\Themes\Legacy\Image\HierarchyThisAndChildren.gif" />
+    <None Include="res\Themes\Legacy\Image\HierarchyThisAndParent.gif" />
+    <None Include="res\Themes\Legacy\Image\HierarchyThisAndParentAndChildren.gif" />
+    <None Include="res\Themes\Legacy\Image\PermissionDenied.gif" />
+    <None Include="res\Themes\Legacy\Image\PermissionGranted.gif" />
+    <None Include="res\Themes\Legacy\Image\PermissionUndefined.gif" />
+    <None Include="res\Themes\NovaBlue\Html\Style.css" />
+    <None Include="res\Themes\NovaBlue\Image\CancelButton.gif" />
+    <None Include="res\Themes\NovaBlue\Image\Collapse.gif" />
+    <None Include="res\Themes\NovaBlue\Image\DeleteItem.gif" />
+    <None Include="res\Themes\NovaBlue\Image\EditItem.gif" />
+    <None Include="res\Themes\NovaBlue\Image\Expand.gif" />
+    <None Include="res\Themes\NovaBlue\Image\HierarchyThis.gif" />
+    <None Include="res\Themes\NovaBlue\Image\HierarchyThisAndChildren.gif" />
+    <None Include="res\Themes\NovaBlue\Image\HierarchyThisAndParent.gif" />
+    <None Include="res\Themes\NovaBlue\Image\HierarchyThisAndParentAndChildren.gif" />
+    <None Include="res\Themes\NovaBlue\Image\PermissionDenied.gif" />
+    <None Include="res\Themes\NovaBlue\Image\PermissionGranted.gif" />
+    <None Include="res\Themes\NovaBlue\Image\PermissionUndefined.gif" />
+    <None Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
+    <None Include="UI\SecurityManagerSearchWebService.asmx" />
+    <None Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
+    <None Include="UI\AccessControl\EditPermissionControl.ascx" />
+    <None Include="UI\AccessControl\EditAccessControlEntryControl.ascx" />
+    <None Include="UI\AccessControl\EditStateCombinationControl.ascx" />
+    <None Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx" />
+    <None Include="UI\AccessControl\EditPermissionsForm.aspx" />
+    <None Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx" />
+    <None Include="UI\OrganizationalStructure\TenantListForm.aspx" />
+    <None Include="UI\OrganizationalStructure\TenantListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditTenantForm.aspx" />
+    <None Include="UI\OrganizationalStructure\EditTenantControl.ascx" />
+    <None Include="UI\SecurityManagerCurrentTenantControl.ascx" />
+    <None Include="UI\SecurityManagerMasterPage.Master" />
+    <None Include="UI\ErrorMessageControl.ascx" />
+    <None Include="UrlMapping.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="res\Themes\ClassicBlue\Html\Style.css" />
-    <Content Include="UI\OrganizationalStructure\EditGroupControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\EditGroupForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\EditGroupTypeControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\EditGroupTypeForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\EditPositionControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\EditPositionForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\EditUserControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\EditUserForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\GroupListControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\GroupListForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\GroupTypeListControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\GroupTypeListForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\PositionListControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\PositionListForm.aspx" />
-    <Content Include="UI\OrganizationalStructure\UserListControl.ascx" />
-    <Content Include="UI\OrganizationalStructure\UserListForm.aspx" />
-    <Content Include="UI\SecurityManagerNavigationTabs.ascx" />
-    <Content Include="WxeHandler.ashx" />
+    </None>
+    <None Include="res\Themes\ClassicBlue\Html\Style.css" />
+    <None Include="UI\OrganizationalStructure\EditGroupControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditGroupForm.aspx" />
+    <None Include="UI\OrganizationalStructure\EditGroupTypeControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditGroupTypeForm.aspx" />
+    <None Include="UI\OrganizationalStructure\EditPositionControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditPositionForm.aspx" />
+    <None Include="UI\OrganizationalStructure\EditUserControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditUserForm.aspx" />
+    <None Include="UI\OrganizationalStructure\GroupListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\GroupListForm.aspx" />
+    <None Include="UI\OrganizationalStructure\GroupTypeListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\GroupTypeListForm.aspx" />
+    <None Include="UI\OrganizationalStructure\PositionListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\PositionListForm.aspx" />
+    <None Include="UI\OrganizationalStructure\UserListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\UserListForm.aspx" />
+    <None Include="UI\SecurityManagerNavigationTabs.ascx" />
+    <None Include="WxeHandler.ashx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblyInfoShared.cs">
@@ -567,26 +568,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="AfterBuild">
-    <Delete Files="@(MappingFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
-    <Copy SourceFiles="@(MappingFiles->'%(Fullpath)')" DestinationFiles="@(MappingFiles->'$(MSBuildProjectDirectory)\$(OutputPath)\%(FileName)%(Extension)')" />
-  </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
-        <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>3039</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:60400/trunk/SecurityManager.Clients.Web/</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-        </WebProjectProperties>
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

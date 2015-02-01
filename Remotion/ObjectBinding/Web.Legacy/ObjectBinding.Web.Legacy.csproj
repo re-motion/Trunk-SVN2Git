@@ -66,7 +66,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\prereq\Assemblies\CommonServiceLocator-1.0\net-2.0\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -114,6 +114,9 @@
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocMultilineTextValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocReferenceValueQuirksModeRenderer.cs" />
     <Compile Include="UI\Controls\BocTextValueImplementation\Rendering\BocTextValueQuirksModeRenderer.cs" />
+    <None Include="..\..\Build\NuSpec\TemplateSharedForWeb.nuspec">
+      <Link>TemplateSharedForWeb.nuspec</Link>
+    </None>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
@@ -160,45 +163,46 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Doc\include\UI\Controls\BocBooleanValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocCheckBoxRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocDateTimeValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocEnumValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocListRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocMultilineTextValueRenderer.xml" />
-    <Content Include="Doc\include\UI\Controls\BocTextValueRenderer.xml" />
-    <Content Include="Res\HTML\BocAutoCompleteReferenceValue.css" />
-    <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.css" />
-    <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
-    <Content Include="Res\HTML\BocAutoCompleteReferenceValue.js" />
-    <Content Include="Res\HTML\BocBooleanValue.css" />
-    <Content Include="Res\HTML\BocBooleanValue.js" />
-    <Content Include="Res\HTML\BocCheckBox.css" />
-    <Content Include="Res\HTML\BocCheckBox.js" />
-    <Content Include="Res\HTML\BocDateTimeValue.css" />
-    <Content Include="Res\HTML\BocEnumValue.css" />
-    <Content Include="Res\HTML\BocList.css" />
-    <Content Include="Res\HTML\BocList.js" />
-    <Content Include="Res\HTML\BocMultilineTextValue.css" />
-    <Content Include="Res\HTML\BocReferenceValue.css" />
-    <Content Include="Res\HTML\BocReferenceValue.js" />
-    <Content Include="Res\HTML\BocReferenceValueBase.js" />
-    <Content Include="Res\HTML\BocTextValue.css" />
-    <Content Include="Res\Image\CheckBoxFalse.gif" />
-    <Content Include="Res\Image\CheckBoxNull.gif" />
-    <Content Include="Res\Image\CheckBoxTrue.gif" />
-    <Content Include="Res\Image\DropDownMenuArrow.gif" />
-    <Content Include="Res\Image\MoveFirst.gif" />
-    <Content Include="Res\Image\MoveFirstInactive.gif" />
-    <Content Include="Res\Image\MoveLast.gif" />
-    <Content Include="Res\Image\MoveLastInactive.gif" />
-    <Content Include="Res\Image\MoveNext.gif" />
-    <Content Include="Res\Image\MoveNextInactive.gif" />
-    <Content Include="Res\Image\MovePrevious.gif" />
-    <Content Include="Res\Image\MovePreviousInactive.gif" />
-    <Content Include="Res\Image\RequestInProgressIndicator.gif" />
-    <Content Include="Res\Image\SortAscending.gif" />
-    <Content Include="Res\Image\SortDescending.gif" />
+    <None Include="Doc\include\UI\Controls\BocBooleanValueRenderer.xml" />
+    <None Include="Doc\include\UI\Controls\BocCheckBoxRenderer.xml" />
+    <None Include="Doc\include\UI\Controls\BocDateTimeValueRenderer.xml" />
+    <None Include="Doc\include\UI\Controls\BocEnumValueRenderer.xml" />
+    <None Include="Doc\include\UI\Controls\BocListRenderer.xml" />
+    <None Include="Doc\include\UI\Controls\BocMultilineTextValueRenderer.xml" />
+    <None Include="Doc\include\UI\Controls\BocTextValueRenderer.xml" />
+    <None Include="packages.config" />
+    <None Include="Res\HTML\BocAutoCompleteReferenceValue.css" />
+    <None Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.css" />
+    <None Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
+    <None Include="Res\HTML\BocAutoCompleteReferenceValue.js" />
+    <None Include="Res\HTML\BocBooleanValue.css" />
+    <None Include="Res\HTML\BocBooleanValue.js" />
+    <None Include="Res\HTML\BocCheckBox.css" />
+    <None Include="Res\HTML\BocCheckBox.js" />
+    <None Include="Res\HTML\BocDateTimeValue.css" />
+    <None Include="Res\HTML\BocEnumValue.css" />
+    <None Include="Res\HTML\BocList.css" />
+    <None Include="Res\HTML\BocList.js" />
+    <None Include="Res\HTML\BocMultilineTextValue.css" />
+    <None Include="Res\HTML\BocReferenceValue.css" />
+    <None Include="Res\HTML\BocReferenceValue.js" />
+    <None Include="Res\HTML\BocReferenceValueBase.js" />
+    <None Include="Res\HTML\BocTextValue.css" />
+    <None Include="Res\Image\CheckBoxFalse.gif" />
+    <None Include="Res\Image\CheckBoxNull.gif" />
+    <None Include="Res\Image\CheckBoxTrue.gif" />
+    <None Include="Res\Image\DropDownMenuArrow.gif" />
+    <None Include="Res\Image\MoveFirst.gif" />
+    <None Include="Res\Image\MoveFirstInactive.gif" />
+    <None Include="Res\Image\MoveLast.gif" />
+    <None Include="Res\Image\MoveLastInactive.gif" />
+    <None Include="Res\Image\MoveNext.gif" />
+    <None Include="Res\Image\MoveNextInactive.gif" />
+    <None Include="Res\Image\MovePrevious.gif" />
+    <None Include="Res\Image\MovePreviousInactive.gif" />
+    <None Include="Res\Image\RequestInProgressIndicator.gif" />
+    <None Include="Res\Image\SortAscending.gif" />
+    <None Include="Res\Image\SortDescending.gif" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Globalization\BocListNavigationBlockQuirksModeRenderer.de.resx">
@@ -207,6 +211,9 @@
     <EmbeddedResource Include="Globalization\BocListNavigationBlockQuirksModeRenderer.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FacetManifest.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
