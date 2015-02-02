@@ -55,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_BuildFiles", "_BuildFiles"
 		Build\Server.Jira.targets = Build\Server.Jira.targets
 		Build\Server.Subversion.targets = Build\Server.Subversion.targets
 		Build\Server.UpdateAssemblyInfos.targets = Build\Server.UpdateAssemblyInfos.targets
+		Build\Server.Version.props = Build\Server.Version.props
 		Build\Server.VersionNumbers.targets = Build\Server.VersionNumbers.targets
 		Build\Shared.Local.Overrides.targets = Build\Shared.Local.Overrides.targets
 		Build\Shared.Overrides.targets = Build\Shared.Overrides.targets

@@ -22,7 +22,7 @@
 
   <PropertyGroup>
     <ReleaseType>LOCAL</ReleaseType>
-    <NuGetVersionSuffix>X</NuGetVersionSuffix>
+    <NuGetVersionSuffix>x</NuGetVersionSuffix>
     <SvnBranchFolder>local</SvnBranchFolder>  
     <SvnRevision>0</SvnRevision>
 
