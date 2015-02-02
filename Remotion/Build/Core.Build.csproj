@@ -40,7 +40,7 @@
     <None Include="Customizations\Properties.targets">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Customizations\Server\Extensions.targets" />
+    <None Include="Customizations\Extensions.targets" />
     <None Include="Customizations\Server\Configuration.targets" />
     <None Include="Customizations\Server\Shared.targets" />
     <None Include="Customizations\Version.targets" />
