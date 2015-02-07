@@ -20,7 +20,7 @@
 <package
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://rubicon.eu/Schemas/Packaging/NuGet/FacetManifest/1.0"
-    feature="Remotion.Web.Contract.DiagnosticMetadata"
+    feature="Remotion.Web.Contracts.DiagnosticMetadata"
     layer="Core">
   <extends>
     <feature name="Remotion.ObjectBinding" />
