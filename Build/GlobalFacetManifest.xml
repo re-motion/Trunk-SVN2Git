@@ -3,6 +3,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://rubicon.eu/Schemas/Packaging/NuGet/FacetManifest/1.0">
 
+  <package id="log4net"
+           feature="_Shared"
+           layer="_References"/>
+
   <package id="FluentValidation-Signed"
            feature="FluentValidation"
            layer="_References"/>
