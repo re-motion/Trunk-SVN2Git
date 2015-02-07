@@ -21,8 +21,8 @@
 
   <Target Name="ArtifactBuild_Configuration">
     <PropertyGroup>
-      <Platforms>x86</Platforms>
-      <DatabaseSystems>SqlServer2008R2</DatabaseSystems>
+      <Platforms>x64</Platforms>
+      <DatabaseSystems>SqlServer2012</DatabaseSystems>
       <Browsers></Browsers>
       <SkipDocumentation>True</SkipDocumentation>
     </PropertyGroup>
