@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.Design;
-using System.Text;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Remotion.Reflection.TypeDiscovery;
 
@@ -27,106 +25,39 @@ namespace Remotion.Utilities
   /// <summary>
   /// Utility methods for handling types.
   /// </summary>
-  public static class TypeUtility
+  public static partial class TypeUtility
   {
+    #region Obsolete
+
     /// <summary>
-    /// The implementation of <see cref="TypeUtility.ParseAbbreviatedTypeName"/>, implemented in a nested class in order to prevent unnecessary
-    /// initialization of pre-compiled regular expressions.
+    ///   Loads a type, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
     /// </summary>
-    private class AbbreviationParser
+    [Obsolete (
+        "GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity "
+        + "is required, use Type.GetType. To use abbreviated type names for the lookup, use ParseAbbreviatedTypeName.", true)]
+    [CanBeNull]
+    public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
     {
-      private readonly Regex _enclosedQualifiedTypeRegex;
-      private readonly Regex _enclosedTypeRegex;
-      private readonly Regex _typeRegex;
-
-      public AbbreviationParser ()
-      {
-        const string typeNamePattern = //  <asm>::<type>
-            @"(?<asm>[^\[\]\,]+)" //       <asm> is the assembly part of the type name (before ::)
-            + @"::"
-            + @"(?<type>[^\[\]\,]+)"; //   <type> is the partially qualified type name (after ::)
-
-        const string bracketPattern = //   [...] (an optional pair of matching square brackets and anything in between)
-            @"(?<br> \[            " //    see "Mastering Regular Expressions" (O'Reilly) for how the construct "balancing group definition" 
-            + @"  (                " //    is used to match brackets: http://www.oreilly.com/catalog/regex2/chapter/ch09.pdf
-            + @"      [^\[\]]      "
-            + @"    |              "
-            + @"      \[ (?<d>)    " //    increment nesting counter <d>
-            + @"    |              "
-            + @"      \] (?<-d>)   " //    decrement <d>
-            + @"  )*               "
-            + @"  (?(d)(?!))       " //    ensure <d> is 0 before considering next match
-            + @"\] )?              ";
-
-        const string strongNameParts = // comma-separated list of name=value pairs
-            @"(?<sn> (, \s* \w+ = [^,]+ )* )";
-
-        const string typePattern = // <asm>::<type>[...] (square brackets are optional)
-            typeNamePattern
-            + bracketPattern;
-
-        const string openUnqualifiedPattern = // requires the pattern to be preceded by [ or ,
-            @"(?<= [\[,] )";
-        const string closeUnqualifiedPattern = // requires the pattern to be followed by ] or ,
-            @"(?= [\],] )";
-
-        const string enclosedTypePattern = // type within argument list
-            openUnqualifiedPattern
-            + typePattern
-            + closeUnqualifiedPattern;
-
-        const string qualifiedTypePattern = // <asm>::<type>[...], name=val, name=val ... (square brackets are optional)
-            typePattern
-            + strongNameParts;
-
-        const string openQualifiedPattern = // requires the pattern to be preceded by [[ or ,[
-            @"(?<= [\[,] \[)";
-        const string closeQualifiedPattern = // requires the pattern to be followed by ]] or ],
-            @"(?= \] [\],] )";
-
-        const string enclosedQualifiedTypePattern = // qualified type within argument list
-            openQualifiedPattern
-            + qualifiedTypePattern
-            + closeQualifiedPattern;
-
-        // Do not use RegexOptions.Compiled because it takes 200ms to compile which is not offset by the calls made after cache lookups.
-        // This is an issue in .NET up to at least version 4.5.1 in x64 mode.
-        const RegexOptions options = RegexOptions.ExplicitCapture | RegexOptions.IgnorePatternWhitespace;
-        _enclosedQualifiedTypeRegex = new Regex (enclosedQualifiedTypePattern, options);
-        _enclosedTypeRegex = new Regex (enclosedTypePattern, options);
-        _typeRegex = new Regex (typePattern, options);
-      }
-
-      public string ParseAbbreviatedTypeName (string abbreviatedTypeName)
-      {
-        ArgumentUtility.CheckNotNull ("abbreviatedTypeName", abbreviatedTypeName);
-
-        string fullTypeName = abbreviatedTypeName;
-        const string replace = @"${asm}.${type}${br}, ${asm}";
-        fullTypeName = ReplaceRecursive (_enclosedQualifiedTypeRegex, fullTypeName, replace + "${sn}");
-        fullTypeName = ReplaceRecursive (_enclosedTypeRegex, fullTypeName, "[" + replace + "]");
-        fullTypeName = _typeRegex.Replace (fullTypeName, replace);
-
-        return fullTypeName;
-      }
-
-      private string ReplaceRecursive (Regex regex, string input, string replacement)
-      {
-        string result = regex.Replace (input, replacement);
-        while (result != input)
-        {
-          input = result;
-          result = regex.Replace (input, replacement);
-        }
-        return result;
-      }
+      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
+      return Type.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError, ignoreCase);
     }
+
+    [Obsolete ("Use GetType (string, bool) instead. (Version 1.15.30.0)")]
+    public static Type GetDesignModeType ([NotNull]string abbreviatedTypeName, bool throwOnError)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
+      return GetType (abbreviatedTypeName, throwOnError);
+    }
+
+    #endregion
 
     private static readonly ConcurrentDictionary<string, string> s_fullTypeNames = new ConcurrentDictionary<string, string> ();
     private static readonly ConcurrentDictionary<Type, string> s_partialAssemblyQualifiedNameCache = new ConcurrentDictionary<Type, string>();
 
     /// <summary>The <see cref="Lazy{T}"/> protects the expensive regex-creation.</summary>
     private static readonly Lazy<AbbreviationParser> s_abbreviationParser = new Lazy<AbbreviationParser> (() => new AbbreviationParser());
+
+    private static readonly AbbreviationBuilder s_abbreviationBuilder = new AbbreviationBuilder();
 
     /// <summary>
     ///   Converts abbreviated qualified type names into standard qualified type names.
@@ -136,22 +67,25 @@ namespace Remotion.Utilities
     ///   abbreviated type name <c>"Remotion.Web::Utilities.ControlHelper"</c> would result in the standard
     ///   type name <c>"Remotion.Web.Utilities.ControlHelper, Remotion.Web"</c>.
     /// </remarks>
-    /// <param name="abbreviatedTypeName"> A standard or abbreviated type name. </param>
+    /// <param name="typeName"> A standard or abbreviated type name. </param>
     /// <returns> A standard type name as expected by <see cref="Type.GetType(string)"/>. </returns>
-    public static string ParseAbbreviatedTypeName ([CanBeNull]string abbreviatedTypeName)
+    [CanBeNull]
+    [ContractAnnotation ("typeName:notnull => notnull;typeName:null => null")]
+    public static string ParseAbbreviatedTypeName ([CanBeNull]string typeName)
     {
-      if (abbreviatedTypeName == null)
+      if (typeName == null)
         return null;
 
-      return s_fullTypeNames.GetOrAdd (abbreviatedTypeName, AbbreviatedTypeNameWithoutCache);
+      return s_fullTypeNames.GetOrAdd (typeName, ParseAbbreviatedTypeNameWithoutCache);
     }
 
-    private static string AbbreviatedTypeNameWithoutCache ([NotNull] string abbreviatedTypeName)
+    private static string ParseAbbreviatedTypeNameWithoutCache ([NotNull] string typeName)
     {
-      if (!abbreviatedTypeName.Contains ("::"))
-        return abbreviatedTypeName;
+      // Optimization to prevent instantiating the AbbreviationParser unless necessary.
+      if (!AbbreviationParser.IsAbbreviatedTypeName (typeName))
+        return typeName;
 
-      return s_abbreviationParser.Value.ParseAbbreviatedTypeName (abbreviatedTypeName);
+      return s_abbreviationParser.Value.ParseAbbreviatedTypeName (typeName);
     }
 
     /// <summary>
@@ -184,104 +118,23 @@ namespace Remotion.Utilities
     }
 
     /// <summary>
-    ///   Loads a type, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
+    /// Gets the type and assembly name without the version, culture, and public key token.
     /// </summary>
-    [Obsolete (
-        "GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity "
-        + "is required, use Type.GetType. To use abbreviated type names for the lookup, use ParseAbbreviatedTypeName.", true)]
-    [CanBeNull]
-    public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return Type.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError, ignoreCase);
-    }
-
+    [NotNull]
     public static string GetPartialAssemblyQualifiedName ([NotNull]Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       return s_partialAssemblyQualifiedNameCache.GetOrAdd (type, key => key.FullName + ", " + key.Assembly.GetName ().Name);
     }
 
-    [Obsolete ("Use GetType (string, bool) instead. (Version 1.15.30.0)")]
-    public static Type GetDesignModeType ([NotNull]string abbreviatedTypeName, bool throwOnError)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return GetType (abbreviatedTypeName, throwOnError);
-    }
-
     /// <summary>
     /// Gets the type name in abbreviated syntax (<see cref="ParseAbbreviatedTypeName"/>).
     /// </summary>
+    [NotNull]
     public static string GetAbbreviatedTypeName ([NotNull]Type type, bool includeVersionAndCulture)
     {
-      StringBuilder sb = new StringBuilder (50);
-      BuildAbbreviatedTypeName (sb, type, includeVersionAndCulture, false);
-      return sb.ToString();
-    }
-
-    private static void BuildAbbreviatedTypeName (StringBuilder sb, Type type, bool includeVersionAndCulture, bool isTypeParameter)
-    {
-      string ns = type.Namespace ?? string.Empty;
-      string asm = type.Assembly.GetName().Name;
-      bool canAbbreviate = ns.StartsWith (asm);
-
-      // put type paramters in [brackets] if they include commas, so the commas cannot be confused with type parameter separators
-      bool needsBrackets = isTypeParameter && (includeVersionAndCulture || !canAbbreviate);
-      if (needsBrackets)
-        sb.Append ("[");
-
-      if (canAbbreviate)
-      {
-        var nsLength = string.IsNullOrEmpty (ns) ? 0 : ns.Length + 1;
-        var name = StripTypeParametersFromName (type.FullName.Substring (nsLength));
-        sb.Append (asm).Append ("::");
-
-        if (ns.Length > asm.Length)
-          sb.Append (ns.Substring (asm.Length + 1)).Append ('.').Append (name);
-        else
-          sb.Append (name);
-
-        BuildAbbreviatedTypeParameters (sb, type, includeVersionAndCulture);
-      }
-      else
-      {
-        sb.Append (StripTypeParametersFromName (type.FullName));
-        BuildAbbreviatedTypeParameters (sb, type, includeVersionAndCulture);
-        sb.Append (", ").Append (asm);
-      }
-
-      if (includeVersionAndCulture)
-        sb.Append (type.Assembly.FullName.Substring (asm.Length));
-
-      if (needsBrackets)
-        sb.Append ("]");
-    }
-
-    private static string StripTypeParametersFromName (string typeName)
-    {
-      var p = typeName.IndexOf ('[');
-      return p < 0 ? typeName : typeName.Substring (0, p);
-    }
-
-    private static void BuildAbbreviatedTypeParameters (StringBuilder sb, Type type, bool includeVersionAndCulture)
-    {
-      if (type.IsGenericType && !type.IsGenericTypeDefinition)
-      {
-        Type[] typeParams = type.GetGenericArguments();
-        if (typeParams.Length > 0)
-        {
-          sb.Append ("[");
-          for (int i = 0; i < typeParams.Length; ++i)
-          {
-            if (i > 0)
-              sb.Append (", ");
-
-            Type typeParam = typeParams[i];
-            BuildAbbreviatedTypeName (sb, typeParam, includeVersionAndCulture, true);
-          }
-          sb.Append ("]");
-        }
-      }
+      ArgumentUtility.CheckNotNull ("type", type);
+      return s_abbreviationBuilder.BuildAbbreviatedTypeName (type, includeVersionAndCulture);
     }
   }
 }

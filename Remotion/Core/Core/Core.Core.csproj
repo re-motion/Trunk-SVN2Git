@@ -430,6 +430,7 @@
     <Compile Include="Utilities\TypeUtility.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\TypeUtility.AbbreviationParser.cs" />
     <Compile Include="Utilities\UtcNowProvider.cs" />
     <Compile Include="Xml\SchemaLoaderBase.cs" />
     <Compile Include="Xml\XmlSchemaValidationErrorInfo.cs" />
@@ -460,6 +461,7 @@
     <None Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <None Include="doc\include\Remotion.NamespaceDoc.xml" />
     <None Include="packages.config" />
+    <Compile Include="Utilities\TypeUtility.AbbreviationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
