@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel.Design;
 using Remotion.Design;
 
 namespace Remotion.Utilities
@@ -49,26 +48,9 @@ namespace Remotion.Utilities
       }
     }
 
-    public static IDesignerHost DesignerHost
-    {
-      get
-      {
-        CheckDesignMode();
-        return s_designModeHelper.DesignerHost;
-      }
-    }
-
     public static bool IsDesignMode
     {
       get { return s_isDesignMode; }
-    }
-
-    public static Type GetDesignModeType (string typeName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
-      CheckDesignMode ();
-
-      return DesignerHost.GetType (typeName);
     }
 
     private static void CheckDesignMode ()

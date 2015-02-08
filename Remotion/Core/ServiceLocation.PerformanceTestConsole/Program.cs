@@ -18,7 +18,7 @@
 using System;
 using System.Linq;
 using log4net.Config;
-using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -30,7 +30,7 @@ namespace Core.ServiceLocation.PerformanceTestConsole
     {
       Console.WriteLine ("{0} - Application started", DateTime.Now.ToString ("yyyy-MM-dd hh:mm:ss,fff"));
       XmlConfigurator.Configure();
-      var typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
+      var typeDiscoveryService = ContextAwareTypeUtility.GetTypeDiscoveryService();
       var domainObjectType = Type.GetType ("Remotion.Data.DomainObjects.DomainObject, Remotion.Data.DomainObjects", true, false);
       typeDiscoveryService.GetTypes (domainObjectType, false);
       typeDiscoveryService.GetTypes (domainObjectType, false);

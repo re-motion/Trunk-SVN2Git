@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel.Design;
 using System.Configuration;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -25,7 +26,7 @@ using Remotion.Utilities;
 namespace Remotion.Configuration.TypeDiscovery
 {
   /// <summary>
-  /// Configures the type discovery performed by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>.
+  /// Configures ContextAwareTypeUtilityormed by <see cref="ContextAwareTypeUtility.GetTypeDiscoveryService"/>.
   /// </summary>
   public sealed class TypeDiscoveryConfiguration : ConfigurationSection
   {
@@ -34,9 +35,8 @@ namespace Remotion.Configuration.TypeDiscovery
 
     /// <summary>
     /// Gets the current <see cref="TypeDiscoveryConfiguration"/> instance. This is used by 
-    /// <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/> to retrieve a <see cref="ITypeDiscoveryService"/> instance if
-    /// <see cref="DesignerUtility.IsDesignMode"/> is not set to <see langword="true" /> and no specific 
-    /// <see cref="ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService"/> instance has been set.
+    /// <see cref="ContextAwareTypeUtility.GetTypeDiscoveryService"/> to retrieve a <see cref="ITypeDiscoveryService"/> instance if
+    /// <see cref="DesignerUtility.IsDesignMode"/> is not set to <see langword="true" />.
     /// </summary>
     /// <value>The current <see cref="TypeDiscoveryConfiguration"/>.</value>
     public static TypeDiscoveryConfiguration Current

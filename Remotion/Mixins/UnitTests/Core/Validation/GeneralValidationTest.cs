@@ -26,6 +26,7 @@ using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain;
 using Remotion.Mixins.Validation;
 using Remotion.Mixins.Validation.Rules;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Mixins.UnitTests.Core.Validation
@@ -41,7 +42,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       var validationTestDomainNamespace = typeof (AbstractMixinWithoutBase).Namespace;
       var globalTestDomainNamespace = typeof (BaseType1).Namespace;
       var typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (
-          ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(), validationTestDomainNamespace, globalTestDomainNamespace);
+          ContextAwareTypeUtility.GetTypeDiscoveryService(), validationTestDomainNamespace, globalTestDomainNamespace);
       var types = typeDiscoveryService.GetTypes (null, false);
       _configurationScope = DeclarativeConfigurationBuilder.BuildConfigurationFromTypes (null, types.Cast<Type>()).EnterScope();
     }

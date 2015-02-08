@@ -21,7 +21,7 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -39,7 +39,7 @@ namespace Remotion.ExtensibleEnums.Infrastructure
 
     public ExtensibleEnumValueDiscoveryService ()
     {
-      _typeDiscoveryService = ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ();
+      _typeDiscoveryService = ContextAwareTypeUtility.GetTypeDiscoveryService ();
     }
 
     protected ExtensibleEnumValueDiscoveryService (ITypeDiscoveryService typeDiscoveryService)

@@ -23,6 +23,7 @@ using Remotion.Design;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
@@ -106,7 +107,6 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
 
       try
       {
-        ContextAwareTypeDiscoveryUtility.DefaultNonDesignModeService = null;
         DeclarativeConfigurationBuilder.BuildDefaultConfiguration ();
       }
       finally

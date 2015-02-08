@@ -55,7 +55,7 @@ namespace Remotion.ServiceLocation
 
     public static DefaultServiceConfigurationDiscoveryService Create ()
     {
-      return new DefaultServiceConfigurationDiscoveryService(ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService());
+      return new DefaultServiceConfigurationDiscoveryService(ContextAwareTypeUtility.GetTypeDiscoveryService());
     }
 
     public DefaultServiceConfigurationDiscoveryService (ITypeDiscoveryService typeDiscoveryService)

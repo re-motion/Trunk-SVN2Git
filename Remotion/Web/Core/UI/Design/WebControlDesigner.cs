@@ -43,7 +43,7 @@ namespace Remotion.Web.UI.Design
       IDesignerHost designerHost = (IDesignerHost) component.Site.GetService (typeof (IDesignerHost));
       Assertion.IsNotNull (designerHost, "No IDesignerHost found.");
 
-      if (!DesignerUtility.IsDesignMode || !object.ReferenceEquals (DesignerUtility.DesignerHost, designerHost))
+      if (!DesignerUtility.IsDesignMode || !object.ReferenceEquals (DesignerUtility.DesignModeHelper.DesignerHost, designerHost))
         DesignerUtility.SetDesignMode (new WebDesginModeHelper (designerHost));
 
       EnsureCheckForDuplicateAssemblies();

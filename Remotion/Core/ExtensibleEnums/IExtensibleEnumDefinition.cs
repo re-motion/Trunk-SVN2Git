@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.ExtensibleEnums.Infrastructure;
-using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection;
 
 namespace Remotion.ExtensibleEnums
 {
@@ -61,7 +61,7 @@ namespace Remotion.ExtensibleEnums
     /// <returns>A <see cref="ReadOnlyCollection{T}"/> holding the <see cref="IExtensibleEnumInfo"/> objects describing the values for the 
     /// extensible enum type.</returns>
     /// <remarks>
-    /// By default, the values are retrieved by scanning all types found by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
+    /// By default, the values are retrieved by scanning all types found by <see cref="ContextAwareTypeUtility.GetTypeDiscoveryService"/>
     /// and discovering the extension methods defining values via <see cref="ExtensibleEnumValueDiscoveryService"/>.
     /// </remarks>
     ReadOnlyCollection<IExtensibleEnumInfo> GetValueInfos ();

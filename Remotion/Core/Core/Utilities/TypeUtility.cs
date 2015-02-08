@@ -18,6 +18,7 @@ using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.Design;
 using JetBrains.Annotations;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Utilities
@@ -25,6 +26,7 @@ namespace Remotion.Utilities
   /// <summary>
   /// Utility methods for handling types.
   /// </summary>
+  /// <threadsafety static="true" instance="false"/>
   public static partial class TypeUtility
   {
     #region Obsolete
@@ -36,17 +38,18 @@ namespace Remotion.Utilities
         "GetType is now designer-aware, and the designer does not support case-insensitive type lookup. If type lookup with case insensitivity "
         + "is required, use Type.GetType. To use abbreviated type names for the lookup, use ParseAbbreviatedTypeName.", true)]
     [CanBeNull]
-    public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError, bool ignoreCase)
+    public static Type GetType ([NotNull]string name, bool throwOnError, bool ignoreCase)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return Type.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError, ignoreCase);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      return TypeResolutionService.GetType (ParseAbbreviatedTypeName (name), throwOnError, ignoreCase);
     }
 
     [Obsolete ("Use GetType (string, bool) instead. (Version 1.15.30.0)")]
-    public static Type GetDesignModeType ([NotNull]string abbreviatedTypeName, bool throwOnError)
+    public static Type GetDesignModeType ([NotNull]string name, bool throwOnError)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return GetType (abbreviatedTypeName, throwOnError);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      return TypeResolutionService.GetType (ParseAbbreviatedTypeName (name), throwOnError);
     }
 
     #endregion
@@ -92,29 +95,38 @@ namespace Remotion.Utilities
     ///   Loads a type, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
     /// </summary>
     /// <remarks>
-    /// This method uses <see cref="ContextAwareTypeDiscoveryUtility"/>. By default, it will search all assemblies for the requested type.
+    /// This method uses <see cref="ContextAwareTypeUtility"/>. By default, it will search all assemblies for the requested type.
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
     [CanBeNull]
-    public static Type GetType ([NotNull]string abbreviatedTypeName)
+    public static Type GetType ([NotNull]string name)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return GetType (abbreviatedTypeName, false);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      return TypeResolutionService.GetType (ParseAbbreviatedTypeName (name), false);
     }
 
     /// <summary>
-    ///   Loads a type, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
+    ///   Loads a type by name, optionally using an abbreviated type name as defined in <see cref="ParseAbbreviatedTypeName"/>.
     /// </summary>
+    /// <param name="name">
+    /// The name of the type to get. This must follow the conventions of <see cref="Type.GetType(string,bool)"/>.
+    /// </param>
+    /// <param name="throwOnError">
+    /// If <see langword="true" />, a <see cref="TypeLoadException"/> is thrown if the given type cannot be loaded. Otherwise, <see langword="null" /> is returned.
+    /// </param>
+    /// <returns>The type with the given name, retrieved either from the designer or via <see cref="Type.GetType(string,bool)"/>.</returns>
     /// <remarks>
-    /// This method uses <see cref="ContextAwareTypeDiscoveryUtility"/>. By default, it will search all assemblies for the requested type.
-    /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
+    /// By default, it will search all assemblies for the requested type using <see cref="Type.GetType(string,bool)"/>. In the designer context 
+    /// (<see cref="DesignerUtility.IsDesignMode"/> is set to <see langword="true" />), the designer services (<see cref="IDesignerHost"/>) are used for the lookup.
     /// </remarks>
     [CanBeNull]
     [ContractAnnotation ("throwOnError:true => notnull")]
-    public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError)
+    public static Type GetType ([NotNull]string name, bool throwOnError)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return ContextAwareTypeDiscoveryUtility.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+
+      return TypeResolutionService.GetType (ParseAbbreviatedTypeName (name), throwOnError);
     }
 
     /// <summary>
@@ -124,6 +136,7 @@ namespace Remotion.Utilities
     public static string GetPartialAssemblyQualifiedName ([NotNull]Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
+
       return s_partialAssemblyQualifiedNameCache.GetOrAdd (type, key => key.FullName + ", " + key.Assembly.GetName ().Name);
     }
 
@@ -135,6 +148,11 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
       return s_abbreviationBuilder.BuildAbbreviatedTypeName (type, includeVersionAndCulture);
+    }
+
+    private static ITypeResolutionService TypeResolutionService
+    {
+      get { return ContextAwareTypeUtility.GetTypeResolutionService(); }
     }
   }
 }

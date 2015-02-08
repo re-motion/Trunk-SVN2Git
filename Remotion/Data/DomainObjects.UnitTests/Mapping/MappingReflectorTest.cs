@@ -26,7 +26,7 @@ using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.DomainObjects.UnitTests.Factories;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection.TypeDiscovery;
+using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
 using Rhino.Mocks;
@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
       var reflector = new MappingReflector ();
 
-      Assert.That (reflector.TypeDiscoveryService, Is.SameAs (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService ()));
+      Assert.That (reflector.TypeDiscoveryService, Is.SameAs (ContextAwareTypeUtility.GetTypeDiscoveryService ()));
     }
 
     [Test]

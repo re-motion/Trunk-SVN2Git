@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     // This ctor is required when the MappingReflector is instantiated as a configuration element from a config file.
     public MappingReflector ()
         : this (
-            ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(),
+            ContextAwareTypeUtility.GetTypeDiscoveryService(),
             new ClassIDProvider(),
             SafeServiceLocator.Current.GetInstance<IMemberInformationNameResolver>(),
             new PropertyMetadataReflector(),

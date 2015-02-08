@@ -24,6 +24,7 @@ using Remotion.Context;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
 using Remotion.Logging;
+using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
@@ -39,6 +40,7 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     private MockRepository _mockRepository;
     private ISite _stubSite;
     private IDesignerHost _mockDesignerHost;
+    private ITypeResolutionService _typeResolutionServiceMock;
 
     [SetUp]
     public override void SetUp ()
@@ -58,20 +60,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
       var helperStub = _mockRepository.Stub<IDesignModeHelper> ();
       SetupResult.For (helperStub.DesignerHost).Return (_mockDesignerHost);
 
+      _typeResolutionServiceMock = _mockRepository.StrictMock<ITypeResolutionService> ();
+      SetupResult.For (_mockDesignerHost.GetService (typeof (ITypeResolutionService))).Return (_typeResolutionServiceMock);
+
+      var typeDiscoveryServiceStub = _mockRepository.Stub<ITypeDiscoveryService> ();
+      SetupResult.For (typeDiscoveryServiceStub.GetTypes (null, false)).IgnoreArguments ().Return (Assembly.GetExecutingAssembly ().GetTypes ());
+      SetupResult.For (_mockDesignerHost.GetService (typeof (ITypeDiscoveryService))).Return (typeDiscoveryServiceStub);
+
+      // initialize IoC and mixin infrastructure to remove sideeffects in test.
+      MixinTypeUtility.GetConcreteMixedType (typeof (SimpleBusinessObjectClass));
+
       DesignerUtility.SetDesignMode (helperStub);
-
-      PrepareMixinConfiguration (_mockDesignerHost);
-    }
-
-    private void PrepareMixinConfiguration (IDesignerHost host)
-    {
-      SetupResult.For (host.GetType (typeof (TypeFactoryImplementation).AssemblyQualifiedName)).Return (typeof (TypeFactoryImplementation));
-      SetupResult.For (host.GetType (typeof (ObjectFactoryImplementation).AssemblyQualifiedName)).Return (typeof (ObjectFactoryImplementation));
-      var serviceStub = _mockRepository.Stub<ITypeDiscoveryService> ();
-      SetupResult.For (serviceStub.GetTypes (null, false)).IgnoreArguments ().Return (Assembly.GetExecutingAssembly ().GetTypes ());
-      SetupResult.For (host.GetService (typeof (ITypeDiscoveryService))).Return (serviceStub);
-      SetupResult.For (host.GetType (typeof (CallContextStorageProvider).AssemblyQualifiedName)).Return (typeof (CallContextStorageProvider));
-      SetupResult.For (host.GetType (typeof (ILogManager).AssemblyQualifiedName)).Return (typeof (Log4NetLogManager));
     }
 
     [TearDown]
@@ -85,8 +84,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     public void GetAndSetType ()
     {
       Expect.Call (
-          _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
+          _typeResolutionServiceMock.GetType (
+              "Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests", true))
           .Return (typeof (SimpleBusinessObjectClass));
       _mockRepository.ReplayAll();
 
@@ -112,8 +111,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     public void GetBusinessObjectClass ()
     {
       Expect.Call (
-          _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
+          _typeResolutionServiceMock.GetType (
+              "Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests", true))
           .Return (typeof (SimpleBusinessObjectClass))
           .Repeat.AtLeastOnce();
       _mockRepository.ReplayAll();
@@ -131,8 +130,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     public void GetBusinessObjectClass_SameTwice ()
     {
       SetupResult.For (
-          _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests"))
+          _typeResolutionServiceMock.GetType (
+              "Remotion.ObjectBinding.UnitTests.TestDomain.SimpleBusinessObjectClass, Remotion.ObjectBinding.UnitTests", true))
           .Return (typeof (SimpleBusinessObjectClass));
       _mockRepository.ReplayAll();
 
@@ -153,8 +152,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     public void GetBusinessObjectClass_WithNonBindableType ()
     {
       Expect.Call (
-          _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass, Remotion.ObjectBinding.UnitTests"))
+          _typeResolutionServiceMock.GetType (
+              "Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass, Remotion.ObjectBinding.UnitTests", true))
           .Return (typeof (StubBusinessObjectWithoutBindableObjectBaseClassAttributeClass))
           .Repeat.AtLeastOnce();
       _mockRepository.ReplayAll();
@@ -169,8 +168,8 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.BindableObjectDataSour
     public void GetBusinessObjectClass_WithTypeDerivedFromBaseClass ()
     {
       Expect.Call (
-          _mockDesignerHost.GetType (
-              "Remotion.ObjectBinding.UnitTests.TestDomain.ClassDerivedFromBindableObjectBase, Remotion.ObjectBinding.UnitTests"))
+          _typeResolutionServiceMock.GetType (
+              "Remotion.ObjectBinding.UnitTests.TestDomain.ClassDerivedFromBindableObjectBase, Remotion.ObjectBinding.UnitTests", true))
           .Return (typeof (ClassDerivedFromBindableObjectBase))
           .Repeat.AtLeastOnce ();
       _mockRepository.ReplayAll ();

@@ -255,6 +255,8 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtilityTest.cs" />
+    <Compile Include="Reflection\TypeResolution\DefaultTypeResolutionServiceTest.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\TestDomain\SampleTypeWithoutXmlAttributes.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\TestDomain\SampleTypeWithXmlRoot.cs" />
     <Compile Include="Xml\XmlSerializationUtilityTests\TestDomain\SampleTypeWithXmlRootAndXmlType.cs" />
@@ -291,7 +293,6 @@
     <Compile Include="Configuration\TypeDiscovery\FakeTypeDiscoveryService.cs" />
     <Compile Include="Configuration\TypeDiscovery\RootAssembliesElementTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\TypeDiscoveryConfigurationTest.cs" />
-    <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\DebugTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ErrorTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\FatalTest.cs" />
@@ -484,7 +485,7 @@
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedAssemblyInDynamicDirectory\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedExeAssemblyInDynamicDirectory\AssemblyInfo.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinderTypeDiscoveryServiceTest.cs" />
-    <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtilityTest.cs" />
+    <Compile Include="Reflection\ContextAwareTypeUtilityTest.cs" />
     <Compile Include="Reflection\InheritanceHierarchyFilterTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\MarkedAssemblyWithOtherFileNameInRelativeSearchPath\AssemblyInfo.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly\AssemblyInfo.cs" />

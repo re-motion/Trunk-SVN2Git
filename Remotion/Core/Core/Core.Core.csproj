@@ -242,6 +242,7 @@
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
     <Compile Include="Configuration\ServiceLocation\IServiceLocationConfiguration.cs" />
     <Compile Include="Configuration\ServiceLocation\ServiceLocationConfiguration.cs" />
+    <Compile Include="Configuration\TypeResolution\TypeResolutionConfiguration.cs" />
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
     <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
     <Compile Include="IHandleAttribute.cs" />
+    <Compile Include="Obsolete\Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\MethodInfoExtensions.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
     <Compile Include="Reflection\PropertyInfoExtensions.cs" />
@@ -259,6 +261,7 @@
     <Compile Include="Reflection\AssemblyTypeCache.cs" />
     <Compile Include="Reflection\TypeDiscovery\BaseTypeCache.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
+    <Compile Include="Reflection\TypeResolution\DefaultTypeResolutionService.cs" />
     <Compile Include="Reflection\TypeExtensions.cs" />
     <Compile Include="ServiceLocation\BootstrapServiceConfiguration.cs" />
     <Compile Include="ServiceLocation\ConcreteImplementationAttribute.obsolete.cs" />
@@ -283,7 +286,7 @@
     <Compile Include="Logging\LogThreshold.cs" />
     <Compile Include="PermanentGuidAttribute.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecorator.cs" />
-    <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
+    <Compile Include="Reflection\ContextAwareTypeUtility.cs" />
     <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
     <Compile Include="SharedSource\ResharperAnnotations\AssertionConditionType.cs" />
     <Compile Include="SharedSource\ResharperAnnotations\ImplicitUseKindFlags.cs" />

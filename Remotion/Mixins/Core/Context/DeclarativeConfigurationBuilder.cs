@@ -115,7 +115,7 @@ namespace Remotion.Mixins.Context
     /// referenced assemblies for mixin configuration information. System assemblies are not scanned.
     /// </summary>
     /// <returns>A mixin configuration holding the default mixin configuration information for this application.</returns>
-    /// <remarks>This method uses the <see cref="ContextAwareTypeDiscoveryUtility"/> to discover the types to be used in the mixin configuration.
+    /// <remarks>This method uses the <see cref="ContextAwareTypeUtility"/> to discover the types to be used in the mixin configuration.
     /// In design mode, this will use the types returned by the designer, but in ordinary application scenarios, the following steps are performed:
     /// <list type="number">
     /// <item>Retrieve all types assemblies from the current <see cref="AppDomain">AppDomain's</see> bin directory.</item>
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.Context
     /// <item>If the loaded assemblies haven't already been analyzed, treat them according to steps 2-4.</item>
     /// </list>
     /// </remarks>
-    /// <seealso cref="ContextAwareTypeDiscoveryUtility"/>
+    /// <seealso cref="ContextAwareTypeUtility"/>
     public static MixinConfiguration BuildDefaultConfiguration ()
     {
       ICollection types = GetTypeDiscoveryService().GetTypes (null, false);
@@ -134,7 +134,7 @@ namespace Remotion.Mixins.Context
     // Separate method because of tests
     private static ITypeDiscoveryService GetTypeDiscoveryService ()
     {
-      return ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService();
+      return ContextAwareTypeUtility.GetTypeDiscoveryService();
     }
 
     private readonly MixinConfiguration _parentConfiguration;

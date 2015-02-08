@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Threading;
+using Remotion.Reflection;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -48,7 +49,7 @@ namespace Remotion.Validation.Implementation
     }
 
     public DiscoveryServiceBasedValidationCollectorReflector (IValidatedTypeResolver validatedTypeResolver)
-        : this (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(), validatedTypeResolver)
+        : this (ContextAwareTypeUtility.GetTypeDiscoveryService(), validatedTypeResolver)
     {
     }
 

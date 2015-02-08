@@ -34,7 +34,7 @@ namespace Remotion.Reflection.TypeDiscovery
   /// <summary>
   /// Provides an implementation of the <see cref="ITypeDiscoveryService"/> interface that uses an <see cref="AssemblyFinder"/> to
   /// retrieve types. This class is created by <see cref="TypeDiscoveryConfiguration.CreateCustomService"/> in the default configuration and
-  /// is therefore the default <see cref="ITypeDiscoveryService"/> provided by <see cref="ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService"/>
+  /// is therefore the default <see cref="ITypeDiscoveryService"/> provided by <see cref="ContextAwareTypeUtility.GetTypeDiscoveryService"/>
   /// in the standard context.
   /// </summary>
   public sealed class AssemblyFinderTypeDiscoveryService : ITypeDiscoveryService
