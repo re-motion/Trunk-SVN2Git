@@ -150,7 +150,7 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      return new Lazy<Type> (() => TypeFactory.GetConcreteType (type));
+      return new Lazy<Type> (() => BindableObjectProvider.GetConcreteTypeForBindableObjectImplementation (type));
     }
 
     protected virtual Type GetUnderlyingType ()

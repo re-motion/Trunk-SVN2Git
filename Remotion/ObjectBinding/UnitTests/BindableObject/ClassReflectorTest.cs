@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -24,6 +25,7 @@ using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
@@ -99,6 +101,51 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
       Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClassWithIdentity)));
       Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ClassWithManualIdentity)));
+    }
+
+    [Test]
+    public void GetMetadata_ForSealedBusinessObject_WithExistingMixin ()
+    {
+      var mixinTargetType = typeof (ManualBusinessObject);
+      var businessObjectType = typeof (SealedBindableObject);
+      Assertion.IsTrue (mixinTargetType.IsAssignableFrom (businessObjectType));
+
+      using (MixinConfiguration.BuildNew()
+          .AddMixinToClass (
+              MixinKind.Extending,
+              mixinTargetType,
+              typeof (MixinStub),
+              MemberVisibility.Public,
+              Enumerable.Empty<Type>(),
+              Enumerable.Empty<Type>())
+          .EnterScope())
+      {
+        var classReflector = new ClassReflector (
+            businessObjectType,
+            _businessObjectProvider,
+            _metadataFactory,
+            _bindableObjectGlobalizationService);
+        var bindableObjectClass = classReflector.GetMetadata();
+
+        Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClass)));
+        Assert.That (bindableObjectClass.TargetType, Is.SameAs (businessObjectType));
+        Assert.That (bindableObjectClass.ConcreteType, Is.SameAs (bindableObjectClass.TargetType));
+      }
+    }
+
+    [Test]
+    public void GetMetadata_ForValueType ()
+    {
+      var classReflector = new ClassReflector (
+          typeof (ValueTypeBindableObject),
+          _businessObjectProvider,
+          _metadataFactory,
+          _bindableObjectGlobalizationService);
+      var bindableObjectClass = classReflector.GetMetadata();
+
+      Assert.That (bindableObjectClass, Is.InstanceOf (typeof (IBusinessObjectClass)));
+      Assert.That (bindableObjectClass.TargetType, Is.SameAs (typeof (ValueTypeBindableObject)));
+      Assert.That (bindableObjectClass.ConcreteType, Is.SameAs (bindableObjectClass.TargetType));
     }
 
     [Test]

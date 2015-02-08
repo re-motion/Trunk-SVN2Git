@@ -267,6 +267,7 @@
     <Compile Include="TestDomain\PropertyFinderMixinAddingPropertyBase.cs" />
     <Compile Include="TestDomain\MixinOverridingProperty.cs" />
     <Compile Include="TestDomain\SampleAttribute.cs" />
+    <Compile Include="TestDomain\SealedBindableObject.cs" />
     <Compile Include="TestDomain\SimpleReferenceTypeProperty.cs" />
     <Compile Include="TestDomain\SimpleReferenceTypePropertyReflectorMixin.cs" />
     <Compile Include="TestDomain\StubBindableObject.cs" />
@@ -282,7 +283,7 @@
     <Compile Include="TestDomain\DerivedStubBusinessObjectProviderAttribute.cs" />
     <Compile Include="TestDomain\OtherBusinessObjectImplementationProviderAttribute.cs" />
     <Compile Include="TestDomain\Stub2BusinessObjectProviderAttribute.cs" />
-    <Compile Include="TestDomain\StubBusinessObjectClass.cs" />
+    <Compile Include="TestDomain\BindableObjectWithStubBusinessObjectProvider.cs" />
     <Compile Include="BusinessObjectProviderTest.cs" />
     <Compile Include="BindableObject\ConstantEnumerationValueFilterTest.cs" />
     <Compile Include="BindableObject\BindableObjectMetadataFactoryTest.cs" />
@@ -392,6 +393,7 @@
     <Compile Include="StubBusinessObjectDataSource.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TestDomain\ValueTypeBindableObject.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>

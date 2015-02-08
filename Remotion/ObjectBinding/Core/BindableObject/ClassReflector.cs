@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -46,7 +45,7 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("bindableObjectGlobalizationService", bindableObjectGlobalizationService);
 
       _targetType = targetType;
-      _concreteType = MixinTypeUtility.GetConcreteMixedType (_targetType);
+      _concreteType = BindableObjectProvider.GetConcreteTypeForBindableObjectImplementation (_targetType);
       _businessObjectProvider = businessObjectProvider;
       _metadataFactory = metadataFactory;
       _bindableObjectGlobalizationService = bindableObjectGlobalizationService;

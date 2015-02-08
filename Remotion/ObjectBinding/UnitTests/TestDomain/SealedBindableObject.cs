@@ -14,29 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
 
 namespace Remotion.ObjectBinding.UnitTests.TestDomain
 {
-  [Serializable]
-  public class ClassWithManualIdentity : ManualBusinessObject, IBusinessObjectWithIdentity
+  public sealed class SealedBindableObject : StubBindableObject
   {
-    private readonly string _uniqueIdentifier;
-
-    public ClassWithManualIdentity (string uniqueIdentifier)
-    {
-      _uniqueIdentifier = uniqueIdentifier;
-    }
-
-    public string DisplayName
-    {
-      get { return "Manual business object"; }
-    }
-
-    public string UniqueIdentifier
-    {
-      get { return _uniqueIdentifier; }
-    }
   }
 }

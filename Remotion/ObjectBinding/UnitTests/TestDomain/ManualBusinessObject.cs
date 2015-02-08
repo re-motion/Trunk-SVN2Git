@@ -51,16 +51,6 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
       return GetProperty (property).ToString ();
     }
 
-    public string DisplayName
-    {
-      get { return "Manual business object"; }
-    }
-
-    public string DisplayNameSafe
-    {
-      get { return "Manual business object (safe)"; }
-    }
-
     public IBusinessObjectClass BusinessObjectClass
     {
       get { return BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (ManualBusinessObject)); }

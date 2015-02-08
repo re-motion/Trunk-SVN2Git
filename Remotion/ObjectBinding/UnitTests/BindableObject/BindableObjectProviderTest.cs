@@ -16,12 +16,14 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.ObjectBinding.UnitTests.TestDomain;
 using Remotion.ServiceLocation;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.BindableObject
@@ -108,11 +110,11 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.TestDomain.StubBusinessObject' "
+        "The business object provider associated with the type 'Remotion.ObjectBinding.UnitTests.TestDomain.BindableObjectWithStubBusinessObjectProvider' "
         + "is not of type 'Remotion.ObjectBinding.BindableObject.BindableObjectProvider'.\r\nParameter name: type")]
     public void GetProviderForBindableObjectType_WithInvalidProviderType ()
     {
-      BindableObjectProvider.GetProviderForBindableObjectType (typeof (StubBusinessObject));
+      BindableObjectProvider.GetProviderForBindableObjectType (typeof (BindableObjectWithStubBusinessObjectProvider));
     }
 
     [Test]
@@ -260,6 +262,33 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     {
       Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (object)), Is.False);
       Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (ManualBusinessObject)), Is.False);
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_TrueWithSealedTypeHavingAMixin ()
+    {
+      var mixinTargetType = typeof (ManualBusinessObject);
+      var businessObjectType = typeof (SealedBindableObject);
+      Assertion.IsTrue (mixinTargetType.IsAssignableFrom (businessObjectType));
+
+      using (MixinConfiguration.BuildNew()
+          .AddMixinToClass (
+              MixinKind.Extending,
+              mixinTargetType,
+              typeof (MixinStub),
+              MemberVisibility.Public,
+              Enumerable.Empty<Type>(),
+              Enumerable.Empty<Type>())
+          .EnterScope())
+      {
+        Assert.That (BindableObjectProvider.IsBindableObjectImplementation (businessObjectType), Is.True);
+      }
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_TrueWithValueType ()
+    {
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (typeof (ValueTypeBindableObject)), Is.True);
     }
   }
 }

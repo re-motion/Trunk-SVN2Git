@@ -81,6 +81,17 @@ namespace Remotion.ObjectBinding.BindableObject
       return HasBindableObjectMixin (type) || IsBindableObjectBaseClass (type);
     }
 
+    internal static Type GetConcreteTypeForBindableObjectImplementation (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      var hasSupportForMixins = !type.IsSealed;
+      if (hasSupportForMixins)
+        return MixinTypeUtility.GetConcreteMixedType (type);
+
+      return type;
+    }
+
     private static bool IsBindableObjectBaseClass (Type type)
     {
       return typeof (IBusinessObject).IsAssignableFrom (type) && AttributeUtility.IsDefined (type, typeof (BindableObjectBaseClassAttribute), true);

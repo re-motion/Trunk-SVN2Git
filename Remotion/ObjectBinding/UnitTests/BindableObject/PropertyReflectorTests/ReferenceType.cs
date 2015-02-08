@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject;
@@ -293,6 +294,43 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject.PropertyReflectorTests
       Assert.That (businessObjectProperty.IsList, Is.False);
       Assert.That (businessObjectProperty.IsRequired, Is.False);
       Assert.That (businessObjectProperty.IsReadOnly (null), Is.True);
+    }
+
+    [Test]
+    public void GetMetadata_ForSealedBusinessObject_WithExistingMixin ()
+    {
+      var mixinTargetType = typeof (ManualBusinessObject);
+      var businessObjectType = typeof (SealedBindableObject);
+      Assertion.IsTrue (mixinTargetType.IsAssignableFrom (businessObjectType));
+
+      using (MixinConfiguration.BuildNew()
+          .AddMixinToClass (
+              MixinKind.Extending,
+              mixinTargetType,
+              typeof (MixinStub),
+              MemberVisibility.Public,
+              Enumerable.Empty<Type>(),
+              Enumerable.Empty<Type>())
+          .EnterScope())
+      {
+        IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<SealedBindableObject>), "Scalar");
+
+        PropertyReflector propertyReflector = PropertyReflector.Create (propertyInfo, _businessObjectProvider);
+
+        var referenceProperty = (IBusinessObjectReferenceProperty) propertyReflector.GetMetadata();
+        Assert.That (() => referenceProperty.SupportsSearchAvailableObjects, Throws.Nothing);
+      }
+    }
+
+    [Test]
+    public void GetMetadata_ForValueType ()
+    {
+      IPropertyInformation propertyInfo = GetPropertyInfo (typeof (ClassWithReferenceType<ValueTypeBindableObject>), "Scalar");
+
+      PropertyReflector propertyReflector = PropertyReflector.Create (propertyInfo, _businessObjectProvider);
+
+      var referenceProperty = (IBusinessObjectReferenceProperty) propertyReflector.GetMetadata();
+      Assert.That (() => referenceProperty.SupportsSearchAvailableObjects, Throws.Nothing);
     }
   }
 }

@@ -21,7 +21,6 @@ namespace Remotion.ObjectBinding.UnitTests.TestDomain
 {
   [BindableObject]
   public class ClassWithReferenceType<T> : IInterfaceWithReferenceType<T>
-      where T : class
   {
     private T _explicitInterfaceScalar;
     private readonly T _readOnlyScalar = default (T);

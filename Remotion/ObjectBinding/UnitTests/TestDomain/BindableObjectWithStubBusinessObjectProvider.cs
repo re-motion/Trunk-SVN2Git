@@ -20,7 +20,7 @@ using System;
 namespace Remotion.ObjectBinding.UnitTests.TestDomain
 {
   [StubBusinessObjectProvider]
-  public class StubBusinessObject : ManualBusinessObject
+  public class BindableObjectWithStubBusinessObjectProvider : ManualBusinessObject
   {
   }
 }
