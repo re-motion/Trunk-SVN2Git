@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public string GetText ()
     {
       if (IsReadOnly())
-        return Scope.FindChild ("Label").Text; // do not trim
+        return Scope.FindChild ("Value").Text; // do not trim
 
       return Scope.FindChild ("TextValue").Value; // do not trim
     }

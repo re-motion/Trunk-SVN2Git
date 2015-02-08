@@ -491,7 +491,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocReferenceValueImpl
       contentSpan.AssertChildElementCount (1);
 
       var innerSpan = contentSpan.GetAssertedChildElement ("span", 0);
-      innerSpan.AssertAttributeValueEquals ("id", c_clientID + "_Label");
+      innerSpan.AssertAttributeValueEquals ("id", c_clientID + "_Value");
       innerSpan.AssertAttributeValueEquals ("data-value", c_uniqueIdentifier);
       innerSpan.AssertChildElementCount (0);
       innerSpan.AssertTextNode ("MyText", 0);

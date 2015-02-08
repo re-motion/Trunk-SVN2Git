@@ -353,7 +353,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       var label = new Label
                   {
-                      ID = renderingContext.Control.ClientID + "_Label",
+                      ID = renderingContext.Control.ClientID + "_Value",
                       ClientIDMode = ClientIDMode.Static,
                       EnableViewState = false,
                       Height = Unit.Empty,

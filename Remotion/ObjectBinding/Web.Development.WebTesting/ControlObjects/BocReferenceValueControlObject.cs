@@ -48,13 +48,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     public OptionDefinition GetSelectedOption ()
     {
+      var scope = Scope.FindChild ("Value");
       if (IsReadOnly())
-      {
-        var scope = Scope.FindChild ("Label");
         return new OptionDefinition (scope["data-value"], -1, scope.Text);
-      }
-
-      return Scope.FindChild("Value").GetSelectedOption();
+      else
+        return scope.GetSelectedOption();
     }
 
     /// <inheritdoc/>
@@ -72,10 +70,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// <inheritdoc/>
     public string GetText ()
     {
+      var scope = Scope.FindChild ("Value");
       if (IsReadOnly())
-        return Scope.FindChild ("Label").Text; // do not trim
-
-      return Scope.FindChild ("Value").GetSelectedOption().Text;
+        return scope.Text; // do not trim
+      else
+        return scope.GetSelectedOption().Text;
     }
 
     /// <inheritdoc/>
