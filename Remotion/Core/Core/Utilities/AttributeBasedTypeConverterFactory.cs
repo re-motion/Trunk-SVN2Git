@@ -41,7 +41,7 @@ namespace Remotion.Utilities
       if (typeConverter == null)
         return null;
 
-      var typeConverterType = ContextAwareTypeDiscoveryUtility.GetType (typeConverter.ConverterTypeName, true);
+      var typeConverterType = TypeUtility.GetType (typeConverter.ConverterTypeName, true);
       return (TypeConverter) Activator.CreateInstance (typeConverterType);
     }
   }

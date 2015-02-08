@@ -176,6 +176,7 @@ namespace Remotion.Utilities
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
     [CanBeNull]
+    [ContractAnnotation ("throwOnError:true => notnull")]
     public static Type GetType ([NotNull]string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
@@ -201,10 +202,11 @@ namespace Remotion.Utilities
       return s_partialAssemblyQualifiedNameCache.GetOrAdd (type, key => key.FullName + ", " + key.Assembly.GetName ().Name);
     }
 
+    [Obsolete ("Use GetType (string, bool) instead. (Version 1.15.30.0)")]
     public static Type GetDesignModeType ([NotNull]string abbreviatedTypeName, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("abbreviatedTypeName", abbreviatedTypeName);
-      return ContextAwareTypeDiscoveryUtility.GetType (ParseAbbreviatedTypeName (abbreviatedTypeName), throwOnError);
+      return GetType (abbreviatedTypeName, throwOnError);
     }
 
     /// <summary>

@@ -16,22 +16,21 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Reflection.TypeDiscovery;
+using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
   /// <summary>
   /// Provides functionality to resolve type name templates to actual types. Type name templates are assembly-qualified type names that contain
   /// "&lt;version&gt;" and "&lt;publicKeyToken&gt;" as placeholders for version and public key token. Those placeholders will be replaced with
-  /// the version and public key token of a given reference <see cref="Assembly"/>, then <see cref="ContextAwareTypeDiscoveryUtility"/> is
-  /// used to resolve the type.
+  /// the version and public key token of a given reference <see cref="Assembly"/>, then <see cref="TypeUtility.GetType(string, bool)"/> is used to resolve the type.
   /// </summary>
   [Obsolete ("Resolving the type via the assembly qualified typename is no longer required. (Version 1.15.10.0")]
   public static class TypeNameTemplateResolver
   {
     public static Type ResolveToType (string typeNameTemplate, Assembly referenceAssembly)
     {
-      return ContextAwareTypeDiscoveryUtility.GetType (ResolveToTypeName (typeNameTemplate, referenceAssembly), true);
+      return TypeUtility.GetType (ResolveToTypeName (typeNameTemplate, referenceAssembly), true);
     }
 
     public static string ResolveToTypeName (string typeNameTemplate, Assembly referenceAssembly)

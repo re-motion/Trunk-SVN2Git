@@ -16,7 +16,7 @@
 // 
 
 using System;
-using Remotion.Reflection.TypeDiscovery;
+using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting
 {
@@ -24,12 +24,12 @@ namespace Remotion.Development.UnitTesting
   {
     public static object CreateInstancePublicCtor (string typeName, params object[] arguments)
     {
-      return CreateInstancePublicCtor (ContextAwareTypeDiscoveryUtility.GetType (typeName, true), arguments);
+      return CreateInstancePublicCtor (TypeUtility.GetType (typeName, true), arguments);
     }
 
     public static object CreateInstanceNonPublicCtor (string typeName, params object[] arguments)
     {
-      return CreateInstanceNonPublicCtor (ContextAwareTypeDiscoveryUtility.GetType (typeName, true), arguments);
+      return CreateInstanceNonPublicCtor (TypeUtility.GetType (typeName, true), arguments);
     }
   }
 }

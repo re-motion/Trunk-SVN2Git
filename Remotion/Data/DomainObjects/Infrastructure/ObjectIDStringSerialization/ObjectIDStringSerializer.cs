@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization
@@ -106,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectIDStringSerialization
       for (int i = 0; i < parts.Length; i++)
         parts[i] = Unescape (parts[i]);
 
-      Type type = ContextAwareTypeDiscoveryUtility.GetType (parts[2], false);
+      Type type = TypeUtility.GetType (parts[2], false);
       if (type == null)
       {
         var message = string.Format ("Serialized ObjectID '{0}' is invalid: '{1}' is not the name of a loadable type.", objectIDString, parts[2]);

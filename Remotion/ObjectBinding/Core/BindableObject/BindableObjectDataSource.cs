@@ -81,9 +81,6 @@ namespace Remotion.ObjectBinding.BindableObject
       if (_typeName == null)
         return null;
 
-      if (IsDesignMode)
-        return TypeUtility.GetDesignModeType (_typeName, false);
-
       return TypeUtility.GetType (_typeName, true);
     }
 

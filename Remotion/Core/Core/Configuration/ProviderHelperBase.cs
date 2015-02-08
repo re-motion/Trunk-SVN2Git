@@ -20,7 +20,6 @@ using System.Configuration;
 using System.Configuration.Provider;
 using System.IO;
 using System.Reflection;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Configuration
@@ -179,7 +178,7 @@ namespace Remotion.Configuration
             assemblyName.FullName);
       }
 
-      return ContextAwareTypeDiscoveryUtility.GetType (Assembly.CreateQualifiedName (assemblyName.FullName, typeName), true);
+      return TypeUtility.GetType (Assembly.CreateQualifiedName (assemblyName.FullName, typeName), true);
     }
 
     /// <summary>Initializes a collection of providers of the given type using the supplied settings.</summary>

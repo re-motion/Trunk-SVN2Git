@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Design
     {
       if (string.IsNullOrEmpty (value))
         return true;
-      if (TypeUtility.GetDesignModeType (value, false) == null)
+      if (TypeUtility.GetType (value, false) == null)
         return false;
       return true;
     }

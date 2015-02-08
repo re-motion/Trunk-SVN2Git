@@ -21,7 +21,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.ExtensibleEnums;
-using Remotion.Reflection.TypeDiscovery;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
@@ -202,7 +201,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
         case "ObjectID":
           return typeof (ObjectID);
         default:
-          return ContextAwareTypeDiscoveryUtility.GetType (valueTypeAttribute, true);
+          return TypeUtility.GetType (valueTypeAttribute, true);
       }
     }
 
