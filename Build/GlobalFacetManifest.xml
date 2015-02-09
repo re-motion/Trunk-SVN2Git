@@ -16,10 +16,10 @@
            layer="Core"/>
 
   <package id="Remotion.Linq.Development"
-           feature="Remotion.Data"
+           feature="Remotion.Development"
            layer="Core">
     <extends>
-      <feature name="Remotion.Development" />
+      <feature name="Remotion.Data" />
     </extends>
   </package>
 
@@ -28,10 +28,10 @@
            layer="Core"/>
 
   <package id="Remotion.Linq.SqlBackend.Development"
-           feature="Remotion.Data"
+           feature="Remotion.Development"
            layer="Core">
     <extends>
-      <feature name="Remotion.Development" />
+      <feature name="Remotion.Data" />
     </extends>
   </package>
 
@@ -44,10 +44,10 @@
            layer="Core"/>
 
   <package id="Remotion.TypePipe.Development"
-           feature="Remotion.Core"
+           feature="Remotion.Development"
            layer="Core">
     <extends>
-      <feature name="Remotion.Development" />
+      <feature name="Remotion.Core" />
     </extends>
   </package>
 

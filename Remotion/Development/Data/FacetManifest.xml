@@ -20,9 +20,9 @@
 <package
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://rubicon.eu/Schemas/Packaging/NuGet/FacetManifest/1.0"
-    feature="Remotion.Data"
+    feature="Remotion.Development"
     layer="Core">
   <extends>
-    <feature name="Remotion.Development"/>
+    <feature name="Remotion.Data"/>
   </extends>
 </package>
