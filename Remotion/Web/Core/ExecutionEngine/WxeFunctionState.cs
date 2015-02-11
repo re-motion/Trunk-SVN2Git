@@ -24,6 +24,7 @@ namespace Remotion.Web.ExecutionEngine
   /// <summary>
   ///   Stores the session state for a single function token.
   /// </summary>
+  /// <threadsafety static="true" instance="false" />
   [Serializable]
   public class WxeFunctionState
   {

@@ -74,9 +74,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
       UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_rootFunction.GetType(), "~/root.wxe"));
       UrlMappingConfiguration.Current.Mappings.Add (new UrlMappingEntry (_subFunction.GetType(), "~/sub.wxe"));
 
-      var sessionStub = _mockRepository.DynamicMock<HttpSessionStateBase>();
-      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
-      _functionStateManager = new WxeFunctionStateManager (sessionStub);
+      _functionStateManager = new WxeFunctionStateManager (new FakeHttpSessionStateBase());
 
       Uri uri = new Uri ("http://localhost/root.wxe");
 

@@ -48,6 +48,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       LastCall.Constraints (
           Rhino.Mocks.Constraints.Is.Equal (GetSessionKeyForFunctionStates()),
           Rhino.Mocks.Constraints.Is.TypeOf (typeof (Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData>)));
+      Expect.Call (_sessionMock.SyncRoot).Return (new object());
 
       _functionState = new WxeFunctionState (new TestFunction(), 1, true);
     }
@@ -70,12 +71,13 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
           new Dictionary<string, WxeFunctionStateManager.WxeFunctionStateMetaData>();
       functionStates.Add (functionStateMetaData.FunctionToken, functionStateMetaData);
 
-      var session = _mockRepository.StrictMock<HttpSessionStateBase>();
+      var sessionMock = _mockRepository.StrictMock<HttpSessionStateBase>();
 
-      Expect.Call (session[GetSessionKeyForFunctionStates()]).Return (functionStates);
+      Expect.Call (sessionMock[GetSessionKeyForFunctionStates()]).Return (functionStates);
+      Expect.Call (sessionMock.SyncRoot).Return (new object());
       _mockRepository.ReplayAll();
 
-      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (session);
+      WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (sessionMock);
 
       _mockRepository.VerifyAll();
       Assert.That (functionStateManager.GetLastAccess (functionStateMetaData.FunctionToken), Is.EqualTo (lastAccess));

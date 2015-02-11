@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Context;
@@ -25,8 +26,10 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  /// <threadsafety static="true" instance="true" />
   public class WxeFunctionStateManager
   {
+    /// <threadsafety static="true" instance="true" />
     [Serializable]
     public class WxeFunctionStateMetaData : Tuple<string, int, DateTime>
     {
@@ -56,9 +59,16 @@ namespace Remotion.Web.ExecutionEngine
     private static readonly string s_key = typeof (WxeFunctionStateManager).AssemblyQualifiedName;
     private static readonly string s_sessionKeyForFunctionStates = s_key + "|WxeFunctionStates";
 
-    private static readonly SafeContextSingleton<WxeFunctionStateManager> s_functionStateManager = new SafeContextSingleton<WxeFunctionStateManager> (
-        s_key,
-        () => new WxeFunctionStateManager (new HttpSessionStateWrapper (HttpContext.Current.Session)));
+    private static readonly SafeContextSingleton<WxeFunctionStateManager> s_functionStateManager =
+        new SafeContextSingleton<WxeFunctionStateManager> (s_key, CreateWxeFunctionStateManager);
+
+    private static WxeFunctionStateManager CreateWxeFunctionStateManager ()
+    {
+      var session = HttpContext.Current.Session;
+      var sessionWrapper = new HttpSessionStateWrapper (session);
+      Assertion.IsTrue (ReferenceEquals (session.SyncRoot, sessionWrapper.SyncRoot));
+      return new WxeFunctionStateManager (sessionWrapper);
+    }
 
     public static WxeFunctionStateManager Current
     {
@@ -72,6 +82,7 @@ namespace Remotion.Web.ExecutionEngine
 
     private readonly Dictionary<string, WxeFunctionStateMetaData> _functionStates;
     private readonly HttpSessionStateBase _session;
+    private readonly object _lockObject;
 
     public WxeFunctionStateManager (HttpSessionStateBase session)
     {
@@ -84,20 +95,25 @@ namespace Remotion.Web.ExecutionEngine
         _functionStates = new Dictionary<string, WxeFunctionStateMetaData> ();
         _session[s_sessionKeyForFunctionStates] = _functionStates;
       }
+      // WxeFunctionStateManager must be synchronized accross access from multiple requests in case the WxeFunctionStateManager is accessed from a ReadOnlySession.
+      // Note that this will not guard against access from ReadOnlySessions that use serialization, but this is not an issue as a ReadOnlySession 
+      // does include a write-back.
+      _lockObject = _session.SyncRoot;
     }
 
     /// <summary> Cleans up expired <see cref="WxeFunctionState"/> objects in the collection. </summary>
     /// <remarks> Removes and aborts expired function states. </remarks>
     public void CleanUpExpired ()
     {
-      string[] keys = new string[_functionStates.Keys.Count];
-      _functionStates.Keys.CopyTo (keys, 0);
-      foreach (string functionToken in keys)
+      lock (_lockObject)
       {
-        if (IsExpired (functionToken))
+        foreach (string functionToken in _functionStates.Keys.ToArray())
         {
-          WxeFunctionState functionState = GetItem (functionToken);
-          Abort (functionState);
+          if (IsExpired (functionToken))
+          {
+            WxeFunctionState functionState = GetItem (functionToken);
+            Abort (functionState);
+          }
         }
       }
     }
@@ -111,9 +127,14 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("functionState", functionState);
       if (functionState.IsAborted)
         throw new ArgumentException ("An aborted WxeFunctionState cannot be added to the collection.", "functionState");
-      _functionStates.Add (
-          functionState.FunctionToken, new WxeFunctionStateMetaData (functionState.FunctionToken, functionState.Lifetime, DateTime.Now));
-      _session.Add (GetSessionKeyForFunctionState (functionState.FunctionToken), functionState);
+
+      lock (_lockObject)
+      {
+        _functionStates.Add (
+            functionState.FunctionToken,
+            new WxeFunctionStateMetaData (functionState.FunctionToken, functionState.Lifetime, DateTime.Now));
+        _session.Add (GetSessionKeyForFunctionState (functionState.FunctionToken), functionState);
+      }
     }
 
     /// <summary> Gets the <see cref="WxeFunctionState"/> for the specifed <paramref name="functionToken"/>. </summary>
@@ -133,7 +154,11 @@ namespace Remotion.Web.ExecutionEngine
         stopwatch.Start();
       }
 
-      WxeFunctionState functionState = (WxeFunctionState) _session[GetSessionKeyForFunctionState (functionToken)];
+      WxeFunctionState functionState;
+      lock (_lockObject)
+      {
+        functionState = (WxeFunctionState) _session[GetSessionKeyForFunctionState (functionToken)];
+      }
 
       if (hasOutOfProcessSession)
       {
@@ -151,8 +176,12 @@ namespace Remotion.Web.ExecutionEngine
     protected void Remove (string functionToken)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
-      _session.Remove (GetSessionKeyForFunctionState (functionToken));
-      _functionStates.Remove (functionToken);
+
+      lock (_lockObject)
+      {
+        _session.Remove (GetSessionKeyForFunctionState (functionToken));
+        _functionStates.Remove (functionToken);
+      }
     }
 
     /// <summary> Removes and aborts the <paramref name="functionState"/> from the collection. </summary>
@@ -162,41 +191,56 @@ namespace Remotion.Web.ExecutionEngine
     public void Abort (WxeFunctionState functionState)
     {
       ArgumentUtility.CheckNotNull ("functionState", functionState);
-      Remove (functionState.FunctionToken);
-      functionState.Abort();
+
+      lock (_lockObject)
+      {
+        Remove (functionState.FunctionToken);
+        // WxeFunctionState is not threadsafe, thus locking the abort at this point is good practice
+        functionState.Abort();
+      }
     }
 
     public bool IsExpired (string functionToken)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
 
-      WxeFunctionStateMetaData functionStateMetaData;
-      if (_functionStates.TryGetValue (functionToken, out functionStateMetaData))
-        return functionStateMetaData.LastAccess.AddMinutes (functionStateMetaData.Lifetime) < DateTime.Now;
+      lock (_lockObject)
+      {
+        WxeFunctionStateMetaData functionStateMetaData;
+        if (_functionStates.TryGetValue (functionToken, out functionStateMetaData))
+          return functionStateMetaData.LastAccess.AddMinutes (functionStateMetaData.Lifetime) < DateTime.Now;
 
-      return true;
+        return true;
+      }
     }
 
     public DateTime GetLastAccess (string functionToken)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
-      CheckFunctionTokenExists (functionToken);
+      lock (_lockObject)
+      {
+        CheckFunctionTokenExists (functionToken);
 
-      return _functionStates[functionToken].LastAccess;
+        return _functionStates[functionToken].LastAccess;
+      }
     }
 
     public void Touch (string functionToken)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
-      CheckFunctionTokenExists (functionToken);
+      lock (_lockObject)
+      {
+        CheckFunctionTokenExists (functionToken);
 
-      s_log.Debug (string.Format ("Refreshing WxeFunctionState {0}.", functionToken));
-      WxeFunctionStateMetaData old = _functionStates[functionToken];
-      _functionStates[functionToken] = new WxeFunctionStateMetaData (old.FunctionToken, old.Lifetime, DateTime.Now);
+        s_log.Debug (string.Format ("Refreshing WxeFunctionState {0}.", functionToken));
+        WxeFunctionStateMetaData old = _functionStates[functionToken];
+        _functionStates[functionToken] = new WxeFunctionStateMetaData (old.FunctionToken, old.Lifetime, DateTime.Now);
+      }
     }
 
     private void CheckFunctionTokenExists (string functionToken)
     {
+      // No lock in method, will be locked from the outside.
       if (!_functionStates.ContainsKey (functionToken))
       {
         throw new ArgumentException (

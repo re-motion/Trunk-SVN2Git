@@ -178,6 +178,7 @@
     <Compile Include="Core\Context\ISafeContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
     <Compile Include="Core\ExecutionEngine\WxePageTests\InfrastructureExceptionHandling_WxePageTest.cs" />
+    <Compile Include="Core\ExecutionEngine\FakeHttpSessionStateBase.cs" />
     <Compile Include="Core\Infrastructure\IBuildManagerTest.cs" />
     <Compile Include="Core\Infrastructure\IHttpContextProviderTest.cs" />
     <Compile Include="Core\Infrastructure\IInfrastructureResourceUrlFactoryTest.cs" />

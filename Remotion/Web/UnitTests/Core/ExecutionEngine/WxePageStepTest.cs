@@ -63,10 +63,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       _pageMock = _mockRepository.DynamicMock<IWxePage>();
       _wxeHandler = new WxeHandler();
 
-      var sessionStub = _mockRepository.DynamicMock<HttpSessionStateBase>();
-      sessionStub.Stub (stub => stub[Arg<string>.Is.NotNull]).PropertyBehavior();
-
-      _functionStateManager = new WxeFunctionStateManager (sessionStub);
+      _functionStateManager = new WxeFunctionStateManager (new FakeHttpSessionStateBase());
       _wxeContext = new WxeContext (_httpContextMock, _functionStateManager, _functionState, new NameValueCollection());
     }
 
