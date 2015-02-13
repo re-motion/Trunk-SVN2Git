@@ -16,6 +16,7 @@
 // 
 
 using System.Web;
+using System.Web.SessionState;
 using Remotion.Collections;
 
 namespace Remotion.Web.UnitTests.Core.ExecutionEngine
@@ -24,9 +25,11 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
   {
     private readonly object _lockObject = new object();
     private readonly NameObjectCollection _items = new NameObjectCollection();
+    private readonly SessionStateMode _mode;
 
-    public FakeHttpSessionStateBase ()
+    public FakeHttpSessionStateBase (SessionStateMode mode = SessionStateMode.Off)
     {
+      _mode = mode;
     }
 
     public sealed override object SyncRoot
@@ -43,6 +46,16 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     public override void Add (string name, object value)
     {
       _items.Add (name, value);
+    }
+
+    public override void Remove (string name)
+    {
+      _items.Remove (name);
+    }
+
+    public override SessionStateMode Mode
+    {
+      get { return _mode; }
     }
   }
 }
