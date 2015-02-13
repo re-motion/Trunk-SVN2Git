@@ -17,6 +17,7 @@
 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 
 namespace Remotion.Web.Test
@@ -27,6 +28,13 @@ namespace Remotion.Web.Test
   public class Start : SmartPage
   {
     protected Button ResetSessionButton;
+    protected Label CurrentFunctionCountLabel;
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+      CurrentFunctionCountLabel.Text = WxeFunctionStateManager.Current.CleanUpExpired().ToString();
+    }
 
     protected void ResetSessionButton_Click (object sender, EventArgs e)
     {
