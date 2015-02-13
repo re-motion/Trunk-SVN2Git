@@ -102,8 +102,9 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     /// <summary> Cleans up expired <see cref="WxeFunctionState"/> objects in the collection. </summary>
+    /// <returns>The remaining (i.e. not expired) function states.</returns>
     /// <remarks> Removes and aborts expired function states. </remarks>
-    public void CleanUpExpired ()
+    public int CleanUpExpired ()
     {
       lock (_lockObject)
       {
@@ -115,6 +116,7 @@ namespace Remotion.Web.ExecutionEngine
             Abort (functionState);
           }
         }
+        return _functionStates.Count;
       }
     }
 
@@ -147,7 +149,7 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
       
       Stopwatch stopwatch = null;
-      bool hasOutOfProcessSession = _session.Mode != SessionStateMode.InProc;
+      bool hasOutOfProcessSession = _session.Mode != SessionStateMode.Off && _session.Mode != SessionStateMode.InProc;
       if (hasOutOfProcessSession)
       {
         stopwatch = new Stopwatch();

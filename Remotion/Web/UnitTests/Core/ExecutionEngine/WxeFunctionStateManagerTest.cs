@@ -133,13 +133,17 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       functionStateManager.Add (functionStateExpired);
       functionStateManager.Add (functionStateNotExpired);
 
+      var resultBeforeExpiration = functionStateManager.CleanUpExpired();
+      Assert.That (resultBeforeExpiration, Is.EqualTo (2));
+
       Thread.Sleep (61000);
 
       Assert.That (functionStateManager.IsExpired (functionStateExpired.FunctionToken), Is.True);
       Assert.That (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken), Is.False);
 
-      functionStateManager.CleanUpExpired();
+      var resultAfterExpiration = functionStateManager.CleanUpExpired();
 
+      Assert.That (resultAfterExpiration, Is.EqualTo (1));
       Assert.That (functionStateManager.IsExpired (functionStateNotExpired.FunctionToken), Is.False);
       Assert.That (_session[GetSessionKeyForFunctionState (functionStateExpired.FunctionToken)], Is.Null);
     }
