@@ -21,6 +21,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Development.Web.ResourceHosting;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.Test.ErrorHandling;
 using Remotion.Web.UI;
 
@@ -57,6 +58,10 @@ namespace Remotion.Web.Test
 
     protected void Application_EndRequest (Object sender, EventArgs e)
     {
+      if (Context.Handler is WxeHandler && WxeFunctionStateManager.Current.CleanUpExpired() == 0)
+      {
+        // Perform cleanup. Cannot call Session.Abandon() at this point because the session is no longer available during EndRequest.
+      }
     }
 
     protected void Application_AuthenticateRequest (Object sender, EventArgs e)
