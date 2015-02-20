@@ -19,12 +19,14 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
+using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
 {
@@ -217,6 +219,34 @@ namespace Remotion.SecurityManager.UnitTests.Domain.OrganizationalStructure
         position2.UniqueIdentifier = "UID";
 
         ClientTransactionScope.CurrentTransaction.Commit();
+      }
+    }
+
+    [Test]
+    public void Initializ_SetsUniqueIdentityInsideSecurityFreeSection ()
+    {
+      var extensionStub = MockRepository.GenerateStub<IClientTransactionExtension>();
+      bool propertyValueChangingCalled = false;
+      extensionStub.Stub (_ => _.Key).Return ("STUB");
+      extensionStub.Stub (_ => _.PropertyValueChanging (null, null, null, null, null)).IgnoreArguments().WhenCalled (
+          mi =>
+          {
+            var propertyDefinition = ((PropertyDefinition) mi.Arguments[2]);
+            if (propertyDefinition.PropertyInfo.Name == "UniqueIdentifier")
+            {
+              propertyValueChangingCalled = true;
+              Assert.That (SecurityFreeSection.IsActive, Is.True);
+            }
+          });
+
+      OrganizationalStructureTestHelper testHelper = new OrganizationalStructureTestHelper();
+      using (testHelper.Transaction.EnterNonDiscardingScope())
+      {
+        testHelper.Transaction.Extensions.Add (extensionStub);
+        Assert.That (SecurityFreeSection.IsActive, Is.False);
+        testHelper.CreatePosition ("Position1");
+        Assert.That (SecurityFreeSection.IsActive, Is.False);
+        Assert.That (propertyValueChangingCalled, Is.True);
       }
     }
   }

@@ -77,9 +77,14 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
 
     protected Position ()
     {
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
-      UniqueIdentifier = Guid.NewGuid ().ToString ();
-// ReSharper restore DoNotCallOverridableMethodsInConstructor
+      // The SecurityFreeSection is reduntant if the security strategy created by the OrganizationalStructureObject uses no security for new objects.
+      // Since creating the security strategy represents an extension point, separate precaution for setting the UniqueIdentifier in the ctor must be taken.
+      using (SecurityFreeSection.Activate())
+      {
+        // ReSharper disable DoNotCallOverridableMethodsInConstructor
+        UniqueIdentifier = Guid.NewGuid().ToString();
+        // ReSharper restore DoNotCallOverridableMethodsInConstructor
+      }
     }
 
     [StringProperty (IsNullable = false, MaximumLength = 100)]
