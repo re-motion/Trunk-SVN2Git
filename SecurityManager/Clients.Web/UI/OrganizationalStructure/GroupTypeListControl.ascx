@@ -16,6 +16,8 @@
  % Additional permissions are listed in the file re-motion_exceptions.txt.
 --%>
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="GroupTypeListControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure.GroupTypeListControl" %>
+<%@ Register TagPrefix="remotion" Namespace="Remotion.Web.UI.Controls" Assembly="Remotion.Web" %>
+<%@ Register TagPrefix="remotion" Namespace="Remotion.ObjectBinding.Web.UI.Controls" Assembly="Remotion.ObjectBinding.Web" %>
 
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.OrganizationalStructure.GroupType, Remotion.SecurityManager" />
 <remotion:FormGridManager ID="FormGridManager" runat="server" ValidatorVisibility="HideValidators" />

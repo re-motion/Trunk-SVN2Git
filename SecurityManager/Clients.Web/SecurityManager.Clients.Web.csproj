@@ -66,7 +66,9 @@
     <Reference Include="System.Web.Services" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Default.aspx" />
+    <None Include="Default.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="..\Build\NuSpec\TemplateSharedForWeb.nuspec">
       <Link>TemplateSharedForWeb.nuspec</Link>
     </None>
@@ -124,41 +126,83 @@
     <None Include="res\Themes\NovaBlue\Image\PermissionDenied.gif" />
     <None Include="res\Themes\NovaBlue\Image\PermissionGranted.gif" />
     <None Include="res\Themes\NovaBlue\Image\PermissionUndefined.gif" />
-    <None Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx" />
+    <None Include="UI\AccessControl\EditAccessControlEntryHeaderControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\SecurityManagerSearchWebService.asmx" />
-    <None Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx" />
-    <None Include="UI\AccessControl\EditPermissionControl.ascx" />
-    <None Include="UI\AccessControl\EditAccessControlEntryControl.ascx" />
-    <None Include="UI\AccessControl\EditStateCombinationControl.ascx" />
-    <None Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx" />
-    <None Include="UI\AccessControl\EditPermissionsForm.aspx" />
-    <None Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx" />
+    <None Include="UI\AccessControl\EditStatelessAccessControlListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\AccessControl\EditPermissionControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\AccessControl\EditAccessControlEntryControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\AccessControl\EditStateCombinationControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\AccessControl\EditStatefulAccessControlListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\AccessControl\EditPermissionsForm.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\AccessControl\SecurableClassDefinitionListForm.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\TenantListForm.aspx" />
-    <None Include="UI\OrganizationalStructure\TenantListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\TenantListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\EditTenantForm.aspx" />
-    <None Include="UI\OrganizationalStructure\EditTenantControl.ascx" />
-    <None Include="UI\SecurityManagerCurrentTenantControl.ascx" />
-    <None Include="UI\SecurityManagerMasterPage.Master" />
+    <None Include="UI\OrganizationalStructure\EditTenantControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\SecurityManagerCurrentTenantControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\SecurityManagerMasterPage.Master">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\ErrorMessageControl.ascx" />
     <None Include="UrlMapping.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="res\Themes\ClassicBlue\Html\Style.css" />
-    <None Include="UI\OrganizationalStructure\EditGroupControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditGroupControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\EditGroupForm.aspx" />
-    <None Include="UI\OrganizationalStructure\EditGroupTypeControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditGroupTypeControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\EditGroupTypeForm.aspx" />
-    <None Include="UI\OrganizationalStructure\EditPositionControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditPositionControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\EditPositionForm.aspx" />
-    <None Include="UI\OrganizationalStructure\EditUserControl.ascx" />
-    <None Include="UI\OrganizationalStructure\EditUserForm.aspx" />
-    <None Include="UI\OrganizationalStructure\GroupListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\EditUserControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\OrganizationalStructure\EditUserForm.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
+    <None Include="UI\OrganizationalStructure\GroupListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\GroupListForm.aspx" />
-    <None Include="UI\OrganizationalStructure\GroupTypeListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\GroupTypeListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\GroupTypeListForm.aspx" />
-    <None Include="UI\OrganizationalStructure\PositionListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\PositionListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\PositionListForm.aspx" />
-    <None Include="UI\OrganizationalStructure\UserListControl.ascx" />
+    <None Include="UI\OrganizationalStructure\UserListControl.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </None>
     <None Include="UI\OrganizationalStructure\UserListForm.aspx" />
     <None Include="UI\SecurityManagerNavigationTabs.ascx" />
     <None Include="WxeHandler.ashx" />

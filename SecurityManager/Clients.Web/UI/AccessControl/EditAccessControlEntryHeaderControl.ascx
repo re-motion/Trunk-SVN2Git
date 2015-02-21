@@ -16,8 +16,7 @@
  % Additional permissions are listed in the file re-motion_exceptions.txt.
 --%>
 <%@ Control Language="C#" AutoEventWireup="true" Codebehind="EditAccessControlEntryHeaderControl.ascx.cs" Inherits="Remotion.SecurityManager.Clients.Web.UI.AccessControl.EditAccessControlEntryHeaderControl" %>
-<%@ Register TagPrefix="securityManager" Assembly="Remotion.SecurityManager.Clients.Web" Namespace="Remotion.SecurityManager.Clients.Web.Classes" %>
-<%@ Register TagPrefix="securityManager" Src="EditPermissionControl.ascx" TagName="EditPermissionControl" %>
+<%@ Register TagPrefix="remotion" Namespace="Remotion.ObjectBinding.Web.UI.Controls" Assembly="Remotion.ObjectBinding.Web" %>
 <remotion:BindableObjectDataSourceControl ID="CurrentObject" runat="server" Type="Remotion.SecurityManager.Domain.Metadata.SecurableClassDefinition, Remotion.SecurityManager" />
 <tr class="header">
 <asp:PlaceHolder ID="HeaderCells" runat="server" />
