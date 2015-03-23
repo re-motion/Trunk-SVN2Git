@@ -73,6 +73,7 @@
           NuGetVersionSuffix=$(NuGetVersionSuffix);
           ReleaseType=$(ReleaseType);
           VcsUrlTemplate=$(VcsUrlTemplate);
+          SvnRevision=$(SvnRevision);
       </BuildProperties>
     </PropertyGroup>
 
