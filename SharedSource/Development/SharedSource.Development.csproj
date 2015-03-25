@@ -56,6 +56,7 @@
     <Compile Include="UnitTesting\Enumerables\EnumerableExtensions.cs" />
     <Compile Include="UnitTesting\Enumerables\OneTimeEnumerable.cs" />
     <Compile Include="UnitTesting\IO\AssemblyLoader.cs" />
+    <Compile Include="UnitTesting\IO\TempFile.cs" />
     <Compile Include="UnitTesting\ObjectExtensions.cs" />
     <Compile Include="UnitTesting\ObjectMothers\BooleanObjectMother.cs" />
     <Compile Include="UnitTesting\ObjectMothers\DictionaryObjectMother.cs" />

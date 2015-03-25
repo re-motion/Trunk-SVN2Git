@@ -132,6 +132,9 @@
     <Compile Include="..\..\..\SharedSource\Development\UnitTesting\IO\AssemblyLoader.cs">
       <Link>SharedSource\UnitTesting\IO\AssemblyLoader.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\SharedSource\Development\UnitTesting\IO\TempFile.cs">
+      <Link>SharedSource\UnitTesting\IO\TempFile.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\SharedSource\Development\UnitTesting\ObjectExtensions.cs">
       <Link>SharedSource\UnitTesting\ObjectExtensions.cs</Link>
     </Compile>
@@ -209,6 +212,7 @@
     <Compile Include="UnitTesting\Enumerables\OneTimeEnumerable.Partial.cs" />
     <Compile Include="UnitTesting\GCCounter.cs" />
     <Compile Include="UnitTesting\IO\AssemblyLoader.Partial.cs" />
+    <Compile Include="UnitTesting\IO\TempFile.Partial.cs" />
     <Compile Include="UnitTesting\ObjectExtensions.Partial.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigSystemHelper.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigurationHelper.cs" />
@@ -218,7 +222,6 @@
     <Compile Include="UnitTesting\Data\SqlClient\SqlBatchCommandException.cs" />
     <Compile Include="UnitTesting\Configuration\FakeInternalConfigSystem.cs" />
     <Compile Include="UnitTesting\IMockRepository.cs" />
-    <Compile Include="UnitTesting\IO\TempFile.cs" />
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
     <Compile Include="UnitTesting\ObjectMothers\BooleanObjectMother.Partial.cs" />
     <Compile Include="UnitTesting\ObjectMothers\DictionaryObjectMother.Partial.cs" />

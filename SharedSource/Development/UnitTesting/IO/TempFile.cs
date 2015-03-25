@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.IO;
 using Remotion.Utilities;
@@ -23,7 +24,7 @@ namespace Remotion.Development.UnitTesting.IO
   /// <summary>
   /// The <see cref="TempFile"/> class represents a disposable temp file created via the <see cref="Path.GetTempFileName"/> method.
   /// </summary>
-  public class TempFile : IDisposable
+  partial class TempFile : IDisposable
   {
     private string _fileName;
 

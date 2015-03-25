@@ -48,6 +48,7 @@
     <Compile Include="Development\Core\UnitTesting\DevNullTest.cs" />
     <Compile Include="Development\Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs" />
     <Compile Include="Development\Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs" />
+    <Compile Include="Development\Core\UnitTesting\IO\TempFileTest.cs" />
     <Compile Include="Development\Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs" />
     <Compile Include="Development\Core\UnitTesting\PEVerifierTest.cs" />
     <Compile Include="Development\Core\UnitTesting\Reflection\NormalizingMemberInfoFromExpressionUtilityTest.cs" />

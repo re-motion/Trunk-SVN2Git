@@ -177,6 +177,9 @@
     <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs">
       <Link>SharedSource\Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\IO\TempFileTest.cs">
+      <Link>Core\UnitTesting\IO\TempFileTest.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\SharedSource\UnitTests\Development\Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs">
       <Link>SharedSource\Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs</Link>
     </Compile>
@@ -232,7 +235,6 @@
     <Compile Include="Core\UnitTesting\AppDomainRunnerTest.cs" />
     <Compile Include="Core\UnitTesting\Data\SqlClient\DatabaseAgentTest.cs" />
     <Compile Include="Core\UnitTesting\Data\SqlClient\TestableDatabaseAgent.cs" />
-    <Compile Include="Core\UnitTesting\IO\TempFileTest.cs" />
     <Compile Include="Core\UnitTesting\RhinoMocksRepositoryAdapter.cs" />
     <Compile Include="Core\UnitTesting\SerializationCallbackTesterTest.cs" />
     <Compile Include="Core\UnitTesting\TestCreateInstance.cs">
