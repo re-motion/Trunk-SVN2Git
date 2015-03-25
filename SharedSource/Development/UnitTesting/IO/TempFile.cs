@@ -19,6 +19,7 @@ using System;
 using System.IO;
 using Remotion.Utilities;
 
+// ReSharper disable once CheckNamespace
 namespace Remotion.Development.UnitTesting.IO
 {
   /// <summary>
