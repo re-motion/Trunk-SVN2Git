@@ -8,7 +8,7 @@
     <owners>rubicon IT GmbH</owners>
     <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
     <projectUrl>http://www.re-motion.org</projectUrl>
-    <description>The re-motion TempFile is used during unit testing when file needs to be created and then disposed during tear-down. Distributed as source code.</description>
+    <description>The re-motion TempFile is used during unit testing when a file needs to be created and then disposed during tear-down. Distributed as source code.</description>
     <copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</copyright>
     <tags>re-motion Development UnitTesting TempFile</tags>
     <developmentDependency>true</developmentDependency>
