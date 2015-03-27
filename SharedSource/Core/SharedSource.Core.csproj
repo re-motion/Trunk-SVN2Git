@@ -88,6 +88,7 @@
     <None Include="Remotion.Utilities.EqualityUtility.Sources.nuspec" />
     <None Include="Remotion.Utilities.ExceptionUtility.Sources.nuspec" />
     <None Include="Remotion.Utilities.NullableTypeUtility.Sources.nuspec" />
+    <None Include="Remotion.Utilities.FileUtility.Sources.nuspec" />
     <None Include="ReSharperAnnotations\ReSharperAnnotations Apache-2.0.licenseheader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
