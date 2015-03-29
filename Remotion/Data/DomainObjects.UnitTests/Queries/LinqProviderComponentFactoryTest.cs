@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
@@ -63,7 +64,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Queries
     [Test]
     public void CreateQueryParser_HasDefaultNodesAndSteps ()
     {
-      var selectMethod = SelectExpressionNode.SupportedMethods[0];
+      var selectMethod = SelectExpressionNode.GetSupportedMethods().First();
       var queryParser = (QueryParser) _factory.CreateQueryParser();
 
       Assert.That (queryParser.NodeTypeProvider, Is.TypeOf (typeof (CompoundNodeTypeProvider)));
