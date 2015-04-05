@@ -122,7 +122,7 @@
     </Reference>
     <Reference Include="Remotion.Linq.EagerFetching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\Remotion.Linq.EagerFetching.2.0.0-alpha-003\lib\portable-net45+win+wpa81+wp80\Remotion.Linq.EagerFetching.dll</HintPath>
+      <HintPath>..\..\..\packages\Remotion.Linq.EagerFetching.2.0.0-alpha-004\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq.SqlBackend, Version=2.0.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
