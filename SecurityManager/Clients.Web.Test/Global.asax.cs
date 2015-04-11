@@ -37,7 +37,7 @@ namespace Remotion.SecurityManager.Clients.Web.Test
 
       //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.IClientTransactionExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
       //defaultServiceLocator.Register (typeof (Remotion.Data.DomainObjects.Tracing.IPersistenceExtensionFactory), typeof (Remotion.Data.DomainObjects.UberProfIntegration.LinqToSqlExtensionFactory), LifetimeKind.Singleton);
-      //defaultServiceLocator.Register (typeof (IOrganizationalStructureEditControlFormGridRowProvider<EditUserControl>), typeof (EditUserControlFormGridRowProvider), LifetimeKind.Singleton);
+      //defaultServiceLocator.RegisterMultiple<IOrganizationalStructureEditControlFormGridRowProvider<EditUserControl>> (() => new EditUserControlFormGridRowProvider());
 
       ServiceLocator.SetLocatorProvider (() => defaultServiceLocator);
 

@@ -48,11 +48,11 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
 
     protected override void OnLoadComplete (EventArgs e)
     {
-      base.OnLoadComplete (e);
-
       //Split to support IFormGridRowProvider
       if (!IsPostBack)
         LoadValuesInternal (false);
+
+      base.OnLoadComplete (e);
     }
 
     private void LoadValuesInternal (bool interim)
