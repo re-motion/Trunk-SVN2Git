@@ -71,8 +71,8 @@ namespace Remotion.ObjectBinding
     ///   <item>
     ///     <term>The <paramref name="property"/> parameter implements the <see cref="IBusinessObjectReferenceProperty"/> interface.</term>
     ///     <description> 
-    ///       The value's <see cref="IBusinessObjectWithIdentity.DisplayName"/> is returned if the object implements <see cref="IBusinessObjectWithIdentity"/>, 
-    ///       otherwise, <see cref="object.ToString()"/> is used.
+    ///       The value's <see cref="IBusinessObjectWithIdentity.DisplayName"/> is returned (including an acess check) 
+    ///       if the object implements <see cref="IBusinessObjectWithIdentity"/>, otherwise, <see cref="object.ToString()"/> is used.
     ///     </description>
     ///   </item>
     ///   <item>
@@ -230,8 +230,13 @@ namespace Remotion.ObjectBinding
     {
       if (value == null)
         return string.Empty;
+
+      // When using IBusinessObjectWithIdentity, the DisplayName property can be checked before accessing the string value.
+      // This check is not possible with IBusinessObject. Here, the implementation must take care to check the string value before returning it.
+
       if (value is IBusinessObjectWithIdentity)
-        return ((IBusinessObjectWithIdentity) value).DisplayName;
+        return ((IBusinessObjectWithIdentity) value).GetAccessibleDisplayName();
+
       return value.ToString();
     }
 
