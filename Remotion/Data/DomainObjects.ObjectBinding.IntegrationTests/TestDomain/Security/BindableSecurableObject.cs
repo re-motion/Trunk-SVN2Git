@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.
     }
 
     private IObjectSecurityStrategy _securityStrategy;
-    private string _readOnylProperty = string.Empty;
+    private string _readOnlyProperty = string.Empty;
     private string _propertyToOverride = string.Empty;
 
 
@@ -52,7 +52,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.
     protected override void OnLoaded (LoadMode loadMode)
     {
       base.OnLoaded (loadMode);
-      _securityStrategy = new ObjectSecurityStrategy (this, InvalidationToken.Create());
+      _securityStrategy = ObjectSecurityStrategy.Create (this, InvalidationToken.Create());
     }
 
     public IObjectSecurityStrategy GetSecurityStrategy ()
@@ -97,7 +97,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.
 
     public string ReadOnlyProperty
     {
-      get { return _readOnylProperty; }
+      get { return _readOnlyProperty; }
     }
 
     public virtual string PropertyToOverride

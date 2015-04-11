@@ -46,7 +46,7 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
       _securityContextFactoryStub.Stub (_ => _.CreateSecurityContext()).Return (_context);
 
       _invalidationToken = InvalidationToken.Create();
-      _strategy = new ObjectSecurityStrategy (_securityContextFactoryStub, _invalidationToken);
+      _strategy = ObjectSecurityStrategy.Create (_securityContextFactoryStub, _invalidationToken);
     }
 
     [Test]

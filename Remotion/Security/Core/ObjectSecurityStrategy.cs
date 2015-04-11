@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Remotion.Collections;
 using Remotion.Utilities;
 
@@ -53,18 +54,42 @@ namespace Remotion.Security
 
     #endregion
 
-    private readonly ICache<ISecurityPrincipal, AccessType[]> _cache;
-    private readonly ISecurityContextFactory _securityContextFactory;
-
-    public ObjectSecurityStrategy (
-        ISecurityContextFactory securityContextFactory,
-        InvalidationToken invalidationToken)
+    /// <summary>
+    /// Instantiates <see cref="ObjectSecurityStrategy"/> with a cache based on the <paramref name="invalidationToken"/>.
+    /// </summary>
+    public static IObjectSecurityStrategy Create (
+        [NotNull] ISecurityContextFactory securityContextFactory,
+        [NotNull] InvalidationToken invalidationToken)
     {
       ArgumentUtility.CheckNotNull ("securityContextFactory", securityContextFactory);
       ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
+      return new ObjectSecurityStrategy (securityContextFactory, CacheFactory.Create<ISecurityPrincipal, AccessType[]> (invalidationToken));
+    }
+
+    /// <summary>
+    /// Instantiates <see cref="ObjectSecurityStrategy"/> with a custom <paramref name="cache"/> implementation.
+    /// </summary>
+    public static IObjectSecurityStrategy CreateWithCustomCache (
+        [NotNull] ISecurityContextFactory securityContextFactory,
+        [NotNull] ICache<ISecurityPrincipal, AccessType[]> cache)
+    {
+      ArgumentUtility.CheckNotNull ("securityContextFactory", securityContextFactory);
+      ArgumentUtility.CheckNotNull ("cache", cache);
+
+      return new ObjectSecurityStrategy (securityContextFactory, cache);
+    }
+
+    private readonly ISecurityContextFactory _securityContextFactory;
+    private readonly ICache<ISecurityPrincipal, AccessType[]> _cache;
+
+    private ObjectSecurityStrategy (ISecurityContextFactory securityContextFactory, ICache<ISecurityPrincipal, AccessType[]> cache)
+    {
+      ArgumentUtility.DebugCheckNotNull ("securityContextFactory", securityContextFactory);
+      ArgumentUtility.DebugCheckNotNull ("cache", cache);
+
       _securityContextFactory = securityContextFactory;
-      _cache = CacheFactory.Create<ISecurityPrincipal, AccessType[]> (invalidationToken);
+      _cache = cache;
     }
 
     public bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)

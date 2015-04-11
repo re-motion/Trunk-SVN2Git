@@ -32,7 +32,7 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
     private ISecurityPrincipal _principalStub;
     private SecurityContext _context;
     private InvalidationToken _invalidationToken;
-    private ObjectSecurityStrategy _strategy;
+    private IObjectSecurityStrategy _strategy;
 
     [SetUp]
     public void SetUp ()
@@ -46,7 +46,7 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
       _securityContextFactoryStub.Stub (_ => _.CreateSecurityContext()).Return (_context);
 
       _invalidationToken = InvalidationToken.Create();
-      _strategy = new ObjectSecurityStrategy (_securityContextFactoryStub, _invalidationToken);
+      _strategy = ObjectSecurityStrategy.Create (_securityContextFactoryStub, _invalidationToken);
     }
 
     [Test]
@@ -156,6 +156,27 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
 
       Assert.That (hasAccessOnSecondCall, Is.True);
       _securityProviderMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void CreateWithCustomCache_UsesCache ()
+    {
+      var cache = new Cache<ISecurityPrincipal, AccessType[]>();
+      var strategy = ObjectSecurityStrategy.CreateWithCustomCache (_securityContextFactoryStub, cache);
+
+      _securityProviderMock
+          .Expect (_ => _.GetAccess (null, null))
+          .IgnoreArguments()
+          .Throw (new InvalidOperationException ("Should not be called."));
+
+      cache.Add (_principalStub, new[] { AccessType.Get (GeneralAccessTypes.Read) });
+
+      bool hasAccess = strategy.HasAccess (
+          _securityProviderMock,
+          _principalStub,
+          new[] { AccessType.Get (GeneralAccessTypes.Read) });
+
+      Assert.That (hasAccess, Is.True);
     }
   }
 }

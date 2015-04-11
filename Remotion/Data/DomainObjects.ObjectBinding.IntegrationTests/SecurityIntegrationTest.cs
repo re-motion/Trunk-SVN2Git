@@ -18,12 +18,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
 using Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests.TestDomain.Security;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Development.UnitTesting;
 using Remotion.ObjectBinding;
-using Remotion.ObjectBinding.BindableObject;
 using Remotion.Security;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
@@ -621,7 +619,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       return (IBusinessObject)
           BindableSecurableObject.NewObject (
               _clientTransaction,
-              new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create()));
+              ObjectSecurityStrategy.Create (securityContextFactoryStub, InvalidationToken.Create()));
     }
 
     private IBusinessObject CreateDerivedBindableSecurableObject (ISecurityContextFactory securityContextFactoryStub)
@@ -629,7 +627,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding.IntegrationTests
       return (IBusinessObject)
           DerivedBindableSecurableObject.NewObject (
               _clientTransaction,
-              new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create()));
+              ObjectSecurityStrategy.Create (securityContextFactoryStub, InvalidationToken.Create()));
     }
   }
 }

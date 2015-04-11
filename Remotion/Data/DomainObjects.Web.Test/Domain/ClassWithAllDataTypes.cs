@@ -287,7 +287,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Domain
     IObjectSecurityStrategy ISecurableObject.GetSecurityStrategy ()
     {
       return new DomainObjectSecurityStrategyDecorator (
-          new ObjectSecurityStrategy (this, InvalidationToken.Create()),
+          ObjectSecurityStrategy.Create (this, InvalidationToken.Create()),
           this,
           RequiredSecurityForStates.NewAndDeleted);
     }
