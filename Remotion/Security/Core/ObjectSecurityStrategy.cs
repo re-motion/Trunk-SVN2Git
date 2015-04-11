@@ -55,18 +55,18 @@ namespace Remotion.Security
 
     private readonly ICache<ISecurityPrincipal, AccessType[]> _cache;
     private readonly ISecurityContextFactory _securityContextFactory;
-    private readonly CacheInvalidationToken _cacheInvalidationToken;
+    private readonly InvalidationToken _invalidationToken;
 
     public ObjectSecurityStrategy (
         ISecurityContextFactory securityContextFactory,
-        CacheInvalidationToken cacheInvalidationToken)
+        InvalidationToken invalidationToken)
     {
       ArgumentUtility.CheckNotNull ("securityContextFactory", securityContextFactory);
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
       _securityContextFactory = securityContextFactory;
-      _cacheInvalidationToken = cacheInvalidationToken;
-      _cache = CacheFactory.Create<ISecurityPrincipal, AccessType[]> (cacheInvalidationToken);
+      _invalidationToken = invalidationToken;
+      _cache = CacheFactory.Create<ISecurityPrincipal, AccessType[]> (invalidationToken);
     }
 
     public ISecurityContextFactory SecurityContextFactory
@@ -74,9 +74,9 @@ namespace Remotion.Security
       get { return _securityContextFactory; }
     }
 
-    public CacheInvalidationToken CacheInvalidationToken
+    public InvalidationToken InvalidationToken
     {
-      get { return _cacheInvalidationToken; }
+      get { return _invalidationToken; }
     }
 
     public bool HasAccess (ISecurityProvider securityProvider, ISecurityPrincipal principal, IReadOnlyList<AccessType> requiredAccessTypes)

@@ -21,25 +21,25 @@ using Remotion.Utilities;
 namespace Remotion.Collections
 {
   [Serializable]
-  public class InvalidationTokenBasedCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
+  public sealed class InvalidationTokenBasedCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
   {
     private readonly ICache<TKey, TValue> _innerCache;
-    private readonly CacheInvalidationToken _cacheInvalidationToken;
-    private CacheInvalidationToken.Revision _revision;
+    private readonly InvalidationToken _invalidationToken;
+    private InvalidationToken.Revision _revision;
 
-    public InvalidationTokenBasedCacheDecorator (ICache<TKey, TValue> innerCache, CacheInvalidationToken cacheInvalidationToken)
+    public InvalidationTokenBasedCacheDecorator (ICache<TKey, TValue> innerCache, InvalidationToken invalidationToken)
     {
       ArgumentUtility.CheckNotNull ("innerCache", innerCache);
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
       _innerCache = innerCache;
-      _cacheInvalidationToken = cacheInvalidationToken;
-      _revision = _cacheInvalidationToken.GetCurrent();
+      _invalidationToken = invalidationToken;
+      _revision = _invalidationToken.GetCurrent();
     }
 
-    public CacheInvalidationToken CacheInvalidationToken
+    public InvalidationToken InvalidationToken
     {
-      get { return _cacheInvalidationToken; }
+      get { return _invalidationToken; }
     }
 
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
@@ -62,7 +62,7 @@ namespace Remotion.Collections
     void ICache<TKey, TValue>.Clear ()
     {
       _innerCache.Clear();
-      _revision = _cacheInvalidationToken.GetCurrent();
+      _revision = _invalidationToken.GetCurrent();
     }
 
     bool INullObject.IsNull
@@ -72,10 +72,10 @@ namespace Remotion.Collections
 
     private void CheckRevision ()
     {
-      if (!_cacheInvalidationToken.IsCurrent (_revision))
+      if (!_invalidationToken.IsCurrent (_revision))
       {
         _innerCache.Clear();
-        _revision = _cacheInvalidationToken.GetCurrent();
+        _revision = _invalidationToken.GetCurrent();
       }
     }
   }

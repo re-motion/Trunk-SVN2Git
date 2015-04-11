@@ -263,7 +263,7 @@ namespace Remotion.Data.DomainObjects.Security.UnitTests
     {
       return SecurableObject.NewObject (
           clientTransaction ?? _clientTransaction,
-          new ObjectSecurityStrategy (securityContextFactory, CacheInvalidationToken.Create()),
+          new ObjectSecurityStrategy (securityContextFactory, InvalidationToken.Create()),
           action);
     }
   }

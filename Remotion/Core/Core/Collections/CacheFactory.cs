@@ -50,15 +50,15 @@ namespace Remotion.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="invalidationToken">The <see cref="InvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
     /// <returns>
     /// A <see cref="Cache{TKey,TValue}"/> instance for storing keys and values.
     /// </returns>
-    public static ICache<TKey, TValue> Create<TKey, TValue> ([NotNull] CacheInvalidationToken cacheInvalidationToken)
+    public static ICache<TKey, TValue> Create<TKey, TValue> ([NotNull] InvalidationToken invalidationToken)
     {
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
-      return new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>(), cacheInvalidationToken);
+      return new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>(), invalidationToken);
     }
 
     /// <summary>
@@ -82,18 +82,18 @@ namespace Remotion.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    /// <param name="cacheInvalidationToken">The <see cref="CacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="invalidationToken">The <see cref="InvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
     /// <param name="comparer">The comparer to use for comparing keys. Can be <see langword="null" />.</param>
     /// <returns>
     /// A <see cref="Cache{TKey,TValue}"/> instances for storing keys and values.
     /// </returns>
     public static ICache<TKey, TValue> Create<TKey, TValue> (
-        [NotNull] CacheInvalidationToken cacheInvalidationToken,
+        [NotNull] InvalidationToken invalidationToken,
         [CanBeNull] IEqualityComparer<TKey> comparer)
     {
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
-      return new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer), cacheInvalidationToken);
+      return new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer), invalidationToken);
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ namespace Remotion.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    /// <param name="cacheInvalidationToken">The <see cref="LockingCacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="invalidationToken">The <see cref="LockingInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
     /// <returns>
     /// A <see cref="LockingCacheDecorator{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
     /// </returns>
@@ -133,12 +133,12 @@ namespace Remotion.Collections
     /// to reduce contention.
     /// </remarks>
     public static ICache<TKey, TValue> CreateWithLocking<TKey, TValue> (
-        [NotNull] LockingCacheInvalidationToken cacheInvalidationToken)
+        [NotNull] LockingInvalidationToken invalidationToken)
     {
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
       return new LockingCacheDecorator<TKey, TValue> (
-          new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>(), cacheInvalidationToken));
+          new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue>(), invalidationToken));
     }
 
     /// <summary>
@@ -168,7 +168,7 @@ namespace Remotion.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    /// <param name="cacheInvalidationToken">The <see cref="LockingCacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="invalidationToken">The <see cref="LockingInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
     /// <param name="comparer">The comparer to use for comparing keys.</param>
     /// <returns>
     /// A <see cref="LockingCacheDecorator{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
@@ -180,13 +180,13 @@ namespace Remotion.Collections
     /// <see cref="CreateWithLazyLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce contention.
     /// </remarks>
     public static ICache<TKey, TValue> CreateWithLocking<TKey, TValue> (
-        [NotNull] LockingCacheInvalidationToken cacheInvalidationToken,
+        [NotNull] LockingInvalidationToken invalidationToken,
         [CanBeNull] IEqualityComparer<TKey> comparer)
     {
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
       return new LockingCacheDecorator<TKey, TValue> (
-          new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer), cacheInvalidationToken));
+          new InvalidationTokenBasedCacheDecorator<TKey, TValue> (new Cache<TKey, TValue> (comparer), invalidationToken));
     }
 
     /// <summary>
@@ -216,7 +216,7 @@ namespace Remotion.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    /// <param name="cacheInvalidationToken">The <see cref="LockingCacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="invalidationToken">The <see cref="LockingInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
     /// <returns>
     /// A <see cref="LazyLockingCachingAdapter{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
     /// </returns>
@@ -227,15 +227,15 @@ namespace Remotion.Collections
     /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue}()"/> instead to reduce the number of locks used.
     /// </remarks>
     public static ICache<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (
-        [NotNull] LockingCacheInvalidationToken cacheInvalidationToken)
+        [NotNull] LockingInvalidationToken invalidationToken)
         where TValue : class
     {
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
       return new LazyLockingCachingAdapter<TKey, TValue> (
           new InvalidationTokenBasedCacheDecorator<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (
               new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>>(),
-              cacheInvalidationToken));
+              invalidationToken));
     }
 
     /// <summary>
@@ -268,7 +268,7 @@ namespace Remotion.Collections
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
-    /// <param name="cacheInvalidationToken">The <see cref="LockingCacheInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
+    /// <param name="invalidationToken">The <see cref="LockingInvalidationToken"/> that can be used to signal a cache invalidation. Must not be <see langword="null" />.</param>
     /// <param name="comparer">The comparer to use for comparing keys.</param>
     /// <returns>
     /// A <see cref="LazyLockingCachingAdapter{TKey,TValue}"/> instances for storing keys and values in a thread-safe way.
@@ -281,16 +281,16 @@ namespace Remotion.Collections
     /// <see cref="CreateWithLocking{TKey,TValue}(System.Collections.Generic.IEqualityComparer{TKey})"/> instead to reduce the number of locks used.
     /// </remarks>
     public static ICache<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (
-        [NotNull] LockingCacheInvalidationToken cacheInvalidationToken,
+        [NotNull] LockingInvalidationToken invalidationToken,
         [CanBeNull] IEqualityComparer<TKey> comparer)
         where TValue : class
     {
-      ArgumentUtility.CheckNotNull ("cacheInvalidationToken", cacheInvalidationToken);
+      ArgumentUtility.CheckNotNull ("invalidationToken", invalidationToken);
 
       return new LazyLockingCachingAdapter<TKey, TValue> (
           new InvalidationTokenBasedCacheDecorator<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (
               new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (comparer),
-              cacheInvalidationToken));
+              invalidationToken));
     }
   }
 }

@@ -428,7 +428,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       return (IBusinessObject) ObjectFactory.Create (
           false,
           typeof (SecurableClassWithProperties),
-          ParamList.Create (new ObjectSecurityStrategy (securityContextFactoryStub, CacheInvalidationToken.Create())));
+          ParamList.Create (new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create())));
     }
 
     private IBusinessObject CreateDerivedSecurableClassWithProperties (ISecurityContextFactory securityContextFactoryStub)
@@ -436,7 +436,7 @@ namespace Remotion.ObjectBinding.Security.UnitTests.BindableObject
       return (IBusinessObject) ObjectFactory.Create (
           false,
           typeof (DerivedSecurableClassWithProperties),
-          ParamList.Create (new ObjectSecurityStrategy (securityContextFactoryStub, CacheInvalidationToken.Create())));
+          ParamList.Create (new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create())));
     }
   }
 }

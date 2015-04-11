@@ -19,16 +19,16 @@ using System;
 namespace Remotion.Collections
 {
   /// <summary>
-  /// The <see cref="CacheInvalidationTokenImplementation"/> is the non-threadsafe implementation of the <see cref="CacheInvalidationToken"/> class.
+  /// The <see cref="InvalidationTokenImplementation"/> is the non-threadsafe implementation of the <see cref="InvalidationToken"/> class.
   /// </summary>
-  /// <remarks>Instantiate via <see cref="CacheInvalidationToken"/>.<see cref="CacheInvalidationToken.Create"/>.</remarks>
+  /// <remarks>Instantiate via <see cref="InvalidationToken"/>.<see cref="InvalidationToken.Create"/>.</remarks>
   /// <threadsafety static="true" instance="false" />
   [Serializable]
-  internal sealed class CacheInvalidationTokenImplementation : CacheInvalidationToken
+  internal sealed class InvalidationTokenImplementation : InvalidationToken
   {
     private long _currentRevisionValue;
 
-    internal CacheInvalidationTokenImplementation ()
+    internal InvalidationTokenImplementation ()
     {
       // Use the instance's hash-code as revision seed value to allow for a reasonably different number space. 
       // The hash-code is often different between reference types and therefor adds a bit of randomness to the revisions.

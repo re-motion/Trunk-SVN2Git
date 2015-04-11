@@ -63,7 +63,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Delete) });
 
       ISecurableObject securableObject = new SecurableObject (
-          new ObjectSecurityStrategy (securityContextFactoryStub, CacheInvalidationToken.Create()));
+          new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create()));
       var methodInfo = typeof (SecurableObject).GetMethod ("Delete", new Type[0]);
 
       var hasMethodAccess = _securityClient.HasMethodAccess (securableObject, methodInfo);
@@ -83,7 +83,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Create) });
 
       ISecurableObject securableObject = new DerivedSecurableObject (
-          new ObjectSecurityStrategy (securityContextFactoryStub, CacheInvalidationToken.Create()));
+          new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create()));
       var methodInfo = typeof (DerivedSecurableObject).GetMethod ("Make");
 
       var hasMethodAccess = _securityClient.HasMethodAccess (securableObject, methodInfo);
@@ -153,7 +153,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
           .Return (new[] { AccessType.Get (GeneralAccessTypes.Read) });
 
       ISecurableObject securableObject = new SecurableObject (
-          new ObjectSecurityStrategy (securityContextFactoryStub, CacheInvalidationToken.Create()));
+          new ObjectSecurityStrategy (securityContextFactoryStub, InvalidationToken.Create()));
 
       var hasMethodAccess = _securityClient.HasPropertyReadAccess (securableObject, "IsVisible");
 

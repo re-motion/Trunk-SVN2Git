@@ -19,20 +19,20 @@ using System;
 
 namespace Remotion.Collections
 {
-  /// <summary>The <see cref="CacheInvalidationToken"/> can be used as a means to commicate that the cached information is no longer current.</summary>
+  /// <summary>The <see cref="InvalidationToken"/> can be used as a means to commicate that the cached information is no longer current.</summary>
   /// <remarks>
   /// Use <see cref="GetCurrent"/> to get the current revision and provide it to <see cref="IsCurrent"/> when checking whether the revision is still current.
   /// Invoke <see cref="Invalidate"/> to signal a cache invalidation.
   /// <note type="caution">
-  /// If the <see cref="CacheInvalidationToken.Revision"/> is part of a serialized instance, the associated <see cref="CacheInvalidationToken"/> must also be serialized.
+  /// If the <see cref="InvalidationToken.Revision"/> is part of a serialized instance, the associated <see cref="InvalidationToken"/> must also be serialized.
   /// </note>
   /// </remarks>
-  /// <seealso cref="LockingCacheInvalidationToken"/>
+  /// <seealso cref="LockingInvalidationToken"/>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public abstract class CacheInvalidationToken
+  public abstract class InvalidationToken
   {
-    /// <summary>Represents a cache revision for the <see cref="CacheInvalidationToken"/> from which it was created.</summary>
+    /// <summary>Represents a cache revision for the <see cref="InvalidationToken"/> from which it was created.</summary>
     /// <threadsafety static="true" instance="true" />
     [Serializable]
     public struct Revision
@@ -42,15 +42,15 @@ namespace Remotion.Collections
 #if DEBUG
       // The CacheInvalidationToken should only be held in debug builds to allow the easier finding of mismatched use of CacheInvalidationToken.
       // For release builds, no hit should be taken for the extra field in the Revision.
-      private readonly WeakReference<CacheInvalidationToken> _tokenReference;
+      private readonly WeakReference<InvalidationToken> _tokenReference;
 #endif
 
-      internal Revision (long value, CacheInvalidationToken token)
+      internal Revision (long value, InvalidationToken token)
       {
         _value = value;
 
 #if DEBUG
-        _tokenReference = new WeakReference<CacheInvalidationToken> (token);
+        _tokenReference = new WeakReference<InvalidationToken> (token);
 #endif
       }
 
@@ -60,7 +60,7 @@ namespace Remotion.Collections
       }
 
 #if DEBUG
-      public CacheInvalidationToken Token
+      public InvalidationToken Token
       {
         get
         {
@@ -70,7 +70,7 @@ namespace Remotion.Collections
           // Taking a lock on the _tokenReference is OK in this instance given that the_tokenReference is competely under control of the current type.
           lock (_tokenReference)
           {
-            CacheInvalidationToken token;
+            InvalidationToken token;
             _tokenReference.TryGetTarget (out token);
             return token;
           }
@@ -80,23 +80,23 @@ namespace Remotion.Collections
     }
 
     /// <summary>
-    /// Creates a non-threadsafe version of the <see cref="CacheInvalidationToken"/> class.
+    /// Creates a non-threadsafe version of the <see cref="InvalidationToken"/> class.
     /// </summary>
-    public static CacheInvalidationToken Create ()
+    public static InvalidationToken Create ()
     {
-      return new CacheInvalidationTokenImplementation();
+      return new InvalidationTokenImplementation();
     }
 
     /// <summary>
-    /// Creates a threadsafe version of the <see cref="CacheInvalidationToken"/> class.
+    /// Creates a threadsafe version of the <see cref="InvalidationToken"/> class.
     /// </summary>
-    public static LockingCacheInvalidationToken CreatWithLocking ()
+    public static LockingInvalidationToken CreatWithLocking ()
     {
-      return new LockingCacheInvalidationToken();
+      return new LockingInvalidationToken();
     }
 
     // Prevent creating derived types outside of what's predefined.
-    internal CacheInvalidationToken ()
+    internal InvalidationToken ()
     {
     }
 

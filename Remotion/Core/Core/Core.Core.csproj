@@ -224,8 +224,8 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Collections\CacheFactory.cs" />
-    <Compile Include="Collections\CacheInvalidationToken.cs" />
-    <Compile Include="Collections\CacheInvalidationTokenImplementation.cs" />
+    <Compile Include="Collections\InvalidationToken.cs" />
+    <Compile Include="Collections\InvalidationTokenImplementation.cs" />
     <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
     <Compile Include="Collections\ExpiringDataStore.cs" />
@@ -238,7 +238,7 @@
     <Compile Include="Collections\LazyLockingCachingAdapter.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
-    <Compile Include="Collections\LockingCacheInvalidationToken.cs" />
+    <Compile Include="Collections\LockingInvalidationToken.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
     <Compile Include="Configuration\ServiceLocation\IServiceLocationConfiguration.cs" />
     <Compile Include="Configuration\ServiceLocation\ServiceLocationConfiguration.cs" />
@@ -251,6 +251,8 @@
     <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
     <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
     <Compile Include="IHandleAttribute.cs" />
+    <Compile Include="Obsolete\Collections\LockingCacheInvalidationToken.cs" />
+    <Compile Include="Obsolete\Collections\CacheInvalidationToken.cs" />
     <Compile Include="Obsolete\Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\MethodInfoExtensions.cs" />
     <Compile Include="Reflection\MethodResolver.cs" />
@@ -473,6 +475,7 @@
   <ItemGroup>
     <None Include="FacetManifest.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

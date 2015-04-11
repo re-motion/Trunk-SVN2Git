@@ -14,36 +14,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Threading;
 
+using System;
+
+// ReSharper disable once CheckNamespace
 namespace Remotion.Collections
 {
-  /// <summary>The <see cref="LockingCacheInvalidationToken"/> can be used as a means to commicate that the cached information is no longer current.</summary>
-  /// <remarks>
-  /// Instantiate via <see cref="CacheInvalidationToken"/>.<see cref="CacheInvalidationToken.CreatWithLocking"/>.
-  /// </remarks>
-  /// <threadsafety static="true" instance="true" />
-  [Serializable]
-  public sealed class LockingCacheInvalidationToken : CacheInvalidationToken
+  [Obsolete ("Use LockingInvalidationToken instead.", true)]
+  public sealed class LockingCacheInvalidationToken : InvalidationToken
   {
-    private long _currentRevisionValue;
-
-    internal LockingCacheInvalidationToken ()
+    private LockingCacheInvalidationToken ()
     {
-      // Use the instance's hash-code as revision seed value to allow for a reasonably different number space. 
-      // The hash-code is often different between reference types and therefor adds a bit of randomness to the revisions.
-      _currentRevisionValue = Math.Abs (GetHashCode()) * -1;
     }
 
     public override void Invalidate ()
     {
-      Interlocked.Increment (ref _currentRevisionValue);
+      throw new NotImplementedException();
     }
 
     protected override long GetCurrentRevisionValue ()
     {
-      return Interlocked.Read (ref _currentRevisionValue);
+      throw new NotImplementedException();
     }
   }
 }
