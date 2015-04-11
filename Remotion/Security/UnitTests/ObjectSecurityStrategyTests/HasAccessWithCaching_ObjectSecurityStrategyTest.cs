@@ -140,7 +140,7 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
       Assert.That (hasAccessOnFirstCall, Is.True);
       _securityProviderMock.VerifyAllExpectations();
 
-      _strategy.InvalidationToken.Invalidate();
+      _invalidationToken.Invalidate();
 
       _securityProviderMock.BackToRecord();
       _securityProviderMock
