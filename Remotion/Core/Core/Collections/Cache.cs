@@ -15,18 +15,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-  //TODO: Doc
+  /// <summary>
+  /// Implements the <see cref="ICache{TKey,TValue}"/> interface to provide a simple, dictionary-based cache for values.
+  /// </summary>
+  /// <typeparam name="TKey">The type of the keys.</typeparam>
+  /// <typeparam name="TValue">The type of the values.</typeparam>
+  /// <remarks>
+  /// It is recommended to use the <see cref="CacheFactory"/> type to create instances of the desired cache implementation 
+  /// (e.g. thread-safe implementations, implementations with support for data invalidation, etc).
+  /// </remarks>
+  /// <threadsafety static="true" instance="false" />
   [Serializable]
-  public class Cache<TKey, TValue> : ICache<TKey, TValue> 
+  public sealed class Cache<TKey, TValue> : ICache<TKey, TValue> 
   {
     private readonly SimpleDataStore<TKey, TValue> _dataStore;
-
-    // construction and disposing
 
     public Cache ()
       : this (null)
@@ -37,8 +45,6 @@ namespace Remotion.Collections
     {
       _dataStore = new SimpleDataStore<TKey, TValue> (comparer);
     }
-
-    // methods and properties
 
     public void Add (TKey key, TValue value)
     {
@@ -55,17 +61,32 @@ namespace Remotion.Collections
       return _dataStore.TryGetValue (key, out value);
     }
 
-    public void Clear ()
-    {
-      _dataStore.Clear ();
-    }
-
     public TValue GetOrCreateValue (TKey key, Func<TKey,TValue> valueFactory)
     {
       ArgumentUtility.DebugCheckNotNull ("key", key);
       ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
       return _dataStore.GetOrCreateValue (key, valueFactory);
+    }
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    private IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
+    {
+      return _dataStore.GetEnumerator();
+    }
+
+    public void Clear ()
+    {
+      _dataStore.Clear ();
     }
 
     bool INullObject.IsNull

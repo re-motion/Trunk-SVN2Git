@@ -16,6 +16,9 @@
 // 
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -160,6 +163,80 @@ namespace Remotion.UnitTests.Collections
       var resultOnSecondCall = decorator.TryGetValue (key, out valueOnSecondCall);
       Assert.That (resultOnSecondCall, Is.True);
       Assert.That (valueOnSecondCall, Is.EqualTo ("Value2"));
+    }
+
+    [Test]
+    public void GetEnumerator_Generic_ReturnsItemsFromCache ()
+    {
+      var cache = new Cache<string, object>();
+      var decorator = new InvalidationTokenBasedCacheDecorator<string, object> (cache, InvalidationToken.Create());
+
+      object exptected1 = new object();
+      object exptected2 = new object();
+      cache.Add ("key1", exptected1);
+      cache.Add ("key2", exptected2);
+
+      Assert.That (
+          decorator,
+          Is.EquivalentTo (
+              new[]
+              {
+                  new KeyValuePair<string, object> ("key1", exptected1),
+                  new KeyValuePair<string, object> ("key2", exptected2)
+              }
+              ));
+    }
+
+    [Test]
+    public void GetEnumerator_Generic_AfterTokenWasInvalidated_ReturnsEmptySequence ()
+    {
+      var cache = new Cache<string, object>();
+
+      object exptected1 = new object();
+      object exptected2 = new object();
+      cache.Add ("key1", exptected1);
+      cache.Add ("key2", exptected2);
+
+      var decorated = new InvalidationTokenBasedCacheDecorator<string, object> (cache, InvalidationToken.Create());
+      decorated.InvalidationToken.Invalidate();
+      Assert.That (decorated, Is.Empty);
+    }
+
+    [Test]
+    public void GetEnumerator_NonGeneric_ReturnsItemsFromCache ()
+    {
+      var cache = new Cache<string, object>();
+      var decorator = new InvalidationTokenBasedCacheDecorator<string, object> (cache, InvalidationToken.Create());
+
+      object exptected1 = new object();
+      object exptected2 = new object();
+      cache.Add ("key1", exptected1);
+      cache.Add ("key2", exptected2);
+
+      Assert.That (
+          ((IEnumerable) decorator).Cast<KeyValuePair<string, object>>(),
+          Is.EquivalentTo (
+              new[]
+              {
+                  new KeyValuePair<string, object> ("key1", exptected1),
+                  new KeyValuePair<string, object> ("key2", exptected2)
+              }
+              ));
+    }
+
+    [Test]
+    public void GetEnumerator_NonGeneric_AfterTokenWasInvalidated_ReturnsEmptySequence ()
+    {
+      var cache = new Cache<string, object>();
+
+      object exptected1 = new object();
+      object exptected2 = new object();
+      cache.Add ("key1", exptected1);
+      cache.Add ("key2", exptected2);
+
+      var decorated = new InvalidationTokenBasedCacheDecorator<string, object> (cache, InvalidationToken.Create());
+      decorated.InvalidationToken.Invalidate();
+      Assert.That (((IEnumerable) decorated).Cast<KeyValuePair<string, object>>(), Is.Empty);
     }
 
     [Test]

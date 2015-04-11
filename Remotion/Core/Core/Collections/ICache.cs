@@ -31,7 +31,7 @@ namespace Remotion.Collections
   /// caches might choose to remove individual items (or all their items) at any time. If a reliable store is needed, use 
   /// <see cref="IDictionary{TKey,TValue}"/> or <see cref="IDataStore{TKey,TValue}"/>.
   /// </remarks>
-  public interface ICache<TKey, TValue> : INullObject
+  public interface ICache<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, INullObject
   {
     /// <summary>
     /// Gets the value of the element with the specified key, creating a new one if none exists.

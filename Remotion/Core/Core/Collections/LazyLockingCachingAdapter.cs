@@ -15,6 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -94,6 +97,21 @@ namespace Remotion.Collections
 
       value = null;
       return false;
+    }
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    private IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
+    {
+      return _innerCache.Select (item => new KeyValuePair<TKey, TValue> (item.Key, item.Value.Value.Value)).GetEnumerator();
     }
 
     public void Clear ()

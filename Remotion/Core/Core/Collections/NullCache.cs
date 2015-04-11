@@ -15,6 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -26,7 +29,7 @@ namespace Remotion.Collections
   /// Use NullCache objects if some code expects an <see cref="ICache{TKey,TValue}"/> interface, but you don't actually want to use caching.
   /// </remarks>
   [Serializable]
-  public class NullCache<TKey, TValue> : ICache<TKey, TValue>
+  public sealed class NullCache<TKey, TValue> : ICache<TKey, TValue>
   {
     public NullCache ()
     {
@@ -46,6 +49,16 @@ namespace Remotion.Collections
     {
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
       return valueFactory(key);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return Enumerable.Empty<KeyValuePair<TKey, TValue>>().GetEnumerator();
+    }
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+    {
+      return Enumerable.Empty<KeyValuePair<TKey, TValue>>().GetEnumerator();
     }
 
     public void Clear ()

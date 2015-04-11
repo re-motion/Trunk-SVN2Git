@@ -15,6 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
@@ -53,6 +56,24 @@ namespace Remotion.UnitTests.Collections
       object actual;
       Assert.That (_cache.TryGetValue ("key1", out actual), Is.False);
       Assert.That (actual, Is.Null);
+    }
+
+    [Test]
+    public void GetEnumerator_Generic()
+    {
+      _cache.GetOrCreateValue ("key1", delegate { return new object(); });
+      _cache.GetOrCreateValue ("key2", delegate { return new object(); });
+
+      Assert.That (_cache, Is.Empty);
+    }
+
+    [Test]
+    public void GetEnumerator_NonGeneric()
+    {
+      _cache.GetOrCreateValue ("key1", delegate { return new object(); });
+      _cache.GetOrCreateValue ("key2", delegate { return new object(); });
+
+      Assert.That (((IEnumerable) _cache).Cast<KeyValuePair<string, object>>(), Is.Empty);
     }
 
     [Test]

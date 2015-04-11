@@ -17,6 +17,9 @@
 
 //
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.RhinoMocks.UnitTesting.Threading;
@@ -145,6 +148,70 @@ namespace Remotion.UnitTests.Collections
       Assert.That (actualResult, Is.EqualTo (false));
 
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetEnumerator_Generic ()
+    {
+      var expected1 = new object();
+      var expected2 = new object();
+
+      var returnValue = ((IEnumerable<KeyValuePair<string, DoubleCheckedLockingContainer<Wrapper>>>)
+          new[]
+          {
+              new KeyValuePair<string, DoubleCheckedLockingContainer<Wrapper>> ("key1", CreateContainerThatChecksForNotProtected (expected1)),
+              new KeyValuePair<string, DoubleCheckedLockingContainer<Wrapper>> ("key2", CreateContainerThatChecksForNotProtected (expected2))
+          }).GetEnumerator();
+
+      _innerCacheMock
+          .Expect (mock => mock.GetEnumerator())
+          .Return (returnValue)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      var items = _cachingAdapter.ToArray();
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (
+          items,
+          Is.EquivalentTo (
+              new[]
+              {
+                  new KeyValuePair<string, object> ("key1", expected1),
+                  new KeyValuePair<string, object> ("key2", expected2)
+              }
+              ));
+    }
+
+    [Test]
+    public void GetEnumerator_NonGeneric ()
+    {
+      var expected1 = new object();
+      var expected2 = new object();
+
+      var returnValue = ((IEnumerable<KeyValuePair<string, DoubleCheckedLockingContainer<Wrapper>>>)
+          new[]
+          {
+              new KeyValuePair<string, DoubleCheckedLockingContainer<Wrapper>> ("key1", CreateContainerThatChecksForNotProtected (expected1)),
+              new KeyValuePair<string, DoubleCheckedLockingContainer<Wrapper>> ("key2", CreateContainerThatChecksForNotProtected (expected2))
+          }).GetEnumerator();
+
+      _innerCacheMock
+          .Expect (mock => mock.GetEnumerator())
+          .Return (returnValue)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      var items = ((IEnumerable) _cachingAdapter).Cast<KeyValuePair<string, object>>().ToArray();
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (
+          items,
+          Is.EquivalentTo (
+              new[]
+              {
+                  new KeyValuePair<string, object> ("key1", expected1),
+                  new KeyValuePair<string, object> ("key2", expected2)
+              }
+              ));
     }
 
     [Test]

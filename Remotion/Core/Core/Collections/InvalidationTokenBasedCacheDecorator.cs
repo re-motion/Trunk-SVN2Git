@@ -16,6 +16,8 @@
 // 
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -57,6 +59,22 @@ namespace Remotion.Collections
 
       CheckRevision();
       return _innerCache.TryGetValue (key, out value);
+    }
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    private IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
+    {
+      CheckRevision();
+      return _innerCache.GetEnumerator();
     }
 
     void ICache<TKey, TValue>.Clear ()

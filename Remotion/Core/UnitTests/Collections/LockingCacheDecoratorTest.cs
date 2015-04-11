@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.RhinoMocks.UnitTesting.Threading;
@@ -58,7 +59,33 @@ namespace Remotion.UnitTests.Collections
     public void TryGetValue ()
     {
       int value;
-      _helper.ExpectSynchronizedDelegation (store => store.TryGetValue ("hugo", out value), true);
+      _helper.ExpectSynchronizedDelegation (cache => cache.TryGetValue ("hugo", out value), true);
+    }
+
+    [Test]
+    public void GetEnumerator_Generic ()
+    {
+      _helper.ExpectSynchronizedDelegation (
+          cache => cache.GetEnumerator(),
+          ((IEnumerable<KeyValuePair<string, int>>) new[]
+                                                    {
+                                                        new KeyValuePair<string, int> ("key1", 1),
+                                                        new KeyValuePair<string, int> ("key2", 2)
+                                                    }).GetEnumerator(),
+          actual => Assert.That (
+              ConvertToSequence (actual),
+              Is.EquivalentTo (
+                  new[]
+                  {
+                      new KeyValuePair<string, int> ("key1", 1),
+                      new KeyValuePair<string, int> ("key2", 2)
+                  })));
+    }
+
+    private static IEnumerable<KeyValuePair<string, int>> ConvertToSequence (IEnumerator<KeyValuePair<string, int>> actual)
+    {
+      while (actual.MoveNext())
+        yield return actual.Current;
     }
 
     [Test]

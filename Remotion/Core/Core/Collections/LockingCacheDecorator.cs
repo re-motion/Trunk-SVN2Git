@@ -15,6 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -32,7 +36,7 @@ namespace Remotion.Collections
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public class LockingCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
+  public sealed class LockingCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
   {
     private readonly ICache<TKey, TValue> _innerCache;
     private readonly object _lock = new object ();
@@ -59,6 +63,25 @@ namespace Remotion.Collections
 
       lock (_lock)
         return _innerCache.TryGetValue (key, out value);
+    }
+
+    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
+    }
+
+    private IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
+    {
+      // Sequence must be evaluated while inside the lock
+      lock (_lock)
+      {
+        return ((IEnumerable<KeyValuePair<TKey, TValue>>) _innerCache.ToArray()).GetEnumerator();
+      }
     }
 
     public void Clear ()
