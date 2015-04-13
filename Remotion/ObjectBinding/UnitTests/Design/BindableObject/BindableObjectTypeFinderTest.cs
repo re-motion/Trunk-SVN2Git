@@ -51,7 +51,6 @@ namespace Remotion.ObjectBinding.UnitTests.Design.BindableObject
           new object[]
               {
                   typeof (ClassWithAllDataTypes),
-                  typeof (ClassWithValueType<>),
                   typeof (SimpleValueType),
                   typeof (SimpleReferenceType),
                   typeof (ManualBusinessObject),
@@ -67,7 +66,8 @@ namespace Remotion.ObjectBinding.UnitTests.Design.BindableObject
 
       Assert.That (types, Is.EquivalentTo (new[]
                                              {
-                                                 typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>), typeof (ClassWithIdentity),
+                                                 typeof (ClassWithAllDataTypes),
+                                                 typeof (ClassWithIdentity),
                                                  typeof (ClassDerivedFromBindableObjectBase),
                                                  typeof (ClassDerivedFromBindableObjectWithIdentityBase)
                                              }));
@@ -84,7 +84,6 @@ namespace Remotion.ObjectBinding.UnitTests.Design.BindableObject
           new object[]
           {
               typeof (ClassWithAllDataTypes),
-              typeof (ClassWithValueType<>),
               typeof (SimpleValueType),
               typeof (SimpleReferenceType),
               typeof (ManualBusinessObject),
@@ -99,7 +98,7 @@ namespace Remotion.ObjectBinding.UnitTests.Design.BindableObject
 
       Assert.That (types, Is.EquivalentTo (new[]
                                              {
-                                                 typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>),
+                                                 typeof (ClassWithAllDataTypes),
                                                  typeof (ClassDerivedFromBindableObjectBase),
                                                  typeof (ClassDerivedFromBindableObjectWithIdentityBase),
                                              }));
@@ -118,7 +117,6 @@ namespace Remotion.ObjectBinding.UnitTests.Design.BindableObject
             new object[]
                 {
                     typeof (ClassWithAllDataTypes),
-                    typeof (ClassWithValueType<>),
                     typeof (SimpleValueType),
                     typeof (SimpleReferenceType),
                     typeof (ManualBusinessObject),
@@ -134,7 +132,8 @@ namespace Remotion.ObjectBinding.UnitTests.Design.BindableObject
         Assert.That (types,
                      Is.EquivalentTo (new[]
                                         {
-                                            typeof (ClassWithAllDataTypes), typeof (ClassWithValueType<>), typeof (ClassDerivedFromBindableObjectBase),
+                                            typeof (ClassWithAllDataTypes),
+                                            typeof (ClassDerivedFromBindableObjectBase),
                                             typeof (ClassDerivedFromBindableObjectWithIdentityBase),
                                         }));
 

@@ -264,6 +264,7 @@
     <Compile Include="TestDomain\IInterfaceToImplement.cs" />
     <Compile Include="TestDomain\IInterfaceWithProperty.cs" />
     <Compile Include="TestDomain\IMixinSecurableClass.cs" />
+    <Compile Include="TestDomain\GenericBindableObject.cs" />
     <Compile Include="TestDomain\PropertyFinderMixinAddingPropertyBase.cs" />
     <Compile Include="TestDomain\MixinOverridingProperty.cs" />
     <Compile Include="TestDomain\SampleAttribute.cs" />

@@ -142,6 +142,17 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
+    public void GetBindableObjectClass_WithOpenGeneric ()
+    {
+      var provider = (BindableObjectProvider) BindableObjectProvider.GetProvider (typeof (BindableObjectProviderAttribute));
+      Assert.That (
+          () => provider.GetBindableObjectClass (typeof (GenericBindableObject<>)),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The type 'Remotion.ObjectBinding.UnitTests.TestDomain.GenericBindableObject`1' "
+              + "is not a bindable object implementation. Open generic types are not supported.\r\nParameter name: type"));
+    }
+
+    [Test]
     public void GetBindableObjectClass ()
     {
       var mockRepository = new MockRepository();
@@ -283,6 +294,26 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
       {
         Assert.That (BindableObjectProvider.IsBindableObjectImplementation (businessObjectType), Is.True);
       }
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_FalseWithOpenGenericType ()
+    {
+      var mixinTargetType = typeof (ManualBusinessObject);
+      var businessObjectType = typeof (GenericBindableObject<>);
+      Assertion.IsTrue (mixinTargetType.IsAssignableFrom (businessObjectType));
+
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (businessObjectType), Is.False);
+    }
+
+    [Test]
+    public void IsBindableObjectImplementation_TrueWithClosedGenericType ()
+    {
+      var mixinTargetType = typeof (ManualBusinessObject);
+      var businessObjectType = typeof (GenericBindableObject<string>);
+      Assertion.IsTrue (mixinTargetType.IsAssignableFrom (businessObjectType));
+
+      Assert.That (BindableObjectProvider.IsBindableObjectImplementation (businessObjectType), Is.True);
     }
 
     [Test]

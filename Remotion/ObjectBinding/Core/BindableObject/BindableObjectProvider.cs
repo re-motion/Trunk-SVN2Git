@@ -78,7 +78,14 @@ namespace Remotion.ObjectBinding.BindableObject
     public static bool IsBindableObjectImplementation (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return HasBindableObjectMixin (type) || IsBindableObjectBaseClass (type);
+
+      if (!IsSupportedAsBindableObjectImplementation (type))
+        return false;
+
+      if (HasBindableObjectMixin (type))
+        return true;
+
+      return IsBindableObjectBaseClass (type);
     }
 
     internal static Type GetConcreteTypeForBindableObjectImplementation (Type type)
@@ -90,6 +97,11 @@ namespace Remotion.ObjectBinding.BindableObject
         return MixinTypeUtility.GetConcreteMixedType (type);
 
       return type;
+    }
+
+    private static bool IsSupportedAsBindableObjectImplementation (Type type)
+    {
+      return !type.ContainsGenericParameters;
     }
 
     private static bool IsBindableObjectBaseClass (Type type)
@@ -185,6 +197,15 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       if (!IsBindableObjectImplementation (type))
       {
+        if (type.ContainsGenericParameters)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "The type '{0}' is not a bindable object implementation. Open generic types are not supported.",
+                  type.FullName),
+              "type");
+        }
+
         throw new ArgumentException (
             string.Format (
                 "The type '{0}' is not a bindable object implementation. It must either have a mixin derived from BindableObjectMixinBase<T> applied "
