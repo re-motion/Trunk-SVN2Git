@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Collections;
+using System.Linq;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -29,39 +29,10 @@ namespace Remotion.Security.Metadata
   [ImplementationFor (typeof (IPermissionProvider), Lifetime = LifetimeKind.Singleton)]
   public class PermissionReflector : IPermissionProvider
   {
-    private struct CacheKey : IEquatable<CacheKey>
-    {
-      public readonly Type Type;
-      public readonly IMethodInformation MethodInformation;
-
-      public CacheKey (Type type, IMethodInformation methodInformation)
-      {
-        ArgumentUtility.DebugCheckNotNull ("type", type);
-        ArgumentUtility.DebugCheckNotNull ("methodInformation", methodInformation);
-
-        Type = type;
-        MethodInformation = methodInformation;
-      }
-
-      public override int GetHashCode ()
-      {
-        return MethodInformation.GetHashCode();
-      }
-
-      public bool Equals (CacheKey other)
-      {
-        return Type == other.Type
-               && MethodInformation.Equals (other.MethodInformation);
-      }
-    }
-
     private static readonly Enum[] s_emptyPermissions = new Enum[0];
-    private readonly ICache<CacheKey, Enum[]> _cache = CacheFactory.CreateWithLocking<CacheKey, Enum[]>();
-    private readonly Func<CacheKey, Enum[]> _cacheValueFactory;
 
     public PermissionReflector ()
     {
-      _cacheValueFactory = key => GetPermissions (key.MethodInformation);
     }
 
     public IReadOnlyList<Enum> GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
@@ -72,30 +43,11 @@ namespace Remotion.Security.Metadata
       if (methodInformation.IsNull)
         return s_emptyPermissions;
 
-      return GetPermissionsFromCache (type, methodInformation);
-    }
-
-    private Enum[] GetPermissions (IMethodInformation methodInformation)
-    {
-      var permissionAttribute = methodInformation.GetCustomAttribute<DemandPermissionAttribute>(true);
-
+      var permissionAttribute = methodInformation.GetCustomAttribute<DemandPermissionAttribute> (true);
       if (permissionAttribute == null)
         return s_emptyPermissions;
 
-      var permissions = new List<Enum> ();
-      foreach (Enum accessTypeEnum in permissionAttribute.GetAccessTypes ())
-      {
-        if (!permissions.Contains (accessTypeEnum))
-          permissions.Add (accessTypeEnum);
-      }
-
-      return permissions.ToArray ();
-    }
-
-    private Enum[] GetPermissionsFromCache (Type type, IMethodInformation methodInformation)
-    {
-      var cacheKey = new CacheKey (type, methodInformation);
-      return _cache.GetOrCreateValue (cacheKey, _cacheValueFactory);
+      return permissionAttribute.GetAccessTypes().Distinct().ToArray();
     }
   }
 }

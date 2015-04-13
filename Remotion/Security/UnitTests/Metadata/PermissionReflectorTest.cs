@@ -75,15 +75,6 @@ namespace Remotion.Security.UnitTests.Metadata
     }
 
     [Test]
-    public void GetRequiredMethodPermissionsCacheForMethodWithOneAttribute ()
-    {
-      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (SecurableObject).GetMethod ("Record"));
-      var requiredAccessTypes = _permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation);
-
-      Assert.That (_permissionReflector.GetRequiredMethodPermissions (typeof (SecurableObject), methodInformation), Is.SameAs (requiredAccessTypes));
-    }
-
-    [Test]
     public void GetRequiredMethodPermissionsOverriddenMethodWithPermissionFromBaseMethod ()
     {
       IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (DerivedSecurableObject).GetMethod ("Record"));

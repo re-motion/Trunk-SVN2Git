@@ -89,6 +89,7 @@
     <Compile Include="IFunctionalSecurityStrategyTest.cs" />
     <Compile Include="IPrincipalProviderTest.cs" />
     <Compile Include="ISecurityProviderTest.cs" />
+    <Compile Include="Metadata\CachingPermissionProviderDecoratorTest.cs" />
     <Compile Include="Metadata\IMemberResolverTest.cs" />
     <Compile Include="Metadata\IPermissionProviderTest.cs" />
     <Compile Include="Metadata\EnumValueInfoListContentsConstraint.cs" />
