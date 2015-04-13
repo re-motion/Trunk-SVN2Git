@@ -20,9 +20,9 @@ using Remotion.Utilities;
 namespace Remotion
 {
   /// <summary>
-  ///   Supplies an identifier that should remain constant even accross refactorings. Can be applied to reference types, properties and fields.
+  ///   Supplies an identifier that should remain constant even accross refactorings. Can be applied to reference types, interfaces, properties and fields.
   /// </summary>
-  [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property |AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
   public class PermanentGuidAttribute : Attribute
   {
     private readonly Guid _value;
