@@ -75,10 +75,8 @@ namespace Remotion.Security.Metadata
       return GetPermissionsFromCache (type, methodInformation);
     }
 
-    public Enum[] GetPermissions (IMethodInformation methodInformation)
+    private Enum[] GetPermissions (IMethodInformation methodInformation)
     {
-      ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
-
       var permissionAttribute = methodInformation.GetCustomAttribute<DemandPermissionAttribute>(true);
 
       if (permissionAttribute == null)

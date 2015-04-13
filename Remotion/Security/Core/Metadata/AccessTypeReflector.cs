@@ -103,36 +103,36 @@ namespace Remotion.Security.Metadata
       AddAccessTypesFromAttribute (methodInformations, accessTypes, cache);
     }
 
-    private IEnumerable<IMethodInformation> GetStaticMethods (Type type)
+    private IEnumerable<MethodInfo> GetStaticMethods (Type type)
     {
       MemberInfo[] staticMethods = type.FindMembers (
           MemberTypes.Method,
           BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy,
           FindSecuredMembersFilter,
           null);
-      return staticMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi));
+      return staticMethods.Cast<MethodInfo>();
     }
 
-    private IEnumerable<IMethodInformation> GetInstanceMethods (Type type)
+    private IEnumerable<MethodInfo> GetInstanceMethods (Type type)
     {
       MemberInfo[] instanceMethods = type.FindMembers (
           MemberTypes.Method,
           BindingFlags.Instance | BindingFlags.Public,
           FindSecuredMembersFilter,
           null);
-      return instanceMethods.Cast<MethodInfo> ().Select (mi => (IMethodInformation) MethodInfoAdapter.Create(mi));
+      return instanceMethods.Cast<MethodInfo>();
     }
 
     private bool FindSecuredMembersFilter (MemberInfo member, object filterCriteria)
     {
       return Attribute.IsDefined (member, typeof (DemandPermissionAttribute), true);
-    }  
+    }
 
-    private void AddAccessTypesFromAttribute (IEnumerable<IMethodInformation> methodInformations, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
+    private void AddAccessTypesFromAttribute (IEnumerable<MethodInfo> methodInfos, Dictionary<Enum, EnumValueInfo> accessTypes, MetadataCache cache)
     {
-      foreach (var methodInformation in methodInformations)
+      foreach (var methodInfo in methodInfos)
       {
-        Enum[] values = _permissionReflector.GetPermissions (methodInformation);
+        Enum[] values = _permissionReflector.GetRequiredMethodPermissions (methodInfo.DeclaringType, MethodInfoAdapter.Create(methodInfo));
         foreach (Enum value in values)
         {
           EnumValueInfo accessType = _enumerationReflector.GetValue (value, cache);
