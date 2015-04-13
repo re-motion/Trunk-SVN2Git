@@ -151,6 +151,53 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
             Is.True);
         Assert.That (resourceValue, Is.EqualTo ("The Invariant Struct Name"));
       }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (InterfaceWithMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (InterfaceWithMultiLingualNameAttribute)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("The Invariant Interface Name"));
+      }
+
+      // no localization for derived interface without own localization
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (DerivedInterfaceWithoutOwnMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (DerivedInterfaceWithoutOwnMultiLingualNameAttribute)),
+                out resourceValue),
+            Is.False);
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (DerivedInterfaceWithOwnMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (DerivedInterfaceWithOwnMultiLingualNameAttribute)),
+                out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("The Invariant Derived Interface Name"));
+      }
+
+      using (new CultureScope ("it", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetTypeDisplayName (
+                TypeAdapter.Create (typeof (ClassWithInterfaceIntroducedMultiLingualNameAttribute)),
+                TypeAdapter.Create (typeof (ClassWithInterfaceIntroducedMultiLingualNameAttribute)),
+                out resourceValue),
+            Is.False);
+      }
     }
 
     [Test]

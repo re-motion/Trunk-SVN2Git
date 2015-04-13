@@ -92,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManagerExtensionsTest.cs" />
     <Compile Include="Implementation\ResourceManagerResolverTest.cs" />
+    <Compile Include="TestDomain\ClassWithInterfaceIntroducedMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\ClassWithLongResourceIdentifier.cs" />
     <Compile Include="TestDomain\ClassWithMissingResources.cs" />
     <Compile Include="TestDomain\ClassWithMultiLingualResourcesAttributes.cs" />
@@ -99,6 +100,8 @@
     <Compile Include="TestDomain\ClassWithProperties.cs" />
     <Compile Include="TestDomain\ClassWithResources.cs" />
     <Compile Include="TestDomain\ClassWithShortResourceIdentifier.cs" />
+    <Compile Include="TestDomain\DerivedInterfaceWithoutOwnMultiLingualNameAttribute.cs" />
+    <Compile Include="TestDomain\DerivedInterfaceWithOwnMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\EnumWithDescription.cs" />
     <Compile Include="TestDomain\EnumWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\EnumWithResources.cs" />
@@ -108,6 +111,7 @@
     <Compile Include="TestDomain\ClassWithoutMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\DerivedClassWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\EnumWithResourcesAndAttribute.cs" />
+    <Compile Include="TestDomain\InterfaceWithMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\NamedResources.cs" />
     <Compile Include="TestDomain\Resources\ClassWithResources.Designer.cs">
       <DependentUpon>ClassWithResources.resx</DependentUpon>
