@@ -97,6 +97,7 @@
     <Compile Include="DemandPermissionAttribute.cs" />
     <Compile Include="EnumWrapper.cs" />
     <Compile Include="IFunctionalSecurityStrategy.cs" />
+    <Compile Include="Metadata\CachingPermissionProviderDecorator.cs" />
     <Compile Include="Obsolete\IObjectSecurityAdapter.cs" />
     <Compile Include="IObjectSecurityStrategy.cs" />
     <Compile Include="IPrincipalProvider.cs" />

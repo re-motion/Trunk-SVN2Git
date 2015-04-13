@@ -42,8 +42,6 @@ namespace Remotion.Security
     private static readonly IReadOnlyList<AccessType> s_readAccessTypeAsList = ImmutableSingleton.Create(s_readAccessType);
     private static readonly IReadOnlyList<AccessType> s_editAccessTypeAsList = ImmutableSingleton.Create(s_editAccessType);
 
-    private static readonly Converter<Enum, AccessType> s_enumToAccessTypeConverter = ConvertEnumToAccessType;
-
     public static SecurityClient CreateSecurityClientFromConfiguration ()
     {
       if (SecurityConfiguration.Current.DisableAccessChecks)
@@ -264,7 +262,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
+      var requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
       Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
@@ -376,10 +374,10 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.CheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
+      var requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
       Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
-      if (requiredAccessTypeEnums.Length == 0)
+      if (requiredAccessTypeEnums.Count == 0)
         requiredAccessTypeEnums = s_readAccessTypeEnumAsArray;
 
       return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
@@ -496,10 +494,10 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
+      var requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableObject.GetSecurableType (), methodInformation);
       Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
-      if (requiredAccessTypeEnums.Length == 0)
+      if (requiredAccessTypeEnums.Count == 0)
         requiredAccessTypeEnums = s_editAccessTypeEnumAsArray;
 
       return HasAccess (securableObject, methodInformation, requiredAccessTypeEnums, principal);
@@ -648,7 +646,7 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
+      var requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
       Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasStatelessAccess (securableClass, methodInformation, requiredAccessTypeEnums, principal);
@@ -768,32 +766,40 @@ namespace Remotion.Security
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);
       ArgumentUtility.DebugCheckNotNull ("principal", principal);
 
-      Enum[] requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
+      var requiredAccessTypeEnums = _permissionProvider.GetRequiredMethodPermissions (securableClass, methodInformation);
       Assertion.DebugIsNotNull (requiredAccessTypeEnums, "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.");
 
       return HasStatelessAccess (securableClass, methodInformation, requiredAccessTypeEnums, principal);
     }
 
 
-    private bool HasAccess (ISecurableObject securableObject, IMemberInformation memberInformation, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
+    private bool HasAccess (
+        ISecurableObject securableObject, 
+        IMemberInformation memberInformation, 
+        IReadOnlyList<Enum> requiredAccessTypeEnums, 
+        ISecurityPrincipal principal)
     {
-      if (requiredAccessTypeEnums.Length == 0)
+      if (requiredAccessTypeEnums.Count == 0)
         throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberInformation.Name), "requiredAccessTypeEnums");
 
       return HasAccess (securableObject, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }
 
-    private bool HasStatelessAccess (Type securableClass, IMemberInformation memberInformation, Enum[] requiredAccessTypeEnums, ISecurityPrincipal principal)
+    private bool HasStatelessAccess (
+        Type securableClass,
+        IMemberInformation memberInformation,
+        IReadOnlyList<Enum> requiredAccessTypeEnums,
+        ISecurityPrincipal principal)
     {
-      if (requiredAccessTypeEnums.Length == 0)
+      if (requiredAccessTypeEnums.Count == 0)
         throw new ArgumentException (string.Format ("The member '{0}' does not define required permissions.", memberInformation.Name), "requiredAccessTypeEnums");
 
       return HasStatelessAccess (securableClass, principal, ConvertRequiredAccessTypeEnums (requiredAccessTypeEnums));
     }
 
-    private IReadOnlyList<AccessType> ConvertRequiredAccessTypeEnums (Enum[] requiredAccessTypeEnums)
+    private IReadOnlyList<AccessType> ConvertRequiredAccessTypeEnums (IReadOnlyList<Enum> requiredAccessTypeEnums)
     {
-      if (requiredAccessTypeEnums.Length == 1)
+      if (requiredAccessTypeEnums.Count == 1)
       {
         var requiredAccessTypeEnum = requiredAccessTypeEnums[0];
         if (s_readAccessTypeAsEnum.Equals (requiredAccessTypeEnum))
@@ -802,7 +808,12 @@ namespace Remotion.Security
           return s_editAccessTypeAsList;
         return ImmutableSingleton.Create (AccessType.Get (requiredAccessTypeEnum));
       }
-      return Array.ConvertAll (requiredAccessTypeEnums, s_enumToAccessTypeConverter);
+
+      var requiredAccessTypes = new AccessType[requiredAccessTypeEnums.Count];
+      for (int i = 0; i < requiredAccessTypeEnums.Count; i++)
+        requiredAccessTypes[i] = ConvertEnumToAccessType (requiredAccessTypeEnums[i]);
+
+      return requiredAccessTypes;
     }
 
     private static AccessType ConvertEnumToAccessType (Enum accessTypeEnum)

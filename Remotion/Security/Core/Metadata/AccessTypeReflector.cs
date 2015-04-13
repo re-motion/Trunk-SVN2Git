@@ -132,7 +132,7 @@ namespace Remotion.Security.Metadata
     {
       foreach (var methodInfo in methodInfos)
       {
-        Enum[] values = _permissionReflector.GetRequiredMethodPermissions (methodInfo.DeclaringType, MethodInfoAdapter.Create(methodInfo));
+        var values = _permissionReflector.GetRequiredMethodPermissions (methodInfo.DeclaringType, MethodInfoAdapter.Create(methodInfo));
         foreach (Enum value in values)
         {
           EnumValueInfo accessType = _enumerationReflector.GetValue (value, cache);

@@ -64,7 +64,7 @@ namespace Remotion.Security.Metadata
       _cacheValueFactory = key => GetPermissions (key.MethodInformation);
     }
 
-    public Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
+    public IReadOnlyList<Enum> GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("methodInformation", methodInformation);

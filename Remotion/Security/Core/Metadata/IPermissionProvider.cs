@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 
 namespace Remotion.Security.Metadata
 {
  public interface IPermissionProvider
   {
-    Enum[] GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation);
+    IReadOnlyList<Enum> GetRequiredMethodPermissions (Type type, IMethodInformation methodInformation);
   }
 }
