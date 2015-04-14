@@ -36,8 +36,8 @@ namespace Remotion.Globalization.Implementation
   public abstract class LocalizedNameProviderBase<TReflectionObject>
       where TReflectionObject : class
   {
-    private readonly ConcurrentDictionary<TReflectionObject, Lazy<Dictionary<CultureInfo, string>>> _localizedTypeNamesForTypeInformation =
-        new ConcurrentDictionary<TReflectionObject, Lazy<Dictionary<CultureInfo, string>>>();
+    private readonly ConcurrentDictionary<TReflectionObject, Lazy<IReadOnlyDictionary<CultureInfo, string>>> _localizedTypeNamesForTypeInformation =
+        new ConcurrentDictionary<TReflectionObject, Lazy<IReadOnlyDictionary<CultureInfo, string>>>();
 
     protected LocalizedNameProviderBase ()
     {
@@ -76,18 +76,18 @@ namespace Remotion.Globalization.Implementation
               currentUICulture));
     }
 
-    private Dictionary<CultureInfo, string> GetMultiLingualNameAttributesFromCache (TReflectionObject reflectionObject)
+    private IReadOnlyDictionary<CultureInfo, string> GetMultiLingualNameAttributesFromCache (TReflectionObject reflectionObject)
     {
       var lazyAttributes = _localizedTypeNamesForTypeInformation.GetOrAdd (
           reflectionObject,
-          new Lazy<Dictionary<CultureInfo, string>> (
+          new Lazy<IReadOnlyDictionary<CultureInfo, string>> (
               () => GetMultiLingualNameAttributes (reflectionObject),
               LazyThreadSafetyMode.ExecutionAndPublication));
 
       return lazyAttributes.Value;
     }
 
-    private Dictionary<CultureInfo, string> GetMultiLingualNameAttributes (TReflectionObject reflectionObject)
+    private IReadOnlyDictionary<CultureInfo, string> GetMultiLingualNameAttributes (TReflectionObject reflectionObject)
     {
       var attributes = new Dictionary<CultureInfo, string>();
       foreach (var attribute in GetCustomAttributes (reflectionObject))
