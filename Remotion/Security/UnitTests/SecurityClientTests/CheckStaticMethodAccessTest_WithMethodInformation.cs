@@ -56,13 +56,12 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     [ExpectedException (typeof (PermissionDeniedException))]
     public void Test_AccessDenied_ShouldThrowPermissionDeniedException ()
     {
-      _testHelper.ExpectMemberResolverGetMethodInformation ("StaticMethod", MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, TestAccessTypes.First);
 
       _testHelper.ExpectFunctionalSecurityStrategyHasAccess (TestAccessTypes.First, false);
       _testHelper.ReplayAll();
 
-      _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), "StaticMethod");
+      _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation);
     }
 
     [Test]

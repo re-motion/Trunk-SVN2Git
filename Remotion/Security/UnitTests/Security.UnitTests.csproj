@@ -162,6 +162,7 @@
     <Compile Include="SecurityClientTests\HasStatelessMethodAccess_WithMethodInformation.cs" />
     <Compile Include="SecurityClientTests\HasStaticMethodAccessTest_WithMethodInfo.cs" />
     <Compile Include="SecurityClientTests\HasStaticMethodAccessTest_WithMethodInformation.cs" />
+    <Compile Include="SecurityClientTests\MultipleAccessTypesTest.cs" />
     <Compile Include="SecurityClientTests\SecurityClientIntegrationTest.cs" />
     <Compile Include="SecurityPrincipalRoleTest.cs" />
     <Compile Include="SecurityPrincipalTest.cs" />
