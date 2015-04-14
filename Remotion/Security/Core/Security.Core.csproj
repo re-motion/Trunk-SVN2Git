@@ -158,7 +158,6 @@
     <Compile Include="PermissionDeniedException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityClient.cs" />
-    <Compile Include="SecurityConfigurationException.cs" />
     <Compile Include="SecurityContext.cs" />
     <Compile Include="SecurityException.cs" />
     <Compile Include="Obsolete\ObjectSecurityAdapter.cs" />

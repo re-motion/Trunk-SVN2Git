@@ -19,7 +19,7 @@ using System.Runtime.Serialization;
 
 namespace Remotion.Security
 {
-  [Serializable]
+  [Obsolete ("Use PermissionDeniedException for permission errors and InvalidOperationException etc. for semantic errors. (Version 1.13.34.0)", true)]
   public class SecurityException : Exception
   {
     // types
