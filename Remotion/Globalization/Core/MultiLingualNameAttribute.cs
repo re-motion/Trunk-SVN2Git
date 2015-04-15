@@ -37,13 +37,18 @@ namespace Remotion.Globalization
   /// </item>
   /// </list>
   /// </remarks>
-  [AttributeUsage (
-      AttributeTargets.Class |AttributeTargets.Struct | AttributeTargets.Interface | AttributeTargets.Enum
-      | AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Method,
-      AllowMultiple = true,
-      Inherited = true)]
+  [AttributeUsage (MultiLingualNameAttribute.AttributeTargets, AllowMultiple = true, Inherited = true)]
   public class MultiLingualNameAttribute : Attribute
   {
+    public const AttributeTargets AttributeTargets =
+        System.AttributeTargets.Class
+        | System.AttributeTargets.Struct
+        | System.AttributeTargets.Interface
+        | System.AttributeTargets.Enum
+        | System.AttributeTargets.Property
+        | System.AttributeTargets.Field
+        | System.AttributeTargets.Method;
+
     private readonly string _localizedName;
     private readonly CultureInfo _culture;
 

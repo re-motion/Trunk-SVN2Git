@@ -54,6 +54,13 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="CultureInfoExtensions.cs" />
+    <Compile Include="DeATAttribute.cs" />
+    <Compile Include="DeAttribute.cs" />
+    <Compile Include="DeCHAttribute.cs" />
+    <Compile Include="DeDEAttribute.cs" />
+    <Compile Include="EnAttribute.cs" />
+    <Compile Include="EnGBAttribute.cs" />
+    <Compile Include="EnUSAttribute.cs" />
     <Compile Include="Implementation\CompoundEnumerationGlobalizationService.cs" />
     <Compile Include="Implementation\CompoundMemberInformationGlobalizationService.cs" />
     <Compile Include="Implementation\CompoundResourceManagerFactory.cs" />

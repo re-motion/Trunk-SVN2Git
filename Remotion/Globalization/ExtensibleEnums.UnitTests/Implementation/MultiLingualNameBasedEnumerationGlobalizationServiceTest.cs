@@ -51,8 +51,8 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
 
       [MultiLingualName ("The Name invariant", "")]
       [MultiLingualName ("The Name fr-FR", "fr-FR")]
-      [MultiLingualName ("The Name en", "en")]
-      [MultiLingualName ("The Name en-US", "en-US")]
+      [En ("The Name en")]
+      [EnUS ("The Name en-US")]
       public static TestEnum ValueWithMultiLingualNameAttributes (ExtensibleEnumDefinition<TestEnum> definition)
       {
         throw new NotImplementedException();

@@ -20,14 +20,14 @@ using System;
 namespace Remotion.Globalization.UnitTests.TestDomain
 {
   [MultiLingualName ("Invariant Type Name", "")]
-  [MultiLingualName ("de-AT Type Name", "de-AT")]
-  [MultiLingualName ("de Type Name", "de")]
-  [MultiLingualName ("en Type Name", "en")]
+  [DeAT ("de-AT Type Name")]
+  [De ("de Type Name")]
+  [En ("en Type Name")]
   public class ClassWithMultiLingualNameAttribute
   {
     [MultiLingualName ("Invariant Property Name", "")]
-    [MultiLingualName ("de-AT Property Name", "de-AT")]
-    [MultiLingualName ("de Property Name", "de")]
+    [DeAT ("de-AT Property Name")]
+    [De ("de Property Name")]
     public virtual int PropertyWithMultiLingualNameAttribute { get; set; }
 
     [MultiLingualName ("Invariant Property Name", "")]

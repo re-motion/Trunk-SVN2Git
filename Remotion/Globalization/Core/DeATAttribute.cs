@@ -15,16 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
-namespace Remotion.Globalization.UnitTests.TestDomain
+namespace Remotion.Globalization
 {
-  [MultiLingualName ("The Invariant Enum Name", "")]
-  [EnUS ("The en-US Enum Name")]
-  public enum EnumWithMultiLingualNameAttribute
+  /// <summary>
+  /// The <see cref="DeATAttribute"/> can be applied to types, properties, enum values, and methods (e.g. for extensible enum values) 
+  /// to specify the <see cref="MultiLingualNameAttribute.LocalizedName"/> for the <b>de-AT</b>-culture.
+  /// </summary>
+  /// <seealso cref="MultiLingualNameAttribute"/>
+  [AttributeUsage (MultiLingualNameAttribute.AttributeTargets, AllowMultiple = false, Inherited = true)]
+  public sealed class DeATAttribute : MultiLingualNameAttribute
   {
-    [MultiLingualName ("The Invariant Name", "")]
-    [EnUS ("The en-US Name")]
-    ValueWithLocalizedName,
-    ValueWithoutLocalizedName
+    public DeATAttribute ([NotNull] string localizedName)
+        : base(localizedName, "de-AT")
+    {
+    }
   }
 }

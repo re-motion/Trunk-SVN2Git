@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,16 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 
-namespace Remotion.Globalization.UnitTests.TestDomain
+namespace Remotion.Globalization
 {
-  [MultiLingualName ("The Invariant Enum Name", "")]
-  [EnUS ("The en-US Enum Name")]
-  public enum EnumWithMultiLingualNameAttribute
+  /// <summary>
+  /// The <see cref="EnGBAttribute"/> can be applied to types, properties, enum values, and methods (e.g. for extensible enum values) 
+  /// to specify the <see cref="MultiLingualNameAttribute.LocalizedName"/> for the <b>en-GB</b>-culture.
+  /// </summary>
+  /// <seealso cref="MultiLingualNameAttribute"/>
+  [AttributeUsage (MultiLingualNameAttribute.AttributeTargets, AllowMultiple = false, Inherited = true)]
+  public sealed class EnGBAttribute : MultiLingualNameAttribute
   {
-    [MultiLingualName ("The Invariant Name", "")]
-    [EnUS ("The en-US Name")]
-    ValueWithLocalizedName,
-    ValueWithoutLocalizedName
+    public EnGBAttribute ([NotNull] string localizedName)
+        : base(localizedName, "en-GB")
+    {
+    }
   }
 }
