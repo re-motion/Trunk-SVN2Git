@@ -81,6 +81,13 @@
     <Compile Include="TestDomain\Resources\LightColorExtensions.Designer.cs">
       <DependentUpon>LightColorExtensions.resx</DependentUpon>
     </Compile>
+    <Compile Include="TestDomain\TestAssemblies.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\Without\TestEnum.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\EnUS\TestEnum.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\Without\AssemblyInfo.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\EnUS\AssemblyInfo.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\En\TestEnum.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\En\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\remotion.snk">
@@ -109,6 +116,10 @@
       <Project>{82D3420D-F557-4E31-955B-2935A785753E}</Project>
       <Name>Core.Reflection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
+      <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Globalization.Core.csproj">
       <Project>{AC6AB6EB-F6AC-45A4-88A7-877D11A65CCB}</Project>
       <Name>Globalization.Core</Name>
@@ -119,6 +130,10 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <Delete Files="@(TestAssembly->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Directory)')" />
+    <Copy SourceFiles="@(TestAssembly->'%(Fullpath)')" DestinationFiles="@(TestAssembly->'$(MSBuildProjectDirectory)\$(OutputPath)\%(Identity)')" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

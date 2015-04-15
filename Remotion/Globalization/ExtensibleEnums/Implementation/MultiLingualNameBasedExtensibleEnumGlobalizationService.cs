@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Remotion.ExtensibleEnums;
+using Remotion.FunctionalProgramming;
 using Remotion.Globalization.Implementation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -43,6 +43,13 @@ namespace Remotion.Globalization.ExtensibleEnums.Implementation
         ArgumentUtility.CheckNotNull ("definingMethod", definingMethod);
 
         return definingMethod.GetCustomAttributes<MultiLingualNameAttribute>(false);
+      }
+
+      protected override Assembly GetAssembly (MethodInfo definingMethod)
+      {
+        ArgumentUtility.CheckNotNull ("definingMethod", definingMethod);
+
+        return Maybe.ForValue (definingMethod.DeclaringType).Select (t => t.Assembly).ValueOrDefault();
       }
 
       protected override string GetContextForExceptionMessage (MethodInfo definingMethod)

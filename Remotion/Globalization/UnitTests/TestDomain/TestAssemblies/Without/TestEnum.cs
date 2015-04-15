@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,16 +16,15 @@
 // 
 
 using System;
-using System.Reflection;
-using System.Resources;
+using Remotion.Globalization;
 
-//
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-//
+public enum TestEnum
+{
+  [MultiLingualName ("The Name en", "en")]
+  [MultiLingualName ("The Name en-US", "en-US")]
+  ValueWithEnAndEnUS,
 
-[assembly: AssemblyTitle ("Remotion Extensible Enums Library Unit Tests")]
-[assembly: AssemblyCulture ("")]
-[assembly: NeutralResourcesLanguage ("")]
-[assembly: CLSCompliant (true)]
+  [MultiLingualName ("The Name invariant", "")]
+  [MultiLingualName ("The Name en", "en")]
+  ValueWithInvariantAndEn,
+}

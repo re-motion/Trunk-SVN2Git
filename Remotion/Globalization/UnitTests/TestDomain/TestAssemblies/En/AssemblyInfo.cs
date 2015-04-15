@@ -14,33 +14,5 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
-using System;
-using NUnit.Framework;
-using Remotion.Development.UnitTesting;
-using Remotion.Globalization.Implementation;
-
-namespace Remotion.Globalization.UnitTests.Implementation
-{
-  [TestFixture]
-  public class MissingLocalizationExceptionTest
-  {
-    [Test]
-    public void Initialize ()
-    {
-      var exception = new MissingLocalizationException ("The message");
-
-      Assert.That (exception.Message, Is.EqualTo ("The message"));
-    }
-    
-    [Test]
-    public void SerializeAndDeserialize()
-    {
-      var exception = new MissingLocalizationException ("The message");
-      var deserialized = Serializer.SerializeAndDeserialize (exception);
-
-      Assert.That (deserialized.Message, Is.EqualTo (exception.Message));
-    }
-
-  }
-}
+using System.Resources;
+[assembly: NeutralResourcesLanguage ("en")]

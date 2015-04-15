@@ -17,7 +17,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
@@ -43,6 +45,13 @@ namespace Remotion.Globalization.Implementation
         ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
 
         return typeInformation.GetCustomAttributes<MultiLingualNameAttribute> (false);
+      }
+
+      protected override Assembly GetAssembly (ITypeInformation typeInformation)
+      {
+        ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
+
+        return typeInformation.Assembly;
       }
 
       protected override string GetContextForExceptionMessage (ITypeInformation typeInformation)
@@ -75,6 +84,13 @@ namespace Remotion.Globalization.Implementation
                   Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.FullName).ValueOrDefault ("<undefined>")));
         }
         return originallyDeclaredAttributes;
+      }
+
+      protected override Assembly GetAssembly (IPropertyInformation propertyInformation)
+      {
+        ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+        return Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.Assembly).ValueOrDefault();
       }
 
       protected override string GetContextForExceptionMessage (IPropertyInformation propertyInformation)

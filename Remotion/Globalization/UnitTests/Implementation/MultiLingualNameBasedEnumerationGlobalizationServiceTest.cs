@@ -17,9 +17,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Globalization.Implementation;
-using Remotion.Reflection;
+using Remotion.Globalization.UnitTests.TestDomain;
 using Remotion.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Globalization.UnitTests.Implementation
 {
@@ -105,6 +104,158 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
+    public void Test_WithoutNeutralResourcesLanguageAttribute_UsesInvariantCultureForNeutralCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.En.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithInvariantAndEn");
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_ReturnsTheSpecifiedCultureAsFallbackForInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.En.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithEnAndEnUS");
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_DoesNotOverrideExistingInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.En.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithInvariantAndEn");
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_ReturnsTheNeutralCultureAsFallbackForSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.En.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithEnAndEnUS");
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_DoesNotOverrideExistingSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.En.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithEnAndEnUS");
+
+      using (new CultureScope ("en-US", "en-US"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_ReturnsTheSpecifiedCultureAsFallbackForInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.EnUS.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithEnAndEnUS");
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_ReturnsTheNeutralCultureAsFallbackForSpecficCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.EnUS.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithEnAndEnUS");
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_DoesNotOverrideExistingSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedEnumerationGlobalizationService();
+
+      var testEnumType = TestAssemblies.EnUS.Value.GetType ("TestEnum", true, false);
+      var enumValue = (Enum) Enum.Parse (testEnumType, "ValueWithEnAndEnUSAndEnGB");
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetEnumerationValueDisplayName (enumValue, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-GB"));
+      }
+    }
+
+    [Test]
     public void TryGetEnumerationValueDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesInvariantCulture_ReturnsForTheInvariantCulture ()
     {
       var service = new MultiLingualNameBasedEnumerationGlobalizationService();
@@ -121,7 +272,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetEnumerationValueDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
+    public void Test_WithMultiLingualNameAttributesNotMatchingTheNeutralResourcesLanguageAttribute_ThrowsInvalidOperationException ()
     {
       var service = new MultiLingualNameBasedEnumerationGlobalizationService();
 
@@ -131,12 +282,10 @@ namespace Remotion.Globalization.UnitTests.Implementation
 
         Assert.That (
             () => service.TryGetEnumerationValueDisplayName (TestEnum.ValueWithoutInvariantCulture, out multiLingualName),
-            Throws.TypeOf<MissingLocalizationException>().With.Message.EqualTo (
+            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith (
                 "The enum value 'ValueWithoutInvariantCulture' declared on type "
                 + "'Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedEnumerationGlobalizationServiceTest+TestEnum' "
-                + "has one or more MultiLingualNameAttributes applied "
-                + "but does not define a localization for the current UI culture 'en-GB' or a valid fallback culture "
-                + "(i.e. there is no localization defined for the invariant culture)."));
+                + "has no MultiLingualNameAttribute for the assembly's neutral resource language ('') applied."));
       }
     }
     
@@ -155,7 +304,7 @@ namespace Remotion.Globalization.UnitTests.Implementation
                 "The enum value 'ValueWithDuplicateMultiLingualNameAttributes' declared on type "
                 + "'Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedEnumerationGlobalizationServiceTest+TestEnum' "
                 + "has more than one MultiLingualNameAttribute for the culture 'fr-FR' applied. "
-                + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type."));
+                + "The used cultures must be unique within the set of MultiLingualNameAttributes."));
       }
     }
 

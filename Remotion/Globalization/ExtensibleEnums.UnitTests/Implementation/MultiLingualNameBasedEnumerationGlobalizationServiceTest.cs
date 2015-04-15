@@ -19,7 +19,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.ExtensibleEnums;
 using Remotion.Globalization.ExtensibleEnums.Implementation;
-using Remotion.Globalization.Implementation;
+using Remotion.Globalization.ExtensibleEnums.UnitTests.TestDomain;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -106,7 +106,7 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
       {
         string multiLingualName;
 
-      var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
@@ -127,12 +127,181 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
       {
         string multiLingualName;
 
-      var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
       }
     }
+
+    [Test]
+    public void Test_WithoutNeutralResourcesLanguageAttribute_UsesInvariantCultureForNeutralCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithInvariantAndEn", TestAssemblies.Without.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_ReturnsTheSpecifiedCultureAsFallbackForInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithEnAndEnUS", TestAssemblies.En.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_DoesNotOverrideExistingInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithInvariantAndEn", TestAssemblies.En.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_ReturnsTheNeutralCultureAsFallbackForSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithEnAndEnUS", TestAssemblies.En.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_DoesNotOverrideExistingSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithEnAndEnUS", TestAssemblies.En.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("en-US", "en-US"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_ReturnsTheSpecifiedCultureAsFallbackForInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithEnAndEnUS", TestAssemblies.EnUS.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_ReturnsTheNeutralCultureAsFallbackForSpecficCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithEnAndEnUS", TestAssemblies.EnUS.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_DoesNotOverrideExistingSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
+
+      var extensibleEnumInfo = MockRepository.GenerateStub<IExtensibleEnumInfo>();
+      extensibleEnumInfo.Stub (_ => _.DefiningMethod).Return (GetMethod ("ValueWithEnAndEnUSAndEnGB", TestAssemblies.EnUS.Value));
+      var extensibleEnumStub = MockRepository.GenerateStub<IExtensibleEnum>();
+      extensibleEnumStub.Stub (_ => _.GetValueInfo()).Return (extensibleEnumInfo);
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-GB"));
+      }
+    }
+
 
     [Test]
     public void TryGetEnumerationValueDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureOnlyMatchesInvariantCulture_ReturnsForTheInvariantCulture ()
@@ -148,7 +317,7 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
       {
         string multiLingualName;
 
-      var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
+        var result = service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName);
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
@@ -156,7 +325,7 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
     }
 
     [Test]
-    public void TryGetEnumerationValueDisplayName_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
+    public void Test_WithMultiLingualNameAttributesNotMatchingTheNeutralResourcesLanguageAttribute_ThrowsInvalidOperationException ()
     {
       var service = new MultiLingualNameBasedExtensibleEnumGlobalizationService();
       
@@ -171,12 +340,10 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
 
         Assert.That (
             () => service.TryGetExtensibleEnumValueDisplayName (extensibleEnumStub, out multiLingualName),
-            Throws.TypeOf<MissingLocalizationException>().With.Message.EqualTo (
+            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith (
                 "The extensible enum value 'ValueWithoutInvariantCulture' declared on type "
                 + "'Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation.MultiLingualNameBasedExtensibleEnumGlobalizationServiceTest+TestEnumExtensions' "
-                + "has one or more MultiLingualNameAttributes applied "
-                + "but does not define a localization for the current UI culture 'en-GB' or a valid fallback culture "
-                + "(i.e. there is no localization defined for the invariant culture)."));
+                + "has no MultiLingualNameAttribute for the assembly's neutral resource language ('') applied."));
       }
     }
     
@@ -200,7 +367,7 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
                 "The extensible enum value 'ValueWithDuplicateMultiLingualNameAttributes' declared on type "
                 + "'Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation.MultiLingualNameBasedExtensibleEnumGlobalizationServiceTest+TestEnumExtensions' "
                 + "has more than one MultiLingualNameAttribute for the culture 'fr-FR' applied. "
-                + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type."));
+                + "The used cultures must be unique within the set of MultiLingualNameAttributes."));
       }
     }
 
@@ -254,6 +421,14 @@ namespace Remotion.Globalization.ExtensibleEnums.UnitTests.Implementation
     private MethodInfo GetMethod (string name)
     {
       var methodInfo = typeof (TestEnumExtensions).GetMethod (name);
+      Assert.That (methodInfo, Is.Not.Null);
+      return methodInfo;
+    }
+
+    private MethodInfo GetMethod (string name, Assembly assembly)
+    {
+      var type = assembly.GetType ("TestEnumExtensions", true, false);
+      var methodInfo = type.GetMethod (name);
       Assert.That (methodInfo, Is.Not.Null);
       return methodInfo;
     }

@@ -46,6 +46,13 @@ namespace Remotion.Globalization.Implementation
         return AttributeUtility.GetCustomAttributes<MultiLingualNameAttribute> (field, false);
       }
 
+      protected override Assembly GetAssembly (Enum reflectionObject)
+      {
+        ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
+
+        return reflectionObject.GetType().Assembly;
+      }
+
       protected override string GetContextForExceptionMessage (Enum value)
       {
         ArgumentUtility.CheckNotNull ("value", value);

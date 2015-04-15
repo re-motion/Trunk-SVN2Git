@@ -17,6 +17,7 @@
 
 using System;
 using System.Reflection;
+using System.Resources;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -26,4 +27,5 @@ using System.Reflection;
 
 [assembly: AssemblyTitle ("Remotion Extensions Library Unit Tests")]
 [assembly: AssemblyCulture ("")]
+[assembly: NeutralResourcesLanguage ("")]
 [assembly: CLSCompliant (true)]

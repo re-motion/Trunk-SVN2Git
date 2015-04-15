@@ -14,26 +14,5 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
-using System;
-using System.Runtime.Serialization;
-
-namespace Remotion.Globalization.Implementation
-{
-  /// <summary>
-  /// Represents inconsitent localization of a type, property, or enum value.
-  /// </summary>
-  [Serializable]
-  public sealed class MissingLocalizationException : Exception
-  {
-    public MissingLocalizationException (string message)
-        : base (message)
-    {
-    }
-
-    private MissingLocalizationException (SerializationInfo info, StreamingContext context)
-        : base (info, context)
-    {
-    }
-  }
-}
+using System.Resources;
+[assembly: NeutralResourcesLanguage ("en")]

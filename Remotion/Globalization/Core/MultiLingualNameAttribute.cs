@@ -17,8 +17,8 @@
 
 using System;
 using System.Globalization;
+using System.Resources;
 using JetBrains.Annotations;
-using Remotion.Globalization.Implementation;
 using Remotion.Utilities;
 
 namespace Remotion.Globalization
@@ -32,8 +32,8 @@ namespace Remotion.Globalization
   /// <item>For <see cref="MultiLingualNameAttribute"/> must be applied to the original declaration of a member. </item>
   /// <item>For types, the derived type does not inherit the base type's localization.</item>
   /// <item>
-  ///   One of the attributes should always specifiy the localization for the invariant culture. Otherwise, a <see cref="MissingLocalizationException"/> 
-  ///   is thrown if a localziation look-up is performed for a UI-culture not part of the defined cultures for this reflection object.
+  ///   One of the attributes should always specifiy the localization for the culture specified by the <see cref="NeutralResourcesLanguageAttribute"/>, 
+  ///   or the invariant culture if no attribute is applied to the declaring assembly. Otherwise, an <see cref="InvalidOperationException"/> is thrown.
   /// </item>
   /// </list>
   /// </remarks>

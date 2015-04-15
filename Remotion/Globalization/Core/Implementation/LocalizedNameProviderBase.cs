@@ -18,9 +18,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
 using JetBrains.Annotations;
 using Remotion.Reflection;
@@ -36,6 +38,11 @@ namespace Remotion.Globalization.Implementation
   public abstract class LocalizedNameProviderBase<TReflectionObject>
       where TReflectionObject : class
   {
+    // ReSharper disable StaticMemberInGenericType
+    private static readonly IReadOnlyDictionary<CultureInfo, string> s_emptyDictionary = 
+        new ReadOnlyDictionary<CultureInfo, string> (new Dictionary<CultureInfo, string>());
+    // ReSharper restore StaticMemberInGenericType
+
     private readonly ConcurrentDictionary<TReflectionObject, Lazy<IReadOnlyDictionary<CultureInfo, string>>> _localizedTypeNamesForTypeInformation =
         new ConcurrentDictionary<TReflectionObject, Lazy<IReadOnlyDictionary<CultureInfo, string>>>();
 
@@ -46,6 +53,9 @@ namespace Remotion.Globalization.Implementation
     [NotNull]
     protected abstract IEnumerable<MultiLingualNameAttribute> GetCustomAttributes ([NotNull] TReflectionObject reflectionObject);
 
+    [CanBeNull]
+    protected abstract Assembly GetAssembly ([NotNull] TReflectionObject reflectionObject);
+
     [NotNull]
     protected abstract string GetContextForExceptionMessage ([NotNull] TReflectionObject reflectionObject);
 
@@ -53,8 +63,8 @@ namespace Remotion.Globalization.Implementation
     {
       ArgumentUtility.CheckNotNull ("reflectionObject", reflectionObject);
 
-      var attributes = GetMultiLingualNameAttributesFromCache (reflectionObject);
-      if (!attributes.Any())
+      var localizedNames = GetLocalizedNamesFromCache (reflectionObject);
+      if (!localizedNames.Any())
       {
         result = null;
         return false;
@@ -63,31 +73,38 @@ namespace Remotion.Globalization.Implementation
       var currentUICulture = CultureInfo.CurrentUICulture;
       foreach (var cultureInfo in currentUICulture.GetCultureHierarchy())
       {
-        if (attributes.TryGetValue (cultureInfo, out result))
+        if (localizedNames.TryGetValue (cultureInfo, out result))
           return true;
       }
 
-      throw new MissingLocalizationException (
-          string.Format (
-              "{0} has one or more MultiLingualNameAttributes applied "
-              + "but does not define a localization for the current UI culture '{1}' or a valid fallback culture "
-              + "(i.e. there is no localization defined for the invariant culture).",
-              GetContextForExceptionMessage (reflectionObject),
-              currentUICulture));
+      throw new InvalidOperationException (
+          string.Format ("{0} has no localization defined for the invariant culture.", GetContextForExceptionMessage (reflectionObject)));
     }
 
-    private IReadOnlyDictionary<CultureInfo, string> GetMultiLingualNameAttributesFromCache (TReflectionObject reflectionObject)
+    private IReadOnlyDictionary<CultureInfo, string> GetLocalizedNamesFromCache (TReflectionObject reflectionObject)
     {
       var lazyAttributes = _localizedTypeNamesForTypeInformation.GetOrAdd (
           reflectionObject,
           new Lazy<IReadOnlyDictionary<CultureInfo, string>> (
-              () => GetMultiLingualNameAttributes (reflectionObject),
+              () => GetLocalizedNames (reflectionObject),
               LazyThreadSafetyMode.ExecutionAndPublication));
 
       return lazyAttributes.Value;
     }
 
-    private IReadOnlyDictionary<CultureInfo, string> GetMultiLingualNameAttributes (TReflectionObject reflectionObject)
+    private IReadOnlyDictionary<CultureInfo, string> GetLocalizedNames (TReflectionObject reflectionObject)
+    {
+      var attributes = GetLocalizedNamesForReflectionObject (reflectionObject);
+
+      if (!attributes.Any())
+        return s_emptyDictionary;
+
+      UpdateLocalizedNamesForAssemblyNeutralResourceCulture (reflectionObject, attributes);
+
+      return attributes;
+    }
+
+    private Dictionary<CultureInfo, string> GetLocalizedNamesForReflectionObject (TReflectionObject reflectionObject)
     {
       var attributes = new Dictionary<CultureInfo, string>();
       foreach (var attribute in GetCustomAttributes (reflectionObject))
@@ -97,13 +114,48 @@ namespace Remotion.Globalization.Implementation
           throw new InvalidOperationException (
               string.Format (
                   "{0} has more than one MultiLingualNameAttribute for the culture '{1}' applied. "
-                  + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type.",
+                  + "The used cultures must be unique within the set of MultiLingualNameAttributes.",
                   GetContextForExceptionMessage (reflectionObject),
                   attribute.Culture));
         }
         attributes.Add (attribute.Culture, attribute.LocalizedName);
       }
       return attributes;
+    }
+
+    private void UpdateLocalizedNamesForAssemblyNeutralResourceCulture (
+        TReflectionObject reflectionObject,
+        Dictionary<CultureInfo, string> attributes)
+    {
+      var assemblyNeutralResourcesCulture = GetAssemblyNeutralResourcesCulture (reflectionObject);
+      string neutralLocalizedName;
+      if (!attributes.TryGetValue (assemblyNeutralResourcesCulture, out neutralLocalizedName))
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "{0} has no MultiLingualNameAttribute for the assembly's neutral resource language ('{1}') applied. "
+                + "The neutral resource language can be specified the NeutralResourcesLanguageAttribute; "
+                + "the invariant culture is used as fallback if no attribute has been applied to the assembly.",
+                GetContextForExceptionMessage (reflectionObject),
+                assemblyNeutralResourcesCulture));
+      }
+
+      if (!attributes.ContainsKey (CultureInfo.InvariantCulture))
+        attributes.Add (CultureInfo.InvariantCulture, neutralLocalizedName);
+    }
+
+    [NotNull]
+    private CultureInfo GetAssemblyNeutralResourcesCulture (TReflectionObject reflectionObject)
+    {
+      var assembly = GetAssembly (reflectionObject);
+      if (assembly == null)
+        return CultureInfo.InvariantCulture;
+
+      var attribute = assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>();
+      if (attribute == null)
+        return CultureInfo.InvariantCulture;
+
+      return CultureInfo.GetCultureInfo (attribute.CultureName);
     }
   }
 }

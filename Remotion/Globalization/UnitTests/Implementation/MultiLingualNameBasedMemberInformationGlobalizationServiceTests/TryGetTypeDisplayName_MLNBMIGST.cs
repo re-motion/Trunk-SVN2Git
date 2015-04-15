@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Globalization.Implementation;
+using Remotion.Globalization.UnitTests.TestDomain;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -66,6 +67,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en", "en"),
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -96,6 +98,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en", "en"),
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -142,7 +145,278 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
     }
 
     [Test]
-    public void Test_WithMultiLingualNameAttributesForDifferentCulturesAndCurrentUICultureDoesNotMatchAnyCulture_ThrowsMissingLocalizationException ()
+    public void Test_WithoutAssembly_UsesInvariantCultureForNeutralCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name invariant", ""),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (null);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithoutNeutralResourcesLanguageAttribute_UsesInvariantCultureForNeutralCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name invariant", ""),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.Without.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_ReturnsTheSpecifiedCultureAsFallbackForInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_DoesNotOverrideExistingInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name invariant", ""),
+                  new MultiLingualNameAttribute ("The Name en", "en")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name invariant"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_ReturnsTheNeutralCultureAsFallbackForSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesNeutralCulture_DoesNotOverrideExistingSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("en-US", "en-US"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_ReturnsTheSpecifiedCultureAsFallbackForInvariantCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.EnUS.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("", ""))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-US"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_ReturnsTheNeutralCultureAsFallbackForSpecficCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.EnUS.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en"));
+      }
+    }
+
+    [Test]
+    public void Test_WithNeutralResourcesLanguageAttributeSpecifiesSpecificCulture_DoesNotOverrideExistingSpecificCulture ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name en", "en"),
+                  new MultiLingualNameAttribute ("The Name en-GB", "en-GB"),
+                  new MultiLingualNameAttribute ("The Name en-US", "en-US")
+              });
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.EnUS.Value);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+
+      using (new CultureScope ("en-GB", "en-GB"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name en-GB"));
+      }
+    }
+
+    [Test]
+    public void Test_WithMultiLingualNameAttributesNotMatchingTheNeutralResourcesLanguageAttribute_ThrowsInvalidOperationException ()
     {
       var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
 
@@ -155,20 +429,19 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name fr-FR", "fr-FR"),
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
-      typeInformationStub.Stub(_ =>_.FullName).Return("The.Full.Type.Name");
+      typeInformationStub.Stub (_ =>_.FullName).Return("The.Full.Type.Name");
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.En.Value);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
-      using (new CultureScope ("it-IT", "en-US"))
+      using (new CultureScope ("it-IT", "en-GB"))
       {
         string multiLingualName;
 
         Assert.That (
             () => service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
-            Throws.TypeOf<MissingLocalizationException>().With.Message.EqualTo (
-                "The type 'The.Full.Type.Name' has one or more MultiLingualNameAttributes applied "
-                + "but does not define a localization for the current UI culture 'en-US' or a valid fallback culture "
-                + "(i.e. there is no localization defined for the invariant culture)."));
+            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith (
+                "The type 'The.Full.Type.Name' has no MultiLingualNameAttribute for the assembly's neutral resource language ('en') applied."));
       }
     }
     
@@ -199,7 +472,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
             () => service.TryGetTypeDisplayName (typeInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
             Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo (
                 "The type 'The.Full.Type.Name' has more than one MultiLingualNameAttribute for the culture 'fr-FR' applied. "
-                + "The used cultures must be unique within the set of MultiLingualNameAttributes for a type."));
+                + "The used cultures must be unique within the set of MultiLingualNameAttributes."));
       }
     }
 

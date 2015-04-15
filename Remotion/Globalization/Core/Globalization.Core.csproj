@@ -59,7 +59,6 @@
     <Compile Include="Implementation\CompoundResourceManagerFactory.cs" />
     <Compile Include="Implementation\IResourceManagerFactory.cs" />
     <Compile Include="Implementation\LocalizedNameProviderBase.cs" />
-    <Compile Include="Implementation\MissingLocalizationException.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedEnumerationGlobalizationService.cs" />
     <Compile Include="Implementation\MultiLingualNameBasedMemberInformationGlobalizationService.cs" />
     <Compile Include="Implementation\ResourceAttributeBasedResourceManagerFactory.cs" />
