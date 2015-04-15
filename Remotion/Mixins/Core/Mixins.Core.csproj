@@ -289,9 +289,7 @@
     <Compile Include="Utilities\MixinGenericArgumentFinder.cs" />
     <Compile Include="Utilities\MixinReflector.cs" />
     <Compile Include="Utilities\MixinTypeCloser.cs" />
-    <Compile Include="Utilities\MultiSet.cs" />
     <Compile Include="Utilities\ReflectionUtility.cs" />
-    <Compile Include="Utilities\UncastableEnumerableWrapper.cs" />
     <Compile Include="Validation\DefaultValidationLog.cs" />
     <Compile Include="Validation\DelegateRuleDescriptionAttribute.cs" />
     <Compile Include="Validation\DelegateValidationRule.cs" />
