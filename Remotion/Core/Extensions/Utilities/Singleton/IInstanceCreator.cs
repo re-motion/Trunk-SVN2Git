@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Remotion.Mixins.Utilities.Singleton
+namespace Remotion.Utilities.Singleton
 {
   public interface IInstanceCreator<T>
   {

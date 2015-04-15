@@ -16,11 +16,25 @@
 // 
 
 using System;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 
-namespace Remotion.Mixins.UnitTests.Core.Utilities.Singleton.TestDomain
+namespace Remotion.Utilities.Singleton
 {
-  public class SecondaryImplementationOfInterface : IInterfaceWithConcreteImplementation
+  /// <summary>
+  /// Implements <see cref="IInstanceCreator{T}"/> by delegating to <see cref="ServiceLocator"/> to resolve an instance implementing
+  /// <typeparamref name="T"/>.
+  /// </summary>
+  /// <typeparam name="T">The type to resolve from the <see cref="ServiceLocator"/>.</typeparam>
+  /// <remarks>
+  /// This class uses the <see cref="SafeServiceLocator"/>, so it will use an instance of <see cref="DefaultServiceLocator"/> if no other
+  /// <see cref="IServiceLocator"/> was installed.
+  /// </remarks>
+  public class ServiceLocatorInstanceCreator<T> : IInstanceCreator<T>
   {
-    
+    public T CreateInstance()
+    {
+      return SafeServiceLocator.Current.GetInstance<T>();
+    }
   }
 }

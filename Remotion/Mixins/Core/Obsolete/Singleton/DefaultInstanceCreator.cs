@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,12 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using Remotion.ServiceLocation;
+using System;
 
-namespace Remotion.Mixins.UnitTests.Core.Utilities.Singleton.TestDomain
+// ReSharper disable once CheckNamespace
+
+namespace Remotion.Mixins.Utilities.Singleton
 {
-  [ImplementationFor (typeof (IInterfaceWithConcreteImplementation))]
-  public class ConcreteImplementationOfInterface : IInterfaceWithConcreteImplementation
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Extensions.dll", true)]
+  internal class DefaultInstanceCreator<T> : IInstanceCreator<T>
+      where T : new()
   {
+    public T CreateInstance ()
+    {
+      return new T();
+    }
   }
 }

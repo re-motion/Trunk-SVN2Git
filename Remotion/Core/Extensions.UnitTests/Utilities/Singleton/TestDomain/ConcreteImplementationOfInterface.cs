@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -16,14 +16,12 @@
 // 
 
 using System;
+using Remotion.ServiceLocation;
 
-namespace Remotion.Mixins.Utilities.Singleton
+namespace Remotion.Extensions.UnitTests.Utilities.Singleton.TestDomain
 {
-  public class DefaultInstanceCreator<T> : IInstanceCreator<T> where T : new()
+  [ImplementationFor (typeof (IInterfaceWithConcreteImplementation))]
+  public class ConcreteImplementationOfInterface : IInterfaceWithConcreteImplementation
   {
-    public T CreateInstance()
-    {
-      return new T();
-    }
   }
 }

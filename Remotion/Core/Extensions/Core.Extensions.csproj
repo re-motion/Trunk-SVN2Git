@@ -130,6 +130,10 @@
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
     <Compile Include="Utilities\MemberAccessUtility.cs" />
+    <Compile Include="Utilities\Singleton\DefaultInstanceCreator.cs" />
+    <Compile Include="Utilities\Singleton\IInstanceCreator.cs" />
+    <Compile Include="Utilities\Singleton\ServiceLocatorInstanceCreator.cs" />
+    <Compile Include="Utilities\Singleton\ThreadSafeSingletonBase.cs" />
     <Compile Include="Utilities\WorkContext.cs" />
   </ItemGroup>
   <ItemGroup>

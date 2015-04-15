@@ -19,11 +19,11 @@ using System;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins.UnitTests.Core.Utilities.Singleton.TestDomain;
-using Remotion.Mixins.Utilities.Singleton;
+using Remotion.Extensions.UnitTests.Utilities.Singleton.TestDomain;
+using Remotion.Utilities.Singleton;
 using Rhino.Mocks;
 
-namespace Remotion.Mixins.UnitTests.Core.Utilities.Singleton
+namespace Remotion.Extensions.UnitTests.Utilities.Singleton
 {
   [TestFixture]
   public class ServiceLocatorInstanceCreatorTest

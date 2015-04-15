@@ -16,9 +16,8 @@
 // 
 
 using System;
-using Remotion.ServiceLocation;
 
-namespace Remotion.Mixins.UnitTests.Core.Utilities.Singleton.TestDomain
+namespace Remotion.Extensions.UnitTests.Utilities.Singleton.TestDomain
 {
  public interface IInterfaceWithConcreteImplementation
   {

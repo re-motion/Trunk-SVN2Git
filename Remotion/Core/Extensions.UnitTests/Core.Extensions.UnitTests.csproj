@@ -97,6 +97,10 @@
     <Compile Include="Utilities\DelegateBasedDisposableTest.cs" />
     <Compile Include="Utilities\FrameworkVersionDetector.cs" />
     <Compile Include="Utilities\PostActionDisposableDecoratorTest.cs" />
+    <Compile Include="Utilities\Singleton\ServiceLocatorInstanceCreatorTest.cs" />
+    <Compile Include="Utilities\Singleton\TestDomain\ConcreteImplementationOfInterface.cs" />
+    <Compile Include="Utilities\Singleton\TestDomain\IInterfaceWithConcreteImplementation.cs" />
+    <Compile Include="Utilities\Singleton\TestDomain\SecondaryImplementationOfInterface.cs" />
     <Compile Include="Utilities\WorkContextTest.cs" />
   </ItemGroup>
   <ItemGroup>

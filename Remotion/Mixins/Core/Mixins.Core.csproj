@@ -274,6 +274,10 @@
     <Compile Include="ObjectFactory.cs" />
     <Compile Include="Obsolete\Globalization\IResourceManager.cs" />
     <Compile Include="Obsolete\Globalization\MixedMultiLingualResources.cs" />
+    <Compile Include="Obsolete\Singleton\DefaultInstanceCreator.cs" />
+    <Compile Include="Obsolete\Singleton\IInstanceCreator.cs" />
+    <Compile Include="Obsolete\Singleton\ServiceLocatorInstanceCreator.cs" />
+    <Compile Include="Obsolete\Singleton\ThreadSafeSingletonBase.cs" />
     <Compile Include="OverrideMixinAttribute.cs" />
     <Compile Include="OverrideTargetAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -287,10 +291,6 @@
     <Compile Include="Utilities\MixinTypeCloser.cs" />
     <Compile Include="Utilities\MultiSet.cs" />
     <Compile Include="Utilities\ReflectionUtility.cs" />
-    <Compile Include="Utilities\Singleton\DefaultInstanceCreator.cs" />
-    <Compile Include="Utilities\Singleton\IInstanceCreator.cs" />
-    <Compile Include="Utilities\Singleton\ServiceLocatorInstanceCreator.cs" />
-    <Compile Include="Utilities\Singleton\ThreadSafeSingletonBase.cs" />
     <Compile Include="Utilities\UncastableEnumerableWrapper.cs" />
     <Compile Include="Validation\DefaultValidationLog.cs" />
     <Compile Include="Validation\DelegateRuleDescriptionAttribute.cs" />
@@ -360,9 +360,7 @@
       <Name>TypePipe.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\Serialization\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="FacetManifest.xml" />
   </ItemGroup>

@@ -350,10 +350,6 @@
     <Compile Include="Core\Utilities\MixinReflectorTest.cs" />
     <Compile Include="Core\Utilities\MixinTypeCloserTest.cs" />
     <Compile Include="Core\Utilities\ReflectionUtilityTest.cs" />
-    <Compile Include="Core\Utilities\Singleton\ServiceLocatorInstanceCreatorTest.cs" />
-    <Compile Include="Core\Utilities\Singleton\TestDomain\ConcreteImplementationOfInterface.cs" />
-    <Compile Include="Core\Utilities\Singleton\TestDomain\IInterfaceWithConcreteImplementation.cs" />
-    <Compile Include="Core\Utilities\Singleton\TestDomain\SecondaryImplementationOfInterface.cs" />
     <Compile Include="Core\Utilities\TestDomain\AssociatedMethods\ClassWithAllKindsOfMembers.cs" />
     <Compile Include="Core\Utilities\TestDomain\GenericClassWithConflictingConstraints.cs" />
     <Compile Include="Core\Utilities\TestDomain\GenericClassWithInconclusiveConstraints.cs" />

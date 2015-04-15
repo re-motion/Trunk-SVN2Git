@@ -16,25 +16,35 @@
 // 
 
 using System;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.ServiceLocation;
+
+// ReSharper disable once CheckNamespace
 
 namespace Remotion.Mixins.Utilities.Singleton
 {
-  /// <summary>
-  /// Implements <see cref="IInstanceCreator{T}"/> by delegating to <see cref="ServiceLocator"/> to resolve an instance implementing
-  /// <typeparamref name="T"/>.
-  /// </summary>
-  /// <typeparam name="T">The type to resolve from the <see cref="ServiceLocator"/>.</typeparam>
-  /// <remarks>
-  /// This class uses the <see cref="SafeServiceLocator"/>, so it will use an instance of <see cref="DefaultServiceLocator"/> if no other
-  /// <see cref="IServiceLocator"/> was installed.
-  /// </remarks>
-  public class ServiceLocatorInstanceCreator<T> : IInstanceCreator<T>
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Extensions.dll", true)]
+  internal class ThreadSafeSingletonBase<TSelf, TCreator>
+      where TSelf : class
+      where TCreator : IInstanceCreator<TSelf>, new()
   {
-    public T CreateInstance()
+    private static readonly DoubleCheckedLockingContainer<TSelf> s_instance = new DoubleCheckedLockingContainer<TSelf> (new TCreator().CreateInstance);
+
+    public ThreadSafeSingletonBase ()
     {
-      return SafeServiceLocator.Current.GetInstance<T>();
+    }
+
+    public static TSelf Current
+    {
+      get { return s_instance.Value; }
+    }
+
+    public static bool HasCurrent
+    {
+      get { return s_instance.HasValue; }
+    }
+
+    public static void SetCurrent (TSelf value)
+    {
+      s_instance.Value = value;
     }
   }
 }
