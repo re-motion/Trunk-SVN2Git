@@ -24,6 +24,8 @@
         <h3>ImageButton2</h3>
         <asp:ImageButton ID="MyImageButton2" CommandName="MyImageButton2Command" ImageUrl="~/Images/SampleIcon.gif" PostBackUrl="ImageButtonTest.wxe" runat="server"/>
       </div>
+      <h3>ImageButton3</h3>
+      <asp:HyperLink ID="MyImageButton3" ImageUrl="~/Images/SampleIcon.gif" NavigateUrl="ImageButtonTest.wxe" runat="server" />
     </ContentTemplate>
   </asp:UpdatePanel>
 </asp:Content>
