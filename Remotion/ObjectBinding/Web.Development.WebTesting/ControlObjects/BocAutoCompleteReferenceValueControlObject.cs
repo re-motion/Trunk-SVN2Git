@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var inputScopeID = GetInputScopeID();
 
       var searchServiceRequestScript = CommonJavaScripts.CreateAutoCompleteSearchServiceRequest (inputScopeID, searchText, completionSetCount);
-      var response = (IReadOnlyDictionary<string, object>) Context.Window.ExecuteScript (searchServiceRequestScript);
+      var response = (IReadOnlyDictionary<string, object>) Context.Browser.Driver.ExecuteScript (searchServiceRequestScript, Scope);
       return ParseSearchServiceResponse (response);
     }
 
@@ -116,7 +116,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var inputScopeId = GetInputScopeID();
 
       var searchServiceRequestScript = CommonJavaScripts.CreateAutoCompleteExactSearchServiceRequest (inputScopeId, searchText);
-      var response = (IReadOnlyDictionary<string, object>) Context.Window.ExecuteScript (searchServiceRequestScript);
+      var response = (IReadOnlyDictionary<string, object>) Context.Browser.Driver.ExecuteScript (searchServiceRequestScript, Scope);
       return ParseSearchServiceResponse (response).SingleOrDefault();
     }
 
