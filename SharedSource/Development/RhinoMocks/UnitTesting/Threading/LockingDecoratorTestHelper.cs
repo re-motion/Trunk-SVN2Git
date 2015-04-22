@@ -55,9 +55,14 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
 
     public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> action, TResult fakeResult, Action<TResult> resultChecker)
     {
+      ExpectSynchronizedDelegation (action, action, fakeResult, resultChecker);
+    }
+
+    public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> expectAction, Func<T, TResult> action, TResult fakeResult, Action<TResult> resultChecker)
+    {
       _innerMock.BackToRecord();
       _innerMock
-          .Expect (mock => action (mock))
+          .Expect (mock => expectAction (mock))
           .Return (fakeResult)
           .WhenCalled (mi => LockTestHelper.CheckLockIsHeld (_lockObject));
       _innerMock.Replay();

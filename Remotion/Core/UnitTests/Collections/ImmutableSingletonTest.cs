@@ -77,6 +77,23 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
+    public void Enumerate_NonGeneric ()
+    {
+      IReadOnlyList<string> list = ImmutableSingleton.Create ("B");
+      IEnumerator enumerator = list.ToNonGenericEnumerable().GetEnumerator();
+
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration has not started. Call MoveNext."));
+      Assert.That (enumerator.MoveNext(), Is.True);
+      Assert.That (enumerator.Current, Is.EqualTo ("B"));
+      Assert.That (enumerator.MoveNext(), Is.False);
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
+      enumerator.Reset();
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration has not started. Call MoveNext."));
+      Assert.That (enumerator.MoveNext(), Is.True);
+      Assert.That (enumerator.Current, Is.EqualTo ("B"));
+    }
+
+    [Test]
     public void Enumerate_Foreach ()
     {
       var items = new List<string>();

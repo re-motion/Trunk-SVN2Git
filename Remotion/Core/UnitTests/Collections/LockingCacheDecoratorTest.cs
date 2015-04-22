@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -73,7 +74,7 @@ namespace Remotion.UnitTests.Collections
                                                         new KeyValuePair<string, int> ("key2", 2)
                                                     }).GetEnumerator(),
           actual => Assert.That (
-              ConvertToSequence (actual),
+              ConvertToSequenceGeneric (actual),
               Is.EquivalentTo (
                   new[]
                   {
@@ -82,7 +83,34 @@ namespace Remotion.UnitTests.Collections
                   })));
     }
 
-    private static IEnumerable<KeyValuePair<string, int>> ConvertToSequence (IEnumerator<KeyValuePair<string, int>> actual)
+    private static IEnumerable<KeyValuePair<string, int>> ConvertToSequenceGeneric (IEnumerator<KeyValuePair<string, int>> actual)
+    {
+      while (actual.MoveNext())
+        yield return actual.Current;
+    }
+
+    [Test]
+    public void GetEnumerator_NonGeneric ()
+    {
+      _helper.ExpectSynchronizedDelegation (
+          cache => cache.GetEnumerator(),
+          cache => ((IEnumerable) cache).GetEnumerator(),
+          ((IEnumerable<KeyValuePair<string, int>>) new[]
+                                                    {
+                                                        new KeyValuePair<string, int> ("key1", 1),
+                                                        new KeyValuePair<string, int> ("key2", 2)
+                                                    }).GetEnumerator(),
+          actual => Assert.That (
+              ConvertToSequenceNonGeneric (actual),
+              Is.EquivalentTo (
+                  new[]
+                  {
+                      new KeyValuePair<string, int> ("key1", 1),
+                      new KeyValuePair<string, int> ("key2", 2)
+                  })));
+    }
+
+    private static IEnumerable<object> ConvertToSequenceNonGeneric (IEnumerator actual)
     {
       while (actual.MoveNext())
         yield return actual.Current;

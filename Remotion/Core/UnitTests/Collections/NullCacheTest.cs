@@ -64,7 +64,7 @@ namespace Remotion.UnitTests.Collections
       _cache.GetOrCreateValue ("key1", delegate { return new object(); });
       _cache.GetOrCreateValue ("key2", delegate { return new object(); });
 
-      Assert.That (_cache, Is.Empty);
+      Assert.That (_cache.ToArray(), Is.Empty);
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Collections
       _cache.GetOrCreateValue ("key1", delegate { return new object(); });
       _cache.GetOrCreateValue ("key2", delegate { return new object(); });
 
-      Assert.That (((IEnumerable) _cache).Cast<KeyValuePair<string, object>>(), Is.Empty);
+      Assert.That (_cache.ToNonGenericEnumerable(), Is.Empty);
     }
 
     [Test]

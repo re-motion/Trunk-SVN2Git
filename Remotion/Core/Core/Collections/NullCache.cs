@@ -35,10 +35,6 @@ namespace Remotion.Collections
     {
     }
 
-    public void Add (TKey key, TValue value)
-    {
-    }
-
     public bool TryGetValue (TKey key, out TValue value)
     {
       value = default (TValue);

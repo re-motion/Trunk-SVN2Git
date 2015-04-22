@@ -200,11 +200,14 @@ namespace Remotion.UnitTests.Collections
           .Return (returnValue)
           .WhenCalled (mi => CheckInnerCacheIsProtected ());
 
-      var items = ((IEnumerable) _cachingAdapter).Cast<KeyValuePair<string, object>>().ToArray();
+      var actual = new List<object>();
+      var enumerator = ((IEnumerable) _cachingAdapter).GetEnumerator();
+      while (enumerator.MoveNext())
+        actual.Add (enumerator.Current);
 
       _innerCacheMock.VerifyAllExpectations ();
       Assert.That (
-          items,
+          actual,
           Is.EquivalentTo (
               new[]
               {

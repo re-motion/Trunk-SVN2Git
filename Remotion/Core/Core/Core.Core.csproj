@@ -251,7 +251,6 @@
     <Compile Include="FunctionalProgramming\EnumerableUtility.Partial.cs" />
     <Compile Include="FunctionalProgramming\Maybe.Partial.cs" />
     <Compile Include="IHandleAttribute.cs" />
-    <Compile Include="Obsolete\Collections\LockingCacheInvalidationToken.cs" />
     <Compile Include="Obsolete\Collections\CacheInvalidationToken.cs" />
     <Compile Include="Obsolete\Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
     <Compile Include="Reflection\MethodInfoExtensions.cs" />

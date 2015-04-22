@@ -133,7 +133,7 @@ namespace Remotion.UnitTests.Collections
       _cache.GetOrCreateValue ("key2", delegate { return expected2; });
 
       Assert.That (
-          _cache,
+          _cache.ToArray(),
           Is.EquivalentTo (
               new[]
               {
@@ -142,7 +142,7 @@ namespace Remotion.UnitTests.Collections
               }
               ));
     }
-    
+
     [Test]
     public void GetEnumerator_NonGeneric()
     {
@@ -152,7 +152,7 @@ namespace Remotion.UnitTests.Collections
       _cache.GetOrCreateValue ("key2", delegate { return expected2; });
 
       Assert.That (
-          ((IEnumerable)_cache).Cast<KeyValuePair<string, object>>(),
+          _cache.ToNonGenericEnumerable(),
           Is.EquivalentTo (
               new[]
               {

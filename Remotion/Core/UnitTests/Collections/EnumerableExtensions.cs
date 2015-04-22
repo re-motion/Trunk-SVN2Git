@@ -16,25 +16,15 @@
 // 
 
 using System;
+using System.Collections;
 
-// ReSharper disable once CheckNamespace
-namespace Remotion.Collections
+namespace Remotion.UnitTests.Collections
 {
-  [Obsolete ("Use LockingInvalidationToken instead.", true)]
-  public sealed class LockingCacheInvalidationToken : InvalidationToken
+  public static class EnumerableExtensions
   {
-    private LockingCacheInvalidationToken ()
+    public static IEnumerable ToNonGenericEnumerable (this IEnumerable enumerable)
     {
-    }
-
-    public override void Invalidate ()
-    {
-      throw new NotImplementedException();
-    }
-
-    protected override long GetCurrentRevisionValue ()
-    {
-      throw new NotImplementedException();
+      return enumerable;
     }
   }
 }

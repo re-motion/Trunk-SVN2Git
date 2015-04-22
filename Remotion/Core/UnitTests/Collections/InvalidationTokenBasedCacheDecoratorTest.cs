@@ -177,7 +177,7 @@ namespace Remotion.UnitTests.Collections
       cache.Add ("key2", exptected2);
 
       Assert.That (
-          decorator,
+          decorator.ToArray(),
           Is.EquivalentTo (
               new[]
               {
@@ -199,7 +199,7 @@ namespace Remotion.UnitTests.Collections
 
       var decorated = new InvalidationTokenBasedCacheDecorator<string, object> (cache, InvalidationToken.Create());
       decorated.InvalidationToken.Invalidate();
-      Assert.That (decorated, Is.Empty);
+      Assert.That (decorated.ToArray(), Is.Empty);
     }
 
     [Test]
@@ -214,7 +214,7 @@ namespace Remotion.UnitTests.Collections
       cache.Add ("key2", exptected2);
 
       Assert.That (
-          ((IEnumerable) decorator).Cast<KeyValuePair<string, object>>(),
+          decorator.ToNonGenericEnumerable(),
           Is.EquivalentTo (
               new[]
               {
@@ -236,7 +236,7 @@ namespace Remotion.UnitTests.Collections
 
       var decorated = new InvalidationTokenBasedCacheDecorator<string, object> (cache, InvalidationToken.Create());
       decorated.InvalidationToken.Invalidate();
-      Assert.That (((IEnumerable) decorated).Cast<KeyValuePair<string, object>>(), Is.Empty);
+      Assert.That (decorated.ToNonGenericEnumerable().Cast<KeyValuePair<string, object>>(), Is.Empty);
     }
 
     [Test]
