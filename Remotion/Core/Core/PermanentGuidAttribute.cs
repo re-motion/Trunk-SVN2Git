@@ -14,15 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.Utilities;
 
 namespace Remotion
 {
   /// <summary>
-  ///   Supplies an identifier that should remain constant even accross refactorings. Can be applied to reference types, interfaces, properties and fields.
+  /// Supplies an identifier that should remain constant even accross refactorings. 
+  /// Can be applied to reference types, value types, interfaces, enums, properties, methods, and fields.
   /// </summary>
-  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+  [AttributeUsage (
+      AttributeTargets.Class
+      | AttributeTargets.Struct
+      | AttributeTargets.Interface
+      | AttributeTargets.Enum
+      | AttributeTargets.Property
+      | AttributeTargets.Method
+      | AttributeTargets.Field,
+      AllowMultiple = false,
+      Inherited = false)]
   public class PermanentGuidAttribute : Attribute
   {
     private readonly Guid _value;
