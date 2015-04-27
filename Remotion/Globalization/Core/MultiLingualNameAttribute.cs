@@ -40,7 +40,7 @@ namespace Remotion.Globalization
   [AttributeUsage (MultiLingualNameAttribute.AttributeTargets, AllowMultiple = true, Inherited = true)]
   public class MultiLingualNameAttribute : Attribute
   {
-    public const AttributeTargets AttributeTargets =
+    protected const AttributeTargets AttributeTargets =
         System.AttributeTargets.Class
         | System.AttributeTargets.Struct
         | System.AttributeTargets.Interface
