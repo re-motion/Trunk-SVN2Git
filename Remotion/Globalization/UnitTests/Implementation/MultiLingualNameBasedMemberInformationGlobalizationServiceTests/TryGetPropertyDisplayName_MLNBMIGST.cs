@@ -72,7 +72,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -107,7 +107,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -172,7 +172,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -203,7 +203,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (null);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (null);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -237,7 +237,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -271,7 +271,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -305,7 +305,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en", "en")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -339,7 +339,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -373,7 +373,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -407,7 +407,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -441,7 +441,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -476,7 +476,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-US", "en-US")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
-      propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
 
       var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
 
@@ -489,6 +489,38 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
 
         Assert.That (result, Is.True);
         Assert.That (multiLingualName, Is.EqualTo ("The Name en-GB"));
+      }
+    }
+
+    [Test]
+    public void Test_UsesNeutralResourcesLanguageAttributeFromOriginalDeclaration ()
+    {
+      var service = new MultiLingualNameBasedMemberInformationGlobalizationService();
+
+      var typeInformationStub = MockRepository.GenerateStub<ITypeInformation>();
+      typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.EnUS.Value);
+
+      var propertyInformationStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyInformationStub
+          .Stub (_ => _.GetCustomAttributes<MultiLingualNameAttribute> (false))
+          .Return (
+              new[]
+              {
+                  new MultiLingualNameAttribute ("The Name", "en-US")
+              });
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
+
+      var typeInformationForResourceResolutionStub = MockRepository.GenerateStub<ITypeInformation>();
+
+      using (new CultureScope ("en", "en"))
+      {
+        string multiLingualName;
+
+        var result = service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName);
+
+        Assert.That (result, Is.True);
+        Assert.That (multiLingualName, Is.EqualTo ("The Name"));
       }
     }
 
@@ -512,6 +544,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
       typeInformationStub.Stub (_ => _.FullName).Return ("The.Full.Type.Name");
       typeInformationStub.Stub (_ => _.Assembly).Return (TestAssemblies.EnUS.Value);
 
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
       propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
       propertyInformationStub.Stub (_ => _.Name).Return ("TheProperty");
 
@@ -523,7 +556,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
 
         Assert.That (
             () => service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
-            Throws.TypeOf<InvalidOperationException>().With.Message.StartsWith (
+            Throws.TypeOf<InvalidOperationException>().With.Message.StringStarting (
                 "The property 'TheProperty' declared on type 'The.Full.Type.Name' has no MultiLingualNameAttribute "
                 + "for the assembly's neutral resource language ('en-US') applied."));
       }
@@ -548,6 +581,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
                   new MultiLingualNameAttribute ("The Name en-GB", "en-GB")
               });
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (propertyInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
       propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
       propertyInformationStub.Stub (_ => _.Name).Return ("TheProperty");
 
@@ -649,6 +683,7 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
               });
 
       propertyInformationStub.Stub (_ => _.GetOriginalDeclaration()).Return (basePropertyInformationStub);
+      propertyInformationStub.Stub (_ => _.GetOriginalDeclaringType()).Return (typeInformationStub);
       propertyInformationStub.Stub (_ => _.DeclaringType).Return (typeInformationStub);
       propertyInformationStub.Stub (_ => _.Name).Return ("TheProperty");
 

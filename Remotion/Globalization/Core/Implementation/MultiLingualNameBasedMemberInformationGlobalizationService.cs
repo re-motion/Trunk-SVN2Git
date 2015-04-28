@@ -17,8 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
@@ -90,7 +88,7 @@ namespace Remotion.Globalization.Implementation
       {
         ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-        return Maybe.ForValue (propertyInformation.GetOriginalDeclaration().DeclaringType).Select (t => t.Assembly).ValueOrDefault();
+        return Maybe.ForValue (propertyInformation.GetOriginalDeclaringType()).Select (t => t.Assembly).ValueOrDefault();
       }
 
       protected override string GetContextForExceptionMessage (IPropertyInformation propertyInformation)
