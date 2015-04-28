@@ -90,7 +90,7 @@ namespace Remotion.Globalization.Implementation
       {
         ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-        return Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.Assembly).ValueOrDefault();
+        return Maybe.ForValue (propertyInformation.GetOriginalDeclaration().DeclaringType).Select (t => t.Assembly).ValueOrDefault();
       }
 
       protected override string GetContextForExceptionMessage (IPropertyInformation propertyInformation)
@@ -100,7 +100,7 @@ namespace Remotion.Globalization.Implementation
         return string.Format (
             "The property '{0}' declared on type '{1}'",
             propertyInformation.Name,
-            GetDeclaringTypeName (propertyInformation));
+            GetDeclaringTypeName (propertyInformation.GetOriginalDeclaration()));
       }
 
       private string GetDeclaringTypeName (IPropertyInformation propertyInformation)
