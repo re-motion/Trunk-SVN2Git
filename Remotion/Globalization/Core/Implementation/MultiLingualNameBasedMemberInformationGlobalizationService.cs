@@ -78,10 +78,10 @@ namespace Remotion.Globalization.Implementation
         {
           throw new InvalidOperationException (
               string.Format (
-                  "The property '{0}' overridden on type '{1}' has one or more MultiLingualNameAttributes applied via an property override. "
+                  "The property '{0}' overridden on type '{1}' has one or more MultiLingualNameAttributes applied via a property override. "
                   + "The MultiLingualNameAttributes maybe only be applied to the original declaration of a property.",
                   propertyInformation.Name,
-                  Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.FullName).ValueOrDefault ("<undefined>")));
+                  GetDeclaringTypeName (propertyInformation)));
         }
         return originallyDeclaredAttributes;
       }
@@ -100,7 +100,12 @@ namespace Remotion.Globalization.Implementation
         return string.Format (
             "The property '{0}' declared on type '{1}'",
             propertyInformation.Name,
-            Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.FullName).ValueOrDefault ("<undefined>"));
+            GetDeclaringTypeName (propertyInformation));
+      }
+
+      private string GetDeclaringTypeName (IPropertyInformation propertyInformation)
+      {
+        return Maybe.ForValue (propertyInformation.DeclaringType).Select (t => t.FullName).ValueOrDefault ("<undefined>");
       }
     }
 

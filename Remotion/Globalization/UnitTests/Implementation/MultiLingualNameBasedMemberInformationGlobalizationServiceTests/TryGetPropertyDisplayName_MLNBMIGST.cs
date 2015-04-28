@@ -656,11 +656,11 @@ namespace Remotion.Globalization.UnitTests.Implementation.MultiLingualNameBasedM
 
       string multiLingualName;
 
-        Assert.That (
-            () => service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
-            Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo (
-                "The property 'TheProperty' overridden on type 'The.Full.Type.Name' has one or more MultiLingualNameAttributes applied via an property override. "
-                + "The MultiLingualNameAttributes maybe only be applied to the original declaration of a property."));
+      Assert.That (
+          () => service.TryGetPropertyDisplayName (propertyInformationStub, typeInformationForResourceResolutionStub, out multiLingualName),
+          Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo (
+              "The property 'TheProperty' overridden on type 'The.Full.Type.Name' has one or more MultiLingualNameAttributes applied via a property override. "
+              + "The MultiLingualNameAttributes maybe only be applied to the original declaration of a property."));
     }
 
     [Test]
