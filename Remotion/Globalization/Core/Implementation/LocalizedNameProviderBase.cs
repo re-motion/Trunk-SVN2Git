@@ -39,12 +39,21 @@ namespace Remotion.Globalization.Implementation
       where TReflectionObject : class
   {
     // ReSharper disable StaticMemberInGenericType
+
     private static readonly IReadOnlyDictionary<CultureInfo, string> s_emptyDictionary = 
         new ReadOnlyDictionary<CultureInfo, string> (new Dictionary<CultureInfo, string>());
+
+    private static readonly Lazy<CultureInfo> s_invariantCulture = new Lazy<CultureInfo> (
+        () => CultureInfo.InvariantCulture,
+        LazyThreadSafetyMode.ExecutionAndPublication);
+
     // ReSharper restore StaticMemberInGenericType
 
     private readonly ConcurrentDictionary<TReflectionObject, Lazy<IReadOnlyDictionary<CultureInfo, string>>> _localizedTypeNamesForTypeInformation =
         new ConcurrentDictionary<TReflectionObject, Lazy<IReadOnlyDictionary<CultureInfo, string>>>();
+
+    private readonly ConcurrentDictionary<Assembly, Lazy<CultureInfo>> _neutralResourcesCultureForAssembly =
+        new ConcurrentDictionary<Assembly, Lazy<CultureInfo>>();
 
     protected LocalizedNameProviderBase ()
     {
@@ -151,11 +160,16 @@ namespace Remotion.Globalization.Implementation
       if (assembly == null)
         return CultureInfo.InvariantCulture;
 
+      var cachedCulture = _neutralResourcesCultureForAssembly.GetOrAdd (assembly, GetAssemblyNeutralResourcesCulture);
+      return cachedCulture.Value;
+    }
+
+    private Lazy<CultureInfo> GetAssemblyNeutralResourcesCulture (Assembly assembly)
+    {
       var attribute = assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>();
       if (attribute == null)
-        return CultureInfo.InvariantCulture;
-
-      return CultureInfo.GetCultureInfo (attribute.CultureName);
+        return s_invariantCulture;
+      return new Lazy<CultureInfo> (() => CultureInfo.GetCultureInfo (attribute.CultureName), LazyThreadSafetyMode.ExecutionAndPublication);
     }
   }
 }
