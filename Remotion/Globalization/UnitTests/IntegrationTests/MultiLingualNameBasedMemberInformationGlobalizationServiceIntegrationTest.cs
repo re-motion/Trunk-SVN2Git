@@ -313,6 +313,71 @@ namespace Remotion.Globalization.UnitTests.IntegrationTests
       }
     }
 
+
+    [Test]
+    public void TryGetPropertyDisplayName_WithPropertiesDeclaredInAssemblyWithDifferentNeutralLanguage ()
+    {
+      var service = SafeServiceLocator.Current.GetInstance<IMemberInformationGlobalizationService>();
+      var enUSassembly = TestAssemblies.EnUS;
+      var enUSType = enUSassembly.Value.GetType ("DerivedClassWithMultiLingualNameAttributeAndDifferentNeutralLanguage");
+      var declaredProperty = enUSType.GetProperty ("PropertyWithMultiLingualNameAttributeOnDerivedClass");
+      var overriddenProperty = enUSType.GetProperty ("OverriddenPropertyWithMultiLingualNameAttribute");
+
+      using (new CultureScope ("it", "it"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (PropertyInfoAdapter.Create (declaredProperty), TypeAdapter.Create (enUSType), out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("en-US Property Name"));
+      }
+
+      using (new CultureScope ("en", "en"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (PropertyInfoAdapter.Create (declaredProperty), TypeAdapter.Create (enUSType), out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("en Property Name"));
+      }
+
+      using (new CultureScope ("en-US", "en-US"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (PropertyInfoAdapter.Create (declaredProperty), TypeAdapter.Create (enUSType), out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("en-US Property Name"));
+      }
+
+      using (new CultureScope ("it", "it"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (PropertyInfoAdapter.Create (overriddenProperty), TypeAdapter.Create (enUSType), out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("Invariant Property Name"));
+      }
+
+      using (new CultureScope ("de", "de"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (PropertyInfoAdapter.Create (overriddenProperty), TypeAdapter.Create (enUSType), out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de Property Name"));
+      }
+
+      using (new CultureScope ("de-AT", "de-AT"))
+      {
+        string resourceValue;
+        Assert.That (
+            service.TryGetPropertyDisplayName (PropertyInfoAdapter.Create (overriddenProperty), TypeAdapter.Create (enUSType), out resourceValue),
+            Is.True);
+        Assert.That (resourceValue, Is.EqualTo ("de-AT Property Name"));
+      }
+    }
+
     [Test]
     public void TryGetPropertyDisplayName_WithMultiLingualNameAttributeAppliedToOverride_ThrowsInvalidOperationException ()
     {

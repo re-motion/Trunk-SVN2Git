@@ -99,6 +99,7 @@
     <Compile Include="TestDomain\ClassWithProperties.cs" />
     <Compile Include="TestDomain\ClassWithResources.cs" />
     <Compile Include="TestDomain\ClassWithShortResourceIdentifier.cs" />
+    <TestAssembly Include="TestDomain\TestAssemblies\EnUS\DerivedClassWithMultiLingualNameAttributeAndDifferentNeutralLanguage.cs" />
     <Compile Include="TestDomain\DerivedInterfaceWithoutOwnMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\DerivedInterfaceWithOwnMultiLingualNameAttribute.cs" />
     <Compile Include="TestDomain\EnumWithDescription.cs" />

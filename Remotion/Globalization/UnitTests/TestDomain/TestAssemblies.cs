@@ -33,7 +33,8 @@ namespace Remotion.Globalization.UnitTests.TestDomain
     {
       var assemblyCompiler = AssemblyCompiler.CreateInMemoryAssemblyCompiler (
           c_testAssemblySourceDirectoryRoot + "\\" + assemblyName,
-          typeof (MultiLingualNameAttribute).Module.Name);
+          typeof (MultiLingualNameAttribute).Module.Name,
+          typeof (TestAssemblies).Module.Name);
       assemblyCompiler.Compile();
       return assemblyCompiler.CompiledAssembly;
     }
