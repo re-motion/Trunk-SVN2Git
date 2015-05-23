@@ -20,9 +20,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation.PredefinedTransformations;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -120,7 +119,7 @@ namespace Remotion.Data.DomainObjects
       {
         var message = string.Format (
             "The method call '{0}' cannot be redirected to the property '{1}.{2}'. {3}",
-            FormattingExpressionTreeVisitor.Format (methodCallExpression),
+            methodCallExpression,
             MappedProperty.DeclaringType,
             MappedProperty.Name,
             specificMessage);

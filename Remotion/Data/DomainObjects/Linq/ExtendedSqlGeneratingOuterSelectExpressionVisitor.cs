@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Linq
       EnsureNoCollectionExpression (expression);
 
       var visitor = new ExtendedSqlGeneratingOuterSelectExpressionVisitor (commandBuilder, stage, setOperationsMode);
-      visitor.VisitExpression (expression);
+      visitor.Visit (expression);
     }
 
     public static ObjectID GetObjectIDOrNull (string classID, object value)
@@ -64,9 +64,9 @@ namespace Remotion.Data.DomainObjects.Linq
     {
     }
 
-    protected override Expression VisitNewExpression (NewExpression expression)
+    protected override Expression VisitNew (NewExpression expression)
     {
-      var baseResult = base.VisitNewExpression (expression);
+      var baseResult = base.VisitNew (expression);
       if (expression.Type == typeof (ObjectID))
       {
         // If the NewExpression represents a selected ObjectID, we want to return null if the ID value is null. Therefore, change the projection

@@ -19,7 +19,7 @@ using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing.ExpressionVisitors;
 using Remotion.Linq.SqlBackend.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlStatementModel;
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
           row => ExtendedSqlGeneratingOuterSelectExpressionVisitor.GetObjectIDOrNull (
               row.GetValue<string> (new ColumnID ("m0", 0)), 
               row.GetValue<object> (new ColumnID ("m1", 1)));
-      var expectedInMemoryProjectionBody = PartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection.Body);
+      var expectedInMemoryProjectionBody = PartialEvaluatingExpressionVisitor.EvaluateIndependentSubtrees (expectedInMemoryProjection.Body);
       SqlExpressionTreeComparer.CheckAreEqualTrees (expectedInMemoryProjectionBody, _commandBuilder.GetInMemoryProjectionBody());
     } 
   }

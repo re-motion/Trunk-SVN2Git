@@ -21,7 +21,6 @@ using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Linq;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
 using Remotion.Linq.SqlBackend.MappingResolution;
 using Remotion.Linq.SqlBackend.SqlStatementModel.Resolved;
 using Remotion.Linq.SqlBackend.SqlStatementModel.SqlSpecificExpressions;
@@ -152,9 +151,8 @@ namespace Remotion.Data.DomainObjects.Linq
         if (!ReflectionUtility.IsDomainObject (checkedExpression.Type))
         {
           var message = string.Format (
-              "No database-level type check can be added for the expression '{0}'." +
-              "Only the types of DomainObjects can be checked in database queries.",
-              FormattingExpressionTreeVisitor.Format (checkedExpression));
+              "No database-level type check can be added for the expression '{0}'. Only the types of DomainObjects can be checked in database queries.",
+              checkedExpression);
           throw new UnmappedItemException (message);
         }
 

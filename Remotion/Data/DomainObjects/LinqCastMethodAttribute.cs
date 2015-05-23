@@ -16,9 +16,8 @@
 // 
 using System;
 using System.Linq.Expressions;
-using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionVisitors.Transformation.PredefinedTransformations;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -82,9 +81,7 @@ namespace Remotion.Data.DomainObjects
         {
           if (methodCallExpression.Arguments.Count != 1)
           {
-            var message = string.Format (
-                "Static LinqCastMethods must have exactly one argument. Expression: '{0}'", 
-                FormattingExpressionTreeVisitor.Format (methodCallExpression));
+            var message = string.Format ("Static LinqCastMethods must have exactly one argument. Expression: '{0}'", methodCallExpression);
             throw new NotSupportedException (message);
           }
           return Expression.Convert (methodCallExpression.Arguments[0], methodCallExpression.Type);
@@ -93,9 +90,7 @@ namespace Remotion.Data.DomainObjects
         {
           if (methodCallExpression.Arguments.Count != 0)
           {
-            var message = string.Format (
-                "Non-static LinqCastMethods must have no arguments. Expression: '{0}'",
-                FormattingExpressionTreeVisitor.Format (methodCallExpression));
+            var message = string.Format ("Non-static LinqCastMethods must have no arguments. Expression: '{0}'", methodCallExpression);
             throw new NotSupportedException (message);
           }
           return Expression.Convert (methodCallExpression.Object, methodCallExpression.Type);
