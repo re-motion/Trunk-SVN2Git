@@ -133,7 +133,7 @@
     <value>Struktureinheit</value>
   </data>
   <data name="property:SpecificPosition" xml:space="preserve">
-    <value>Position</value>
+    <value>Stelle</value>
   </data>
   <data name="property:SpecificTenant" xml:space="preserve">
     <value>Mandant</value>
