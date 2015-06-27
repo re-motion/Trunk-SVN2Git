@@ -177,6 +177,10 @@
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\ISafeContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
+    <Compile Include="Core\ExecutionEngine\TestFunctions\TestBaseFunctionWithParameters.cs" />
+    <Compile Include="Core\ExecutionEngine\TestFunctions\TestDerivedFunctionWithParameters.cs" />
+    <Compile Include="Core\ExecutionEngine\TestFunctions\TestFunctionWithDuplicateParameterIndices.cs" />
+    <Compile Include="Core\ExecutionEngine\TestFunctions\TestFunctionWithOverriddenParameter.cs" />
     <Compile Include="Core\ExecutionEngine\WxePageTests\InfrastructureExceptionHandling_WxePageTest.cs" />
     <Compile Include="Core\ExecutionEngine\FakeHttpSessionStateBase.cs" />
     <Compile Include="Core\Infrastructure\IBuildManagerTest.cs" />

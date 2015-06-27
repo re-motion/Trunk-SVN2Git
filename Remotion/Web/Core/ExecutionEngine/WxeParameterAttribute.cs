@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Reflection;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
@@ -30,6 +31,15 @@ namespace Remotion.Web.ExecutionEngine
       WxeParameterAttribute attribute = AttributeUtility.GetCustomAttribute<WxeParameterAttribute> (property, false);
       if (attribute == null)
         return null;
+
+      if (!property.IsOriginalDeclaration())
+      {
+        throw new WxeException (
+            string.Format (
+                "Property '{0}', overridden by '{1}', has a WxeParameterAttribute applied. The WxeParameterAttribute may only be applied to the original declaration of a property.",
+                property.Name,
+                property.DeclaringType));
+      }
 
       if (!attribute._required.HasValue)
         attribute._required = property.PropertyType.IsValueType;

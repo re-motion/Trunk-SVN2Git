@@ -151,6 +151,7 @@
     <Compile Include="TreeViewTestFunction.cs" />
     <Compile Include="TreeViewTest.aspx.cs">
       <DependentUpon>TreeViewTest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="TreeViewTest.aspx.designer.cs">
       <DependentUpon>TreeViewTest.aspx</DependentUpon>

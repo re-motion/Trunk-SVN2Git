@@ -16,11 +16,12 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
@@ -48,25 +49,40 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     private static WxeParameterDeclaration[] GetParameterDeclarationsUnchecked (Type type)
     {
-      var properties = type.GetProperties (BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-      var parameters = new List<WxeParameterDeclaration> (properties.Length);
-      var indices = new List<int> (properties.Length);
-      foreach (PropertyInfo property in properties)
+      var result = type
+          .CreateSequence (t => t.BaseType)
+          .Reverse()
+          .SelectMany (
+              (t, i) => t.GetProperties (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
+                  .Select (property => new { Property = property, Attribute = WxeParameterAttribute.GetAttribute (property) })
+                  .Where (_ => _.Attribute != null)
+                  .Select (
+                      _ => new
+                           {
+                               Type = t,
+                               TypeIndex = i,
+                               ParameterIndex = _.Attribute.Index,
+                               Property = _.Property,
+                               ParameterDeclaration =
+                                   new WxeParameterDeclaration (_.Property.Name, _.Attribute.Required, _.Attribute.Direction, _.Property.PropertyType)
+                           }))
+          .OrderBy (_ => _.TypeIndex)
+          .ThenBy (_ => _.ParameterIndex)
+          .ToList();
+
+      var duplicateIndices = result.GroupBy (_ => new { _.TypeIndex, _.ParameterIndex }).Where (_ => _.Count() > 1).ToList();
+      if (duplicateIndices.Any())
       {
-        var parameterAttribute = WxeParameterAttribute.GetAttribute (property);
-        if (parameterAttribute != null)
-        {
-          parameters.Add (
-              new WxeParameterDeclaration (
-                  property.Name, parameterAttribute.Required, parameterAttribute.Direction, property.PropertyType));
-          indices.Add (parameterAttribute.Index);
-        }
+        var firstDuplicateIndex = duplicateIndices.First().ToArray();
+        throw new WxeException (
+            string.Format (
+                "'{0}' declares WxeParameters '{1}' and '{2}' with the same index. The index of a WxeParameter must be unique within a type.",
+                firstDuplicateIndex[0].Type,
+                firstDuplicateIndex[0].Property.Name,
+                firstDuplicateIndex[1].Property.Name));
       }
 
-      var declarations = parameters.ToArray();
-      int[] numberArray = indices.ToArray();
-      Array.Sort (numberArray, declarations);
-      return declarations;
+      return result.Select (_ => _.ParameterDeclaration).ToArray();
     }
 
     /// <summary>
