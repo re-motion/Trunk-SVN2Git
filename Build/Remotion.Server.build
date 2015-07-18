@@ -20,7 +20,7 @@
     <SolutionBuildFile>$(SolutionDirectory)build\Remotion.build</SolutionBuildFile>
 
     <ReleaseType>DEV</ReleaseType>
-    <NuGetVersionSuffix>x</NuGetVersionSuffix>
+    <NuGetVersionSuffix>alpha</NuGetVersionSuffix>
 
     <SecureNetworkShare></SecureNetworkShare>
     <SolutionKeyFile>$(SecureNetworkShare)\remotion.snk</SolutionKeyFile>
@@ -52,9 +52,11 @@
   </Target>
 
   <Target Name="CheckBuildConfigurationProperties" >
+    <Error Text="The property 'teamcity_build_checkoutdir' is not set." Condition="'$(teamcity_build_checkoutdir)' == ''" />
     <Error Text="The property 'ReleaseType' is not set." Condition="'$(ReleaseType)' == ''" />
     <Error Text="The property 'build_number' is not set." Condition="'$(build_number)' == ''" />
 
+    <Message Text="The property 'teamcity_build_checkoutdir' is set to '$(teamcity_build_checkoutdir)'." />
     <Message Text="The property 'ReleaseType' is set to '$(ReleaseType)'." />
     <Message Text="The property 'build_number' is set to '$(build_number)'." />
   </Target>
@@ -74,7 +76,7 @@
       CheckProperties;
       CleanFolders;
       CleanProjects;
-      GetLatestReleasedVersion;
+      GetEarliestUnreleasedVersion;
       SetVersionCiAndNightlyBuild;
       PrepareBuildProperties;
     </BeforeTestBuildTargets>

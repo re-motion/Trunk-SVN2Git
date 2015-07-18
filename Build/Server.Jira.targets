@@ -8,7 +8,7 @@
   <Import Project="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.tasks"/>
 
   <Target Name="GetEarliestUnreleasedVersion">
-    <Error Text="Property 'Version' was already set. Probably caused by: GetLatestReleasedVersion" Condition="'$(Version)' != ''" />
+    <Error Text="Property 'Version' was already set." Condition="'$(Version)' != ''" />
     
     <JiraGetEarliestUnreleasedVersion JiraUrl="$(JiraUrl)"
                                       JiraUsername="$(JiraUsername)"
@@ -31,24 +31,6 @@
     <Error Text="Only versions >= $(_firstVersion) are supported." Condition="$([System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse ($(_firstVersion))) ) ) &lt; 0" />
   </Target>
 
-  <Target Name="GetLatestReleasedVersion">
-    <Error Text="Property 'Version' was already set. Probably caused by: GetEarliestUnreleasedVersion" Condition="'$(Version)' != ''" />
-    <Error Text="Property 'NextVersion' was already set. Probably caused by: GetEarliestUnreleasedVersion" Condition="'$(NextVersion)' != ''" />
-
-    <JiraGetLatestReleasedVersion JiraUrl="$(JiraUrl)"
-                                  JiraUsername="$(JiraUsername)"
-                                  JiraPassword="$(JiraPassword)"
-                                  JiraProject="$(JiraProject)"
-                                  VersionPattern="$(JiraVersionPattern)">
-      <Output PropertyName="VersionID" TaskParameter="VersionID"/>
-      <Output PropertyName="Version" TaskParameter="VersionName"/>
-      <Output PropertyName="NextVersionID" TaskParameter="NextUnreleasedVersionID"/>
-      <Output PropertyName="NextVersion" TaskParameter="NextUnreleasedVersionName"/>
-    </JiraGetLatestReleasedVersion>
-
-    <Message Text="Determined version (latest relesed): $(Version), next version (earliest unrelesed) is going to be $(NextVersion)" Importance="High"/>
-  </Target>
-  
   <Target Name="ReleaseJiraVersion" DependsOnTargets="GetEarliestUnreleasedVersion">
     <Error Text="JIRA problem: no unreleased version available." Condition="'$(VersionID)' == ''"/>
     <Error Text="JIRA problem: no subsequent unreleased version available." Condition="'$(NextVersionID)' == ''"/>

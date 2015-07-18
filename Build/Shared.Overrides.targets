@@ -109,11 +109,21 @@
   </Target>
 
   <Target Name="PrepareAssemblyNuGetVersion" DependsOnTargets="CheckVersionIsFourPartVersion" Condition="$(Version) != ''">
-    <Error Text="The property 'VersionPattern' is not set." Condition="'$(VersionPattern)' == ''" />
 
     <PropertyGroup>
-      <AssemblyNuGetVersion>$(Version)</AssemblyNuGetVersion>
-      <AssemblyNuGetVersion Condition="'$(NuGetVersionSuffix)' != ''">$(AssemblyNuGetVersion)-$(NuGetVersionSuffix)</AssemblyNuGetVersion>
+      <_versionMajor>$([System.Version]::Parse ($(Version)).Major)</_versionMajor>
+      <_versionMinor>$([System.Version]::Parse ($(Version)).Minor)</_versionMinor>
+      <_versionBuild>$([System.Version]::Parse ($(Version)).Build)</_versionBuild>
+      <_versionRevision>$([System.Version]::Parse ($(Version)).Revision)</_versionRevision>
+    </PropertyGroup>
+
+    <MSBuild.ExtensionPack.Framework.TextString TaskAction="PadLeft" OldString="$(_versionRevision)" String1="0" Count="4"> 
+      <Output PropertyName="_versionRevision" TaskParameter="NewString"/> 
+    </MSBuild.ExtensionPack.Framework.TextString>
+
+    <PropertyGroup>
+      <AssemblyNuGetVersion>$(_versionMajor).$(_versionMinor).$(_versionBuild)</AssemblyNuGetVersion>
+      <AssemblyNuGetVersion Condition="'$(NuGetVersionSuffix)' != ''">$(AssemblyNuGetVersion)-$(NuGetVersionSuffix)$(_versionRevision)</AssemblyNuGetVersion>
     </PropertyGroup>
 
     <Message Text="Done preparing AssemblyNuGetVersion '$(AssemblyNuGetVersion)'" Importance="High"/>
