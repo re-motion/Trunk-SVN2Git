@@ -41,7 +41,10 @@
       <Version-Major>$([System.Version]::Parse ($(Version)).Major)</Version-Major>
       <Version-Minor>$([System.Version]::Parse ($(Version)).Minor)</Version-Minor>
       <Version-Build>$([System.Version]::Parse ($(Version)).Build)</Version-Build>
+
+      <!-- Used also in 'Shared.Overrides.targets' during 'PrepareAssemblyNuGetVersion'. -->
       <Version-Revision>10000</Version-Revision>
+
     </PropertyGroup>
 
     <PropertyGroup>

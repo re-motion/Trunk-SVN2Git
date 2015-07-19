@@ -20,7 +20,7 @@
     <SolutionBuildFile>$(SolutionDirectory)build\Remotion.build</SolutionBuildFile>
 
     <ReleaseType>DEV</ReleaseType>
-    <NuGetVersionSuffix>alpha</NuGetVersionSuffix>
+    <NuGetVersionSuffix>pre</NuGetVersionSuffix>
 
     <SecureNetworkShare></SecureNetworkShare>
     <SolutionKeyFile>$(SecureNetworkShare)\remotion.snk</SolutionKeyFile>
