@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding
     /// <summary>
     /// Gets the <see cref="IBusinessObjectProvider"/> associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.
     /// </summary>
-    /// <typeParam name="TBusinessObjectProviderAttributeType">
+    /// <typeParam name="TBusinessObjectProviderAttribute">
     /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
     /// </typeParam>
     /// <remarks>If no provider has been registered, a default isntance will be created using the <see cref="ObjectFactory"/>.</remarks>
@@ -93,11 +93,11 @@ namespace Remotion.ObjectBinding
     /// <summary>
     /// Sets the <see cref="IBusinessObjectProvider"/> to be associated with the <see cref="BusinessObjectProviderAttribute"/> type specified.
     /// </summary>
-    /// <typeParam name="TBusinessObjectProviderAttributeType">
+    /// <typeParam name="TBusinessObjectProviderAttribute">
     /// A <see cref="Type"/> derived from <see cref="BusinessObjectProviderAttribute"/>. Must not be <see langword="null" />.
     /// </typeParam>
     /// <param name="provider">
-    /// The <see cref="IBusinessObjectProvider"/> instance to be associated with the <typeParamref name="TBusinessObjectProviderAttributeType"/>. 
+    /// The <see cref="IBusinessObjectProvider"/> instance to be associated with the <typeParamref name="TBusinessObjectProviderAttribute"/>. 
     /// Pass <see langword="null"/> to remove the association.
     /// </param>
     public static void SetProvider<TBusinessObjectProviderAttribute> (IBusinessObjectProvider provider)
