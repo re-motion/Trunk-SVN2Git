@@ -13,15 +13,23 @@
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
     <Error Text="The property 'SvnRevision' is not set." Condition="'$(SvnRevision)' == ''" />
     <Error Text="The property 'SvnWorkingCopyPath' is not set." Condition="'$(SvnWorkingCopyPath)' == ''" />
-    
+
+    <PropertyGroup>
+      <Version-Major>$([System.Version]::Parse ($(Version)).Major)</Version-Major>
+      <Version-Minor>$([System.Version]::Parse ($(Version)).Minor)</Version-Minor>
+      <Version-Build>$([System.Version]::Parse ($(Version)).Build)</Version-Build>
+
+      <TagVersion>$(Version-Major).$(Version-Minor).$(Version-Build)</TagVersion>
+    </PropertyGroup>
+
     <SvnCopy ToolPath="$(SvnToolPath)"
              Username="$(SvnUsername)"
              Password="$(SvnPassword)"
              SourcePath="$(SvnWorkingCopyPath)"
-             DestinationPath="$(SvnBaseUri)/$(SvnTagsFolder)/$(Version)"
-             Message="Tagging build version $(Version)" />
+             DestinationPath="$(SvnBaseUri)/$(SvnTagsFolder)/$(TagVersion)"
+             Message="Tagging build version $(TagVersion)" />
 
-    <Message Text="Tagged revision '$(SvnRevision)' at '$(SvnBaseUri)/$(SvnTagsFolder)/$(Version)'." Importance="High" />
+    <Message Text="Tagged revision '$(SvnRevision)' at '$(SvnBaseUri)/$(SvnTagsFolder)/$(TagVersion)'." Importance="High" />
   </Target>
 
   <Target Name="CommitVersionForLocalBuild" DependsOnTargets="CreateSvnWorkingCopyPath">
