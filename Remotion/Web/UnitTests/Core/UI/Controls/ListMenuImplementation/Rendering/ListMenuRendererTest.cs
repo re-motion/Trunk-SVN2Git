@@ -71,7 +71,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ListMenuImplementation.Renderi
       PopulateMenu();
 
       var serviceLocator = DefaultServiceLocator.Create();
-      serviceLocator.RegisterSingle<IRenderingFeatures> (() => new WithDiagnosticMetadataRenderingFeatures());
+      serviceLocator.RegisterSingle<IRenderingFeatures> (() => RenderingFeatures.WithDiagnosticMetadata);
       _serviceLocatorScope = new ServiceLocatorScope (serviceLocator);
     }
 
