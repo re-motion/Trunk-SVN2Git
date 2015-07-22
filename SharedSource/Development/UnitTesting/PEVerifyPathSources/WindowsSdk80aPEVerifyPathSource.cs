@@ -56,14 +56,16 @@ namespace Remotion.Development.UnitTesting.PEVerifyPathSources
       {
         case PEVerifyVersion.DotNet2:
           return Maybe
-              .ForValue (Registry.LocalMachine.OpenSubKey (WindowsSdkRegistryKey35, false))
+              .ForValue (RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32))
+              .Select (key => key.OpenSubKey (WindowsSdkRegistryKey35, false))
               .Select (key => key.GetValue (WindowsSdkRegistryInstallationFolderValue) as string)
               .Select (path => Path.Combine (path, "PEVerify.exe"))
               .ValueOrDefault ();
 
         case PEVerifyVersion.DotNet4:
           return Maybe
-              .ForValue (Registry.LocalMachine.OpenSubKey (WindowsSdkRegistryKey40, false))
+              .ForValue (RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32))
+              .Select (key => key.OpenSubKey (WindowsSdkRegistryKey40, false))
               .Select (key => key.GetValue (WindowsSdkRegistryInstallationFolderValue) as string)
               .Select (path => Path.Combine (path, "PEVerify.exe"))
               .ValueOrDefault ();

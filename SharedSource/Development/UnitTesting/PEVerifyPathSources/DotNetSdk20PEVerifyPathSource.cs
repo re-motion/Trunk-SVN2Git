@@ -42,7 +42,8 @@ namespace Remotion.Development.UnitTesting.PEVerifyPathSources
         return null;
 
       return Maybe
-          .ForValue (Registry.LocalMachine.OpenSubKey (SdkRegistryKey, false))
+          .ForValue (RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32))
+          .Select (key => key.OpenSubKey (SdkRegistryKey, false))
           .Select (key => key.GetValue (SdkRegistryValue) as string)
           .Select (path => Path.Combine (path, "bin"))
           .Select (path => Path.Combine (path, "PEVerify.exe"))

@@ -48,7 +48,8 @@ namespace Remotion.Development.UnitTesting.PEVerifyPathSources
         return null;
 
       return Maybe
-          .ForValue (Registry.LocalMachine.OpenSubKey (WindowsSdkRegistryKey, false))
+          .ForValue (RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32))
+          .Select (key => key.OpenSubKey (WindowsSdkRegistryKey, false))
           .Select (key => key.GetValue (WindowsSdkRegistryVersionValue) as string)
           .Select (windowsSdkVersion => Registry.LocalMachine.OpenSubKey (WindowsSdkRegistryKey + "\\" + windowsSdkVersion, false))
           .Select (key => key.GetValue (WindowsSdkRegistryInstallationFolderValue) as string)
