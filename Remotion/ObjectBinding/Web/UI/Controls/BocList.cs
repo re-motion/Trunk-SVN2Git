@@ -121,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> A list of control wide resources. </summary>
     /// <remarks> 
     ///   Resources will be accessed using 
-    ///   <see cref="IResourceManager.TryGetString"/>. 
+    ///   <see cref="M:Remotion.Globalization.IResourceManager.TryGetString(string, out string)"/>.
     /// </remarks>
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocList")]
