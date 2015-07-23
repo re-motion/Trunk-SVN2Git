@@ -16,8 +16,10 @@
 // 
 
 using System;
+using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
+using NUnit.Framework;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
@@ -120,6 +122,21 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
     public string Save ()
     {
+      if (File.Exists (_filename))
+      {
+        try
+        {
+          File.Delete (_filename);
+        }
+        catch (UnauthorizedAccessException)
+        {
+          Assert.Fail (
+              "Assembly '{0}' already exists, likely because it could not be properly cleaned during a previous test-run. "
+              + "Please delete the bin-directory manually and re-run the tests.",
+              _filename);
+        }
+      }
+
       _assemblyBuilder.Save (_filename);
       return _moduleBuilder.FullyQualifiedName;
     }
