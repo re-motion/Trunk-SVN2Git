@@ -49,6 +49,12 @@ namespace Remotion.Extensions.UnitTests.Utilities
       Assert.That (FrameworkVersionDetector.IsVersionSupported (FrameworkVersion.Net_4_5_2), Is.EqualTo (IsNet_4_5_2_Installed()));
     }
 
+    [Test]
+    public void IsMinimumVersion_Net_4_6 ()
+    {
+      Assert.That (FrameworkVersionDetector.IsVersionSupported (FrameworkVersion.Net_4_6), Is.EqualTo (IsNet_4_6_Installed()));
+    }
+
     private bool IsNet_4_5_1_Installed ()
     {
       var net_4_5_1_ReleaseVersion = 378675;
@@ -59,6 +65,12 @@ namespace Remotion.Extensions.UnitTests.Utilities
     {
       var net_4_5_2_ReleaseVersion = 379893;
       return IsNet_4_x_x_Installed (net_4_5_2_ReleaseVersion);
+    }
+
+    private bool IsNet_4_6_Installed ()
+    {
+      var net_4_6_ReleaseVersion = 393295;
+      return IsNet_4_x_x_Installed (net_4_6_ReleaseVersion);
     }
 
     private static bool IsNet_4_x_x_Installed (int expectedReleaseVersion)

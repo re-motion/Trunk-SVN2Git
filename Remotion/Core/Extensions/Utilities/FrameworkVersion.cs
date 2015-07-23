@@ -26,6 +26,7 @@ namespace Remotion.Utilities
     Net_4_0,
     Net_4_5,
     Net_4_5_1,
-    Net_4_5_2
+    Net_4_5_2,
+    Net_4_6
   }
 }

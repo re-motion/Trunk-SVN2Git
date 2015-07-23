@@ -26,6 +26,8 @@ namespace Remotion.Utilities
   /// </summary>
   public static class FrameworkVersionDetector
   {
+    private static readonly Lazy<bool> s_isNet_4_6_Supported = new Lazy<bool> (IsNet_4_6_Installed);
+
     private static readonly Lazy<bool> s_isNet_4_5_2_Supported = new Lazy<bool> (IsNet_4_5_2_Installed);
 
     private static readonly Lazy<bool> s_isNet_4_5_1_Supported = new Lazy<bool> (IsNet_4_5_1_Installed);
@@ -39,6 +41,9 @@ namespace Remotion.Utilities
     /// </summary>
     public static bool IsVersionSupported (FrameworkVersion frameworkVersion)
     {
+      if (frameworkVersion >= FrameworkVersion.Net_4_6)
+        return s_isNet_4_6_Supported.Value;
+
       if (frameworkVersion >= FrameworkVersion.Net_4_5_2)
         return s_isNet_4_5_2_Supported.Value;
 
@@ -52,6 +57,12 @@ namespace Remotion.Utilities
         return s_isNet_4_0_Supported.Value;
 
       throw new ArgumentException (string.Format("'{0}' is not a valid FrameworkVersion.", frameworkVersion));
+    }
+
+    private static bool IsNet_4_6_Installed ()
+    {
+      // https://msdn.microsoft.com/en-US/library/ms171868.aspx#v46
+      return Type.GetType ("System.Security.Cryptography.RSACng", throwOnError: false) != null;
     }
 
     private static bool IsNet_4_5_2_Installed ()
