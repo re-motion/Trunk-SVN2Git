@@ -20,7 +20,9 @@ using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.Remoting;
+using System.Runtime.Serialization;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Remotion.Utilities;
 
 namespace Remotion.Tools.UnitTests
@@ -98,19 +100,16 @@ namespace Remotion.Tools.UnitTests
     }
 
     [Test]
-    public void Register_AllowsAssembliesToBeResolved()
+    public void Register_AllowsAssembliesToBeResolved ()
     {
-      var resolver = CreateResolver ();
+      var resolver = CreateResolver();
 
-      try
-      {
-        _appDomain.DoCallBack (delegate { });
-        Assert.Fail ("Expected exception");
-      }
-      catch (FileNotFoundException)
-      {
-        // ok
-      }
+      ExactTypeConstraint constraint;
+      if (FrameworkVersionDetector.IsVersionSupported (FrameworkVersion.Net_4_6))
+        constraint = Throws.Exception.TypeOf<SerializationException>();
+      else
+        constraint = Throws.Exception.TypeOf<FileNotFoundException>();
+      Assert.That (() => _appDomain.DoCallBack (delegate { }), constraint); // Serialized type should not be available in the other AppDomain
 
       resolver.Register (_appDomain);
 
