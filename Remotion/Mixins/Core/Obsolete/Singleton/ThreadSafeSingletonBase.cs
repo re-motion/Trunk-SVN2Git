@@ -24,9 +24,9 @@ namespace Remotion.Mixins.Utilities.Singleton
   [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Extensions.dll", true)]
   internal class ThreadSafeSingletonBase<TSelf, TCreator>
       where TSelf : class
-      where TCreator : IInstanceCreator<TSelf>, new()
+      where TCreator : new()
   {
-    private static readonly DoubleCheckedLockingContainer<TSelf> s_instance = new DoubleCheckedLockingContainer<TSelf> (new TCreator().CreateInstance);
+    private static readonly DoubleCheckedLockingContainer<TSelf> s_instance = new DoubleCheckedLockingContainer<TSelf> (null);
 
     public ThreadSafeSingletonBase ()
     {
