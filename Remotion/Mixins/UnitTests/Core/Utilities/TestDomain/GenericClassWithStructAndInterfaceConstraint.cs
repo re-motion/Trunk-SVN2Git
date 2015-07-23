@@ -20,7 +20,7 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities.TestDomain
 {
 // ReSharper disable UnusedTypeParameter
   public class GenericClassWithStructAndInterfaceConstraint<T>
-      where T : struct, ICloneable
+      where T :  struct, ICloneable
   {
   }
   // ReSharper restore UnusedTypeParameter

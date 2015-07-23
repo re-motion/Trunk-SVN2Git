@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -54,12 +55,16 @@ namespace Remotion.Mixins.Utilities
     {
       Type candidate = null;
 
-      foreach (Type constraint in typeParameter.GetGenericParameterConstraints())
+      // Starting with .NET 4.6, the order follows different conventions. 
+      // For better diagnostics, the value-type/reference-type constraint should be listed before any interface constraints.
+      var constraints = typeParameter.GetGenericParameterConstraints().OrderBy (t => t.IsInterface).ThenBy (t => t.FullName);
+
+      foreach (Type constraint in constraints)
       {
         if (constraint.ContainsGenericParameters)
         {
           string message = string.Format (
-              "The generic type parameter has a constraint '{0}' which itself contains generic parameters.", 
+              "The generic type parameter has a constraint '{0}' which itself contains generic parameters.",
               constraint.Name);
           throw new NotSupportedException (message);
         }
