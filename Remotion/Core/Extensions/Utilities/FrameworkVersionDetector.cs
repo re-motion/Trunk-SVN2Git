@@ -62,7 +62,7 @@ namespace Remotion.Utilities
     private static bool IsNet_4_6_Installed ()
     {
       // https://msdn.microsoft.com/en-US/library/ms171868.aspx#v46
-      return Type.GetType ("System.Security.Cryptography.RSACng", throwOnError: false) != null;
+      return Type.GetType ("System.Security.Cryptography.RSACng, System.Core", throwOnError: false) != null;
     }
 
     private static bool IsNet_4_5_2_Installed ()
