@@ -83,8 +83,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq.IntegrationTests
       CheckQueryResult (
           from o in QueryFactory.CreateLinqQuery<Order>()
           where
+#pragma warning disable 0472 //The result of the expression is always 'true' since a value of type 'int' is never equal to 'null' of type 'int?'
               (from so in QueryFactory.CreateLinqQuery<Order>() orderby so.OrderNumber where so.ID == DomainObjectIDs.Order1 select so.OrderNumber).
                   Single() != null && o.OrderNumber < 6
+#pragma warning restore 0472
           select o,
           DomainObjectIDs.Order1,
           DomainObjectIDs.Order3,
