@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
@@ -35,15 +35,14 @@ using Remotion.Reflection;
 using Remotion.ServiceLocation;
 using Remotion.Web.Contracts.DiagnosticMetadata;
 using Remotion.Web.UI;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
 using Rhino.Mocks;
 using AttributeCollection = System.Web.UI.AttributeCollection;
 
-namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplementation.Rendering
+namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplementation.Rendering.BocEnumValueRendererTests
 {
   [TestFixture]
-  public class BocEnumValueRendererTest : RendererTestBase
+  public class SelectList_BEVRT : RendererTestBase
   {
     private const string c_clientID = "MyEnumValue";
     private const string c_valueName = "ListControlClientID";
@@ -99,180 +98,48 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       _enumValue.Stub (mock => mock.LabelStyle).Return (new Style (stateBag));
       _enumValue.Stub (mock => mock.ListControlStyle).Return (new ListControlStyle());
       _enumValue.Stub (mock => mock.ControlStyle).Return (new Style (stateBag));
+      _enumValue.Stub (mock => mock.Enabled).Return (false);
     }
 
     [Test]
-    public void RenderNullValue ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-
-      AssertOptionList (true, null, false, false, false);
-    }
-
-    [Test]
-    public void RenderFirstValue ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (false, TestEnum.First, false, false, false);
-    }
-
-    [Test]
-    public void RenderFirstValueAutoPostback ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.ListControlStyle.AutoPostBack = true;
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (false, TestEnum.First, false, false, true);
-    }
-
-    [Test]
-    public void RenderFirstValueWithNullOption ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.IsRequired).Return (false);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (true, TestEnum.First, false, false, false);
-    }
-
-    [Test]
-    public void RenderNullValueDisabled ()
+    public void Render_NullValue ()
     {
       _enumValue.Stub (mock => mock.IsRequired).Return (true);
 
-      AssertOptionList (true, null, true, false, false);
+      AssertOptionList (true, null, false, false);
     }
 
     [Test]
-    public void RenderFirstValueDisabled ()
+    public void Render_NamedValue ()
     {
       _enumValue.Stub (mock => mock.IsRequired).Return (true);
       _enumValue.Value = TestEnum.First;
 
-      AssertOptionList (false, TestEnum.First, true, false, false);
+      AssertOptionList (false, TestEnum.First, false, false);
     }
 
     [Test]
-    public void RenderFirstValueWithNullOptionDisabled ()
-    {
-      _enumValue.Stub (mock => mock.IsRequired).Return (false);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (true, TestEnum.First, true, false, false);
-    }
-
-    [Test]
-    public void RenderNullValueReadOnly ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Stub (mock => mock.IsReadOnly).Return (true);
-
-      AssertLabel (null, false);
-    }
-
-    [Test]
-    public void RenderFirstValueReadOnly ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _enumValue.Value = TestEnum.First;
-      _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
-
-      AssertLabel (TestEnum.First, false);
-    }
-
-    [Test]
-    public void RenderFirstValueWithCssClass ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.CssClass = "CssClass";
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (false, TestEnum.First, false, false, false);
-    }
-
-    [Test]
-    public void RenderFirstValueDisabledWithCssClass ()
+    public void Render_NamedValue_WithCssClass ()
     {
       _enumValue.CssClass = "CssClass";
       _enumValue.Stub (mock => mock.IsRequired).Return (true);
       _enumValue.Value = TestEnum.First;
 
-      AssertOptionList (false, TestEnum.First, true, false, false);
+      AssertOptionList (false, TestEnum.First, false, false);
     }
 
     [Test]
-    public void RenderFirstValueReadOnlyWithCssClass ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.CssClass = "CssClass";
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _enumValue.Value = TestEnum.First;
-      _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
-
-      AssertLabel (TestEnum.First, false);
-    }
-
-    [Test]
-    public void RenderFirstValueWithCssClassInAttributes ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Attributes["class"] = "CssClass";
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (false, TestEnum.First, false, false, false);
-    }
-
-    [Test]
-    public void RenderFirstValueDisabledWithCssClassInAttributes ()
+    public void Render_NamedValue_WithCssClassInAttributes ()
     {
       _enumValue.Attributes["class"] = "CssClass";
       _enumValue.Stub (mock => mock.IsRequired).Return (true);
       _enumValue.Value = TestEnum.First;
 
-      AssertOptionList (false, TestEnum.First, true, false, false);
+      AssertOptionList (false, TestEnum.First, false, false);
     }
 
     [Test]
-    public void RenderFirstValueReadOnlyWithCssClassInAttributes ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Attributes["class"] = "CssClass";
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _enumValue.Value = TestEnum.First;
-      _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
-
-      AssertLabel (TestEnum.First, false);
-    }
-
-    [Test]
-    public void RenderFirstValueWithStyle ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Height = _height;
-      _enumValue.Width = _width;
-      _enumValue.ControlStyle.Height = _height;
-      _enumValue.ControlStyle.Width = _width;
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (false, TestEnum.First, false, true, false);
-    }
-
-    [Test]
-    public void RenderFirstValueDisabledWithStyle ()
+    public void Render_NamedValue_WithStyle ()
     {
       _enumValue.Height = _height;
       _enumValue.Width = _width;
@@ -281,62 +148,18 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       _enumValue.Stub (mock => mock.IsRequired).Return (true);
       _enumValue.Value = TestEnum.First;
 
-      AssertOptionList (false, TestEnum.First, true, true, false);
+      AssertOptionList (false, TestEnum.First, true, false);
     }
 
     [Test]
-    public void RenderFirstValueReadOnlyWithStyle ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Height = _height;
-      _enumValue.Width = _width;
-      _enumValue.ControlStyle.Height = _height;
-      _enumValue.ControlStyle.Width = _width;
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _enumValue.Value = TestEnum.First;
-      _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
-
-      AssertLabel (TestEnum.First, true);
-    }
-
-    [Test]
-    public void RenderFirstValueWithStyleInAttributes ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Style["height"] = _height.ToString();
-      _enumValue.Style["width"] = _width.ToString();
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Value = TestEnum.First;
-
-      AssertOptionList (false, TestEnum.First, false, true, false);
-    }
-
-    [Test]
-    public void RenderFirstValueDisabledWithStyleInAttributes ()
+    public void Render_NamedValue_WithStyleInAttributes ()
     {
       _enumValue.Style["height"] = _height.ToString();
       _enumValue.Style["width"] = _width.ToString();
       _enumValue.Stub (mock => mock.IsRequired).Return (true);
       _enumValue.Value = TestEnum.First;
 
-      AssertOptionList (false, TestEnum.First, true, true, false);
-    }
-
-    [Test]
-    public void RenderFirstValueReadOnlyWithStyleInAttributes ()
-    {
-      _enumValue.Stub (mock => mock.Enabled).Return (true);
-      _enumValue.Style["height"] = _height.ToString();
-      _enumValue.Style["width"] = _width.ToString();
-      _enumValue.Stub (mock => mock.IsRequired).Return (true);
-      _enumValue.Stub (mock => mock.IsReadOnly).Return (true);
-      _enumValue.Value = TestEnum.First;
-      _enumValue.Stub (mock => mock.EnumerationValueInfo).Return (_enumerationInfos[0]);
-
-      AssertLabel (TestEnum.First, false);
+      AssertOptionList (false, TestEnum.First, true, false);
     }
 
     [Test]
@@ -359,33 +182,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       Html.AssertAttribute (outerSpan, DiagnosticMetadataAttributesForObjectBinding.BocEnumValueStyle, "ListBox");
     }
 
-    private void AssertLabel (TestEnum? value, bool withStyle)
-    {
-      var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, RenderingFeatures.Default);
-      renderer.Render (new BocEnumValueRenderingContext(HttpContext, Html.Writer, _enumValue));
-
-      var document = Html.GetResultDocument();
-      XmlNode div = GetAssertedSpan (document, true, false, false, renderer);
-
-
-      var span = Html.GetAssertedChildElement (div, "span", 0);
-      Html.AssertAttribute (span, "id", c_valueName);
-      if (_enumValue.EnumerationValueInfo!=null)
-        Html.AssertAttribute (span, "data-value", _enumValue.EnumerationValueInfo.Identifier);
-
-      if (withStyle)
-      {
-        Html.AssertStyleAttribute (span, "width", _width.ToString());
-        Html.AssertStyleAttribute (span, "height", "100%");
-      }
-
-      if (value.HasValue)
-        Html.AssertTextNode (span, value.Value.ToString(), 0);
-      else
-        Html.AssertChildElementCount (span, 0);
-    }
-
-    private XmlNode GetAssertedSpan (XmlDocument document, bool isReadOnly, bool isDisabled, bool withStyle, BocEnumValueRenderer renderer)
+    private XmlNode GetAssertedSpan (XmlDocument document, bool isReadOnly, bool withStyle, BocEnumValueRenderer renderer)
     {
       var div = Html.GetAssertedChildElement (document, "span", 0);
       string cssClass = _enumValue.CssClass;
@@ -398,8 +195,8 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       Html.AssertAttribute (div, "class", cssClass, HtmlHelperBase.AttributeValueCompareMode.Contains);
       if (isReadOnly)
         Html.AssertAttribute (div, "class", renderer.CssClassReadOnly, HtmlHelperBase.AttributeValueCompareMode.Contains);
-      if (isDisabled)
-        Html.AssertAttribute (div, "class", renderer.CssClassDisabled, HtmlHelperBase.AttributeValueCompareMode.Contains);
+
+      Html.AssertAttribute (div, "class", renderer.CssClassDisabled, HtmlHelperBase.AttributeValueCompareMode.Contains);
 
       if (withStyle)
       {
@@ -410,13 +207,13 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       return div;
     }
 
-    private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool isDisabled, bool withStyle, bool autoPostBack)
+    private void AssertOptionList (bool withNullValue, TestEnum? selectedValue, bool withStyle, bool autoPostBack)
     {
       var renderer = new BocEnumValueRenderer (new FakeResourceUrlFactory (), GlobalizationService, RenderingFeatures.Default);
       renderer.Render (new BocEnumValueRenderingContext (HttpContext, Html.Writer, _enumValue));
 
       var document = Html.GetResultDocument();
-      var div = GetAssertedSpan (document, false, false, false, renderer);
+      var div = GetAssertedSpan (document, false, false, renderer);
 
       var select = Html.GetAssertedChildElement (div, "select", 0);
       Html.AssertAttribute (select, "id", c_valueName);
@@ -425,8 +222,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocEnumValueImplement
       if (withStyle)
         Html.AssertStyleAttribute (select, "height", "100%");
 
-      if (isDisabled)
-        Html.AssertAttribute (select, "disabled", "disabled");
+      Html.AssertAttribute (select, "disabled", "disabled");
 
       if (withNullValue)
         AssertNullOption (select, !selectedValue.HasValue);
