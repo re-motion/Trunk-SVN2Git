@@ -16,23 +16,16 @@
 // 
 
 using System;
-using System.Configuration;
+using JetBrains.Annotations;
 
-namespace Remotion.Web.Development.WebTesting.Configuration
+namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
   /// <summary>
-  /// Additionally configured browser preferences, see <see cref="WebTestingConfiguration.BrowserPreferences"/>.
+  /// Represents the configuration for hosting the web application that is to be tested.
   /// </summary>
-  public class BrowserPreferencesConfigurationElementCollection : ConfigurationElementCollection
+  /// <seealso cref="HostingConfiguration"/>
+  public interface IHostingConfiguration
   {
-    protected override ConfigurationElement CreateNewElement ()
-    {
-      return new BrowserPreferenceConfigurationElement();
-    }
-
-    protected override object GetElementKey (ConfigurationElement element)
-    {
-      return ((BrowserPreferenceConfigurationElement) element).Key;
-    }
+    [NotNull] IHostingStrategy GetHostingStrategy ();
   }
 }

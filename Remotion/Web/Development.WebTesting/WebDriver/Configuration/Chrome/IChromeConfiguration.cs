@@ -14,25 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Coypu;
 
-namespace Remotion.Web.Development.WebTesting.Configuration
+using System;
+using JetBrains.Annotations;
+using OpenQA.Selenium.Chrome;
+
+namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chrome
 {
   /// <summary>
-  /// Provides all the necessary information to initialize Coypu <see cref="Options"/>.
+  /// Provides configuration specific to initializing and shutting down Chrome.
   /// </summary>
-  public interface ICoypuConfiguration
+  /// <seealso cref="ChromeConfiguration"/>
+  public interface IChromeConfiguration : IBrowserConfiguration
   {
     /// <summary>
-    /// Specifies how long the Coypu engine should maximally search for a web element or try to interact with a web element before it fails.
+    /// Creates the <see cref="ChromeOptions"/> used when instantiating the Chrome browser.
     /// </summary>
-    TimeSpan SearchTimeout { get; }
-
-    /// <summary>
-    /// Whenever the element to be interacted with is not ready, visible or otherwise not present, the Coypu engine automatically retries the action
-    /// after the given <see cref="RetryInterval"/> until the <see cref="SearchTimeout"/> has been reached.
-    /// </summary>
-    TimeSpan RetryInterval { get; }
+    [NotNull] ChromeOptions CreateChromeOptions ();
   }
 }

@@ -14,24 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 
-namespace Remotion.Web.Development.WebTesting.Configuration
+using System;
+using Coypu;
+
+namespace Remotion.Web.Development.WebTesting.WebDriver
 {
   /// <summary>
-  /// Provides all the necessary information to run a web test.
+  /// Code-only configurable constants.
   /// </summary>
-  public interface IWebTestConfiguration
+  public static class WebTestingConstants
   {
     /// <summary>
-    /// URL to which the web application under test has been published.
+    /// Defines whether Coypu queries should find invisible elements.
     /// </summary>
-    string WebApplicationRoot { get; }
+    public static readonly bool ShouldConsiderInvisibleElements = true;
 
     /// <summary>
-    /// Absolute or relative path to the screenshot directory. The web testing framework automatically takes two screenshots (one of the whole desktop
-    /// and one of the browser window) in case a web test failed.
+    /// Defines the default Coypu <see cref="Match"/> strategy.
     /// </summary>
-    string ScreenshotDirectory { get; }
+    public static readonly Match DefaultMatchStrategy = Match.First;
+
+    /// <summary>
+    /// Defines the default Coypu <see cref="TextPrecision"/> strategy.
+    /// </summary>
+    public static readonly TextPrecision DefaultTextPrecision = TextPrecision.PreferExact;
   }
 }

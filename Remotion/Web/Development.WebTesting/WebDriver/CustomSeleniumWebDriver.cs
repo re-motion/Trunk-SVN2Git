@@ -14,23 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using Coypu.Drivers;
+using Coypu.Drivers.Selenium;
+using OpenQA.Selenium;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.WebDriver
 {
-  /// <summary>
-  /// A hosting strategy determines which web server to start and how to deploy/undeploy the web application under test.
-  /// </summary>
-  public interface IHostingStrategy
+  public class CustomSeleniumWebDriver : SeleniumWebDriver
   {
-    /// <summary>
-    /// Deploys the web application and starts the corresponding server.
-    /// </summary>
-    void DeployAndStartWebApplication ();
+    public CustomSeleniumWebDriver (Browser browser)
+        : base(browser)
+    {
+    }
 
-    /// <summary>
-    /// Stops the corresponding server and undeploys the web application.
-    /// </summary>
-    void StopAndUndeployWebApplication ();
+    public CustomSeleniumWebDriver (IWebDriver webDriver, Browser browser)
+        : base(webDriver, browser)
+    {
+    }
   }
 }

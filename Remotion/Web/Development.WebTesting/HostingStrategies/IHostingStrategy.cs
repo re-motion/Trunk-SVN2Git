@@ -14,28 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Coypu;
 
-namespace Remotion.Web.Development.WebTesting.Configuration
+using System;
+
+namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
   /// <summary>
-  /// Code-only configurable constants.
+  /// A hosting strategy determines which web server to start and how to deploy/undeploy the web application under test.
   /// </summary>
-  public static class WebTestingConstants
+  public interface IHostingStrategy
   {
     /// <summary>
-    /// Defines whether Coypu queries should find invisible elements.
+    /// Deploys the web application and starts the corresponding server.
     /// </summary>
-    public static readonly bool ShouldConsiderInvisibleElements = true;
+    void DeployAndStartWebApplication ();
 
     /// <summary>
-    /// Defines the default Coypu <see cref="Match"/> strategy.
+    /// Stops the corresponding server and undeploys the web application.
     /// </summary>
-    public static readonly Match DefaultMatchStrategy = Match.First;
-
-    /// <summary>
-    /// Defines the default Coypu <see cref="TextPrecision"/> strategy.
-    /// </summary>
-    public static readonly TextPrecision DefaultTextPrecision = TextPrecision.PreferExact;
+    void StopAndUndeployWebApplication ();
   }
 }
