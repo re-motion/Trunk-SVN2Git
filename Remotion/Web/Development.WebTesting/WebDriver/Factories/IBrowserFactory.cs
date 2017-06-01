@@ -14,23 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using Coypu;
 using JetBrains.Annotations;
 using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.WebDriver.Factories
 {
   /// <summary>
-  /// Factory to create Coypu <see cref="BrowserSession"/> objects.
+  /// Factory to create <see cref="IBrowserSession"/>s.
   /// </summary>
   public interface IBrowserFactory
   {
     /// <summary>
-    /// Creates a Coypu <see cref="BrowserSession"/>.
+    /// Creates a <see cref="IBrowserSession"/>.
     /// </summary>
-    /// <returns>A new Coypu <see cref="BrowserSession"/>.</returns>
-    BrowserSession CreateBrowser ([NotNull] ITestInfrastructureConfiguration testInfrastructureConfiguration);
+    /// <returns>A new <see cref="IBrowserSession"/>.</returns>
+    [NotNull]
+    IBrowserSession CreateBrowser ([NotNull] ITestInfrastructureConfiguration testInfrastructureConfiguration);
   }
 }
