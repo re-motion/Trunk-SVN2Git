@@ -17,7 +17,7 @@
 using System;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation;
 
-namespace Remotion.Web.Development.WebTesting.IntegrationTests.ScreenshotInfrastructure
+namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests.ScreenshotCreation
 {
   /// <summary>
   /// Test delegate that annotates <paramref name="controlObject"/> using <paramref name="screenshotBuilder"/>.
