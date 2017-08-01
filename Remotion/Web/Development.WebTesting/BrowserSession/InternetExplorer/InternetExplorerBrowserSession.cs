@@ -15,20 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Coypu;
 using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.WebDriver.Configuration.InternetExplorer;
 
-namespace Remotion.Web.Development.WebTesting.WebDriver.Factories
+namespace Remotion.Web.Development.WebTesting.BrowserSession.InternetExplorer
 {
   /// <summary>
-  /// Represents a wrapper around a <see cref="Coypu.BrowserSession"/> which has addition cleanup routines via <see cref="IDisposable.Dispose"/>
+  /// Implements <see cref="IBrowserSession"/> for the InternetExplorer browser.
   /// </summary>
-  public interface IBrowserSession : IDisposable
+  public class InternetExplorerBrowserSession : BrowserSessionBase<IInternetExplorerConfiguration>
   {
-    /// <summary>
-    /// The underlying <see cref="Coypu.BrowserSession"/>.
-    /// </summary>
-    [NotNull]
-    BrowserSession Value { get; }
+    public InternetExplorerBrowserSession ([NotNull] Coypu.BrowserSession value, IInternetExplorerConfiguration configuration, int driverProcessId)
+        : base (value, configuration, driverProcessId)
+    {
+    }
   }
 }

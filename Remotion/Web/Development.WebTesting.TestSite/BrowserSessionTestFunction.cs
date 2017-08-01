@@ -15,24 +15,21 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Coypu;
 using JetBrains.Annotations;
-using OpenQA.Selenium;
+using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.Development.WebTesting
+namespace Remotion.Web.Development.WebTesting.TestSite
 {
-  /// <summary>
-  /// Various extension methods for Coypu's <see cref="BrowserSession"/> class.
-  /// </summary>
-  public static class CoypuBrowserSessionExtensions
+  [UsedImplicitly]
+  public class BrowserSessionTestFunction : WxeFunction
   {
-    /// <summary>
-    /// Clears all cookies for the current domain.
-    /// </summary>
-    public static void ClearCookies ([NotNull] this BrowserSession browser)
+    public BrowserSessionTestFunction ()
+        : base (new NoneTransactionMode())
     {
-      var webDriver = (IWebDriver) browser.Native;
-      webDriver.Manage().Cookies.DeleteAllCookies();
     }
+
+    // Steps
+    private WxeStep Step1 = new WxePageStep ("BrowserSessionTest.aspx");
   }
 }
