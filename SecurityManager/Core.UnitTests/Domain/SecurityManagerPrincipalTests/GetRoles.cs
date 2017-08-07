@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
@@ -28,52 +29,47 @@ using Rhino.Mocks;
 namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTests
 {
   [TestFixture]
-  public class GetUser : SecurityManagerPrincipalTestBase
+  public class GetRoles : SecurityManagerPrincipalTestBase
   {
     private User _user;
     private Tenant _tenant;
+    private Role[] _roles;
     private SecurityManagerPrincipal _principal;
 
     public override void SetUp ()
     {
-      base.SetUp();
+      base.SetUp ();
+
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
+      ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ();
 
-      _user = User.FindByUserName ("substituting.user");
+      _user = User.FindByUserName ("test.user");
       _tenant = _user.Tenant;
-
-      _principal = CreateSecurityManagerPrincipal (_tenant, _user, null, null);
+      _roles = _user.Roles.Skip (1).Take (2).ToArray();
+      Assert.That (_roles.Length, Is.EqualTo (2));
+      _principal = CreateSecurityManagerPrincipal (_tenant, _user, _roles, null);
     }
 
     public override void TearDown ()
     {
-      base.TearDown();
+      base.TearDown ();
       SecurityManagerPrincipal.Current = SecurityManagerPrincipal.Null;
-    }
-
-    [Test]
-    public void Test ()
-    {
-      var userProxy = _principal.User;
-
-      Assert.That (userProxy.ID, Is.EqualTo (_user.ID));
     }
 
     [Test]
     public void UsesCache ()
     {
-      Assert.That (_principal.User, Is.SameAs (_principal.User));
+      Assert.That (_principal.Substitution, Is.SameAs (_principal.Substitution));
     }
 
     [Test]
     public void SerializesCache ()
     {
-      var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (_principal, _principal.User));
+      var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (_principal, _principal.Substitution));
       SecurityManagerPrincipal deserialziedSecurityManagerPrincipal = deserialized.Item1;
-      UserProxy deserialziedUser = deserialized.Item2;
+      SubstitutionProxy deserialziedSubstitution = deserialized.Item2;
 
-      Assert.That (deserialziedSecurityManagerPrincipal.User, Is.SameAs (deserialziedUser));
+      Assert.That (deserialziedSecurityManagerPrincipal.Substitution, Is.SameAs (deserialziedSubstitution));
     }
 
     [Test]
@@ -92,9 +88,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
         Assert.That (refreshedInstance, Is.Not.SameAs (_principal));
       }
 
-      var userProxy = refreshedInstance.User;
+      var roleProxies = refreshedInstance.Roles;
 
-      Assert.That (userProxy.ID, Is.EqualTo (_user.ID));
+      Assert.That (roleProxies.Select (r=>r.ID), Is.EqualTo (_roles.Select (r=>r.ID)));
     }
   }
 }
