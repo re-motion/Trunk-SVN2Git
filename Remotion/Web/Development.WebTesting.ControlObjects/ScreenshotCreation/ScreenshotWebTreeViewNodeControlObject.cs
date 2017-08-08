@@ -15,44 +15,38 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using JetBrains.Annotations;
-using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.Fluent;
-using Remotion.Web.Development.WebTesting.Utilities;
 
-namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation.BocDateTimeValue
+namespace Remotion.Web.Development.WebTesting.ControlObjects.ScreenshotCreation
 {
   /// <summary>
-  /// Marker class for the screenshot fluent API. Represents a <see cref="BocDateTimeValueControlObject"/> date picker.
+  /// Represents a <see cref="WebTreeViewNodeControlObject"/> for the screenshot creation API.
   /// </summary>
-  public class ScreenshotBocDateTimeValuePicker : ISelfResolvable
+  public class ScreenshotWebTreeViewNodeControlObject : ISelfResolvable
   {
-    private readonly IFluentScreenshotElement<BocDateTimeValueControlObject> _fluentDateTimeValue;
+    private readonly IFluentScreenshotElement<WebTreeViewNodeControlObject> _fluentWebTreeView;
 
-    public ScreenshotBocDateTimeValuePicker (
-        [NotNull] IFluentScreenshotElement<BocDateTimeValueControlObject> fluentDateTimeValue)
+    public ScreenshotWebTreeViewNodeControlObject (IFluentScreenshotElement<WebTreeViewNodeControlObject> fluentWebTreeView)
     {
-      ArgumentUtility.CheckNotNull ("fluentDateTimeValue", fluentDateTimeValue);
-
-      _fluentDateTimeValue = fluentDateTimeValue;
+      _fluentWebTreeView = fluentWebTreeView;
     }
 
-    public IFluentScreenshotElement<BocDateTimeValueControlObject> FluentDateTimeValue
+    public IFluentScreenshotElement<WebTreeViewNodeControlObject> FluentWebTreeViewNode
     {
-      get { return _fluentDateTimeValue; }
+      get { return _fluentWebTreeView; }
     }
 
-    public BocDateTimeValueControlObject DateTimeValue
+    public WebTreeViewNodeControlObject WebTreeViewNode
     {
-      get { return _fluentDateTimeValue.Target; }
+      get { return _fluentWebTreeView.Target; }
     }
 
     /// <inheritdoc />
     public ResolvedScreenshotElement ResolveBrowserCoordinates ()
     {
-      return _fluentDateTimeValue.GetDatePicker().GetElement().ResolveBrowserCoordinates();
+      return _fluentWebTreeView.ResolveBrowserCoordinates();
     }
 
     /// <inheritdoc />
@@ -60,7 +54,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation.B
     {
       ArgumentUtility.CheckNotNull ("locator", locator);
 
-      return _fluentDateTimeValue.GetDatePicker().GetElement().ResolveDesktopCoordinates (locator);
+      return _fluentWebTreeView.ResolveDesktopCoordinates (locator);
     }
   }
 }
