@@ -15,18 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 
-namespace Remotion.Web.Development.WebTesting.TestSite.GenericTestPageInfrastructure
+// ReSharper disable once CheckNamespace
+
+namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
 {
   /// <summary>
-  /// Contains methods for rendering and setup of a control on the generic page.
+  /// Status code of the generic test page.
   /// </summary>
-  public interface IControlSetup
+  public enum GenericTestPageStatus
   {
-    /// <summary>
-    /// Adds the control to the specified <paramref name="container"/>.
-    /// </summary>
-    void AddToContainer (Control container);
+    Unknown = 0,
+    Failed = 1,
+    Ok = 2
   }
 }

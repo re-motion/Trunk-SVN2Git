@@ -14,17 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using System.Web.UI;
+using NUnit.Framework;
 
-namespace Remotion.Web.Development.WebTesting.TestSite.GenericTestPageInfrastructure
+namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
 {
-  public class SimplePageSetup<TControl> : SimplePageSetup
-      where TControl : Control, new()
+  /// <summary>
+  /// Simplifies the usage of the <see cref="TestCaseSourceAttribute"/> by automatically supplying the sourceName parameter.
+  /// </summary>
+  [AttributeUsage (AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
+  public class RemotionTestCaseSourceAttribute : TestCaseSourceAttribute
   {
-    public SimplePageSetup ()
-        : base ((p, n) => new SimpleControlSetup<TControl> (p, n))
+    public RemotionTestCaseSourceAttribute (Type sourceType)
+        : base (sourceType, "GetTests")
     {
     }
   }

@@ -14,24 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
+using JetBrains.Annotations;
 
-namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests.GenericTestCaseInfrastructure
+// ReSharper disable once CheckNamespace
+
+namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
 {
   /// <summary>
-  /// Represents parameters for <see cref="ControlSelectorTestCaseFactoryBase{TControlSelector,TControl,TTestParameter}"/> sub classes.
+  /// DTO object for JSON conversion.
   /// </summary>
-  public interface ITestParameters
+#pragma warning disable 0649
+  [UsedImplicitly (ImplicitUseTargetFlags.WithMembers)]
+  public class GenericTestPageParameterDto
   {
-    /// <summary>
-    /// Unique name of <see cref="ITestParameters"/>.
-    /// </summary>
-    string Name { get; }
+    public GenericTestPageParameterDto (GenericTestPageStatus status, GenericTestPageParameterCollection parameters)
+    {
+      Status = status;
+      Parameters = parameters;
+    }
 
-    /// <summary>
-    /// Applies the specified <paramref name="data"/> to the <see cref="ITestParameters"/> and returns if it was successful.
-    /// </summary>
-    bool Apply (string[] data);
+    public GenericTestPageStatus Status;
+    public GenericTestPageParameterCollection Parameters;
   }
+#pragma warning restore 0649
 }
