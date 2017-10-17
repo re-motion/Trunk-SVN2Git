@@ -1,4 +1,4 @@
-// NOTE: This file was originally generated via JetBrains ReSharper
+﻿// NOTE: This file was originally generated via JetBrains ReSharper
 // and is part of the JetBrains.Annotations for ReSharper. 
 // It has since been modified for use in the re-motion framework development.
 //
@@ -66,18 +66,14 @@ using System;
 namespace JetBrains.Annotations
 {
   /// <summary>
-  /// Indicates that the function argument should be string literal and match one
-  /// of the parameters of the caller function. For example, ReSharper annotates
-  /// the parameter of <see cref="System.ArgumentNullException"/>.
+  /// Prevents the Member Reordering feature from tossing members of the marked class.
   /// </summary>
-  /// <example><code>
-  /// void Foo(string param) {
-  ///   if (param == null)
-  ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
-  /// }
-  /// </code></example>
-  [AttributeUsage (AttributeTargets.Parameter)]
-  sealed partial class InvokerParameterNameAttribute : Attribute
+  /// <remarks>
+  /// The attribute must be mentioned in your member reordering patterns
+  /// </remarks>
+  [AttributeUsage (
+      AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct | AttributeTargets.Enum)]
+  sealed partial class NoReorderAttribute : Attribute
   {
   }
 }

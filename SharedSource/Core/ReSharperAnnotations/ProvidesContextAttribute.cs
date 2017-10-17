@@ -1,4 +1,4 @@
-// NOTE: This file was originally generated via JetBrains ReSharper
+﻿// NOTE: This file was originally generated via JetBrains ReSharper
 // and is part of the JetBrains.Annotations for ReSharper. 
 // It has since been modified for use in the re-motion framework development.
 //
@@ -66,18 +66,24 @@ using System;
 namespace JetBrains.Annotations
 {
   /// <summary>
-  /// Indicates that the function argument should be string literal and match one
-  /// of the parameters of the caller function. For example, ReSharper annotates
-  /// the parameter of <see cref="System.ArgumentNullException"/>.
+  /// Indicates the type member or parameter of some type, that should be used instead of all other ways
+  /// to get the value that type. This annotation is useful when you have some "context" value evaluated
+  /// and stored somewhere, meaning that all other ways to get this value must be consolidated with existing one.
   /// </summary>
   /// <example><code>
-  /// void Foo(string param) {
-  ///   if (param == null)
-  ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
+  /// class Foo {
+  ///   [ProvidesContext] IBarService _barService = ...;
+  /// 
+  ///   void ProcessNode(INode node) {
+  ///     DoSomething(node, node.GetGlobalServices().Bar);
+  ///     //              ^ Warning: use value of '_barService' field
+  ///   }
   /// }
   /// </code></example>
-  [AttributeUsage (AttributeTargets.Parameter)]
-  sealed partial class InvokerParameterNameAttribute : Attribute
+  [AttributeUsage (
+      AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Parameter | AttributeTargets.Method |
+      AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct | AttributeTargets.GenericParameter)]
+  sealed partial class ProvidesContextAttribute : Attribute
   {
   }
 }

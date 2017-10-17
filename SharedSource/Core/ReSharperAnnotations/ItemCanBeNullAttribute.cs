@@ -1,4 +1,4 @@
-// NOTE: This file was originally generated via JetBrains ReSharper
+﻿// NOTE: This file was originally generated via JetBrains ReSharper
 // and is part of the JetBrains.Annotations for ReSharper. 
 // It has since been modified for use in the re-motion framework development.
 //
@@ -66,18 +66,14 @@ using System;
 namespace JetBrains.Annotations
 {
   /// <summary>
-  /// Indicates that the function argument should be string literal and match one
-  /// of the parameters of the caller function. For example, ReSharper annotates
-  /// the parameter of <see cref="System.ArgumentNullException"/>.
+  /// Can be applied to symbols of types derived from IEnumerable as well as to symbols of Task
+  /// and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+  /// or of the Lazy.Value property can be null.
   /// </summary>
-  /// <example><code>
-  /// void Foo(string param) {
-  ///   if (param == null)
-  ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
-  /// }
-  /// </code></example>
-  [AttributeUsage (AttributeTargets.Parameter)]
-  sealed partial class InvokerParameterNameAttribute : Attribute
+  [AttributeUsage (
+      AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property |
+      AttributeTargets.Delegate | AttributeTargets.Field)]
+  sealed partial class ItemCanBeNullAttribute : Attribute
   {
   }
 }

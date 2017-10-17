@@ -1,4 +1,4 @@
-// NOTE: This file was originally generated via JetBrains ReSharper
+﻿// NOTE: This file was originally generated via JetBrains ReSharper
 // and is part of the JetBrains.Annotations for ReSharper. 
 // It has since been modified for use in the re-motion framework development.
 //
@@ -66,18 +66,20 @@ using System;
 namespace JetBrains.Annotations
 {
   /// <summary>
-  /// Indicates that the function argument should be string literal and match one
-  /// of the parameters of the caller function. For example, ReSharper annotates
-  /// the parameter of <see cref="System.ArgumentNullException"/>.
+  /// For a parameter that is expected to be one of the limited set of values.
+  /// Specify fields of which type should be used as values for this parameter.
   /// </summary>
-  /// <example><code>
-  /// void Foo(string param) {
-  ///   if (param == null)
-  ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
-  /// }
-  /// </code></example>
-  [AttributeUsage (AttributeTargets.Parameter)]
-  sealed partial class InvokerParameterNameAttribute : Attribute
+  [AttributeUsage (
+      AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Field,
+      AllowMultiple = true)]
+  sealed partial class ValueProviderAttribute : Attribute
   {
+    public ValueProviderAttribute ([NotNull] string name)
+    {
+      Name = name;
+    }
+
+    [NotNull]
+    public string Name { get; private set; }
   }
 }

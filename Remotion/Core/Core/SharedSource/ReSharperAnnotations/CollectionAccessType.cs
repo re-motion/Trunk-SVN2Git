@@ -1,4 +1,4 @@
-// NOTE: This file was originally generated via JetBrains ReSharper
+﻿// NOTE: This file was originally generated via JetBrains ReSharper
 // and is part of the JetBrains.Annotations for ReSharper. 
 // It has since been modified for use in the re-motion framework development.
 //
@@ -65,19 +65,19 @@ using System;
 
 namespace JetBrains.Annotations
 {
-  /// <summary>
-  /// Indicates that the function argument should be string literal and match one
-  /// of the parameters of the caller function. For example, ReSharper annotates
-  /// the parameter of <see cref="System.ArgumentNullException"/>.
-  /// </summary>
-  /// <example><code>
-  /// void Foo(string param) {
-  ///   if (param == null)
-  ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
-  /// }
-  /// </code></example>
-  [AttributeUsage (AttributeTargets.Parameter)]
-  sealed partial class InvokerParameterNameAttribute : Attribute
+  [Flags]
+  public enum CollectionAccessType
   {
+    /// <summary>Method does not use or modify content of the collection.</summary>
+    None = 0,
+
+    /// <summary>Method only reads content of the collection but does not modify it.</summary>
+    Read = 1,
+
+    /// <summary>Method can change content of the collection but does not add new elements.</summary>
+    ModifyExistingContent = 2,
+
+    /// <summary>Method can add new elements to the collection.</summary>
+    UpdatedContent = ModifyExistingContent | 4
   }
 }
