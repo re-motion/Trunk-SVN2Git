@@ -16,35 +16,19 @@
 // 
 using System;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Web.Development.WebTesting.TestSite.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.GenericPages
 {
-  /// <summary>
-  /// Custom <see cref="IGenericTestPage{TOptions}"/> for a <see cref="BocReferenceValue"/>.
-  /// </summary>
-  public class BocReferenceValueGenericTestPage : EditableGenericTestPage<BocReferenceValue>
+  public abstract class EditableGenericTestPage<TControl> : SimpleGenericTestPage<TControl>
+      where TControl : BusinessObjectBoundEditableWebControl, new()
   {
-    public BocReferenceValueGenericTestPage ()
-    {
-    }
-
     /// <inheritdoc />
-    public override string DisplayName
+    public override TControl CreateControl (GenericTestOptions options)
     {
-      get { return "Partner"; }
-    }
+      var control = base.CreateControl (options);
+      control.ReadOnly = options.ReadOnlyState == ReadOnlyState.ReadOnly;
 
-    /// <inheritdoc />
-    public override string DomainProperty
-    {
-      get { return "Partner"; }
-    }
-
-    /// <inheritdoc />
-    public override string PropertyIdentifier
-    {
-      get { return "Partner"; }
+      return control;
     }
   }
 }

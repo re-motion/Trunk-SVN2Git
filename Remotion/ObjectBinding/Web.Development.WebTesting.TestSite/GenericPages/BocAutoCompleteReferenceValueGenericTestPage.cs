@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.GenericPage
   /// <summary>
   /// Custom <see cref="IGenericTestPage{TOptions}"/> for a <see cref="BocAutoCompleteReferenceValue"/>.
   /// </summary>
-  public class BocAutoCompleteReferenceValueGenericTestPage : SimpleGenericTestPage<BocAutoCompleteReferenceValue>
+  public class BocAutoCompleteReferenceValueGenericTestPage : EditableGenericTestPage<BocAutoCompleteReferenceValue>
   {
     public BocAutoCompleteReferenceValueGenericTestPage ()
     {

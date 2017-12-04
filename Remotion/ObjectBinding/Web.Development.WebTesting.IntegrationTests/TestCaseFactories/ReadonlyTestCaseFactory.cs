@@ -25,35 +25,35 @@ using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure.Generi
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests.TestCaseFactories
 {
   /// <summary>
-  /// Contains general tests for <see cref="BocControlObject"/>s.
+  /// Contains tests for readonly state of <see cref="BocControlObject"/>s.
   /// </summary>
-  public class GeneralTestCaseFactory<TControlSelector, TControl>
-      : ControlSelectorTestCaseFactoryBase<TControlSelector, TControl, GeneralTestPageParameters>
+  public class ReadOnlyTestCaseFactory<TControlSelector, TControl>
+      : ControlSelectorTestCaseFactoryBase<TControlSelector, TControl, ReadOnlyTestPageParameters>
       where TControlSelector : IHtmlIDControlSelector<TControl>
       where TControl : BocControlObject
   {
-    public GeneralTestCaseFactory ()
+    public ReadOnlyTestCaseFactory ()
     {
     }
 
     /// <inheritdoc />
     protected override string TestPrefix
     {
-      get { return "General"; }
+      get { return "ReadOnly"; }
     }
 
-    [GenericPageTestMethod (PageType = GenericTestPageType.EnabledDisabled)]
-    public void IsEnabled ()
+    [GenericPageTestMethod (PageType = GenericTestPageType.EnabledReadOnly)]
+    public void IsEditable ()
     {
       var control = Selector.GetByID (Parameter.EnabledHtmlID);
-      Assert.That (control.IsDisabled(), Is.False);
+      Assert.That (control.IsReadOnly(), Is.False);
     }
 
-    [GenericPageTestMethod (PageType = GenericTestPageType.EnabledDisabled)]
-    public void IsDisabled ()
+    [GenericPageTestMethod (PageType = GenericTestPageType.EnabledReadOnly)]
+    public void IsReadOnly ()
     {
-      var control = Selector.GetByID (Parameter.DisabledHtmlID);
-      Assert.That (control.IsDisabled(), Is.True);
+      var control = Selector.GetByID (Parameter.ReadOnlyHtmlID);
+      Assert.That (control.IsReadOnly(), Is.True);
     }
   }
 }

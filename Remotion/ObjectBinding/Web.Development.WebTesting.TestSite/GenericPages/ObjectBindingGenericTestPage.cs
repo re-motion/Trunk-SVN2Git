@@ -15,36 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using System.Web.UI;
+using JetBrains.Annotations;
+using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure;
 using Remotion.Web.Development.WebTesting.TestSite.Infrastructure;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.GenericPages
 {
-  /// <summary>
-  /// Custom <see cref="IGenericTestPage{TOptions}"/> for a <see cref="BocReferenceValue"/>.
-  /// </summary>
-  public class BocReferenceValueGenericTestPage : EditableGenericTestPage<BocReferenceValue>
+  public abstract class ObjectBindingGenericTestPage<TOptions> : GenericTestPageBase<TOptions>
   {
-    public BocReferenceValueGenericTestPage ()
-    {
-    }
+    [NotNull]
+    protected abstract TOptions ReadOnlyControlOptions { get; }
 
-    /// <inheritdoc />
-    public override string DisplayName
-    {
-      get { return "Partner"; }
-    }
+    [NotNull]
+    protected abstract Control ReadOnlyControlPanel { get; }
 
-    /// <inheritdoc />
-    public override string DomainProperty
+    protected override void AddControls (GenericTestPageType pageType, IGenericTestPage<TOptions> testPage)
     {
-      get { return "Partner"; }
-    }
+      base.AddControls (pageType, testPage);
 
-    /// <inheritdoc />
-    public override string PropertyIdentifier
-    {
-      get { return "Partner"; }
+      if (pageType.HasFlag (GenericTestPageType.ReadOnlyElements))
+        ReadOnlyControlPanel.Controls.Add (testPage.CreateControl (ReadOnlyControlOptions));
     }
   }
 }

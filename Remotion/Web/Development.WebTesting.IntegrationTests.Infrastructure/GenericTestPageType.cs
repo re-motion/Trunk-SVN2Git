@@ -28,6 +28,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
   {
     Default = HiddenElements | VisibleElements | AmbiguousElements | DisabledElements,
     EnabledDisabled = VisibleElements | DisabledElements,
+    EnabledReadOnly = VisibleElements | ReadOnlyElements,
     NonAmbiguous = HiddenElements | VisibleElements,
 
     /// <summary>
@@ -49,5 +50,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
     /// Renders the disabled elements.
     /// </summary>
     DisabledElements = 8,
+
+    /// <summary>
+    /// Renders the readonly elements.
+    /// </summary>
+    ReadOnlyElements = 16,
   }
 }

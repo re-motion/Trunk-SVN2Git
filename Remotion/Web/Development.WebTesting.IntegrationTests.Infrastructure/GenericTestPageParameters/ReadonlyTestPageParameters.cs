@@ -15,36 +15,47 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.Web.Development.WebTesting.TestSite.Infrastructure;
 
-namespace Remotion.ObjectBinding.Web.Development.WebTesting.TestSite.GenericPages
+namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure.GenericTestPageParameters
 {
   /// <summary>
-  /// Custom <see cref="IGenericTestPage{TOptions}"/> for a <see cref="BocReferenceValue"/>.
+  /// <see cref="IGenericTestPageParameter"/> for the general test case factories.
   /// </summary>
-  public class BocReferenceValueGenericTestPage : EditableGenericTestPage<BocReferenceValue>
+  public class ReadOnlyTestPageParameters : GenericTestPageParameterBase
   {
-    public BocReferenceValueGenericTestPage ()
+    private const int c_parameterCount = 2;
+
+    private string _enabledHtmlID;
+    private string _readOnlyHtmlID;
+
+    public ReadOnlyTestPageParameters ()
+        : base (TestConstants.ReadOnlyTestsID, c_parameterCount)
     {
     }
 
-    /// <inheritdoc />
-    public override string DisplayName
+    /// <summary>
+    /// HTML id of the enabled control.
+    /// </summary>
+    public string EnabledHtmlID
     {
-      get { return "Partner"; }
+      get { return _enabledHtmlID; }
+    }
+
+    /// <summary>
+    /// HTML id of the readonly control.
+    /// </summary>
+    public string ReadOnlyHtmlID
+    {
+      get { return _readOnlyHtmlID; }
     }
 
     /// <inheritdoc />
-    public override string DomainProperty
+    public override void Apply (GenericTestPageParameter data)
     {
-      get { return "Partner"; }
-    }
+      base.Apply (data);
 
-    /// <inheritdoc />
-    public override string PropertyIdentifier
-    {
-      get { return "Partner"; }
+      _enabledHtmlID = data[0];
+      _readOnlyHtmlID = data[1];
     }
   }
 }
