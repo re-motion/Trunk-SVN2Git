@@ -15,13 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Xml.Serialization;
+using System.Xml.Schema;
 
-namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests.TestDomain
+namespace Remotion.Xml
 {
-  [XmlRoot ( Namespace = "http://root-namespace")]
-  [XmlType (Namespace = "http://type-namespace")]
-  public class SampleTypeWithXmlRootAndXmlType
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Xml.dll", true)]
+  public abstract class SchemaLoaderBase
   {
+    protected abstract string SchemaFile { get; }
+    public abstract string SchemaUri { get; }
+
+    protected SchemaLoaderBase ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public virtual XmlSchemaSet LoadSchemaSet ()
+    {
+      throw new NotImplementedException();
+    }
+
+    protected XmlSchema LoadSchema (string schemaFileName)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

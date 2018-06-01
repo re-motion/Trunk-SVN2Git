@@ -15,46 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Xml.Schema;
-using Remotion.Utilities;
-using Remotion.Xml;
 
-namespace Remotion.UnitTests.Xml
+namespace Remotion.Xml
 {
-  public class SchemaLoaderBaseMock : SchemaLoaderBase
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Xml.dll", true)]
+  public class XmlSchemaValidationHandler
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    private string _schemaUri;
-
-    // construction and disposing
-
-    public SchemaLoaderBaseMock (string schemaUri)
-    {
-      ArgumentUtility.CheckNotNull ("schemaUri", schemaUri);
-
-      _schemaUri = schemaUri;
-    }
-
-    // methods and properties
-
-    protected override string SchemaFile
-    {
-      get { return "SchemaLoaderBaseMock.xsd"; }
-    }
-
-    public override string SchemaUri
-    {
-      get { return _schemaUri; }
-    }
-
-    public new XmlSchema LoadSchema (string schemaFileName)
-    {
-      return base.LoadSchema (schemaFileName);
-    }
   }
 }

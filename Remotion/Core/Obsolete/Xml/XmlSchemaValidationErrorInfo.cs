@@ -16,9 +16,10 @@
 // 
 using System;
 
-namespace Remotion.UnitTests.Xml.XmlSerializationUtilityTests.TestDomain
+namespace Remotion.Xml
 {
-  public class SampleTypeWithoutXmlAttributes
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Xml.dll", true)]
+  public class XmlSchemaValidationErrorInfo
   {
   }
 }
