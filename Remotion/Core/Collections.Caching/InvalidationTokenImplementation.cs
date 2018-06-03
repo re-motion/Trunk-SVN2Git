@@ -15,21 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Threading;
 
-namespace Remotion.Collections
+namespace Remotion.Collections.Caching
 {
-  /// <summary>The <see cref="LockingInvalidationToken"/> can be used as a means to commicate that the cached information is no longer current.</summary>
-  /// <remarks>
-  /// Instantiate via <see cref="InvalidationToken"/>.<see cref="InvalidationToken.CreatWithLocking"/>.
-  /// </remarks>
-  /// <threadsafety static="true" instance="true" />
+  /// <summary>
+  /// The <see cref="InvalidationTokenImplementation"/> is the non-threadsafe implementation of the <see cref="InvalidationToken"/> class.
+  /// </summary>
+  /// <remarks>Instantiate via <see cref="InvalidationToken"/>.<see cref="InvalidationToken.Create"/>.</remarks>
+  /// <threadsafety static="true" instance="false" />
   [Serializable]
-  public sealed class LockingInvalidationToken : InvalidationToken
+  internal sealed class InvalidationTokenImplementation : InvalidationToken
   {
     private long _currentRevisionValue;
 
-    internal LockingInvalidationToken ()
+    internal InvalidationTokenImplementation ()
     {
       // Use the instance's hash-code as revision seed value to allow for a reasonably different number space. 
       // The hash-code is often different between reference types and therefor adds a bit of randomness to the revisions.
@@ -38,12 +37,12 @@ namespace Remotion.Collections
 
     public override void Invalidate ()
     {
-      Interlocked.Increment (ref _currentRevisionValue);
+      _currentRevisionValue++;
     }
 
     protected override long GetCurrentRevisionValue ()
     {
-      return Interlocked.Read (ref _currentRevisionValue);
+      return _currentRevisionValue;
     }
   }
 }

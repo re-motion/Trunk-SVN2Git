@@ -16,13 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.UnitTests.Collections
+namespace Remotion.Collections.Caching.UnitTests
 {
   [TestFixture]
-  public class LockingCacheInvalidationTokenTest
+  public class LockingInvalidationTokenTest
   {
 #if DEBUG
     [Ignore ("Skipped if DEBUG build")]

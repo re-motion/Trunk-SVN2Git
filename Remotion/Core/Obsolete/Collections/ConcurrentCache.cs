@@ -17,53 +17,50 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
-  /// <summary>
-  /// This class implements a cache that does not actually cache anything.
-  /// </summary>
-  /// <remarks>
-  /// Use NullCache objects if some code expects an <see cref="ICache{TKey,TValue}"/> interface, but you don't actually want to use caching.
-  /// </remarks>
-  [Serializable]
-  public sealed class NullCache<TKey, TValue> : ICache<TKey, TValue>
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Collections.Caching.dll", true)]
+  public sealed class ConcurrentCache<TKey, TValue> : ICache<TKey, TValue>
   {
-    public NullCache ()
+    public ConcurrentCache ()
     {
+      throw new NotImplementedException();
+    }
+
+    public ConcurrentCache (IEqualityComparer<TKey> comparer)
+    {
+      throw new NotImplementedException();
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
-      value = default (TValue);
-      return false;
+      throw new NotImplementedException();
     }
 
-    public TValue GetOrCreateValue (TKey key, Func<TKey,TValue> valueFactory)
+    public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
     {
-      ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
-      return valueFactory(key);
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return Enumerable.Empty<KeyValuePair<TKey, TValue>>().GetEnumerator();
+      throw new NotImplementedException();
     }
 
     IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
     {
-      return Enumerable.Empty<KeyValuePair<TKey, TValue>>().GetEnumerator();
+      throw new NotImplementedException();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      throw new NotImplementedException();
     }
 
     public void Clear ()
     {
+      throw new NotImplementedException();
     }
 
     bool INullObject.IsNull
     {
-      get { return true; }
+      get { throw new NotImplementedException(); }
     }
   }
 }
