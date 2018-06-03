@@ -18,52 +18,50 @@ using System;
 
 namespace Remotion.Collections
 {
-  /// <summary>
-  /// This class implements a data store that doesn't actually store anything. It's part of the null object pattern.
-  /// </summary>
-  /// <typeparam name="TKey">The type of the keys.</typeparam>
-  /// <typeparam name="TValue">The type of the values.</typeparam>
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Collections.DataStore.dll", true)]
   public class NullDataStore<TKey, TValue> : IDataStore<TKey, TValue>
   {
-    public static readonly NullDataStore<TKey, TValue> Instance = new NullDataStore<TKey, TValue> ();
+    public static readonly NullDataStore<TKey, TValue> Instance = null;
 
     private NullDataStore()
     {
+      throw new NotImplementedException();
     }
 
     public bool ContainsKey (TKey key)
     {
-      return false;
+      throw new NotImplementedException();
     }
 
     public void Add (TKey key, TValue value)
     {
+      throw new NotImplementedException();
     }
 
     public bool Remove (TKey key)
     {
-      return false;
+      throw new NotImplementedException();
     }
 
     public void Clear ()
     {
+      throw new NotImplementedException();
     }
 
     public TValue this [TKey key]
     {
-      get { throw new InvalidOperationException ("No values can be retrieved from this cache."); }
-      set { }
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
     }
 
     public TValue GetValueOrDefault (TKey key)
     {
-      return default (TValue);
+      throw new NotImplementedException();
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
-      value = default (TValue);
-      return false;
+      throw new NotImplementedException();
     }
 
     public TValue GetOrCreateValue (TKey key, Func<TKey, TValue> valueFactory)
@@ -73,7 +71,7 @@ namespace Remotion.Collections
 
     public bool IsNull
     {
-      get { return true; }
+      get { throw new NotImplementedException(); }
     }
   }
 }

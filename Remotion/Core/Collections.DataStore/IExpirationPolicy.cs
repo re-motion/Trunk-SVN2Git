@@ -16,7 +16,7 @@
 // 
 using System;
 
-namespace Remotion.Collections
+namespace Remotion.Collections.DataStore
 {
   /// <summary>
   /// <see cref="IExpirationPolicy{TValue,TExpirationInfo,TScanInfo}"/> defines the API for implementations that handle value expiration. This is

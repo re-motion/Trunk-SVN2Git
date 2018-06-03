@@ -15,30 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Collections;
-using Remotion.Collections.DataStore;
-using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.TestDomain
+namespace Remotion.Collections
 {
-  public class StubBusinessObjectProvider : BusinessObjectProvider
+  [Obsolete ("Dummy declaration for DependDB. Moved to Remotion.Collections.DataStore.dll", true)]
+  public interface IExpirationPolicy<TValue, TExpirationInfo, TScanInfo>
   {
-    private readonly IDataStore<Type, IBusinessObjectService> _serviceStore = DataStoreFactory.CreateWithSynchronization<Type, IBusinessObjectService>();
+    TExpirationInfo GetExpirationInfo (TValue value);
+    TScanInfo GetNextScanInfo ();
 
-
-    public StubBusinessObjectProvider ()
-        : this (MockRepository.GenerateStub<IBusinessObjectServiceFactory>())
-    {
-    }
-
-    public StubBusinessObjectProvider (IBusinessObjectServiceFactory serviceFactory)
-        : base (serviceFactory)
-    {
-    }
-
-    protected override IDataStore<Type, IBusinessObjectService> ServiceStore
-    {
-      get { return _serviceStore; }
-    }
+    bool IsExpired (TValue value, TExpirationInfo expirationInfo);
+    bool ShouldScanForExpiredItems (TScanInfo nextScanInfo);
   }
 }
