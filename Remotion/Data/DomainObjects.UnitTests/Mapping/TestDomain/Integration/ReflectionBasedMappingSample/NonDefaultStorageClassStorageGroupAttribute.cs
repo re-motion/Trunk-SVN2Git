@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,27 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation
+namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
 {
-  public class ClassDefinitionWithUnresolvedClassType : ClassDefinition
+  public class NonDefaultStorageClassStorageGroupAttribute : StorageGroupAttribute
   {
-    public ClassDefinitionWithUnresolvedClassType (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        IPersistentMixinFinder persistentMixinFinder,
-        IDomainObjectCreator instanceCreator)
-        : base (id, classType, isAbstract, baseClass, null, DefaultStorageClass.Persistent, persistentMixinFinder, instanceCreator)
-    {
-    }
+    public const DefaultStorageClass NonDefaultStorageClass = (DefaultStorageClass) (-15);
 
-    public override bool IsClassTypeResolved
+    public NonDefaultStorageClassStorageGroupAttribute ()
+        : base (NonDefaultStorageClass)
     {
-      get { return false; }
     }
   }
 }

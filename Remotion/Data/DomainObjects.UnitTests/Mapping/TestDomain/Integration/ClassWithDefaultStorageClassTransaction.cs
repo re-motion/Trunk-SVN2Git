@@ -15,27 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation
+namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration
 {
-  public class ClassDefinitionWithUnresolvedClassType : ClassDefinition
+  [DBTable ("TableWithDefaultStorageClassTransaction")]
+  [TestDomainWithStorageClassTransaction]
+  [Instantiable]
+  public abstract class ClassWithDefaultStorageClassTransaction : DomainObject
   {
-    public ClassDefinitionWithUnresolvedClassType (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        IPersistentMixinFinder persistentMixinFinder,
-        IDomainObjectCreator instanceCreator)
-        : base (id, classType, isAbstract, baseClass, null, DefaultStorageClass.Persistent, persistentMixinFinder, instanceCreator)
+    protected ClassWithDefaultStorageClassTransaction ()
     {
     }
 
-    public override bool IsClassTypeResolved
-    {
-      get { return false; }
-    }
+    public abstract int NoAttribute { get; set; }
+
+    [StorageClass (StorageClass.Persistent)]
+    public abstract int Persistent { get; set; }
+
+    [StorageClassTransaction]
+    public abstract int Transaction { get; set; }
+
+    [StorageClassNone]
+    public object None { get; set; }
   }
 }

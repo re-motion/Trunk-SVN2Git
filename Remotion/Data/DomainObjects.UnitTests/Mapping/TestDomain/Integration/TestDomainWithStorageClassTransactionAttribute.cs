@@ -15,27 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.DomainObjects.UnitTests.Mapping.Validation
+namespace Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration
 {
-  public class ClassDefinitionWithUnresolvedClassType : ClassDefinition
+  public class TestDomainWithStorageClassTransactionAttribute : StorageGroupAttribute
   {
-    public ClassDefinitionWithUnresolvedClassType (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        IPersistentMixinFinder persistentMixinFinder,
-        IDomainObjectCreator instanceCreator)
-        : base (id, classType, isAbstract, baseClass, null, DefaultStorageClass.Persistent, persistentMixinFinder, instanceCreator)
+    public TestDomainWithStorageClassTransactionAttribute ()
+        : base (DefaultStorageClass.Transaction)
     {
-    }
-
-    public override bool IsClassTypeResolved
-    {
-      get { return false; }
     }
   }
 }
