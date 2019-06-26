@@ -191,3 +191,6 @@ remotion.snk
 
 # Named
 GitExtensions.settings.backup
+
+# re-motion
+Remotion/ObjectBinding/Web.Test/log-data/
