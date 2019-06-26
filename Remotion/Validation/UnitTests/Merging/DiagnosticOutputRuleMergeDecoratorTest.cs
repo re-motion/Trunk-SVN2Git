@@ -18,10 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Validators;
 using log4net.Appender;
-using log4net.Config;
 using log4net.Core;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
@@ -37,7 +35,6 @@ using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.UnitTests.TestDomain.Collectors;
 using Remotion.Validation.UnitTests.TestHelpers;
 using Rhino.Mocks;
-using LogManager = log4net.LogManager;
 
 namespace Remotion.Validation.UnitTests.Merging
 {

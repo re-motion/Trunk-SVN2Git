@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Internal;
 using FluentValidation.Resources;
 using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Globalization.UnitTests.TestDomain;
 using Remotion.Validation.Globalization.UnitTests.TestHelpers;
+using Remotion.Validation.Rules;
 using Rhino.Mocks;
 
 namespace Remotion.Validation.Globalization.UnitTests

@@ -20,7 +20,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Validators;
 using Remotion.Logging;
 using Remotion.Reflection;

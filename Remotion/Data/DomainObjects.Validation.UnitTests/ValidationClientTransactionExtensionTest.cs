@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Results;
 using FluentValidation.Validators;
 using NUnit.Framework;
@@ -28,6 +27,7 @@ using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
 using Remotion.Utilities;
 using Remotion.Validation;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Rules;
 using Remotion.Validation.Utilities;
 using Rhino.Mocks;
 

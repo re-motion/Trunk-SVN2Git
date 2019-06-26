@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Linq;
-using FluentValidation;
 using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Reflection;

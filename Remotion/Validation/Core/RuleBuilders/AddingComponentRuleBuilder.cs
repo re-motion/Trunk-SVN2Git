@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Validators;
 using Remotion.Utilities;
 using Remotion.Validation.MetaValidation;
@@ -121,7 +120,7 @@ namespace Remotion.Validation.RuleBuilders
       return this;
     }
 
-    IRuleBuilderOptions<TValidatedType, TProperty> IConfigurable<PropertyRule, IRuleBuilderOptions<TValidatedType, TProperty>>.Configure (Action<PropertyRule> configurator)
+    IRuleBuilderOptions<TValidatedType, TProperty> FluentValidation.Internal.IConfigurable<PropertyRule, IRuleBuilderOptions<TValidatedType, TProperty>>.Configure (Action<PropertyRule> configurator)
     {
       ArgumentUtility.CheckNotNull ("configurator", configurator);
 

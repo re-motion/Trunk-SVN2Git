@@ -15,12 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Internal;
 using FluentValidation.Resources;
 using Remotion.Globalization;
-using Remotion.Globalization.Implementation;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.Validation.Rules;
 using Remotion.Validation.Utilities;
 
 namespace Remotion.Validation.Globalization

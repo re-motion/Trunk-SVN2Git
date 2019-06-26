@@ -24,7 +24,7 @@ namespace Remotion.Validation.Globalization.UnitTests.TestHelpers
 {
   public class StubPropertyValidator : IPropertyValidator
   {
-    public IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
+    public IEnumerable<ValidationFailure> Validate (FluentValidation.Validators.PropertyValidatorContext context)
     {
       throw new NotImplementedException();
     }

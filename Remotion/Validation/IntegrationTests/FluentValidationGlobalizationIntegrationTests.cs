@@ -17,12 +17,12 @@
 using System;
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Resources;
 using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
 using Remotion.Validation.IntegrationTests.TestHelpers;
+using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.IntegrationTests
 {
@@ -100,7 +100,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var result =
           _propertyRule.Validate (
-              new ValidationContext (_customer, new PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new DefaultValidatorSelector()))
+              new ValidationContext (_customer, new FluentValidation.Internal.PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new FluentValidation.Internal.DefaultValidatorSelector()))
                        .ToArray();
 
       var validationResult = result.Single();

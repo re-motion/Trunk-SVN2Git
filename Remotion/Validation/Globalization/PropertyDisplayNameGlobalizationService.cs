@@ -16,11 +16,11 @@
 // 
 using System;
 using FluentValidation;
-using FluentValidation.Internal;
 using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Globalization
 {

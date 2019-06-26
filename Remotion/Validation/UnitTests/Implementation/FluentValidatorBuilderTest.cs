@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Internal;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Validation.Implementation;

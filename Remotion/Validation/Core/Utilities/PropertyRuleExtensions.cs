@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Reflection;
-using FluentValidation.Internal;
 using Remotion.Utilities;
+using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Utilities
 {

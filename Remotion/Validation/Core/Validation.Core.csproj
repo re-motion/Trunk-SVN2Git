@@ -66,6 +66,8 @@
     <Compile Include="Attributes\Validation\NotNullAttribute.cs" />
     <Compile Include="Attributes\Validation\RemoveValidatorAttribute.cs" />
     <Compile Include="Attributes\Validation\AddingValidationAttributeBase.cs" />
+    <Compile Include="DefaultValidatorExtensions.cs" />
+    <Compile Include="DefaultValidatorOptions.cs" />
     <Compile Include="Implementation\AttributeBasedComponentValidationCollector.cs" />
     <Compile Include="Implementation\CompoundValidationRuleMetadataService.cs" />
     <Compile Include="Implementation\IValidationRuleMetadataService.cs" />
@@ -99,7 +101,11 @@
     <Compile Include="MetaValidation\DefaultSystemMetaValidationRulesProviderFactory.cs" />
     <Compile Include="MetaValidation\ISystemMetaValidationRulesProviderFactory.cs" />
     <Compile Include="MetaValidation\Rules\Custom\AnyRuleAppliedMetaValidationRule.cs" />
+    <Compile Include="PropertyValidatorContext.cs" />
     <Compile Include="Providers\ValidationAttributesBasedCollectorProvider.cs" />
+    <Compile Include="RuleBuilders\IRuleBuilder.cs" />
+    <Compile Include="RuleBuilders\IRuleBuilderInitial.cs" />
+    <Compile Include="RuleBuilders\IRuleBuilderOptions.cs" />
     <Compile Include="Rules\AddingComponentPropertyMetaValidationRule.cs" />
     <Compile Include="Rules\IAddingComponentPropertyMetaValidationRule.cs" />
     <Compile Include="Implementation\CompoundValidator.cs" />
@@ -129,6 +135,7 @@
     <Compile Include="MetaValidation\SystemMetaValidationRuleBase.cs" />
     <Compile Include="Implementation\DiscoveryServiceBasedValidationCollectorReflector.cs" />
     <Compile Include="Implementation\IValidationCollectorReflector.cs" />
+    <Compile Include="Rules\PropertyRule.cs" />
     <Compile Include="Utilities\PropertyRuleExtensions.cs" />
     <Compile Include="Utilities\TopologySortExtensions.cs" />
     <Compile Include="Utilities\TopologySortMissingDependencyBehavior.cs" />
