@@ -17,8 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentValidation;
-using FluentValidation.Validators;
 using log4net.Appender;
 using log4net.Core;
 using log4net.Repository;
@@ -34,6 +32,7 @@ using Remotion.Validation.UnitTests.Implementation.TestDomain;
 using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.UnitTests.TestDomain.Collectors;
 using Remotion.Validation.UnitTests.TestHelpers;
+using Remotion.Validation.Validators;
 using Rhino.Mocks;
 
 namespace Remotion.Validation.UnitTests.Merging
@@ -103,16 +102,16 @@ namespace Remotion.Validation.UnitTests.Merging
 
       _validatorFormatterStub.Stub (
           stub => stub.Format (Arg<IPropertyValidator>.Matches (c => c.GetType() == typeof (NotNullValidator)), Arg<Func<Type, string>>.Is.Anything))
-          .Return ("FluentValidation.Validators.NotNullValidator");
+          .Return ("Remotion.Validation.Validators.NotNullValidator");
       _validatorFormatterStub.Stub (
           stub => stub.Format (Arg<IPropertyValidator>.Matches (c => c.GetType() == typeof (LengthValidator)), Arg<Func<Type, string>>.Is.Anything))
-          .Return ("FluentValidation.Validators.LengthValidator");
+          .Return ("Remotion.Validation.Validators.LengthValidator");
       _validatorFormatterStub.Stub (
           stub => stub.Format (Arg<IPropertyValidator>.Matches (c => c.GetType() == typeof (NotEmptyValidator)), Arg<Func<Type, string>>.Is.Anything))
-          .Return ("FluentValidation.Validators.NotEmptyValidator");
+          .Return ("Remotion.Validation.Validators.NotEmptyValidator");
       _validatorFormatterStub.Stub (
           stub => stub.Format (Arg<IPropertyValidator>.Matches (c => c.GetType() == typeof (NotEqualValidator)), Arg<Func<Type, string>>.Is.Anything))
-          .Return ("FluentValidation.Validators.NotEqualValidator");
+          .Return ("Remotion.Validation.Validators.NotEqualValidator");
       _validatorFormatterStub.Stub (
           stub =>
               stub.Format (Arg<IPropertyValidator>.Matches (c => c.GetType() == typeof (StubPropertyValidator)), Arg<Func<Type, string>>.Is.Anything))
@@ -162,16 +161,16 @@ namespace Remotion.Validation.UnitTests.Merging
           "\r\nAFTER MERGE:"
           + "\r\n\r\n    -> Remotion.Validation.UnitTests.TestDomain.Customer#UserName"
           + "\r\n        VALIDATORS:"
-          + "\r\n        -> FluentValidation.Validators.NotNullValidator (x2)"
-          + "\r\n        -> FluentValidation.Validators.NotEmptyValidator (x1)"
+          + "\r\n        -> Remotion.Validation.Validators.NotNullValidator (x2)"
+          + "\r\n        -> Remotion.Validation.Validators.NotEmptyValidator (x1)"
           + "\r\n        MERGE LOG:"
-          + "\r\n        -> 'FluentValidation.Validators.NotEmptyValidator' was removed from collectors 'CustomerValidationCollector1, CustomerValidationCollector2'"
-          + "\r\n        -> 'FluentValidation.Validators.NotNullValidator' was removed from collector 'CustomerValidationCollector2'"
+          + "\r\n        -> 'Remotion.Validation.Validators.NotEmptyValidator' was removed from collectors 'CustomerValidationCollector1, CustomerValidationCollector2'"
+          + "\r\n        -> 'Remotion.Validation.Validators.NotNullValidator' was removed from collector 'CustomerValidationCollector2'"
           + "\r\n\r\n    -> Remotion.Validation.UnitTests.TestDomain.Person#LastName"
           + "\r\n        VALIDATORS:"
-          + "\r\n        -> FluentValidation.Validators.NotEqualValidator (x1)"
+          + "\r\n        -> Remotion.Validation.Validators.NotEqualValidator (x1)"
           + "\r\n        MERGE LOG:"
-          + "\r\n        -> 'FluentValidation.Validators.NotEqualValidator' was removed from collector 'CustomerValidationCollector1'"
+          + "\r\n        -> 'Remotion.Validation.Validators.NotEqualValidator' was removed from collector 'CustomerValidationCollector1'"
           + "\r\n\r\n    -> Remotion.Validation.UnitTests.Implementation.ValidationRuleStub"
           + "\r\n        VALIDATORS:"
           + "\r\n        -> Remotion.Validation.UnitTests.TestHelpers.StubPropertyValidator (x1)";
@@ -182,18 +181,18 @@ namespace Remotion.Validation.UnitTests.Merging
           + "\r\n\r\n-> Remotion.Validation.Providers.ValidationAttributesBasedCollectorProvider#Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseTypeCollector1"
           + "\r\n\r\n    -> Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseType#Property1"
           + "\r\n        ADDED HARD CONSTRAINT VALIDATORS:"
-          + "\r\n        -> FluentValidation.Validators.NotNullValidator (x1)"
-          + "\r\n        -> FluentValidation.Validators.NotEqualValidator (x1)"
+          + "\r\n        -> Remotion.Validation.Validators.NotNullValidator (x1)"
+          + "\r\n        -> Remotion.Validation.Validators.NotEqualValidator (x1)"
           + "\r\n\r\n    -> Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseType#Property2"
           + "\r\n        ADDED SOFT CONSTRAINT VALIDATORS:"
-          + "\r\n        -> FluentValidation.Validators.LengthValidator (x1)"
+          + "\r\n        -> Remotion.Validation.Validators.LengthValidator (x1)"
           + "\r\n        ADDED META VALIDATION RULES:"
           + "\r\n        -> Remotion.Validation.UnitTests.TestDomain.ValidationRules.MaxLengthMetaValidationRule"
           + "\r\n\r\n-> Remotion.Validation.Providers.ApiBasedComponentValidationCollectorProvider#Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseTypeCollector2"
           + "\r\n\r\n    -> Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseType#Property2"
           + "\r\n        REMOVED VALIDATORS:"
-          + "\r\n        -> FluentValidation.Validators.NotEmptyValidator (x1)"
-          + "\r\n        -> FluentValidation.Validators.MaximumLengthValidator#Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseTypeCollector1 (x1)";
+          + "\r\n        -> Remotion.Validation.Validators.NotEmptyValidator (x1)"
+          + "\r\n        -> Remotion.Validation.Validators.MaximumLengthValidator#Remotion.Validation.UnitTests.Implementation.TestDomain.TypeWithoutBaseTypeCollector1 (x1)";
       CheckLoggingMethod (() => _diagnosticOutputRuleMergeDecorator.Merge (validationCollectorInfos), expectedBeforeMerge, 1);
     }
 

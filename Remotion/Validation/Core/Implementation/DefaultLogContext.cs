@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Collections.Generic;
-using FluentValidation;
-using FluentValidation.Validators;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Implementation
 {

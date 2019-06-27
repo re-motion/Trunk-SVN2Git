@@ -16,13 +16,12 @@
 // 
 using System;
 using System.Linq;
-using FluentValidation;
 using FluentValidation.Resources;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
 using Remotion.Validation.IntegrationTests.TestHelpers;
 using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.IntegrationTests
 {
@@ -100,7 +99,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var result =
           _propertyRule.Validate (
-              new ValidationContext (_customer, new FluentValidation.Internal.PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new FluentValidation.Internal.DefaultValidatorSelector()))
+              new ValidationContext (_customer, new FluentValidation.Internal.PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new DefaultValidatorSelector()))
                        .ToArray();
 
       var validationResult = result.Single();
@@ -142,24 +141,6 @@ namespace Remotion.Validation.IntegrationTests
 
       Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
       Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.equal_error));
-    }
-
-    [Test]
-    public void DefaultErrorMessage_CreditCardValidator ()
-    {
-      var validator = new CreditCardValidator();
-
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString(), Is.EqualTo (Messages.CreditCardError));
-    }
-
-    [Test]
-    public void DefaultErrorMessage_EmailValidator ()
-    {
-      var validator = new EmailValidator ();
-
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.email_error));
     }
 
     [Test]

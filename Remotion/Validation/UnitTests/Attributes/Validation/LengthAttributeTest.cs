@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Linq;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Attributes.Validation;
 using Remotion.Validation.UnitTests.TestDomain;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.UnitTests.Attributes.Validation
 {

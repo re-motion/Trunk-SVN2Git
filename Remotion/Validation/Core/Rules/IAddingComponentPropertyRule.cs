@@ -16,12 +16,11 @@
 // 
 using System;
 using System.ComponentModel;
-using System.Reflection;
 using FluentValidation;
-using FluentValidation.Validators;
 using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Validation.Merging;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Rules
 {

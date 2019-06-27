@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.UnitTests.Implementation
 {
@@ -37,7 +37,7 @@ namespace Remotion.Validation.UnitTests.Implementation
     {
       var result = _formatter.Format (new NotNullValidator(), t=>t.Name);
 
-      Assert.That (result, Is.EqualTo ("FluentValidation.Validators.NotNullValidator"));
+      Assert.That (result, Is.EqualTo ("Remotion.Validation.Validators.NotNullValidator"));
     }
   }
 }

@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using FluentValidation;
-using FluentValidation.Validators;
 using Remotion.Logging;
 using Remotion.Reflection;
 using Remotion.ServiceLocation;
@@ -28,6 +26,7 @@ using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Merging
 {

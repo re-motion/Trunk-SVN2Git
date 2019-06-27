@@ -4,16 +4,19 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using FluentValidation.Internal;
 using FluentValidation.Results;
-using FluentValidation.Validators;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using FluentValidation;
+using FluentValidation.Internal;
 using Remotion.Utilities;
+using Remotion.Validation.Validators;
+using DefaultValidatorSelector = Remotion.Validation.Validators.DefaultValidatorSelector;
+using IValidatorSelector = Remotion.Validation.Validators.IValidatorSelector;
 
 namespace Remotion.Validation
 {
@@ -127,19 +130,6 @@ namespace Remotion.Validation
       RegexOptions options)
     {
       return ruleBuilder.SetValidator((IPropertyValidator) new RegularExpressionValidator(expression, options));
-    }
-
-    /// <summary>
-    /// Defines a regular expression validator on the current rule builder, but only for string properties.
-    /// Validation will fail if the value returned by the lambda is not a valid email address.
-    /// </summary>
-    /// <typeparam name="T">Type of object being validated</typeparam>
-    /// <param name="ruleBuilder">The rule builder on which the validator should be defined</param>
-    /// <returns></returns>
-    public static RuleBuilders.IRuleBuilderOptions<T, string> EmailAddress<T>(
-      this RuleBuilders.IRuleBuilder<T, string> ruleBuilder)
-    {
-      return ruleBuilder.SetValidator((IPropertyValidator) new EmailValidator());
     }
 
     /// <summary>
@@ -748,13 +738,34 @@ namespace Remotion.Validation
       return ruleBuilder.SetValidator((IPropertyValidator) new ExclusiveBetweenValidator((IComparable) from, (IComparable) to));
     }
 
-    /// <summary>
-    /// Defines a credit card validator for the current rule builder that ensures that the specified string is a valid credit card number.
-    /// </summary>
-    public static RuleBuilders.IRuleBuilderOptions<T, string> CreditCard<T>(
-      this RuleBuilders.IRuleBuilder<T, string> ruleBuilder)
+    private static Func<object, object> CoerceToNonGeneric<T, TProperty>(
+        this Func<T, TProperty> func)
     {
-      return ruleBuilder.SetValidator((IPropertyValidator) new CreditCardValidator());
+      //TODO: Move/replace, step 1: Utilities with internal
+      return (Func<object, object>) (x => (object) func((T) x));
+    }
+
+    /// <summary>Gets a MemberInfo from a member expression.</summary>
+    public static MemberInfo GetMember(this LambdaExpression expression)
+    {
+      //TODO: Move/replace, step 1: Utilities with internal
+      return RemoveUnary(expression.Body)?.Member;
+    }
+
+    /// <summary>Gets a MemberInfo from a member expression.</summary>
+    public static MemberInfo GetMember<T, TProperty>(
+        this Expression<Func<T, TProperty>> expression)
+    {
+      //TODO: Move/replace, step 1: Utilities with internal
+      return RemoveUnary(expression.Body)?.Member;
+    }
+
+    private static MemberExpression RemoveUnary(Expression toUnwrap)
+    {
+      //TODO: Move/replace, step 1: Utilities with internal
+      if (toUnwrap is UnaryExpression)
+        return ((UnaryExpression) toUnwrap).Operand as MemberExpression;
+      return toUnwrap as MemberExpression;
     }
   }
 }

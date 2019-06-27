@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentValidation;
 using FluentValidation.Results;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -29,6 +27,7 @@ using Remotion.Validation;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Rules;
 using Remotion.Validation.Utilities;
+using Remotion.Validation.Validators;
 using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests

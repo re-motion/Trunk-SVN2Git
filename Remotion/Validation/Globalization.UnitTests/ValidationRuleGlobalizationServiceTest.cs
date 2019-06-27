@@ -16,11 +16,11 @@
 // 
 using System;
 using FluentValidation.Resources;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Globalization.UnitTests.TestDomain;
 using Remotion.Validation.Globalization.UnitTests.TestHelpers;
 using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
 using Rhino.Mocks;
 
 namespace Remotion.Validation.Globalization.UnitTests

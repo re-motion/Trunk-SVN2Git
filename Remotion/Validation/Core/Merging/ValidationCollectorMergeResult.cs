@@ -17,9 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentValidation;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Merging
 {

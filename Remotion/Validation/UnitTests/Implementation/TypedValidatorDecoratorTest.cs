@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation;
 using FluentValidation.Results;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Rules;
 using Remotion.Validation.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -121,7 +121,7 @@ namespace Remotion.Validation.UnitTests.Implementation
     public void CascadeMode_Setter ()
     {
       Assert.That (
-          () => ((IValidator<Customer>) _validatorDecorator).CascadeMode = CascadeMode.StopOnFirstFailure,
+          () => ((IValidator<Customer>) _validatorDecorator).CascadeMode = FluentValidation.CascadeMode.StopOnFirstFailure,
           Throws.TypeOf<NotSupportedException>()
               .And.Message.EqualTo ("CascadeMode is not supported for a 'Remotion.Validation.Implementation.TypedValidatorDecorator`1'"));
     }

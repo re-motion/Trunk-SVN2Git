@@ -87,6 +87,8 @@
     <Compile Include="TestDomain\ComponentB\ValidationCollectors\CustomerValidationCollector2.cs" />
     <Compile Include="TestDomain\ComponentB\ValidationCollectors\IPersonValidationCollector2.cs" />
     <Compile Include="TestDomain\ComponentB\ValidationCollectors\SpecialCustomerValidationCollector1.cs" />
+    <Compile Include="TestDomain\Validators\FakeCreditCardValidator.cs" />
+    <Compile Include="TestDomain\Validators\FakeEmailValidator.cs" />
     <Compile Include="TestDomain\MetaValidation\BaseMetaValidationTestClass1.cs" />
     <Compile Include="TestDomain\MetaValidation\BaseMetaValidationTestClassCollector1.cs" />
     <Compile Include="TestDomain\MetaValidation\DerivedMetaValidationTestClass1.cs" />

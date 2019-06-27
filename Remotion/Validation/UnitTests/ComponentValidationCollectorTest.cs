@@ -17,12 +17,12 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.UnitTests.TestHelpers;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.UnitTests
 {

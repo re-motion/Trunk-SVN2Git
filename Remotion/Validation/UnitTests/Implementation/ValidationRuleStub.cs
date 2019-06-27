@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using FluentValidation;
 using FluentValidation.Results;
-using FluentValidation.Validators;
+using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.UnitTests.Implementation
 {
@@ -47,7 +47,7 @@ namespace Remotion.Validation.UnitTests.Implementation
       throw new NotImplementedException();
     }
 
-    public void ApplyCondition (Func<object, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators)
+    public void ApplyCondition (Func<object, bool> predicate, FluentValidation.ApplyConditionTo applyConditionTo = FluentValidation.ApplyConditionTo.AllValidators)
     {
       throw new NotImplementedException();
     }

@@ -16,9 +16,9 @@
 // 
 using System;
 using FluentValidation.Resources;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Globalization.UnitTests.TestHelpers;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Globalization.UnitTests
 {
@@ -55,18 +55,6 @@ namespace Remotion.Validation.Globalization.UnitTests
     public void EqualValidator ()
     {
       CheckValidatorDefaultMessage (new EqualValidator ("test"));
-    }
-
-    [Test]
-    public void CreditCardValidator ()
-    {
-      CheckValidatorDefaultMessage (new CreditCardValidator());
-    }
-
-    [Test]
-    public void CheckEmailValidator ()
-    {
-      CheckValidatorDefaultMessage (new EmailValidator());
     }
 
     [Test]

@@ -4,9 +4,8 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using FluentValidation;
-using FluentValidation.Validators;
 using System;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.RuleBuilders
 {
@@ -26,14 +25,6 @@ namespace Remotion.Validation.RuleBuilders
     /// Associates an instance of IValidator with the current property rule.
     /// </summary>
     /// <param name="validator">The validator to use</param>
-    [Obsolete("This overload of SetValidator is no longer used. If you are trying to set a child validator for a collection, use SetCollectionValidator instead.")]
-    IRuleBuilderOptions<T, TProperty> SetValidator(IValidator validator);
-
-    /// <summary>
-    /// Associates an instance of IValidator with the current property rule.
-    /// </summary>
-    /// <param name="validator">The validator to use</param>
-    IRuleBuilderOptions<T, TProperty> SetValidator(
-        IValidator<TProperty> validator);
+    IRuleBuilderOptions<T, TProperty> SetValidator(IValidator<TProperty> validator);
   }
 }

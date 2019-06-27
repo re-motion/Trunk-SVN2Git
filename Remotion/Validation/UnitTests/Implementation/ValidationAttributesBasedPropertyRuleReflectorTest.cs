@@ -17,11 +17,11 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation.Rules.Custom;
 using Remotion.Validation.UnitTests.TestDomain;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.UnitTests.Implementation
 {

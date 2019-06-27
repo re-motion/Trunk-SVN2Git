@@ -16,9 +16,9 @@
 // 
 using System;
 using FluentValidation.Resources;
-using FluentValidation.Validators;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Globalization
 {
@@ -40,12 +40,6 @@ namespace Remotion.Validation.Globalization
 
       if (validator is EqualValidator)
         return IsDefault (validator, Messages.equal_error);
-
-      if (validator is CreditCardValidator)
-        return IsDefault (validator, Messages.CreditCardError);
-
-      if (validator is EmailValidator)
-        return IsDefault (validator, Messages.email_error);
 
       if (validator is ExactLengthValidator)
         return IsDefault (validator, Messages.exact_length_error);

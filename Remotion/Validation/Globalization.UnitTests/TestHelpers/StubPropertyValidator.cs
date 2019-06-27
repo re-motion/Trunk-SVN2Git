@@ -18,13 +18,13 @@ using System;
 using System.Collections.Generic;
 using FluentValidation.Resources;
 using FluentValidation.Results;
-using FluentValidation.Validators;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Globalization.UnitTests.TestHelpers
 {
   public class StubPropertyValidator : IPropertyValidator
   {
-    public IEnumerable<ValidationFailure> Validate (FluentValidation.Validators.PropertyValidatorContext context)
+    public IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
     {
       throw new NotImplementedException();
     }

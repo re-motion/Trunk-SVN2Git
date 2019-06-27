@@ -103,6 +103,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="TestDomain\Validators\FakeCreditCardValidator.cs" />
+    <Compile Include="TestDomain\Validators\FakeEmailValidator.cs" />
     <Compile Include="ValidationRulesIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>

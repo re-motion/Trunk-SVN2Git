@@ -17,9 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using FluentValidation;
-using FluentValidation.Validators;
 using Remotion.Validation.MetaValidation;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.RuleBuilders
 {

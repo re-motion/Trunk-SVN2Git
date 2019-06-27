@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.UnitTests.TestHelpers;
+using Remotion.Validation.Validators;
 using Rhino.Mocks;
 
 namespace Remotion.Validation.UnitTests.Implementation
@@ -58,26 +58,6 @@ namespace Remotion.Validation.UnitTests.Implementation
       var result = _formatter.Format (validator, _typeNameFormatter);
 
       Assert.That (result, Is.EqualTo ("NotEmptyValidator"));
-    }
-
-    [Test]
-    public void Format_EmailValidator ()
-    {
-      var validator = new EmailValidator();
-
-      var result = _formatter.Format (validator, _typeNameFormatter);
-
-      Assert.That (result, Is.EqualTo ("EmailValidator"));
-    }
-
-    [Test]
-    public void Format_CreditCardValidator ()
-    {
-      var validator = new CreditCardValidator();
-
-      var result = _formatter.Format (validator, _typeNameFormatter);
-
-      Assert.That (result, Is.EqualTo ("CreditCardValidator"));
     }
 
     [Test]

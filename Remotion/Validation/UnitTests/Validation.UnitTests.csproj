@@ -150,6 +150,8 @@
     <Compile Include="TestDomain\SpecialCustomer2.cs" />
     <Compile Include="TestDomain\ValidationRules\MaxLengthMetaValidationRule.cs" />
     <Compile Include="TestDomain\ValidationRules\MaxValidatorCountRule.cs" />
+    <Compile Include="TestDomain\Validators\FakeCreditCardValidator.cs" />
+    <Compile Include="TestDomain\Validators\FakeEmailValidator.cs" />
     <Compile Include="TestHelpers\TypeUtility.cs" />
     <Compile Include="RuleBuilders\RemovingComponentRuleBuilderTest.cs" />
     <Compile Include="Rules\AddingComponentPropertyRuleTest.cs" />

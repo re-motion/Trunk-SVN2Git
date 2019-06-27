@@ -17,8 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using FluentValidation.Validators;
 using Remotion.Utilities;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Attributes.Validation
 {

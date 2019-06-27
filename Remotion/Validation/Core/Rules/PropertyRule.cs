@@ -6,14 +6,15 @@
 
 using FluentValidation.Resources;
 using FluentValidation.Results;
-using FluentValidation.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using FluentValidation;
-using FluentValidation.Internal;
+using Remotion.Validation.Validators;
+using ApplyConditionTo = FluentValidation.ApplyConditionTo;
+using CascadeMode = FluentValidation.CascadeMode;
+using ValidatorOptions = FluentValidation.ValidatorOptions;
 
 namespace Remotion.Validation.Rules
 {
@@ -116,7 +117,7 @@ namespace Remotion.Validation.Rules
       System.Linq.Expressions.Expression<Func<T, TProperty>> expression,
       Func<CascadeMode> cascadeModeThunk)
     {
-      return new PropertyRule(expression.GetMember<T, TProperty>(), expression.Compile().CoerceToNonGeneric<T, TProperty>(), (LambdaExpression) expression, cascadeModeThunk, typeof (TProperty), typeof (T));
+      return new PropertyRule(FluentValidation.Internal.Extensions.GetMember<T, TProperty>(expression), FluentValidation.Internal.Extensions.CoerceToNonGeneric<T, TProperty>(expression.Compile()), (LambdaExpression) expression, cascadeModeThunk, typeof (TProperty), typeof (T));
     }
 
     /// <summary>Adds a validator to the rule.</summary>
@@ -171,7 +172,7 @@ namespace Remotion.Validation.Rules
       if (this.DisplayName != null)
         str = this.DisplayName.GetString();
       if (str == null)
-        str = this.PropertyName.SplitPascalCase();
+        str = FluentValidation.Internal.Extensions.SplitPascalCase (this.PropertyName);
       return str;
     }
 
@@ -180,8 +181,7 @@ namespace Remotion.Validation.Rules
     /// </summary>
     /// <param name="context">Validation Context</param>
     /// <returns>A collection of validation failures</returns>
-    public virtual IEnumerable<ValidationFailure> Validate(
-      ValidationContext context)
+    public virtual IEnumerable<ValidationFailure> Validate(ValidationContext context)
     {
       string displayName = this.GetDisplayName();
       if (this.PropertyName == null && displayName == null)
@@ -218,17 +218,7 @@ namespace Remotion.Validation.Rules
       string propertyName)
     {
       PropertyValidatorContext context1 = new PropertyValidatorContext(context, this, propertyName);
-      var fluentContext = new FluentValidation.Validators.PropertyValidatorContext (
-          context1.ParentContext,
-          new FluentValidation.Internal.PropertyRule (
-              context1.Rule.Member,
-              context1.Rule.PropertyFunc,
-              context1.Rule.Expression,
-              context1.Rule.cascadeModeThunk,
-              context1.Rule.TypeToValidate,
-              context1.Rule._containerType),
-          context1.PropertyName);
-      return validator.Validate(fluentContext);
+      return validator.Validate(context1);
     }
 
     public void ApplyCondition(Func<object, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators)

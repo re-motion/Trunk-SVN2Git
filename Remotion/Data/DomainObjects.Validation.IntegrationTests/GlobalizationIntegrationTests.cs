@@ -38,7 +38,6 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
         var customer = Customer.NewObject();
-        customer.Email = "InvalidMail";
         ((ICustomerIntroduced) customer).Address = Address.NewObject();
         ((ICustomerIntroduced) customer).Title = "Chef1";
 
@@ -48,7 +47,7 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         Assert.That (result1.IsValid, Is.False);
         Assert.That (
             result1.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'LocalizedTitle' should not be equal to 'Chef1'.", "'LocalizedMail' is not a valid email address." }));
+            Is.EquivalentTo (new[] { "'LocalizedTitle' should not be equal to 'Chef1'." }));
       }
     }
 

@@ -17,11 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using FluentValidation;
-using FluentValidation.Validators;
 using Remotion.Utilities;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.RuleBuilders
 {
@@ -131,12 +130,6 @@ namespace Remotion.Validation.RuleBuilders
     private void AddValidator (IPropertyValidator validator)
     {
       _addingComponentPropertyRule.RegisterValidator (validator);
-    }
-
-    IRuleBuilderOptions<TValidatedType, TProperty> IRuleBuilder<TValidatedType, TProperty>.SetValidator (IValidator validator)
-    {
-      throw new NotSupportedException (
-          "This overload of SetValidator is no longer used. If you are trying to set a child validator for a collection, use SetCollectionValidator instead.");
     }
   }
 }

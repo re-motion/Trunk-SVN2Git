@@ -17,9 +17,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using FluentValidation;
 using FluentValidation.Results;
 using Remotion.Utilities;
+using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Implementation
 {
@@ -99,7 +99,7 @@ namespace Remotion.Validation.Implementation
       return _validator.GetEnumerator();
     }
 
-    CascadeMode IValidator<T>.CascadeMode
+    FluentValidation.CascadeMode IValidator<T>.CascadeMode
     {
       get
       {

@@ -21,12 +21,12 @@ using System.Reflection;
 using System.Text;
 using FluentValidation;
 using FluentValidation.Internal;
-using FluentValidation.Validators;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
 using Remotion.Validation.MetaValidation;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Rules
 {

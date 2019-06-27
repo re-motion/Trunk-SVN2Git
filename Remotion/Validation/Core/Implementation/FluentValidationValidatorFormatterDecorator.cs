@@ -17,9 +17,9 @@
 using System;
 using System.Reflection;
 using System.Text;
-using FluentValidation.Validators;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Implementation
 {
@@ -52,8 +52,7 @@ namespace Remotion.Validation.Implementation
       var validatorType = validator.GetType();
       var typeName = typeNameFormatter (validatorType);
 
-      if (typeof (INotNullValidator).IsAssignableFrom (validatorType) || typeof (INotEmptyValidator).IsAssignableFrom (validatorType)
-          || typeof (IEmailValidator).IsAssignableFrom (validatorType) || typeof (CreditCardValidator).IsAssignableFrom (validatorType))
+      if (typeof (INotNullValidator).IsAssignableFrom (validatorType) || typeof (INotEmptyValidator).IsAssignableFrom (validatorType))
         return typeName;
 
       if (typeof (ILengthValidator).IsAssignableFrom (validatorType))

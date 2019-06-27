@@ -16,9 +16,9 @@
 // 
 using System;
 using FluentValidation.Resources;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Utilities;
+using Remotion.Validation.Validators;
 using Rhino.Mocks;
 
 namespace Remotion.Validation.Globalization.UnitTests
