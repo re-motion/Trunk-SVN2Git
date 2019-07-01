@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using FluentValidation.Results;
+using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
 using Remotion.Validation.Validators;
 

@@ -19,9 +19,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using FluentValidation.Results;
 using Remotion.Utilities;
 using Remotion.Utilities.ReSharperAnnotations;
+using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
 using Remotion.Validation.Validators;
 

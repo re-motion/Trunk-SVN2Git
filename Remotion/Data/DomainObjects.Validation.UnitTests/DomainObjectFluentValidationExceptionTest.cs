@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using FluentValidation.Results;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Validation.Results;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests
 {

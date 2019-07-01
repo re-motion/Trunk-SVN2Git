@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using FluentValidation.Results;
 using JetBrains.Annotations;
 using Remotion.Utilities;
+using Remotion.Validation.Results;
 
 namespace Remotion.Data.DomainObjects.Validation
 {

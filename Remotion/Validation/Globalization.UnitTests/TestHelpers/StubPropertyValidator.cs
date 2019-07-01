@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using FluentValidation.Resources;
-using FluentValidation.Results;
+using Remotion.Validation.Results;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Globalization.UnitTests.TestHelpers

@@ -16,9 +16,9 @@
 // 
 using System;
 using System.Linq;
-using FluentValidation.Results;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Utilities;
+using Remotion.Validation.Results;
 using Remotion.Validation.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Validation.UI.Controls

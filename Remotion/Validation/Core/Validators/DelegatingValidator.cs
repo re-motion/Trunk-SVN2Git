@@ -5,10 +5,10 @@
 // Assembly location: C:\Development\Remotion\trunk\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using FluentValidation.Resources;
-using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Validation.Results;
 
 namespace Remotion.Validation.Validators
 {

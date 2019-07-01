@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Resources;
-using FluentValidation.Results;
 using Remotion.Validation;
+using Remotion.Validation.Results;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain.Validators

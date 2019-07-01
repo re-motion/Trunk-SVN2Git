@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation.Resources;
-using FluentValidation.Results;
+using Remotion.Validation.Results;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Mixins.IntegrationTests.TestDomain.Validators

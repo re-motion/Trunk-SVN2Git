@@ -20,11 +20,11 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using FluentValidation.Results;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Utilities;
 using Remotion.Validation;
+using Remotion.Validation.Results;
 using Remotion.Validation.Utilities;
 
 namespace Remotion.Data.DomainObjects.Validation

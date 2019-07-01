@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Results;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Validation.Implementation;
+using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
 using Remotion.Validation.UnitTests.TestDomain;
 using Rhino.Mocks;
