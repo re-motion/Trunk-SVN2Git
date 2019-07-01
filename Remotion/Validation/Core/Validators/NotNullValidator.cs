@@ -6,14 +6,14 @@
 
 using System;
 using System.Linq.Expressions;
-using FluentValidation.Resources;
+using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class NotNullValidator : PropertyValidator, INotNullValidator, IPropertyValidator
   {
     public NotNullValidator()
-        : base((Expression<Func<string>>) (() => Messages.notnull_error))
+        : base((Expression<Func<string>>) (() => Constants.NotNullError))
     {
     }
 

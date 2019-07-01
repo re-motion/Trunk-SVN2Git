@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Linq;
-using FluentValidation.Resources;
 using NUnit.Framework;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
 using Remotion.Validation.IntegrationTests.TestHelpers;
 using Remotion.Validation.Rules;
@@ -112,8 +112,9 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new NotNullValidator();
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.notnull_error));
+      // TODO: originally this was Is.TypeOf (LocalizedStringSource) (and all tests below)
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.NotNullError));
     }
 
     [Test]
@@ -121,8 +122,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new NotEmptyValidator (null);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.notempty_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.NotEmptyError));
     }
 
     [Test]
@@ -130,8 +131,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new NotEqualValidator (null);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.notequal_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.NotEqualError));
     }
 
     [Test]
@@ -139,8 +140,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new EqualValidator (null);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.equal_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.EqualError));
     }
 
     [Test]
@@ -148,8 +149,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new ExactLengthValidator (10);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.exact_length_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.ExactLengthError));
     }
 
     [Test]
@@ -157,8 +158,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new LengthValidator (1, 3);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.length_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.LengthError));
     }
 
     [Test]
@@ -166,8 +167,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new ExclusiveBetweenValidator (1, 3);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.exclusivebetween_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.ExclusiveBetweenError));
     }
 
     [Test]
@@ -175,8 +176,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new InclusiveBetweenValidator (1, 3);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.inclusivebetween_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.InclusiveBetweenError));
     }
 
     [Test]
@@ -184,8 +185,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new LessThanValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.lessthan_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.LessThanError));
     }
 
     [Test]
@@ -193,8 +194,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new LessThanOrEqualValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.lessthanorequal_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.LessThanOrEqualError));
     }
 
     [Test]
@@ -202,8 +203,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new GreaterThanValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.greaterthan_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.GreaterThanError));
     }
 
     [Test]
@@ -211,8 +212,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new GreaterThanOrEqualValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.greaterthanorequal_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.GreaterThanOrEqualError));
     }
 
     [Test]
@@ -220,8 +221,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new PredicateValidator ((o1, o2, o3) => true);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.predicate_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.PredicateError));
     }
 
     [Test]
@@ -229,8 +230,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new RegularExpressionValidator ("");
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.regex_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.RegularExpressionError));
     }
 
     [Test]
@@ -238,8 +239,8 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new ScalePrecisionValidator (2, 5);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (LocalizedStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Messages.scale_precision_error));
+      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
+      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.ScalePrecisionError));
     }
   }
 }

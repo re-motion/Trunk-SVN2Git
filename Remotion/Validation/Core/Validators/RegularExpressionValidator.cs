@@ -4,9 +4,9 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using FluentValidation.Resources;
 using System;
 using System.Text.RegularExpressions;
+using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
@@ -16,21 +16,21 @@ namespace Remotion.Validation.Validators
     private readonly Regex regex;
 
     public RegularExpressionValidator(string expression)
-        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Messages.regex_error))
+        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Constants.RegularExpressionError))
     {
       this.expression = expression;
       this.regex = new Regex(expression);
     }
 
     public RegularExpressionValidator(Regex regex)
-        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Messages.regex_error))
+        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Constants.RegularExpressionError))
     {
       this.expression = regex.ToString();
       this.regex = regex;
     }
 
     public RegularExpressionValidator(string expression, RegexOptions options)
-        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Messages.regex_error))
+        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Constants.RegularExpressionError))
     {
       this.expression = expression;
       this.regex = new Regex(expression, options);

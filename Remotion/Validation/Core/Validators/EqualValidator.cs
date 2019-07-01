@@ -4,11 +4,11 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using FluentValidation.Resources;
 using System;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
@@ -18,20 +18,20 @@ namespace Remotion.Validation.Validators
     private readonly IEqualityComparer comparer;
 
     public EqualValidator(object valueToCompare)
-      : base((Expression<Func<string>>) (() => Messages.equal_error))
+      : base((Expression<Func<string>>) (() => Constants.EqualError))
     {
       this.ValueToCompare = valueToCompare;
     }
 
     public EqualValidator(object valueToCompare, IEqualityComparer comparer)
-      : base((Expression<Func<string>>) (() => Messages.equal_error))
+      : base((Expression<Func<string>>) (() => Constants.EqualError))
     {
       this.ValueToCompare = valueToCompare;
       this.comparer = comparer;
     }
 
     public EqualValidator(Func<object, object> comparisonProperty, MemberInfo member)
-      : base((Expression<Func<string>>) (() => Messages.equal_error))
+      : base((Expression<Func<string>>) (() => Constants.EqualError))
     {
       this.func = comparisonProperty;
       this.MemberToCompare = member;
@@ -41,7 +41,7 @@ namespace Remotion.Validation.Validators
       Func<object, object> comparisonProperty,
       MemberInfo member,
       IEqualityComparer comparer)
-      : base((Expression<Func<string>>) (() => Messages.equal_error))
+      : base((Expression<Func<string>>) (() => Constants.EqualError))
     {
       this.func = comparisonProperty;
       this.MemberToCompare = member;

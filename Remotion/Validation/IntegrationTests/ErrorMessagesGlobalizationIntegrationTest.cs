@@ -18,8 +18,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using FluentValidation.Resources;
-using FluentValidation.Validators;
 using NUnit.Framework;
 using Remotion.Utilities;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
@@ -43,6 +41,7 @@ namespace Remotion.Validation.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count(), Is.EqualTo (2));
+      // TODO: Change when localization is implemented
       Assert.That (
           result.Errors.Select (e => e.ErrorMessage),
           Is.EquivalentTo (new[] { "'LocalizedFirstName' must not be empty.", "'LastName' should not be equal to 'Test'." }));
@@ -62,9 +61,10 @@ namespace Remotion.Validation.IntegrationTests
         var result = validator.Validate (person);
 
         Assert.That (result.IsValid, Is.False);
+        // TODO: Change when localization is implemented
         Assert.That (
             result.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
+            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' must not be empty." }));
       }
     }
 
@@ -84,9 +84,10 @@ namespace Remotion.Validation.IntegrationTests
         var result = validator.Validate (person);
 
         Assert.That (result.IsValid, Is.False);
+        // TODO: Change when localization is implemented
         Assert.That (
             result.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
+            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' must not be empty." }));
       }
     }
 
@@ -108,9 +109,10 @@ namespace Remotion.Validation.IntegrationTests
         using (new CultureScope (""))
         {
           Assert.That (result.IsValid, Is.False);
+          // TODO: Change when localization is implemented
           Assert.That (
               result.Errors.Select (e => e.ErrorMessage),
-              Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
+              Is.EquivalentTo (new[] { "'Lokalisierter Vorname' must not be empty." }));
         }
       }
     }

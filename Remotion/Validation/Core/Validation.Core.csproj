@@ -70,6 +70,10 @@
     <Compile Include="DefaultValidatorOptions.cs" />
     <Compile Include="Implementation\AttributeBasedComponentValidationCollector.cs" />
     <Compile Include="Implementation\CompoundValidationRuleMetadataService.cs" />
+    <Compile Include="Implementation\Constants.cs" />
+    <Compile Include="Implementation\FallbackAwareResourceAccessorBuilder.cs" />
+    <Compile Include="Implementation\IResourceAccessorBuilder.cs" />
+    <Compile Include="Implementation\IStringSource.cs" />
     <Compile Include="Implementation\IValidationRuleMetadataService.cs" />
     <Compile Include="IComponentValidationCollector1.cs" />
     <Compile Include="Implementation\ClassTypeAwareValidatedTypeResolverDecorator.cs" />
@@ -77,6 +81,8 @@
     <Compile Include="Implementation\CompoundValidationTypeFilter.cs" />
     <Compile Include="Implementation\CompoundValidatorBuilder.cs" />
     <Compile Include="Implementation\DefaultLogContext.cs" />
+    <Compile Include="Implementation\LazyStringSource.cs" />
+    <Compile Include="Implementation\LocalizedStringSource.cs" />
     <Compile Include="Implementation\NullValidatedTypeResolver.cs" />
     <Compile Include="Implementation\DefaultValidatorFormatter.cs" />
     <Compile Include="FluentValidationBuilderExtensions.cs" />
@@ -85,6 +91,8 @@
     <Compile Include="Implementation\ICollectorValidator.cs" />
     <Compile Include="Implementation\IValidatedTypeResolver.cs" />
     <Compile Include="Implementation\IValidatorFormatter.cs" />
+    <Compile Include="Implementation\StaticResourceAccessorBuilder.cs" />
+    <Compile Include="Implementation\StaticStringSource.cs" />
     <Compile Include="Implementation\TypedValidatorDecorator.cs" />
     <Compile Include="Implementation\ValidatorBuilderSerializationDecorator.cs" />
     <Compile Include="IValidator.cs" />

@@ -5,16 +5,16 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using FluentValidation.Internal;
-using FluentValidation.Resources;
 using System;
 using System.Linq.Expressions;
+using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class InclusiveBetweenValidator : PropertyValidator, IBetweenValidator, IPropertyValidator
   {
     public InclusiveBetweenValidator(IComparable from, IComparable to)
-        : base((Expression<Func<string>>) (() => Messages.inclusivebetween_error))
+        : base((Expression<Func<string>>) (() => Constants.InclusiveBetweenError))
     {
       this.To = to;
       this.From = from;

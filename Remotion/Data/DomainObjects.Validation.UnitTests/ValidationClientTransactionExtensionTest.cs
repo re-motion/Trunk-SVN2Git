@@ -227,7 +227,8 @@ Object 'DomainObjectWithoutAnnotatedProperties' with ID '.*':
           Assert.That (exception.AffectedObjects[0], Is.EqualTo (domainObject1));
 
           Assert.That (exception.ValidationFailures.Count, Is.EqualTo (1));
-          Assert.That (exception.ValidationFailures.ToArray()[0].ErrorMessage, Is.EqualTo ("'Name' darf keinen Null-Wert aufweisen."));
+          // TODO: Change when localization is implemented
+          Assert.That (exception.ValidationFailures.ToArray()[0].ErrorMessage, Is.EqualTo ("'Name' must not be empty."));
         }
       }
     }

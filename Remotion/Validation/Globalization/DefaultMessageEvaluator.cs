@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Resources;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Globalization
@@ -30,56 +30,56 @@ namespace Remotion.Validation.Globalization
       ArgumentUtility.CheckNotNull ("validator", validator);
 
       if (validator is NotNullValidator)
-        return IsDefault (validator, Messages.notnull_error);
+        return IsDefault (validator, Constants.NotNullError);
 
       if (validator is NotEmptyValidator)
-        return IsDefault (validator, Messages.notempty_error);
+        return IsDefault (validator, Constants.NotEmptyError);
 
       if (validator is NotEqualValidator)
-        return IsDefault (validator, Messages.notequal_error);
+        return IsDefault (validator, Constants.NotEqualError);
 
       if (validator is EqualValidator)
-        return IsDefault (validator, Messages.equal_error);
+        return IsDefault (validator, Constants.EqualError);
 
       if (validator is ExactLengthValidator)
-        return IsDefault (validator, Messages.exact_length_error);
+        return IsDefault (validator, Constants.ExactLengthError);
 
       if (validator is LengthValidator)
-        return IsDefault (validator, Messages.length_error);
+        return IsDefault (validator, Constants.LengthError);
 
       if (validator is ExclusiveBetweenValidator)
-        return IsDefault (validator, Messages.exclusivebetween_error);
+        return IsDefault (validator, Constants.ExclusiveBetweenError);
 
       if (validator is InclusiveBetweenValidator)
-        return IsDefault (validator, Messages.inclusivebetween_error);
+        return IsDefault (validator, Constants.InclusiveBetweenError);
 
       if (validator is LessThanValidator)
-        return IsDefault (validator, Messages.lessthan_error);
+        return IsDefault (validator, Constants.LessThanError);
 
       if (validator is LessThanOrEqualValidator)
-        return IsDefault (validator, Messages.lessthanorequal_error);
+        return IsDefault (validator, Constants.LessThanOrEqualError);
 
       if (validator is GreaterThanValidator)
-        return IsDefault (validator, Messages.greaterthan_error);
+        return IsDefault (validator, Constants.GreaterThanError);
 
       if (validator is GreaterThanOrEqualValidator)
-        return IsDefault (validator, Messages.greaterthanorequal_error);
+        return IsDefault (validator, Constants.GreaterThanOrEqualError);
 
       if (validator is PredicateValidator)
-        return IsDefault (validator, Messages.predicate_error);
+        return IsDefault (validator, Constants.PredicateError);
 
       if (validator is RegularExpressionValidator)
-        return IsDefault (validator, Messages.regex_error);
+        return IsDefault (validator, Constants.RegularExpressionError);
 
       if (validator is ScalePrecisionValidator)
-        return IsDefault (validator, Messages.scale_precision_error);
+        return IsDefault (validator, Constants.ScalePrecisionError);
 
       return false;
     }
 
     private bool IsDefault (IPropertyValidator validator, string errorMessage)
     {
-      return validator.ErrorMessageSource is LocalizedStringSource && validator.ErrorMessageSource.GetString() == errorMessage;
+      return validator.ErrorMessageSource is StaticStringSource && validator.ErrorMessageSource.GetString() == errorMessage;
     }
   }
 }

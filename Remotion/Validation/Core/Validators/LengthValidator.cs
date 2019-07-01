@@ -4,9 +4,9 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using FluentValidation.Resources;
 using System;
 using System.Linq.Expressions;
+using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
@@ -17,7 +17,7 @@ namespace Remotion.Validation.Validators
     public int Max { get; private set; }
 
     public LengthValidator(int min, int max)
-        : this(min, max, (Expression<Func<string>>) (() => Messages.length_error))
+        : this(min, max, (Expression<Func<string>>) (() => Constants.LengthError))
     {
     }
 

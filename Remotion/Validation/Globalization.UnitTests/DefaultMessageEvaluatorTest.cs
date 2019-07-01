@@ -15,9 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Resources;
 using NUnit.Framework;
 using Remotion.Validation.Globalization.UnitTests.TestHelpers;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Globalization.UnitTests
