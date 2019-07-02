@@ -12,9 +12,7 @@ using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Rules;
-using ApplyConditionTo = FluentValidation.ApplyConditionTo;
-using CascadeMode = FluentValidation.CascadeMode;
-using Extensions = FluentValidation.Internal.Extensions;
+using Remotion.Validation.Utilities;
 
 namespace Remotion.Validation
 {

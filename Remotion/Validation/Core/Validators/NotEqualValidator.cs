@@ -9,6 +9,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Validation.Implementation;
+using Comparer = Remotion.Validation.Implementation.Comparer;
 
 namespace Remotion.Validation.Validators
 {
@@ -64,11 +65,11 @@ namespace Remotion.Validation.Validators
       return this.ValueToCompare;
     }
 
-    public FluentValidation.Validators.Comparison Comparison
+    public Comparison Comparison
     {
       get
       {
-        return FluentValidation.Validators.Comparison.NotEqual;
+        return Comparison.NotEqual;
       }
     }
 
@@ -81,7 +82,7 @@ namespace Remotion.Validation.Validators
       if (this.comparer != null)
         return this.comparer.Equals(comparisonValue, propertyValue);
       if (comparisonValue is IComparable && propertyValue is IComparable)
-        return FluentValidation.Internal.Comparer.GetEqualsResult((IComparable) comparisonValue, (IComparable) propertyValue);
+        return Comparer.GetEqualsResult((IComparable) comparisonValue, (IComparable) propertyValue);
       return comparisonValue == propertyValue;
     }
   }

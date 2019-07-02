@@ -14,7 +14,7 @@ namespace Remotion.Validation.Validators
   /// <summary>
   /// A custom property validator.
   /// This interface should not be implemented directly in your code as it is subject to change.
-  /// Please inherit from <see cref="T:FluentValidation.Validators.PropertyValidator">PropertyValidator</see> instead.
+  /// Please inherit from <see cref="T:PropertyValidator">PropertyValidator</see> instead.
   /// </summary>
   public interface IPropertyValidator
   {

@@ -4,9 +4,9 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using Remotion.Validation.Rules;
+using System;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
-using PropertyChain = FluentValidation.Internal.PropertyChain;
 
 namespace Remotion.Validation
 {
@@ -19,7 +19,7 @@ namespace Remotion.Validation
 
     public ValidationContext(
         object instanceToValidate,
-        FluentValidation.Internal.PropertyChain propertyChain,
+        PropertyChain propertyChain,
         IValidatorSelector validatorSelector)
     {
       this.PropertyChain = new PropertyChain(propertyChain);

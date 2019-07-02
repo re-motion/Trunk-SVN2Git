@@ -8,6 +8,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
@@ -55,7 +56,7 @@ namespace Remotion.Validation.Validators
 
     public abstract bool IsValid(IComparable value, IComparable valueToCompare);
 
-    public abstract FluentValidation.Validators.Comparison Comparison { get; }
+    public abstract Comparison Comparison { get; }
 
     public MemberInfo MemberToCompare { get; private set; }
 

@@ -56,13 +56,6 @@ namespace Remotion.Validation.Implementation
       return _validator.Validate (instance);
     }
 
-    public ValidationResult Validate (ValidationContext<T> context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      return _validator.Validate (context);
-    }
-
     public IValidatorDescriptor CreateDescriptor ()
     {
       return _validator.CreateDescriptor();
@@ -99,7 +92,7 @@ namespace Remotion.Validation.Implementation
       return _validator.GetEnumerator();
     }
 
-    FluentValidation.CascadeMode IValidator<T>.CascadeMode
+    CascadeMode IValidator<T>.CascadeMode
     {
       get
       {

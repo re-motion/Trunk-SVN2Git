@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Rules;
 using Remotion.Validation.Validators;
 
@@ -57,8 +58,7 @@ namespace Remotion.Validation
       return this.GetName(member.Name);
     }
 
-    public IEnumerable<IPropertyValidator> GetValidatorsForMember<TValue>(
-      FluentValidation.MemberAccessor<T, TValue> accessor)
+    public IEnumerable<IPropertyValidator> GetValidatorsForMember<TValue>(MemberAccessor<T, TValue> accessor)
     {
       return this.Rules.OfType<PropertyRule>().Where<PropertyRule>((Func<PropertyRule, bool>) (rule => object.Equals((object) rule.Member, (object) accessor.Member))).SelectMany<PropertyRule, IPropertyValidator, IPropertyValidator>((Func<PropertyRule, IEnumerable<IPropertyValidator>>) (rule => rule.Validators), (Func<PropertyRule, IPropertyValidator, IPropertyValidator>) ((rule, validator) => validator));
     }

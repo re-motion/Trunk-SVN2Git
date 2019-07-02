@@ -99,7 +99,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var result =
           _propertyRule.Validate (
-              new ValidationContext (_customer, new FluentValidation.Internal.PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new DefaultValidatorSelector()))
+              new ValidationContext (_customer, new PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new DefaultValidatorSelector()))
                        .ToArray();
 
       var validationResult = result.Single();

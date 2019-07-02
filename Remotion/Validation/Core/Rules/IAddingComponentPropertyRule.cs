@@ -16,7 +16,6 @@
 // 
 using System;
 using System.ComponentModel;
-using FluentValidation;
 using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Validation.Merging;

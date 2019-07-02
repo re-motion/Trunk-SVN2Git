@@ -6,7 +6,6 @@
 
 using System;
 using System.Reflection;
-using FluentValidation;
 
 namespace Remotion.Validation.Implementation
 {

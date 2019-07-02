@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using FluentValidation.Internal;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Validation.MetaValidation;

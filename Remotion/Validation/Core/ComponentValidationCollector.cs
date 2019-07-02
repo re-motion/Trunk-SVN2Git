@@ -18,8 +18,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using FluentValidation.Internal;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
+using Remotion.Validation.Utilities;
 using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Rules;
 

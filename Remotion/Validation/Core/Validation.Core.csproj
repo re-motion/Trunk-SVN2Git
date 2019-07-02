@@ -38,10 +38,6 @@
     <DocumentationFile>bin\Release\Remotion.Validation.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FluentValidation">
-      <HintPath>..\..\..\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Fork.JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
@@ -68,10 +64,15 @@
     <Compile Include="Attributes\Validation\AddingValidationAttributeBase.cs" />
     <Compile Include="DefaultValidatorExtensions.cs" />
     <Compile Include="DefaultValidatorOptions.cs" />
+    <Compile Include="Implementation\ApplyConditionTo.cs" />
     <Compile Include="Implementation\AttributeBasedComponentValidationCollector.cs" />
+    <Compile Include="Implementation\CascadeMode.cs" />
+    <Compile Include="Implementation\Comparer.cs" />
+    <Compile Include="Implementation\Comparison.cs" />
     <Compile Include="Implementation\CompoundValidationRuleMetadataService.cs" />
     <Compile Include="Implementation\Constants.cs" />
     <Compile Include="Implementation\FallbackAwareResourceAccessorBuilder.cs" />
+    <Compile Include="Implementation\IConfigurable.cs" />
     <Compile Include="Implementation\IResourceAccessorBuilder.cs" />
     <Compile Include="Implementation\IStringSource.cs" />
     <Compile Include="Implementation\IValidationRuleMetadataService.cs" />
@@ -83,6 +84,9 @@
     <Compile Include="Implementation\DefaultLogContext.cs" />
     <Compile Include="Implementation\LazyStringSource.cs" />
     <Compile Include="Implementation\LocalizedStringSource.cs" />
+    <Compile Include="Implementation\MemberAccessor.cs" />
+    <Compile Include="Implementation\MemberNameValidatorSelector.cs" />
+    <Compile Include="Implementation\MessageFormatter.cs" />
     <Compile Include="Implementation\NullValidatedTypeResolver.cs" />
     <Compile Include="Implementation\DefaultValidatorFormatter.cs" />
     <Compile Include="FluentValidationBuilderExtensions.cs" />
@@ -91,10 +95,14 @@
     <Compile Include="Implementation\ICollectorValidator.cs" />
     <Compile Include="Implementation\IValidatedTypeResolver.cs" />
     <Compile Include="Implementation\IValidatorFormatter.cs" />
+    <Compile Include="Implementation\PropertyChain.cs" />
+    <Compile Include="Implementation\RulesetValidatorSelector.cs" />
     <Compile Include="Implementation\StaticResourceAccessorBuilder.cs" />
     <Compile Include="Implementation\StaticStringSource.cs" />
+    <Compile Include="Implementation\TrackingCollection.cs" />
     <Compile Include="Implementation\TypedValidatorDecorator.cs" />
     <Compile Include="Implementation\ValidatorBuilderSerializationDecorator.cs" />
+    <Compile Include="Implementation\ValidatorOptions.cs" />
     <Compile Include="IValidator.cs" />
     <Compile Include="IValidator1.cs" />
     <Compile Include="IValidatorBuilder.cs" />
@@ -147,6 +155,7 @@
     <Compile Include="Implementation\DiscoveryServiceBasedValidationCollectorReflector.cs" />
     <Compile Include="Implementation\IValidationCollectorReflector.cs" />
     <Compile Include="Rules\IValidationRule.cs" />
+    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="ValidationContext1.cs" />
     <Compile Include="Results\ValidationFailure.cs" />
     <Compile Include="Results\ValidationResult.cs" />

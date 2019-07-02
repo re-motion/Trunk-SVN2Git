@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using FluentValidation.Validators;
 using JetBrains.Annotations;
 using Remotion.Reflection;
 using Remotion.Validation.MetaValidation;
+using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Rules
 {

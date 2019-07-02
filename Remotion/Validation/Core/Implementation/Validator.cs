@@ -57,7 +57,7 @@ namespace Remotion.Validation.Implementation
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      return Validate (new ValidationContext (instance, new FluentValidation.Internal.PropertyChain(), new DefaultValidatorSelector()));
+      return Validate (new ValidationContext (instance, new PropertyChain(), new DefaultValidatorSelector()));
     }
 
     public ValidationResult Validate (ValidationContext context)

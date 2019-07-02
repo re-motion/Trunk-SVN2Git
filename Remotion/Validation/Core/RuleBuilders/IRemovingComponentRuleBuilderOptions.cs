@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using FluentValidation.Internal;
 
 namespace Remotion.Validation.RuleBuilders
 {
@@ -23,7 +22,7 @@ namespace Remotion.Validation.RuleBuilders
   /// Provides a fluent API for removing a validation rule added by another component.
   /// </summary>
   /// <seealso cref="RemovingComponentRuleBuilder{TValidatedType,TProperty}"/>
-  public interface IRemovingComponentRuleBuilderOptions<TValidatedType, out TProperty> : IRemovingComponentRuleBuilder<TValidatedType, TProperty>, IFluentInterface
+  public interface IRemovingComponentRuleBuilderOptions<TValidatedType, out TProperty> : IRemovingComponentRuleBuilder<TValidatedType, TProperty>
   {
     
   }

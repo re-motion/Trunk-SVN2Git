@@ -6,6 +6,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
 
@@ -23,6 +24,6 @@ namespace Remotion.Validation
     /// <summary>
     /// Sets the cascade mode for all rules within this validator.
     /// </summary>
-    FluentValidation.CascadeMode CascadeMode { get; set; }
+    CascadeMode CascadeMode { get; set; }
   }
 }

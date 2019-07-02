@@ -121,7 +121,7 @@ namespace Remotion.Validation.UnitTests.Implementation
     public void CascadeMode_Setter ()
     {
       Assert.That (
-          () => ((IValidator<Customer>) _validatorDecorator).CascadeMode = FluentValidation.CascadeMode.StopOnFirstFailure,
+          () => ((IValidator<Customer>) _validatorDecorator).CascadeMode = CascadeMode.StopOnFirstFailure,
           Throws.TypeOf<NotSupportedException>()
               .And.Message.EqualTo ("CascadeMode is not supported for a 'Remotion.Validation.Implementation.TypedValidatorDecorator`1'"));
     }

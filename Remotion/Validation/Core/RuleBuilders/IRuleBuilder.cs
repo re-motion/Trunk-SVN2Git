@@ -12,7 +12,7 @@ namespace Remotion.Validation.RuleBuilders
   /// <summary>Rule builder</summary>
   /// <typeparam name="T"></typeparam>
   /// <typeparam name="TProperty"></typeparam>
-  public interface IRuleBuilder<T, out TProperty> : FluentValidation.Internal.IFluentInterface
+  public interface IRuleBuilder<T, out TProperty>
   {
     /// <summary>
     /// Associates a validator with this the property for this rule builder.

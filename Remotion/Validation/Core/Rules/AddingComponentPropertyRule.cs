@@ -19,13 +19,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using FluentValidation;
-using FluentValidation.Internal;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
-using Remotion.Validation.MetaValidation;
+using Remotion.Validation.Utilities;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Rules

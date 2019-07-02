@@ -11,10 +11,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
+using Remotion.Validation.Utilities;
 using Remotion.Validation.Validators;
-using ApplyConditionTo = FluentValidation.ApplyConditionTo;
-using CascadeMode = FluentValidation.CascadeMode;
-using ValidatorOptions = FluentValidation.ValidatorOptions;
 
 namespace Remotion.Validation.Rules
 {
@@ -117,7 +115,7 @@ namespace Remotion.Validation.Rules
       System.Linq.Expressions.Expression<Func<T, TProperty>> expression,
       Func<CascadeMode> cascadeModeThunk)
     {
-      return new PropertyRule(FluentValidation.Internal.Extensions.GetMember<T, TProperty>(expression), FluentValidation.Internal.Extensions.CoerceToNonGeneric<T, TProperty>(expression.Compile()), (LambdaExpression) expression, cascadeModeThunk, typeof (TProperty), typeof (T));
+      return new PropertyRule(Extensions.GetMember<T, TProperty>(expression), Extensions.CoerceToNonGeneric<T, TProperty>(expression.Compile()), (LambdaExpression) expression, cascadeModeThunk, typeof (TProperty), typeof (T));
     }
 
     /// <summary>Adds a validator to the rule.</summary>
@@ -172,7 +170,7 @@ namespace Remotion.Validation.Rules
       if (this.DisplayName != null)
         str = this.DisplayName.GetString();
       if (str == null)
-        str = FluentValidation.Internal.Extensions.SplitPascalCase (this.PropertyName);
+        str = Extensions.SplitPascalCase (this.PropertyName);
       return str;
     }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using FluentValidation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 

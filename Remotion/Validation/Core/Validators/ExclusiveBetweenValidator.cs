@@ -4,7 +4,6 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
-using FluentValidation.Internal;
 using System;
 using System.Linq.Expressions;
 using Remotion.Validation.Implementation;
