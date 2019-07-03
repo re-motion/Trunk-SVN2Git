@@ -6,20 +6,20 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
-using Remotion.Validation.Rules;
 
 namespace Remotion.Validation
 {
   /// <summary>Defines a validator for a particular type.</summary>
   /// <typeparam name="T"></typeparam>
-  public interface IValidator<in T> : IValidator, IEnumerable<IValidationRule>, IEnumerable
+  public interface IValidator<in T> : IValidator
   {
     /// <summary>Validates the specified instance.</summary>
     /// <param name="instance">The instance to validate</param>
     /// <returns>A ValidationResult object containing any validation failures.</returns>
-    ValidationResult Validate(T instance);
+    ValidationResult Validate (T instance);
 
     /// <summary>
     /// Sets the cascade mode for all rules within this validator.

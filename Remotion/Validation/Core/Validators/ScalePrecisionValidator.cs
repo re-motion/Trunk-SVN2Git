@@ -23,124 +23,112 @@ namespace Remotion.Validation.Validators
   /// </summary>
   public class ScalePrecisionValidator : PropertyValidator
   {
-    public ScalePrecisionValidator(int scale, int precision)
-      : this(scale, precision, (Expression<Func<string>>) (() => Constants.ScalePrecisionError))
+    public ScalePrecisionValidator (int scale, int precision)
+        : this (scale, precision, () => Constants.ScalePrecisionError)
     {
-      this.Init(scale, precision);
+      Init (scale, precision);
     }
 
-    public ScalePrecisionValidator(
-      int scale,
-      int precision,
-      string errorMessageResourceName,
-      Type errorMessageResourceType)
-      : base(errorMessageResourceName, errorMessageResourceType)
+    private ScalePrecisionValidator (int scale, int precision, Expression<Func<string>> errorMessageResourceSelector)
+        : base (errorMessageResourceSelector)
     {
-      this.Init(scale, precision);
+      Init (scale, precision);
     }
 
-    public ScalePrecisionValidator(int scale, int precision, string errorMessage)
-      : base(errorMessage)
-    {
-      this.Init(scale, precision);
-    }
+    public int Scale { get; private set; }
 
-    public ScalePrecisionValidator(
-      int scale,
-      int precision,
-      Expression<Func<string>> errorMessageResourceSelector)
-      : base(errorMessageResourceSelector)
-    {
-      this.Init(scale, precision);
-    }
-
-    public int Scale { get; set; }
-
-    public int Precision { get; set; }
+    public int Precision { get; private set; }
 
     public bool? IgnoreTrailingZeros { get; set; }
 
-    protected override bool IsValid(PropertyValidatorContext context)
+    protected override bool IsValid (PropertyValidatorContext context)
     {
-      Decimal? propertyValue = context.PropertyValue as Decimal?;
-      if (propertyValue.HasValue)
-      {
-        int scale = this.GetScale(propertyValue.Value);
-        int precision = this.GetPrecision(propertyValue.Value);
-        if (scale > this.Scale || precision > this.Precision)
-        {
-          context.MessageFormatter.AppendArgument("expectedPrecision", (object) this.Precision).AppendArgument("expectedScale", (object) this.Scale).AppendArgument("digits", (object) (precision - scale)).AppendArgument("actualScale", (object) scale);
-          return false;
-        }
-      }
-      return true;
+      if (!(context.PropertyValue is decimal propertyValue))
+        return true;
+
+      var scale = GetScale (propertyValue);
+      var precision = GetPrecision (propertyValue);
+      if (scale <= Scale && precision <= Precision)
+        return true;
+
+      context.MessageFormatter
+          .AppendArgument ("expectedPrecision", Precision)
+          .AppendArgument ("expectedScale", Scale)
+          .AppendArgument ("digits", precision - scale)
+          .AppendArgument ("actualScale", scale);
+
+      return false;
     }
 
-    private void Init(int scale, int precision)
+    private void Init (int scale, int precision)
     {
-      this.Scale = scale;
-      this.Precision = precision;
-      if (this.Scale < 0)
-        throw new ArgumentOutOfRangeException(nameof (scale), string.Format("Scale must be a positive integer. [value:{0}].", (object) this.Scale));
-      if (this.Precision < 0)
-        throw new ArgumentOutOfRangeException(nameof (precision), string.Format("Precision must be a positive integer. [value:{0}].", (object) this.Precision));
-      if (this.Precision < this.Scale)
-        throw new ArgumentOutOfRangeException(nameof (scale), string.Format("Scale must be greater than precision. [scale:{0}, precision:{1}].", (object) this.Scale, (object) this.Precision));
+      Scale = scale;
+      Precision = precision;
+
+      if (Scale < 0)
+        throw new ArgumentOutOfRangeException (nameof (scale), $"Scale must be a positive integer. [value:{Scale}].");
+
+      if (Precision < 0)
+        throw new ArgumentOutOfRangeException (nameof (precision), $"Precision must be a positive integer. [value:{Precision}].");
+
+      if (Precision < Scale)
+        throw new ArgumentOutOfRangeException (nameof (scale), $"Scale must be greater than precision. [scale:{Scale}, precision:{Precision}].");
     }
 
-    private static uint[] GetBits(Decimal Decimal)
+    private static uint[] GetBits (decimal Decimal)
     {
-      return (uint[]) (object) Decimal.GetBits(Decimal);
+      return (uint[]) (object) decimal.GetBits (Decimal);
     }
 
-    private static Decimal GetMantissa(Decimal Decimal)
+    private static decimal GetMantissa (decimal Decimal)
     {
-      uint[] bits = ScalePrecisionValidator.GetBits(Decimal);
-      return (Decimal) bits[2] * new Decimal(4294967296L) * new Decimal(4294967296L) + (Decimal) bits[1] * new Decimal(4294967296L) + (Decimal) bits[0];
+      var bits = GetBits (Decimal);
+      return bits[2] * new decimal (4294967296L) * new decimal (4294967296L) + bits[1] * new decimal (4294967296L) + bits[0];
     }
 
-    private static uint GetUnsignedScale(Decimal Decimal)
+    private static uint GetUnsignedScale (decimal Decimal)
     {
-      return ScalePrecisionValidator.GetBits(Decimal)[3] >> 16 & 31U;
+      return GetBits (Decimal)[3] >> 16 & 31U;
     }
 
-    private int GetScale(Decimal Decimal)
+    private int GetScale (decimal Decimal)
     {
-      uint unsignedScale = ScalePrecisionValidator.GetUnsignedScale(Decimal);
-      if (this.IgnoreTrailingZeros.HasValue && this.IgnoreTrailingZeros.Value)
-        return (int) unsignedScale - (int) ScalePrecisionValidator.NumTrailingZeros(Decimal);
+      var unsignedScale = GetUnsignedScale (Decimal);
+      if (IgnoreTrailingZeros.HasValue && IgnoreTrailingZeros.Value)
+        return (int) unsignedScale - (int) NumTrailingZeros (Decimal);
+
       return (int) unsignedScale;
     }
 
-    private static uint NumTrailingZeros(Decimal Decimal)
+    private static uint NumTrailingZeros (decimal Decimal)
     {
       uint num = 0;
-      uint unsignedScale = ScalePrecisionValidator.GetUnsignedScale(Decimal);
-      Decimal mantissa = ScalePrecisionValidator.GetMantissa(Decimal);
-      while (mantissa % new Decimal(10) == new Decimal(0) && num < unsignedScale)
+      var unsignedScale = GetUnsignedScale (Decimal);
+      var mantissa = GetMantissa (Decimal);
+      while (mantissa % new decimal (10) == new decimal (0) && num < unsignedScale)
       {
         ++num;
-        mantissa /= new Decimal(10);
+        mantissa /= new decimal (10);
       }
       return num;
     }
 
-    private int GetPrecision(Decimal Decimal)
+    private int GetPrecision (decimal Decimal)
     {
       uint num = 0;
-      if (Decimal != new Decimal(0))
+      if (Decimal != new decimal (0))
       {
-        Decimal mantissa = ScalePrecisionValidator.GetMantissa(Decimal);
-        while (mantissa >= new Decimal(1))
+        var mantissa = GetMantissa (Decimal);
+        while (mantissa >= new decimal (1))
         {
           ++num;
-          mantissa /= new Decimal(10);
+          mantissa /= new decimal (10);
         }
-        if (this.IgnoreTrailingZeros.HasValue && this.IgnoreTrailingZeros.Value)
-          return (int) num - (int) ScalePrecisionValidator.NumTrailingZeros(Decimal);
+        if (IgnoreTrailingZeros.HasValue && IgnoreTrailingZeros.Value)
+          return (int) num - (int) NumTrailingZeros (Decimal);
       }
       else
-        num = (uint) (this.GetScale(Decimal) + 1);
+        num = (uint) (GetScale (Decimal) + 1);
       return (int) num;
     }
   }

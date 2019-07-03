@@ -18,8 +18,7 @@ namespace Remotion.Validation.Validators
   /// </summary>
   public interface IPropertyValidator
   {
-    IEnumerable<ValidationFailure> Validate(
-        PropertyValidatorContext context);
+    IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context);
 
     /// <summary>
     /// Custom message arguments.

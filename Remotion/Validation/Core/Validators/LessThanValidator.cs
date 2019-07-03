@@ -5,35 +5,25 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class LessThanValidator : AbstractComparisonValidator
   {
-    public LessThanValidator(IComparable value)
-        : base(value, (Expression<Func<string>>) (() => Constants.LessThanError))
+    public LessThanValidator (IComparable value)
+        : base (value, () => Constants.LessThanError)
     {
     }
 
-    public LessThanValidator(Func<object, object> valueToCompareFunc, MemberInfo member)
-        : base(valueToCompareFunc, member, (Expression<Func<string>>) (() => Constants.LessThanError))
+    protected override bool IsValid (IComparable value, IComparable valueToCompare)
     {
-    }
-
-    public override bool IsValid(IComparable value, IComparable valueToCompare)
-    {
-      return Comparer.GetComparisonResult(value, valueToCompare) < 0;
+      return Comparer.GetComparisonResult (value, valueToCompare) < 0;
     }
 
     public override Comparison Comparison
     {
-      get
-      {
-        return Comparison.LessThan;
-      }
+      get { return Comparison.LessThan; }
     }
   }
 }

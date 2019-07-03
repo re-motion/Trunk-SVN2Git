@@ -5,7 +5,6 @@
 // Assembly location: C:\Development\re-motion_svn2git\Remotion\ObjectBinding\Web.Development.WebTesting.TestSite\Bin\FluentValidation.dll
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,79 +14,81 @@ namespace Remotion.Validation.Implementation
   public static class ValidatorOptions
   {
     public static CascadeMode CascadeMode = CascadeMode.Continue;
-    private static Func<Type, MemberInfo, LambdaExpression, string> propertyNameResolver = new Func<Type, MemberInfo, LambdaExpression, string>(ValidatorOptions.DefaultPropertyNameResolver);
-    private static Func<Type, MemberInfo, LambdaExpression, string> displayNameResolver = new Func<Type, MemberInfo, LambdaExpression, string>(ValidatorOptions.DefaultDisplayNameResolver);
     public static Type ResourceProviderType;
+    private static readonly Func<Type, MemberInfo, LambdaExpression, string> s_propertyNameResolver = DefaultPropertyNameResolver;
+    private static readonly Func<Type, MemberInfo, LambdaExpression, string> s_displayNameResolver = DefaultDisplayNameResolver;
 
     public static Func<Type, MemberInfo, LambdaExpression, string> PropertyNameResolver
     {
-      get
-      {
-        return ValidatorOptions.propertyNameResolver;
-      }
-      set
-      {
-        ValidatorOptions.propertyNameResolver = value ?? new Func<Type, MemberInfo, LambdaExpression, string>(ValidatorOptions.DefaultPropertyNameResolver);
-      }
+      get { return s_propertyNameResolver; }
     }
 
     public static Func<Type, MemberInfo, LambdaExpression, string> DisplayNameResolver
     {
-      get
-      {
-        return ValidatorOptions.displayNameResolver;
-      }
-      set
-      {
-        ValidatorOptions.displayNameResolver = value ?? new Func<Type, MemberInfo, LambdaExpression, string>(ValidatorOptions.DefaultDisplayNameResolver);
-      }
+      get { return s_displayNameResolver; }
     }
 
-    private static string DefaultPropertyNameResolver(
-      Type type,
-      MemberInfo memberInfo,
-      LambdaExpression expression)
+    private static string DefaultPropertyNameResolver (Type type, MemberInfo memberInfo, LambdaExpression expression)
     {
       if (expression != null)
       {
-        PropertyChain propertyChain = PropertyChain.FromExpression(expression);
+        var propertyChain = PropertyChain.FromExpression (expression);
         if (propertyChain.Count > 0)
           return propertyChain.ToString();
       }
-      if (memberInfo != (MemberInfo)null)
+
+      if (memberInfo != null)
         return memberInfo.Name;
-      return (string)null;
+
+      return null;
     }
 
-    private static string DefaultDisplayNameResolver(
-      Type type,
-      MemberInfo memberInfo,
-      LambdaExpression expression)
+    private static string DefaultDisplayNameResolver (Type type, MemberInfo memberInfo, LambdaExpression expression)
     {
-      if (memberInfo == (MemberInfo)null)
-        return (string)null;
-      return ValidatorOptions.GetDisplayName(memberInfo);
+      if (memberInfo == null)
+        return null;
+
+      return GetDisplayName (memberInfo);
     }
 
-    private static string GetDisplayName(MemberInfo member)
+    private static string GetDisplayName (MemberInfo member)
     {
-      var list = ((IEnumerable<object>) member.GetCustomAttributes (true)).Select (
-          attr => new
+      var list = member
+          .GetCustomAttributes (true)
+          .Select (
+              attr => new
+                      {
+                          attr,
+                          type = attr.GetType()
+                      })
+          .ToList();
+
+      var str = list
+          .Where (attr => attr.type.Name == "DisplayAttribute")
+          .Select (
+              attr => new
+                      {
+                          attr,
+                          method = attr.type.GetMethod ("GetName", BindingFlags.Instance | BindingFlags.Public)
+                      })
+          .Where (_param0 => _param0.method != null as MethodInfo)
+          .Select (_param0 => _param0.method.Invoke (_param0.attr.attr, null) as string)
+          .FirstOrDefault();
+
+      if (string.IsNullOrEmpty (str))
       {
-        attr = attr,
-        type = attr.GetType()
-      }).ToList();
-      string str = list.Where(attr => attr.type.Name == "DisplayAttribute").Select(attr => new
-      {
-        attr = attr,
-        method = attr.type.GetMethod("GetName", BindingFlags.Instance | BindingFlags.Public)
-      }).Where(_param0 => _param0.method != (MethodInfo)null).Select(_param0 => _param0.method.Invoke(_param0.attr.attr, (object[])null) as string).FirstOrDefault<string>();
-      if (string.IsNullOrEmpty(str))
-        str = list.Where(attr => attr.type.Name == "DisplayNameAttribute").Select(attr => new
-        {
-          attr = attr,
-          property = attr.type.GetProperty("DisplayName", BindingFlags.Instance | BindingFlags.Public)
-        }).Where(_param0 => _param0.property != (PropertyInfo)null).Select(_param0 => _param0.property.GetValue(_param0.attr.attr, (object[])null) as string).FirstOrDefault<string>();
+        str = list
+            .Where (attr => attr.type.Name == "DisplayNameAttribute")
+            .Select (
+                attr => new
+                        {
+                            attr,
+                            property = attr.type.GetProperty ("DisplayName", BindingFlags.Instance | BindingFlags.Public)
+                        })
+            .Where (_param0 => _param0.property != null as PropertyInfo)
+            .Select (_param0 => _param0.property.GetValue (_param0.attr.attr, null) as string)
+            .FirstOrDefault();
+      }
       return str;
     }
   }

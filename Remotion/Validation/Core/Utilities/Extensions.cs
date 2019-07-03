@@ -15,43 +15,38 @@ namespace Remotion.Validation.Utilities
   public static class Extensions
   {
     /// <summary>Gets a MemberInfo from a member expression.</summary>
-    public static MemberInfo GetMember<T, TProperty>(
-      this Expression<Func<T, TProperty>> expression)
+    public static MemberInfo GetMember<T, TProperty> (this Expression<Func<T, TProperty>> expression)
     {
-      return Extensions.RemoveUnary(expression.Body)?.Member;
+      return RemoveUnary (expression.Body)?.Member;
     }
 
-    private static MemberExpression RemoveUnary(Expression toUnwrap)
+    private static MemberExpression RemoveUnary (Expression toUnwrap)
     {
-      if (toUnwrap is UnaryExpression)
-        return ((UnaryExpression)toUnwrap).Operand as MemberExpression;
+      if (toUnwrap is UnaryExpression expression)
+        return expression.Operand as MemberExpression;
+
       return toUnwrap as MemberExpression;
     }
 
     /// <summary>
     /// Splits pascal case, so "FooBar" would become "Foo Bar"
     /// </summary>
-    public static string SplitPascalCase(this string input)
+    public static string SplitPascalCase (this string input)
     {
-      if (string.IsNullOrEmpty(input))
+      if (string.IsNullOrEmpty (input))
         return input;
-      return Regex.Replace(input, "([A-Z])", " $1").Trim();
+
+      return Regex.Replace (input, "([A-Z])", " $1").Trim();
     }
 
-    public static Func<object, object> CoerceToNonGeneric<T, TProperty>(
-      this Func<T, TProperty> func)
+    public static Func<object, object> CoerceToNonGeneric<T, TProperty> (this Func<T, TProperty> func)
     {
-      return (Func<object, object>)(x => (object)func((T)x));
+      return x => func ((T) x) as object;
     }
 
-    public static Func<object, bool> CoerceToNonGeneric<T>(this Func<T, bool> func)
+    public static Func<object, bool> CoerceToNonGeneric<T> (this Func<T, bool> func)
     {
-      return (Func<object, bool>)(x => func((T)x));
-    }
-
-    public static Action<object> CoerceToNonGeneric<T>(this Action<T> action)
-    {
-      return (Action<object>)(x => action((T)x));
+      return x => func ((T) x);
     }
   }
 }

@@ -12,15 +12,13 @@ namespace Remotion.Validation.Validators
 {
   public class MinimumLengthValidator : LengthValidator
   {
-    public MinimumLengthValidator(int min)
-        : this(min, (Expression<Func<string>>) (() => Constants.LengthError))
+    public MinimumLengthValidator (int min)
+        : this (min, () => Constants.LengthError)
     {
     }
 
-    public MinimumLengthValidator(
-        int min,
-        Expression<Func<string>> errorMessageResourceSelector)
-        : base(min, -1, errorMessageResourceSelector)
+    private MinimumLengthValidator (int min, Expression<Func<string>> errorMessageResourceSelector) 
+        : base (min, -1, errorMessageResourceSelector)
     {
     }
   }

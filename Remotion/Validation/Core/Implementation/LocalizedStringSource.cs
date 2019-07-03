@@ -6,16 +6,15 @@
 
 using System;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace Remotion.Validation.Implementation
 {
   /// <summary>Represents a localized string.</summary>
   public class LocalizedStringSource : IStringSource
   {
-    private readonly Func<string> accessor;
-    private readonly Type resourceType;
-    private readonly string resourceName;
+    private readonly Func<string> _accessor;
+    private readonly Type _resourceType;
+    private readonly string _resourceName;
 
     /// <summary>
     /// Creates a new instance of the LocalizedErrorMessageSource class using the specified resource name and resource type.
@@ -23,14 +22,11 @@ namespace Remotion.Validation.Implementation
     /// <param name="resourceType">The resource type</param>
     /// <param name="resourceName">The resource name</param>
     /// <param name="resourceAccessorBuilder">Strategy used to construct the resource accessor</param>
-    public LocalizedStringSource(
-      Type resourceType,
-      string resourceName,
-      IResourceAccessorBuilder resourceAccessorBuilder)
+    public LocalizedStringSource (Type resourceType, string resourceName, IResourceAccessorBuilder resourceAccessorBuilder)
     {
-      this.resourceType = resourceType;
-      this.resourceName = resourceName;
-      this.accessor = resourceAccessorBuilder.GetResourceAccessor(resourceType, resourceName);
+      _resourceType = resourceType;
+      _resourceName = resourceName;
+      _accessor = resourceAccessorBuilder.GetResourceAccessor (resourceType, resourceName);
     }
 
     /// <summary>
@@ -39,42 +35,35 @@ namespace Remotion.Validation.Implementation
     /// <param name="expression">The expression </param>
     /// <param name="resourceProviderSelectionStrategy">Strategy used to construct the resource accessor</param>
     /// <returns>Error message source</returns>
-    public static IStringSource CreateFromExpression(
-      Expression<Func<string>> expression,
-      IResourceAccessorBuilder resourceProviderSelectionStrategy)
+    public static IStringSource CreateFromExpression (Expression<Func<string>> expression, IResourceAccessorBuilder resourceProviderSelectionStrategy)
     {
-      ConstantExpression body = expression.Body as ConstantExpression;
-      if (body != null)
-        return (IStringSource)new StaticStringSource((string)body.Value);
-      MemberInfo member = expression.GetMember();
-      if (member == (MemberInfo)null)
-        throw new InvalidOperationException("Only MemberExpressions an be passed to BuildResourceAccessor, eg () => Messages.MyResource");
-      return (IStringSource)new LocalizedStringSource(member.DeclaringType, member.Name, resourceProviderSelectionStrategy);
+      if (expression.Body is ConstantExpression body)
+        return new StaticStringSource ((string) body.Value);
+
+      var member = expression.GetMember();
+      if (member == null)
+        throw new InvalidOperationException ("Only MemberExpressions an be passed to BuildResourceAccessor, eg () => Messages.MyResource");
+
+      return new LocalizedStringSource (member.DeclaringType, member.Name, resourceProviderSelectionStrategy);
     }
 
     /// <summary>Construct the error message template</summary>
     /// <returns>Error message template</returns>
-    public string GetString()
+    public string GetString ()
     {
-      return this.accessor();
+      return _accessor();
     }
 
     /// <summary>The name of the resource if localized.</summary>
     public string ResourceName
     {
-      get
-      {
-        return this.resourceName;
-      }
+      get { return _resourceName; }
     }
 
     /// <summary>The type of the resource provider if localized.</summary>
     public Type ResourceType
     {
-      get
-      {
-        return this.resourceType;
-      }
+      get { return _resourceType; }
     }
   }
 }

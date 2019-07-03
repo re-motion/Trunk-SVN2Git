@@ -19,22 +19,19 @@ namespace Remotion.Validation.Rules
   /// <summary>Defines a rule associated with a property.</summary>
   public class PropertyRule : IValidationRule
   {
-    private readonly List<IPropertyValidator> validators = new List<IPropertyValidator>();
-    private Func<CascadeMode> cascadeModeThunk = (Func<CascadeMode>) (() => ValidatorOptions.CascadeMode);
-
-    //TODO: remove when done
-    private readonly Type _containerType;
+    private readonly List<IPropertyValidator> _validators = new List<IPropertyValidator>();
+    private readonly Func<CascadeMode> _cascadeModeThunk = () => ValidatorOptions.CascadeMode;
 
     /// <summary>Property associated with this rule.</summary>
-    public MemberInfo Member { get; private set; }
+    public MemberInfo Member { get; }
 
     /// <summary>
     /// Function that can be invoked to retrieve the value of the property.
     /// </summary>
-    public Func<object, object> PropertyFunc { get; private set; }
+    public Func<object, object> PropertyFunc { get; }
 
     /// <summary>Expression that was used to create the rule.</summary>
-    public LambdaExpression Expression { get; private set; }
+    public LambdaExpression Expression { get; }
 
     /// <summary>
     /// String source that can be used to retrieve the display name (if null, falls back to the property name)
@@ -47,34 +44,15 @@ namespace Remotion.Validation.Rules
     /// <summary>
     /// Function that will be invoked if any of the validators associated with this rule fail.
     /// </summary>
-    public Action<object> OnFailure { get; set; }
+    private Action<object> OnFailure { get; }
 
     /// <summary>The current validator being configured by this rule.</summary>
     public IPropertyValidator CurrentValidator { get; private set; }
 
-    /// <summary>Type of the property being validated</summary>
-    public Type TypeToValidate { get; private set; }
-
-    /// <summary>Cascade mode for this rule.</summary>
-    public CascadeMode CascadeMode
-    {
-      get
-      {
-        return this.cascadeModeThunk();
-      }
-      set
-      {
-        this.cascadeModeThunk = (Func<CascadeMode>) (() => value);
-      }
-    }
-
     /// <summary>Validators associated with this rule.</summary>
     public IEnumerable<IPropertyValidator> Validators
     {
-      get
-      {
-        return (IEnumerable<IPropertyValidator>) this.validators;
-      }
+      get { return _validators; }
     }
 
     /// <summary>Creates a new property rule.</summary>
@@ -82,76 +60,69 @@ namespace Remotion.Validation.Rules
     /// <param name="propertyFunc">Function to get the property value</param>
     /// <param name="expression">Lambda expression used to create the rule</param>
     /// <param name="cascadeModeThunk">Function to get the cascade mode.</param>
-    /// <param name="typeToValidate">Type to validate</param>
     /// <param name="containerType">Container type that owns the property</param>
-    public PropertyRule(
-      MemberInfo member,
-      Func<object, object> propertyFunc,
-      LambdaExpression expression,
-      Func<CascadeMode> cascadeModeThunk,
-      Type typeToValidate,
-      Type containerType)
+    protected PropertyRule (
+        MemberInfo member,
+        Func<object, object> propertyFunc,
+        LambdaExpression expression,
+        Func<CascadeMode> cascadeModeThunk,
+        Type containerType)
     {
-      _containerType = containerType;
-      this.Member = member;
-      this.PropertyFunc = propertyFunc;
-      this.Expression = expression;
-      this.OnFailure = (Action<object>) (x => {});
-      this.TypeToValidate = typeToValidate;
-      this.cascadeModeThunk = cascadeModeThunk;
-      this.PropertyName = ValidatorOptions.PropertyNameResolver(containerType, member, expression);
-      this.DisplayName = (IStringSource) new LazyStringSource((Func<string>) (() => ValidatorOptions.DisplayNameResolver(containerType, member, expression)));
+      Member = member;
+      PropertyFunc = propertyFunc;
+      Expression = expression;
+      OnFailure = x => { };
+      _cascadeModeThunk = cascadeModeThunk;
+      PropertyName = ValidatorOptions.PropertyNameResolver (containerType, member, expression);
+      DisplayName = new LazyStringSource (() => ValidatorOptions.DisplayNameResolver (containerType, member, expression));
     }
 
     /// <summary>Creates a new property rule from a lambda expression.</summary>
-    public static PropertyRule Create<T, TProperty>(
-      System.Linq.Expressions.Expression<Func<T, TProperty>> expression)
+    public static PropertyRule Create<T, TProperty> (Expression<Func<T, TProperty>> expression)
     {
-      return PropertyRule.Create<T, TProperty>(expression, (Func<CascadeMode>) (() => ValidatorOptions.CascadeMode));
+      return Create (expression, () => ValidatorOptions.CascadeMode);
     }
 
     /// <summary>Creates a new property rule from a lambda expression.</summary>
-    public static PropertyRule Create<T, TProperty>(
-      System.Linq.Expressions.Expression<Func<T, TProperty>> expression,
-      Func<CascadeMode> cascadeModeThunk)
+    private static PropertyRule Create<T, TProperty> (Expression<Func<T, TProperty>> expression, Func<CascadeMode> cascadeModeThunk)
     {
-      return new PropertyRule(Extensions.GetMember<T, TProperty>(expression), Extensions.CoerceToNonGeneric<T, TProperty>(expression.Compile()), (LambdaExpression) expression, cascadeModeThunk, typeof (TProperty), typeof (T));
+      return new PropertyRule (
+          Extensions.GetMember (expression),
+          expression.Compile().CoerceToNonGeneric (),
+          expression,
+          cascadeModeThunk,
+          typeof (T));
     }
 
     /// <summary>Adds a validator to the rule.</summary>
-    public void AddValidator(IPropertyValidator validator)
+    public void AddValidator (IPropertyValidator validator)
     {
-      this.CurrentValidator = validator;
-      this.validators.Add(validator);
+      CurrentValidator = validator;
+      _validators.Add (validator);
     }
 
     /// <summary>
     /// Replaces a validator in this rule. Used to wrap validators.
     /// </summary>
-    public void ReplaceValidator(IPropertyValidator original, IPropertyValidator newValidator)
+    private void ReplaceValidator (IPropertyValidator original, IPropertyValidator newValidator)
     {
-      int index = this.validators.IndexOf(original);
+      var index = _validators.IndexOf (original);
       if (index <= -1)
         return;
-      this.validators[index] = newValidator;
-      if (!object.ReferenceEquals((object) this.CurrentValidator, (object) original))
+
+      _validators[index] = newValidator;
+      if (!ReferenceEquals (CurrentValidator, original))
         return;
-      this.CurrentValidator = newValidator;
+
+      CurrentValidator = newValidator;
     }
 
     /// <summary>Remove a validator in this rule.</summary>
-    public void RemoveValidator(IPropertyValidator original)
+    protected void RemoveValidator (IPropertyValidator original)
     {
-      if (object.ReferenceEquals((object) this.CurrentValidator, (object) original))
-        this.CurrentValidator = this.validators.LastOrDefault<IPropertyValidator>((Func<IPropertyValidator, bool>) (x => x != original));
-      this.validators.Remove(original);
-    }
-
-    /// <summary>Clear all validators from this rule.</summary>
-    public void ClearValidators()
-    {
-      this.CurrentValidator = (IPropertyValidator) null;
-      this.validators.Clear();
+      if (ReferenceEquals (CurrentValidator, original))
+        CurrentValidator = _validators.LastOrDefault (x => x != original);
+      _validators.Remove (original);
     }
 
     /// <summary>
@@ -164,14 +135,12 @@ namespace Remotion.Validation.Rules
     public Func<PropertyValidatorContext, string> MessageBuilder { get; set; }
 
     /// <summary>Display name for the property.</summary>
-    public string GetDisplayName()
+    public string GetDisplayName ()
     {
-      string str = (string) null;
-      if (this.DisplayName != null)
-        str = this.DisplayName.GetString();
-      if (str == null)
-        str = Extensions.SplitPascalCase (this.PropertyName);
-      return str;
+      string str = null;
+      if (DisplayName != null)
+        str = DisplayName.GetString();
+      return str ?? PropertyName.SplitPascalCase();
     }
 
     /// <summary>
@@ -179,21 +148,23 @@ namespace Remotion.Validation.Rules
     /// </summary>
     /// <param name="context">Validation Context</param>
     /// <returns>A collection of validation failures</returns>
-    public virtual IEnumerable<ValidationFailure> Validate(ValidationContext context)
+    public virtual IEnumerable<ValidationFailure> Validate (ValidationContext context)
     {
-      string displayName = this.GetDisplayName();
-      if (this.PropertyName == null && displayName == null)
-        throw new InvalidOperationException(string.Format("Property name could not be automatically determined for expression {0}. Please specify either a custom property name by calling 'WithName'.", (object) this.Expression));
-      string propertyName = context.PropertyChain.BuildPropertyName(this.PropertyName ?? displayName);
-      if (context.Selector.CanExecute((IValidationRule) this, propertyName, context))
+      var displayName = GetDisplayName();
+      if (PropertyName == null && displayName == null)
+        throw new InvalidOperationException (
+            $"Property name could not be automatically determined for expression {Expression}. Please specify either a custom property name by calling 'WithName'.");
+
+      var propertyName = context.PropertyChain.BuildPropertyName (PropertyName ?? displayName);
+      if (context.Selector.CanExecute (this))
       {
-        CascadeMode cascade = this.cascadeModeThunk();
-        bool hasAnyFailure = false;
-        foreach (IPropertyValidator validator in this.validators)
+        var cascade = _cascadeModeThunk();
+        var hasAnyFailure = false;
+        foreach (var validator in _validators)
         {
-          IEnumerable<ValidationFailure> results = this.InvokePropertyValidator(context, validator, propertyName);
-          bool hasFailure = false;
-          foreach (ValidationFailure validationFailure in results)
+          var results = InvokePropertyValidator (context, validator, propertyName);
+          var hasFailure = false;
+          foreach (var validationFailure in results)
           {
             hasAnyFailure = true;
             hasFailure = true;
@@ -203,34 +174,33 @@ namespace Remotion.Validation.Rules
             break;
         }
         if (hasAnyFailure)
-          this.OnFailure(context.InstanceToValidate);
+          OnFailure (context.InstanceToValidate);
       }
     }
 
     /// <summary>
     /// Invokes a property validator using the specified validation context.
     /// </summary>
-    protected virtual IEnumerable<ValidationFailure> InvokePropertyValidator(
-      ValidationContext context,
-      IPropertyValidator validator,
-      string propertyName)
+    private IEnumerable<ValidationFailure> InvokePropertyValidator (ValidationContext context, IPropertyValidator validator, string propertyName)
     {
-      PropertyValidatorContext context1 = new PropertyValidatorContext(context, this, propertyName);
-      return validator.Validate(context1);
+      var context1 = new PropertyValidatorContext (context, this, propertyName);
+      return validator.Validate (context1);
     }
 
-    public void ApplyCondition(Func<object, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators)
+    public void ApplyCondition (Func<object, bool> predicate, ApplyConditionTo applyConditionTo = ApplyConditionTo.AllValidators)
     {
       if (applyConditionTo == ApplyConditionTo.AllValidators)
       {
-        foreach (IPropertyValidator propertyValidator in this.Validators.ToList<IPropertyValidator>())
+        foreach (IPropertyValidator propertyValidator in Validators.ToList())
         {
-          DelegatingValidator delegatingValidator = new DelegatingValidator(predicate, propertyValidator);
-          this.ReplaceValidator(propertyValidator, (IPropertyValidator) delegatingValidator);
+          var delegatingValidator = new DelegatingValidator (predicate, propertyValidator);
+          ReplaceValidator (propertyValidator, delegatingValidator);
         }
       }
       else
-        this.ReplaceValidator(this.CurrentValidator, (IPropertyValidator) new DelegatingValidator(predicate, this.CurrentValidator));
+      {
+        ReplaceValidator (CurrentValidator, new DelegatingValidator (predicate, CurrentValidator));
+      }
     }
   }
 }

@@ -12,72 +12,45 @@ using Remotion.Validation.Results;
 
 namespace Remotion.Validation.Validators
 {
-  public class DelegatingValidator : IDelegatingValidator, IPropertyValidator
+  public class DelegatingValidator : IDelegatingValidator
   {
-    private readonly Func<object, bool> condition;
+    private readonly Func<object, bool> _condition;
+    private IPropertyValidator InnerValidator { get; }
 
-    public IPropertyValidator InnerValidator { get; private set; }
-
-    public DelegatingValidator(Func<object, bool> condition, IPropertyValidator innerValidator)
+    public DelegatingValidator (Func<object, bool> condition, IPropertyValidator innerValidator)
     {
-      this.condition = condition;
-      this.InnerValidator = innerValidator;
+      _condition = condition;
+      InnerValidator = innerValidator;
     }
 
     public IStringSource ErrorMessageSource
     {
-      get
-      {
-        return this.InnerValidator.ErrorMessageSource;
-      }
-      set
-      {
-        this.InnerValidator.ErrorMessageSource = value;
-      }
+      get { return InnerValidator.ErrorMessageSource; }
+      set { InnerValidator.ErrorMessageSource = value; }
     }
 
-    public IEnumerable<ValidationFailure> Validate(
-      PropertyValidatorContext context)
+    public IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
     {
-      if (this.condition(context.Instance))
-        return this.InnerValidator.Validate(context);
+      if (_condition (context.Instance))
+        return InnerValidator.Validate (context);
+
       return Enumerable.Empty<ValidationFailure>();
     }
 
     public ICollection<Func<object, object, object>> CustomMessageFormatArguments
     {
-      get
-      {
-        return this.InnerValidator.CustomMessageFormatArguments;
-      }
-    }
-
-    public bool SupportsStandaloneValidation
-    {
-      get
-      {
-        return false;
-      }
+      get { return InnerValidator.CustomMessageFormatArguments; }
     }
 
     public Func<object, object> CustomStateProvider
     {
-      get
-      {
-        return this.InnerValidator.CustomStateProvider;
-      }
-      set
-      {
-        this.InnerValidator.CustomStateProvider = value;
-      }
+      get { return InnerValidator.CustomStateProvider; }
+      set { InnerValidator.CustomStateProvider = value; }
     }
 
     IPropertyValidator IDelegatingValidator.InnerValidator
     {
-      get
-      {
-        return this.InnerValidator;
-      }
+      get { return InnerValidator; }
     }
   }
 }

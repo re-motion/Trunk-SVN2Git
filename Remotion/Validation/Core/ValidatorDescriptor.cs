@@ -7,9 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using Remotion.Validation.Implementation;
 using Remotion.Validation.Rules;
 using Remotion.Validation.Validators;
 
@@ -18,49 +15,48 @@ namespace Remotion.Validation
   /// <summary>Used for providing metadata about a validator.</summary>
   public class ValidatorDescriptor<T> : IValidatorDescriptor
   {
-    protected IEnumerable<IValidationRule> Rules { get; private set; }
+    private IEnumerable<IValidationRule> Rules { get; }
 
-    public ValidatorDescriptor(IEnumerable<IValidationRule> ruleBuilders)
+    public ValidatorDescriptor (IEnumerable<IValidationRule> ruleBuilders)
     {
-      this.Rules = ruleBuilders;
+      Rules = ruleBuilders;
     }
 
-    public virtual string GetName(string property)
+    public virtual string GetName (string property)
     {
-      return this.Rules.OfType<PropertyRule>().Where<PropertyRule>((Func<PropertyRule, bool>) (x => x.PropertyName == property)).Select<PropertyRule, string>((Func<PropertyRule, string>) (x => x.GetDisplayName())).FirstOrDefault<string>();
+      return Rules
+          .OfType<PropertyRule>()
+          .Where (x => x.PropertyName == property)
+          .Select (x => x.GetDisplayName())
+          .FirstOrDefault();
     }
 
-    public virtual ILookup<string, IPropertyValidator> GetMembersWithValidators()
+    public virtual ILookup<string, IPropertyValidator> GetMembersWithValidators ()
     {
-      return this.Rules.OfType<PropertyRule>().Where<PropertyRule>((Func<PropertyRule, bool>) (rule => rule.PropertyName != null)).SelectMany((Func<PropertyRule, IEnumerable<IPropertyValidator>>) (rule => rule.Validators), (rule, validator) => new
-      {
-        propertyName = rule.PropertyName,
-        validator = validator
-      }).ToLookup(x => x.propertyName, x => x.validator);
+      return Rules
+          .OfType<PropertyRule>()
+          .Where (rule => rule.PropertyName != null)
+          .SelectMany (
+              rule => rule.Validators,
+              (rule, validator) => new
+                 {
+                     propertyName = rule.PropertyName, validator
+                 })
+          .ToLookup (x => x.propertyName, x => x.validator);
     }
 
-    public IEnumerable<IPropertyValidator> GetValidatorsForMember(
-      string name)
+    public IEnumerable<IPropertyValidator> GetValidatorsForMember (string name)
     {
-      return this.GetMembersWithValidators()[name];
+      return GetMembersWithValidators()[name];
     }
 
-    public IEnumerable<IValidationRule> GetRulesForMember(string name)
+    public IEnumerable<IValidationRule> GetRulesForMember (string name)
     {
-      return (IEnumerable<IValidationRule>) this.Rules.OfType<PropertyRule>().Where<PropertyRule>((Func<PropertyRule, bool>) (rule => rule.PropertyName == name)).Select<PropertyRule, IValidationRule>((Func<PropertyRule, IValidationRule>) (rule => (IValidationRule) rule)).ToList<IValidationRule>();
-    }
-
-    public virtual string GetName(Expression<Func<T, object>> propertyExpression)
-    {
-      MemberInfo member = propertyExpression.GetMember<T, object>();
-      if (member == (MemberInfo) null)
-        throw new ArgumentException(string.Format("Cannot retrieve name as expression '{0}' as it does not specify a property.", (object) propertyExpression));
-      return this.GetName(member.Name);
-    }
-
-    public IEnumerable<IPropertyValidator> GetValidatorsForMember<TValue>(MemberAccessor<T, TValue> accessor)
-    {
-      return this.Rules.OfType<PropertyRule>().Where<PropertyRule>((Func<PropertyRule, bool>) (rule => object.Equals((object) rule.Member, (object) accessor.Member))).SelectMany<PropertyRule, IPropertyValidator, IPropertyValidator>((Func<PropertyRule, IEnumerable<IPropertyValidator>>) (rule => rule.Validators), (Func<PropertyRule, IPropertyValidator, IPropertyValidator>) ((rule, validator) => validator));
+      return Rules
+          .OfType<PropertyRule>()
+          .Where (rule => rule.PropertyName == name)
+          .Select (rule => (IValidationRule) rule)
+          .ToList();
     }
   }
 }

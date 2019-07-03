@@ -13,16 +13,16 @@ namespace Remotion.Validation.Results
   [Serializable]
   public class ValidationResult
   {
-    private readonly List<ValidationFailure> errors = new List<ValidationFailure>();
+    private readonly List<ValidationFailure> _errors = new List<ValidationFailure>();
 
     public virtual bool IsValid
     {
-      get { return this.Errors.Count == 0; }
+      get { return Errors.Count == 0; }
     }
 
     public IList<ValidationFailure> Errors
     {
-      get { return (IList<ValidationFailure>) this.errors; }
+      get { return _errors; }
     }
 
     public ValidationResult ()
@@ -31,7 +31,7 @@ namespace Remotion.Validation.Results
 
     public ValidationResult (IEnumerable<ValidationFailure> failures)
     {
-      this.errors.AddRange (failures.Where<ValidationFailure> ((Func<ValidationFailure, bool>) (failure => failure != null)));
+      _errors.AddRange (failures.Where (failure => failure != null));
     }
   }
 }

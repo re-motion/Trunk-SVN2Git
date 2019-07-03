@@ -12,7 +12,7 @@ namespace Remotion.Validation.Implementation
   /// <summary>Represents an object that is configurable.</summary>
   /// <typeparam name="TConfiguration">Type of object being configured</typeparam>
   /// <typeparam name="TNext">Return type</typeparam>
-  public interface IConfigurable<TConfiguration, out TNext>
+  public interface IConfigurable<out TConfiguration, out TNext>
   {
     /// <summary>Configures the current object.</summary>
     /// <param name="configurator">Action to configure the object.</param>

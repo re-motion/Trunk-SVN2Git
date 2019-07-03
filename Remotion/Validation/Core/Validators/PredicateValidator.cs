@@ -5,32 +5,28 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public class PredicateValidator : PropertyValidator, IPredicateValidator, IPropertyValidator
+  public class PredicateValidator : PropertyValidator, IPredicateValidator
   {
-    private readonly PredicateValidator.Predicate predicate;
+    private readonly Predicate _predicate;
 
-    public PredicateValidator(PredicateValidator.Predicate predicate)
-        : base((Expression<Func<string>>) (() => Constants.PredicateError))
+    public PredicateValidator (Predicate predicate)
+        : base (() => Constants.PredicateError)
     {
       ArgumentUtility.CheckNotNull ("predicate", predicate);
-      
-      this.predicate = predicate;
+
+      _predicate = predicate;
     }
 
-    protected override bool IsValid(PropertyValidatorContext context)
+    protected override bool IsValid (PropertyValidatorContext context)
     {
-      return this.predicate(context.Instance, context.PropertyValue, context);
+      return _predicate (context.Instance, context.PropertyValue, context);
     }
 
-    public delegate bool Predicate(
-        object instanceToValidate,
-        object propertyValue,
-        PropertyValidatorContext propertyValidatorContext);
+    public delegate bool Predicate (object instanceToValidate, object propertyValue, PropertyValidatorContext propertyValidatorContext);
   }
 }

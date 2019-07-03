@@ -7,51 +7,55 @@
 using System;
 using System.Collections;
 using System.Linq;
-using System.Linq.Expressions;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public class NotEmptyValidator : PropertyValidator, INotEmptyValidator, IPropertyValidator
+  public class NotEmptyValidator : PropertyValidator, INotEmptyValidator
   {
-    private readonly object defaultValueForType;
+    private readonly object _defaultValueForType;
 
-    public NotEmptyValidator(object defaultValueForType)
-        : base((Expression<Func<string>>) (() => Constants.NotEmptyError))
+    public NotEmptyValidator (object defaultValueForType)
+        : base (() => Constants.NotEmptyError)
     {
-      this.defaultValueForType = defaultValueForType;
+      _defaultValueForType = defaultValueForType;
     }
 
-    protected override bool IsValid(PropertyValidatorContext context)
+    protected override bool IsValid (PropertyValidatorContext context)
     {
-      return context.PropertyValue != null && !this.IsInvalidString(context.PropertyValue) && (!this.IsEmptyCollection(context.PropertyValue) && !object.Equals(context.PropertyValue, this.defaultValueForType));
+      return context.PropertyValue != null
+             && !IsInvalidString (context.PropertyValue)
+             && !IsEmptyCollection (context.PropertyValue)
+             && !Equals (context.PropertyValue, _defaultValueForType);
     }
 
-    private bool IsEmptyCollection(object propertyValue)
+    private bool IsEmptyCollection (object propertyValue)
     {
-      IEnumerable source = propertyValue as IEnumerable;
-      if (source != null)
-        return !source.Cast<object>().Any<object>();
+      if (propertyValue is IEnumerable source)
+        return !source.Cast<object>().Any();
+
       return false;
     }
 
-    private bool IsInvalidString(object value)
+    private bool IsInvalidString (object value)
     {
-      if (value is string)
-        return this.IsNullOrWhiteSpace(value as string);
+      if (value is string valueString)
+        return IsNullOrWhiteSpace (valueString);
+
       return false;
     }
 
-    private bool IsNullOrWhiteSpace(string value)
+    private bool IsNullOrWhiteSpace (string value)
     {
-      if (value != null)
+      if (value == null)
+        return true;
+
+      foreach (var t in value)
       {
-        for (int index = 0; index < value.Length; ++index)
-        {
-          if (!char.IsWhiteSpace(value[index]))
-            return false;
-        }
+        if (!char.IsWhiteSpace (t))
+          return false;
       }
+
       return true;
     }
   }

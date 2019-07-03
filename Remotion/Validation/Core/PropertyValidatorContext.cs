@@ -12,21 +12,21 @@ namespace Remotion.Validation
 {
   public class PropertyValidatorContext
   {
-    private readonly MessageFormatter messageFormatter = new MessageFormatter();
-    private bool propertyValueSet;
-    private object propertyValue;
+    private readonly MessageFormatter _messageFormatter = new MessageFormatter();
+    private bool _propertyValueSet;
+    private object _propertyValue;
 
-    public ValidationContext ParentContext { get; private set; }
+    public ValidationContext ParentContext { get; }
 
-    public PropertyRule Rule { get; private set; }
+    public PropertyRule Rule { get; }
 
-    public string PropertyName { get; private set; }
+    public string PropertyName { get; }
 
     public string PropertyDescription
     {
       get
       {
-        return this.Rule.GetDisplayName();
+        return Rule.GetDisplayName();
       }
     }
 
@@ -34,7 +34,7 @@ namespace Remotion.Validation
     {
       get
       {
-        return this.ParentContext.InstanceToValidate;
+        return ParentContext.InstanceToValidate;
       }
     }
 
@@ -42,7 +42,7 @@ namespace Remotion.Validation
     {
       get
       {
-        return this.messageFormatter;
+        return _messageFormatter;
       }
     }
 
@@ -50,28 +50,20 @@ namespace Remotion.Validation
     {
       get
       {
-        if (!this.propertyValueSet)
-        {
-          this.propertyValue = this.Rule.PropertyFunc(this.Instance);
-          this.propertyValueSet = true;
-        }
-        return this.propertyValue;
-      }
-      set
-      {
-        this.propertyValue = value;
-        this.propertyValueSet = true;
+        if (_propertyValueSet) 
+          return _propertyValue;
+
+        _propertyValue = Rule.PropertyFunc(Instance);
+        _propertyValueSet = true;
+        return _propertyValue;
       }
     }
 
-    public PropertyValidatorContext(
-        ValidationContext parentContext,
-        PropertyRule rule,
-        string propertyName)
+    public PropertyValidatorContext(ValidationContext parentContext, PropertyRule rule, string propertyName)
     {
-      this.ParentContext = parentContext;
-      this.Rule = rule;
-      this.PropertyName = propertyName;
+      ParentContext = parentContext;
+      Rule = rule;
+      PropertyName = propertyName;
     }
   }
 }

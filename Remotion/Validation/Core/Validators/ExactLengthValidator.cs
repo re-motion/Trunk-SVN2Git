@@ -5,15 +5,14 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class ExactLengthValidator : LengthValidator
   {
-    public ExactLengthValidator(int length)
-        : base(length, length, (Expression<Func<string>>) (() => Constants.ExactLengthError))
+    public ExactLengthValidator (int length)
+        : base (length, length, () => Constants.ExactLengthError)
     {
     }
   }

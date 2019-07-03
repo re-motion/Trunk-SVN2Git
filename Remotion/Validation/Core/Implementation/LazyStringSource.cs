@@ -14,22 +14,22 @@ namespace Remotion.Validation.Implementation
 
     public LazyStringSource (Func<string> stringProvider)
     {
-      this._stringProvider = stringProvider;
+      _stringProvider = stringProvider;
     }
 
     public string GetString ()
     {
-      return this._stringProvider();
+      return _stringProvider();
     }
 
     public string ResourceName
     {
-      get { return (string) null; }
+      get { return null; }
     }
 
     public Type ResourceType
     {
-      get { return (Type) null; }
+      get { return null; }
     }
   }
 }

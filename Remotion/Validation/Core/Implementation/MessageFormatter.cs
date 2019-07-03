@@ -4,6 +4,7 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\re-motion_svn2git\Remotion\ObjectBinding\Web.Development.WebTesting.TestSite\Bin\FluentValidation.dll
 
+using System;
 using System.Collections.Generic;
 
 namespace Remotion.Validation.Implementation
@@ -11,27 +12,25 @@ namespace Remotion.Validation.Implementation
   /// <summary>Assists in the construction of validation messages.</summary>
   public class MessageFormatter
   {
-    private readonly Dictionary<string, object> placeholderValues = new Dictionary<string, object>();
-    /// <summary>Default Property Name placeholder.</summary>
-    public const string PropertyName = "PropertyName";
-    private object[] additionalArgs;
+    private readonly Dictionary<string, object> _placeholderValues = new Dictionary<string, object>();
+    private object[] _additionalArgs;
 
     /// <summary>Adds a value for a validation message placeholder.</summary>
     /// <param name="name"></param>
     /// <param name="value"></param>
     /// <returns></returns>
-    public MessageFormatter AppendArgument(string name, object value)
+    public MessageFormatter AppendArgument (string name, object value)
     {
-      this.placeholderValues[name] = value;
+      _placeholderValues[name] = value;
       return this;
     }
 
     /// <summary>Appends a property name to the message.</summary>
     /// <param name="name">The name of the property</param>
     /// <returns></returns>
-    public MessageFormatter AppendPropertyName(string name)
+    public MessageFormatter AppendPropertyName (string name)
     {
-      return this.AppendArgument("PropertyName", (object)name);
+      return AppendArgument ("PropertyName", name);
     }
 
     /// <summary>
@@ -39,9 +38,9 @@ namespace Remotion.Validation.Implementation
     /// </summary>
     /// <param name="additionalArgs">Additional arguments</param>
     /// <returns></returns>
-    public MessageFormatter AppendAdditionalArguments(params object[] additionalArgs)
+    public MessageFormatter AppendAdditionalArguments (params object[] additionalArgs)
     {
-      this.additionalArgs = additionalArgs;
+      _additionalArgs = additionalArgs;
       return this;
     }
 
@@ -50,13 +49,15 @@ namespace Remotion.Validation.Implementation
     /// </summary>
     /// <param name="messageTemplate">Message template</param>
     /// <returns>The message with placeholders replaced with their appropriate values</returns>
-    public string BuildMessage(string messageTemplate)
+    public string BuildMessage (string messageTemplate)
     {
-      string str = messageTemplate;
-      foreach (KeyValuePair<string, object> placeholderValue in this.placeholderValues)
-        str = this.ReplacePlaceholderWithValue(str, placeholderValue.Key, placeholderValue.Value);
-      if (this.ShouldUseAdditionalArgs)
-        return string.Format(str, this.additionalArgs);
+      var str = messageTemplate;
+      foreach (var placeholderValue in _placeholderValues)
+        str = ReplacePlaceholderWithValue (str, placeholderValue.Key, placeholderValue.Value);
+
+      if (ShouldUseAdditionalArgs)
+        return string.Format (str, _additionalArgs);
+
       return str;
     }
 
@@ -64,16 +65,17 @@ namespace Remotion.Validation.Implementation
     {
       get
       {
-        if (this.additionalArgs != null)
-          return this.additionalArgs.Length > 0;
+        if (_additionalArgs != null)
+          return _additionalArgs.Length > 0;
+
         return false;
       }
     }
 
-    private string ReplacePlaceholderWithValue(string template, string key, object value)
+    private string ReplacePlaceholderWithValue (string template, string key, object value)
     {
-      string oldValue = "{" + key + "}";
-      return template.Replace(oldValue, value == null ? (string)null : value.ToString());
+      var oldValue = "{" + key + "}";
+      return template.Replace (oldValue, value?.ToString());
     }
   }
 }

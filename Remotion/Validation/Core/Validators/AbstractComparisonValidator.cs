@@ -12,54 +12,52 @@ using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public abstract class AbstractComparisonValidator : PropertyValidator, IComparisonValidator, IPropertyValidator
+  public abstract class AbstractComparisonValidator : PropertyValidator, IComparisonValidator
   {
-    private readonly Func<object, object> valueToCompareFunc;
+    private readonly Func<object, object> _valueToCompareFunc;
 
-    protected AbstractComparisonValidator(
-      IComparable value,
-      Expression<Func<string>> errorMessageSelector)
-      : base(errorMessageSelector)
+    protected AbstractComparisonValidator (IComparable value, Expression<Func<string>> errorMessageSelector)
+        : base (errorMessageSelector)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      this.ValueToCompare = (object) value;
+      ValueToCompare = value;
     }
 
-    protected AbstractComparisonValidator(
-      Func<object, object> valueToCompareFunc,
-      MemberInfo member,
-      Expression<Func<string>> errorMessageSelector)
-      : base(errorMessageSelector)
+    protected AbstractComparisonValidator (Func<object, object> valueToCompareFunc, MemberInfo member, Expression<Func<string>> errorMessageSelector)
+        : base (errorMessageSelector)
     {
-      this.valueToCompareFunc = valueToCompareFunc;
-      this.MemberToCompare = member;
+      _valueToCompareFunc = valueToCompareFunc;
+      MemberToCompare = member;
     }
 
-    protected override sealed bool IsValid(PropertyValidatorContext context)
+    protected sealed override bool IsValid (PropertyValidatorContext context)
     {
       if (context.PropertyValue == null)
         return true;
-      IComparable comparisonValue = this.GetComparisonValue(context);
-      if (this.IsValid((IComparable) context.PropertyValue, comparisonValue))
+
+      var comparisonValue = GetComparisonValue (context);
+      if (IsValid ((IComparable) context.PropertyValue, comparisonValue))
         return true;
-      context.MessageFormatter.AppendArgument("ComparisonValue", (object) comparisonValue);
+
+      context.MessageFormatter.AppendArgument ("ComparisonValue", comparisonValue);
       return false;
     }
 
-    private IComparable GetComparisonValue(PropertyValidatorContext context)
+    private IComparable GetComparisonValue (PropertyValidatorContext context)
     {
-      if (this.valueToCompareFunc != null)
-        return (IComparable) this.valueToCompareFunc(context.Instance);
-      return (IComparable) this.ValueToCompare;
+      if (_valueToCompareFunc != null)
+        return (IComparable) _valueToCompareFunc (context.Instance);
+
+      return (IComparable) ValueToCompare;
     }
 
-    public abstract bool IsValid(IComparable value, IComparable valueToCompare);
+    protected abstract bool IsValid (IComparable value, IComparable valueToCompare);
 
     public abstract Comparison Comparison { get; }
 
-    public MemberInfo MemberToCompare { get; private set; }
+    public MemberInfo MemberToCompare { get; }
 
-    public object ValueToCompare { get; private set; }
+    public object ValueToCompare { get; }
   }
 }

@@ -5,35 +5,25 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class GreaterThanValidator : AbstractComparisonValidator
   {
-    public GreaterThanValidator(IComparable value)
-        : base(value, (Expression<Func<string>>) (() => Constants.GreaterThanError))
+    public GreaterThanValidator (IComparable value)
+        : base (value, () => Constants.GreaterThanError)
     {
     }
 
-    public GreaterThanValidator(Func<object, object> valueToCompareFunc, MemberInfo member)
-        : base(valueToCompareFunc, member, (Expression<Func<string>>) (() => Constants.GreaterThanError))
+    protected override bool IsValid (IComparable value, IComparable valueToCompare)
     {
-    }
-
-    public override bool IsValid(IComparable value, IComparable valueToCompare)
-    {
-      return Comparer.GetComparisonResult(value, valueToCompare) > 0;
+      return Comparer.GetComparisonResult (value, valueToCompare) > 0;
     }
 
     public override Comparison Comparison
     {
-      get
-      {
-        return Comparison.GreaterThan;
-      }
+      get { return Comparison.GreaterThan; }
     }
   }
 }

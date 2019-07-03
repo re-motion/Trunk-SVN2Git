@@ -4,6 +4,7 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
+using System;
 using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Validators
@@ -15,12 +16,10 @@ namespace Remotion.Validation.Validators
   {
     /// <summary>Determines whether or not a rule should execute.</summary>
     /// <param name="rule">The rule</param>
-    /// <param name="propertyPath">Property path (eg Customer.Address.Line1)</param>
-    /// <param name="context">Contextual information</param>
     /// <returns>Whether or not the validator can execute.</returns>
-    public bool CanExecute(IValidationRule rule, string propertyPath, ValidationContext context)
+    public bool CanExecute (IValidationRule rule)
     {
-      return string.IsNullOrEmpty(rule.RuleSet);
+      return string.IsNullOrEmpty (rule.RuleSet);
     }
   }
 }

@@ -6,83 +6,75 @@
 
 using System;
 using System.Collections;
-using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Validation.Implementation;
 using Comparer = Remotion.Validation.Implementation.Comparer;
 
 namespace Remotion.Validation.Validators
 {
-  public class NotEqualValidator : PropertyValidator, IComparisonValidator, IPropertyValidator
+  public class NotEqualValidator : PropertyValidator, IComparisonValidator
   {
-    private readonly IEqualityComparer comparer;
-    private readonly Func<object, object> func;
+    private readonly IEqualityComparer _comparer;
+    private readonly Func<object, object> _func;
 
     public NotEqualValidator(Func<object, object> func, MemberInfo memberToCompare)
-      : base((Expression<Func<string>>) (() => Constants.NotEqualError))
+        : base(() => Constants.NotEqualError)
     {
-      this.func = func;
-      this.MemberToCompare = memberToCompare;
+      _func = func;
+      MemberToCompare = memberToCompare;
     }
 
-    public NotEqualValidator(
-      Func<object, object> func,
-      MemberInfo memberToCompare,
-      IEqualityComparer equalityComparer)
-      : base((Expression<Func<string>>) (() => Constants.NotEqualError))
+    public NotEqualValidator(Func<object, object> func, MemberInfo memberToCompare, IEqualityComparer equalityComparer)
+        : base(() => Constants.NotEqualError)
     {
-      this.func = func;
-      this.comparer = equalityComparer;
-      this.MemberToCompare = memberToCompare;
+      _func = func;
+      _comparer = equalityComparer;
+      MemberToCompare = memberToCompare;
     }
 
-    public NotEqualValidator(object comparisonValue)
-      : base((Expression<Func<string>>) (() => Constants.NotEqualError))
+    public NotEqualValidator (object comparisonValue)
+        : base (() => Constants.NotEqualError)
     {
-      this.ValueToCompare = comparisonValue;
+      ValueToCompare = comparisonValue;
     }
 
-    public NotEqualValidator(object comparisonValue, IEqualityComparer equalityComparer)
-      : base((Expression<Func<string>>) (() => Constants.NotEqualError))
+    public NotEqualValidator (object comparisonValue, IEqualityComparer equalityComparer)
+        : base (() => Constants.NotEqualError)
     {
-      this.ValueToCompare = comparisonValue;
-      this.comparer = equalityComparer;
+      ValueToCompare = comparisonValue;
+      _comparer = equalityComparer;
     }
 
-    protected override bool IsValid(PropertyValidatorContext context)
+    protected override bool IsValid (PropertyValidatorContext context)
     {
-      object comparisonValue = this.GetComparisonValue(context);
-      if (!this.Compare(comparisonValue, context.PropertyValue))
+      var comparisonValue = GetComparisonValue (context);
+      if (!Compare (comparisonValue, context.PropertyValue))
         return true;
-      context.MessageFormatter.AppendArgument("ComparisonValue", comparisonValue);
+
+      context.MessageFormatter.AppendArgument ("ComparisonValue", comparisonValue);
       return false;
     }
 
-    private object GetComparisonValue(PropertyValidatorContext context)
+    private object GetComparisonValue (PropertyValidatorContext context)
     {
-      if (this.func != null)
-        return this.func(context.Instance);
-      return this.ValueToCompare;
+      if (_func != null)
+        return _func (context.Instance);
+
+      return ValueToCompare;
     }
 
-    public Comparison Comparison
+    public MemberInfo MemberToCompare { get; }
+
+    public object ValueToCompare { get; }
+
+    private bool Compare (object comparisonValue, object propertyValue)
     {
-      get
-      {
-        return Comparison.NotEqual;
-      }
-    }
+      if (_comparer != null)
+        return _comparer.Equals (comparisonValue, propertyValue);
 
-    public MemberInfo MemberToCompare { get; private set; }
+      if (comparisonValue is IComparable value && propertyValue is IComparable compare)
+        return Comparer.GetEqualsResult (value, compare);
 
-    public object ValueToCompare { get; private set; }
-
-    protected bool Compare(object comparisonValue, object propertyValue)
-    {
-      if (this.comparer != null)
-        return this.comparer.Equals(comparisonValue, propertyValue);
-      if (comparisonValue is IComparable && propertyValue is IComparable)
-        return Comparer.GetEqualsResult((IComparable) comparisonValue, (IComparable) propertyValue);
       return comparisonValue == propertyValue;
     }
   }

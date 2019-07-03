@@ -33,22 +33,18 @@ namespace Remotion.Validation.Rules
   /// </summary>
   public sealed class AddingComponentPropertyRule
       // Note: this class has to inherit from PropertyRule to make IRuleBuilder.Configure work
-      : PropertyRule,
-          IAddingComponentPropertyRule
+      : PropertyRule, IAddingComponentPropertyRule
   {
     private readonly Type _collectorType;
     private readonly PropertyInfoAdapter _property;
     private bool _isHardConstraint;
 
-    public static AddingComponentPropertyRule Create<TValidatedType, TProperty> (
-        Expression<Func<TValidatedType, TProperty>> expression,
-        Type collectorType)
+    public static AddingComponentPropertyRule Create<TValidatedType, TProperty> (Expression<Func<TValidatedType, TProperty>> expression, Type collectorType)
     {
       var member = expression.GetMember() as PropertyInfo;
       if (member == null)
       {
-        throw new InvalidOperationException (
-            string.Format ("An '{0}' can only created for property members.", typeof (AddingComponentPropertyRule).Name));
+        throw new InvalidOperationException ($"An '{typeof (AddingComponentPropertyRule).Name}' can only created for property members.");
       }
 
       var compiled = expression.Compile();
@@ -59,7 +55,6 @@ namespace Remotion.Validation.Rules
           compiled.CoerceToNonGeneric(),
           expression,
           () => ValidatorOptions.CascadeMode,
-          typeof (TProperty),
           typeof (TValidatedType));
     }
 
@@ -70,7 +65,6 @@ namespace Remotion.Validation.Rules
             propertyFunc,
             null,
             () => ValidatorOptions.CascadeMode,
-            ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo).PropertyType,
             validatedType)
     {
     }
@@ -81,9 +75,8 @@ namespace Remotion.Validation.Rules
         Func<object, object> propertyFunc,
         LambdaExpression expression,
         Func<CascadeMode> cascadeModeThunk,
-        Type propertyType,
         Type validatedType)
-        : base (propertyInfo, propertyFunc, expression, cascadeModeThunk, propertyType, validatedType)
+        : base (propertyInfo, propertyFunc, expression, cascadeModeThunk, validatedType)
     {
       ArgumentUtility.CheckNotNull ("collectorType", collectorType);
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
@@ -135,8 +128,7 @@ namespace Remotion.Validation.Rules
       if (_isHardConstraint && validatorsToRemove.Any())
       {
         throw new ValidationConfigurationException (
-            string.Format (
-                "Hard constraint validator(s) '{0}' on property '{1}.{2}' cannot be removed.",
+            string.Format ("Hard constraint validator(s) '{0}' on property '{1}.{2}' cannot be removed.",
                 string.Join (", ", validatorsToRemove.Select (v => v.GetType().Name).ToArray()),
                 Property.DeclaringType.FullName,
                 Property.Name));
@@ -148,6 +140,7 @@ namespace Remotion.Validation.Rules
       var sb = new StringBuilder (GetType().Name);
       if (_isHardConstraint)
         sb.Append (" (HARD CONSTRAINT)");
+
       sb.Append (": ");
       sb.Append (Property.DeclaringType != null ? Property.DeclaringType.FullName + "#" : string.Empty);
       sb.Append (Property.Name);

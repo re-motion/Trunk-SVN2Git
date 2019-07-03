@@ -11,7 +11,7 @@ namespace Remotion.Validation.Implementation
   /// <summary>Represents a static string.</summary>
   public class StaticStringSource : IStringSource
   {
-    private readonly string message;
+    private readonly string _message;
 
     /// <summary>
     /// Creates a new StringErrorMessageSource using the specified error message as the error template.
@@ -19,26 +19,26 @@ namespace Remotion.Validation.Implementation
     /// <param name="message">The error message template.</param>
     public StaticStringSource (string message)
     {
-      this.message = message;
+      _message = message;
     }
 
     /// <summary>Construct the error message template</summary>
     /// <returns>Error message template</returns>
     public string GetString ()
     {
-      return this.message;
+      return _message;
     }
 
     /// <summary>The name of the resource if localized.</summary>
     public string ResourceName
     {
-      get { return (string) null; }
+      get { return null; }
     }
 
     /// <summary>The type of the resource provider if localized.</summary>
     public Type ResourceType
     {
-      get { return (Type) null; }
+      get { return null; }
     }
   }
 }

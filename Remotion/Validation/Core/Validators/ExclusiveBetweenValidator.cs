@@ -5,32 +5,32 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public class ExclusiveBetweenValidator : PropertyValidator, IBetweenValidator, IPropertyValidator
+  public class ExclusiveBetweenValidator : PropertyValidator, IBetweenValidator
   {
-    public ExclusiveBetweenValidator(IComparable from, IComparable to)
-        : base((Expression<Func<string>>) (() => Constants.ExclusiveBetweenError))
+    public ExclusiveBetweenValidator (IComparable from, IComparable to)
+        : base (() => Constants.ExclusiveBetweenError)
     {
-      this.To = to;
-      this.From = from;
-      if (Comparer.GetComparisonResult(to, from) == -1)
-        throw new ArgumentOutOfRangeException(nameof (to), "To should be larger than from.");
+      To = to;
+      From = from;
+      if (Comparer.GetComparisonResult (to, from) == -1)
+        throw new ArgumentOutOfRangeException (nameof (to), "To should be larger than from.");
     }
 
-    public IComparable From { get; private set; }
+    public IComparable From { get; }
 
-    public IComparable To { get; private set; }
+    public IComparable To { get; }
 
-    protected override bool IsValid(PropertyValidatorContext context)
+    protected override bool IsValid (PropertyValidatorContext context)
     {
-      IComparable propertyValue = (IComparable) context.PropertyValue;
-      if (propertyValue == null || Comparer.GetComparisonResult(propertyValue, this.From) > 0 && Comparer.GetComparisonResult(propertyValue, this.To) < 0)
+      var propertyValue = (IComparable) context.PropertyValue;
+      if (propertyValue == null || Comparer.GetComparisonResult (propertyValue, From) > 0 && Comparer.GetComparisonResult (propertyValue, To) < 0)
         return true;
-      context.MessageFormatter.AppendArgument("From", (object) this.From).AppendArgument("To", (object) this.To).AppendArgument("Value", context.PropertyValue);
+
+      context.MessageFormatter.AppendArgument ("From", From).AppendArgument ("To", To).AppendArgument ("Value", context.PropertyValue);
       return false;
     }
   }

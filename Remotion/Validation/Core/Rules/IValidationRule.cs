@@ -21,7 +21,7 @@ namespace Remotion.Validation.Rules
     IEnumerable<IPropertyValidator> Validators { get; }
 
     /// <summary>Name of the rule-set to which this rule belongs.</summary>
-    string RuleSet { get; set; }
+    string RuleSet { get; }
 
     /// <summary>
     /// Performs validation using a validation context and returns a collection of Validation Failures.

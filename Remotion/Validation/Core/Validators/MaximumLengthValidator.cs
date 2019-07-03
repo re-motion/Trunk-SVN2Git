@@ -12,15 +12,13 @@ namespace Remotion.Validation.Validators
 {
   public class MaximumLengthValidator : LengthValidator
   {
-    public MaximumLengthValidator(int max)
-        : this(max, (Expression<Func<string>>) (() => Constants.LengthError))
+    public MaximumLengthValidator (int max)
+        : this (max, () => Constants.LengthError)
     {
     }
 
-    public MaximumLengthValidator(
-        int max,
-        Expression<Func<string>> errorMessageResourceSelector)
-        : base(0, max, errorMessageResourceSelector)
+    private MaximumLengthValidator (int max, Expression<Func<string>> errorMessageResourceSelector)
+        : base (0, max, errorMessageResourceSelector)
     {
     }
   }

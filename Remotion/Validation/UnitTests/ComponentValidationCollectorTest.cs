@@ -156,7 +156,7 @@ namespace Remotion.Validation.UnitTests
       foreach (var propertyValidator in propertyValidators)
       {
         Assert.That (propertyValidator.GetType(), Is.EqualTo (typeof (DelegatingValidator)));
-        var condition = (Func<object, bool>) PrivateInvoke.GetNonPublicField (propertyValidator, "condition");
+        var condition = (Func<object, bool>) PrivateInvoke.GetNonPublicField (propertyValidator, "_condition");
         Assert.That (condition (customer1), Is.True);
         Assert.That (condition (customer2), Is.False);
       }
@@ -203,7 +203,7 @@ namespace Remotion.Validation.UnitTests
       foreach (var propertyValidator in propertyValidators)
       {
         Assert.That (propertyValidator.GetType(), Is.EqualTo (typeof (DelegatingValidator)));
-        var condition = (Func<object, bool>) PrivateInvoke.GetNonPublicField (propertyValidator, "condition");
+        var condition = (Func<object, bool>) PrivateInvoke.GetNonPublicField (propertyValidator, "_condition");
         Assert.That (condition (customer1), Is.False);
         Assert.That (condition (customer2), Is.True);
       }

@@ -15,43 +15,21 @@ namespace Remotion.Validation.Validators
   {
     public IStringSource ErrorMessageSource
     {
-      get
-      {
-        return (IStringSource) null;
-      }
-      set
-      {
-      }
+      get { return null; }
+      set { }
     }
 
-    public abstract IEnumerable<ValidationFailure> Validate(
-        PropertyValidatorContext context);
+    public abstract IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context);
 
     public virtual ICollection<Func<object, object, object>> CustomMessageFormatArguments
     {
-      get
-      {
-        return (ICollection<Func<object, object, object>>) new List<Func<object, object, object>>();
-      }
-    }
-
-    public virtual bool SupportsStandaloneValidation
-    {
-      get
-      {
-        return false;
-      }
+      get { return new List<Func<object, object, object>>(); }
     }
 
     public Func<object, object> CustomStateProvider
     {
-      get
-      {
-        return (Func<object, object>) null;
-      }
-      set
-      {
-      }
+      get { return null; }
+      set { }
     }
   }
 }

@@ -19,20 +19,17 @@ namespace Remotion.Validation.Implementation
     /// ResourceType and ResourceName are ref parameters to allow derived types
     /// to replace the type/name of the resource before the delegate is constructed.
     /// </summary>
-    protected override PropertyInfo GetResourceProperty (
-        ref Type resourceType,
-        ref string resourceName)
+    protected override PropertyInfo GetResourceProperty (ref Type resourceType, ref string resourceName)
     {
-      if (ValidatorOptions.ResourceProviderType != (Type) null)
-      {
-        PropertyInfo property = ValidatorOptions.ResourceProviderType.GetProperty (resourceName, BindingFlags.Static | BindingFlags.Public);
-        if (property != (PropertyInfo) null)
-        {
-          resourceType = ValidatorOptions.ResourceProviderType;
-          return property;
-        }
-      }
-      return base.GetResourceProperty (ref resourceType, ref resourceName);
+      if (ValidatorOptions.ResourceProviderType == null) 
+        return base.GetResourceProperty (ref resourceType, ref resourceName);
+
+      var property = ValidatorOptions.ResourceProviderType.GetProperty (resourceName, BindingFlags.Static | BindingFlags.Public);
+      if (property == null) 
+        return base.GetResourceProperty (ref resourceType, ref resourceName);
+
+      resourceType = ValidatorOptions.ResourceProviderType;
+      return property;
     }
   }
 }

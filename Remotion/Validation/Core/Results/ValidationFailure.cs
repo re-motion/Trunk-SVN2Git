@@ -17,26 +17,16 @@ namespace Remotion.Validation.Results
 
     /// <summary>Creates a new validation failure.</summary>
     public ValidationFailure (string propertyName, string error)
-        : this (propertyName, error, (object) null)
     {
-    }
-
-    /// <summary>Creates a new ValidationFailure.</summary>
-    public ValidationFailure (string propertyName, string error, object attemptedValue)
-    {
-      this.PropertyName = propertyName;
-      this.ErrorMessage = error;
-      this.AttemptedValue = attemptedValue;
+      PropertyName = propertyName;
+      ErrorMessage = error;
     }
 
     /// <summary>The name of the property.</summary>
-    public string PropertyName { get; private set; }
+    public string PropertyName { get; }
 
     /// <summary>The error message</summary>
-    public string ErrorMessage { get; private set; }
-
-    /// <summary>The property value that caused the failure.</summary>
-    public object AttemptedValue { get; private set; }
+    public string ErrorMessage { get; }
 
     /// <summary>Custom state associated with the failure.</summary>
     public object CustomState { get; set; }
@@ -44,7 +34,7 @@ namespace Remotion.Validation.Results
     /// <summary>Creates a textual representation of the failure.</summary>
     public override string ToString ()
     {
-      return this.ErrorMessage;
+      return ErrorMessage;
     }
   }
 }

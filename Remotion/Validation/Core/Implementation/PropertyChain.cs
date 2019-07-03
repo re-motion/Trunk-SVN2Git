@@ -13,80 +13,68 @@ namespace Remotion.Validation.Implementation
   /// <summary>Represents a chain of properties</summary>
   public class PropertyChain
   {
-    private readonly List<string> memberNames = new List<string>();
+    private readonly List<string> _memberNames = new List<string>();
 
     public int Count
     {
-      get { return this.memberNames.Count; }
+      get { return _memberNames.Count; }
     }
 
     /// <summary>Creates a new PropertyChain.</summary>
-    public PropertyChain()
+    public PropertyChain ()
     {
     }
 
     /// <summary>Creates a new PropertyChain based on another.</summary>
-    public PropertyChain(PropertyChain parent)
+    public PropertyChain (PropertyChain parent)
     {
       if (parent == null)
         return;
-      this.memberNames.AddRange((IEnumerable<string>)parent.memberNames);
+      _memberNames.AddRange (parent._memberNames);
     }
 
-    public PropertyChain(IEnumerable<string> memberNames)
+    public PropertyChain (IEnumerable<string> memberNames)
     {
-      this.memberNames.AddRange(memberNames);
+      _memberNames.AddRange (memberNames);
     }
 
     /// <summary>Adds a property name to the chain</summary>
     /// <param name="propertyName">Name of the property to add</param>
-    public void Add(string propertyName)
+    public void Add (string propertyName)
     {
-      this.memberNames.Add(propertyName);
-    }
-
-    /// <summary>
-    /// Adds an indexer to the property chain. For example, if the following chain has been constructed:
-    /// Parent.Child
-    /// then calling AddIndexer(0) would convert this to:
-    /// Parent.Child[0]
-    /// </summary>
-    /// <param name="indexer"></param>
-    public void AddIndexer (object indexer)
-    {
-      if (this.memberNames.Count == 0)
-        throw new InvalidOperationException ("Could not apply an Indexer because the property chain is empty.");
-      this.memberNames[this.memberNames.Count - 1] = this.memberNames[this.memberNames.Count - 1] + "[" + indexer + "]";
+      _memberNames.Add (propertyName);
     }
 
     /// <summary>Creates a string representation of a property chain.</summary>
-    public override string ToString()
+    public override string ToString ()
     {
-      return string.Join(".", this.memberNames.ToArray());
+      return string.Join (".", _memberNames.ToArray());
     }
 
     /// <summary>Builds a property path.</summary>
-    public string BuildPropertyName(string propertyName)
+    public string BuildPropertyName (string propertyName)
     {
-      PropertyChain propertyChain = new PropertyChain(this);
-      propertyChain.Add(propertyName);
+      var propertyChain = new PropertyChain (this);
+      propertyChain.Add (propertyName);
       return propertyChain.ToString();
     }
 
     public static PropertyChain FromExpression (LambdaExpression expression)
     {
-      Stack<string> stringStack = new Stack<string>();
-      Func<Expression, MemberExpression> func = (Func<Expression, MemberExpression>) (toUnwrap =>
+      var stringStack = new Stack<string>();
+
+      MemberExpression Func (Expression toUnwrap)
       {
-        if (toUnwrap is UnaryExpression)
-          return ((UnaryExpression) toUnwrap).Operand as MemberExpression;
+        if (toUnwrap is UnaryExpression unaryExpression)
+          return unaryExpression.Operand as MemberExpression;
+
         return toUnwrap as MemberExpression;
-      });
-      for (MemberExpression memberExpression = func (expression.Body);
-          memberExpression != null;
-          memberExpression = func (memberExpression.Expression))
+      }
+
+      for (var memberExpression = Func (expression.Body); memberExpression != null; memberExpression = Func (memberExpression.Expression))
         stringStack.Push (memberExpression.Member.Name);
-      return new PropertyChain ((IEnumerable<string>) stringStack);
+
+      return new PropertyChain (stringStack);
     }
   }
 }

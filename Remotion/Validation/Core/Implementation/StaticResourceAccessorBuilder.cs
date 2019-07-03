@@ -15,14 +15,16 @@ namespace Remotion.Validation.Implementation
   public class StaticResourceAccessorBuilder : IResourceAccessorBuilder
   {
     /// <summary>Builds a function used to retrieve the resource.</summary>
-    public virtual Func<string> GetResourceAccessor(Type resourceType, string resourceName)
+    public virtual Func<string> GetResourceAccessor (Type resourceType, string resourceName)
     {
-      PropertyInfo resourceProperty = this.GetResourceProperty(ref resourceType, ref resourceName);
-      if (resourceProperty == (PropertyInfo)null)
-        throw new InvalidOperationException(string.Format("Could not find a property named '{0}' on type '{1}'.", (object)resourceName, (object)resourceType));
-      if (resourceProperty.PropertyType != typeof(string))
-        throw new InvalidOperationException(string.Format("Property '{0}' on type '{1}' does not return a string", (object)resourceName, (object)resourceType));
-      return (Func<string>)Delegate.CreateDelegate(typeof(Func<string>), resourceProperty.GetGetMethod());
+      var resourceProperty = GetResourceProperty (ref resourceType, ref resourceName);
+      if (resourceProperty == null)
+        throw new InvalidOperationException ($"Could not find a property named '{resourceName}' on type '{resourceType}'.");
+
+      if (resourceProperty.PropertyType != typeof (string))
+        throw new InvalidOperationException ($"Property '{resourceName}' on type '{resourceType}' does not return a string");
+
+      return (Func<string>) Delegate.CreateDelegate (typeof (Func<string>), resourceProperty.GetGetMethod());
     }
 
     /// <summary>
@@ -30,11 +32,9 @@ namespace Remotion.Validation.Implementation
     /// ResourceType and ResourceName are ref parameters to allow derived types
     /// to replace the type/name of the resource before the delegate is constructed.
     /// </summary>
-    protected virtual PropertyInfo GetResourceProperty(
-      ref Type resourceType,
-      ref string resourceName)
+    protected virtual PropertyInfo GetResourceProperty (ref Type resourceType, ref string resourceName)
     {
-      return resourceType.GetProperty(resourceName, BindingFlags.Static | BindingFlags.Public);
+      return resourceType.GetProperty (resourceName, BindingFlags.Static | BindingFlags.Public);
     }
   }
 }

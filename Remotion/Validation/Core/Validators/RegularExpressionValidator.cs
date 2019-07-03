@@ -10,43 +10,26 @@ using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public class RegularExpressionValidator : PropertyValidator, IRegularExpressionValidator, IPropertyValidator
+  public class RegularExpressionValidator : PropertyValidator, IRegularExpressionValidator
   {
-    private readonly string expression;
-    private readonly Regex regex;
+    private readonly string _expression;
+    private readonly Regex _regex;
 
-    public RegularExpressionValidator(string expression)
-        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Constants.RegularExpressionError))
+    public RegularExpressionValidator (string expression)
+        : base (() => Constants.RegularExpressionError)
     {
-      this.expression = expression;
-      this.regex = new Regex(expression);
+      _expression = expression;
+      _regex = new Regex (expression);
     }
 
-    public RegularExpressionValidator(Regex regex)
-        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Constants.RegularExpressionError))
+    protected override bool IsValid (PropertyValidatorContext context)
     {
-      this.expression = regex.ToString();
-      this.regex = regex;
-    }
-
-    public RegularExpressionValidator(string expression, RegexOptions options)
-        : base((System.Linq.Expressions.Expression<Func<string>>) (() => Constants.RegularExpressionError))
-    {
-      this.expression = expression;
-      this.regex = new Regex(expression, options);
-    }
-
-    protected override bool IsValid(PropertyValidatorContext context)
-    {
-      return context.PropertyValue == null || this.regex.IsMatch((string) context.PropertyValue);
+      return context.PropertyValue == null || _regex.IsMatch ((string) context.PropertyValue);
     }
 
     public string Expression
     {
-      get
-      {
-        return this.expression;
-      }
+      get { return _expression; }
     }
   }
 }

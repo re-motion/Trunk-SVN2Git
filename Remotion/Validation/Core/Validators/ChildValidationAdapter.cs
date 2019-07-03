@@ -7,54 +7,50 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Validation.Results;
 
 namespace Remotion.Validation.Validators
 {
   public class ChildValidatorAdaptor : NoopPropertyValidator
   {
-    private readonly IValidator validator;
+    private readonly IValidator _validator;
 
-    public IValidator Validator
+    private IValidator Validator
     {
-      get
-      {
-        return this.validator;
-      }
+      get { return _validator; }
     }
 
-    public ChildValidatorAdaptor(IValidator validator)
+    public ChildValidatorAdaptor (IValidator validator)
     {
-      this.validator = validator;
+      _validator = validator;
     }
 
-    public override IEnumerable<ValidationFailure> Validate(
-      PropertyValidatorContext context)
+    public override IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
     {
-      if (context.Rule.Member == (MemberInfo) null)
-        throw new InvalidOperationException(string.Format("Nested validators can only be used with Member Expressions."));
-      object propertyValue = context.PropertyValue;
+      if (context.Rule.Member == null)
+        throw new InvalidOperationException ("Nested validators can only be used with Member Expressions.");
+
+      var propertyValue = context.PropertyValue;
       if (propertyValue == null)
         return Enumerable.Empty<ValidationFailure>();
-      IValidator validator = this.GetValidator(context);
+
+      var validator = GetValidator ();
       if (validator == null)
         return Enumerable.Empty<ValidationFailure>();
-      ValidationContext forChildValidator = this.CreateNewValidationContextForChildValidator(propertyValue, context);
-      return (IEnumerable<ValidationFailure>) validator.Validate(forChildValidator).Errors;
+
+      var forChildValidator = CreateNewValidationContextForChildValidator (propertyValue, context);
+      return validator.Validate (forChildValidator).Errors;
     }
 
-    protected virtual IValidator GetValidator(PropertyValidatorContext context)
+    protected virtual IValidator GetValidator ()
     {
-      return this.Validator;
+      return Validator;
     }
 
-    protected ValidationContext CreateNewValidationContextForChildValidator(
-      object instanceToValidate,
-      PropertyValidatorContext context)
+    private ValidationContext CreateNewValidationContextForChildValidator (object instanceToValidate, PropertyValidatorContext context)
     {
-      ValidationContext validationContext = context.ParentContext.CloneForChildValidator(instanceToValidate);
-      validationContext.PropertyChain.Add(context.Rule.PropertyName);
+      var validationContext = context.ParentContext.CloneForChildValidator (instanceToValidate);
+      validationContext.PropertyChain.Add (context.Rule.PropertyName);
       return validationContext;
     }
   }

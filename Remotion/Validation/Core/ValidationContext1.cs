@@ -4,6 +4,7 @@
 // MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
+using System;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
@@ -11,20 +12,17 @@ namespace Remotion.Validation
 {
   public class ValidationContext<T> : ValidationContext
   {
-    public ValidationContext(T instanceToValidate)
-        : this(instanceToValidate, new PropertyChain(), (IValidatorSelector) new DefaultValidatorSelector())
+    public ValidationContext (T instanceToValidate)
+        : this (instanceToValidate, new PropertyChain(), new DefaultValidatorSelector())
     {
     }
 
-    public ValidationContext(
-        T instanceToValidate,
-        PropertyChain propertyChain,
-        IValidatorSelector validatorSelector)
-        : base((object) instanceToValidate, propertyChain, validatorSelector)
+    private ValidationContext (T instanceToValidate, PropertyChain propertyChain, IValidatorSelector validatorSelector)
+        : base (instanceToValidate, propertyChain, validatorSelector)
     {
-      this.InstanceToValidate = instanceToValidate;
+      InstanceToValidate = instanceToValidate;
     }
 
-    public new T InstanceToValidate { get; private set; }
+    private new T InstanceToValidate { get; }
   }
 }

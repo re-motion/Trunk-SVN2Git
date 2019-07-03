@@ -12,40 +12,29 @@ namespace Remotion.Validation
 {
   public class ValidationContext
   {
-    public ValidationContext(object instanceToValidate)
-        : this(instanceToValidate, new PropertyChain(), (IValidatorSelector) new DefaultValidatorSelector())
+    public ValidationContext (object instanceToValidate)
+        : this (instanceToValidate, new PropertyChain(), new DefaultValidatorSelector())
     {
     }
 
-    public ValidationContext(
-        object instanceToValidate,
-        PropertyChain propertyChain,
-        IValidatorSelector validatorSelector)
+    public ValidationContext (object instanceToValidate, PropertyChain propertyChain, IValidatorSelector validatorSelector)
     {
-      this.PropertyChain = new PropertyChain(propertyChain);
-      this.InstanceToValidate = instanceToValidate;
-      this.Selector = validatorSelector;
+      PropertyChain = new PropertyChain (propertyChain);
+      InstanceToValidate = instanceToValidate;
+      Selector = validatorSelector;
     }
 
-    public PropertyChain PropertyChain { get; private set; }
+    public PropertyChain PropertyChain { get; }
 
-    public object InstanceToValidate { get; private set; }
+    public object InstanceToValidate { get; }
 
-    public IValidatorSelector Selector { get; private set; }
+    public IValidatorSelector Selector { get; }
 
-    public bool IsChildContext { get; internal set; }
+    private bool IsChildContext { get; set; }
 
-    public ValidationContext Clone(
-        PropertyChain chain = null,
-        object instanceToValidate = null,
-        IValidatorSelector selector = null)
+    internal ValidationContext CloneForChildValidator (object instanceToValidate)
     {
-      return new ValidationContext(instanceToValidate ?? this.InstanceToValidate, chain ?? this.PropertyChain, selector ?? this.Selector);
-    }
-
-    internal ValidationContext CloneForChildValidator(object instanceToValidate)
-    {
-      return new ValidationContext(instanceToValidate, this.PropertyChain, this.Selector)
+      return new ValidationContext (instanceToValidate, PropertyChain, Selector)
              {
                  IsChildContext = true
              };

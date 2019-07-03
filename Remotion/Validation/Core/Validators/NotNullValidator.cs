@@ -5,19 +5,18 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public class NotNullValidator : PropertyValidator, INotNullValidator, IPropertyValidator
+  public class NotNullValidator : PropertyValidator, INotNullValidator
   {
-    public NotNullValidator()
-        : base((Expression<Func<string>>) (() => Constants.NotNullError))
+    public NotNullValidator ()
+        : base (() => Constants.NotNullError)
     {
     }
 
-    protected override bool IsValid(PropertyValidatorContext context)
+    protected override bool IsValid (PropertyValidatorContext context)
     {
       return context.PropertyValue != null;
     }
