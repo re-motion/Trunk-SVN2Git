@@ -161,6 +161,11 @@
     <CallTarget Targets="$(AfterTestBuildTargets)"/>
   </Target>
 
+  <Target Name="Server_NightlyBuild_Reduced" DependsOnTargets="$(BeforeTestBuildTargets)">
+    <MSBuild Projects="@(ProjectsBuildServer)" Targets="Server_NightlyBuild_Reduced" Properties="$(BuildProperties)" BuildInParallel="false"/>
+    <CallTarget Targets="$(AfterTestBuildTargets)"/>
+  </Target>
+
   <Target Name="Server_FullBuild" DependsOnTargets="$(BeforeFullBuildTargets)">
     <MSBuild Projects="@(ProjectsBuildServer)" Targets="Server_FullBuild" Properties="$(BuildProperties)" BuildInParallel="false"/>
     <CallTarget Targets="$(AfterFullBuildTargets)"/>
