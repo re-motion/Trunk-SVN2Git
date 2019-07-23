@@ -91,6 +91,30 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     /// <summary>
+    /// Tests using an implementation of <see cref="IScreenshotTransformation{T}"/>, drawing three overlapping ellipses with specified Z indices
+    /// and manipulating the height of the resolved element.
+    /// </summary>
+    [Category ("Screenshot")]
+    [Test]
+    public void ScreenshotTransformationTest ()
+    {
+      ScreenshotTestingDelegate<ControlObject> test =
+          (builder, target) =>
+          {
+            var transformations = new ScreenshotTransformationCollection<ControlObject>
+                                  {
+                                      new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Aqua, 3),
+                                      new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Red, 2, new Point (30, 0)),
+                                      new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Yellow, 4, new Point (60, 0)),
+                                      new RemoveYScreenshotTransformation<ControlObject> (30)
+                                  };
+            builder.Crop (target, s_controlObjectResolver, new ScreenshotCropping (WebPadding.None), transformations);
+          };
+
+      Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Browser, test);
+    }
+
+    /// <summary>
     /// Tests cropping with a different padding on each side.
     /// </summary>
     [Category ("Screenshot")]
@@ -721,6 +745,67 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
           IFluentScreenshotElementWithCovariance<WebTreeViewNodeControlObject> fluentWebTreeViewNode,
           IFluentScreenshotElement<ElementScope> fluentElement)
           : base (fluentWebTreeViewNode, fluentElement)
+      {
+      }
+    }
+
+    private class EllipseScreenshotTransformation<T> : IScreenshotTransformation<T>
+    {
+      public int ZIndex { get; }
+      private int Width { get; }
+      private int Height { get; }
+      private Brush Brush { get; }
+      public Point Offset { get; }
+
+      public EllipseScreenshotTransformation (int width, int height, Brush brush, int zIndex = default, Point offset = default)
+      {
+        Width = width;
+        Height = height;
+        Brush = brush;
+        ZIndex = zIndex;
+        Offset = offset;
+      }
+
+      public ScreenshotTransformationContext<T> BeginApply (ScreenshotTransformationContext<T> context)
+      {
+        context.Graphics.FillEllipse (
+            Brush,
+            context.ResolvedElement.ElementBounds.X + Offset.X,
+            context.ResolvedElement.ElementBounds.Y + Offset.Y,
+            Width,
+            Height);
+
+        return context;
+      }
+
+      public void EndApply (ScreenshotTransformationContext<T> context)
+      {
+      }
+    }
+
+    private class RemoveYScreenshotTransformation<T> : IScreenshotTransformation<T>
+    {
+      private readonly int _pixelToCutOff;
+      public int ZIndex { get; }
+
+      public RemoveYScreenshotTransformation (int pixelToCutOff)
+      {
+        _pixelToCutOff = pixelToCutOff;
+      }
+
+      public ScreenshotTransformationContext<T> BeginApply (ScreenshotTransformationContext<T> context)
+      {
+        var resolvedElement = context.ResolvedElement.CloneWith (
+            elementBounds: new Rectangle (
+                context.ResolvedElement.ElementBounds.X,
+                context.ResolvedElement.ElementBounds.Y,
+                context.ResolvedElement.ElementBounds.Width,
+                context.ResolvedElement.ElementBounds.Height - _pixelToCutOff));
+
+        return context.CloneWith(resolvedElement: resolvedElement);
+      }
+
+      public void EndApply (ScreenshotTransformationContext<T> context)
       {
       }
     }
