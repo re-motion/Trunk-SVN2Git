@@ -25,13 +25,48 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
   /// <summary>
   /// A context for <see cref="IScreenshotTransformation{T}"/> to apply their transformations on.
   /// </summary>
-  public class ScreenshotTransformationContext<T>
+  public class ScreenshotTransformationContext<T> : IDisposable
   {
+    public static ScreenshotTransformationContext<T> CreateForTransformation (
+        ScreenshotManipulation manipulation,
+        [NotNull] Graphics graphics,
+        [NotNull] IScreenshotElementResolver<T> resolver,
+        [NotNull] T target,
+        CoordinateSystem coordinateSystem,
+        [NotNull] IScreenshotTransformation<T> transformation,
+        [NotNull] IBrowserContentLocator locator)
+    {
+      ArgumentUtility.CheckNotNull ("graphics", graphics);
+      ArgumentUtility.CheckNotNull ("resolver", resolver);
+      ArgumentUtility.CheckNotNull ("target", target);
+      ArgumentUtility.CheckNotNull ("transformation", transformation);
+      ArgumentUtility.CheckNotNull ("locator", locator);
+
+      var resolvedElement = Resolve (resolver, target, locator, coordinateSystem);
+      var context = new ScreenshotTransformationContext<T> (manipulation, graphics, resolver, target, resolvedElement, transformation);
+
+      context = transformation.BeginApply (context);
+
+      var parentBounds = context.ResolvedElement.ParentBounds;
+      if (parentBounds.HasValue)
+      {
+        return
+            context.CloneWith (
+                resolvedElement:
+                resolvedElement.CloneWith (elementBounds: Rectangle.Intersect (parentBounds.Value, context.ResolvedElement.ElementBounds)));
+      }
+      else
+      {
+        return context;
+      }
+    }
+
     private readonly ScreenshotManipulation _manipulation;
     private readonly Graphics _graphics;
     private readonly IScreenshotElementResolver<T> _resolver;
     private readonly T _target;
     private readonly ResolvedScreenshotElement _resolvedElement;
+    private readonly IScreenshotTransformation<T> _transformation;
 
     public ScreenshotTransformationContext (
         ScreenshotManipulation manipulation,
@@ -39,17 +74,28 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
         [NotNull] IScreenshotElementResolver<T> resolver,
         [NotNull] T target,
         [NotNull] ResolvedScreenshotElement resolvedElement)
+        : this (manipulation, graphics, resolver, target, resolvedElement, null)
     {
       ArgumentUtility.CheckNotNull ("graphics", graphics);
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("resolvedElement", resolvedElement);
+    }
 
+    private ScreenshotTransformationContext (
+        ScreenshotManipulation manipulation,
+        [NotNull] Graphics graphics,
+        [NotNull] IScreenshotElementResolver<T> resolver,
+        [NotNull] T target,
+        [NotNull] ResolvedScreenshotElement resolvedElement,
+        [CanBeNull] IScreenshotTransformation<T> transformation)
+    {
       _manipulation = manipulation;
       _graphics = graphics;
       _resolver = resolver;
       _target = target;
       _resolvedElement = resolvedElement;
+      _transformation = transformation;
     }
 
     /// <summary>
@@ -97,8 +143,9 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
     /// </summary>
     public ScreenshotTransformationContext<T> CloneWith (
         IScreenshotElementResolver<T> resolver = null,
-        OptionalParameter<T> target = default(OptionalParameter<T>),
-        ResolvedScreenshotElement resolvedElement = null)
+        OptionalParameter<T> target = default (OptionalParameter<T>),
+        ResolvedScreenshotElement resolvedElement = null,
+        IScreenshotTransformation<T> transformation = null)
     {
       if (target.HasValue && target.Value == null)
         throw new ArgumentNullException ("target", "Value of optional parameter cannot be null.");
@@ -108,7 +155,30 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
           _graphics,
           resolver ?? _resolver,
           Assertion.IsNotNull (target.GetValueOrDefault (_target)),
-          resolvedElement ?? _resolvedElement);
+          resolvedElement ?? _resolvedElement,
+          transformation ?? _transformation);
+    }
+
+    public void Dispose ()
+    {
+      _transformation?.EndApply (this);
+    }
+
+    private static ResolvedScreenshotElement Resolve (
+        IScreenshotElementResolver<T> resolver,
+        T target,
+        IBrowserContentLocator locator,
+        CoordinateSystem coordinateSystem)
+    {
+      switch (coordinateSystem)
+      {
+        case CoordinateSystem.Browser:
+          return resolver.ResolveBrowserCoordinates (target);
+        case CoordinateSystem.Desktop:
+          return resolver.ResolveDesktopCoordinates (target, locator);
+        default:
+          throw new ArgumentOutOfRangeException ("coordinateSystem", coordinateSystem, null);
+      }
     }
   }
 }

@@ -30,69 +30,6 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
   /// </summary>
   public class ScreenshotBuilder
   {
-    private class TransformationHelper<T> : IDisposable
-    {
-      private readonly ScreenshotTransformationContext<T> _context;
-      private readonly IScreenshotTransformation<T> _transformation;
-
-      public TransformationHelper (
-          ScreenshotManipulation manipulation,
-          Graphics graphics,
-          IScreenshotElementResolver<T> resolver,
-          T target,
-          CoordinateSystem coordinateSystem,
-          IScreenshotTransformation<T> transformation,
-          IBrowserContentLocator locator)
-      {
-        var resolvedElement = Resolve (resolver, target, locator, coordinateSystem);
-        var context = new ScreenshotTransformationContext<T> (manipulation, graphics, resolver, target, resolvedElement);
-
-        context = transformation.BeginApply (context);
-
-        var parentBounds = context.ResolvedElement.ParentBounds;
-        if (parentBounds.HasValue)
-        {
-          _context =
-              context.CloneWith (
-                  resolvedElement:
-                      resolvedElement.CloneWith (elementBounds: Rectangle.Intersect (parentBounds.Value, context.ResolvedElement.ElementBounds)));
-        }
-        else
-        {
-          _context = context;
-        }
-
-        _transformation = transformation;
-      }
-
-      public ScreenshotTransformationContext<T> Context
-      {
-        get { return _context; }
-      }
-
-      public void Dispose ()
-      {
-        _transformation.EndApply (_context);
-      }
-
-      private ResolvedScreenshotElement Resolve (
-          IScreenshotElementResolver<T> resolver,
-          T target,
-          IBrowserContentLocator locator,
-          CoordinateSystem coordinateSystem)
-      {
-        switch (coordinateSystem)
-        {
-          case CoordinateSystem.Browser:
-            return resolver.ResolveBrowserCoordinates (target);
-          case CoordinateSystem.Desktop:
-            return resolver.ResolveDesktopCoordinates (target, locator);
-          default:
-            throw new ArgumentOutOfRangeException ("coordinateSystem", coordinateSystem, null);
-        }
-      }
-    }
-
     private readonly IBrowserContentLocator _locator;
 
     private Graphics _graphics;
@@ -172,10 +109,8 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
       ArgumentUtility.CheckNotNull ("resolver", resolver);
       ArgumentUtility.CheckNotNull ("annotation", annotation);
 
-      using (var helper = CreateTransformationHelper (ScreenshotManipulation.Annotate, resolver, target, transformation))
+      using (var context = CreateTransformationContext (ScreenshotManipulation.Annotate, resolver, target, transformation))
       {
-        var context = helper.Context;
-
         ValidateResolvedElement (context.ResolvedElement, minimumElementVisibility);
 
         annotation.Draw (context.Graphics, context.ResolvedElement);
@@ -199,10 +134,8 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
       ArgumentUtility.CheckNotNull ("cropping", cropping);
 
 
-      using (var helper = CreateTransformationHelper (ScreenshotManipulation.Annotate, resolver, target, transformation))
+      using (var context = CreateTransformationContext (ScreenshotManipulation.Annotate, resolver, target, transformation))
       {
-        var context = helper.Context;
-
         ValidateResolvedElement (context.ResolvedElement, minimumElementVisibility);
 
         var croppingRegion = cropping.ApplyOnElement (_imageBounds, context.ResolvedElement);
@@ -237,13 +170,13 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
       _screenshot.Image.Save (path, ImageFormat.Png);
     }
 
-    private TransformationHelper<T> CreateTransformationHelper<T> (
+    private ScreenshotTransformationContext<T> CreateTransformationContext<T> (
         ScreenshotManipulation manipulation,
         IScreenshotElementResolver<T> resolver,
         T target,
         [CanBeNull] IScreenshotTransformation<T> transformation)
     {
-      return new TransformationHelper<T> (
+      return ScreenshotTransformationContext<T>.CreateForTransformation (
           manipulation,
           _graphics,
           resolver,
