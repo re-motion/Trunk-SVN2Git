@@ -108,7 +108,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
                                       new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Yellow, 4, new Point (60, 0)),
                                       new RemovePixelsFromBottomScreenshotTransformation<ControlObject> (30)
                                   };
-            builder.Crop (target, s_controlObjectResolver, new ScreenshotCropping (WebPadding.None), transformations);
+            var fluentScreenshotElement = target.ForControlObjectScreenshot();
+            ((IFluentScreenshotElement<ControlObject>) fluentScreenshotElement).Transformations = transformations;
+
+            builder.Crop (fluentScreenshotElement);
           };
 
       Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Browser, test);
