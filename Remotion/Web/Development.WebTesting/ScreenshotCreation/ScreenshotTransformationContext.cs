@@ -27,6 +27,10 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
   /// </summary>
   public class ScreenshotTransformationContext<T> : IDisposable
   {
+    /// <summary>
+    /// Creates a disposable context, executing <see cref="IScreenshotTransformation{T}.BeginApply"/> of <paramref name="transformation"/> to the context at creation,
+    /// and executing <see cref="IScreenshotTransformation{T}.EndApply"/> of <paramref name="transformation"/> at disposal.
+    /// </summary>
     public static ScreenshotTransformationContext<T> CreateForTransformation (
         ScreenshotManipulation manipulation,
         [NotNull] Graphics graphics,
