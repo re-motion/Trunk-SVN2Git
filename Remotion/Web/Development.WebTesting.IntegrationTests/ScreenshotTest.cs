@@ -755,7 +755,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       private int Width { get; }
       private int Height { get; }
       private Brush Brush { get; }
-      public Point Offset { get; }
+      private Point Offset { get; }
 
       public EllipseScreenshotTransformation (int width, int height, Brush brush, int zIndex = default, Point offset = default)
       {
@@ -802,7 +802,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
                 context.ResolvedElement.ElementBounds.Width,
                 context.ResolvedElement.ElementBounds.Height - _pixelToCutOff));
 
-        return context.CloneWith(resolvedElement: resolvedElement);
+        return context.CloneWith (resolvedElement: resolvedElement);
       }
 
       public void EndApply (ScreenshotTransformationContext<T> context)
