@@ -106,7 +106,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
                                       new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Aqua, 3),
                                       new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Red, 2, new Point (30, 0)),
                                       new EllipseScreenshotTransformation<ControlObject> (50, 50, Brushes.Yellow, 4, new Point (60, 0)),
-                                      new RemoveYScreenshotTransformation<ControlObject> (30)
+                                      new RemovePixelsFromBottomScreenshotTransformation<ControlObject> (30)
                                   };
             builder.Crop (target, s_controlObjectResolver, new ScreenshotCropping (WebPadding.None), transformations);
           };
@@ -783,14 +783,14 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       }
     }
 
-    private class RemoveYScreenshotTransformation<T> : IScreenshotTransformation<T>
+    private class RemovePixelsFromBottomScreenshotTransformation<T> : IScreenshotTransformation<T>
     {
-      private readonly int _pixelToCutOff;
+      private readonly int _pixelsToRemove;
       public int ZIndex { get; }
 
-      public RemoveYScreenshotTransformation (int pixelToCutOff)
+      public RemovePixelsFromBottomScreenshotTransformation (int pixelsToRemove)
       {
-        _pixelToCutOff = pixelToCutOff;
+        _pixelsToRemove = pixelsToRemove;
       }
 
       public ScreenshotTransformationContext<T> BeginApply (ScreenshotTransformationContext<T> context)
@@ -800,7 +800,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
                 context.ResolvedElement.ElementBounds.X,
                 context.ResolvedElement.ElementBounds.Y,
                 context.ResolvedElement.ElementBounds.Width,
-                context.ResolvedElement.ElementBounds.Height - _pixelToCutOff));
+                context.ResolvedElement.ElementBounds.Height - _pixelsToRemove));
 
         return context.CloneWith (resolvedElement: resolvedElement);
       }
