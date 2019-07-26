@@ -55,10 +55,8 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
                 resolvedElement:
                 resolvedElement.CloneWith (elementBounds: Rectangle.Intersect (parentBounds.Value, context.ResolvedElement.ElementBounds)));
       }
-      else
-      {
-        return context;
-      }
+
+      return context;
     }
 
     private readonly ScreenshotManipulation _manipulation;
