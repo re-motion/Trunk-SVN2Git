@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.IO;
 using Coypu;
 using Coypu.Drivers;
@@ -48,7 +49,7 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
       var sessionConfiguration = CreateSessionConfiguration (testInfrastructureConfiguration);
       int driverProcessID;
       string userDirectory;
-      var driver = CreateChromeDriver (out driverProcessID, out userDirectory);
+      var driver = CreateChromeDriver (out driverProcessID, out userDirectory, testInfrastructureConfiguration.CommandTimeout);
 
       var session = new Coypu.BrowserSession (sessionConfiguration, new CustomSeleniumWebDriver (driver, Browser.Chrome));
 
@@ -69,12 +70,12 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
              };
     }
 
-    private ChromeDriver CreateChromeDriver (out int driverProcessID, [CanBeNull] out string userDirectory)
+    private ChromeDriver CreateChromeDriver (out int driverProcessID, [CanBeNull] out string userDirectory, TimeSpan commandTimeout)
     {
       var driverService = CreateChromeDriverService();
       var chromeOptions = _chromeConfiguration.CreateChromeOptions();
 
-      var driver = new ChromeDriver (driverService, chromeOptions);
+      var driver = new ChromeDriver (driverService, chromeOptions, commandTimeout);
       driverProcessID = driverService.ProcessId;
       userDirectory = chromeOptions.UserDirectory;
       return driver;
