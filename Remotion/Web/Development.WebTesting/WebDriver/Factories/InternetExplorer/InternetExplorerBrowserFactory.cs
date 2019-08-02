@@ -47,7 +47,7 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.InternetExplor
 
       var sessionConfiguration = CreateSessionConfiguration (testInfrastructureConfiguration);
       int driverProcessId;
-      var driver = CreateInternetExplorerDriver (out driverProcessId);
+      var driver = CreateInternetExplorerDriver (out driverProcessId, testInfrastructureConfiguration.CommandTimeout);
 
       var session = new Coypu.BrowserSession (sessionConfiguration, new CustomSeleniumWebDriver (driver, Browser.InternetExplorer));
 
@@ -68,12 +68,12 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.InternetExplor
              };
     }
 
-    private InternetExplorerDriver CreateInternetExplorerDriver (out int driverProcessId)
+    private InternetExplorerDriver CreateInternetExplorerDriver (out int driverProcessId, TimeSpan commandTimeout)
     {
       var driverService = CreateInternetExplorerDriverService();
       var options = _internetExplorerConfiguration.CreateInternetExplorerOptions();
 
-      var driver = new InternetExplorerDriver (driverService, options);
+      var driver = new InternetExplorerDriver (driverService, options, commandTimeout);
 
       driverProcessId = driverService.ProcessId;
 
