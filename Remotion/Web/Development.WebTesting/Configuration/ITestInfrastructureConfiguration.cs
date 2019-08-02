@@ -48,6 +48,11 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     TimeSpan RetryInterval { get; }
 
     /// <summary>
+    /// Returns the command timeout used for the communication between the Selenium language bindings and the <see cref="OpenQA.Selenium.Remote.RemoteWebDriver"/>.
+    /// </summary>
+    TimeSpan CommandTimeout { get; }
+
+    /// <summary>
     /// Some Selenium web driver implementations may become confused when searching for windows if there are other browser windows present. Typically
     /// you want to turn this auto-close option on when running web tests, on developer machines, however, this may unexpectedly close important
     /// browser windows, which is why the default value is set to <see langword="false" />.

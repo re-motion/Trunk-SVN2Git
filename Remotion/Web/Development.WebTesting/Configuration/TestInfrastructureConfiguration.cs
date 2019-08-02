@@ -38,6 +38,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     private readonly string _screenshotDirectory;
     private readonly TimeSpan _searchTimeout;
     private readonly TimeSpan _retryInterval;
+    private readonly TimeSpan _commandTimeout;
     private readonly IRequestErrorDetectionStrategy _requestErrorDetectionStrategy;
     private readonly bool _closeBrowserWindowsOnSetUpAndTearDown;
 
@@ -49,6 +50,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       _screenshotDirectory = webTestConfigurationSection.ScreenshotDirectory;
       _searchTimeout = webTestConfigurationSection.SearchTimeout;
       _retryInterval = webTestConfigurationSection.RetryInterval;
+      _commandTimeout = webTestConfigurationSection.CommandTimeout;
 
       _closeBrowserWindowsOnSetUpAndTearDown = webTestConfigurationSection.CloseBrowserWindowsOnSetUpAndTearDown;
       _requestErrorDetectionStrategy = GetRequestErrorDetectionConfiguration (webTestConfigurationSection.RequestErrorDetectionStrategyTypeName);
@@ -72,6 +74,12 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     public TimeSpan RetryInterval
     {
       get { return _retryInterval; }
+    }
+
+    /// <inheritdoc />
+    public TimeSpan CommandTimeout
+    {
+      get { return _commandTimeout; }
     }
 
     public bool CloseBrowserWindowsOnSetUpAndTearDown
