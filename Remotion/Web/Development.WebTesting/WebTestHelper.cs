@@ -190,12 +190,17 @@ namespace Remotion.Web.Development.WebTesting
     /// Creates a new browser session using the configured settings from <see cref="WebTestConfigurationFactory"/>.
     /// </summary>
     /// <param name="maximizeWindow">Specified whether the new browser session's window should be maximized.</param>
+    /// <param name="commandTimeout">Specifies a command timeout for the communication between the Selenium language bindings and the <see cref="IWebDriver"/>.</param>
     /// <returns>The new browser session.</returns>
-    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true)
+    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, TimeSpan? commandTimeout = null)
     {
+      var testInfrastructureConfiguration = _testInfrastructureConfiguration;
+      if (commandTimeout != null)
+        testInfrastructureConfiguration = ((TestInfrastructureConfiguration) _testInfrastructureConfiguration).Clone (commandTimeout: commandTimeout);
+
       using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
-        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (_testInfrastructureConfiguration);
+        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (testInfrastructureConfiguration);
         _browserSessions.Add (browserResult);
 
         if (maximizeWindow)
