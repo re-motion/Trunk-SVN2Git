@@ -151,7 +151,8 @@ namespace Remotion.Web.Development.WebTesting
     /// SetUp method for each web test fixture.
     /// </summary>
     /// <param name="maximizeWindow">Specifies whether the main browser session's window should be maximized.</param>
-    public void OnFixtureSetUp (bool maximizeWindow = true)
+    /// <param name="commandTimeout">Specifies a command timeout for the communication between the Selenium language bindings and the <see cref="IWebDriver"/>.</param>
+    public void OnFixtureSetUp (bool maximizeWindow = true, TimeSpan? commandTimeout = null)
     {
       s_log.InfoFormat ("WebTestHelper.OnFixtureSetup() has been called.");
       s_log.InfoFormat ("Remotion version: " + typeof (WebTestHelper).Assembly.GetName().Version);
@@ -165,7 +166,7 @@ namespace Remotion.Web.Development.WebTesting
       // See RM-6731.
       EnsureAllBrowserWindowsAreClosed();
 
-      _mainBrowserSession = CreateNewBrowserSession (maximizeWindow);
+      _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, commandTimeout);
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
