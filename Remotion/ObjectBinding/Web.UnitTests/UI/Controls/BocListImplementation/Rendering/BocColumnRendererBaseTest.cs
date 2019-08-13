@@ -209,6 +209,44 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       Html.AssertAttribute (th, DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata, "true");
     }
 
+    [Test]
+    public void TestDiagnosticMetadataRenderingInTitleForEmptyContent ()
+    {
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition);
+
+      Column.ColumnTitle = "";
+
+      var renderingContext = CreateRenderingContext();
+
+      renderer.RenderTitleCell (renderingContext, SortingDirection.None, 0);
+
+      var document = Html.GetResultDocument();
+      var th = Html.GetAssertedChildElement (document, "th", 0);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
+    }
+
+    [Test]
+    public void TestDiagnosticMetadataRenderingInTitleForNullContent ()
+    {
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (
+          new FakeResourceUrlFactory(),
+          RenderingFeatures.WithDiagnosticMetadata,
+          _bocListCssClassDefinition);
+
+      Column.ColumnTitle = null;
+
+      var renderingContext = CreateRenderingContext();
+
+      renderer.RenderTitleCell (renderingContext, SortingDirection.None, 0);
+
+      var document = Html.GetResultDocument();
+      var th = Html.GetAssertedChildElement (document, "th", 0);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
+    }
+
     private void RenderTitleCell (
         SortingDirection sortDirection,
         int sortIndex,
