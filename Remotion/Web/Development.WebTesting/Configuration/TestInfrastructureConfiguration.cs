@@ -44,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
 
     public TestInfrastructureConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection)
         : this (
-            webTestConfigurationSection.WebApplicationRoot,
+            ArgumentUtility.CheckNotNull ("webTestConfigurationSection", webTestConfigurationSection).WebApplicationRoot,
             webTestConfigurationSection.ScreenshotDirectory,
             webTestConfigurationSection.SearchTimeout,
             webTestConfigurationSection.RetryInterval,
@@ -52,7 +52,6 @@ namespace Remotion.Web.Development.WebTesting.Configuration
             webTestConfigurationSection.CloseBrowserWindowsOnSetUpAndTearDown,
             GetRequestErrorDetectionConfiguration (webTestConfigurationSection.RequestErrorDetectionStrategyTypeName))
     {
-      ArgumentUtility.CheckNotNull ("webTestConfigurationSection", webTestConfigurationSection);
     }
 
     private TestInfrastructureConfiguration (
