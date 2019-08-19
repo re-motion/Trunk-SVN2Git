@@ -41,13 +41,15 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.InternetExplor
       _internetExplorerConfiguration = internetExplorerConfiguration;
     }
 
-    public IBrowserSession CreateBrowser (ITestInfrastructureConfiguration testInfrastructureConfiguration)
+    public IBrowserSession CreateBrowser (ITestInfrastructureConfiguration testInfrastructureConfiguration, DriverOptions options)
     {
       ArgumentUtility.CheckNotNull ("testInfrastructureConfiguration", testInfrastructureConfiguration);
 
       var sessionConfiguration = CreateSessionConfiguration (testInfrastructureConfiguration);
+      var commandTimeout = options?.CommandTimeout ?? testInfrastructureConfiguration.CommandTimeout;
+
       int driverProcessId;
-      var driver = CreateInternetExplorerDriver (out driverProcessId, testInfrastructureConfiguration.CommandTimeout);
+      var driver = CreateInternetExplorerDriver (out driverProcessId, commandTimeout);
 
       var session = new Coypu.BrowserSession (sessionConfiguration, new CustomSeleniumWebDriver (driver, Browser.InternetExplorer));
 

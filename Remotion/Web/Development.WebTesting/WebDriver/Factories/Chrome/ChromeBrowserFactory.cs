@@ -42,14 +42,16 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
       _chromeConfiguration = chromeConfiguration;
     }
 
-    public IBrowserSession CreateBrowser (ITestInfrastructureConfiguration testInfrastructureConfiguration)
+    public IBrowserSession CreateBrowser (ITestInfrastructureConfiguration testInfrastructureConfiguration, DriverOptions options)
     {
       ArgumentUtility.CheckNotNull ("testInfrastructureConfiguration", testInfrastructureConfiguration);
 
       var sessionConfiguration = CreateSessionConfiguration (testInfrastructureConfiguration);
+      var commandTimeout = options?.CommandTimeout ?? testInfrastructureConfiguration.CommandTimeout;
+
       int driverProcessID;
       string userDirectory;
-      var driver = CreateChromeDriver (out driverProcessID, out userDirectory, testInfrastructureConfiguration.CommandTimeout);
+      var driver = CreateChromeDriver (out driverProcessID,out userDirectory,commandTimeout);
 
       var session = new Coypu.BrowserSession (sessionConfiguration, new CustomSeleniumWebDriver (driver, Browser.Chrome));
 

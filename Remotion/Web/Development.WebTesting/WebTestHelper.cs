@@ -151,8 +151,8 @@ namespace Remotion.Web.Development.WebTesting
     /// SetUp method for each web test fixture.
     /// </summary>
     /// <param name="maximizeWindow">Specifies whether the main browser session's window should be maximized.</param>
-    /// <param name="commandTimeout">Specifies a command timeout for the communication between the Selenium language bindings and the <see cref="IWebDriver"/>.</param>
-    public void OnFixtureSetUp (bool maximizeWindow = true, TimeSpan? commandTimeout = null)
+    /// <param name="options">Specifies additional options applied when creating the browser.</param>
+    public void OnFixtureSetUp (bool maximizeWindow = true, DriverOptions options = null)
     {
       s_log.InfoFormat ("WebTestHelper.OnFixtureSetup() has been called.");
       s_log.InfoFormat ("Remotion version: " + typeof (WebTestHelper).Assembly.GetName().Version);
@@ -166,7 +166,7 @@ namespace Remotion.Web.Development.WebTesting
       // See RM-6731.
       EnsureAllBrowserWindowsAreClosed();
 
-      _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, commandTimeout);
+      _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, options);
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
@@ -191,17 +191,15 @@ namespace Remotion.Web.Development.WebTesting
     /// Creates a new browser session using the configured settings from <see cref="WebTestConfigurationFactory"/>.
     /// </summary>
     /// <param name="maximizeWindow">Specified whether the new browser session's window should be maximized.</param>
-    /// <param name="commandTimeout">Specifies a command timeout for the communication between the Selenium language bindings and the <see cref="IWebDriver"/>.</param>
+    /// <param name="options">Specifies additional options applied when creating the browser.</param>
     /// <returns>The new browser session.</returns>
-    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, TimeSpan? commandTimeout = null)
+    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, DriverOptions options = null)
     {
       var testInfrastructureConfiguration = _testInfrastructureConfiguration;
-      if (commandTimeout != null)
-        testInfrastructureConfiguration = ((TestInfrastructureConfiguration) _testInfrastructureConfiguration).Clone (commandTimeout: commandTimeout);
 
       using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
-        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (testInfrastructureConfiguration);
+        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (testInfrastructureConfiguration, options);
         _browserSessions.Add (browserResult);
 
         if (maximizeWindow)
