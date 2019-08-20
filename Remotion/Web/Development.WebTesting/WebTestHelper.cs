@@ -193,13 +193,11 @@ namespace Remotion.Web.Development.WebTesting
     /// <param name="maximizeWindow">Specified whether the new browser session's window should be maximized.</param>
     /// <param name="options">Specifies additional options applied when creating the browser.</param>
     /// <returns>The new browser session.</returns>
-    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, DriverOptions options = null)
+    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, [CanBeNull] DriverOptions options = null)
     {
-      var testInfrastructureConfiguration = _testInfrastructureConfiguration;
-
       using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
-        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (testInfrastructureConfiguration, options);
+        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (_testInfrastructureConfiguration, options);
         _browserSessions.Add (browserResult);
 
         if (maximizeWindow)

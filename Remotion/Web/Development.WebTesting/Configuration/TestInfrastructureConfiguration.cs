@@ -43,33 +43,17 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     private readonly bool _closeBrowserWindowsOnSetUpAndTearDown;
 
     public TestInfrastructureConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection)
-        : this (
-            ArgumentUtility.CheckNotNull ("webTestConfigurationSection", webTestConfigurationSection).WebApplicationRoot,
-            webTestConfigurationSection.ScreenshotDirectory,
-            webTestConfigurationSection.SearchTimeout,
-            webTestConfigurationSection.RetryInterval,
-            webTestConfigurationSection.CommandTimeout,
-            webTestConfigurationSection.CloseBrowserWindowsOnSetUpAndTearDown,
-            GetRequestErrorDetectionConfiguration (webTestConfigurationSection.RequestErrorDetectionStrategyTypeName))
     {
-    }
+      ArgumentUtility.CheckNotNull ("webTestConfigurationSection", webTestConfigurationSection);
 
-    private TestInfrastructureConfiguration (
-        string webApplicationRoot,
-        string screenshotDirectory,
-        TimeSpan searchTimeout,
-        TimeSpan retryInterval,
-        TimeSpan commandTimeout,
-        bool closeBrowserWindowsOnSetUpAndTearDown,
-        IRequestErrorDetectionStrategy requestErrorDetectionStrategy)
-    {
-      _webApplicationRoot = webApplicationRoot;
-      _screenshotDirectory = screenshotDirectory;
-      _searchTimeout = searchTimeout;
-      _retryInterval = retryInterval;
-      _commandTimeout = commandTimeout;
-      _closeBrowserWindowsOnSetUpAndTearDown = closeBrowserWindowsOnSetUpAndTearDown;
-      _requestErrorDetectionStrategy = requestErrorDetectionStrategy;
+      _webApplicationRoot = webTestConfigurationSection.WebApplicationRoot;
+      _screenshotDirectory = webTestConfigurationSection.ScreenshotDirectory;
+      _searchTimeout = webTestConfigurationSection.SearchTimeout;
+      _retryInterval = webTestConfigurationSection.RetryInterval;
+      _commandTimeout = webTestConfigurationSection.CommandTimeout;
+
+      _closeBrowserWindowsOnSetUpAndTearDown = webTestConfigurationSection.CloseBrowserWindowsOnSetUpAndTearDown;
+      _requestErrorDetectionStrategy = GetRequestErrorDetectionConfiguration (webTestConfigurationSection.RequestErrorDetectionStrategyTypeName);
     }
 
     public string WebApplicationRoot
@@ -108,26 +92,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       get { return _requestErrorDetectionStrategy; }
     }
 
-    public TestInfrastructureConfiguration Clone (
-        [CanBeNull] string webApplicationRoot = null,
-        [CanBeNull] string screenshotDirectory = null,
-        TimeSpan? searchTimeout = null,
-        TimeSpan? retryInterval = null,
-        TimeSpan? commandTimeout = null,
-        bool? closeBrowserWindowsOnSetUpAndTearDown = null,
-        [CanBeNull] IRequestErrorDetectionStrategy requestErrorDetectionStrategy = null)
-    {
-      return new TestInfrastructureConfiguration (
-          webApplicationRoot ?? WebApplicationRoot,
-          screenshotDirectory ?? ScreenshotDirectory,
-          searchTimeout ?? SearchTimeout,
-          retryInterval ?? RetryInterval,
-          commandTimeout ?? CommandTimeout,
-          closeBrowserWindowsOnSetUpAndTearDown ?? CloseBrowserWindowsOnSetUpAndTearDown,
-          requestErrorDetectionStrategy ?? RequestErrorDetectionStrategy);
-    }
-
-    private static IRequestErrorDetectionStrategy GetRequestErrorDetectionConfiguration (string requestErrorDetectionStrategyName)
+    private IRequestErrorDetectionStrategy GetRequestErrorDetectionConfiguration (string requestErrorDetectionStrategyName)
     {
       var requestErrorStrategyType = GetRequestErrorDetectionStrategyType (requestErrorDetectionStrategyName);
       Assertion.IsNotNull (
@@ -138,10 +103,10 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     }
 
     [CanBeNull]
-    private static Type GetRequestErrorDetectionStrategyType (string requestErrorDetectionStrategyTypeName)
+    private Type GetRequestErrorDetectionStrategyType (string requestErrorDetectionStrategyTypeName)
     {
       if (s_wellKnownRequestErrorDetectionStrategyTypes.ContainsKey (requestErrorDetectionStrategyTypeName))
-        return s_wellKnownRequestErrorDetectionStrategyTypes[requestErrorDetectionStrategyTypeName];
+        return s_wellKnownRequestErrorDetectionStrategyTypes [requestErrorDetectionStrategyTypeName];
 
       return Type.GetType (requestErrorDetectionStrategyTypeName, throwOnError: false, ignoreCase: false);
     }

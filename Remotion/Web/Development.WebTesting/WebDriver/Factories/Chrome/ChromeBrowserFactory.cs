@@ -51,7 +51,7 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
 
       int driverProcessID;
       string userDirectory;
-      var driver = CreateChromeDriver (out driverProcessID,out userDirectory,commandTimeout);
+      var driver = CreateChromeDriver (out driverProcessID, out userDirectory, commandTimeout);
 
       var session = new Coypu.BrowserSession (sessionConfiguration, new CustomSeleniumWebDriver (driver, Browser.Chrome));
 
