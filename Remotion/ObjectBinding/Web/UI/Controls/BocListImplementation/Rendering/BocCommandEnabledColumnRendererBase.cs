@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (RenderingFeatures.EnableDiagnosticMetadata)
       {
         if (string.IsNullOrWhiteSpace (contents))
-          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, "");
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, string.Empty);
         else
           renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, contents);
       }

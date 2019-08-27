@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
         var columnTitle = renderingContext.ColumnDefinition.ColumnTitleDisplayValue;
         if (string.IsNullOrEmpty (columnTitle))
-          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, "");
+          renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, string.Empty);
         else
           renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributes.Content, HtmlUtility.StripHtmlTags (columnTitle));
 
