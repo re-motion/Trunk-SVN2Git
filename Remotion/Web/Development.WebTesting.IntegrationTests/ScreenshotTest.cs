@@ -667,7 +667,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => Helper.CreateBrowserScreenshot (Helper.MainBrowserSession),
-          Throws.InstanceOf<InvalidOperationException>());
+          Throws.InstanceOf<InvalidOperationException>()
+              .With.Message.EqualTo ("Taking a browser screenshot while an alert is shown is currently not possible."));
 
       ((IWebDriver) nativeDriver).SwitchTo().Alert().Dismiss();
 
