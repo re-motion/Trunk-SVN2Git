@@ -660,7 +660,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void Screenshot_WhenAlertDialogOpen ()
+    public void CreateBrowserScreenshot_AlertDialogOpen_ThrowsInvalidOperationException ()
     {
       var nativeDriver = Helper.MainBrowserSession.Driver.Native;
       ((IJavaScriptExecutor) nativeDriver).ExecuteScript ("alert(1);");
