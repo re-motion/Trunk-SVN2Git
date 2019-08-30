@@ -19,6 +19,8 @@ using System.Drawing;
 using System.Threading;
 using Coypu;
 using NUnit.Framework;
+using OpenQA.Selenium;
+using Remotion.Web.Development.WebTesting.BrowserSession;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.ControlObjects.ScreenshotCreation;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
@@ -655,6 +657,21 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
           };
 
       Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Browser, test);
+    }
+
+    [Test]
+    public void Screenshot_WhenAlertDialogOpen ()
+    {
+      var nativeDriver = Helper.MainBrowserSession.Driver.Native;
+      ((IJavaScriptExecutor) nativeDriver).ExecuteScript ("alert(1);");
+
+      Assert.That (
+          () => Helper.CreateBrowserScreenshot (Helper.MainBrowserSession),
+          Throws.InstanceOf<InvalidOperationException>());
+
+      ((IWebDriver) nativeDriver).SwitchTo().Alert().Dismiss();
+
+      Assert.False (Helper.MainBrowserSession.IsAlertOpen());
     }
 
     private ScreenshotTooltipStyle GetTooltipStyleForCurrentBrowser ()
