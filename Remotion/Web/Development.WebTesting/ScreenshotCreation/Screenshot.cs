@@ -79,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
     private static Screenshot CreateBrowserScreenshot (IBrowserSession browserSession, IBrowserContentLocator locator)
     {
       if (browserSession.IsAlertOpen())
-        throw new InvalidOperationException ("Taking a browserscreenshot while an alert is shown is currently not possible.");
+        throw new InvalidOperationException ("Taking a browser screenshot while an alert is shown is currently not possible.");
 
       var browserBounds = locator.GetBrowserContentBounds ((IWebDriver) browserSession.Driver.Native);
       var image = new Bitmap (browserBounds.Width, browserBounds.Height);
