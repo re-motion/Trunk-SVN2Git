@@ -20,7 +20,7 @@ using OpenQA.Selenium.Remote;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Used to overwrite options for non-specific <see cref="RemoteWebDriver"/>.
+  /// Used to overwrite options for a non-specific <see cref="RemoteWebDriver"/>.
   /// </summary>
   public class DriverOptions
   {
