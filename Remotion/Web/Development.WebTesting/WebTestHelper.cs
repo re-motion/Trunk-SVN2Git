@@ -152,7 +152,7 @@ namespace Remotion.Web.Development.WebTesting
     /// </summary>
     /// <param name="maximizeWindow">Specifies whether the main browser session's window should be maximized.</param>
     /// <param name="options">Specifies additional options applied when creating the browser.</param>
-    public void OnFixtureSetUp (bool maximizeWindow = true, DriverOptions options = null)
+    public void OnFixtureSetUp (bool maximizeWindow = true, [CanBeNull] DriverOptions options = null)
     {
       s_log.InfoFormat ("WebTestHelper.OnFixtureSetup() has been called.");
       s_log.InfoFormat ("Remotion version: " + typeof (WebTestHelper).Assembly.GetName().Version);
