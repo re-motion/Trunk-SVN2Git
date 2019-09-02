@@ -135,11 +135,14 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       var rating = 0;
 
       // Check if the title matches
-      var name = automationWindow.Current.Name;
-      if (name == driver.Title || name == driver.Url)
-        rating += 2;
-      else if (name.Contains (driver.Url))
-        rating += 1;
+      if (!IsAlertOpen (driver))
+      {
+        var name = automationWindow.Current.Name;
+        if (name == driver.Title || name == driver.Url)
+          rating += 2;
+        else if (name.Contains (driver.Url))
+          rating += 1;
+      }
 
       // Check if the bounds match the ones specified by the driver
       var rawBounds = automationWindow.Current.BoundingRectangle;
@@ -159,6 +162,19 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
         rating += 4;
 
       return new KeyValuePair<int, AutomationElement> (rating, automationWindow);
+    }
+
+    public bool IsAlertOpen (IWebDriver driver)
+    {
+      try
+      {
+        driver.SwitchTo().Alert();
+        return true;
+      }
+      catch (NoAlertPresentException)
+      {
+        return false;
+      }
     }
   }
 }

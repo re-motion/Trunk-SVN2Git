@@ -30,6 +30,7 @@ using Remotion.Web.Development.WebTesting.ScreenshotCreation;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.Annotations;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.Fluent;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.Resolvers;
+using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebDriver;
 using Remotion.Web.Development.WebTesting.WebFormsControlObjects;
 using Remotion.Web.Development.WebTesting.WebFormsControlObjects.FluentScreenshots.Extensions;
@@ -656,23 +657,20 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
             builder.Crop (fluentScreenshotElement);
           };
 
-      Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Browser, test);
+      Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Both, test);
     }
 
     [Test]
-    public void CreateBrowserScreenshot_AlertDialogOpen_ThrowsInvalidOperationException ()
+    public void AlertBox ()
     {
-      var nativeDriver = Helper.MainBrowserSession.Driver.Native;
-      ((IJavaScriptExecutor) nativeDriver).ExecuteScript ("alert(1);");
+      var home = Start();
 
-      Assert.That (
-          () => Helper.CreateBrowserScreenshot (Helper.MainBrowserSession),
-          Throws.InstanceOf<InvalidOperationException>()
-              .With.Message.EqualTo ("Taking a browser screenshot while an alert is shown is currently not possible."));
+      JavaScriptExecutor.GetJavaScriptExecutor (Helper.MainBrowserSession).ExecuteScript ("alert(1);");
 
-      ((IWebDriver) nativeDriver).SwitchTo().Alert().Dismiss();
-
-      Assert.False (Helper.MainBrowserSession.IsAlertOpen());
+      Helper.RunScreenshotTestExact<PageObject, PageObject> (
+          home,
+          ScreenshotTestingType.Browser,
+          (builder, controlObject) => { });
     }
 
     private ScreenshotTooltipStyle GetTooltipStyleForCurrentBrowser ()
