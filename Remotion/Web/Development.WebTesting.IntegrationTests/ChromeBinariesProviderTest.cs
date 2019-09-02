@@ -41,8 +41,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
               Regex.Escape (Path.GetTempPath()) + @"Remotion.Web.Development.WebTesting.WebDriver\\chromedriver\\chromedriver_v\d+\.\d+\.\d+\.\d+\\chromedriver.exe"));
       Assert.That (
           result.UserDirectory,
-          Is.StringMatching (
-              Regex.Escape (Path.GetTempPath()) + c_guidRegex));
+          Is.StringMatching (Regex.Escape (Path.GetTempPath()) + c_guidRegex));
     }
   }
 }
