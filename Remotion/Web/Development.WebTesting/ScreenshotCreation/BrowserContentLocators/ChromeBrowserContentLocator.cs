@@ -164,7 +164,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       return new KeyValuePair<int, AutomationElement> (rating, automationWindow);
     }
 
-    public bool IsAlertOpen (IWebDriver driver)
+    private bool IsAlertOpen (IWebDriver driver)
     {
       try
       {

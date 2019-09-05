@@ -663,14 +663,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void AlertBox ()
     {
-      var home = Start();
-
+      var target = PrepareTest();
       JavaScriptExecutor.GetJavaScriptExecutor (Helper.MainBrowserSession).ExecuteScript ("alert(1);");
 
-      Helper.RunScreenshotTestExact<PageObject, PageObject> (
-          home,
-          ScreenshotTestingType.Browser,
-          (builder, controlObject) => { });
+      Helper.RunScreenshotTestExact<ScreenshotTest> (target, ScreenshotTestingType.Browser, (builder, controlObject) => { });
+
+      ((IWebDriver) Helper.MainBrowserSession.Driver.Native).SwitchTo().Alert().Dismiss();
     }
 
     private ScreenshotTooltipStyle GetTooltipStyleForCurrentBrowser ()
