@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public bool IsReadOnly ()
     {
-      return Scope.GetAttributeOrThrow (DiagnosticMetadataAttributes.IsReadOnly) == "true";
+      return Scope.GetAttribute (DiagnosticMetadataAttributes.IsReadOnly) == "true";
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     /// </summary>
     public bool IsDisabled ()
     {
-      return Scope.GetAttributeOrThrow (DiagnosticMetadataAttributes.IsDisabled) == "true";
+      return Scope.GetAttribute (DiagnosticMetadataAttributes.IsDisabled) == "true";
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       try
       {
-        describedBy = scope.GetAttributeOrThrow ("aria-describedby");
+        describedBy = scope.GetAttribute ("aria-describedby");
       }
       catch (MissingHtmlException exception)
       {
@@ -82,7 +82,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       var validationErrorIDs = describedBy.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-      var validationErrorIndex = int.Parse (scope.GetAttributeOrThrow (DiagnosticMetadataAttributes.ValidationErrorIDIndex));
+      var validationErrorIndex = int.Parse (scope.GetAttribute (DiagnosticMetadataAttributes.ValidationErrorIDIndex));
       var validationErrorsScope = Scope.FindId (validationErrorIDs[validationErrorIndex]);
 
       // re-motion renders the delimiter as <br />, but the browser (and Selenium) show it as <br>

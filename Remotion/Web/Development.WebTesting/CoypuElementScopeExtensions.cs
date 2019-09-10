@@ -99,7 +99,6 @@ namespace Remotion.Web.Development.WebTesting
         }
 
         return true;
-        
       }
       catch (MissingHtmlException)
       {
@@ -258,13 +257,15 @@ namespace Remotion.Web.Development.WebTesting
     /// </remarks>
     /// <exception cref="MissingHtmlException">If the attribute cannot be found.</exception>
     [NotNull]
-    public static string GetAttributeOrThrow ([NotNull] this ElementScope scope, [NotNull] string attributeName)
+    public static string GetAttribute ([NotNull] this ElementScope scope, [NotNull] string attributeName)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
       ArgumentUtility.CheckNotNullOrEmpty ("attributeName", attributeName);
 
-      var result = scope[attributeName]
-                   ?? throw new MissingHtmlException ($"Cannot find the attribute '{attributeName}' on the current scope.");
+      var result = scope[attributeName];
+
+      if (result == null)
+        throw new MissingHtmlException ($"Cannot find the attribute '{attributeName}' on the current scope.");
 
       return result;
     }
