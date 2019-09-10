@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
       catch (MissingHtmlException exception)
       {
-        throw GetMissingValidationErrorFieldException (exception);
+        throw CreateMissingValidationErrorFieldException (exception);
       }
 
       var validationErrorIDs = describedBy.Split (new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -94,11 +94,11 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       }
       catch (MissingHtmlException exception)
       {
-        throw GetMissingValidationErrorFieldException (exception);
+        throw CreateMissingValidationErrorFieldException (exception);
       }
     }
 
-    private MissingHtmlException GetMissingValidationErrorFieldException (MissingHtmlException innerException)
+    private MissingHtmlException CreateMissingValidationErrorFieldException (MissingHtmlException innerException)
     {
       return new MissingHtmlException (
           "Could not find validation error field. This could be due to wrong markup or a missing validator.",
