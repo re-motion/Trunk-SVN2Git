@@ -249,11 +249,11 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     /// <summary>
-    /// Gets an attribute from the scope or throws a <see cref="MissingHtmlException"/> if it could not be found. Wraps <see cref="ElementScope.this"/>.
+    /// Gets the specified HTML attribute's value from the <paramref name="scope"/>.
     /// </summary>
     /// <remarks>
     /// Accessing HTML attributes through <see cref="ElementScope.this"/> returns null if the attribute does not exist.
-    /// This might not be the desired behavior in some cases, thus offering this extension method.
+    /// By using <see cref="GetAttribute"/> instead, a <see cref="MissingHtmlException"/> is thrown if the HTML attribute does not exist on the scope.
     /// </remarks>
     /// <exception cref="MissingHtmlException">If the attribute cannot be found.</exception>
     [NotNull]
