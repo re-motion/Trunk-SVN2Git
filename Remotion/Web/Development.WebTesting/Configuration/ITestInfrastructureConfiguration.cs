@@ -36,21 +36,8 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// </summary>
     string ScreenshotDirectory { [CanBeNull] get; }
 
-    /// <summary>
-    /// Specifies how long the Coypu engine should maximally search for a web element or try to interact with a web element before it fails.
-    /// </summary>
-    TimeSpan SearchTimeout { get; }
-
-    /// <summary>
-    /// Whenever the element to be interacted with is not ready, visible or otherwise not present, the Coypu engine automatically retries the action
-    /// after the given <see cref="RetryInterval"/> until the <see cref="SearchTimeout"/> has been reached.
-    /// </summary>
-    TimeSpan RetryInterval { get; }
-
-    /// <summary>
-    /// Returns the command timeout used for the communication between the Selenium language bindings and the <see cref="OpenQA.Selenium.Remote.RemoteWebDriver"/>.
-    /// </summary>
-    TimeSpan CommandTimeout { get; }
+    [NotNull]
+    DriverConfiguration DriverConfiguration { [NotNull] get; }
 
     /// <summary>
     /// Some Selenium web driver implementations may become confused when searching for windows if there are other browser windows present. Typically

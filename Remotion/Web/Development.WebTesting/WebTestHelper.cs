@@ -151,8 +151,8 @@ namespace Remotion.Web.Development.WebTesting
     /// SetUp method for each web test fixture.
     /// </summary>
     /// <param name="maximizeWindow">Specifies whether the main browser session's window should be maximized.</param>
-    /// <param name="options">Specifies additional options applied when creating the browser.</param>
-    public void OnFixtureSetUp (bool maximizeWindow = true, [CanBeNull] DriverOptions options = null)
+    /// <param name="configurationOverride">Specifies additional options applied when creating the browser.</param>
+    public void OnFixtureSetUp (bool maximizeWindow = true, [CanBeNull] DriverConfigurationOverride configurationOverride = null)
     {
       s_log.InfoFormat ("WebTestHelper.OnFixtureSetup() has been called.");
       s_log.InfoFormat ("Remotion version: " + typeof (WebTestHelper).Assembly.GetName().Version);
@@ -166,7 +166,7 @@ namespace Remotion.Web.Development.WebTesting
       // See RM-6731.
       EnsureAllBrowserWindowsAreClosed();
 
-      _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, options);
+      _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, configurationOverride);
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
@@ -191,13 +191,15 @@ namespace Remotion.Web.Development.WebTesting
     /// Creates a new browser session using the configured settings from <see cref="WebTestConfigurationFactory"/>.
     /// </summary>
     /// <param name="maximizeWindow">Specified whether the new browser session's window should be maximized.</param>
-    /// <param name="options">Specifies additional options applied when creating the browser.</param>
+    /// <param name="configurationOverride">Specifies additional options applied when creating the browser.</param>
     /// <returns>The new browser session.</returns>
-    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, [CanBeNull] DriverOptions options = null)
+    public IBrowserSession CreateNewBrowserSession (bool maximizeWindow = true, [CanBeNull] DriverConfigurationOverride configurationOverride = null)
     {
       using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
-        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (_testInfrastructureConfiguration, options);
+        var mergedDriverConfiguration = MergeDriverConfiguration (_testInfrastructureConfiguration.DriverConfiguration, configurationOverride);
+
+        var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (mergedDriverConfiguration);
         _browserSessions.Add (browserResult);
 
         if (maximizeWindow)
@@ -333,6 +335,17 @@ namespace Remotion.Web.Development.WebTesting
     private void EnsureCursorIsOutsideBrowserWindow ()
     {
       Cursor.Position = new Point (0, 0);
+    }
+
+    private DriverConfiguration MergeDriverConfiguration (DriverConfiguration configuration, DriverConfigurationOverride configurationOverride)
+    {
+      if (configurationOverride == null)
+        return configuration;
+
+      return new DriverConfiguration (
+          configurationOverride.CommandTimeout ?? configuration.CommandTimeout,
+          configurationOverride.SearchTimeout ?? configuration.SearchTimeout,
+          configurationOverride.RetryInterval ?? configuration.RetryInterval);
     }
   }
 }

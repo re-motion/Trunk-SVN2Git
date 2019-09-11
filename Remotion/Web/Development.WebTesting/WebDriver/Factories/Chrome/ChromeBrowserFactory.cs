@@ -42,12 +42,12 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
       _chromeConfiguration = chromeConfiguration;
     }
 
-    public IBrowserSession CreateBrowser (ITestInfrastructureConfiguration testInfrastructureConfiguration, DriverOptions options)
+    public IBrowserSession CreateBrowser (DriverConfiguration configuration)
     {
-      ArgumentUtility.CheckNotNull ("testInfrastructureConfiguration", testInfrastructureConfiguration);
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      var sessionConfiguration = CreateSessionConfiguration (testInfrastructureConfiguration);
-      var commandTimeout = options?.CommandTimeout ?? testInfrastructureConfiguration.CommandTimeout;
+      var sessionConfiguration = CreateSessionConfiguration (configuration);
+      var commandTimeout = configuration.CommandTimeout;
 
       int driverProcessID;
       string userDirectory;
@@ -58,13 +58,13 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
       return new ChromeBrowserSession (session, _chromeConfiguration, driverProcessID, userDirectory);
     }
 
-    private SessionConfiguration CreateSessionConfiguration (ITestInfrastructureConfiguration testInfrastructureConfiguration)
+    private SessionConfiguration CreateSessionConfiguration (DriverConfiguration configuration)
     {
       return new SessionConfiguration
              {
                  Browser = Browser.Chrome,
-                 RetryInterval = testInfrastructureConfiguration.RetryInterval,
-                 Timeout = testInfrastructureConfiguration.SearchTimeout,
+                 RetryInterval = configuration.RetryInterval,
+                 Timeout = configuration.SearchTimeout,
                  ConsiderInvisibleElements = WebTestingConstants.ShouldConsiderInvisibleElements,
                  Match = WebTestingConstants.DefaultMatchStrategy,
                  TextPrecision = WebTestingConstants.DefaultTextPrecision,

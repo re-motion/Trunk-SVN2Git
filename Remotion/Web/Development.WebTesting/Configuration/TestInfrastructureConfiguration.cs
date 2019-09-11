@@ -36,11 +36,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
 
     private readonly string _webApplicationRoot;
     private readonly string _screenshotDirectory;
-    private readonly TimeSpan _searchTimeout;
-    private readonly TimeSpan _retryInterval;
-    private readonly TimeSpan _commandTimeout;
     private readonly IRequestErrorDetectionStrategy _requestErrorDetectionStrategy;
     private readonly bool _closeBrowserWindowsOnSetUpAndTearDown;
+    private readonly DriverConfiguration _driverConfiguration;
 
     public TestInfrastructureConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection)
     {
@@ -48,9 +46,10 @@ namespace Remotion.Web.Development.WebTesting.Configuration
 
       _webApplicationRoot = webTestConfigurationSection.WebApplicationRoot;
       _screenshotDirectory = webTestConfigurationSection.ScreenshotDirectory;
-      _searchTimeout = webTestConfigurationSection.SearchTimeout;
-      _retryInterval = webTestConfigurationSection.RetryInterval;
-      _commandTimeout = webTestConfigurationSection.CommandTimeout;
+      _driverConfiguration = new DriverConfiguration (
+          webTestConfigurationSection.CommandTimeout,
+          webTestConfigurationSection.SearchTimeout,
+          webTestConfigurationSection.RetryInterval);
 
       _closeBrowserWindowsOnSetUpAndTearDown = webTestConfigurationSection.CloseBrowserWindowsOnSetUpAndTearDown;
       _requestErrorDetectionStrategy = GetRequestErrorDetectionConfiguration (webTestConfigurationSection.RequestErrorDetectionStrategyTypeName);
@@ -66,20 +65,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       get { return _screenshotDirectory; }
     }
 
-    public TimeSpan SearchTimeout
+    public DriverConfiguration DriverConfiguration
     {
-      get { return _searchTimeout; }
-    }
-
-    public TimeSpan RetryInterval
-    {
-      get { return _retryInterval; }
-    }
-
-    /// <inheritdoc />
-    public TimeSpan CommandTimeout
-    {
-      get { return _commandTimeout; }
+      get { return _driverConfiguration; }
     }
 
     public bool CloseBrowserWindowsOnSetUpAndTearDown

@@ -20,18 +20,28 @@ using OpenQA.Selenium.Remote;
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Used to overwrite options for a non-specific <see cref="RemoteWebDriver"/>.
+  /// Used to overwrite options for a non-specific <see cref="RemoteWebDriver" />.
   /// </summary>
-  public class DriverOptions
+  public class DriverConfigurationOverride
   {
     /// <summary>
-    /// Specifies a command timeout for the communication between the Selenium language bindings and the <see cref="OpenQA.Selenium.IWebDriver"/>.
+    /// Specifies a command timeout for the communication between the Selenium language bindings and the <see cref="OpenQA.Selenium.IWebDriver" />.
     /// </summary>
-    public TimeSpan CommandTimeout { get; }
+    public TimeSpan? CommandTimeout { get; set; }
 
-    public DriverOptions (TimeSpan commandTimeout)
+    /// <summary>
+    /// Specifies how long the Coypu engine should maximally search for a web element or try to interact with a web element before it fails.
+    /// </summary>
+    public TimeSpan? SearchTimeout { get; set; }
+
+    /// <summary>
+    /// Whenever the element to be interacted with is not ready, visible or otherwise not present, the Coypu engine automatically retries the action
+    /// after the given <see cref="RetryInterval" /> until the <see cref="SearchTimeout" /> has been reached.
+    /// </summary>
+    public TimeSpan? RetryInterval { get; set; }
+
+    public DriverConfigurationOverride ()
     {
-      CommandTimeout = commandTimeout;
     }
   }
 }

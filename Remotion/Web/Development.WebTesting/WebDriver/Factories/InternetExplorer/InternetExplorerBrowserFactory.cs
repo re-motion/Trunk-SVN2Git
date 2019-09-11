@@ -41,12 +41,12 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.InternetExplor
       _internetExplorerConfiguration = internetExplorerConfiguration;
     }
 
-    public IBrowserSession CreateBrowser (ITestInfrastructureConfiguration testInfrastructureConfiguration, DriverOptions options)
+    public IBrowserSession CreateBrowser (DriverConfiguration configuration)
     {
-      ArgumentUtility.CheckNotNull ("testInfrastructureConfiguration", testInfrastructureConfiguration);
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      var sessionConfiguration = CreateSessionConfiguration (testInfrastructureConfiguration);
-      var commandTimeout = options?.CommandTimeout ?? testInfrastructureConfiguration.CommandTimeout;
+      var sessionConfiguration = CreateSessionConfiguration (configuration);
+      var commandTimeout = configuration.CommandTimeout;
 
       int driverProcessId;
       var driver = CreateInternetExplorerDriver (out driverProcessId, commandTimeout);
@@ -56,13 +56,13 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.InternetExplor
       return new InternetExplorerBrowserSession (session, _internetExplorerConfiguration, driverProcessId);
     }
 
-    private SessionConfiguration CreateSessionConfiguration (ITestInfrastructureConfiguration testInfrastructureConfiguration)
+    private SessionConfiguration CreateSessionConfiguration (DriverConfiguration configuration)
     {
       return new SessionConfiguration
              {
                  Browser = Browser.InternetExplorer,
-                 RetryInterval = testInfrastructureConfiguration.RetryInterval,
-                 Timeout = testInfrastructureConfiguration.SearchTimeout,
+                 RetryInterval = configuration.RetryInterval,
+                 Timeout = configuration.SearchTimeout,
                  ConsiderInvisibleElements = WebTestingConstants.ShouldConsiderInvisibleElements,
                  Match = WebTestingConstants.DefaultMatchStrategy,
                  TextPrecision = WebTestingConstants.DefaultTextPrecision,

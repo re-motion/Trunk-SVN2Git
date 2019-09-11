@@ -62,8 +62,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       var retryUntilTimeout = new RetryUntilTimeout (
           action,
-          configuration.SearchTimeout,
-          configuration.RetryInterval);
+          configuration.DriverConfiguration.SearchTimeout,
+          configuration.DriverConfiguration.RetryInterval);
       retryUntilTimeout.Run();
     }
 
@@ -74,8 +74,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
       var retryUntilTimeout = new RetryUntilTimeout<TReturnType> (
           func,
-          configuration.SearchTimeout,
-          configuration.RetryInterval);
+          configuration.DriverConfiguration.SearchTimeout,
+          configuration.DriverConfiguration.RetryInterval);
       return retryUntilTimeout.Run();
     }
   }
