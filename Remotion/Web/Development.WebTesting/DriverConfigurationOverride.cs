@@ -15,12 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using OpenQA.Selenium.Remote;
+using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {
   /// <summary>
-  /// Used to overwrite options for a non-specific <see cref="RemoteWebDriver" />.
+  /// Used to override <see cref="DriverConfiguration"/>.
   /// </summary>
   public class DriverConfigurationOverride
   {

@@ -18,6 +18,9 @@ using System;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
+  /// <summary>
+  /// Represents driver related configuration settings.
+  /// </summary>
   public class DriverConfiguration
   {
     /// <summary>
