@@ -36,7 +36,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// </summary>
     string ScreenshotDirectory { [CanBeNull] get; }
 
-    [NotNull]
+    /// <summary>
+    /// Represents driver related configuration settings.
+    /// </summary>
     DriverConfiguration DriverConfiguration { [NotNull] get; }
 
     /// <summary>
