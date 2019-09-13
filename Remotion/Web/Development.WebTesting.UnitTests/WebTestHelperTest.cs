@@ -35,14 +35,14 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var defaultCommandTimeout = webTestHelper.TestInfrastructureConfiguration.DriverConfiguration.CommandTimeout;
-      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryMock
+      var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryStub
           .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Matches (configuration => configuration.CommandTimeout == defaultCommandTimeout)))
           .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false);
 
-      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var createBrowserArguments = browserFactoryStub.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
       var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
       Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
       Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
@@ -54,14 +54,14 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { CommandTimeout = TimeSpan.FromMinutes (5) };
-      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryMock
+      var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryStub
           .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
           .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
-      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var createBrowserArguments = browserFactoryStub.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
       var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
       Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (configurationOverride.CommandTimeout));
       Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
@@ -73,14 +73,14 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { SearchTimeout = TimeSpan.FromMinutes (5) };
-      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryMock
+      var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryStub
           .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
           .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
-      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var createBrowserArguments = browserFactoryStub.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
       var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
       Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
       Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (configurationOverride.SearchTimeout));
@@ -92,14 +92,14 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { RetryInterval = TimeSpan.FromMinutes (5) };
-      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryMock
+      var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryStub
           .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
           .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
-      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var createBrowserArguments = browserFactoryStub.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
       var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
       Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
       Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
@@ -110,12 +110,12 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       protected override IChromeConfiguration CreateChromeConfiguration (WebTestConfigurationSection configSettings)
       {
-        var browserFactoryMock = MockRepository.GenerateMock<IBrowserFactory>();
+        var browserFactoryStub = MockRepository.GenerateStub<IBrowserFactory>();
 
         var chromeConfigurationStub = MockRepository.GenerateStub<IChromeConfiguration>();
         chromeConfigurationStub
             .Stub (_ => _.BrowserFactory)
-            .Return (browserFactoryMock);
+            .Return (browserFactoryStub);
 
         return chromeConfigurationStub;
       }
