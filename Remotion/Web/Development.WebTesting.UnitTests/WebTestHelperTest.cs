@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -31,8 +31,8 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var defaultCommandTimeout = webTestHelper.TestInfrastructureConfiguration.DriverConfiguration.CommandTimeout;
-      var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryStub
+      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryMock
           .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Matches (configuration => configuration.CommandTimeout == defaultCommandTimeout)))
           .Return (null);
 
@@ -46,26 +46,26 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { CommandTimeout = TimeSpan.FromMinutes (5) };
-      var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryStub
+      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryMock
           .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Matches (configuration => configuration.CommandTimeout == configurationOverride.CommandTimeout)))
           .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
-      browserFactoryStub.VerifyAllExpectations();
+      browserFactoryMock.VerifyAllExpectations();
     }
 
     private class TestWebTestConfigurationFactory : WebTestConfigurationFactory
     {
       protected override IChromeConfiguration CreateChromeConfiguration (WebTestConfigurationSection configSettings)
       {
-        var browserFactoryStub = MockRepository.GenerateMock<IBrowserFactory>();
+        var browserFactoryMock = MockRepository.GenerateMock<IBrowserFactory>();
 
         var chromeConfigurationStub = MockRepository.GenerateStub<IChromeConfiguration>();
         chromeConfigurationStub
             .Stub (_ => _.BrowserFactory)
-            .Return (browserFactoryStub);
+            .Return (browserFactoryMock);
 
         return chromeConfigurationStub;
       }
