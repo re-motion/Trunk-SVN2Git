@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -26,6 +26,10 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
   [TestFixture]
   public class WebTestHelperTest
   {
+    private readonly TimeSpan _configCommandTimeout = TimeSpan.FromSeconds ((13 * 60) + 37);
+    private readonly TimeSpan _configSearchTimeout = TimeSpan.FromSeconds (30);
+    private readonly TimeSpan _configRetryInterval = TimeSpan.FromMilliseconds (25);
+
     [Test]
     public void CreateNewBrowserSession_DefaultValue ()
     {
@@ -38,22 +42,68 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
 
       webTestHelper.CreateNewBrowserSession (false);
 
-      browserFactoryStub.VerifyAllExpectations();
+      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
+      Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
+      Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
+      Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (_configRetryInterval));
     }
 
     [Test]
-    public void CreateNewBrowserSession_Override ()
+    public void CreateNewBrowserSession_CommandTimeoutOverride ()
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { CommandTimeout = TimeSpan.FromMinutes (5) };
       var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
       browserFactoryMock
-          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Matches (configuration => configuration.CommandTimeout == configurationOverride.CommandTimeout)))
+          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
           .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
-      browserFactoryMock.VerifyAllExpectations();
+      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
+      Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (configurationOverride.CommandTimeout));
+      Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
+      Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (_configRetryInterval));
+    }
+
+    [Test]
+    public void CreateNewBrowserSession_SearchTimeoutOverride ()
+    {
+      var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
+      var configurationOverride = new DriverConfigurationOverride { SearchTimeout = TimeSpan.FromMinutes (5) };
+      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryMock
+          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
+          .Return (null);
+
+      webTestHelper.CreateNewBrowserSession (false, configurationOverride);
+
+      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
+      Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
+      Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (configurationOverride.SearchTimeout));
+      Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (_configRetryInterval));
+    }
+
+    [Test]
+    public void CreateNewBrowserSession_RetryIntervalOverride ()
+    {
+      var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
+      var configurationOverride = new DriverConfigurationOverride { RetryInterval = TimeSpan.FromMinutes (5) };
+      var browserFactoryMock = webTestHelper.BrowserConfiguration.BrowserFactory;
+      browserFactoryMock
+          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
+          .Return (null);
+
+      webTestHelper.CreateNewBrowserSession (false, configurationOverride);
+
+      var createBrowserArguments = browserFactoryMock.GetArgumentsForCallsMadeOn (_ => _.CreateBrowser (null));
+      var driverConfigurationArgument = (DriverConfiguration) createBrowserArguments[0][0];
+      Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
+      Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
+      Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (configurationOverride.RetryInterval));
     }
 
     private class TestWebTestConfigurationFactory : WebTestConfigurationFactory
