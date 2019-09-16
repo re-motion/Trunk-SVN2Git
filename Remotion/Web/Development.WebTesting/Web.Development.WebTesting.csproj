@@ -332,9 +332,9 @@
     <None Include="..\..\..\remotion.snk">
       <Link>remotion.snk</Link>
     </None>
-    <None Include="Schemas\WebTestingConfiguration.xsd">
+    <EmbeddedResource Include="Schemas\WebTestingConfiguration.xsd">
       <SubType>Designer</SubType>
-    </None>
+    </EmbeddedResource>
     <None Include="_WebTestDeveloperTools\WebTestingFramework-WebTestDeveloperTools-TampermonkeyScript.js" />
   </ItemGroup>
   <ItemGroup>
