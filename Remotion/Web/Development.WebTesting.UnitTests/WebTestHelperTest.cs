@@ -36,9 +36,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var defaultCommandTimeout = webTestHelper.TestInfrastructureConfiguration.DriverConfiguration.CommandTimeout;
       var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryStub
-          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Matches (configuration => configuration.CommandTimeout == defaultCommandTimeout)))
-          .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false);
 
@@ -54,9 +51,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { CommandTimeout = TimeSpan.FromMinutes (5) };
       var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryStub
-          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
-          .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
@@ -72,9 +66,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { SearchTimeout = TimeSpan.FromMinutes (5) };
       var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryStub
-          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
-          .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
@@ -90,9 +81,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
       var configurationOverride = new DriverConfigurationOverride { RetryInterval = TimeSpan.FromMinutes (5) };
       var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
-      browserFactoryStub
-          .Expect (_ => _.CreateBrowser (Arg<DriverConfiguration>.Is.Anything))
-          .Return (null);
 
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
