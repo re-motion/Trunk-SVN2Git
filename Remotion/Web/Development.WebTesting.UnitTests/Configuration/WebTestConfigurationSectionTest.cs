@@ -45,10 +45,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
 
     private WebTestConfigurationSection _section;
 
-    public WebTestConfigurationSectionTest ()
-    {
-    }
-
     [SetUp]
     public void SetUp ()
     {
