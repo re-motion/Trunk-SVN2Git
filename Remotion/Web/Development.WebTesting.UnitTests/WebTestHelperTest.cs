@@ -34,7 +34,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
     public void CreateNewBrowserSession_DefaultValue ()
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<TestWebTestConfigurationFactory>();
-      var defaultCommandTimeout = webTestHelper.TestInfrastructureConfiguration.DriverConfiguration.CommandTimeout;
       var browserFactoryStub = webTestHelper.BrowserConfiguration.BrowserFactory;
 
       webTestHelper.CreateNewBrowserSession (false);
@@ -55,7 +54,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
       webTestHelper.CreateNewBrowserSession (false, configurationOverride);
 
       var driverConfigurationArgument = GetBrowserFactoryStubCreateBrowserArgument (browserFactoryStub);
-      Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (configurationOverride.CommandTimeout));
+      Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (TimeSpan.FromMinutes (5)));
       Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
       Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (_configRetryInterval));
     }
@@ -71,7 +70,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
 
       var driverConfigurationArgument = GetBrowserFactoryStubCreateBrowserArgument (browserFactoryStub);
       Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
-      Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (configurationOverride.SearchTimeout));
+      Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (TimeSpan.FromMinutes (5)));
       Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (_configRetryInterval));
     }
 
@@ -87,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests
       var driverConfigurationArgument = GetBrowserFactoryStubCreateBrowserArgument (browserFactoryStub);
       Assert.That (driverConfigurationArgument.CommandTimeout, Is.EqualTo (_configCommandTimeout));
       Assert.That (driverConfigurationArgument.SearchTimeout, Is.EqualTo (_configSearchTimeout));
-      Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (configurationOverride.RetryInterval));
+      Assert.That (driverConfigurationArgument.RetryInterval, Is.EqualTo (TimeSpan.FromMinutes (5)));
     }
 
     private DriverConfiguration GetBrowserFactoryStubCreateBrowserArgument (IBrowserFactory browserFactoryStub)
