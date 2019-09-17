@@ -31,10 +31,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
 
     private readonly MethodInfo _webTestConfigurationFactoryPropertySetter = typeof (WebTestConfigurationSection)
         .GetProperties (BindingFlags.Instance | BindingFlags.NonPublic)
-        .Single (
-            pi => pi.Name == "Item"
-                  && pi.GetIndexParameters().Length > 0
-                  && pi.SetMethod.GetParameters().Any (p => p.ParameterType == typeof (string)))
+        .Single (pi => pi.GetIndexParameters().Length > 0 && pi.SetMethod.GetParameters().Any (p => p.ParameterType == typeof (string)))
         .GetSetMethod (true);
 
     [Test]
