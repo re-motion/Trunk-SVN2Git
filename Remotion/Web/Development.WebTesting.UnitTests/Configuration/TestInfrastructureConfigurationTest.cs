@@ -27,23 +27,23 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
   [TestFixture]
   public class TestInfrastructureConfigurationTest
   {
-    private readonly string _testRequestErrorDetectionStrategyAssemblyQualifiedName = typeof (TestRequestErrorDetectionStrategy).AssemblyQualifiedName;
-
-    private readonly MethodInfo _webTestConfigurationSectionIndexerSetter = typeof (WebTestConfigurationSection)
+    private static readonly MethodInfo s_webTestConfigurationSectionIndexerSetter = typeof (WebTestConfigurationSection)
         .GetProperties (BindingFlags.Instance | BindingFlags.NonPublic)
         .Single (pi => pi.GetIndexParameters().Length > 0 && pi.SetMethod.GetParameters().Any (p => p.ParameterType == typeof (string)))
         .GetSetMethod (true);
+
+    private readonly string _testRequestErrorDetectionStrategyAssemblyQualifiedName = typeof (TestRequestErrorDetectionStrategy).AssemblyQualifiedName;
 
     [Test]
     public void CreateFromWebTestConfigurationSection ()
     {
       var webTestConfigurationSection = CreateWebTestConfigurationSection();
-      _webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "webApplicationRoot", "http://some.url:1337/" });
-      _webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "screenshotDirectory", @".\SomeScreenshotDirectory" });
-      _webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "searchTimeout", TimeSpan.FromSeconds (43) });
-      _webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "retryInterval", TimeSpan.FromMilliseconds (42) });
-      _webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "closeBrowserWindowsOnSetUpAndTearDown", false });
-      _webTestConfigurationSectionIndexerSetter.Invoke (
+      s_webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "webApplicationRoot", "http://some.url:1337/" });
+      s_webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "screenshotDirectory", @".\SomeScreenshotDirectory" });
+      s_webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "searchTimeout", TimeSpan.FromSeconds (43) });
+      s_webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "retryInterval", TimeSpan.FromMilliseconds (42) });
+      s_webTestConfigurationSectionIndexerSetter.Invoke (webTestConfigurationSection, new object[] { "closeBrowserWindowsOnSetUpAndTearDown", false });
+      s_webTestConfigurationSectionIndexerSetter.Invoke (
           webTestConfigurationSection,
           new object[] { "requestErrorDetectionStrategy", _testRequestErrorDetectionStrategyAssemblyQualifiedName });
 
