@@ -111,6 +111,7 @@ namespace Remotion.Web.Development.WebTesting
     private static readonly ILog s_log = LogManager.GetLogger (typeof (WebTestHelper));
 
     private readonly IBrowserConfiguration _browserConfiguration;
+    private readonly DriverConfiguration _driverConfiguration;
     private readonly ITestInfrastructureConfiguration _testInfrastructureConfiguration;
     private readonly List<IBrowserSession> _browserSessions = new List<IBrowserSession>();
     private IBrowserSession _mainBrowserSession;
@@ -126,12 +127,19 @@ namespace Remotion.Web.Development.WebTesting
       ArgumentUtility.CheckNotNull ("webTestConfigurationFactory", webTestConfigurationFactory);
 
       _browserConfiguration = webTestConfigurationFactory.CreateBrowserConfiguration();
+      _driverConfiguration = webTestConfigurationFactory.CreateDriverConfiguration();
       _testInfrastructureConfiguration = webTestConfigurationFactory.CreateTestInfrastructureConfiguration();
     }
 
     public IBrowserConfiguration BrowserConfiguration
     {
       get { return _browserConfiguration; }
+    }
+
+    [NotNull]
+    public DriverConfiguration DriverConfiguration
+    {
+      get { return _driverConfiguration; }
     }
 
     public ITestInfrastructureConfiguration TestInfrastructureConfiguration
@@ -197,7 +205,7 @@ namespace Remotion.Web.Development.WebTesting
     {
       using (new PerformanceTimer (s_log, string.Format ("Created new {0} browser session.", _browserConfiguration.BrowserName)))
       {
-        var mergedDriverConfiguration = MergeDriverConfiguration (_testInfrastructureConfiguration.DriverConfiguration, configurationOverride);
+        var mergedDriverConfiguration = MergeDriverConfiguration (_driverConfiguration, configurationOverride);
 
         var browserResult = _browserConfiguration.BrowserFactory.CreateBrowser (mergedDriverConfiguration);
         _browserSessions.Add (browserResult);

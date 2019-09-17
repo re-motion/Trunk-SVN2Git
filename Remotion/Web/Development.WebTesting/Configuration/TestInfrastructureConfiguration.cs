@@ -38,7 +38,6 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     private readonly string _screenshotDirectory;
     private readonly IRequestErrorDetectionStrategy _requestErrorDetectionStrategy;
     private readonly bool _closeBrowserWindowsOnSetUpAndTearDown;
-    private readonly DriverConfiguration _driverConfiguration;
 
     public TestInfrastructureConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection)
     {
@@ -46,10 +45,6 @@ namespace Remotion.Web.Development.WebTesting.Configuration
 
       _webApplicationRoot = webTestConfigurationSection.WebApplicationRoot;
       _screenshotDirectory = webTestConfigurationSection.ScreenshotDirectory;
-      _driverConfiguration = new DriverConfiguration (
-          webTestConfigurationSection.CommandTimeout,
-          webTestConfigurationSection.SearchTimeout,
-          webTestConfigurationSection.RetryInterval);
 
       _closeBrowserWindowsOnSetUpAndTearDown = webTestConfigurationSection.CloseBrowserWindowsOnSetUpAndTearDown;
       _requestErrorDetectionStrategy = GetRequestErrorDetectionConfiguration (webTestConfigurationSection.RequestErrorDetectionStrategyTypeName);
@@ -63,11 +58,6 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     public string ScreenshotDirectory
     {
       get { return _screenshotDirectory; }
-    }
-
-    public DriverConfiguration DriverConfiguration
-    {
-      get { return _driverConfiguration; }
     }
 
     public bool CloseBrowserWindowsOnSetUpAndTearDown
