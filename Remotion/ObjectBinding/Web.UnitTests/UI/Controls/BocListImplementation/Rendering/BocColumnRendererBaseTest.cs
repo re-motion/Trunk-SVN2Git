@@ -220,6 +220,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
+      Assert.That (Column.ColumnTitleDisplayValue, Is.Empty);
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
     }
 
@@ -234,6 +235,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
+      Assert.That (Column.ColumnTitleDisplayValue, Is.Empty);
       Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
     }
 
