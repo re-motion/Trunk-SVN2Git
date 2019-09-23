@@ -213,9 +213,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public void TestDiagnosticMetadataRenderingWithTitleIsEmpty ()
     {
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
-
       Column.ColumnTitle = "";
-
       var renderingContext = CreateRenderingContext();
 
       renderer.RenderTitleCell (renderingContext, SortingDirection.None, 0);
@@ -229,9 +227,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     public void TestDiagnosticMetadataRenderingInTitleWithTitleIsNull ()
     {
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
-
       Column.ColumnTitle = null;
-
       var renderingContext = CreateRenderingContext();
 
       renderer.RenderTitleCell (renderingContext, SortingDirection.None, 0);
