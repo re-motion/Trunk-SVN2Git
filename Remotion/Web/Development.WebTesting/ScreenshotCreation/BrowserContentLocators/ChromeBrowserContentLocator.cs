@@ -94,7 +94,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       var executor = (IJavaScriptExecutor) driver;
       var previousTitle = JavaScriptExecutor.ExecuteStatement<string> (executor, c_setWindowTitle, id);
 
-      var result = AutomationElement.RootElement.FindFirst (TreeScope.Children, new PropertyCondition (AutomationElement.NameProperty, id));
+      var result = AutomationElement.RootElement.FindFirst (TreeScope.Children, new PropertyCondition (AutomationElement.NameProperty, id + " - Google Chrome"));
 
       JavaScriptExecutor.ExecuteStatement<string> (executor, c_setWindowTitle, previousTitle);
 
