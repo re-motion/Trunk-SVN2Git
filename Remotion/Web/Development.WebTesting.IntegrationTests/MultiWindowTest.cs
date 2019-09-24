@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Drawing;
 using System.Threading;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectionStrategies;
@@ -27,6 +28,20 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   [TestFixture]
   public class MultiWindowTest : IntegrationTest
   {
+    [Test]
+    public void TestMultiWindowResizeBrowserContent ()
+    {
+      var home = Start();
+      var newSize = new Size (600, 600);
+      var loadWindowFunctionInNewWindowButton = home.WebButtons().GetByID ("LoadWindowFunctionInNewWindow");
+      var window1 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> ("MyWindow");
+      var window2 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> ("MyWindow");
+
+      Helper.BrowserConfiguration.BrowserHelper.ResizeBrowserContentTo (window2.Context.Window, newSize);
+
+      Assert.That (Helper.BrowserConfiguration.BrowserHelper.GetBrowserContentBounds (window1.Context.Window).Size, Is.EqualTo (newSize));
+    }
+
     [Test]
     public void TestMultiFrameActions ()
     {
