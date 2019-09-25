@@ -31,11 +31,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestMultiWindowResizeBrowserContent ()
     {
+      const string windowTitle = "MyWindow";
       var home = Start();
       var newSize = new Size (600, 600);
       var loadWindowFunctionInNewWindowButton = home.WebButtons().GetByID ("LoadWindowFunctionInNewWindow");
-      var window1 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> ("MyWindow");
-      var window2 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> ("MyWindow");
+      var window1 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> (windowTitle);
+      var window2 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> (windowTitle);
 
       Helper.BrowserConfiguration.BrowserHelper.ResizeBrowserContentTo (window2.Context.Window, newSize);
 
