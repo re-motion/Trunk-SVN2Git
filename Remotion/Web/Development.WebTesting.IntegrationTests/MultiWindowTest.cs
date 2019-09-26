@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   public class MultiWindowTest : IntegrationTest
   {
     [Test]
-    public void TestMultiWindowResizeBrowserContent ()
+    public void TestMultiWindowResizeBrowserContent_FirstWindow ()
     {
       const string windowTitle = "MyWindow";
       var home = Start();
@@ -41,6 +41,21 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Helper.BrowserConfiguration.BrowserHelper.ResizeBrowserContentTo (window2.Context.Window, newSize);
 
       Assert.That (Helper.BrowserConfiguration.BrowserHelper.GetBrowserContentBounds (window1.Context.Window).Size, Is.EqualTo (newSize));
+    }
+
+    [Test]
+    public void TestMultiWindowResizeBrowserContent_SecondWindow ()
+    {
+      const string windowTitle = "MyWindow";
+      var home = Start();
+      var newSize = new Size (600, 600);
+      var loadWindowFunctionInNewWindowButton = home.WebButtons().GetByID ("LoadWindowFunctionInNewWindow");
+      var window1 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> (windowTitle);
+      var window2 = loadWindowFunctionInNewWindowButton.Click().ExpectNewPopupWindow<WxePageObject> (windowTitle);
+
+      Helper.BrowserConfiguration.BrowserHelper.ResizeBrowserContentTo (window1.Context.Window, newSize);
+
+      Assert.That (Helper.BrowserConfiguration.BrowserHelper.GetBrowserContentBounds (window2.Context.Window).Size, Is.EqualTo (newSize));
     }
 
     [Test]
