@@ -19,7 +19,7 @@ using System;
 namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration
 {
   /// <summary>
-  /// Represents a strategy used to clean up a resource needed by a <see cref="Remotion.Web.Development.WebTesting.BrowserSession.IBrowserSession"/>.
+  /// Defines an API for cleaning up the resources needed by a <see cref="Remotion.Web.Development.WebTesting.BrowserSession.IBrowserSession"/>.
   /// </summary>
   public interface IBrowserSessionCleanUpStrategy
   {
