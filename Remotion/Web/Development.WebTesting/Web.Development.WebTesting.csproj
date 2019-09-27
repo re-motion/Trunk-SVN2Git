@@ -196,7 +196,7 @@
     <Compile Include="Utilities\ServerErrorException.cs" />
     <Compile Include="WebDriver\Configuration\Chrome\AdvancedChromeOptions.cs" />
     <Compile Include="WebDriver\Configuration\Chrome\ChromeBinariesProvider.cs" />
-    <Compile Include="WebDriver\Configuration\Chrome\ChromiumUserDirectoryCleanUp.cs" />
+    <Compile Include="WebDriver\Configuration\Chrome\ChromeUserDirectoryCleanUp.cs" />
     <Compile Include="WebDriver\Configuration\Chrome\ExtendedChromeOptions.cs" />
     <Compile Include="BrowserSession\Chrome\ChromeBrowserSession.cs" />
     <Compile Include="BrowserSession\IBrowserSession.cs" />

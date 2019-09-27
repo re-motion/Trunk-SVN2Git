@@ -61,7 +61,7 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Factories.Chrome
           driverProcessID,
           new[]
           {
-              new ChromiumUserDirectoryCleanUp (_chromeConfiguration, userDirectory)
+              new ChromeUserDirectoryCleanUp (_chromeConfiguration, userDirectory)
           });
     }
 

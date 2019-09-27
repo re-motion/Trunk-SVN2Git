@@ -26,14 +26,14 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chrome
   /// <summary>
   /// Responsible for removing any files or directories added to the user directory during a test run.
   /// </summary>
-  public class ChromiumUserDirectoryCleanUp : IBrowserSessionCleanUpStrategy
+  public class ChromeUserDirectoryCleanUp : IBrowserSessionCleanUpStrategy
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (ChromiumUserDirectoryCleanUp));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (ChromeUserDirectoryCleanUp));
 
     private readonly IChromeConfiguration _chromeConfiguration;
     private readonly string _userDirectory;
 
-    public ChromiumUserDirectoryCleanUp ([NotNull] IChromeConfiguration chromeConfiguration, [NotNull] string userDirectory)
+    public ChromeUserDirectoryCleanUp ([NotNull] IChromeConfiguration chromeConfiguration, [NotNull] string userDirectory)
     {
       ArgumentUtility.CheckNotNull ("chromeConfiguration", chromeConfiguration);
       ArgumentUtility.CheckNotNullOrEmpty ("userDirectory", userDirectory);
