@@ -29,13 +29,13 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession.Chrome
   /// </summary>
   public class ChromeBrowserSession : BrowserSessionBase<IChromeConfiguration>
   {
-    private readonly IBrowserSessionCleanUpStrategy[] _cleanUpStrategies;
+    private readonly IReadOnlyCollection<IBrowserSessionCleanUpStrategy> _cleanUpStrategies;
 
     public ChromeBrowserSession (
         [NotNull] Coypu.BrowserSession value,
         [NotNull] IChromeConfiguration configuration,
         int driverProcessID,
-        [CanBeNull] [ItemNotNull] IBrowserSessionCleanUpStrategy[] cleanUpStrategies = null)
+        [CanBeNull] [ItemNotNull] IReadOnlyCollection<IBrowserSessionCleanUpStrategy> cleanUpStrategies = null)
         : base (value, configuration, driverProcessID)
     {
       _cleanUpStrategies = cleanUpStrategies;
