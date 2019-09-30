@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using NUnit.Framework;
-using Remotion.Globalization;
 using Remotion.ServiceLocation;
 using Remotion.Validation.Implementation;
 
@@ -42,16 +40,15 @@ namespace Remotion.Validation.Globalization.UnitTests
       Assert.That (factory, Is.Not.Null);
       Assert.That (factory, Is.TypeOf (typeof (CompoundValidationRuleMetadataService)));
       var validationRuleGlobalizationServices = ((CompoundValidationRuleMetadataService) factory).ValidationRuleGlobalizationServices;
-      Assert.That (validationRuleGlobalizationServices.Count(), Is.EqualTo(2));
-      Assert.That (validationRuleGlobalizationServices[0], Is.TypeOf (typeof (PropertyDisplayNameGlobalizationService)));
-      Assert.That (validationRuleGlobalizationServices[1], Is.TypeOf (typeof (ValidationRuleGlobalizationService)));
+      Assert.That (validationRuleGlobalizationServices.Length, Is.EqualTo(1));
+      Assert.That (validationRuleGlobalizationServices[0], Is.TypeOf (typeof (ValidationRuleGlobalizationService)));
     }
 
     [Test]
     public void GetInstance_Twice_ReturnsSameInstance ()
     {
-      var factory1 = _serviceLocator.GetInstance<IValidationRuleMetadataService> ();
-      var factory2 = _serviceLocator.GetInstance<IValidationRuleMetadataService> ();
+      var factory1 = _serviceLocator.GetInstance<IValidationRuleMetadataService>();
+      var factory2 = _serviceLocator.GetInstance<IValidationRuleMetadataService>();
 
       Assert.That (factory1, Is.SameAs (factory2));
     }

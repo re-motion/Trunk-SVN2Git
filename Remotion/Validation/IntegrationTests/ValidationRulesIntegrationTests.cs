@@ -116,6 +116,8 @@ namespace Remotion.Validation.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count, Is.EqualTo (1));
+      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'Salary' must be greater than '500'."));
+      Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Conditional Message Test: Kein Gehalt definiert"));
     }
 

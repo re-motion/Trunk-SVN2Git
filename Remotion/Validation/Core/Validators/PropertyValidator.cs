@@ -27,7 +27,7 @@ namespace Remotion.Validation.Validators
 
     protected PropertyValidator (Expression<Func<string>> errorMessageResourceSelector)
     {
-      _errorSource = LocalizedStringSource.CreateFromExpression (errorMessageResourceSelector, new FallbackAwareResourceAccessorBuilder());
+      _errorSource = LocalizedStringSource.CreateFromExpression (errorMessageResourceSelector, new StaticResourceAccessorBuilder());
     }
 
     public IStringSource ErrorMessageSource
@@ -38,7 +38,7 @@ namespace Remotion.Validation.Validators
 
     public virtual IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
     {
-      context.MessageFormatter.AppendPropertyName (context.PropertyDescription);
+      context.MessageFormatter.AppendPropertyName (context.PropertyName);
       context.MessageFormatter.AppendArgument ("PropertyValue", context.PropertyValue);
       if (IsValid (context))
         return Enumerable.Empty<ValidationFailure>();
@@ -58,7 +58,8 @@ namespace Remotion.Validation.Validators
     /// <returns>Returns an error validation result.</returns>
     private ValidationFailure CreateValidationError (PropertyValidatorContext context)
     {
-      var error = (context.Rule.MessageBuilder ?? BuildErrorMessage) (context);
+      // TODO RM-5906
+      var error = BuildErrorMessage (context);
       var validationFailure = new ValidationFailure (context.PropertyName, error);
       if (CustomStateProvider != null)
         validationFailure.CustomState = CustomStateProvider (context.Instance);

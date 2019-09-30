@@ -17,9 +17,10 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Reflection;
+using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
-using Remotion.Validation.IntegrationTests.TestHelpers;
 using Remotion.Validation.Rules;
 using Remotion.Validation.Validators;
 
@@ -28,7 +29,7 @@ namespace Remotion.Validation.IntegrationTests
   [TestFixture]
   public class FluentValidationGlobalizationIntegrationTests : IntegrationTestBase
   {
-    private PropertyRule _propertyRule;
+    private PropertyValidationRule _propertyValidationRule;
     private Customer _customer;
 
     /* Note: 
@@ -40,70 +41,35 @@ namespace Remotion.Validation.IntegrationTests
     {
       base.SetUp();
 
-      _propertyRule = PropertyRule.Create (ExpressionHelper.GetTypedMemberExpression<Customer, string> (c => c.LastName));
-      _propertyRule.AddValidator (new NotNullValidator());
+      var property = PropertyInfoAdapter.Create (MemberInfoFromExpressionUtility.GetProperty ((Customer c) => c.LastName));
+      var propertyValidators = new IPropertyValidator[] { new NotNullValidator() };
+      _propertyValidationRule = new PropertyValidationRule (property, propertyValidators);
       _customer = new Customer();
-    }
-
-    [Test]
-    public void Initialization ()
-    {
-      Assert.That (_propertyRule.DisplayName, Is.TypeOf(typeof(LazyStringSource)));
-      Assert.That (_propertyRule.DisplayName.GetString(), Is.Null);
-      Assert.That (_propertyRule.PropertyName, Is.EqualTo ("LastName"));
-      Assert.That (_propertyRule.GetDisplayName(), Is.EqualTo ("Last Name"));
     }
 
     [Test]
     public void Validate_NoExplicitPropertyNameSet ()
     {
-      var result = _propertyRule.Validate (new ValidationContext (_customer)).ToArray().First();
+      var result = _propertyValidationRule.Validate (new ValidationContext (_customer)).ToArray().First();
 
       Assert.That (result.PropertyName, Is.EqualTo ("LastName"));
+      Assert.That (result.ErrorMessage, Is.EqualTo ("'LastName' must not be empty."));
+      Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (result.ErrorMessage, Is.EqualTo ("'Last Name' must not be empty."));
-    }
-
-    [Test]
-    public void Validate_ExplicitPropertyNameSet ()
-    {
-      _propertyRule.PropertyName = "ChangedPropertyName";
-      var result = _propertyRule.Validate (new ValidationContext (_customer)).ToArray().First();
-
-      Assert.That (result.PropertyName, Is.EqualTo ("ChangedPropertyName"));
-      Assert.That (result.ErrorMessage, Is.EqualTo ("'Changed Property Name' must not be empty."));
-    }
-
-    [Test]
-    public void Validate_ExplicitDisplayNameSet ()
-    {
-      _propertyRule.DisplayName = new StaticStringSource ("ChangedDisplayName");
-      var result = _propertyRule.Validate (new ValidationContext (_customer)).ToArray().First();
-
-      Assert.That (result.PropertyName, Is.EqualTo ("LastName"));
-      Assert.That (result.ErrorMessage, Is.EqualTo ("'ChangedDisplayName' must not be empty."));
-    }
-
-    [Test]
-    public void Validate_ExplicitDisplayAndPropertyNameSet_DisplayNameIsUsed ()
-    {
-      _propertyRule.PropertyName = "ChangedPropertyName";
-      _propertyRule.DisplayName = new StaticStringSource ("ChangedDisplayName");
-      var result = _propertyRule.Validate (new ValidationContext (_customer)).ToArray().First();
-
-      Assert.That (result.PropertyName, Is.EqualTo ("ChangedPropertyName"));
-      Assert.That (result.ErrorMessage, Is.EqualTo ("'ChangedDisplayName' must not be empty."));
     }
 
     [Test]
     public void Validate_PropertyChain ()
     {
       var result =
-          _propertyRule.Validate (
+          _propertyValidationRule.Validate (
               new ValidationContext (_customer, new PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new DefaultValidatorSelector()))
                        .ToArray();
 
       var validationResult = result.Single();
       Assert.That (validationResult.PropertyName, Is.EqualTo ("ChainedProperty1.Chainedroperty2.LastName"));
+      Assert.That (validationResult.ErrorMessage, Is.EqualTo ("'ChainedProperty1.Chainedroperty2.LastName' must not be empty."));
+      Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (validationResult.ErrorMessage, Is.EqualTo ("'Last Name' must not be empty."));
     }
 

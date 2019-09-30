@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Validation;
 using Remotion.Validation.Implementation;
@@ -196,8 +197,9 @@ Object 'TestDomainObject' with ID '.*':
             DataContainerObjectMother.Create (domainObject1),
             new IRelationEndPoint[0]);
 
-        var propertyRule = PropertyRule.Create<DomainObjectWithoutAnnotatedProperties, string> (p => p.Name);
-        propertyRule.AddValidator (new NotNullValidator());
+        var propertyRule = new PropertyValidationRule (
+            PropertyInfoAdapter.Create (MemberInfoFromExpressionUtility.GetProperty ((DomainObjectWithoutAnnotatedProperties p) => p.Name)),
+            new[] { new NotNullValidator() });
 
         var rules = new List<IValidationRule>();
         rules.Add (propertyRule);

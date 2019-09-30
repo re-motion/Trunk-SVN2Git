@@ -22,41 +22,10 @@ namespace Remotion.Validation
       Rules = ruleBuilders;
     }
 
-    public virtual string GetName (string property)
-    {
-      return Rules
-          .OfType<PropertyRule>()
-          .Where (x => x.PropertyName == property)
-          .Select (x => x.GetDisplayName())
-          .FirstOrDefault();
-    }
-
-    public virtual ILookup<string, IPropertyValidator> GetMembersWithValidators ()
-    {
-      return Rules
-          .OfType<PropertyRule>()
-          .Where (rule => rule.PropertyName != null)
-          .SelectMany (
-              rule => rule.Validators,
-              (rule, validator) => new
-                 {
-                     propertyName = rule.PropertyName, validator
-                 })
-          .ToLookup (x => x.propertyName, x => x.validator);
-    }
-
     public IEnumerable<IPropertyValidator> GetValidatorsForMember (string name)
     {
-      return GetMembersWithValidators()[name];
-    }
-
-    public IEnumerable<IValidationRule> GetRulesForMember (string name)
-    {
-      return Rules
-          .OfType<PropertyRule>()
-          .Where (rule => rule.PropertyName == name)
-          .Select (rule => (IValidationRule) rule)
-          .ToList();
+      // TODO RM-5906
+      return Rules.Where (r=>r.Property.Name == name).SelectMany (r => r.Validators);
     }
   }
 }

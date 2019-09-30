@@ -29,22 +29,29 @@ namespace Remotion.Validation.RuleBuilders
   public interface IAddingComponentRuleBuilder<TValidatedType, out TProperty>
   {
     /// <summary>
+    /// Associates a validator with this the property for this rule builder.
+    /// </summary>
+    /// <param name="validator">The validator to set</param>
+    /// <returns></returns>
+    IAddingComponentRuleBuilder<TValidatedType, TProperty> SetValidator(IPropertyValidator validator);
+
+    /// <summary>
     /// Declares that the registered validation rule cannot be removed by another component.
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
-    IRuleBuilderOptions<TValidatedType, TProperty> NotRemovable ();
+    IAddingComponentRuleBuilder<TValidatedType, TProperty> NotRemovable ();
 
     /// <summary>
     /// Registers an <see cref="IMetaValidationRule"/> for the given validators.
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
-    IRuleBuilderOptions<TValidatedType, TProperty> AddMetaValidationRule (IMetaValidationRule metaValidationRule);
+    IAddingComponentRuleBuilder<TValidatedType, TProperty> AddMetaValidationRule (IMetaValidationRule metaValidationRule);
 
     /// <summary>
     /// Registers a delegate which will be used for performing consistency checks on the given validators.
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
-    IRuleBuilderOptions<TValidatedType, TProperty> AddMetaValidationRule (
+    IAddingComponentRuleBuilder<TValidatedType, TProperty> AddMetaValidationRule (
         Func<IEnumerable<IPropertyValidator>, MetaValidationRuleValidationResult> rule);
     
     /// <summary>
@@ -54,7 +61,7 @@ namespace Remotion.Validation.RuleBuilders
     /// <remarks>
     /// The infrastructure can include the logic encapsulated within the expression when generating the validation error message. 
     /// </remarks>
-    IRuleBuilderOptions<TValidatedType, TProperty> AddMetaValidationRule<TValidator> (
+    IAddingComponentRuleBuilder<TValidatedType, TProperty> AddMetaValidationRule<TValidator> (
         Expression<Func<IEnumerable<TValidator>, bool>> metaValidationRuleExpression)
         where TValidator: IPropertyValidator;
   }

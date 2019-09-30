@@ -17,7 +17,7 @@
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Utilities;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Implementation
@@ -27,24 +27,26 @@ namespace Remotion.Validation.Implementation
   /// </summary>
   public class DefaultLogContext : ILogContext
   {
-    private readonly MultiDictionary<IValidationRule, LogContextInfo> _removingLogEntries;
+    private readonly MultiDictionary<IAddingComponentPropertyRule, LogContextInfo> _removingLogEntries;
 
     public DefaultLogContext ()
     {
-      _removingLogEntries = new MultiDictionary<IValidationRule, LogContextInfo>();
+      _removingLogEntries = new MultiDictionary<IAddingComponentPropertyRule, LogContextInfo>();
     }
 
     public void ValidatorRemoved (
-        IPropertyValidator removedvalidator, ValidatorRegistrationWithContext[] removingValidatorRegistrationsWithContext, IValidationRule validationRule)
+        IPropertyValidator removedvalidator,
+        ValidatorRegistrationWithContext[] removingValidatorRegistrationsWithContext,
+        IAddingComponentPropertyRule addingComponentPropertyRule)
     {
-      ArgumentUtility.CheckNotNull ("validationRule", validationRule);
+      ArgumentUtility.CheckNotNull ("addingComponentPropertyRule", addingComponentPropertyRule);
       ArgumentUtility.CheckNotNull ("removingValidatorRegistrationsWithContext", removingValidatorRegistrationsWithContext);
-      ArgumentUtility.CheckNotNull ("validationRule", validationRule);
-      
-      _removingLogEntries[validationRule].Add (new LogContextInfo(removedvalidator, removingValidatorRegistrationsWithContext));
+      ArgumentUtility.CheckNotNull ("addingComponentPropertyRule", addingComponentPropertyRule);
+
+      _removingLogEntries[addingComponentPropertyRule].Add (new LogContextInfo (removedvalidator, removingValidatorRegistrationsWithContext));
     }
 
-    public IEnumerable<LogContextInfo> GetLogContextInfos (IValidationRule validationRule)
+    public IEnumerable<LogContextInfo> GetLogContextInfos (IAddingComponentPropertyRule validationRule)
     {
       ArgumentUtility.CheckNotNull ("validationRule", validationRule);
 

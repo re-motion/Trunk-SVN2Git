@@ -26,7 +26,7 @@ using Remotion.Logging;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
 using Remotion.Validation.Providers;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.UnitTests.Implementation;
 using Remotion.Validation.UnitTests.Implementation.TestDomain;
 using Remotion.Validation.UnitTests.TestDomain;
@@ -69,7 +69,7 @@ namespace Remotion.Validation.UnitTests.Merging
     public void Merge_NoValidationCollectors ()
     {
       var collectors = Enumerable.Empty<IEnumerable<ValidationCollectorInfo>>();
-      _wrappedMergerStub.Stub (stub => stub.Merge (collectors)).Return (new ValidationCollectorMergeResult(new IValidationRule[0], _logContextStub));
+      _wrappedMergerStub.Stub (stub => stub.Merge (collectors)).Return (new ValidationCollectorMergeResult(new IAddingComponentPropertyRule[0], _logContextStub));
 
       CheckLoggingMethod (() => _diagnosticOutputRuleMergeDecorator.Merge (collectors), "\r\nAFTER MERGE:", 0);
       CheckLoggingMethod (() => _diagnosticOutputRuleMergeDecorator.Merge (collectors), "\r\nBEFORE MERGE:", 1);
@@ -99,15 +99,15 @@ namespace Remotion.Validation.UnitTests.Merging
       var stubValidator4 = new StubPropertyValidator();
       var stubValidator5 = new NotNullValidator();
 
-      var userNamePropertyRule = PropertyRule.Create (userNameExpression);
-      userNamePropertyRule.AddValidator (stubValidator1);
-      userNamePropertyRule.AddValidator (stubValidator5);
-      userNamePropertyRule.AddValidator (stubValidator2);
-      var lastNamePropertyRule = PropertyRule.Create (lastNameExpression);
-      lastNamePropertyRule.AddValidator (stubValidator3);
+      var userNamePropertyRule = AddingComponentPropertyRule.Create (userNameExpression, typeof (IComponentValidationCollector));
+      userNamePropertyRule.RegisterValidator (stubValidator1);
+      userNamePropertyRule.RegisterValidator (stubValidator5);
+      userNamePropertyRule.RegisterValidator (stubValidator2);
+      var lastNamePropertyRule = AddingComponentPropertyRule.Create (lastNameExpression, typeof (IComponentValidationCollector));
+      lastNamePropertyRule.RegisterValidator (stubValidator3);
 
-      var noPropertyRuleStub = new ValidationRuleStub();
-      noPropertyRuleStub.AddValidator (stubValidator4);
+      var noPropertyRuleStub = new AddingComponentPropertyRuleStub();
+      noPropertyRuleStub.RegisterValidator (stubValidator4);
 
       var removingPropertyRuleStub1 = MockRepository.GenerateStub<IRemovingComponentPropertyRule>();
       removingPropertyRuleStub1.Stub (stub => stub.CollectorType).Return (typeof (CustomerValidationCollector1));
@@ -152,11 +152,11 @@ namespace Remotion.Validation.UnitTests.Merging
       _logContextStub.Stub (stub => stub.GetLogContextInfos (lastNamePropertyRule)).Return (new[] { logContextInfo3 });
       _logContextStub.Stub (stub => stub.GetLogContextInfos (noPropertyRuleStub)).Return (new LogContextInfo[0]);
 
-      var fakeValidationRules = new IValidationRule[] { userNamePropertyRule, lastNamePropertyRule, noPropertyRuleStub };
+      var addingComponentPropertyRules = new IAddingComponentPropertyRule[] { userNamePropertyRule, lastNamePropertyRule, noPropertyRuleStub };
       _wrappedMergerStub.Stub (
           stub =>
               stub.Merge (
-                  validationCollectorInfos)).Return (new ValidationCollectorMergeResult(fakeValidationRules, _logContextStub));
+                  validationCollectorInfos)).Return (new ValidationCollectorMergeResult(addingComponentPropertyRules, _logContextStub));
 
       var expectedAfterMerge =
           "\r\nAFTER MERGE:"
@@ -172,7 +172,7 @@ namespace Remotion.Validation.UnitTests.Merging
           + "\r\n        -> NotEqualValidator (x1)"
           + "\r\n        MERGE LOG:"
           + "\r\n        -> 'NotEqualValidator' was removed from collector 'CustomerValidationCollector1'"
-          + "\r\n\r\n    -> ValidationRuleStub"
+          + "\r\n\r\n    -> Remotion.Validation.UnitTests.Implementation.AddingComponentPropertyRuleStub+DomainType#DomainProperty"
           + "\r\n        VALIDATORS:"
           + "\r\n        -> StubPropertyValidator (x1)";
       CheckLoggingMethod (() => _diagnosticOutputRuleMergeDecorator.Merge (validationCollectorInfos), expectedAfterMerge, 0);

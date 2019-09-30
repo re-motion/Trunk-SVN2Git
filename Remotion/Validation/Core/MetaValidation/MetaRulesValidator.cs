@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 
 namespace Remotion.Validation.MetaValidation
 {
@@ -42,12 +42,11 @@ namespace Remotion.Validation.MetaValidation
       _systemMetaValidationRulesProviderFactory = systemMetaValidationRulesProviderFactory;
     }
 
-    public IEnumerable<MetaValidationRuleValidationResult> Validate (IValidationRule[] validationRules)
+    public IEnumerable<MetaValidationRuleValidationResult> Validate (IAddingComponentPropertyRule[] addingComponentPropertyRules)
     {
-      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
+      ArgumentUtility.CheckNotNull ("addingComponentPropertyRules", addingComponentPropertyRules);
 
-      //DelegateValidators (e.g. Conditions) are filtered!
-      var propertyRulesByMemberInfo = validationRules.OfType<AddingComponentPropertyRule>().ToLookup (pr => pr.Property, pr => pr.Validators);
+      var propertyRulesByMemberInfo = addingComponentPropertyRules.ToLookup (pr => pr.Property, pr => pr.Validators);
 
       return from propertyRuleGroup in _addedPropertyMetaValidationRules.ToLookup (pr => pr.Property)
              let metaValidationRules = GetAllMetaValidationRules (propertyRuleGroup)

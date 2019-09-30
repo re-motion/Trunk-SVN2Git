@@ -116,23 +116,5 @@ namespace Remotion.Validation.UnitTests.Implementation
       Assert.That (enumerator.Current, Is.SameAs (_validationRuleStub2));
       Assert.That (enumerator.MoveNext(), Is.False);
     }
-
-    [Test]
-    public void CascadeMode_Setter ()
-    {
-      Assert.That (
-          () => ((IValidator<Customer>) _validatorDecorator).CascadeMode = CascadeMode.StopOnFirstFailure,
-          Throws.TypeOf<NotSupportedException>()
-              .And.Message.EqualTo ("CascadeMode is not supported for a 'Remotion.Validation.Implementation.TypedValidatorDecorator`1'"));
-    }
-
-    [Test]
-    public void CascadeMode_Getter ()
-    {
-      Assert.That (
-          () => ((IValidator<Customer>) _validatorDecorator).CascadeMode,
-          Throws.TypeOf<NotSupportedException>()
-              .And.Message.EqualTo ("CascadeMode is not supported for a 'Remotion.Validation.Implementation.TypedValidatorDecorator`1'"));
-    }
   }
 }

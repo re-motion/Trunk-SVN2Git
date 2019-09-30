@@ -30,28 +30,28 @@ namespace Remotion.Validation.RuleBuilders
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
     [NotNull]
-    IRemovingComponentRuleBuilderOptions<TValidatedType, TProperty> Validator<TValidator> ();
+    IRemovingComponentRuleBuilder<TValidatedType, TProperty> Validator<TValidator> ();
 
     /// <summary>
     /// Removes validators of type <typeparamref name="TValidator"/> registered by the specified collector <typeparamref name="TCollectorTypeToRemoveFrom"/>.
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
     [NotNull]
-    IRemovingComponentRuleBuilderOptions<TValidatedType, TProperty> Validator<TValidator, TCollectorTypeToRemoveFrom> ();
+    IRemovingComponentRuleBuilder<TValidatedType, TProperty> Validator<TValidator, TCollectorTypeToRemoveFrom> ();
 
     /// <summary>
     /// Removes validators of type <paramref name="validatorType"/>.
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
     [NotNull]
-    IRemovingComponentRuleBuilderOptions<TValidatedType, TProperty> Validator ([NotNull] Type validatorType);
+    IRemovingComponentRuleBuilder<TValidatedType, TProperty> Validator ([NotNull] Type validatorType);
 
     /// <summary>
     /// Removes validators of type <paramref name="validatorType"/> registered by the specified collector <paramref name="collectorTypeToRemoveFrom"/>.
     /// </summary>
     /// <returns>An object to continue the fluent specification.</returns>
     [NotNull]
-    IRemovingComponentRuleBuilderOptions<TValidatedType, TProperty> Validator (
+    IRemovingComponentRuleBuilder<TValidatedType, TProperty> Validator (
         [NotNull] Type validatorType,
         [CanBeNull] Type collectorTypeToRemoveFrom);
   }

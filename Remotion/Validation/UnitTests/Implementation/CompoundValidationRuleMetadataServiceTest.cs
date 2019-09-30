@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.UnitTests.TestDomain;
 using Rhino.Mocks;
 
@@ -30,13 +30,13 @@ namespace Remotion.Validation.UnitTests.Implementation
     private IValidationRuleMetadataService _validationRuleGlobalizationServiceMock2;
     private IValidationRuleMetadataService _validationRuleGlobalizationServiceMock3;
     private CompoundValidationRuleMetadataService _service;
-    private IValidationRule _validationRuleStub;
+    private IAddingComponentPropertyRule _validationRuleStub;
     private Type _typeToValidate;
 
     [SetUp]
     public void SetUp ()
     {
-      _validationRuleStub = MockRepository.GenerateStub<IValidationRule>();
+      _validationRuleStub = MockRepository.GenerateStub<IAddingComponentPropertyRule>();
       _typeToValidate = typeof (Customer);
 
       _validationRuleGlobalizationServiceMock1 = MockRepository.GenerateStrictMock<IValidationRuleMetadataService>();

@@ -63,7 +63,7 @@ namespace Remotion.Validation.UnitTests.RuleBuilders
     {
       _addingComponentPropertyRuleMock.Expect (mock => mock.RegisterValidator (_propertyValidatorStub));
 
-      ((IRuleBuilder<Customer, string>) _addingComponentBuilder).SetValidator (_propertyValidatorStub);
+      ((IAddingComponentRuleBuilder<Customer, string>) _addingComponentBuilder).SetValidator (_propertyValidatorStub);
 
       _addingComponentPropertyRuleMock.VerifyAllExpectations();
     }

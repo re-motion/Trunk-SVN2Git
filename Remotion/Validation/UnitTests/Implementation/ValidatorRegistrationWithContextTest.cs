@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 using Rhino.Mocks;
 

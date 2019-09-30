@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 
 namespace Remotion.Validation.Implementation
 {
   //TODO RM-5906: doc
+  //TODO RM-5906: rename?
   public interface IValidationRuleMetadataService
   {
-    void ApplyMetadata (IValidationRule validationRule, Type typeToValidate);
+    void ApplyMetadata (IAddingComponentPropertyRule addingComponentPropertyRule, Type typeToValidate);
   }
 }

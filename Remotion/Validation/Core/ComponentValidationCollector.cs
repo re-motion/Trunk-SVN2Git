@@ -68,7 +68,7 @@ namespace Remotion.Validation
     }
 
     /// <inheritdoc />
-    public IAddingComponentRuleBuilderOptions<TValidatedType, TProperty> AddRule<TProperty> (
+    public IAddingComponentRuleBuilder<TValidatedType, TProperty> AddRule<TProperty> (
         Expression<Func<TValidatedType, TProperty>> propertySelector)
     {
       ArgumentUtility.CheckNotNull ("propertySelector", propertySelector);
@@ -83,7 +83,7 @@ namespace Remotion.Validation
     }
 
     /// <inheritdoc />
-    public IRemovingComponentRuleBuilderOptions<TValidatedType, TProperty> RemoveRule<TProperty> (
+    public IRemovingComponentRuleBuilder<TValidatedType, TProperty> RemoveRule<TProperty> (
         Expression<Func<TValidatedType, TProperty>> propertySelector)
     {
       ArgumentUtility.CheckNotNull ("propertySelector", propertySelector);

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Merging

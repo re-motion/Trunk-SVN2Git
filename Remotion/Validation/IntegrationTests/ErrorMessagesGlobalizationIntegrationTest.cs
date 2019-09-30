@@ -41,7 +41,10 @@ namespace Remotion.Validation.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count(), Is.EqualTo (2));
-      // TODO: Change when localization is implemented
+      Assert.That (
+          result.Errors.Select (e => e.ErrorMessage),
+          Is.EquivalentTo (new[] { "'FirstName' must not be empty.", "'LastName' should not be equal to 'Test'." }));
+      Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (
           result.Errors.Select (e => e.ErrorMessage),
           Is.EquivalentTo (new[] { "'LocalizedFirstName' must not be empty.", "'LastName' should not be equal to 'Test'." }));
@@ -61,10 +64,13 @@ namespace Remotion.Validation.IntegrationTests
         var result = validator.Validate (person);
 
         Assert.That (result.IsValid, Is.False);
-        // TODO: Change when localization is implemented
         Assert.That (
             result.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' must not be empty." }));
+            Is.EquivalentTo (new[] { "'FirstName' must not be empty." }));
+        Assert.Ignore ("RM-5906: TODO globalization");
+        Assert.That (
+            result.Errors.Select (e => e.ErrorMessage),
+            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
       }
     }
 
@@ -84,10 +90,13 @@ namespace Remotion.Validation.IntegrationTests
         var result = validator.Validate (person);
 
         Assert.That (result.IsValid, Is.False);
-        // TODO: Change when localization is implemented
         Assert.That (
             result.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' must not be empty." }));
+            Is.EquivalentTo (new[] { "'FirstName' must not be empty." }));
+        Assert.Ignore ("RM-5906: TODO globalization");
+        Assert.That (
+            result.Errors.Select (e => e.ErrorMessage),
+            Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
       }
     }
 
@@ -109,10 +118,13 @@ namespace Remotion.Validation.IntegrationTests
         using (new CultureScope (""))
         {
           Assert.That (result.IsValid, Is.False);
-          // TODO: Change when localization is implemented
           Assert.That (
               result.Errors.Select (e => e.ErrorMessage),
-              Is.EquivalentTo (new[] { "'Lokalisierter Vorname' must not be empty." }));
+              Is.EquivalentTo (new[] { "'FirstName' must not be empty." }));
+          Assert.Ignore ("RM-5906: TODO globalization");
+          Assert.That (
+              result.Errors.Select (e => e.ErrorMessage),
+              Is.EquivalentTo (new[] { "'Lokalisierter Vorname' darf keinen Null-Wert aufweisen." }));
         }
       }
     }

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Rules;
 
 namespace Remotion.Validation.Implementation
@@ -41,13 +42,13 @@ namespace Remotion.Validation.Implementation
       get { return _validationRuleGlobalizationServices; }
     }
 
-    public void ApplyMetadata (IValidationRule validationRule, Type typeToValidate)
+    public void ApplyMetadata (IAddingComponentPropertyRule addingComponentPropertyRule, Type typeToValidate)
     {
-      ArgumentUtility.CheckNotNull ("validationRule", validationRule);
-      ArgumentUtility.CheckNotNull ("validationRule", validationRule);
+      ArgumentUtility.CheckNotNull ("addingComponentPropertyRule", addingComponentPropertyRule);
+      ArgumentUtility.CheckNotNull ("addingComponentPropertyRule", addingComponentPropertyRule);
 
       foreach (var validatorGlobalizationService in _validationRuleGlobalizationServices)
-        validatorGlobalizationService.ApplyMetadata (validationRule, typeToValidate);
+        validatorGlobalizationService.ApplyMetadata (addingComponentPropertyRule, typeToValidate);
     }
   }
 }

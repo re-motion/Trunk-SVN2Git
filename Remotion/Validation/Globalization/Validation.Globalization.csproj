@@ -55,8 +55,7 @@
     <Compile Include="IErrorMessageGlobalizationService.cs" />
     <Compile Include="NullErrorMessageGlobalizationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyDisplayNameGlobalizationService.cs" />
-    <Compile Include="PropertyRuleDisplayNameStringSource.cs" />
+    <Compile Include="PropertyValidationRuleDisplayNameStringSource.cs" />
     <Compile Include="ValidationRuleGlobalizationService.cs" />
   </ItemGroup>
   <ItemGroup>

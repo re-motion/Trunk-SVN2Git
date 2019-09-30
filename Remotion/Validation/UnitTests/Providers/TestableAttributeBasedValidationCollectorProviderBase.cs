@@ -21,7 +21,7 @@ using System.Reflection;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.Providers;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.Validators;
 using Rhino.Mocks;
@@ -88,9 +88,6 @@ namespace Remotion.Validation.UnitTests.Providers
 
           if (property.Name == "Position")
           {
-            _validationPropertyRuleReflectorMocks[type]
-                .Expect (mock => mock.GetPropertyAccessExpression (typeof (Employee)))
-                .Return (e => ((Employee) e).Position);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ()).Return (new[] { _propertyValidatorStub1 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ())
                 .Return (new[] { _propertyValidatorStub2 });
@@ -99,9 +96,6 @@ namespace Remotion.Validation.UnitTests.Providers
           }
           else if (property.Name == "Notes")
           {
-            _validationPropertyRuleReflectorMocks[type]
-                .Expect (mock => mock.GetPropertyAccessExpression (typeof (Employee)))
-                .Return (e => ((Employee) e).Notes);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ()).Return (new[] { _propertyValidatorStub3 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ()).Return (new IPropertyValidator[0]);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetRemovingPropertyRegistrations ())
@@ -110,8 +104,6 @@ namespace Remotion.Validation.UnitTests.Providers
           }
           else if (property.Name == "LastName")
           {
-            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression(typeof(SpecialCustomer1))).Return (c =>
-                ((SpecialCustomer1) c).LastName);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ())
                 .Return (new[] { _propertyValidatorStub4, _propertyValidatorStub5 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ()).Return (new IPropertyValidator[0]);
@@ -121,8 +113,6 @@ namespace Remotion.Validation.UnitTests.Providers
           }
           else if (property.Name == "UserName")
           {
-            _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetPropertyAccessExpression (typeof(SpecialCustomer1))).Return (c =>
-                ((SpecialCustomer1) c).UserName);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetAddingPropertyValidators ()).Return (new[] { _propertyValidatorStub6 });
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetHardConstraintPropertyValidators ()).Return (new IPropertyValidator[0]);
             _validationPropertyRuleReflectorMocks[type].Expect (mock => mock.GetRemovingPropertyRegistrations ())

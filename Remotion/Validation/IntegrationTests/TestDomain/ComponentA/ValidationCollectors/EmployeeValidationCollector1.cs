@@ -23,8 +23,7 @@ namespace Remotion.Validation.IntegrationTests.TestDomain.ComponentA.ValidationC
     public EmployeeValidationCollector1 ()
     {
       AddRule (e => e.Salary)
-          .GreaterThan (500)
-          .WithMessage ("Conditional Message Test: {0}", e => e.Salary == 0 ? "Kein Gehalt definiert" : "Gehalt zu gering");
+          .GreaterThan (500);
     }
   }
 }

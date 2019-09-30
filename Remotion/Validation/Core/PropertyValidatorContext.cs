@@ -18,17 +18,9 @@ namespace Remotion.Validation
 
     public ValidationContext ParentContext { get; }
 
-    public PropertyRule Rule { get; }
+    public PropertyValidationRule Rule { get; }
 
     public string PropertyName { get; }
-
-    public string PropertyDescription
-    {
-      get
-      {
-        return Rule.GetDisplayName();
-      }
-    }
 
     public object Instance
     {
@@ -53,13 +45,14 @@ namespace Remotion.Validation
         if (_propertyValueSet) 
           return _propertyValue;
 
-        _propertyValue = Rule.PropertyFunc(Instance);
+        // TODO RM-5906
+        _propertyValue = Rule.Property.GetValue (Instance, new object[0]);
         _propertyValueSet = true;
         return _propertyValue;
       }
     }
 
-    public PropertyValidatorContext(ValidationContext parentContext, PropertyRule rule, string propertyName)
+    public PropertyValidatorContext(ValidationContext parentContext, PropertyValidationRule rule, string propertyName)
     {
       ParentContext = parentContext;
       Rule = rule;

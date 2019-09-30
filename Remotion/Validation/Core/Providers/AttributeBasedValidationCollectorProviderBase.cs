@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.FunctionalProgramming;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 
 namespace Remotion.Validation.Providers
 {
@@ -58,20 +58,17 @@ namespace Remotion.Validation.Providers
           validationRules.Select (vr => vr.Item4));
     }
 
-    private Tuple<AddingComponentPropertyRule, AddingComponentPropertyRule, AddingComponentPropertyMetaValidationRule, RemovingComponentPropertyRule>
-        SetValidationRulesForProperty (
+    private Tuple<AddingComponentPropertyRule, AddingComponentPropertyRule, AddingComponentPropertyMetaValidationRule, RemovingComponentPropertyRule> SetValidationRulesForProperty (
         IAttributesBasedValidationPropertyRuleReflector propertyRuleReflector, Type validatedType)
     {
-      var propertyAccessExpression = propertyRuleReflector.GetPropertyAccessExpression (validatedType);
-      var propertyInfo = propertyRuleReflector.ValidatedProperty;
-      var propertyFunc = propertyAccessExpression.Compile();
+      var property = PropertyInfoAdapter.Create (propertyRuleReflector.ValidatedProperty);
       var collectorType = typeof (AttributeBasedComponentValidationCollector);
 
-      var addingPropertyRule = GetAddingPropertyRule (propertyRuleReflector, validatedType, propertyInfo, propertyFunc, collectorType);
+      var addingPropertyRule = GetAddingPropertyRule (propertyRuleReflector, validatedType, property, collectorType);
       var addingHardConstraintPropertyRule = GetAddingHardConstraintPropertyRule (
-          propertyRuleReflector, validatedType, propertyInfo, propertyFunc, collectorType);
-      var addingMetaValidationPropertyRule = GetAddingComponentPropertyMetaValidationRule (propertyRuleReflector, propertyInfo, collectorType);
-      var removingPropertyRule = GetRemovingComponentPropertyRule (propertyRuleReflector, propertyInfo, collectorType);
+          propertyRuleReflector, validatedType, property, collectorType);
+      var addingMetaValidationPropertyRule = GetAddingComponentPropertyMetaValidationRule (propertyRuleReflector, property, collectorType);
+      var removingPropertyRule = GetRemovingComponentPropertyRule (propertyRuleReflector, property, collectorType);
 
       return Tuple.Create (
           addingPropertyRule,
@@ -83,11 +80,10 @@ namespace Remotion.Validation.Providers
     private AddingComponentPropertyRule GetAddingPropertyRule (
         IAttributesBasedValidationPropertyRuleReflector propertyRuleReflector,
         Type validatedType,
-        PropertyInfo propertyInfo,
-        Func<object, object> propertyFunc,
+        IPropertyInformation property,
         Type collectorType)
     {
-      var propertyRule = new AddingComponentPropertyRule (validatedType, propertyInfo, propertyFunc, collectorType);
+      var propertyRule = new AddingComponentPropertyRule (validatedType, property, collectorType);
 
       foreach (var validator in propertyRuleReflector.GetAddingPropertyValidators ())
         propertyRule.RegisterValidator (validator);
@@ -98,11 +94,10 @@ namespace Remotion.Validation.Providers
     private AddingComponentPropertyRule GetAddingHardConstraintPropertyRule (
         IAttributesBasedValidationPropertyRuleReflector propertyRuleReflector,
         Type validatedType,
-        PropertyInfo propertyInfo,
-        Func<object, object> propertyFunc,
+        IPropertyInformation property,
         Type collectorType)
     {
-      var propertyRule = new AddingComponentPropertyRule (validatedType, propertyInfo, propertyFunc, collectorType);
+      var propertyRule = new AddingComponentPropertyRule (validatedType, property, collectorType);
 
       propertyRule.SetHardConstraint ();
       foreach (var validator in propertyRuleReflector.GetHardConstraintPropertyValidators ())
@@ -113,10 +108,10 @@ namespace Remotion.Validation.Providers
 
     private RemovingComponentPropertyRule GetRemovingComponentPropertyRule (
         IAttributesBasedValidationPropertyRuleReflector propertyRuleReflector,
-        PropertyInfo propertyInfo,
+        IPropertyInformation property,
         Type collectorType)
     {
-      var propertyRule = new RemovingComponentPropertyRule (propertyInfo, collectorType);
+      var propertyRule = new RemovingComponentPropertyRule (property, collectorType);
       
       foreach (var validatorRegistration in propertyRuleReflector.GetRemovingPropertyRegistrations())
         propertyRule.RegisterValidator (validatorRegistration.ValidatorType, validatorRegistration.CollectorTypeToRemoveFrom);
@@ -126,7 +121,7 @@ namespace Remotion.Validation.Providers
 
     private AddingComponentPropertyMetaValidationRule GetAddingComponentPropertyMetaValidationRule (
         IAttributesBasedValidationPropertyRuleReflector propertyRuleReflector,
-        PropertyInfo propertyInfo,
+        IPropertyInformation propertyInfo,
         Type collectorType)
     {
       var propertyRule = new AddingComponentPropertyMetaValidationRule (propertyInfo, collectorType);

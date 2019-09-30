@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Merging;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.UnitTests.TestDomain;
 using Remotion.Validation.UnitTests.TestDomain.Collectors;
 using Remotion.Validation.UnitTests.TestHelpers;
@@ -119,13 +119,13 @@ namespace Remotion.Validation.UnitTests.Merging
               mock.ValidatorRemoved (
                   Arg<IPropertyValidator>.Is.Same (_stubPropertyValidator2),
                   Arg<ValidatorRegistrationWithContext[]>.List.Equal (new[] { _registrationWithContext1, _registrationWithContext6 }),
-                  Arg<IValidationRule>.Is.Same (addingComponentPropertyRule))).Repeat.Once();
+                  Arg<IAddingComponentPropertyRule>.Is.Same (addingComponentPropertyRule))).Repeat.Once();
       _logContextMock.Expect (
           mock =>
               mock.ValidatorRemoved (
                   Arg<IPropertyValidator>.Is.Same (_stubPropertyValidator3),
                   Arg<ValidatorRegistrationWithContext[]>.List.Equal (new[] { _registrationWithContext2 }),
-                  Arg<IValidationRule>.Is.Same (addingComponentPropertyRule))).Repeat.Once();
+                  Arg<IAddingComponentPropertyRule>.Is.Same (addingComponentPropertyRule))).Repeat.Once();
 
       var result = _extractor.ExtractPropertyValidatorsToRemove (addingComponentPropertyRule).ToArray();
 
@@ -148,7 +148,7 @@ namespace Remotion.Validation.UnitTests.Merging
               mock.ValidatorRemoved (
                   Arg<IPropertyValidator>.Is.Same (_stubPropertyValidator4),
                   Arg<ValidatorRegistrationWithContext[]>.List.Equal (new[] { _registrationWithContext8 }),
-                  Arg<IValidationRule>.Is.Same (addingComponentPropertyRule))).Repeat.Once ();
+                  Arg<IAddingComponentPropertyRule>.Is.Same (addingComponentPropertyRule))).Repeat.Once ();
 
       var result = _extractor.ExtractPropertyValidatorsToRemove (addingComponentPropertyRule).ToArray ();
       _logContextMock.VerifyAllExpectations ();

@@ -24,8 +24,7 @@ using Remotion.Utilities;
 using Remotion.Validation.Merging;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.Providers;
-using Remotion.Validation.Rules;
-using Remotion.Validation.Utilities;
+using Remotion.Validation.RuleBuilders;
 
 namespace Remotion.Validation.Implementation
 {
@@ -104,10 +103,9 @@ namespace Remotion.Validation.Implementation
       var validationCollectorMergeResult = _validationCollectorMerger.Merge (allCollectors);
       ValidateMetaRules (allCollectors, validationCollectorMergeResult.CollectedRules);
       
-      ApplyTechnicalPropertyNames (validationCollectorMergeResult.CollectedRules.OfType<PropertyRule>());
       ApplyLocalization (validationCollectorMergeResult.CollectedRules, validatedType);
 
-      return new Validator (validationCollectorMergeResult.CollectedRules, validatedType);
+      return new Validator (validationCollectorMergeResult.CollectedRules.Select (r=> r.CreateValidationRule()), validatedType);
     }
 
     private void ValidateCollectors (IEnumerable<ValidationCollectorInfo> allCollectors)
@@ -116,7 +114,7 @@ namespace Remotion.Validation.Implementation
         _collectorValidator.CheckValid (validationCollectorInfo.Collector);
     }
 
-    private void ValidateMetaRules (IEnumerable<IEnumerable<ValidationCollectorInfo>> allCollectors, IEnumerable<IValidationRule> allRules)
+    private void ValidateMetaRules (IEnumerable<IEnumerable<ValidationCollectorInfo>> allCollectors, IEnumerable<IAddingComponentPropertyRule> allRules)
     {
       var addingComponentPropertyMetaValidationRules =
           allCollectors.SelectMany (cg => cg).Select (ci => ci.Collector).SelectMany (c => c.AddedPropertyMetaValidationRules);
@@ -127,13 +125,7 @@ namespace Remotion.Validation.Implementation
         throw CreateMetaValidationException (metaValidationResults);
     }
 
-    private void ApplyTechnicalPropertyNames (IEnumerable<PropertyRule> propertyRules)
-    {
-      foreach (var propertyRule in propertyRules)
-        propertyRule.PropertyName = _memberInformationNameResolver.GetPropertyName (PropertyInfoAdapter.Create (propertyRule.GetPropertyInfo ()));
-    }
-
-    private void ApplyLocalization (IEnumerable<IValidationRule> validationRules, Type validatedType)
+    private void ApplyLocalization (IEnumerable<IAddingComponentPropertyRule> validationRules, Type validatedType)
     {
       foreach (var validationRule in validationRules)
         _validationRuleGlobalizationService.ApplyMetadata (validationRule, validatedType);

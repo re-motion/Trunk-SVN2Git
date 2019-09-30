@@ -19,7 +19,7 @@ using NUnit.Framework;
 using Remotion.Validation.Globalization.UnitTests.TestDomain;
 using Remotion.Validation.Globalization.UnitTests.TestHelpers;
 using Remotion.Validation.Implementation;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 using Rhino.Mocks;
 
@@ -30,7 +30,7 @@ namespace Remotion.Validation.Globalization.UnitTests
   {
     private IDefaultMessageEvaluator _defaultMessageEvaluatorMock;
     private ValidationRuleGlobalizationService _service;
-    private PropertyRule _propertyRule;
+    private AddingComponentPropertyRule _propertyRule;
     private NotNullValidator _validator1;
     private NotEmptyValidator _validator2;
     private NotEqualValidator _validator3;
@@ -52,10 +52,12 @@ namespace Remotion.Validation.Globalization.UnitTests
       _validator3 = new NotEqualValidator ("test");
       _errorMessageSource3 = _validator3.ErrorMessageSource;
 
-      _propertyRule = PropertyRule.Create (ExpressionHelper.GetTypedMemberExpression<Customer, string> (c => c.LastName));
-      _propertyRule.AddValidator (_validator1);
-      _propertyRule.AddValidator (_validator2);
-      _propertyRule.AddValidator (_validator3);
+      _propertyRule = AddingComponentPropertyRule.Create (
+          ExpressionHelper.GetTypedMemberExpression<Customer, string> (c => c.LastName),
+          typeof (IComponentValidationCollector));
+      _propertyRule.RegisterValidator (_validator1);
+      _propertyRule.RegisterValidator (_validator2);
+      _propertyRule.RegisterValidator (_validator3);
 
       _service = new ValidationRuleGlobalizationService (_defaultMessageEvaluatorMock, _validatorGlobalizationServiceMock);
     }

@@ -29,7 +29,7 @@ using Remotion.Utilities.ReSharperAnnotations;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.MetaValidation;
 using Remotion.Validation.MetaValidation.Rules.Custom;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Data.DomainObjects.Validation

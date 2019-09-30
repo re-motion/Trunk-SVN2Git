@@ -18,7 +18,7 @@ using System;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 
 namespace Remotion.Validation.Globalization
 {
@@ -39,12 +39,12 @@ namespace Remotion.Validation.Globalization
       _errorMessageGlobalizationService = errorMessageGlobalizationService;
     }
 
-    public void ApplyMetadata (IValidationRule validationRule, Type typeToValidate)
+    public void ApplyMetadata (IAddingComponentPropertyRule addingComponentPropertyRule, Type typeToValidate)
     {
-      ArgumentUtility.CheckNotNull ("validationRule", validationRule);
+      ArgumentUtility.CheckNotNull ("addingComponentPropertyRule", addingComponentPropertyRule);
       ArgumentUtility.CheckNotNull ("typeToValidate", typeToValidate);
       
-      foreach (var validator in validationRule.Validators)
+      foreach (var validator in addingComponentPropertyRule.Validators)
       {
         if (_defaultMessageEvaluator.HasDefaultMessageAssigned (validator))
           validator.ErrorMessageSource = new ErrorMessageStringSource (validator, _errorMessageGlobalizationService, validator.ErrorMessageSource);

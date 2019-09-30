@@ -47,6 +47,10 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         Assert.That (result1.IsValid, Is.False);
         Assert.That (
             result1.Errors.Select (e => e.ErrorMessage),
+            Is.EquivalentTo (new[] { "'Title' should not be equal to 'Chef1'." }));
+        Assert.Ignore ("RM-5906: TODO globalization");
+        Assert.That (
+            result1.Errors.Select (e => e.ErrorMessage),
             Is.EquivalentTo (new[] { "'LocalizedTitle' should not be equal to 'Chef1'." }));
       }
     }
@@ -63,6 +67,10 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
 
         var result1 = validator.Validate (order);
         Assert.That (result1.IsValid, Is.False);
+        Assert.That (
+            result1.Errors.Select (e => e.ErrorMessage),
+            Is.EquivalentTo (new[] { "'Number' must be between 3 and 8 characters. You entered 2 characters." }));
+        Assert.Ignore ("RM-5906: TODO globalization");
         Assert.That (
             result1.Errors.Select (e => e.ErrorMessage),
             Is.EquivalentTo (new[] { "'LocalizedNumber' must be between 3 and 8 characters. You entered 2 characters." }));

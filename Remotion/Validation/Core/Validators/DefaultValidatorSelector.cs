@@ -19,7 +19,8 @@ namespace Remotion.Validation.Validators
     /// <returns>Whether or not the validator can execute.</returns>
     public bool CanExecute (IValidationRule rule)
     {
-      return string.IsNullOrEmpty (rule.RuleSet);
+      // TODO RM-5906
+      return true;
     }
   }
 }

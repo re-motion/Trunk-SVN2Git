@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Validation.Rules;
+using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Implementation
@@ -30,8 +30,8 @@ namespace Remotion.Validation.Implementation
     void ValidatorRemoved (
         IPropertyValidator removedValidator,
         ValidatorRegistrationWithContext[] removingValidatorRegistrationsWithContext,
-        IValidationRule validationRule);
+        IAddingComponentPropertyRule addingComponentPropertyRule);
 
-    IEnumerable<LogContextInfo> GetLogContextInfos (IValidationRule validationRule);
+    IEnumerable<LogContextInfo> GetLogContextInfos (IAddingComponentPropertyRule addingComponentPropertyRule);
   }
 }

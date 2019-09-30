@@ -91,17 +91,5 @@ namespace Remotion.Validation.Implementation
     {
       return _validator.GetEnumerator();
     }
-
-    CascadeMode IValidator<T>.CascadeMode
-    {
-      get
-      {
-        throw new NotSupportedException (string.Format ("CascadeMode is not supported for a '{0}'", typeof (TypedValidatorDecorator<>).FullName));
-      }
-      set
-      {
-        throw new NotSupportedException (string.Format ("CascadeMode is not supported for a '{0}'", typeof (TypedValidatorDecorator<>).FullName));
-      }
-    }
   }
 }
