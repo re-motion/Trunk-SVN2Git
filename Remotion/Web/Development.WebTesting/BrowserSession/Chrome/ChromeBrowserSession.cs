@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession.Chrome
         [CanBeNull] [ItemNotNull] IReadOnlyCollection<IBrowserSessionCleanUpStrategy> cleanUpStrategies = null)
         : base (value, configuration, driverProcessID)
     {
-      _cleanUpStrategies = cleanUpStrategies;
+      _cleanUpStrategies = cleanUpStrategies ?? new IBrowserSessionCleanUpStrategy[0];
     }
 
     /// <inheritdoc />
@@ -54,11 +54,8 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession.Chrome
     {
       base.Dispose();
 
-      if (_cleanUpStrategies != null)
-      {
-        foreach (var cleanupStrategy in _cleanUpStrategies)
-          cleanupStrategy.CleanUp();
-      }
+      foreach (var cleanupStrategy in _cleanUpStrategies)
+        cleanupStrategy.CleanUp();
     }
   }
 }
