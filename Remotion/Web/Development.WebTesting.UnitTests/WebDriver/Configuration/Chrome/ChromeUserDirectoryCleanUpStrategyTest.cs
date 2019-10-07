@@ -29,14 +29,22 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.WebDriver.Configuration.
     public void Cleanup_NoRootDirectoryCleanUp ()
     {
       var userDirectoryPath = Path.Combine (Path.GetTempPath(), Guid.NewGuid().ToString ("N"));
-      Directory.CreateDirectory (userDirectoryPath);
       var chromeConfigurationStub = MockRepository.GenerateStub<IChromeConfiguration>();
+      Directory.CreateDirectory (userDirectoryPath);
       chromeConfigurationStub.Stub (_ => _.EnableUserDirectoryRootCleanup).Return (false);
       var cleanUpStrategy = new ChromeUserDirectoryCleanUpStrategy (chromeConfigurationStub, userDirectoryPath);
 
-      cleanUpStrategy.CleanUp();
+      try
+      {
+        cleanUpStrategy.CleanUp();
 
-      Assert.That (Directory.Exists (userDirectoryPath), Is.False);
+        Assert.That (Directory.Exists (userDirectoryPath), Is.False);
+      }
+      finally
+      {
+        if (Directory.Exists (userDirectoryPath))
+          Directory.Delete (userDirectoryPath, true);
+      }
     }
 
     [Test]
@@ -50,9 +58,17 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.WebDriver.Configuration.
       chromeConfigurationStub.Stub (_ => _.UserDirectoryRoot).Return (userDirectoryRootPath);
       var cleanUpStrategy = new ChromeUserDirectoryCleanUpStrategy (chromeConfigurationStub, userDirectoryPath);
 
-      cleanUpStrategy.CleanUp();
+      try
+      {
+        cleanUpStrategy.CleanUp();
 
-      Assert.That (Directory.Exists (userDirectoryRootPath), Is.False);
+        Assert.That (Directory.Exists (userDirectoryRootPath), Is.False);
+      }
+      finally
+      {
+        if (Directory.Exists (userDirectoryRootPath))
+          Directory.Delete (userDirectoryRootPath, true);
+      }
     }
   }
 }
