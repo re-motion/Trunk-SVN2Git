@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
-using System.Threading;
 using Coypu;
 using JetBrains.Annotations;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting;
@@ -172,30 +172,51 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation
       return (int) date.DayOfWeek - 1;
     }
 
+    private static void WaitUntilVisible (IFluentScreenshotElementWithCovariance<ScreenshotBocDateTimeValuePicker> fluentDatePicker, int timeout)
+    {
+      var dateTimeValue = fluentDatePicker.Target.DateTimeValue;
+      var datePickerID = GetDatePickerID (dateTimeValue);
+      var seleniumDriver = (IWebDriver) dateTimeValue.Context.Browser.Driver.Native;
+
+      var webDriverWait = new WebDriverWait (seleniumDriver, TimeSpan.FromMilliseconds (timeout))
+                          {
+                              PollingInterval = TimeSpan.FromMilliseconds (300)
+                          };
+
+      try
+      {
+        webDriverWait.Until (driver => DatePickerContentLoaded (driver, datePickerID));
+      }
+      finally
+      {
+        seleniumDriver.SwitchTo().DefaultContent();
+      }
+    }
+
+    /// <summary>
+    /// Sometimes, due to the delayed generation of the compiled aspx file, the content of the DatePicker iframe is not fully loaded when the iframe is rendered.
+    /// </summary>
+    private static bool DatePickerContentLoaded (IWebDriver driver, string datePickerID)
+    {
+      driver.SwitchTo().DefaultContent();
+      var iframe = driver.FindElement (By.Id (datePickerID)).FindElement (By.TagName ("iframe"));
+      driver.SwitchTo().Frame (iframe);
+
+      return driver.FindElements (By.Id ("Calendar")).Count > 0;
+    }
+
     private static bool IsVisible (IFluentScreenshotElementWithCovariance<ScreenshotBocDateTimeValuePicker> fluentDatePicker)
     {
       var dateTimeValue = fluentDatePicker.Target.DateTimeValue;
-      var id = string.Join ("_", dateTimeValue.Scope.Id, "DatePicker");
+      var id = GetDatePickerID (dateTimeValue);
       var result = dateTimeValue.Context.RootScope.FindId (id, Options.NoWait);
 
       return result.Exists (Options.NoWait);
     }
 
-    private static void WaitUntilVisible (IFluentScreenshotElementWithCovariance<ScreenshotBocDateTimeValuePicker> fluentDatePicker, int timeout)
+    private static string GetDatePickerID (BocDateTimeValueControlObject dateTimeValue)
     {
-      var watch = new Stopwatch();
-      watch.Start();
-
-      do
-      {
-        if (IsVisible (fluentDatePicker))
-          return;
-
-        if (watch.ElapsedMilliseconds >= timeout)
-          throw new TimeoutException ("Could not wait for the timeout in the specified amount of time.");
-
-        Thread.Sleep (50);
-      } while (true);
+      return string.Join ("_", dateTimeValue.Scope.Id, "DatePicker");
     }
   }
 }
