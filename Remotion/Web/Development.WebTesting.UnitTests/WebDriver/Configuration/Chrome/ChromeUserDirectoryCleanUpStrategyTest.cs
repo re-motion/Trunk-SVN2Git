@@ -26,35 +26,12 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.WebDriver.Configuration.
   public class ChromeUserDirectoryCleanUpStrategyTest
   {
     [Test]
-    public void Cleanup_NoRootDirectoryCleanUp ()
-    {
-      var userDirectoryPath = Path.Combine (Path.GetTempPath(), Guid.NewGuid().ToString ("N"));
-      var chromeConfigurationStub = MockRepository.GenerateStub<IChromeConfiguration>();
-      Directory.CreateDirectory (userDirectoryPath);
-      chromeConfigurationStub.Stub (_ => _.EnableUserDirectoryRootCleanup).Return (false);
-      var cleanUpStrategy = new ChromeUserDirectoryCleanUpStrategy (chromeConfigurationStub, userDirectoryPath);
-
-      try
-      {
-        cleanUpStrategy.CleanUp();
-
-        Assert.That (Directory.Exists (userDirectoryPath), Is.False);
-      }
-      finally
-      {
-        if (Directory.Exists (userDirectoryPath))
-          Directory.Delete (userDirectoryPath, true);
-      }
-    }
-
-    [Test]
     public void Cleanup_WithRootDirectoryCleanUp ()
     {
       var userDirectoryRootPath = Path.Combine (Path.GetTempPath(), Guid.NewGuid().ToString ("N"));
       var userDirectoryPath = Path.Combine (userDirectoryRootPath, "0");
       Directory.CreateDirectory (userDirectoryPath);
       var chromeConfigurationStub = MockRepository.GenerateStub<IChromeConfiguration>();
-      chromeConfigurationStub.Stub (_ => _.EnableUserDirectoryRootCleanup).Return (true);
       chromeConfigurationStub.Stub (_ => _.UserDirectoryRoot).Return (userDirectoryRootPath);
       var cleanUpStrategy = new ChromeUserDirectoryCleanUpStrategy (chromeConfigurationStub, userDirectoryPath);
 
