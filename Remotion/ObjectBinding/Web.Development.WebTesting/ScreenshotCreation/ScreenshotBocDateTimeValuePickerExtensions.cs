@@ -172,6 +172,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation
       return (int) date.DayOfWeek - 1;
     }
 
+    private static bool IsVisible (IFluentScreenshotElementWithCovariance<ScreenshotBocDateTimeValuePicker> fluentDatePicker)
+    {
+      var dateTimeValue = fluentDatePicker.Target.DateTimeValue;
+      var id = GetDatePickerID (dateTimeValue);
+      var result = dateTimeValue.Context.RootScope.FindId (id, Options.NoWait);
+
+      return result.Exists (Options.NoWait);
+    }
+
     private static void WaitUntilVisible (IFluentScreenshotElementWithCovariance<ScreenshotBocDateTimeValuePicker> fluentDatePicker, int timeout)
     {
       var dateTimeValue = fluentDatePicker.Target.DateTimeValue;
@@ -203,15 +212,6 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation
       driver.SwitchTo().Frame (iframe);
 
       return driver.FindElements (By.Id ("Calendar")).Count > 0;
-    }
-
-    private static bool IsVisible (IFluentScreenshotElementWithCovariance<ScreenshotBocDateTimeValuePicker> fluentDatePicker)
-    {
-      var dateTimeValue = fluentDatePicker.Target.DateTimeValue;
-      var id = GetDatePickerID (dateTimeValue);
-      var result = dateTimeValue.Context.RootScope.FindId (id, Options.NoWait);
-
-      return result.Exists (Options.NoWait);
     }
 
     private static string GetDatePickerID (BocDateTimeValueControlObject dateTimeValue)
