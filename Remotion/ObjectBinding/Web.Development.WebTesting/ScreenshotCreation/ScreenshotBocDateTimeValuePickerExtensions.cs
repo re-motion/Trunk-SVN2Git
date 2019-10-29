@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation
 
       var webDriverWait = new WebDriverWait (seleniumDriver, TimeSpan.FromMilliseconds (timeout))
                           {
-                              PollingInterval = TimeSpan.FromMilliseconds (300)
+                              PollingInterval = TimeSpan.FromMilliseconds (timeout / 10)
                           };
 
       try
