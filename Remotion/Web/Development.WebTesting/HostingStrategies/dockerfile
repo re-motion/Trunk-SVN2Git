@@ -1,0 +1,25 @@
+ARG HostingBaseDockerImage
+FROM ${HostingBaseDockerImage}
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop';$ProgressPreference = 'SilentlyContinue';"]
+
+ARG WebApplicationPathDockerImage="C:\WebApplication"
+ARG WebApplicationPort
+ARG Is32BitProcess
+
+COPY .\ $WebApplicationPathDockerImage
+
+#Note: As per Dockerfile documentation, this only documents that the container running should be started with -p, publishing this port.
+EXPOSE $WebApplicationPort
+
+ENV WebApplicationPathInsideDocker=$WebApplicationPathDockerImage
+ENV WebApplicationPort=$WebApplicationPort
+ENV Is32BitProcess=$Is32BitProcess
+
+RUN $Acl = Get-Acl $env:WebApplicationPathInsideDocker ; \
+    $Ar = New-Object System.Security.AccessControl.FileSystemAccessRule(\"IIS AppPool\DefaultAppPool\", \"Read\", \"ContainerInherit,ObjectInherit\", \"None\", \"Allow\") ; \
+    Set-Acl $env:WebApplicationPathInsideDocker $Acl ; \
+    New-Item -Path C:/ -Name run.ps1 -ItemType file -Value \"C:/Windows/System32/inetsrv/appcmd.exe set apppool /apppool.name:DefaultAppPool /enable32bitapponwin64:$($env:Is32BitProcess) ; C:/Windows/System32/inetsrv/appcmd.exe set apppool /apppool.name:DefaultAppPool; C:/ServiceMonitor.exe w3svc\" ; \
+    C:\Windows\System32\inetsrv\appcmd.exe add site /name:WebTestingSite /physicalPath:"$($env:WebApplicationPathInsideDocker)" /bindings:"http://*:$($env:WebApplicationPort)"
+
+ENTRYPOINT ["powershell", "-File", "run.ps1"]

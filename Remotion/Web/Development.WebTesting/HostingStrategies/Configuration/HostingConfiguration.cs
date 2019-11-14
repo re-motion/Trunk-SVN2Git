@@ -36,7 +36,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
     private static readonly Dictionary<string, Type> s_wellKnownHostingStrategyTypes =
         new Dictionary<string, Type>
         {
-            { "IisExpress", typeof (IisExpressHostingStrategy) }
+            { "IisExpress", typeof (IisExpressHostingStrategy)},
+            { "Docker", typeof (DockerHostingStrategy)},
         };
 
     private readonly ProviderSettings _hostingProviderSettings;

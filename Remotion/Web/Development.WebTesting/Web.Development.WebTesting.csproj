@@ -115,6 +115,14 @@
     <Compile Include="DownloadInfrastructure\InternetExplorer\WindowAutomation\Win32WindowSupport\IWin32WindowsNativeMethodsExtended.cs" />
     <Compile Include="DownloadInfrastructure\InternetExplorer\WindowAutomation\Win32WindowSupport\Win32WindowsNativeMethodsExtended.cs" />
     <Compile Include="DownloadInfrastructure\PartialFileState.cs" />
+    <Compile Include="HostingStrategies\AspNetDockerContainerWrapper.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\AspNetDockerContainerWrapperConfigurationParameters.cs" />
+    <Compile Include="HostingStrategies\DockerHostingStrategy.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\CustomDockerFile.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\DockerFileManager.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\IDockerFile.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\IDockerFileManager.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\PreparedDockerFile.cs" />
     <Compile Include="IControlObjectNotifier.cs" />
     <Compile Include="ISupportsValidationErrorsForReadOnly.cs" />
     <Compile Include="RequestErrorDetectionStrategies\AspNetRequestErrorDetectionParser.cs" />
@@ -183,11 +191,13 @@
     <Compile Include="Utilities\BrowserAnnotateHelper.cs" />
     <Compile Include="ScreenshotCreation\BrowserContentLocators\ChromiumBrowserContentLocator.cs" />
     <Compile Include="ScreenshotCreation\BrowserContentLocators\InternetExplorerBrowserContentLocator.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\DockerHelper.cs" />
     <Compile Include="Utilities\DomSelectorUtility.cs" />
     <Compile Include="Utilities\DataContractJsonSerializationUtility.cs" />
     <Compile Include="Utilities\ElementScopeExtensions.cs" />
     <Compile Include="ScreenshotCreation\IBrowserContentLocator.cs" />
     <Compile Include="Utilities\BrowserHelper.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\IDockerHelper.cs" />
     <Compile Include="Utilities\InternetExplorerProtectedModeExtensions.cs" />
     <Compile Include="Utilities\LocatorHelper.cs" />
     <Compile Include="Utilities\MouseHelper.cs" />
@@ -383,6 +393,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ScreenshotCreation\Resolvers\WebElementResolverScript.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HostingStrategies\dockerfile" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -43,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting.TestSite
       _resourceVirtualPathProvider = new ResourceVirtualPathProvider (
           new[]
           {
-              new ResourcePathMapping ("Remotion.Web", @"..\..\Web\Core\res")
+              new ResourcePathMapping ("Remotion.Web", @"bin\Remotion.Web.Res")
           },
           FileExtensionHandlerMapping.Default);
       _resourceVirtualPathProvider.Register();

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="RemotionResourceDirectory_DeleteResFolder">
+    <RemoveDir Directories="%(RemotionResourceDirectory.DestinationFolder)"/>
+  </Target>
+
+  <Target Name="RemotionResourceDirectory_CreateResFolder" DependsOnTargets="RemotionResourceDirectory_DeleteResFolder" >
+    <Copy 
+        SourceFiles="%(RemotionResourceDirectory.Identity)"
+        DestinationFolder="%(RemotionResourceDirectory.DestinationFolder)\%(RecursiveDir)"
+        SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="RemotionResourceDirectory_AfterClean" AfterTargets="AfterClean" DependsOnTargets="PrepareResourceDirectoryItemGroup;RemotionResourceDirectory_DeleteResFolder"/>
+  <Target Name="RemotionResourceDirectory_AfterBuild" AfterTargets="AfterBuild" DependsOnTargets="PrepareResourceDirectoryItemGroup;RemotionResourceDirectory_CreateResFolder" />
+</Project>

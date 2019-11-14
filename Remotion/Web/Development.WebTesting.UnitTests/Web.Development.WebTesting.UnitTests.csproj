@@ -70,7 +70,12 @@
     </Compile>
     <Compile Include="Configuration\TestInfrastructureConfigurationTest.cs" />
     <Compile Include="Configuration\WebTestConfigurationSectionTest.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\CustomDockerFileTest.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\DockerFileManagerTest.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\PreparedDockerFileTest.cs" />
+    <Compile Include="HostingStrategies\FileSystemTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HostingStrategies\AspNetDockerContainerWrapperTest.cs" />
     <Compile Include="Utilities\ScreenshotRecorderPathUtilityTest.cs" />
     <Compile Include="Utilities\DomSelectorUtilityTest.cs" />
     <Compile Include="WebDriver\Configuration\Chromium\ChromiumUserDirectoryCleanUpStrategyTest.cs" />
