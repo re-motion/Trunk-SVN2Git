@@ -16,13 +16,16 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using JetBrains.Annotations;
 using log4net;
 using log4net.Config;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.HostingStrategies;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting
 {
@@ -136,10 +139,17 @@ namespace Remotion.Web.Development.WebTesting
 
     private void VerifyWebApplicationStarted (string webApplicationRoot, TimeSpan applicationPingTimeout)
     {
+      var webApplicationRootUri = new Uri (webApplicationRoot);
+      var resolvedUri = ResolveHostname (webApplicationRootUri);
+      s_log.Info ($"Verifying that '{resolvedUri}' is accessible within {applicationPingTimeout}.");
+
       var stopwatch = Stopwatch.StartNew();
-      var webRequest = (HttpWebRequest) HttpWebRequest.Create (webApplicationRoot);
+
+      var webRequest = (HttpWebRequest) HttpWebRequest.Create (resolvedUri);
       webRequest.Method = WebRequestMethods.Http.Head;
       webRequest.AllowAutoRedirect = true;
+      webRequest.Host = webApplicationRootUri.Host;
+
       HttpStatusCode statusCode = default;
       Assertion.DebugAssert (statusCode != HttpStatusCode.OK);
 
@@ -148,11 +158,12 @@ namespace Remotion.Web.Development.WebTesting
         try
         {
           var remainingTimeout = (int) (applicationPingTimeout.TotalMilliseconds - stopwatch.Elapsed.TotalMilliseconds);
-
           webRequest.Timeout = Math.Max (remainingTimeout, 0);
 
-          var response = (HttpWebResponse) webRequest.GetResponse();
-          statusCode = response.StatusCode;
+          using (var response = (HttpWebResponse) webRequest.GetResponse())
+          {
+            statusCode = response.StatusCode;
+          }
         }
         catch (WebException ex)
         {
@@ -163,6 +174,19 @@ namespace Remotion.Web.Development.WebTesting
 
         Thread.Sleep (TimeSpan.FromMilliseconds (500));
       }
+
+      stopwatch.Stop();
+
+      s_log.Info ($"Verified that '{resolvedUri}' is accessible after '{stopwatch.Elapsed}'.");
+    }
+
+    private Uri ResolveHostname (Uri uri)
+    {
+      var host = new RetryUntilTimeout<IPHostEntry> (() => Dns.GetHostEntry (uri.Host), TimeSpan.FromSeconds (30), TimeSpan.FromSeconds (1)).Run();
+      var address = host.AddressList.First (a => a.AddressFamily == AddressFamily.InterNetwork).MapToIPv4();
+      var uriBuilder = new UriBuilder (uri);
+      uriBuilder.Host = address.ToString();
+      return uriBuilder.Uri;
     }
 
     private void UnhostWebApplication ()
