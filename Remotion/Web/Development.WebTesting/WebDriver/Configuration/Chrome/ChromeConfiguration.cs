@@ -56,9 +56,10 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chrome
 
     public override string BrowserExecutableName { get; } = "chrome";
     public override string WebDriverExecutableName { get; } = "chromedriver";
-    public override IBrowserContentLocator Locator { get; } = new ChromeBrowserContentLocator();
+    public override IBrowserContentLocator Locator { get; } = new ChromiumBrowserContentLocator();
     public override ScreenshotTooltipStyle TooltipStyle { get; } = ScreenshotTooltipStyle.Chrome;
     public override IDownloadHelper DownloadHelper { get; }
+
     public string BrowserBinaryPath { get; }
     public string DriverBinaryPath { get; }
     public string UserDirectoryRoot { get; }
@@ -102,18 +103,16 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chrome
 
     public virtual ExtendedChromeOptions CreateChromeOptions ()
     {
-      var chromeOptions = new ExtendedChromeOptions();
+      var userDirectory = CreateUnusedUserDirectoryPath();
+      var chromeOptions = new ExtendedChromeOptions
+                          {
+                              BinaryLocation = BrowserBinaryPath,
+                              UserDirectory = userDirectory
+                          };
 
       DisableSpecCompliance (chromeOptions);
 
-      if (!string.IsNullOrEmpty (BrowserBinaryPath))
-        chromeOptions.BinaryLocation = BrowserBinaryPath;
-
-      var userDirectory = CreateUnusedUserDirectoryPath();
-      chromeOptions.UserDirectory = userDirectory;
-
-      if (!string.IsNullOrEmpty (userDirectory))
-        chromeOptions.AddArgument (string.Format ("user-data-dir={0}", userDirectory));
+      chromeOptions.AddArgument ($"user-data-dir={userDirectory}");
 
       chromeOptions.AddArgument ("no-first-run");
 

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Configuration;
-using Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chrome;
 using Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chromium;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
