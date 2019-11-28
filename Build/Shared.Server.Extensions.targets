@@ -22,8 +22,8 @@
   <Target Name="ArtifactBuild_Configuration">
     <PropertyGroup>
       <Platforms>x64</Platforms>
-      <DatabaseSystems>SqlServer2012</DatabaseSystems>
-      <Browsers></Browsers>
+      <DatabaseSystems>SqlServer2014+NoDB</DatabaseSystems>
+      <Browsers>NoBrowser</Browsers>
       <SkipDocumentation>True</SkipDocumentation>
     </PropertyGroup>
   </Target>
@@ -31,8 +31,8 @@
   <Target Name="CIProductionBuild_Configuration">
     <PropertyGroup>
       <Platforms>x64</Platforms>
-      <DatabaseSystems>SqlServer2012</DatabaseSystems>
-      <Browsers>Chrome</Browsers>
+      <DatabaseSystems>SqlServer2014+NoDB</DatabaseSystems>
+      <Browsers>Chrome+NoBrowser</Browsers>
       <SkipDocumentation>True</SkipDocumentation>
     </PropertyGroup>
   </Target>
@@ -40,8 +40,10 @@
   <Target Name="FullBuildReduced_Configuration">
     <PropertyGroup>
       <Platforms>x64</Platforms>
-      <DatabaseSystems>SqlServer2012</DatabaseSystems>
-      <Browsers>Chrome+InternetExplorer</Browsers>
+      <DatabaseSystems>SqlServer2016+NoDB</DatabaseSystems>
+      <Browsers>Chrome+InternetExplorer+Firefox+Edge+NoBrowser</Browsers>
+      <ExecutionRuntimes>Win_NET48+EnforcedLocalMachine</ExecutionRuntimes>
+      <TargetRuntimes>NET48</TargetRuntimes>
       <TestCategoriesToExclude></TestCategoriesToExclude>
     </PropertyGroup>
   </Target>

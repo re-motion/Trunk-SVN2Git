@@ -29,6 +29,7 @@
     <NuGetToolPath Condition="'$(NuGetToolPath)' == ''">$(PackagesDirectory)NuGet.CommandLine.3.5.0\tools\</NuGetToolPath>
     <NuGetForMSBuildPath Condition="'$(NuGetForMSBuildPath)' == ''">$(PackagesDirectory)NuGet.for.MSBuild.1.4.3\build\</NuGetForMSBuildPath>
     <RemotionBuildTasksPath Condition="'$(RemotionBuildTasksPath)' == ''">$(PackagesDirectory)Remotion.BuildTools.MSBuildTasks.1.0.6862.28795\tools\</RemotionBuildTasksPath>
+    <!-- PR Note: requires BuildScript update -->
     <RemotionBuildScriptPath Condition="'$(RemotionBuildScriptPath)' == ''">$(PackagesDirectory)Remotion.BuildScript.2.0.0-alpha021\BuildTargets\</RemotionBuildScriptPath>
   </PropertyGroup>
 
@@ -83,7 +84,9 @@
           VcsUrlRequiresWindowsCredentials=$(VcsUrlRequiresWindowsCredentials);
           Platforms=$(Platforms);
           DatabaseSystems=$(DatabaseSystems);
+          ExecutionRuntimes=$(ExecutionRuntimes);
           Browsers=$(Browsers);
+          TargetRuntimes=$(TargetRuntimes);
           TestCategoriesToExclude=$(TestCategoriesToExclude);
           DisableDocker=$(DisableDocker);
       </BuildProperties>
@@ -139,16 +142,16 @@
   <Target Name="BuildAll" DependsOnTargets="CleanFolders;PrepareBuildProperties;PrepareBuildTargets;">
 
     <ItemGroup>
-      <_allConfigurations Remove="@(_allConfigurations)" />
+      <_configurationIDs Remove="@(_configurationIDs)" />
       <!-- By listing the debug-build first, the documentation will be generated based on the debug output. -->
-      <_allConfigurations Include="Debug" />
-      <_allConfigurations Include="Release" />
+      <_configurationIDs Include="Debug" />
+      <_configurationIDs Include="Release" />
     </ItemGroup>
 
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="$(FullBuildTargets)"
-             Properties="ConfigurationID=%(_allConfigurations.Identity);$(BuildProperties);"/>
+             Properties="ConfigurationID=%(_configurationIDs.Identity);$(BuildProperties);"/>
   </Target>
   
   <Target Name="TestBuildDebugOnly" DependsOnTargets="CleanFolders;PrepareBuildProperties;PrepareBuildTargets;">

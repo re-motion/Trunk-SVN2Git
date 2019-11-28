@@ -42,9 +42,11 @@
     <PropertyGroup>
       <Platforms>x86</Platforms>
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
-      <Browsers></Browsers>
-      <TestCategoriesToExclude></TestCategoriesToExclude>
+      <Browsers>NoBrowser</Browsers>
       <SkipTests>False</SkipTests>
+      <TestCategoriesToExclude></TestCategoriesToExclude>
+      <ExecutionRuntimes>LocalMachine</ExecutionRuntimes>
+      <TargetRuntimes>NET45</TargetRuntimes>
     </PropertyGroup>
   </Target>
   
