@@ -190,7 +190,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public IReadOnlyList<string> GetValidationErrorsForReadOnly ()
     {
-      return GetValidationErrorsForReadOnly (GetDateScope());
+      return GetValidationErrorsForReadOnly (GetLabeledElementScope());
     }
 
     /// <summary>
