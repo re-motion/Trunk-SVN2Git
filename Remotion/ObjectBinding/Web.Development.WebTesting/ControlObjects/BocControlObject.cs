@@ -66,6 +66,25 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException();
 
+      return GetValidationErrorsInner (scope);
+    }
+
+    /// <summary>
+    /// Returns the validation errors for the read-only <param name="scope" />.
+    /// </summary>
+    /// <exception cref="MissingHtmlException">Thrown if the validation errors cannot be found due to faulty markup or missing validator.</exception>
+    protected IReadOnlyList<string> GetValidationErrorsForReadOnly ([NotNull] ElementScope scope)
+    {
+      ArgumentUtility.CheckNotNull ("scope", scope);
+
+      if (!IsReadOnly())
+        throw new MissingHtmlException ("The control is currently not in a read-only state. Therefore, the operation is not possible.");
+
+      return GetValidationErrorsInner (scope);
+    }
+
+    private IReadOnlyList<string> GetValidationErrorsInner (ElementScope scope)
+    {
       if (IsValid (scope))
         return new List<string>();
 
