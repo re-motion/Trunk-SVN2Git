@@ -46,7 +46,7 @@
       <SkipTests>False</SkipTests>
       <TestCategoriesToExclude></TestCategoriesToExclude>
       <ExecutionRuntimes>LocalMachine</ExecutionRuntimes>
-      <TargetRuntimes>NET45</TargetRuntimes>
+      <TargetRuntimes>NET48</TargetRuntimes>
     </PropertyGroup>
   </Target>
   
@@ -57,6 +57,8 @@
       <DatabaseSystems>SqlServerDefault</DatabaseSystems>
       <!-- Skip Internet Explorer -->
       <Browsers>Chrome</Browsers>
+      <ExecutionRuntimes>LocalMachine</ExecutionRuntimes>
+      <TargetRuntimes>NET48</TargetRuntimes>
       <TestCategoriesToExclude></TestCategoriesToExclude>
       <SkipTests>False</SkipTests>
       <SkipNuGet>False</SkipNuGet>
