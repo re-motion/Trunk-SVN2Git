@@ -32,11 +32,10 @@
     <UnitTestProjectFiles Include="$(SolutionDirectory)\SecurityManager\Core.UnitTests\SecurityManager.Core.UnitTests.csproj">
       <TestSetupBuildFile>$(TestSetupBuildFileForDatabase)</TestSetupBuildFile>
       <TestConfiguration>
-        <!--      Should all be changed to 2016-->
-        Win_NET48  + NET48  + NoBrowser + SqlServer2012 + Debug   + x86;
-        Win_NET48  + NET48  + NoBrowser + SqlServer2012 + Release + x86;
-        Win_NET48  + NET48  + NoBrowser + SqlServer2012 + Debug   + x64;
-        Win_NET48  + NET48  + NoBrowser + SqlServer2012 + Release + x64;
+        Win_NET48  + NET48  + NoBrowser + SqlServer2016 + Debug   + x86;
+        Win_NET48  + NET48  + NoBrowser + SqlServer2016 + Release + x86;
+        Win_NET48  + NET48  + NoBrowser + SqlServer2016 + Debug   + x64;
+        Win_NET48  + NET48  + NoBrowser + SqlServer2016 + Release + x64;
 
         <!-- Compatibility Mode -->
         Win_NET48  + NET472 + NoBrowser + SqlServer2017 + Release + x64;
