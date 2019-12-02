@@ -39,7 +39,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests.Gen
     public string CustomValidatedControlHtmlId { get; private set; }
 
     /// <summary>
-    /// Html id of a control with custom validator inside a form grid.
+    /// Html id of a read-only control with custom validator inside a form grid.
     /// </summary>
     public string CustomValidatedReadOnlyControlHtmlId { get; private set; }
 
