@@ -23,7 +23,6 @@ using Remotion.Utilities;
 using Remotion.Utilities.ReSharperAnnotations;
 using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
-using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Implementation
 {
@@ -60,7 +59,7 @@ namespace Remotion.Validation.Implementation
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
 
-      return Validate (new ValidationContext (instance, new PropertyChain(), new DefaultValidatorSelector()));
+      return Validate (new ValidationContext (instance));
     }
 
     public ValidationResult Validate (ValidationContext context)

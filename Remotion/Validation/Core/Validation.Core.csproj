@@ -88,7 +88,6 @@
     <Compile Include="Implementation\ICollectorValidator.cs" />
     <Compile Include="Implementation\IValidatedTypeResolver.cs" />
     <Compile Include="Implementation\IValidatorFormatter.cs" />
-    <Compile Include="Implementation\PropertyChain.cs" />
     <Compile Include="Implementation\StaticResourceAccessorBuilder.cs" />
     <Compile Include="Implementation\StaticStringSource.cs" />
     <Compile Include="Implementation\TypedValidatorDecorator.cs" />

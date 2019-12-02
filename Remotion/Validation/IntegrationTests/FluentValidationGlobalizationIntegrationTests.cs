@@ -60,21 +60,6 @@ namespace Remotion.Validation.IntegrationTests
     }
 
     [Test]
-    public void Validate_PropertyChain ()
-    {
-      var result =
-          _propertyValidationRule.Validate (
-              new ValidationContext (_customer, new PropertyChain (new[] { "ChainedProperty1", "Chainedroperty2" }), new DefaultValidatorSelector()))
-                       .ToArray();
-
-      var validationResult = result.Single();
-      Assert.That (validationResult.Property, Is.SameAs (_property));
-      Assert.That (validationResult.ErrorMessage, Is.EqualTo ("'LastName' must not be empty."));
-      Assert.Ignore ("RM-5906: TODO globalization");
-      Assert.That (validationResult.ErrorMessage, Is.EqualTo ("'Last Name' must not be empty."));
-    }
-
-    [Test]
     public void DefaultErrorMessage_NotNullValidator ()
     {
       var validator = new NotNullValidator();
