@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Validation.Validators;
 
 namespace Remotion.Validation
 {
@@ -24,11 +23,8 @@ namespace Remotion.Validation
     public ValidationContext (object instanceToValidate)
     {
       InstanceToValidate = instanceToValidate;
-      Selector = new DefaultValidatorSelector();
     }
 
     public object InstanceToValidate { get; }
-
-    public IValidatorSelector Selector { get; }
   }
 }

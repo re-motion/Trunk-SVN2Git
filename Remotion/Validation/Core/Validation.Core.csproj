@@ -147,7 +147,6 @@
     <Compile Include="Results\ValidationResult.cs" />
     <Compile Include="ValidatorDescriptor.cs" />
     <Compile Include="Validators\AbstractComparisonValidator.cs" />
-    <Compile Include="Validators\DefaultValidatorSelector.cs" />
     <Compile Include="Validators\EqualValidator.cs" />
     <Compile Include="Validators\ExactLengthValidator.cs" />
     <Compile Include="Validators\ExclusiveBetweenValidator.cs" />
@@ -160,7 +159,6 @@
     <Compile Include="Validators\INotNullValidator.cs" />
     <Compile Include="Validators\IPredicateValidator.cs" />
     <Compile Include="Validators\IRegularExpressionValidator.cs" />
-    <Compile Include="Validators\IValidatorSelector.cs" />
     <Compile Include="Rules\PropertyValidationRule.cs" />
     <Compile Include="Utilities\TopologySortExtensions.cs" />
     <Compile Include="Utilities\TopologySortMissingDependencyBehavior.cs" />

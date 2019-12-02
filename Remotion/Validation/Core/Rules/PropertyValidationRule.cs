@@ -43,10 +43,7 @@ namespace Remotion.Validation.Rules
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      if (context.Selector.CanExecute (this))
-        return Validators.SelectMany (validator => ValidatePropertyValidator (context, validator));
-      else
-        return Enumerable.Empty<ValidationFailure>();
+      return Validators.SelectMany (validator => ValidatePropertyValidator (context, validator));
     }
 
     private IEnumerable<ValidationFailure> ValidatePropertyValidator (ValidationContext context, IPropertyValidator validator)
