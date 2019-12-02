@@ -160,7 +160,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\StubPropertyValidator.cs" />
     <Compile Include="TestHelpers\TestableComponentValidationCollector.cs" />
-    <Compile Include="Implementation\FluentValidatorBuilderTest.cs" />
+    <Compile Include="Implementation\CollectorBasedValidatorBuilderTest.cs" />
     <Compile Include="Utilities\TopologySortLinqExtensionsTest.cs" />
     <Compile Include="Implementation\ValidatorTest.cs" />
   </ItemGroup>

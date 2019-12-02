@@ -176,7 +176,7 @@
     <Compile Include="RuleBuilders\IRemovingComponentPropertyRule.cs" />
     <Compile Include="RuleBuilders\RemovingComponentPropertyRule.cs" />
     <Compile Include="RuleBuilders\ValidatorRegistration.cs" />
-    <Compile Include="Implementation\FluentValidatorBuilder.cs" />
+    <Compile Include="Implementation\CollectorBasedValidatorBuilder.cs" />
     <Compile Include="Providers\IValidationCollectorProvider.cs" />
     <Compile Include="Providers\ApiBasedComponentValidationCollectorProvider.cs" />
     <Compile Include="Implementation\InvolvedTypeProvider.cs" />
