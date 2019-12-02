@@ -38,7 +38,7 @@ namespace Remotion.Validation.Validators
 
     public virtual IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
     {
-      context.MessageFormatter.AppendPropertyName (context.PropertyName);
+      context.MessageFormatter.AppendPropertyName (context.Property.Name);
       context.MessageFormatter.AppendArgument ("PropertyValue", context.PropertyValue);
       if (IsValid (context))
         return Enumerable.Empty<ValidationFailure>();
@@ -60,7 +60,7 @@ namespace Remotion.Validation.Validators
     {
       // TODO RM-5906
       var error = BuildErrorMessage (context);
-      var validationFailure = new ValidationFailure (context.PropertyName, error);
+      var validationFailure = new ValidationFailure (context.Property, error);
       if (CustomStateProvider != null)
         validationFailure.CustomState = CustomStateProvider (context.Instance);
 

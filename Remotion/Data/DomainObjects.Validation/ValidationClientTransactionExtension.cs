@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.Validation
         errorMessage.AppendLine (
             string.Join (
                 "\r\n",
-                errorByValidatedObject.Select (t => " -- " + t.PropertyName + ": " + t.ErrorMessage)));
+                errorByValidatedObject.Select (t => " -- " + t.Property.Name + ": " + t.ErrorMessage)));
         errorMessage.AppendLine ();
       }
       return errorMessage.ToString ();

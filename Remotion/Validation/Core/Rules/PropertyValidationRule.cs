@@ -43,19 +43,15 @@ namespace Remotion.Validation.Rules
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var propertyName = context.PropertyChain.BuildPropertyName (Property.Name);
       if (context.Selector.CanExecute (this))
-        return Validators.SelectMany (validator => ValidatePropertyValidator (context, propertyName, validator));
+        return Validators.SelectMany (validator => ValidatePropertyValidator (context, validator));
       else
         return Enumerable.Empty<ValidationFailure>();
     }
 
-    private IEnumerable<ValidationFailure> ValidatePropertyValidator (
-        ValidationContext context,
-        string propertyName,
-        IPropertyValidator validator)
+    private IEnumerable<ValidationFailure> ValidatePropertyValidator (ValidationContext context, IPropertyValidator validator)
     {
-      var propertyValidatorContext = new PropertyValidatorContext (context, this, propertyName);
+      var propertyValidatorContext = new PropertyValidatorContext (context, this);
       return validator.Validate (propertyValidatorContext);
     }
   }

@@ -29,15 +29,5 @@ namespace Remotion.Validation
     public object InstanceToValidate { get; }
 
     public IValidatorSelector Selector { get; }
-
-    private bool IsChildContext { get; set; }
-
-    internal ValidationContext CloneForChildValidator (object instanceToValidate)
-    {
-      return new ValidationContext (instanceToValidate, PropertyChain, Selector)
-             {
-                 IsChildContext = true
-             };
-    }
   }
 }

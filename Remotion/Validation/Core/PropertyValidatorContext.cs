@@ -5,6 +5,7 @@
 // Assembly location: C:\Development\Remotion\trunk\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
+using Remotion.Reflection;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Rules;
 
@@ -12,7 +13,6 @@ namespace Remotion.Validation
 {
   public class PropertyValidatorContext
   {
-    private readonly MessageFormatter _messageFormatter = new MessageFormatter();
     private bool _propertyValueSet;
     private object _propertyValue;
 
@@ -20,23 +20,18 @@ namespace Remotion.Validation
 
     public PropertyValidationRule Rule { get; }
 
-    public string PropertyName { get; }
+    public MessageFormatter MessageFormatter { get; }
 
-    public object Instance
+    public PropertyValidatorContext(ValidationContext parentContext, PropertyValidationRule rule)
     {
-      get
-      {
-        return ParentContext.InstanceToValidate;
-      }
+      ParentContext = parentContext;
+      Rule = rule;
+      MessageFormatter = new MessageFormatter();
     }
 
-    public MessageFormatter MessageFormatter
-    {
-      get
-      {
-        return _messageFormatter;
-      }
-    }
+    public IPropertyInformation Property => Rule.Property;
+
+    public object Instance => ParentContext.InstanceToValidate;
 
     public object PropertyValue
     {
@@ -50,13 +45,6 @@ namespace Remotion.Validation
         _propertyValueSet = true;
         return _propertyValue;
       }
-    }
-
-    public PropertyValidatorContext(ValidationContext parentContext, PropertyValidationRule rule, string propertyName)
-    {
-      ParentContext = parentContext;
-      Rule = rule;
-      PropertyName = propertyName;
     }
   }
 }

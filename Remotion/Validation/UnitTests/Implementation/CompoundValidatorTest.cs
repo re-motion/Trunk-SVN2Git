@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
@@ -42,6 +43,13 @@ namespace Remotion.Validation.UnitTests.Implementation
     [SetUp]
     public void SetUp ()
     {
+      var propertyStub1 = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyStub1.Stub (_ => _.Name).Return ("PropertyStub1");
+      var propertyStub2 = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyStub2.Stub (_ => _.Name).Return ("PropertyStub3");
+      var propertyStub3 = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyStub3.Stub (_ => _.Name).Return ("PropertyStub3");
+
       _validationRuleStub1 = MockRepository.GenerateStub<IValidationRule>();
       _validationRuleStub2 = MockRepository.GenerateStub<IValidationRule>();
 
@@ -50,9 +58,9 @@ namespace Remotion.Validation.UnitTests.Implementation
 
       _compoundValidator = new CompoundValidator (new[] { _validatorStub1, _validatorStub2 }, typeof (Customer));
 
-      _validationFailure1 = new ValidationFailure ("PropertyName1", "Failes");
-      _validationFailure2 = new ValidationFailure ("PropertyName2", "Failes");
-      _validationFailure3 = new ValidationFailure ("PropertyName3", "Failes");
+      _validationFailure1 = new ValidationFailure (propertyStub1, "Failes");
+      _validationFailure2 = new ValidationFailure (propertyStub2, "Failes");
+      _validationFailure3 = new ValidationFailure (propertyStub3, "Failes");
 
       _validationResult1 = new ValidationResult (new[] { _validationFailure1, _validationFailure2 });
       _validationResult2 = new ValidationResult (new[] { _validationFailure3 });

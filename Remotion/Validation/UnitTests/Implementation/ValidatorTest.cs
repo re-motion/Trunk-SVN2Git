@@ -17,6 +17,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
+using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
@@ -32,14 +34,18 @@ namespace Remotion.Validation.UnitTests.Implementation
     private IValidationRule _validationRuleStub2;
     private Validator _validator;
     private ValidationFailure _validationFailure;
+    private IPropertyInformation _propertyStub;
 
     [SetUp]
     public void SetUp ()
     {
+      _propertyStub = MockRepository.GenerateStub<IPropertyInformation>();
+      _propertyStub.Stub (_ => _.Name).Return ("PropertyStub");
+
       _validationRuleStub1 = MockRepository.GenerateStub<IValidationRule>();
       _validationRuleStub2 = MockRepository.GenerateStub<IValidationRule>();
 
-      _validationFailure = new ValidationFailure ("PropertyName", "Failes");
+      _validationFailure = new ValidationFailure (_propertyStub, "Failes");
 
       _validator = new Validator (new[] { _validationRuleStub1, _validationRuleStub2 }, typeof (Customer));
     }
