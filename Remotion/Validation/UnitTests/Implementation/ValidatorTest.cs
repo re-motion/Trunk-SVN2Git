@@ -95,7 +95,7 @@ namespace Remotion.Validation.UnitTests.Implementation
     {
       var result = _validator.CreateDescriptor();
 
-      Assert.That (result, Is.TypeOf (typeof (ValidatorDescriptor<Customer>)));
+      Assert.That (result, Is.TypeOf (typeof (ValidatorDescriptor)));
       Assert.That (PrivateInvoke.GetNonPublicProperty (result, "Rules"), Is.EquivalentTo (new[] { _validationRuleStub1, _validationRuleStub2 }));
     }
 

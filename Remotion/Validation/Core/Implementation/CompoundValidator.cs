@@ -18,9 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Remotion.Utilities;
-using Remotion.Utilities.ReSharperAnnotations;
 using Remotion.Validation.Results;
 using Remotion.Validation.Rules;
 
@@ -31,14 +29,8 @@ namespace Remotion.Validation.Implementation
   /// </summary>
   public sealed class CompoundValidator : IValidator
   {
-    private static readonly MethodInfo s_CreateDescriptorMethod =
-        typeof (CompoundValidator).GetMethod (
-            "CreateDescriptor",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
     private readonly IReadOnlyCollection<IValidator> _validators;
     private readonly Type _typeToValidate;
-    private readonly MethodInfo _createDescriptorMethod;
 
     public CompoundValidator (IEnumerable<IValidator> validators, Type typeToValidate)
     {
@@ -47,7 +39,6 @@ namespace Remotion.Validation.Implementation
 
       _validators = validators.ToList().AsReadOnly();
       _typeToValidate = typeToValidate;
-      _createDescriptorMethod = s_CreateDescriptorMethod.MakeGenericMethod (_typeToValidate);
     }
 
     public IReadOnlyCollection<IValidator> Validators
@@ -72,14 +63,8 @@ namespace Remotion.Validation.Implementation
 
     public IValidatorDescriptor CreateDescriptor ()
     {
-      return (IValidatorDescriptor) _createDescriptorMethod.Invoke (this, null);
-    }
-
-    [ReflectionAPI]
-    private IValidatorDescriptor CreateDescriptor<T> ()
-    {
       var validationRules = GetAllValidationRules();
-      return new ValidatorDescriptor<T> (validationRules);
+      return new ValidatorDescriptor (validationRules);
     }
 
     public bool CanValidateInstancesOfType (Type type)
@@ -117,7 +102,7 @@ namespace Remotion.Validation.Implementation
 
     private IEnumerable<IValidationRule> GetAllValidationRules ()
     {
-      return _validators.SelectMany (valiator => valiator);
+      return _validators.SelectMany (validator => validator);
     }
   }
 }

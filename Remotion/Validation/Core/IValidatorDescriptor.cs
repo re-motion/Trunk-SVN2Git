@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Reflection;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation
@@ -24,6 +25,6 @@ namespace Remotion.Validation
   public interface IValidatorDescriptor
   {
     /// <summary>Gets validators for a particular property.</summary>
-    IEnumerable<IPropertyValidator> GetValidatorsForMember (string name);
+    IEnumerable<IPropertyValidator> GetValidatorsForMember (IPropertyInformation property);
   }
 }

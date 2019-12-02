@@ -73,8 +73,7 @@ namespace Remotion.Validation.Implementation
 
     public IValidatorDescriptor CreateDescriptor ()
     {
-      var typeToInstantiate = typeof (ValidatorDescriptor<>).MakeGenericType (_validatedType);
-      return (IValidatorDescriptor) Activator.CreateInstance (typeToInstantiate, _validationRules);
+      return new ValidatorDescriptor (_validationRules);
     }
 
     public bool CanValidateInstancesOfType (Type type)
