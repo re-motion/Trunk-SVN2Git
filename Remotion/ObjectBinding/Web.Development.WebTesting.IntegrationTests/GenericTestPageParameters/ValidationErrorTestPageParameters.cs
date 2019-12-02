@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests.Gen
     public string ControlWithoutValidationHtmlId { get; private set; }
 
     /// <summary>
-    /// Html id of a readonly control.
+    /// Html id of a read-only control.
     /// </summary>
     public string ReadOnlyControlHtmlId { get; private set; }
 
