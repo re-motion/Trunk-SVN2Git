@@ -66,8 +66,6 @@ namespace Remotion.Validation.RuleBuilders
     [EditorBrowsable (EditorBrowsableState.Never)]
     void ApplyRemoveValidatorRegistrations ([NotNull] IPropertyValidatorExtractor propertyValidatorExtractor);
 
-    void ApplyCondition(Func<object, bool> predicate);
-
     /// <summary>
     /// Creates the <see cref="IValidationRule"/> for this <see cref="Property"/>.
     /// </summary>

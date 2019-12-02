@@ -22,21 +22,15 @@ namespace Remotion.Validation.IntegrationTests.TestDomain.ComponentA.ValidationC
   {
     public AddressValidationCollector1 ()
     {
-      When (
-          a => a.Country=="Deutschland",
-          () => AddRule (o => o.PostalCode).Matches ("^DE"));
+      // TODO RM-5906: do conditional validations
+      //IF Country = "Deutschland"
+      //AddRule (o => o.PostalCode).Matches ("^DE");
 
-      When (
-          a => a.Street == "Maria Hilferstrasse 145",
-          () =>
-          {
-            AddRule (a => a.City).Matches ("Wien");
-            AddRule (a => a.PostalCode).Matches ("1090");
-          });
+      //IF Street = "Maria Hilferstrasse 145"
+      //AddRule (a => a.City).Matches ("Wien");
+      //AddRule (a => a.PostalCode).Matches ("1090");
 
-      Unless (
-          a => a.Country == "Brunei",
-          () => AddRule (a => a.PostalCode).NotNull());
+      AddRule (a => a.PostalCode).NotNull();
 
       AddRule (a => a.Street).Length (0, 25);
     }

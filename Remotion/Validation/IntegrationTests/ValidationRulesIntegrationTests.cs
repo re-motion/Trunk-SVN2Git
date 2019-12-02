@@ -43,7 +43,8 @@ namespace Remotion.Validation.IntegrationTests
     }
 
     [Test]
-    public void BuildAdressValidator_WhenAndUnlessConditionApplied ()
+    [Ignore ("RM-5906")]
+    public void BuildAddressValidator_WhenAndUnlessConditionApplied ()
     {
       var address1 = new Address { Country = "Deutschland", PostalCode = "DE - 432134" };
       var address2 = new Address { Country = "Deutschland", PostalCode = "AT - 1220" };

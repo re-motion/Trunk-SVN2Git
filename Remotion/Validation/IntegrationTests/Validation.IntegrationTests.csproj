@@ -97,7 +97,6 @@
     <Compile Include="TestDomain\MetaValidation\MetaValidationTestClass5.cs" />
     <Compile Include="TestDomain\MetaValidation\MetaValidationTestClassCollector1.cs" />
     <Compile Include="TestDomain\MetaValidation\MetaValidationTestClassCollector2.cs" />
-    <Compile Include="TestDomain\MetaValidation\MetaValidationTestClassCollector3.cs" />
     <Compile Include="TestDomain\MetaValidation\MetaValidationTestClassCollector4.cs" />
     <Compile Include="TestDomain\MetaValidation\MetaValidationTestClassCollector5.cs" />
     <Compile Include="TestDomain\MetaValidation\Rules\MaxLengthMetaValidationRule.cs" />

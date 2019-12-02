@@ -115,16 +115,6 @@ namespace Remotion.Validation.RuleBuilders
       }
     }
 
-    public void ApplyCondition (Func<object, bool> predicate)
-    {
-      // TODO RM-5906
-      foreach (IPropertyValidator propertyValidator in _validators.ToList())
-      {
-        var delegatingValidator = new DelegatingValidator (predicate, propertyValidator);
-        ReplaceValidator (propertyValidator, delegatingValidator);
-      }
-    }
-
     private void AddValidator (IPropertyValidator validator)
     {
       // TODO RM-5906: unique validators
@@ -135,16 +125,6 @@ namespace Remotion.Validation.RuleBuilders
     {
       // TODO RM-5906: unique validators
       _validators.Remove (validator);
-    }
-
-    private void ReplaceValidator (IPropertyValidator originalValidator, DelegatingValidator delegatingValidator)
-    {
-      // TODO RM-5906
-      var index = _validators.IndexOf (originalValidator);
-      if (index <= -1)
-        return;
-
-      _validators[index] = delegatingValidator;
     }
 
     public override string ToString ()

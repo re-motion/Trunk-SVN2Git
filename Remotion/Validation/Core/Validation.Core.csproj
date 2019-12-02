@@ -91,7 +91,6 @@
     <Compile Include="Implementation\PropertyChain.cs" />
     <Compile Include="Implementation\StaticResourceAccessorBuilder.cs" />
     <Compile Include="Implementation\StaticStringSource.cs" />
-    <Compile Include="Implementation\TrackingCollection.cs" />
     <Compile Include="Implementation\TypedValidatorDecorator.cs" />
     <Compile Include="Implementation\ValidatorBuilderSerializationDecorator.cs" />
     <Compile Include="IValidator.cs" />
@@ -187,8 +186,6 @@
     <Compile Include="Implementation\Validator.cs" />
     <Compile Include="Utilities\ValidationFailureExtensions.cs" />
     <Compile Include="ValidationContext.cs" />
-    <Compile Include="Validators\DelegatingValidator.cs" />
-    <Compile Include="Validators\IDelegatingValidator.cs" />
     <Compile Include="Validators\ILengthValidator.cs" />
     <Compile Include="Validators\IPropertyValidator.cs" />
     <Compile Include="Validators\LengthValidator.cs" />
