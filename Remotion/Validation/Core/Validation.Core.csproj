@@ -141,7 +141,6 @@
     <Compile Include="Implementation\DiscoveryServiceBasedValidationCollectorReflector.cs" />
     <Compile Include="Implementation\IValidationCollectorReflector.cs" />
     <Compile Include="Rules\IValidationRule.cs" />
-    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="ValidationContext1.cs" />
     <Compile Include="Results\ValidationFailure.cs" />
     <Compile Include="Results\ValidationResult.cs" />
