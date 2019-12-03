@@ -41,7 +41,8 @@ namespace Remotion.Validation.Mixins.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count, Is.EqualTo (1));
-      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'FirstName' should not be equal to 'something'."));
+      Assert.That (result.Errors[0].Property.Name, Is.EqualTo ("FirstName"));
+      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value not equal to 'something'."));
       Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'LocalizedFirstName' should not be equal to 'something'."));
     }
@@ -58,7 +59,8 @@ namespace Remotion.Validation.Mixins.IntegrationTests
       var result = validator.Validate (specialCustomer);
 
       Assert.That (result.IsValid, Is.False);
-      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'LastName' must be between 2 and 8 characters. You entered 15 characters."));
+      Assert.That (result.Errors[0].Property.Name, Is.EqualTo ("LastName"));
+      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Enter between 2 and 8 characters."));
       Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'LocalizedLastName' must be between 2 and 8 characters. You entered 15 characters."));
     }
@@ -75,10 +77,9 @@ namespace Remotion.Validation.Mixins.IntegrationTests
       var result = validator.Validate (customer);
 
       Assert.That (result.IsValid, Is.False);
-      Assert.That (result.Errors.Count (), Is.EqualTo (2));
       Assert.That (
-          result.Errors.Select (e => e.ErrorMessage),
-          Is.EquivalentTo (new[] { "'UserName' should not be equal to 'Test'.", "'FirstName' must not be empty." }));
+          result.Errors.Select (e => $"{e.Property.Name}: {e.ErrorMessage}"),
+          Is.EquivalentTo (new[] { "FirstName: Enter a value.", "UserName: Enter a value not equal to 'Test'."  }));
       Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (
           result.Errors.Select (e => e.ErrorMessage),
@@ -100,7 +101,8 @@ namespace Remotion.Validation.Mixins.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count, Is.EqualTo (1));
-      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'Title' should not be equal to 'Chef1'."));
+      Assert.That (result.Errors[0].Property.Name, Is.EqualTo ("Title"));
+      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value not equal to 'Chef1'."));
       Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'LocalizedTitle' should not be equal to 'Chef1'."));
     }

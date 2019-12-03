@@ -15,22 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remotion.Validation.Results;
+using JetBrains.Annotations;
 using Remotion.Validation.Validators;
 
-namespace Remotion.Validation.UnitTests.TestDomain.Validators
+namespace Remotion.Validation.Implementation
 {
-  public class FakeEmailValidator : IPropertyValidator
+  public interface IValidationMessageFactory
   {
-    public FakeEmailValidator ()
-    {
-    }
-
-    public IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
-    {
-      return Enumerable.Empty<ValidationFailure>();
-    }
+    /// <summary>
+    /// Returns the <see cref="IValidationMessage"/> for a given <see cref="Type"/> that implements the <see cref="IPropertyValidator"/> interface.
+    /// </summary>
+    /// <param name="type">The <see cref="Type"/> of the <see cref="IPropertyValidator"/> to get the <see cref="IValidationMessage"/> for.</param>
+    /// <returns>
+    /// The <see cref="IValidationMessage"/> for the <see cref="IPropertyValidator"/>.
+    /// Please note that the method can return <see langword="null"/> if no <see cref="IValidationMessage"/> is defined for the <paramref name="type"/>.
+    /// </returns>
+    [CanBeNull]
+    IValidationMessage CreateValidationMessageForPropertyValidator ([NotNull] Type type);
   }
 }

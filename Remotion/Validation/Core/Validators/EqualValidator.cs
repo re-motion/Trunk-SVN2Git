@@ -6,44 +6,29 @@
 
 using System;
 using System.Collections;
-using System.Reflection;
 using Remotion.Validation.Implementation;
-using Comparer = Remotion.Validation.Implementation.Comparer;
 
 namespace Remotion.Validation.Validators
 {
-  public class EqualValidator : PropertyValidator, IComparisonValidator
+  public class EqualValidator : PropertyValidator, IValueComparisonValidator
   {
-    private readonly Func<object, object> _func;
-    private readonly IEqualityComparer _comparer;
+    public object ValueToCompare { get; }
+    private IEqualityComparer Comparer { get; }
 
-    public EqualValidator (object valueToCompare)
-        : base (() => Constants.EqualError)
-    {
-      ValueToCompare = valueToCompare;
-    }
 
-    public EqualValidator (Func<object, object> comparisonProperty, MemberInfo member)
-        : base (() => Constants.EqualError)
+    public EqualValidator (object comparisonValue, IEqualityComparer comparer = null, IValidationMessage validationMessage = null)
+        : base (Constants.EqualError, validationMessage ?? new InvariantValidationMessage (Constants.EqualError))
     {
-      _func = comparisonProperty;
-      MemberToCompare = member;
-    }
+      ValueToCompare = comparisonValue;
+      Comparer = comparer;
 
-    public EqualValidator (
-        Func<object, object> comparisonProperty,
-        MemberInfo member,
-        IEqualityComparer comparer)
-        : base (() => Constants.EqualError)
-    {
-      _func = comparisonProperty;
-      MemberToCompare = member;
-      _comparer = comparer;
+      //TODO RM-5906: Add System.IEqualityComparer, similar to NotNullValidator
+      //TODO RM-5906: Refactor remove duplication with NotEqualsValidator.
     }
 
     protected override bool IsValid (PropertyValidatorContext context)
     {
-      var comparisonValue = GetComparisonValue (context);
+      var comparisonValue = ValueToCompare;
       if (Compare (comparisonValue, context.PropertyValue))
         return true;
 
@@ -51,30 +36,15 @@ namespace Remotion.Validation.Validators
       return false;
     }
 
-    private object GetComparisonValue (PropertyValidatorContext context)
-    {
-      if (_func != null)
-        return _func (context.Instance);
-
-      return ValueToCompare;
-    }
-
     public Comparison Comparison
     {
       get { return Comparison.Equal; }
     }
 
-    public MemberInfo MemberToCompare { get; }
-
-    public object ValueToCompare { get; }
-
     private bool Compare (object comparisonValue, object propertyValue)
     {
-      if (_comparer != null)
-        return _comparer.Equals (comparisonValue, propertyValue);
-
       if (comparisonValue is IComparable && propertyValue is IComparable)
-        return Comparer.GetEqualsResult ((IComparable) comparisonValue, (IComparable) propertyValue);
+        return Remotion.Validation.Implementation.Comparer.GetEqualsResult ((IComparable) comparisonValue, (IComparable) propertyValue);
 
       return comparisonValue == propertyValue;
     }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Reflection;
@@ -54,9 +55,7 @@ namespace Remotion.Validation.IntegrationTests
       var validationResult = _propertyValidationRule.Validate (new ValidationContext (_customer)).ToArray().First();
 
       Assert.That (validationResult.Property, Is.SameAs (_property));
-      Assert.That (validationResult.ErrorMessage, Is.EqualTo ("'LastName' must not be empty."));
-      Assert.Ignore ("RM-5906: TODO globalization");
-      Assert.That (validationResult.ErrorMessage, Is.EqualTo ("'Last Name' must not be empty."));
+      Assert.That (validationResult.ErrorMessage, Is.EqualTo ("Enter a value."));
     }
 
     [Test]
@@ -64,9 +63,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new NotNullValidator();
 
-      // TODO: originally this was Is.TypeOf (LocalizedStringSource) (and all tests below)
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.NotNullError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.NotNullError));
     }
 
     [Test]
@@ -74,8 +71,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new NotEmptyValidator (null);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.NotEmptyError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.NotEmptyError));
     }
 
     [Test]
@@ -83,8 +79,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new NotEqualValidator (null);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.NotEqualError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.NotEqualError));
     }
 
     [Test]
@@ -92,8 +87,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new EqualValidator (null);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.EqualError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.EqualError));
     }
 
     [Test]
@@ -101,8 +95,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new ExactLengthValidator (10);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.ExactLengthError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.ExactLengthError));
     }
 
     [Test]
@@ -110,8 +103,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new LengthValidator (1, 3);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.LengthError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.LengthError));
     }
 
     [Test]
@@ -119,8 +111,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new ExclusiveBetweenValidator (1, 3);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.ExclusiveBetweenError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.ExclusiveBetweenError));
     }
 
     [Test]
@@ -128,8 +119,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new InclusiveBetweenValidator (1, 3);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.InclusiveBetweenError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.InclusiveBetweenError));
     }
 
     [Test]
@@ -137,8 +127,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new LessThanValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.LessThanError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.LessThanError));
     }
 
     [Test]
@@ -146,8 +135,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new LessThanOrEqualValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.LessThanOrEqualError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.LessThanOrEqualError));
     }
 
     [Test]
@@ -155,8 +143,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new GreaterThanValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.GreaterThanError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.GreaterThanError));
     }
 
     [Test]
@@ -164,8 +151,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new GreaterThanOrEqualValidator (1);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.GreaterThanOrEqualError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.GreaterThanOrEqualError));
     }
 
     [Test]
@@ -173,8 +159,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new PredicateValidator ((o1, o2, o3) => true);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.PredicateError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.PredicateError));
     }
 
     [Test]
@@ -182,8 +167,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new RegularExpressionValidator ("");
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.RegularExpressionError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.RegularExpressionError));
     }
 
     [Test]
@@ -191,8 +175,7 @@ namespace Remotion.Validation.IntegrationTests
     {
       var validator = new ScalePrecisionValidator (2, 5);
 
-      Assert.That (validator.ErrorMessageSource, Is.TypeOf (typeof (StaticStringSource)));
-      Assert.That (validator.ErrorMessageSource.GetString (), Is.EqualTo (Constants.ScalePrecisionError));
+      Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.ScalePrecisionError));
     }
   }
 }

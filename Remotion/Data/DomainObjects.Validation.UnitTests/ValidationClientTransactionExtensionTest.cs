@@ -227,7 +227,7 @@ Object 'TestDomainObject' with ID '.*':
           string expectedMessage = @"One or more DomainObject contain inconsistent data:
 
 Object 'DomainObjectWithoutAnnotatedProperties' with ID '.*':
- -- Name: 'Name' must not be empty.
+ -- Name: Enter a value.
 ";
 
           Assert.That (exception.Message, Is.StringMatching (expectedMessage));
@@ -237,7 +237,9 @@ Object 'DomainObjectWithoutAnnotatedProperties' with ID '.*':
 
           Assert.That (exception.ValidationFailures.Count, Is.EqualTo (1));
           // TODO: Change when localization is implemented
-          Assert.That (exception.ValidationFailures.ToArray()[0].ErrorMessage, Is.EqualTo ("'Name' must not be empty."));
+          var validationFailures = exception.ValidationFailures.ToArray();
+          Assert.That (validationFailures[0].Property.Name, Is.EqualTo ("Name"));
+          Assert.That (validationFailures[0].ErrorMessage, Is.EqualTo ("Enter a value."));
         }
       }
     }

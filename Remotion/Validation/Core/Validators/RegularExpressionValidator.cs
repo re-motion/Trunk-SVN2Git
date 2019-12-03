@@ -15,8 +15,8 @@ namespace Remotion.Validation.Validators
     private readonly string _expression;
     private readonly Regex _regex;
 
-    public RegularExpressionValidator (string expression)
-        : base (() => Constants.RegularExpressionError)
+    public RegularExpressionValidator (string expression, IValidationMessage validationMessage = null)
+        : base (Constants.RegularExpressionError, validationMessage ?? new InvariantValidationMessage (Constants.RegularExpressionError))
     {
       _expression = expression;
       _regex = new Regex (expression);

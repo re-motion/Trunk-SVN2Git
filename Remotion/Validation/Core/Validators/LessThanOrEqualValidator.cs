@@ -9,10 +9,10 @@ using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
-  public class LessThanOrEqualValidator : AbstractComparisonValidator
+  public class LessThanOrEqualValidator : AbstractValueComparisonValidator
   {
-    public LessThanOrEqualValidator (IComparable value)
-        : base (value, () => Constants.LessThanOrEqualError)
+    public LessThanOrEqualValidator (IComparable value, IValidationMessage validationMessage = null)
+        : base (value, Constants.LessThanOrEqualError, validationMessage ?? new InvariantValidationMessage (Constants.LessThanOrEqualError))
     {
     }
     

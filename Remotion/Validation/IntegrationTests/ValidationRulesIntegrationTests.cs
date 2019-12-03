@@ -94,8 +94,9 @@ namespace Remotion.Validation.IntegrationTests
       var result1 = validator.Validate (address1);
       Assert.That (result1.IsValid, Is.False);
       Assert.That (result1.Errors.Count, Is.EqualTo (2));
-      Assert.That (result1.Errors.Select (e => e.ErrorMessage),
-      Is.EqualTo (new[] { "'SpecialAddressIntroducedProperty' must not be empty.", "'PostalCode' is not in the correct format."}));
+      Assert.That (
+          result1.Errors.Select (e => $"{e.Property.Name}: {e.ErrorMessage}"),
+          Is.EqualTo (new[] { "SpecialAddressIntroducedProperty: Enter a value.", "PostalCode: Enter a value in the correct format."}));
 
       var result2 = validator.Validate (address2);
       Assert.That (result2.IsValid, Is.True);
@@ -103,7 +104,8 @@ namespace Remotion.Validation.IntegrationTests
       var result3 = validator.Validate (address3);
       Assert.That (result3.IsValid, Is.False);
       Assert.That (result3.Errors.Count, Is.EqualTo (1));
-      Assert.That (result3.Errors[0].ErrorMessage, Is.EqualTo ("'PostalCode' must not be empty."));
+      Assert.That (result3.Errors[0].Property.Name, Is.EqualTo ("PostalCode"));
+      Assert.That (result3.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value."));
     }
 
     [Test]
@@ -117,7 +119,7 @@ namespace Remotion.Validation.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count, Is.EqualTo (1));
-      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'Salary' must be greater than '500'."));
+      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value that is greater than '500'."));
       Assert.Ignore ("RM-5906: TODO globalization");
       Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Conditional Message Test: Kein Gehalt definiert"));
     }
@@ -134,7 +136,7 @@ namespace Remotion.Validation.IntegrationTests
 
       Assert.That (result.IsValid, Is.False);
       Assert.That (result.Errors.Count, Is.EqualTo (1));
-      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("'Quantity' should not be empty."));
+      Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value."));
     }
   }
 }

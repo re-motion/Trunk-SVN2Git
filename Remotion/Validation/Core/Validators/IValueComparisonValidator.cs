@@ -8,10 +8,8 @@ using System.Reflection;
 
 namespace Remotion.Validation.Validators
 {
-  public interface IComparisonValidator : IPropertyValidator
+  public interface IValueComparisonValidator : IPropertyValidator
   {
-    MemberInfo MemberToCompare { get; }
-
     object ValueToCompare { get; }
   }
 }

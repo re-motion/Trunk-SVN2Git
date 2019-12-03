@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Attributes.Validation
@@ -29,14 +31,16 @@ namespace Remotion.Validation.Attributes.Validation
   {
     public NotNullAttribute ()
     {
-      
     }
 
     protected override IEnumerable<IPropertyValidator> GetValidators (PropertyInfo property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
-      
-      return new[] { new NotNullValidator() };
+
+      if (string.IsNullOrEmpty (ErrorMessage))
+        return EnumerableUtility.Singleton (new NotNullValidator());
+      else
+        return EnumerableUtility.Singleton (new NotNullValidator (new InvariantValidationMessage (ErrorMessage)));
     }
   }
 }

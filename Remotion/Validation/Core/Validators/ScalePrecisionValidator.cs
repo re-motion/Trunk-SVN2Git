@@ -23,14 +23,8 @@ namespace Remotion.Validation.Validators
   /// </summary>
   public class ScalePrecisionValidator : PropertyValidator
   {
-    public ScalePrecisionValidator (int scale, int precision)
-        : this (scale, precision, () => Constants.ScalePrecisionError)
-    {
-      Init (scale, precision);
-    }
-
-    private ScalePrecisionValidator (int scale, int precision, Expression<Func<string>> errorMessageResourceSelector)
-        : base (errorMessageResourceSelector)
+    public ScalePrecisionValidator (int scale, int precision, IValidationMessage validationMessage = null)
+        : base (Constants.ScalePrecisionError, validationMessage ?? new InvariantValidationMessage (Constants.ScalePrecisionError))
     {
       Init (scale, precision);
     }
@@ -52,10 +46,10 @@ namespace Remotion.Validation.Validators
         return true;
 
       context.MessageFormatter
-          .AppendArgument ("expectedPrecision", Precision)
-          .AppendArgument ("expectedScale", Scale)
-          .AppendArgument ("digits", precision - scale)
-          .AppendArgument ("actualScale", scale);
+          .AppendArgument ("ExpectedPrecision", Precision)
+          .AppendArgument ("ExpectedScale", Scale)
+          .AppendArgument ("Digits", precision - scale)
+          .AppendArgument ("ActualScale", scale);
 
       return false;
     }

@@ -20,7 +20,7 @@ using Remotion.Validation.Validators;
 namespace Remotion.Validation.Implementation
 {
   /// <summary>
-  /// The <see cref="ICollectorValidator"/> interface defines an API for validating <see cref="IComparisonValidator"/> instances. 
+  /// The <see cref="ICollectorValidator"/> interface defines an API for validating <see cref="IValueComparisonValidator"/> instances. 
   /// </summary>
   public interface ICollectorValidator
   {

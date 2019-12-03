@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Validation.Attributes.Validation;
@@ -45,9 +46,11 @@ namespace Remotion.Validation.UnitTests.Attributes.Validation
     {
       var result = _attribute.GetPropertyValidators (typeof (Customer).GetProperty ("LastName")).ToArray();
 
-      Assert.That (result.Count(), Is.EqualTo (1));
+      Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.TypeOf (typeof (NotEqualValidator)));
-      Assert.That (result[0].ErrorMessageSource.GetString(), Is.EqualTo ("'{PropertyName}' should not be equal to '{ComparisonValue}'."));
+      Assert.That (
+          ((PropertyValidator) result[0]).ValidationMessage.ToString (CultureInfo.InvariantCulture),
+          Is.EqualTo ("Enter a value not equal to '{ComparisonValue}'."));
       Assert.That (((NotEqualValidator) result[0]).ValueToCompare, Is.EqualTo ("test"));
     }
 
@@ -58,8 +61,10 @@ namespace Remotion.Validation.UnitTests.Attributes.Validation
 
       var result = _attribute.GetPropertyValidators (typeof (Customer).GetProperty ("LastName")).ToArray();
 
-      Assert.That (result.Count(), Is.EqualTo (1));
-      Assert.That (result[0].ErrorMessageSource.GetString(), Is.EqualTo ("CustomMessage"));
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (
+          ((PropertyValidator) result[0]).ValidationMessage.ToString (CultureInfo.InvariantCulture),
+          Is.EqualTo ("CustomMessage"));
     }
   }
 }

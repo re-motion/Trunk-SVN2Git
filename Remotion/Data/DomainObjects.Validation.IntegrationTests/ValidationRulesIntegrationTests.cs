@@ -46,7 +46,8 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         var result1 = validator.Validate (product1);
         Assert.That (result1.IsValid, Is.False);
         Assert.That (result1.Errors.Count, Is.EqualTo (1));
-        Assert.That (result1.Errors[0].ErrorMessage, Is.EqualTo ("'Order' must not be empty."));
+        Assert.That (result1.Errors[0].Property.Name, Is.EqualTo ("Order"));
+        Assert.That (result1.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value."));
 
         var result2 = validator.Validate (product2);
         Assert.That (result2.IsValid, Is.True);
@@ -67,7 +68,8 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests
         var result1 = validator.Validate (customer1);
         Assert.That (result1.IsValid, Is.False);
         Assert.That (result1.Errors.Count, Is.EqualTo (1));
-        Assert.That (result1.Errors[0].ErrorMessage, Is.EqualTo ("'Address' must not be empty."));
+        Assert.That (result1.Errors[0].Property.Name, Is.EqualTo ("Address"));
+        Assert.That (result1.Errors[0].ErrorMessage, Is.EqualTo ("Enter a value."));
 
         var result2 = validator.Validate (customer2);
         Assert.That (result2.IsValid, Is.True);

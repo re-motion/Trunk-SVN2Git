@@ -11,8 +11,8 @@ namespace Remotion.Validation.Validators
 {
   public class InclusiveBetweenValidator : PropertyValidator, IBetweenValidator
   {
-    public InclusiveBetweenValidator (IComparable from, IComparable to)
-        : base (() => Constants.InclusiveBetweenError)
+    public InclusiveBetweenValidator (IComparable from, IComparable to, IValidationMessage validationMessage = null)
+        : base (Constants.InclusiveBetweenError, validationMessage ?? new InvariantValidationMessage (Constants.InclusiveBetweenError))
     {
       To = to;
       From = from;

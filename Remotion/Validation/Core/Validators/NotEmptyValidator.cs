@@ -15,8 +15,8 @@ namespace Remotion.Validation.Validators
   {
     private readonly object _defaultValueForType;
 
-    public NotEmptyValidator (object defaultValueForType)
-        : base (() => Constants.NotEmptyError)
+    public NotEmptyValidator (object defaultValueForType, IValidationMessage validationMessage = null)
+        : base (Constants.NotEmptyError, validationMessage ?? new InvariantValidationMessage (Constants.NotEmptyError))
     {
       _defaultValueForType = defaultValueForType;
     }

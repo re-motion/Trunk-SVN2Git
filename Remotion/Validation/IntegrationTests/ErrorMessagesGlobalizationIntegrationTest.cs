@@ -40,14 +40,10 @@ namespace Remotion.Validation.IntegrationTests
       var result = validator.Validate (person);
 
       Assert.That (result.IsValid, Is.False);
-      Assert.That (result.Errors.Count(), Is.EqualTo (2));
+      Assert.That (result.Errors.Count, Is.EqualTo (2));
       Assert.That (
-          result.Errors.Select (e => e.ErrorMessage),
-          Is.EquivalentTo (new[] { "'FirstName' must not be empty.", "'LastName' should not be equal to 'Test'." }));
-      Assert.Ignore ("RM-5906: TODO globalization");
-      Assert.That (
-          result.Errors.Select (e => e.ErrorMessage),
-          Is.EquivalentTo (new[] { "'LocalizedFirstName' must not be empty.", "'LastName' should not be equal to 'Test'." }));
+          result.Errors.Select (e => $"{e.Property.Name}: {e.ErrorMessage}"),
+          Is.EquivalentTo (new[] { "FirstName: Enter a value.", "LastName: Enter a value not equal to 'Test'." }));
     }
 
     [Test]
@@ -65,8 +61,8 @@ namespace Remotion.Validation.IntegrationTests
 
         Assert.That (result.IsValid, Is.False);
         Assert.That (
-            result.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'FirstName' must not be empty." }));
+            result.Errors.Select (e => $"{e.Property.Name}: {e.ErrorMessage}"),
+            Is.EquivalentTo (new[] { "FirstName: Enter a value." }));
         Assert.Ignore ("RM-5906: TODO globalization");
         Assert.That (
             result.Errors.Select (e => e.ErrorMessage),
@@ -91,8 +87,8 @@ namespace Remotion.Validation.IntegrationTests
 
         Assert.That (result.IsValid, Is.False);
         Assert.That (
-            result.Errors.Select (e => e.ErrorMessage),
-            Is.EquivalentTo (new[] { "'FirstName' must not be empty." }));
+            result.Errors.Select (e => $"{e.Property.Name}: {e.ErrorMessage}"),
+            Is.EquivalentTo (new[] { "FirstName: Enter a value." }));
         Assert.Ignore ("RM-5906: TODO globalization");
         Assert.That (
             result.Errors.Select (e => e.ErrorMessage),
@@ -119,8 +115,8 @@ namespace Remotion.Validation.IntegrationTests
         {
           Assert.That (result.IsValid, Is.False);
           Assert.That (
-              result.Errors.Select (e => e.ErrorMessage),
-              Is.EquivalentTo (new[] { "'FirstName' must not be empty." }));
+              result.Errors.Select (e => $"{e.Property.Name}: {e.ErrorMessage}"),
+              Is.EquivalentTo (new[] { "FirstName: Enter a value." }));
           Assert.Ignore ("RM-5906: TODO globalization");
           Assert.That (
               result.Errors.Select (e => e.ErrorMessage),

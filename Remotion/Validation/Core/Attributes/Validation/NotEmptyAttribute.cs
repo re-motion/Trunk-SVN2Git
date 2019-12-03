@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Attributes.Validation
@@ -34,8 +36,13 @@ namespace Remotion.Validation.Attributes.Validation
     protected override IEnumerable<IPropertyValidator> GetValidators (PropertyInfo property)
     {
       ArgumentUtility.CheckNotNull ("property", property);
-      
-      return new[] { new NotEmptyValidator (GetDefaultValue(property.PropertyType)) };
+
+      var emptyValue = GetDefaultValue(property.PropertyType);
+
+      if (string.IsNullOrEmpty (ErrorMessage))
+        return EnumerableUtility.Singleton (new NotEmptyValidator (emptyValue));
+      else
+        return EnumerableUtility.Singleton (new NotEmptyValidator (emptyValue, new InvariantValidationMessage (ErrorMessage)));
     }
 
     private object GetDefaultValue (Type type)

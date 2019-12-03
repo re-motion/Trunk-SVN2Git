@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Validation;
-using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
 using Remotion.Validation.Validators;
 
@@ -26,12 +25,6 @@ namespace Remotion.Data.DomainObjects.Validation.IntegrationTests.Testdomain.Val
 {
   public class FakeEmailValidator : IPropertyValidator
   {
-    public ICollection<Func<object, object, object>> CustomMessageFormatArguments { get; } = new List<Func<object, object, object>>();
-
-    public Func<object, object> CustomStateProvider { get; set; }
-
-    public IStringSource ErrorMessageSource { get; set; }
-
     public FakeEmailValidator ()
     {
     }

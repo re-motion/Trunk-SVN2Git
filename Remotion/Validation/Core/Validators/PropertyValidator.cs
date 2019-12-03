@@ -1,13 +1,25 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: FluentValidation.Validators.PropertyValidator
-// Assembly: FluentValidation, Version=5.0.0.1, Culture=neutral, PublicKeyToken=a82054b837897c66
-// MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
-// Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
-
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
+using Remotion.FunctionalProgramming;
+using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
 
@@ -15,26 +27,19 @@ namespace Remotion.Validation.Validators
 {
   public abstract class PropertyValidator : IPropertyValidator
   {
-    private readonly List<Func<object, object, object>> _customFormatArgs = new List<Func<object, object, object>>();
-    private IStringSource _errorSource;
+    public string ErrorMessage { get; }
+    public IValidationMessage ValidationMessage { get; }
 
-    public Func<object, object> CustomStateProvider { get; set; }
-
-    public ICollection<Func<object, object, object>> CustomMessageFormatArguments
+    protected PropertyValidator (string errorMessage, IValidationMessage validationMessage)
     {
-      get { return _customFormatArgs; }
+      ArgumentUtility.CheckNotNullOrEmpty ("errorMessage", errorMessage);
+      ArgumentUtility.CheckNotNull ("validationMessage", validationMessage);
+
+      ErrorMessage = errorMessage;
+      ValidationMessage = validationMessage;
     }
 
-    protected PropertyValidator (Expression<Func<string>> errorMessageResourceSelector)
-    {
-      _errorSource = LocalizedStringSource.CreateFromExpression (errorMessageResourceSelector, new StaticResourceAccessorBuilder());
-    }
-
-    public IStringSource ErrorMessageSource
-    {
-      get { return _errorSource; }
-      set { _errorSource = value ?? throw new ArgumentNullException (nameof (value)); }
-    }
+    protected abstract bool IsValid (PropertyValidatorContext context);
 
     public virtual IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
     {
@@ -43,34 +48,18 @@ namespace Remotion.Validation.Validators
       if (IsValid (context))
         return Enumerable.Empty<ValidationFailure>();
 
-      return new[]
-             {
-                 CreateValidationError (context)
-             };
+      return EnumerableUtility.Singleton (CreateValidationError (context));
     }
 
-    protected abstract bool IsValid (PropertyValidatorContext context);
-
-    /// <summary>
-    /// Creates an error validation result for this validator.
-    /// </summary>
-    /// <param name="context">The validator context</param>
-    /// <returns>Returns an error validation result.</returns>
     private ValidationFailure CreateValidationError (PropertyValidatorContext context)
     {
-      // TODO RM-5906
-      var error = BuildErrorMessage (context);
-      var validationFailure = new ValidationFailure (context.Property, error);
-      if (CustomStateProvider != null)
-        validationFailure.CustomState = CustomStateProvider (context.Instance);
+      var errorMessage = context.MessageFormatter.BuildMessage (ErrorMessage);
+      string localizedValidationMessage = context.MessageFormatter.BuildMessage (ValidationMessage.ToString (CultureInfo.CurrentUICulture));
 
-      return validationFailure;
-    }
-
-    private string BuildErrorMessage (PropertyValidatorContext context)
-    {
-      context.MessageFormatter.AppendAdditionalArguments (_customFormatArgs.Select (func => func (context.Instance, context.PropertyValue)).ToArray());
-      return context.MessageFormatter.BuildMessage (_errorSource.GetString());
+      return new ValidationFailure (
+          context.Property,
+          errorMessage: errorMessage,
+          localizedValidationMessage: localizedValidationMessage);
     }
   }
 }

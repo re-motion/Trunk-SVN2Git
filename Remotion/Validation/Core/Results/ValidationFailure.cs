@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Validation.Results
 {
@@ -23,16 +25,37 @@ namespace Remotion.Validation.Results
   {
     public IPropertyInformation Property { get; }
 
-    /// <summary>The error message</summary>
+    /// <summary>The technical representation of this validation error. Intended for logging.</summary>
+    [NotNull]
     public string ErrorMessage { get; }
+
+    /// <summary>The localized representation of this validation error. Intended for display in the user interface.</summary>
+    [NotNull]
+    public string LocalizedValidationMessage { get; }
 
     /// <summary>Custom state associated with the failure.</summary>
     public object CustomState { get; set; }
 
-    public ValidationFailure (IPropertyInformation property, string error)
+    public ValidationFailure (
+        [NotNull] IPropertyInformation property,
+        [NotNull] string errorMessage)
+        : this (property, errorMessage, errorMessage)
     {
+      // TODO RM-5906 remove overload
+    }
+
+    public ValidationFailure (
+        [NotNull] IPropertyInformation property,
+        [NotNull] string errorMessage,
+        [NotNull] string localizedValidationMessage)
+    {
+      ArgumentUtility.CheckNotNull ("property", property);
+      ArgumentUtility.CheckNotNullOrEmpty ("errorMessage", errorMessage);
+      ArgumentUtility.CheckNotNullOrEmpty ("localizedValidationMessage", localizedValidationMessage);
+
       Property = property;
-      ErrorMessage = error;
+      ErrorMessage = errorMessage;
+      LocalizedValidationMessage = localizedValidationMessage;
     }
   }
 }

@@ -11,8 +11,8 @@ namespace Remotion.Validation.Validators
 {
   public class ExclusiveBetweenValidator : PropertyValidator, IBetweenValidator
   {
-    public ExclusiveBetweenValidator (IComparable from, IComparable to)
-        : base (() => Constants.ExclusiveBetweenError)
+    public ExclusiveBetweenValidator (IComparable from, IComparable to, IValidationMessage validationMessage = null)
+        : base (Constants.ExclusiveBetweenError, validationMessage ?? new InvariantValidationMessage (Constants.ExclusiveBetweenError))
     {
       To = to;
       From = from;

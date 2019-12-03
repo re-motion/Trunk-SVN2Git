@@ -61,7 +61,7 @@ namespace Remotion.Validation.Implementation
       if (typeof (IBetweenValidator).IsAssignableFrom (validatorType))
         return FormatBetweenValidator (validator, typeName);
 
-      if (typeof (IComparisonValidator).IsAssignableFrom (validatorType))
+      if (typeof (IValueComparisonValidator).IsAssignableFrom (validatorType))
         return FormatComparisonValidator (validator, typeNameFormatter, typeName);
 
       if (typeof (IRegularExpressionValidator).IsAssignableFrom (validatorType))
@@ -88,14 +88,8 @@ namespace Remotion.Validation.Implementation
 
     private string FormatComparisonValidator (IPropertyValidator validator, Func<Type, string> typeNameFormatter, string typeName)
     {
-      var comparisonValidator = (IComparisonValidator) validator;
-      if (comparisonValidator.MemberToCompare != null)
-      {
-        return string.Format (
-            "{0} {{ MemberToCompare = '{1}' }}", typeName, FormatMemberInfo (comparisonValidator.MemberToCompare, typeNameFormatter));
-      }
-      else
-        return string.Format ("{0} {{ ValueToCompare = '{1}' }}", typeName, comparisonValidator.ValueToCompare);
+      var comparisonValidator = (IValueComparisonValidator) validator;
+      return string.Format ("{0} {{ ValueToCompare = '{1}' }}", typeName, comparisonValidator.ValueToCompare);
     }
 
     private string FormatRegularExpressionValidator (IPropertyValidator validator, string typeName)

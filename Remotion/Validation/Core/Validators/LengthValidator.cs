@@ -5,7 +5,6 @@
 // Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
 
 using System;
-using System.Linq.Expressions;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
@@ -16,13 +15,13 @@ namespace Remotion.Validation.Validators
 
     public int Max { get; }
 
-    public LengthValidator (int min, int max)
-        : this (min, max, () => Constants.LengthError)
+    public LengthValidator (int min, int max, IValidationMessage validationMessage = null)
+        : this (min, max, Constants.LengthError, validationMessage ?? new InvariantValidationMessage (Constants.LengthError))
     {
     }
 
-    protected LengthValidator (int min, int max, Expression<Func<string>> errorMessageResourceSelector)
-        : base (errorMessageResourceSelector)
+    protected LengthValidator (int min, int max, string errorMessage, IValidationMessage validationMessage)
+        : base (errorMessage, validationMessage)
     {
       Max = max;
       Min = min;

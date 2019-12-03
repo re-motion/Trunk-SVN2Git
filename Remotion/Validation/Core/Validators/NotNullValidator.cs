@@ -11,8 +11,8 @@ namespace Remotion.Validation.Validators
 {
   public class NotNullValidator : PropertyValidator, INotNullValidator
   {
-    public NotNullValidator ()
-        : base (() => Constants.NotNullError)
+    public NotNullValidator (IValidationMessage validationMessage = null)
+        : base (Constants.NotNullError, validationMessage ?? new InvariantValidationMessage (Constants.NotNullError))
     {
     }
 

@@ -71,12 +71,11 @@
     <Compile Include="Implementation\CompoundCollectorValidatorTest.cs" />
     <Compile Include="Implementation\CompoundValidationTypeFilterTest.cs" />
     <Compile Include="Implementation\CompoundValidatorTest.cs" />
-    <Compile Include="Implementation\CompoundValidationRuleMetadataServiceTest.cs" />
     <Compile Include="Implementation\CompoundValidatorBuilderTest.cs" />
     <Compile Include="Implementation\ICollectorValidatorTest.cs" />
     <Compile Include="Implementation\IValidatedTypeResolverTest.cs" />
     <Compile Include="Implementation\IValidationCollectorReflectorTest.cs" />
-    <Compile Include="Implementation\IValidationRuleMetadataServiceTest.cs" />
+    <Compile Include="Implementation\IValidationMessageFactoryTest.cs" />
     <Compile Include="Implementation\IValidatorBuilderTest.cs" />
     <Compile Include="Implementation\IValidatorFormatterTest.cs" />
     <Compile Include="Implementation\NullValidatedTypeResolverTest.cs" />

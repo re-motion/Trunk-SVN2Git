@@ -58,7 +58,6 @@ namespace Remotion.Validation.UnitTests.Implementation
     private IAddingComponentPropertyMetaValidationRule _metaValidationRule1Stub;
     private IAddingComponentPropertyMetaValidationRule _metaValidationRule2Stub;
     private IAddingComponentPropertyMetaValidationRule _metaValidationRule3Stub;
-    private IValidationRuleMetadataService _validationRuleGlobalizationServiceMock;
     private IMemberInformationNameResolver _memberInformationNameResolverMock;
     private ICollectorValidator _collectorValidatorMock;
     private ValidationCollectorMergeResult _fakeValidationCollectorMergeResult;
@@ -70,7 +69,6 @@ namespace Remotion.Validation.UnitTests.Implementation
       _validationCollectorMergerMock = MockRepository.GenerateStrictMock<IValidationCollectorMerger>();
       _metaRulesValidatorFactoryStub = MockRepository.GenerateStub<IMetaRulesValidatorFactory>();
       _metaRuleValidatorMock = MockRepository.GenerateStrictMock<IMetaRuleValidator>();
-      _validationRuleGlobalizationServiceMock = MockRepository.GenerateStrictMock<IValidationRuleMetadataService>();
       _memberInformationNameResolverMock = MockRepository.GenerateStrictMock<IMemberInformationNameResolver>();
       _collectorValidatorMock = MockRepository.GenerateStrictMock<ICollectorValidator> ();
 
@@ -121,7 +119,6 @@ namespace Remotion.Validation.UnitTests.Implementation
           _validationCollectorProviderMock,
           _validationCollectorMergerMock,
           _metaRulesValidatorFactoryStub,
-          _validationRuleGlobalizationServiceMock,
           _memberInformationNameResolverMock,
           _collectorValidatorMock);
 
@@ -151,15 +148,6 @@ namespace Remotion.Validation.UnitTests.Implementation
           .Expect (mock => mock.Validate (Arg<IAddingComponentPropertyRule[]>.List.Equal (_fakeAddingComponentPropertyRulesResult)))
           .Return (new[] { _validMetaValidationResult1, _validMetaValidationResult2 });
 
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub1, typeof (SpecialCustomer1)));
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub2, typeof (SpecialCustomer1)));
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub3, typeof (SpecialCustomer1)));
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub4, typeof (SpecialCustomer1)));
-
       var validationRuleStub1 = MockRepository.GenerateStub<IValidationRule>();
       var validationRuleStub2 = MockRepository.GenerateStub<IValidationRule>();
       _addingComponentPropertyRuleStub1.Stub (_ => _.CreateValidationRule()).Return (validationRuleStub1);
@@ -171,7 +159,6 @@ namespace Remotion.Validation.UnitTests.Implementation
       _validationCollectorMergerMock.VerifyAllExpectations();
       _metaRuleValidatorMock.VerifyAllExpectations();
       _memberInformationNameResolverMock.VerifyAllExpectations();
-      _validationRuleGlobalizationServiceMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (Validator)));
       var validator = (Validator) result;
       var validationRules = validator.ValidationRules.ToArray();
@@ -195,22 +182,12 @@ namespace Remotion.Validation.UnitTests.Implementation
           .Expect (mock => mock.Validate (Arg<IAddingComponentPropertyRule[]>.List.Equal (_fakeAddingComponentPropertyRulesResult)))
           .Return (new[] { _validMetaValidationResult1, _validMetaValidationResult2 });
 
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub1, typeof (SpecialCustomer1)));
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub2, typeof (SpecialCustomer1)));
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub3, typeof (SpecialCustomer1)));
-      _validationRuleGlobalizationServiceMock
-          .Expect (mock => mock.ApplyMetadata (_addingComponentPropertyRuleStub4, typeof (SpecialCustomer1)));
-
       var result = _validatorBuilder.BuildValidator<SpecialCustomer1>();
 
       _validationCollectorProviderMock.VerifyAllExpectations();
       _validationCollectorMergerMock.VerifyAllExpectations();
       _metaRuleValidatorMock.VerifyAllExpectations();
       _memberInformationNameResolverMock.VerifyAllExpectations();
-      _validationRuleGlobalizationServiceMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf (typeof (TypedValidatorDecorator<SpecialCustomer1>)));
     }
 

@@ -37,7 +37,6 @@ namespace Remotion.Validation.Implementation
     private readonly IValidationCollectorProvider _validationCollectorProvider;
     private readonly IValidationCollectorMerger _validationCollectorMerger;
     private readonly IMetaRulesValidatorFactory _metaRulesValidatorFactory;
-    private readonly IValidationRuleMetadataService _validationRuleGlobalizationService;
     private readonly IMemberInformationNameResolver _memberInformationNameResolver;
     private readonly ICollectorValidator _collectorValidator;
 
@@ -45,21 +44,18 @@ namespace Remotion.Validation.Implementation
         IValidationCollectorProvider validationCollectorProvider,
         IValidationCollectorMerger validationCollectorMerger,
         IMetaRulesValidatorFactory metaRuleValidatorFactory,
-        IValidationRuleMetadataService validationRuleGlobalizationService,
         IMemberInformationNameResolver memberInformationNameResolver,
         ICollectorValidator collectorValidator)
     {
       ArgumentUtility.CheckNotNull ("validationCollectorProvider", validationCollectorProvider);
       ArgumentUtility.CheckNotNull ("validationCollectorMerger", validationCollectorMerger);
       ArgumentUtility.CheckNotNull ("metaRuleValidatorFactory", metaRuleValidatorFactory);
-      ArgumentUtility.CheckNotNull ("validationRuleGlobalizationService", validationRuleGlobalizationService);
       ArgumentUtility.CheckNotNull ("memberInformationNameResolver", memberInformationNameResolver);
       ArgumentUtility.CheckNotNull ("collectorValidator", collectorValidator);
       
       _validationCollectorProvider = validationCollectorProvider;
       _validationCollectorMerger = validationCollectorMerger;
       _metaRulesValidatorFactory = metaRuleValidatorFactory;
-      _validationRuleGlobalizationService = validationRuleGlobalizationService;
       _memberInformationNameResolver = memberInformationNameResolver;
       _collectorValidator = collectorValidator;
     }
@@ -77,11 +73,6 @@ namespace Remotion.Validation.Implementation
     public IMetaRulesValidatorFactory MetaRulesValidatorFactory
     {
       get { return _metaRulesValidatorFactory; }
-    }
-
-    public IValidationRuleMetadataService ValidationRulesGlobalizationService
-    {
-      get { return _validationRuleGlobalizationService; }
     }
 
     public IMemberInformationNameResolver MemberInformationNameResolver
@@ -102,8 +93,6 @@ namespace Remotion.Validation.Implementation
       ValidateCollectors (allCollectors.SelectMany (c => c));
       var validationCollectorMergeResult = _validationCollectorMerger.Merge (allCollectors);
       ValidateMetaRules (allCollectors, validationCollectorMergeResult.CollectedRules);
-      
-      ApplyLocalization (validationCollectorMergeResult.CollectedRules, validatedType);
 
       return new Validator (validationCollectorMergeResult.CollectedRules.Select (r=> r.CreateValidationRule()), validatedType);
     }
@@ -123,12 +112,6 @@ namespace Remotion.Validation.Implementation
       var metaValidationResults = metaRulesValidator.Validate (allRules.ToArray()).Where (r => !r.IsValid).ToArray();
       if (metaValidationResults.Any())
         throw CreateMetaValidationException (metaValidationResults);
-    }
-
-    private void ApplyLocalization (IEnumerable<IAddingComponentPropertyRule> validationRules, Type validatedType)
-    {
-      foreach (var validationRule in validationRules)
-        _validationRuleGlobalizationService.ApplyMetadata (validationRule, validatedType);
     }
 
     private ValidationConfigurationException CreateMetaValidationException (IEnumerable<MetaValidationRuleValidationResult> metaValidationResults)

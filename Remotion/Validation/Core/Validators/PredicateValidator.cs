@@ -14,8 +14,8 @@ namespace Remotion.Validation.Validators
   {
     private readonly Predicate _predicate;
 
-    public PredicateValidator (Predicate predicate)
-        : base (() => Constants.PredicateError)
+    public PredicateValidator (Predicate predicate, IValidationMessage validationMessage = null)
+        : base (Constants.PredicateError, validationMessage ?? new InvariantValidationMessage (Constants.PredicateError))
     {
       ArgumentUtility.CheckNotNull ("predicate", predicate);
 

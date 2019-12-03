@@ -55,20 +55,13 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="DefaultMessageEvaluatorTest.cs" />
-    <Compile Include="ErrorMessageStringSourceTest.cs" />
-    <Compile Include="IDefaultMessageEvaluatorTest.cs" />
-    <Compile Include="IErrorMessageGlobalizationServiceTest.cs" />
-    <Compile Include="IValidationRuleMetadataServiceTest.cs" />
-    <Compile Include="NullErrorMessageGlobalizationServiceTest.cs" />
+    <Compile Include="IValidationMessageFactoryTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyValidationRuleDisplayNameStringSourceTest.cs" />
     <Compile Include="TestDomain\Customer.cs" />
     <Compile Include="TestDomain\IPerson.cs" />
     <Compile Include="TestDomain\Person.cs" />
     <Compile Include="TestHelpers\ExpressionHelper.cs" />
     <Compile Include="TestHelpers\StubPropertyValidator.cs" />
-    <Compile Include="ValidationRuleGlobalizationServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">

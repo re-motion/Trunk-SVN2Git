@@ -85,7 +85,7 @@ namespace Remotion.Validation.UnitTests.Implementation
     }
 
     [Test]
-    public void Format_IComparisonValidators ()
+    public void Format_IValueComparisonValidators ()
     {
       var validator1 = new EqualValidator (5);
       var validator2 = new NotEqualValidator (10);
@@ -93,7 +93,6 @@ namespace Remotion.Validation.UnitTests.Implementation
       var validator4 = new GreaterThanOrEqualValidator (7);
       var validator5 = new LessThanValidator (2);
       var validator6 = new LessThanOrEqualValidator (1);
-      var validator7 = new EqualValidator (o => o, typeof (Customer).GetProperty ("UserName"));
 
       Assert.That (_formatter.Format (validator1, _typeNameFormatter), Is.EqualTo ("EqualValidator { ValueToCompare = '5' }"));
       Assert.That (_formatter.Format (validator2, _typeNameFormatter), Is.EqualTo ("NotEqualValidator { ValueToCompare = '10' }"));
@@ -101,7 +100,6 @@ namespace Remotion.Validation.UnitTests.Implementation
       Assert.That (_formatter.Format (validator4, _typeNameFormatter), Is.EqualTo ("GreaterThanOrEqualValidator { ValueToCompare = '7' }"));
       Assert.That (_formatter.Format (validator5, _typeNameFormatter), Is.EqualTo ("LessThanValidator { ValueToCompare = '2' }"));
       Assert.That (_formatter.Format (validator6, _typeNameFormatter), Is.EqualTo ("LessThanOrEqualValidator { ValueToCompare = '1' }"));
-      Assert.That (_formatter.Format (validator7, _typeNameFormatter), Is.EqualTo ("EqualValidator { MemberToCompare = 'Customer.UserName\r\n' }"));
     }
 
     [Test]

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using Remotion.Utilities;
-using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Attributes.Validation
@@ -48,11 +47,12 @@ namespace Remotion.Validation.Attributes.Validation
       
       var validators = GetValidators(property).ToArray();
 
-      if (!string.IsNullOrEmpty (ErrorMessage))
-      {
-        foreach (var validator in validators)
-          validator.ErrorMessageSource = new StaticStringSource (ErrorMessage); //Note: currently only static error messages are supported!
-      }
+      //TODO RM-5906: Set message from attribute
+      //if (!string.IsNullOrEmpty (ErrorMessage))
+      //{
+      //  foreach (var validator in validators)
+      //    validator.ErrorMessageSource = new StaticStringSource (ErrorMessage); //Note: currently only static error messages are supported!
+      //}
 
       return validators;
     }

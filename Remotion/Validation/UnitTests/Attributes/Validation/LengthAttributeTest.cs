@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Validation.Attributes.Validation;
@@ -46,12 +47,12 @@ namespace Remotion.Validation.UnitTests.Attributes.Validation
     {
       var result = _attribute.GetPropertyValidators (typeof (Customer).GetProperty ("LastName")).ToArray();
 
-      Assert.That (result.Count(), Is.EqualTo (1));
+      Assert.That (result.Length, Is.EqualTo (1));
       Assert.That (result[0], Is.TypeOf (typeof (LengthValidator)));
       Assert.That (
-          result[0].ErrorMessageSource.GetString(),
+          ((PropertyValidator) result[0]).ValidationMessage.ToString (CultureInfo.InvariantCulture),
           Is.EqualTo (
-              "'{PropertyName}' must be between {MinLength} and {MaxLength} characters. You entered {TotalLength} characters."));
+              "Enter between {MinLength} and {MaxLength} characters."));
       Assert.That (((LengthValidator) result[0]).Min, Is.EqualTo (10));
       Assert.That (((LengthValidator) result[0]).Max, Is.EqualTo (20));
     }
@@ -63,8 +64,10 @@ namespace Remotion.Validation.UnitTests.Attributes.Validation
 
       var result = _attribute.GetPropertyValidators (typeof (Customer).GetProperty ("LastName")).ToArray();
 
-      Assert.That (result.Count(), Is.EqualTo (1));
-      Assert.That (result[0].ErrorMessageSource.GetString(), Is.EqualTo ("CustomMessage"));
+      Assert.That (result.Length, Is.EqualTo (1));
+      Assert.That (
+          ((PropertyValidator) result[0]).ValidationMessage.ToString (CultureInfo.InvariantCulture),
+          Is.EqualTo ("CustomMessage"));
     }
   }
 }

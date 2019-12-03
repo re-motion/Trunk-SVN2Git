@@ -18,6 +18,8 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.ServiceLocation;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.RuleBuilders;
 using Remotion.Validation.Validators;
 
@@ -39,7 +41,8 @@ namespace Remotion.Validation
     public static IAddingComponentRuleBuilder<TValidatedType, TProperty> NotNull<TValidatedType, TProperty> (
         this IAddingComponentRuleBuilder<TValidatedType, TProperty> ruleBuilder)
     {
-      return ruleBuilder.SetValidator (new NotNullValidator());
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new NotNullValidator (validationMessage));
     }
 
     /// <summary>
@@ -53,7 +56,8 @@ namespace Remotion.Validation
     public static IAddingComponentRuleBuilder<TValidatedType, TProperty> NotEmpty<TValidatedType, TProperty> (
         this IAddingComponentRuleBuilder<TValidatedType, TProperty> ruleBuilder)
     {
-      return ruleBuilder.SetValidator (new NotEmptyValidator (default (TProperty)));
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new NotEmptyValidator (default (TProperty), validationMessage));
     }
 
     /// <summary>
@@ -70,7 +74,8 @@ namespace Remotion.Validation
         int min,
         int max)
     {
-      return ruleBuilder.SetValidator (new LengthValidator (min, max));
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new LengthValidator (min, max, validationMessage));
     }
 
     /// <summary>
@@ -85,7 +90,8 @@ namespace Remotion.Validation
         this IAddingComponentRuleBuilder<TValidatedType, string> ruleBuilder,
         string expression)
     {
-      return ruleBuilder.SetValidator (new RegularExpressionValidator (expression));
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new RegularExpressionValidator (expression, validationMessage));
     }
 
     /// <summary>
@@ -103,7 +109,8 @@ namespace Remotion.Validation
         TProperty toCompare,
         IEqualityComparer comparer = null)
     {
-      return ruleBuilder.SetValidator (new NotEqualValidator (toCompare, comparer));
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new NotEqualValidator (toCompare, comparer, validationMessage));
     }
 
     /// <summary>
@@ -121,7 +128,8 @@ namespace Remotion.Validation
         TProperty valueToCompare)
         where TProperty : IComparable<TProperty>, IComparable
     {
-      return ruleBuilder.SetValidator (new LessThanValidator (valueToCompare));
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new LessThanValidator (valueToCompare, validationMessage));
     }
 
     /// <summary>
@@ -139,14 +147,8 @@ namespace Remotion.Validation
         TProperty valueToCompare)
         where TProperty : IComparable<TProperty>, IComparable
     {
-      return ruleBuilder.SetValidator (new GreaterThanValidator (valueToCompare));
-    }
-
-    /// <summary>Gets a MemberInfo from a member expression.</summary>
-    public static MemberInfo GetMember (this LambdaExpression expression)
-    {
-      //TODO: Move/replace, step 1: Utilities with internal
-      return RemoveUnary (expression.Body)?.Member;
+      var validationMessage = GetValidationMessage<NotNullValidator>();
+      return ruleBuilder.SetValidator (new GreaterThanValidator (valueToCompare, validationMessage));
     }
 
     /// <summary>Gets a MemberInfo from a member expression.</summary>
@@ -163,6 +165,15 @@ namespace Remotion.Validation
         return expression.Operand as MemberExpression;
 
       return toUnwrap as MemberExpression;
+    }
+
+    private static IValidationMessage GetValidationMessage<TValidator> () where TValidator : IPropertyValidator
+    {
+      //TODO RM-5906: Refactor this logic to change ruleBuilder.SetValidator() to accepting a delegate that creates a validator based on the 
+      //              arguments provided, i.e. the IValidationMessage. ruleBuilder can then internally lazily resolve the IValidationMessage factory.
+
+      var validationMessageFactory = SafeServiceLocator.Current.GetInstance<IValidationMessageFactory>();
+      return validationMessageFactory.CreateValidationMessageForPropertyValidator (typeof (TValidator));
     }
   }
 }

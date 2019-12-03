@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Validation.Implementation;
 using Remotion.Validation.Results;
 using Remotion.Validation.Validators;
 
@@ -28,9 +27,5 @@ namespace Remotion.Validation.UnitTests.TestHelpers
     {
       throw new NotImplementedException();
     }
-
-    public ICollection<Func<object, object, object>> CustomMessageFormatArguments { get; private set; }
-    public Func<object, object> CustomStateProvider { get; set; }
-    public IStringSource ErrorMessageSource { get; set; }
   }
 }

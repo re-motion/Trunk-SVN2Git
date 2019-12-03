@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Attributes.Validation
@@ -36,7 +39,7 @@ namespace Remotion.Validation.Attributes.Validation
     public NotEqualAttribute (string value)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-      
+
       _value = value;
     }
 
@@ -49,7 +52,10 @@ namespace Remotion.Validation.Attributes.Validation
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      return new[] { new NotEqualValidator (Value) };
+      if (string.IsNullOrEmpty (ErrorMessage))
+        return EnumerableUtility.Singleton (new NotEqualValidator (Value));
+      else
+        return EnumerableUtility.Singleton (new NotEqualValidator (Value, (IEqualityComparer) null, new InvariantValidationMessage (ErrorMessage)));
     }
   }
 }

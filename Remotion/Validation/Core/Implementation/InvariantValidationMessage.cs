@@ -15,22 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remotion.Validation.Results;
-using Remotion.Validation.Validators;
+using System.Globalization;
+using Remotion.Utilities;
 
-namespace Remotion.Validation.UnitTests.TestDomain.Validators
+namespace Remotion.Validation.Implementation
 {
-  public class FakeEmailValidator : IPropertyValidator
+  public class InvariantValidationMessage : IValidationMessage
   {
-    public FakeEmailValidator ()
+    private readonly string _validationMessage;
+
+    public InvariantValidationMessage (string validationMessage)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("validationMessage", validationMessage);
+
+      _validationMessage = validationMessage;
     }
 
-    public IEnumerable<ValidationFailure> Validate (PropertyValidatorContext context)
+    public string ToString (CultureInfo culture)
     {
-      return Enumerable.Empty<ValidationFailure>();
+      return _validationMessage;
     }
   }
 }

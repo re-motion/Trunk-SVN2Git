@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using Remotion.Validation.Implementation;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Attributes.Validation
@@ -31,7 +33,7 @@ namespace Remotion.Validation.Attributes.Validation
     private readonly int _minLength;
 
     /// <summary>
-    /// Instantiats a new <see cref="LengthAttribute"/>.
+    /// Instantiates a new <see cref="LengthAttribute"/>.
     /// </summary>
     /// <param name="minLength">The minimum number of characters required.</param>
     /// <param name="maxLength">The maximum number of characters allowed.</param>
@@ -55,7 +57,10 @@ namespace Remotion.Validation.Attributes.Validation
     {
       ArgumentUtility.CheckNotNull ("property", property);
 
-      yield return new LengthValidator (MinLength, MaxLength);
+      if (string.IsNullOrEmpty (ErrorMessage))
+        return EnumerableUtility.Singleton (new LengthValidator (MinLength, MaxLength));
+      else
+        return EnumerableUtility.Singleton (new LengthValidator (MinLength, MaxLength, new InvariantValidationMessage (ErrorMessage)));
     }
   }
 }
