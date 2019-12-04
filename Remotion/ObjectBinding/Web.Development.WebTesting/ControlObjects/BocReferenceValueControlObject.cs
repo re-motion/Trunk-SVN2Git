@@ -221,7 +221,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     public IReadOnlyList<string> GetValidationErrorsForReadOnly ()
     {
-      return GetValidationErrorsForReadOnly (GetCommand().Scope);
+      return GetValidationErrorsForReadOnly (GetLabeledElementScope());
     }
 
     protected override ElementScope GetLabeledElementScope ()
