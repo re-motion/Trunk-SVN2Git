@@ -110,8 +110,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests.Tes
       Assert.That (control.IsReadOnly(), Is.False);
       Assert.That (
           () => control.GetValidationErrorsForReadOnly(),
-          Throws.TypeOf<MissingHtmlException>()
-              .With.Message.EqualTo ("The control is currently not in a read-only state. Therefore, the operation is not possible."));
+          Throws.Exception.Message.EqualTo (
+              AssertionExceptionUtility.CreateControlNotReadOnlyException().Message));
     }
 
     private void ClickValidationButton (TControl control)
