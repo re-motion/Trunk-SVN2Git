@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using Coypu;
 using JetBrains.Annotations;
+using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.ControlObjects;
 using Remotion.Web.Development.WebTesting.Utilities;
@@ -117,7 +118,14 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
       private TreeViewNodeControlObject FindAndCreateNodeInHierarchy (string xpathSuffix)
       {
         var nodeScope = GetChildrenScope (_treeViewNode.Scope).FindXPath ("//table" + xpathSuffix);
-        return new TreeViewNodeControlObject (_treeViewNode.Context.CloneForControl (nodeScope));
+        try
+        {
+          return new TreeViewNodeControlObject (_treeViewNode.Context.CloneForControl (nodeScope));
+        }
+        catch (StaleElementException)
+        {
+          throw new WebTestException ("This element has been removed from the DOM.");
+        }
       }
     }
 
@@ -229,7 +237,14 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
     {
       var actualCompletionDetector = MergeWithDefaultActionOptions (Scope, actionOptions);
       const string nodeClickScopeXpath = "./tbody/tr/td[a[contains(@onclick, 'TreeView_SelectNode')]][last()]/a[last()]";
-      ExecuteAction (new ClickAction (this, Scope.FindXPath (nodeClickScopeXpath)), actualCompletionDetector);
+      try
+      {
+        ExecuteAction (new ClickAction (this, Scope.FindXPath (nodeClickScopeXpath)), actualCompletionDetector);
+      }
+      catch (ElementNotInteractableException)
+      {
+        throw new WebTestException ("The element cannot be interacted with.");
+      }
     }
 
     private ElementScope GetCheckboxScope ()

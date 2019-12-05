@@ -302,10 +302,22 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       rootNode.Expand();
 
       rootNode.Scope.ElementFinder.Options.Timeout = TimeSpan.Zero;
-      Assert.That (() => rootNode.GetNodeInHierarchy().WithDisplayTextContains ("A, B").Select(), Throws.InstanceOf<StaleElementException>());
-      Assert.That (() => rootNode.GetNodeInHierarchy().WithDisplayText ("E, ").Select(), Throws.InstanceOf<StaleElementException>());
-      Assert.That (() => rootNode.GetNodeInHierarchy().WithItemID ("eb94bfdb-1140-46f8-971f-e4b41dae13b8").Select(), Throws.InstanceOf<StaleElementException>());
-      Assert.That (() => rootNode.GetNodeInHierarchy ("6866ca48-8957-4f26-ae5f-78a3f6dcc4de").Select(), Throws.InstanceOf<StaleElementException>());
+      Assert.That (
+          () => rootNode.GetNodeInHierarchy().WithDisplayText ("E, ").Select(),
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo ("This element has been removed from the DOM."));
+      Assert.That (
+          () => rootNode.GetNodeInHierarchy().WithItemID ("eb94bfdb-1140-46f8-971f-e4b41dae13b8").Select(),
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo ("This element has been removed from the DOM."));
+      Assert.That (
+          () => rootNode.GetNodeInHierarchy().WithDisplayTextContains ("A, B").Select(),
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo ("This element has been removed from the DOM."));
+      Assert.That (
+          () => rootNode.GetNodeInHierarchy ("6866ca48-8957-4f26-ae5f-78a3f6dcc4de").Select(),
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo ("This element has been removed from the DOM."));
     }
 
     [Test]
