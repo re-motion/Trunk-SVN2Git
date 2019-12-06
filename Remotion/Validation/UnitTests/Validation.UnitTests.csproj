@@ -162,6 +162,24 @@
     <Compile Include="Implementation\CollectorBasedValidatorBuilderTest.cs" />
     <Compile Include="Utilities\TopologySortLinqExtensionsTest.cs" />
     <Compile Include="Implementation\ValidatorTest.cs" />
+    <Compile Include="Validators\EqualValidatorTest.cs" />
+    <Compile Include="Validators\ExactLengthValidatorTest.cs" />
+    <Compile Include="Validators\ExclusiveBetweenValidatorTest.cs" />
+    <Compile Include="Validators\GreaterThanOrEqualValidatorTest.cs" />
+    <Compile Include="Validators\GreaterThanValidatorTest.cs" />
+    <Compile Include="Validators\InclusiveBetweenValidatorTest.cs" />
+    <Compile Include="Validators\LengthValidatorTest.cs" />
+    <Compile Include="Validators\LessThanOrEqualValidatorTest.cs" />
+    <Compile Include="Validators\LessThanValidatorTest.cs" />
+    <Compile Include="Validators\MaximumLengthValidatorTest.cs" />
+    <Compile Include="Validators\MinimumLengthValidatorTest.cs" />
+    <Compile Include="Validators\NotEmptyValidatorTest.cs" />
+    <Compile Include="Validators\NotEqualValidatorTest.cs" />
+    <Compile Include="Validators\NotNullValidatorTest.cs" />
+    <Compile Include="Validators\PredicateValidatorTest.cs" />
+    <Compile Include="Validators\RegularExpressionValidatorTest.cs" />
+    <Compile Include="Validators\ScalePrecisionValidatorTest.cs" />
+    <Compile Include="Validators\ValidatorTestBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
@@ -190,7 +208,6 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

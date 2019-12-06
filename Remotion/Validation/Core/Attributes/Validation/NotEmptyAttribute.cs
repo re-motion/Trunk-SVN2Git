@@ -40,9 +40,9 @@ namespace Remotion.Validation.Attributes.Validation
       var emptyValue = GetDefaultValue(property.PropertyType);
 
       if (string.IsNullOrEmpty (ErrorMessage))
-        return EnumerableUtility.Singleton (new NotEmptyValidator (emptyValue));
+        return EnumerableUtility.Singleton (new NotEmptyValidator ());
       else
-        return EnumerableUtility.Singleton (new NotEmptyValidator (emptyValue, new InvariantValidationMessage (ErrorMessage)));
+        return EnumerableUtility.Singleton (new NotEmptyValidator (new InvariantValidationMessage (ErrorMessage)));
     }
 
     private object GetDefaultValue (Type type)

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.UnitTests.TestDomain;
@@ -70,7 +71,7 @@ namespace Remotion.Validation.UnitTests.Implementation
 
       Assert.That (_formatter.Format (validator1, _typeNameFormatter), Is.EqualTo ("LengthValidator { MinLength = '5', MaxLength = '10' }"));
       Assert.That (_formatter.Format (validator2, _typeNameFormatter), Is.EqualTo ("MaximumLengthValidator { MinLength = '0', MaxLength = '12' }"));
-      Assert.That (_formatter.Format (validator3, _typeNameFormatter), Is.EqualTo ("MinimumLengthValidator { MinLength = '2', MaxLength = '-1' }"));
+      Assert.That (_formatter.Format (validator3, _typeNameFormatter), Is.EqualTo ("MinimumLengthValidator { MinLength = '2', MaxLength = '' }"));
       Assert.That (_formatter.Format (validator4, _typeNameFormatter), Is.EqualTo ("ExactLengthValidator { MinLength = '4', MaxLength = '4' }"));
     }
 
@@ -105,7 +106,7 @@ namespace Remotion.Validation.UnitTests.Implementation
     [Test]
     public void Format_IRegularExpressionValidators ()
     {
-      var validator = new RegularExpressionValidator ("expression");
+      var validator = new RegularExpressionValidator (new Regex ("expression"));
 
       Assert.That (_formatter.Format (validator, _typeNameFormatter), Is.EqualTo ("RegularExpressionValidator { Expression = 'expression' }"));
     }

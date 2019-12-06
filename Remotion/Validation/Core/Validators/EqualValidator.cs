@@ -1,11 +1,23 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: FluentValidation.Validators.EqualValidator
-// Assembly: FluentValidation, Version=5.0.0.1, Culture=neutral, PublicKeyToken=a82054b837897c66
-// MVID: 30628A95-CE3F-41E4-BA2A-29882CBD79CE
-// Assembly location: C:\Development\Remotion\trunk-svn2git\packages\FluentValidation-Signed.5.0.0.1\lib\Net40\FluentValidation.dll
-
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// The re-motion Core Framework is free software; you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation; either version 2.1 of the
+// License, or (at your option) any later version.
+//
+// re-motion is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+//
 using System;
 using System.Collections;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
@@ -15,38 +27,38 @@ namespace Remotion.Validation.Validators
     public object ValueToCompare { get; }
     private IEqualityComparer Comparer { get; }
 
-
-    public EqualValidator (object comparisonValue, IEqualityComparer comparer = null, IValidationMessage validationMessage = null)
+    public EqualValidator ([NotNull] object comparisonValue, [CanBeNull] IEqualityComparer comparer = null, [CanBeNull] IValidationMessage validationMessage = null)
         : base (Constants.EqualError, validationMessage ?? new InvariantValidationMessage (Constants.EqualError))
     {
+      ArgumentUtility.CheckNotNull ("comparisonValue", comparisonValue);
+
       ValueToCompare = comparisonValue;
       Comparer = comparer;
 
-      //TODO RM-5906: Add System.IEqualityComparer, similar to NotNullValidator
       //TODO RM-5906: Refactor remove duplication with NotEqualsValidator.
     }
 
     protected override bool IsValid (PropertyValidatorContext context)
     {
-      var comparisonValue = ValueToCompare;
-      if (Compare (comparisonValue, context.PropertyValue))
+      if (Compare (ValueToCompare, context.PropertyValue))
         return true;
 
-      context.MessageFormatter.AppendArgument ("ComparisonValue", comparisonValue);
+      context.MessageFormatter.AppendArgument ("ComparisonValue", ValueToCompare);
       return false;
-    }
-
-    public Comparison Comparison
-    {
-      get { return Comparison.Equal; }
     }
 
     private bool Compare (object comparisonValue, object propertyValue)
     {
-      if (comparisonValue is IComparable && propertyValue is IComparable)
-        return Remotion.Validation.Implementation.Comparer.GetEqualsResult ((IComparable) comparisonValue, (IComparable) propertyValue);
+      if (propertyValue == null)
+        return true;
 
-      return comparisonValue == propertyValue;
+      if (Comparer != null)
+        return Comparer.Equals (comparisonValue, propertyValue);
+
+      if (comparisonValue.GetType() != propertyValue.GetType())
+        return true;
+
+      return comparisonValue.Equals (propertyValue);
     }
   }
 }

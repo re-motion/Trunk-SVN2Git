@@ -15,18 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class ExactLengthValidator : LengthValidator
   {
-    public ExactLengthValidator (int length, IValidationMessage validationMessage = null)
-        : base (
-            length,
-            length,
-            Constants.ExactLengthError,
-            validationMessage ?? new InvariantValidationMessage (Constants.ExactLengthError))
+    public ExactLengthValidator (int length, [CanBeNull] IValidationMessage validationMessage = null)
+        : base (length, length, Constants.ExactLengthError, validationMessage ?? new InvariantValidationMessage (Constants.ExactLengthError))
     {
     }
   }

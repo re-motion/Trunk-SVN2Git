@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class MaximumLengthValidator : LengthValidator
   {
-    public MaximumLengthValidator (int max, IValidationMessage validationMessage = null)
+    public MaximumLengthValidator (int max, [CanBeNull] IValidationMessage validationMessage = null)
         : base (0, max, Constants.LengthError, validationMessage ?? new InvariantValidationMessage (Constants.LengthError))
     {
     }

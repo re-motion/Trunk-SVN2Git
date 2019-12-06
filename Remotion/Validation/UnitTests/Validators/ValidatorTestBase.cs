@@ -15,10 +15,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 //
 using System;
+using System.Collections.Generic;
+using Remotion.Reflection;
+using Remotion.Validation.Rules;
+using Remotion.Validation.Validators;
+using Rhino.Mocks;
 
-namespace Remotion.Validation.Validators
+namespace Remotion.Validation.UnitTests.Validators
 {
-  public interface INotNullValidator : IPropertyValidator
+  public abstract class ValidatorTestBase
   {
+    protected PropertyValidatorContext CreatePropertyValidatorContext (object value)
+    {
+      var propertyStub = MockRepository.GenerateStub<IPropertyInformation>();
+      propertyStub
+          .Stub (information => information.GetValue (null, null)).IgnoreArguments()
+          .Return (value);
+
+      return new PropertyValidatorContext (new ValidationContext (new object()), new PropertyValidationRule (propertyStub, new List<IPropertyValidator>()));
+    }
   }
 }

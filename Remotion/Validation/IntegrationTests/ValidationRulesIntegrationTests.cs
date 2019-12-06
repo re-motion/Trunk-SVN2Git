@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -124,6 +124,7 @@ namespace Remotion.Validation.IntegrationTests
       Assert.That (result.Errors[0].ErrorMessage, Is.EqualTo ("Conditional Message Test: Kein Gehalt definiert"));
     }
 
+    [Ignore ("RM-5906: Obsolete due to default value removal on NotEmptyValidator.")]
     [Test]
     public void BuildOrderItemValidator_SetValueTypeToDefaulValue_ValidationFails ()
     {

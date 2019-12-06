@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Validation
           && typeof (IEnumerable).IsAssignableFrom (_implementationProperty.PropertyType)
           && !ReflectionUtility.IsObjectList (_implementationProperty.PropertyType))
       {
-        yield return new NotEmptyValidator (GetDefaultValue (_implementationProperty.PropertyType));
+        yield return new NotEmptyValidator();
       }
     }
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.DomainObjects.Validation
       {
         yield return new NotNullValidator();
         if (ReflectionUtility.IsObjectList (_implementationProperty.PropertyType))
-          yield return new NotEmptyValidator (GetDefaultValue (_implementationProperty.PropertyType));
+          yield return new NotEmptyValidator();
       }
     }
 
@@ -164,18 +164,6 @@ namespace Remotion.Data.DomainObjects.Validation
       var maxLength = _domainModelConstraintProvider.GetMaxLength (_implementationPropertyInformation);
       if (maxLength.HasValue)
         yield return new RemotionMaxLengthMetaValidationRule (_implementationProperty, maxLength.Value);
-    }
-
-    private object GetDefaultValue (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      object output = null;
-
-      if (type.IsValueType)
-        output = Activator.CreateInstance (type);
-
-      return output;
     }
   }
 }

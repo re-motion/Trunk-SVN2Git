@@ -15,14 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using JetBrains.Annotations;
 using Remotion.Validation.Implementation;
 
 namespace Remotion.Validation.Validators
 {
   public class MinimumLengthValidator : LengthValidator
   {
-    public MinimumLengthValidator (int min, IValidationMessage validationMessage = null)
-        : base (min, -1, Constants.LengthError, validationMessage ?? new InvariantValidationMessage (Constants.LengthError))
+    public MinimumLengthValidator (int min, [CanBeNull] IValidationMessage validationMessage = null)
+        : base (min, null, Constants.LengthError, validationMessage ?? new InvariantValidationMessage (Constants.LengthError))
     {
     }
   }

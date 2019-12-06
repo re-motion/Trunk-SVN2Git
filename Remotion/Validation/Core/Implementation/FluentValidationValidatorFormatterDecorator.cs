@@ -95,18 +95,17 @@ namespace Remotion.Validation.Implementation
     private string FormatRegularExpressionValidator (IPropertyValidator validator, string typeName)
     {
       var regularExpressionValidator = (IRegularExpressionValidator) validator;
-      return string.Format ("{0} {{ Expression = '{1}' }}", typeName, regularExpressionValidator.Expression);
+      return string.Format ("{0} {{ Expression = '{1}' }}", typeName, regularExpressionValidator.Regex);
     }
 
     private string FormatScalePrecisionValidator (ScalePrecisionValidator precisionValidator, string typeName)
     {
       var scalePrecisionValidator = precisionValidator;
       return string.Format (
-          "{0} {{ Scale = '{1}', Precision = '{2}', IgnoreTrailingZeros = '{3}' }}",
+          "{0} {{ Scale = '{1}', Precision = '{2}' }}",
           typeName,
           scalePrecisionValidator.Scale,
-          scalePrecisionValidator.Precision,
-          scalePrecisionValidator.IgnoreTrailingZeros);
+          scalePrecisionValidator.Precision);
     }
 
     private string FormatMemberInfo (MemberInfo memberInfo, Func<Type, string> typeNameFormatter)

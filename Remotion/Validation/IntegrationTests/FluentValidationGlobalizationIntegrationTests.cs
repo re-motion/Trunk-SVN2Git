@@ -17,6 +17,7 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -77,7 +78,7 @@ namespace Remotion.Validation.IntegrationTests
     [Test]
     public void DefaultErrorMessage_NotEqualValidator ()
     {
-      var validator = new NotEqualValidator (null);
+      var validator = new NotEqualValidator ("");
 
       Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.NotEqualError));
     }
@@ -85,7 +86,7 @@ namespace Remotion.Validation.IntegrationTests
     [Test]
     public void DefaultErrorMessage_EqualValidator ()
     {
-      var validator = new EqualValidator (null);
+      var validator = new EqualValidator ("");
 
       Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.EqualError));
     }
@@ -165,7 +166,7 @@ namespace Remotion.Validation.IntegrationTests
     [Test]
     public void DefaultErrorMessage_RegularExpressionValidator ()
     {
-      var validator = new RegularExpressionValidator ("");
+      var validator = new RegularExpressionValidator (new Regex (""));
 
       Assert.That (validator.ValidationMessage.ToString (CultureInfo.InvariantCulture), Is.EqualTo (Constants.RegularExpressionError));
     }

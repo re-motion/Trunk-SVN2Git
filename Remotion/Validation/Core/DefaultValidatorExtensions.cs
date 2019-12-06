@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Remotion.ServiceLocation;
 using Remotion.Validation.Implementation;
 using Remotion.Validation.RuleBuilders;
@@ -57,7 +58,7 @@ namespace Remotion.Validation
         this IAddingComponentRuleBuilder<TValidatedType, TProperty> ruleBuilder)
     {
       var validationMessage = GetValidationMessage<NotNullValidator>();
-      return ruleBuilder.SetValidator (new NotEmptyValidator (default (TProperty), validationMessage));
+      return ruleBuilder.SetValidator (new NotEmptyValidator (validationMessage));
     }
 
     /// <summary>
@@ -91,7 +92,7 @@ namespace Remotion.Validation
         string expression)
     {
       var validationMessage = GetValidationMessage<NotNullValidator>();
-      return ruleBuilder.SetValidator (new RegularExpressionValidator (expression, validationMessage));
+      return ruleBuilder.SetValidator (new RegularExpressionValidator (new Regex (expression), validationMessage));
     }
 
     /// <summary>
@@ -129,7 +130,7 @@ namespace Remotion.Validation
         where TProperty : IComparable<TProperty>, IComparable
     {
       var validationMessage = GetValidationMessage<NotNullValidator>();
-      return ruleBuilder.SetValidator (new LessThanValidator (valueToCompare, validationMessage));
+      return ruleBuilder.SetValidator (new LessThanValidator (valueToCompare, validationMessage: validationMessage));
     }
 
     /// <summary>
@@ -148,7 +149,7 @@ namespace Remotion.Validation
         where TProperty : IComparable<TProperty>, IComparable
     {
       var validationMessage = GetValidationMessage<NotNullValidator>();
-      return ruleBuilder.SetValidator (new GreaterThanValidator (valueToCompare, validationMessage));
+      return ruleBuilder.SetValidator (new GreaterThanValidator (valueToCompare, validationMessage: validationMessage));
     }
 
     /// <summary>Gets a MemberInfo from a member expression.</summary>
