@@ -17,7 +17,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (DockerHelper));
     private readonly string _dockerExeFullPath;
-    private readonly TimeSpan _waitForExitTimeout = TimeSpan.FromMilliseconds (100);
     private readonly TimeSpan _commandTimeout;
     private string _lastCommandLineOutputLine;
 
@@ -169,10 +168,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 
       while (!dockerProcess.HasExited)
       {
-        dockerProcess.WaitForExit (_waitForExitTimeout.Milliseconds);
+        dockerProcess.WaitForExit (_commandTimeout.Milliseconds);
 
         if (stopwatch.ElapsedMilliseconds > _commandTimeout.TotalMilliseconds)
-          throw new InvalidOperationException ($"Docker command '{dockerCommand}' ran longer than the configured timeout of '{_waitForExitTimeout}'. Abort.");
+          throw new InvalidOperationException ($"Docker command '{dockerCommand}' ran longer than the configured timeout of '{_commandTimeout}'. Abort.");
       }
 
       if (dockerProcess.ExitCode != 0)
