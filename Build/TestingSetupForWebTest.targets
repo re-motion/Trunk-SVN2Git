@@ -38,7 +38,7 @@
       <_dockerPortNummer>60402</_dockerPortNummer>
       <_dockerWebApplicationRoot>http://$(_dockerHostName):$(_dockerPortNummer)/</_dockerWebApplicationRoot>
       <_dockerTimeout>00:15:00</_dockerTimeout>
-      <_applicationPingTimeout>00:05:00</_applicationPingTimeout>
+      <_verifyWebApplicationStartedTimeout>00:05:00</_verifyWebApplicationStartedTimeout>
     </PropertyGroup>
     
     <Error Text="The property 'DotNetFrameworkRuntimeImageName' is not set." Condition="'$(DotNetFrameworkRuntimeImageName)' == '' And '$(_dockerEnabled)' == 'True'" />
@@ -86,6 +86,10 @@
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>browser</Key>
         <Value>$(Browser)</Value>
+      </_appConfigAttributes>
+      <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
+        <Key>verifyWebApplicationStartedTimeout</Key>
+        <Value>$(_verifyWebApplicationStartedTimeout)</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>logsDirectory</Key>
@@ -145,10 +149,6 @@
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting/rwt:hosting">
         <Key>dockerCommandTimeout</Key>
         <Value>$(_dockerTimeout)</Value>
-      </_appConfigAttributes>
-      <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting/rwt:hosting">
-        <Key>applicationPingTimeout</Key>
-        <Value>$(_applicationPingTimeout)</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting/rwt:hosting">
         <Key>hostname</Key>
