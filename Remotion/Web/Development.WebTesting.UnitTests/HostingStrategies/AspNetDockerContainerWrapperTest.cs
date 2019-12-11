@@ -1,6 +1,21 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// The re-motion Core Framework is free software; you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation; either version 2.1 of the
+// License, or (at your option) any later version.
+//
+// re-motion is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+//
+using System;
 using System.Collections.Generic;
-using System.IO;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.HostingStrategies;
 using Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting;
@@ -11,13 +26,12 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
   [TestFixture]
   public class AspNetDockerContainerWrapperTest : FileSystemTestBase
   {
-
     [Test]
     public void BuildAndRun_ShouldNotThrowAndCallCorrectMethods ()
     {
-      var dockerHelperMock = MockRepository.GenerateMock<IDockerHelper> ();
-      var dockerFileMock = MockRepository.GenerateMock<IDockerFile> ();
-      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFileManager> ();
+      var dockerHelperMock = MockRepository.GenerateMock<IDockerHelper>();
+      var dockerFileMock = MockRepository.GenerateMock<IDockerFile>();
+      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFileManager>();
       dockerFileManagerMock.Expect (_ => _.Prepare (Arg<string>.Is.Equal (TemporaryDirectory))).Return (dockerFileMock);
 
       var is32BitProcess = false;
@@ -27,7 +41,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
 
       dockerHelperMock.Expect (
           _ => _.Build (
-              Arg<string>.Is.Anything, 
+              Arg<string>.Is.Anything,
               Arg<Dictionary<string, string>>.Matches (
                   dictionary =>
                       dictionary["HostingBaseDockerImage"] == configurationParameter.DockerImageName
@@ -45,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
               Arg<string>.Is.Equal (configurationParameter.Hostname),
               Arg<string>.Is.Anything));
 
-      dockerFileMock.Expect (_ => _.Dispose ());
+      dockerFileMock.Expect (_ => _.Dispose());
 
       var aspNetDockerContainerWrapper = new AspNetDockerContainerWrapper (dockerHelperMock, dockerFileManagerMock, configurationParameter);
 
@@ -58,9 +72,9 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
     [Test]
     public void BuildAndRun_With32BitTrue_ShouldSet32BitFlag ()
     {
-      var dockerHelperMock = MockRepository.GenerateMock<IDockerHelper> ();
-      var dockerFileMock = MockRepository.GenerateMock<IDockerFile> ();
-      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFileManager> ();
+      var dockerHelperMock = MockRepository.GenerateMock<IDockerHelper>();
+      var dockerFileMock = MockRepository.GenerateMock<IDockerFile>();
+      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFileManager>();
       dockerFileManagerMock.Expect (_ => _.Prepare (Arg<string>.Is.Anything)).Return (dockerFileMock);
 
       var is32BitProcess = true;
@@ -68,7 +82,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
 
       dockerHelperMock.Expect (
           _ => _.Build (
-              Arg<string>.Is.Anything, 
+              Arg<string>.Is.Anything,
               Arg<Dictionary<string, string>>.Matches (
                   dictionary =>
                       dictionary["HostingBaseDockerImage"] == configurationParameter.DockerImageName
@@ -79,7 +93,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
       var aspNetDockerContainerWrapper = new AspNetDockerContainerWrapper (dockerHelperMock, dockerFileManagerMock, configurationParameter);
 
       Assert.That (() => aspNetDockerContainerWrapper.BuildAndRun(), Throws.Nothing);
-      
+
       dockerHelperMock.VerifyAllExpectations();
     }
 
@@ -87,15 +101,15 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
     public void BuildAndRunDispose_ShouldUseTheSameImageAndContainerName ()
     {
       var dockerHelperSpy = new DockerHelperSpy();
-      var dockerFileManagerMock = MockRepository.GenerateStub<IDockerFileManager> ();
-      var dockerFileMock = MockRepository.GenerateStub<IDockerFile> ();
+      var dockerFileManagerMock = MockRepository.GenerateStub<IDockerFileManager>();
+      var dockerFileMock = MockRepository.GenerateStub<IDockerFile>();
       dockerFileManagerMock.Expect (_ => _.Prepare (Arg<string>.Is.Anything)).Return (dockerFileMock);
-      
+
       var configurationParameter = new AspNetDockerContainerWrapperConfigurationParameters (TemporaryDirectory, 123, "TestDockerImageName", null, false);
       var aspNetDockerContainerWrapper = new AspNetDockerContainerWrapper (dockerHelperSpy, dockerFileManagerMock, configurationParameter);
 
       aspNetDockerContainerWrapper.BuildAndRun();
-      
+
       Assert.That (dockerHelperSpy.BuildTagValue, Is.EqualTo (dockerHelperSpy.RunImageNameValue));
 
       aspNetDockerContainerWrapper.Dispose();

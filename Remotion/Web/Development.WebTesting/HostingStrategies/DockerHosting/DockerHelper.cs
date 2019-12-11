@@ -1,9 +1,24 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// The re-motion Core Framework is free software; you can redistribute it
+// and/or modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation; either version 2.1 of the
+// License, or (at your option) any later version.
+//
+// re-motion is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+//
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using JetBrains.Annotations;
 using log4net;
 using Remotion.Utilities;
@@ -64,7 +79,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       ArgumentUtility.CheckNotNullOrEmpty ("containerName", containerName);
       ArgumentUtility.CheckNotNullOrEmpty ("hostName", hostName);
       ArgumentUtility.CheckNotNullOrEmpty ("imageName", imageName);
-      
+
       var iisHostWebSiteInDockerCommand =
           "run"
           + (detached ? " -d" : "")
@@ -101,7 +116,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       RunDockerCommand (removeDockerImageCommand);
     }
 
-    private string GetDockerExeFullPath()
+    private string GetDockerExeFullPath ()
     {
       //Note: We explicitly do not use Environment.ProgramFiles, as it chooses ProgramFiles (x86) when we run our Unit Tests in a 32 Bit Context
       // As the Build Server is 64 bit, Docker cannot be found there under this circumstances.
@@ -136,10 +151,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
                           RedirectStandardOutput = true,
                           RedirectStandardError = true
                       };
-      
+
       if (!String.IsNullOrEmpty (workingDirectory))
         startInfo.WorkingDirectory = workingDirectory;
-      
+
       startInfo.FileName = _dockerExeFullPath;
       startInfo.Arguments = dockerCommand;
 
@@ -176,7 +191,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 
       if (dockerProcess.ExitCode != 0)
       {
-        var error = dockerProcess.StandardError.ReadToEnd(); 
+        var error = dockerProcess.StandardError.ReadToEnd();
         throw new InvalidOperationException ($"Docker command '{dockerCommand}' failed: {error}");
       }
     }
