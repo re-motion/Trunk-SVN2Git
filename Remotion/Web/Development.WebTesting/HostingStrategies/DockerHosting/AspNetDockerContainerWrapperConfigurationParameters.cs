@@ -44,6 +44,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     {
       ArgumentUtility.CheckNotNullOrEmpty ("absoluteWebApplicationPath", absoluteWebApplicationPath);
       ArgumentUtility.CheckNotNullOrEmpty ("dockerImageName", dockerImageName);
+      ArgumentUtility.CheckNotEmpty ("hostname", hostname);
 
       AbsoluteWebApplicationPath = absoluteWebApplicationPath;
       WebApplicationPort = webApplicationPort;

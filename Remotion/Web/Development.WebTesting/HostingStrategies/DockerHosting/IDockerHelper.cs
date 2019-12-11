@@ -16,15 +16,19 @@
 //
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 {
+  /// <summary>
+  /// Interface for communicating with the Docker Process
+  /// </summary>
   public interface IDockerHelper
   {
-    void Pull (string dockerImageName);
-    void Build (string tag, IReadOnlyDictionary<string, string> buildArgs, IDockerFile dockerFile);
-    void Run (bool detached, bool removeContainer, IReadOnlyDictionary<int, int> publishedPorts, string containerName, string hostName, string imageName);
-    void Stop (string containerName);
-    void RemoveImage (string imageName);
+    void Pull ([NotNull] string dockerImageName);
+    void Build ([NotNull] string tag, [NotNull] IReadOnlyDictionary<string, string> buildArgs, [NotNull] IDockerFile dockerFile);
+    void Run (bool detached, bool removeContainer, [NotNull] IReadOnlyDictionary<int, int> publishedPorts, [NotNull] string containerName, [CanBeNull] string hostName, [NotNull] string imageName);
+    void Stop ([NotNull] string containerName);
+    void RemoveImage ([NotNull] string imageName);
   }
 }

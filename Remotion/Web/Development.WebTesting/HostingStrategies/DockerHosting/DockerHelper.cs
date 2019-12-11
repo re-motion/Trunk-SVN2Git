@@ -41,7 +41,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       _dockerExeFullPath = GetDockerExeFullPath();
     }
 
-    public void Pull ([NotNull] string dockerImageName)
+    public void Pull (string dockerImageName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("dockerImageName", dockerImageName);
 
@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       RunDockerCommand (dockerPullCommand);
     }
 
-    public void Build ([NotNull] string tag, [NotNull] IReadOnlyDictionary<string, string> buildArgs, [NotNull] IDockerFile dockerFile)
+    public void Build (string tag, IReadOnlyDictionary<string, string> buildArgs, IDockerFile dockerFile)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("tag", tag);
       ArgumentUtility.CheckNotNull ("buildArgs", buildArgs);
@@ -70,14 +70,14 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     public void Run (
         bool detached,
         bool removeContainer,
-        [NotNull] IReadOnlyDictionary<int, int> publishedPorts,
-        [NotNull] string containerName,
-        [NotNull] string hostName,
-        [NotNull] string imageName)
+        IReadOnlyDictionary<int, int> publishedPorts,
+        string containerName,
+        string hostName,
+        string imageName)
     {
       ArgumentUtility.CheckNotNull ("publishedPorts", publishedPorts);
       ArgumentUtility.CheckNotNullOrEmpty ("containerName", containerName);
-      ArgumentUtility.CheckNotNullOrEmpty ("hostName", hostName);
+      ArgumentUtility.CheckNotEmpty ("hostName", hostName);
       ArgumentUtility.CheckNotNullOrEmpty ("imageName", imageName);
 
       var iisHostWebSiteInDockerCommand =
@@ -86,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
           + (removeContainer ? " --rm" : "")
           + string.Join ("", publishedPorts.Select (x => $" -p {x.Key}:{x.Value}"))
           + $" --name {containerName}"
-          + $" --hostname {hostName}"
+          + (hostName != null ? $" --hostname {hostName}" : "")
           + $" {imageName}";
 
       RunDockerCommand (iisHostWebSiteInDockerCommand);
@@ -100,7 +100,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
         RunDockerCommand (verifyContainerIsStartedCommand);
     }
 
-    public void Stop ([NotNull] string containerName)
+    public void Stop (string containerName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("containerName", containerName);
 
@@ -108,7 +108,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       RunDockerCommand (stopDockerContainerCommand);
     }
 
-    public void RemoveImage ([NotNull] string imageName)
+    public void RemoveImage (string imageName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("imageName", imageName);
 
@@ -158,23 +158,30 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       startInfo.FileName = _dockerExeFullPath;
       startInfo.Arguments = dockerCommand;
 
-      var dockerProcess = new Process { StartInfo = startInfo };
-      dockerProcess.Start();
-
-      dockerProcess.OutputDataReceived += (sender, outputLine) =>
+      using (var dockerProcess = new Process { StartInfo = startInfo })
       {
-        if (outputLine.Data != null)
+        dockerProcess.Start();
+
+        dockerProcess.OutputDataReceived += (sender, outputLine) =>
         {
-          s_log.Info (outputLine.Data);
-          _lastCommandLineOutputLine = outputLine.Data;
+          if (outputLine.Data != null)
+          {
+            s_log.Info (outputLine.Data);
+            _lastCommandLineOutputLine = outputLine.Data;
+          }
+        };
+
+        dockerProcess.BeginOutputReadLine();
+
+        WaitForExit (dockerProcess, dockerCommand);
+
+        if (dockerProcess.ExitCode != 0)
+        {
+          var error = dockerProcess.StandardError.ReadToEnd();
+          throw new InvalidOperationException ($"Docker command '{dockerCommand}' failed: {error}");
         }
-      };
 
-      dockerProcess.BeginOutputReadLine();
-
-      WaitForExit (dockerProcess, dockerCommand);
-
-      dockerProcess.Dispose();
+      }
     }
 
     private void WaitForExit (Process dockerProcess, string dockerCommand)
@@ -187,12 +194,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 
         if (stopwatch.ElapsedMilliseconds > _commandTimeout.TotalMilliseconds)
           throw new InvalidOperationException ($"Docker command '{dockerCommand}' ran longer than the configured timeout of '{_commandTimeout}'. Abort.");
-      }
-
-      if (dockerProcess.ExitCode != 0)
-      {
-        var error = dockerProcess.StandardError.ReadToEnd();
-        throw new InvalidOperationException ($"Docker command '{dockerCommand}' failed: {error}");
       }
     }
   }
