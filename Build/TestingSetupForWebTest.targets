@@ -46,7 +46,7 @@
     <Message Text="Selected Browser: '$(Browser)'" />
     <Message Text="The property 'ChromeVersionArchive' is set to '$(ChromeVersionArchive)'." />
     <Message Text="Docker enabled: '$(_dockerEnabled)'" />
-    <Message Text="The property 'DotNetFrameworkRuntimeImageName' is set to: '$(DotNetFrameworkRuntimeImageName)'" Condition="'$(_dockerEnabled)'"/>
+    <Message Text="The property 'DotNetFrameworkRuntimeImageName' is set to: '$(DotNetFrameworkRuntimeImageName)'" Condition="'$(_dockerEnabled)'" />
     <Message Text="The property 'EdgeVersionArchive' is set to '$(EdgeVersionArchive)'." />
     <Message Text="The property 'FirefoxVersionArchive' is set to '$(FirefoxVersionArchive)'." />
 

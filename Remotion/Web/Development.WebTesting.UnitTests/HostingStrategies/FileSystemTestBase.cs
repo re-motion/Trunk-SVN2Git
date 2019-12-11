@@ -22,7 +22,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
 {
   public class FileSystemTestBase
   {
-    protected string TemporaryDirectory;
+    protected string TemporaryDirectory { get; private set; }
 
     [SetUp]
     public void SetUp ()

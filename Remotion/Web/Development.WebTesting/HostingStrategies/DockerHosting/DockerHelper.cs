@@ -104,7 +104,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     {
       ArgumentUtility.CheckNotNullOrEmpty ("containerName", containerName);
 
-      var stopDockerContainerCommand = "stop" + $" {containerName}";
+      var stopDockerContainerCommand = $"stop {containerName}";
       RunDockerCommand (stopDockerContainerCommand);
     }
 
@@ -112,7 +112,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     {
       ArgumentUtility.CheckNotNullOrEmpty ("imageName", imageName);
 
-      var removeDockerImageCommand = "image rm" + $" {imageName}";
+      var removeDockerImageCommand = $"image rm {imageName}";
       RunDockerCommand (removeDockerImageCommand);
     }
 
@@ -152,7 +152,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
                           RedirectStandardError = true
                       };
 
-      if (!String.IsNullOrEmpty (workingDirectory))
+      if (!string.IsNullOrEmpty (workingDirectory))
         startInfo.WorkingDirectory = workingDirectory;
 
       startInfo.FileName = _dockerExeFullPath;
