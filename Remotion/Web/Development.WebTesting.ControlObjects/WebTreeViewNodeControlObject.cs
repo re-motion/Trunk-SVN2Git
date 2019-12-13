@@ -83,7 +83,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       public WebTreeViewNodeControlObject WithItemID (string itemID)
       {
         var nodeScope = _webTreeViewNode.Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.ItemID, itemID);
-        return CreateWebTreeViewNodeControlObject(nodeScope);
+        return CreateWebTreeViewNodeControlObject (nodeScope);
       }
 
       public WebTreeViewNodeControlObject WithIndex (int oneBasedIndex)
@@ -97,13 +97,13 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
 
         var nodeScope = foundNodes.Single();
 
-        return CreateWebTreeViewNodeControlObject(nodeScope);
+        return CreateWebTreeViewNodeControlObject (nodeScope);
       }
 
       public WebTreeViewNodeControlObject WithDisplayText (string displayText)
       {
         var nodeScope = _webTreeViewNode.Scope.FindTagWithAttribute ("ul li", DiagnosticMetadataAttributes.Content, displayText);
-        return CreateWebTreeViewNodeControlObject(nodeScope);
+        return CreateWebTreeViewNodeControlObject (nodeScope);
       }
 
       public WebTreeViewNodeControlObject WithDisplayTextContains (string containsDisplayText)
@@ -114,7 +114,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
             DiagnosticMetadataAttributes.Content,
             containsDisplayText);
 
-        return CreateWebTreeViewNodeControlObject(nodeScope);
+        return CreateWebTreeViewNodeControlObject (nodeScope);
       }
 
       private WebTreeViewNodeControlObject CreateWebTreeViewNodeControlObject (ElementScope nodeScope)
