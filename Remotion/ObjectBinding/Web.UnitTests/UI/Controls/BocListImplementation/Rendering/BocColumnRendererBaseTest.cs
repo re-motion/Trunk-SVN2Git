@@ -221,7 +221,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
       Assert.That (Column.ColumnTitleDisplayValue, Is.Empty);
-      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, string.Empty);
     }
 
     [Test]
@@ -236,7 +236,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
       var th = Html.GetAssertedChildElement (document, "th", 0);
       Assert.That (Column.ColumnTitleDisplayValue, Is.Empty);
-      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, Column.ColumnTitleDisplayValue);
+      Html.AssertAttribute (th, DiagnosticMetadataAttributes.Content, string.Empty);
     }
 
     private void RenderTitleCell (
