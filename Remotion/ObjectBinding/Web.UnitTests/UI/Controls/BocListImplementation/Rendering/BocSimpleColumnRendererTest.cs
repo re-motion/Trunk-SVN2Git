@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.Resources;
 using Remotion.ObjectBinding.Web.Contracts.DiagnosticMetadata;
@@ -87,6 +85,24 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
 
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
 
+      var document = Html.GetResultDocument();
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (textWrapper, DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, string.Empty);
+    }
+
+    [Test]
+    public void RenderCell_WithNullAsContent ()
+    {
+      var businessObject = TypeWithReference.Create();
+      EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject, false, true);
+      Column.PropertyPathIdentifier = "ReferenceValue";
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
+
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+
+      Assert.That (businessObject.ReferenceValue, Is.Null);
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
       var span = Html.GetAssertedChildElement (td, "span", 0);
