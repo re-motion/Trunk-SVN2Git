@@ -112,6 +112,25 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     }
 
     [Test]
+    public void RenderCell_WithNullAsContent ()
+    {
+      var businessObject = TypeWithReference.Create();
+      EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject, false, true);
+      Column.PropertyPathBindings.Clear();
+      Column.PropertyPathBindings.Add (new PropertyPathBinding ("ReferenceValue"));
+      IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
+
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+
+      Assert.That (businessObject.ReferenceValue, Is.Null);
+      var document = Html.GetResultDocument();
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      var span = Html.GetAssertedChildElement (td, "span", 0);
+      var textWrapper = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (textWrapper, DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, string.Empty);
+    }
+
+    [Test]
     public void RenderBasicCell_WithNewLineAndEncoding ()
     {
       IBocColumnRenderer renderer = new BocCompoundColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.Default, _bocListCssClassDefinition);
