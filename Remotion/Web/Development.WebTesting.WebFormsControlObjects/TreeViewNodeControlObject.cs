@@ -122,9 +122,9 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
         {
           return new TreeViewNodeControlObject (_treeViewNode.Context.CloneForControl (nodeScope));
         }
-        catch (StaleElementException)
+        catch (StaleElementException ex)
         {
-          throw new WebTestException ("This element has been removed from the DOM.");
+          throw AssertionExceptionUtility.CreateControlMissingException (ex.Message);
         }
       }
     }
@@ -241,9 +241,9 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
       {
         ExecuteAction (new ClickAction (this, Scope.FindXPath (nodeClickScopeXpath)), actualCompletionDetector);
       }
-      catch (ElementNotInteractableException)
+      catch (ElementNotInteractableException ex)
       {
-        throw new WebTestException ("The element cannot be interacted with.");
+        throw AssertionExceptionUtility.CreateControlMissingException (ex.Message);
       }
     }
 

@@ -308,6 +308,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelectNodeInHierarchyOnlyRootNodeExpanded ()
     {
+      const string expectedExceptionMessage = "The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()";
       var home = Start();
 
       var treeView = home.TreeViews().GetByLocalID ("MyTreeView");
@@ -318,10 +319,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       rootNode.Scope.ElementFinder.Options.Timeout = TimeSpan.Zero;
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithDisplayText ("Child node 12").Select(), Throws.InstanceOf<WebTestException>()
-          .With.Message.EqualTo ("This element has been removed from the DOM."));
+          .With.Message.EqualTo (expectedExceptionMessage));
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithDisplayTextContains ("11").Select(), Throws.InstanceOf<WebTestException>()
-          .With.Message.EqualTo ("This element has been removed from the DOM."));
+          .With.Message.EqualTo (expectedExceptionMessage));
     }
 
     [Test]
@@ -372,6 +373,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestTreeSelectNodeInHierarchyOnlyRootNodeExpanded ()
     {
+      const string expectedExceptionMessage = "The element cannot be found: element not interactable";
       var home = Start();
 
       var treeView = home.TreeViews().GetByLocalID ("MyTreeView");
@@ -384,11 +386,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithDisplayText ("Child node 12").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be interacted with."));
+              .With.Message.StartsWith (expectedExceptionMessage));
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithDisplayTextContains ("11").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be interacted with."));
+              .With.Message.StartsWith (expectedExceptionMessage));
     }
 
     [Test]

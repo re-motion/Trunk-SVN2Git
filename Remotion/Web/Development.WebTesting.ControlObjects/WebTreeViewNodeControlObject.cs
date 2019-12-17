@@ -123,9 +123,9 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         {
           return new WebTreeViewNodeControlObject (_webTreeViewNode.Context.CloneForControl (nodeScope));
         }
-        catch (StaleElementException)
+        catch (StaleElementException ex)
         {
-          throw new WebTestException ("This element has been removed from the DOM.");
+          throw AssertionExceptionUtility.CreateControlMissingException (ex.Message);
         }
       }
     }
