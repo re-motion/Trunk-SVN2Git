@@ -60,9 +60,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     protected void RenderValueColumnCellText (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, string contents)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      ArgumentUtility.CheckNotNull ("contents", contents);
 
       renderingContext.Writer.AddAttribute ("class", CssClasses.CommandText);
-      if (RenderingFeatures.EnableDiagnosticMetadata && contents != null)
+      if (RenderingFeatures.EnableDiagnosticMetadata)
         renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, contents);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
