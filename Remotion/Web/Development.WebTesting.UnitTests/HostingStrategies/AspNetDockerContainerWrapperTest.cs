@@ -37,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
       var is32BitProcess = false;
       var configurationParameter = new AspNetDockerContainerWrapperConfigurationParameters (TemporaryDirectory, 123, "TestDockerImageName", null, is32BitProcess);
 
-      dockerHelperMock.Expect (_ => _.Pull (Arg<string>.Is.Equal (configurationParameter.DockerImageName)));
+      dockerHelperMock.Expect (_ => _.Pull (configurationParameter.DockerImageName));
 
       dockerHelperMock.Expect (
           _ => _.Build (
