@@ -31,7 +31,12 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   {
     private readonly AspNetDockerContainerWrapper _aspNetDockerContainerWrapper;
 
-    public DockerHostingStrategy ([NotNull] string webApplicationPath, int port, [NotNull] string dockerImageName, TimeSpan dockerCommandTimeout, [CanBeNull] string hostname)
+    public DockerHostingStrategy (
+        [NotNull] string webApplicationPath,
+        int port,
+        [NotNull] string dockerImageName,
+        TimeSpan dockerCommandTimeout,
+        [CanBeNull] string hostname)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("webApplicationPath", webApplicationPath);
       ArgumentUtility.CheckNotNullOrEmpty ("dockerImageName", dockerImageName);
@@ -41,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
 
       var dockerHelper = new DockerHelper (dockerCommandTimeout);
       var configurationParameters = new AspNetDockerContainerWrapperConfigurationParameters (absoluteWebApplicationPath, port, dockerImageName, hostname, is32BitProcess);
-      var dockerFileManager = new DockerFileManager();
+      var dockerFileManager = new DockerFilePreparer();
 
       _aspNetDockerContainerWrapper = new AspNetDockerContainerWrapper (dockerHelper, dockerFileManager, configurationParameters);
     }

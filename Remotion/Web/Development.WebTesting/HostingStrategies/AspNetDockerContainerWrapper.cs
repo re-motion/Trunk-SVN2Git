@@ -28,22 +28,22 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   public class AspNetDockerContainerWrapper : IDisposable
   {
     private readonly IDockerHelper _dockerHelper;
-    private readonly IDockerFileManager _dockerFileManager;
+    private readonly IDockerFilePreparer _dockerFilePreparer;
     private readonly AspNetDockerContainerWrapperConfigurationParameters _configurationParameters;
     private readonly string _localImageName;
     private readonly string _containerName;
 
     public AspNetDockerContainerWrapper (
         [NotNull] IDockerHelper dockerHelper,
-        [NotNull] IDockerFileManager dockerFileManager,
+        [NotNull] IDockerFilePreparer dockerFilePreparer,
         [NotNull] AspNetDockerContainerWrapperConfigurationParameters configurationParameters)
     {
       ArgumentUtility.CheckNotNull ("dockerHelper", dockerHelper);
-      ArgumentUtility.CheckNotNull ("dockerFileManager", dockerFileManager);
+      ArgumentUtility.CheckNotNull ("dockerFilePreparer", dockerFilePreparer);
       ArgumentUtility.CheckNotNull ("configurationParameters", configurationParameters);
 
       _dockerHelper = dockerHelper;
-      _dockerFileManager = dockerFileManager;
+      _dockerFilePreparer = dockerFilePreparer;
       _configurationParameters = configurationParameters;
 
       _containerName = Guid.NewGuid().ToString();
@@ -84,7 +84,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
 
       _dockerHelper.Pull (_configurationParameters.DockerImageName);
 
-      var dockerFile = _dockerFileManager.Prepare (_configurationParameters.AbsoluteWebApplicationPath);
+      var dockerFile = _dockerFilePreparer.Prepare (_configurationParameters.AbsoluteWebApplicationPath);
       try
       {
         _dockerHelper.Build (

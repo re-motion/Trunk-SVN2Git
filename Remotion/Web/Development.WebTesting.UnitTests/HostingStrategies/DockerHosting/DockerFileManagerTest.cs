@@ -27,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Docker
     [Test]
     public void Prepare_WithCustomDockerFileInFileSystem_ShouldReturnTypeCustomDockerFile ()
     {
-      var dockerfileManager = new DockerFileManager();
+      var dockerfileManager = new DockerFilePreparer();
       File.Create (Path.Combine (TemporaryDirectory, "dockerfile")).Dispose();
 
       var dockerfile = dockerfileManager.Prepare (TemporaryDirectory);
@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Docker
     [Test]
     public void Prepare_ShouldReturnTypePreparedDockerFileAndCreatePreparedDockerFile ()
     {
-      var dockerfileManager = new DockerFileManager();
+      var dockerfileManager = new DockerFilePreparer();
 
       var dockerfile = dockerfileManager.Prepare (TemporaryDirectory);
 

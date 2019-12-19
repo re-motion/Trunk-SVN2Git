@@ -34,9 +34,9 @@
       <_dockerEnabled>False</_dockerEnabled>
       <_dockerEnabled Condition="'$(DisableDocker)' == 'False'">True</_dockerEnabled>
       <!-- Hostname can not be longer than 63 characters-->
-      <_dockerHostName>ReMotionWebTestContainer</_dockerHostName>
-      <_dockerPortNummer>60402</_dockerPortNummer>
-      <_dockerWebApplicationRoot>http://$(_dockerHostName):$(_dockerPortNummer)/</_dockerWebApplicationRoot>
+      <_dockerHostName>RemotionWebTestContainer</_dockerHostName>
+      <_dockerPortNumber>60402</_dockerPortNumber>
+      <_dockerWebApplicationRoot>http://$(_dockerHostName):$(_dockerPortNumber)/</_dockerWebApplicationRoot>
       <_dockerTimeout>00:15:00</_dockerTimeout>
       <_verifyWebApplicationStartedTimeout>00:01:00</_verifyWebApplicationStartedTimeout>
     </PropertyGroup>
@@ -140,7 +140,7 @@
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting/rwt:hosting">
         <Key>port</Key>
-        <Value>$(_dockerPortNummer)</Value>
+        <Value>$(_dockerPortNumber)</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting/rwt:hosting">
         <Key>dockerImageName</Key>

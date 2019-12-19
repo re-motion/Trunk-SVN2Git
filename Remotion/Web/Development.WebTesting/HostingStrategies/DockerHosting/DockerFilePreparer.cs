@@ -21,15 +21,15 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 {
-  public class DockerFileManager : IDockerFileManager
+  public class DockerFilePreparer : IDockerFilePreparer
   {
-    private const string dockerfileName = "dockerfile";
+    private const string c_dockerfileName = "dockerfile";
 
     public IDockerFile Prepare (string absoluteWebApplicationPath)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("absoluteWebApplicationPath", absoluteWebApplicationPath);
 
-      var dockerfileLocationFullPath = Path.Combine (absoluteWebApplicationPath, dockerfileName);
+      var dockerfileLocationFullPath = Path.Combine (absoluteWebApplicationPath, c_dockerfileName);
 
       if (File.Exists (dockerfileLocationFullPath))
         return new CustomDockerFile (dockerfileLocationFullPath);
@@ -43,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     {
       var aspNetDockerContainerWrapperType = typeof (AspNetDockerContainerWrapper);
       var assembly = aspNetDockerContainerWrapperType.Assembly;
-      var resourceName = $"{aspNetDockerContainerWrapperType.Namespace}.{dockerfileName}";
+      var resourceName = $"{aspNetDockerContainerWrapperType.Namespace}.{c_dockerfileName}";
 
       SaveManifestToFile (assembly, resourceName, dockerfileLocationFullPath);
     }

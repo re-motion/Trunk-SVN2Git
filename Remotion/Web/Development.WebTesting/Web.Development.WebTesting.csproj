@@ -119,9 +119,9 @@
     <Compile Include="HostingStrategies\DockerHosting\AspNetDockerContainerWrapperConfigurationParameters.cs" />
     <Compile Include="HostingStrategies\DockerHostingStrategy.cs" />
     <Compile Include="HostingStrategies\DockerHosting\CustomDockerFile.cs" />
-    <Compile Include="HostingStrategies\DockerHosting\DockerFileManager.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\DockerFilePreparer.cs" />
     <Compile Include="HostingStrategies\DockerHosting\IDockerFile.cs" />
-    <Compile Include="HostingStrategies\DockerHosting\IDockerFileManager.cs" />
+    <Compile Include="HostingStrategies\DockerHosting\IDockerFilePreparer.cs" />
     <Compile Include="HostingStrategies\DockerHosting\PreparedDockerFile.cs" />
     <Compile Include="IControlObjectNotifier.cs" />
     <Compile Include="ISupportsValidationErrorsForReadOnly.cs" />

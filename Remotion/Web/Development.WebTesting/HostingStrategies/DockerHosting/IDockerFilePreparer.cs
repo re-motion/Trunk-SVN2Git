@@ -19,7 +19,10 @@ using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 {
-  public interface IDockerFileManager
+  /// <summary>
+  /// Prepares the Dockerfile used by the <see cref="DockerHostingStrategy"/>.
+  /// </summary>
+  public interface IDockerFilePreparer
   {
     IDockerFile Prepare ([NotNull] string absoluteWebApplicationPath);
   }

@@ -31,10 +31,10 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
     {
       var dockerHelperMock = MockRepository.GenerateMock<IDockerHelper>();
       var dockerFileMock = MockRepository.GenerateMock<IDockerFile>();
-      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFileManager>();
+      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFilePreparer>();
       dockerFileManagerMock.Expect (_ => _.Prepare (Arg<string>.Is.Equal (TemporaryDirectory))).Return (dockerFileMock);
 
-      var is32BitProcess = false;
+      const bool is32BitProcess = false;
       var configurationParameter = new AspNetDockerContainerWrapperConfigurationParameters (TemporaryDirectory, 123, "TestDockerImageName", null, is32BitProcess);
 
       dockerHelperMock.Expect (_ => _.Pull (configurationParameter.DockerImageName));
@@ -74,7 +74,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
     {
       var dockerHelperMock = MockRepository.GenerateMock<IDockerHelper>();
       var dockerFileMock = MockRepository.GenerateMock<IDockerFile>();
-      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFileManager>();
+      var dockerFileManagerMock = MockRepository.GenerateMock<IDockerFilePreparer>();
       dockerFileManagerMock.Expect (_ => _.Prepare (Arg<string>.Is.Anything)).Return (dockerFileMock);
 
       var is32BitProcess = true;
@@ -101,7 +101,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
     public void BuildAndRunDispose_ShouldUseTheSameImageAndContainerName ()
     {
       var dockerHelperSpy = new DockerHelperSpy();
-      var dockerFileManagerMock = MockRepository.GenerateStub<IDockerFileManager>();
+      var dockerFileManagerMock = MockRepository.GenerateStub<IDockerFilePreparer>();
       var dockerFileMock = MockRepository.GenerateStub<IDockerFile>();
       dockerFileManagerMock.Expect (_ => _.Prepare (Arg<string>.Is.Anything)).Return (dockerFileMock);
 
@@ -118,7 +118,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies
       Assert.That (dockerHelperSpy.RemoveImageImageNameValue, Is.EqualTo (dockerHelperSpy.RunImageNameValue));
     }
 
-    public class DockerHelperSpy : IDockerHelper
+    private class DockerHelperSpy : IDockerHelper
     {
       public string BuildTagValue { get; private set; }
       public string RunContainerNameValue { get; private set; }

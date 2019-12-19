@@ -31,10 +31,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       _dockerFileLocationFullPath = dockerFileLocationFullPath;
     }
 
-    public string GetDockerFileFullPath ()
-    {
-      return _dockerFileLocationFullPath;
-    }
+    public string GetDockerFileFullPath () => _dockerFileLocationFullPath;
 
     public void Dispose ()
     {

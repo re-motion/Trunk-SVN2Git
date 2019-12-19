@@ -27,7 +27,12 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
   {
     void Pull ([NotNull] string dockerImageName);
     void Build ([NotNull] string tag, [NotNull] IReadOnlyDictionary<string, string> buildArgs, [NotNull] IDockerFile dockerFile);
-    void Run (bool detached, bool removeContainer, [NotNull] IReadOnlyDictionary<int, int> publishedPorts, [NotNull] string containerName, [CanBeNull] string hostName, [NotNull] string imageName);
+    void Run (
+        bool detached,
+        bool removeContainer,
+        [NotNull] IReadOnlyDictionary<int, int> publishedPorts,
+        [NotNull] string containerName, [CanBeNull] string hostName,
+        [NotNull] string imageName);
     void Stop ([NotNull] string containerName);
     void RemoveImage ([NotNull] string imageName);
   }
