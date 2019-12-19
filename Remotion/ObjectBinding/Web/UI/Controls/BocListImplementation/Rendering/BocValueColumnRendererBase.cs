@@ -17,11 +17,12 @@
 using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.ObjectBinding.Web.Contracts.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Utilities;
 using Remotion.Web;
-using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
@@ -93,6 +94,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <param name="businessObject">Can be used to derive the icon to render.</param>
     protected virtual void RenderOtherIcons (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, IBusinessObject businessObject)
     {
+    }
+
+    protected void RenderValueColumnCellText (BocColumnRenderingContext<TBocColumnDefinition> renderingContext, string contents)
+    {
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      ArgumentUtility.CheckNotNull ("contents", contents);
+
+      renderingContext.Writer.AddAttribute ("class", CssClasses.CommandText);
+      if (RenderingFeatures.EnableDiagnosticMetadata)
+        renderingContext.Writer.AddAttribute (DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, contents);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
+
+      if (string.IsNullOrWhiteSpace (contents))
+        renderingContext.Writer.Write ("&nbsp;");
+      else
+        renderingContext.Writer.WriteEncodedLines (StringUtility.ParseNewLineSeparatedString (contents));
+
+      renderingContext.Writer.RenderEndTag();
     }
 
     /// <summary>
