@@ -17,7 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Validation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Validation.Results;
@@ -25,20 +26,20 @@ using Remotion.Validation.Results;
 namespace Remotion.ObjectBinding.Web.Validation.UI.Controls.Factories
 {
   /// <summary>
-  /// Implements various <see cref="IUserControlBindingValidatorFactory"/> intefaces and creates validators 
+  /// Implements various <see cref="IBocListValidatorFactory"/> intefaces and creates validators 
   /// that can apply the fluent validation <see cref="ValidationFailure"/> results to the respective control.
   /// </summary>
-  /// <seealso cref="IUserControlBindingValidatorFactory"/>
-  [ImplementationFor (typeof (IUserControlBindingValidatorFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple, Position = Position)]
-  public class FluentValidationUserControlBindingValidatorFactory : IUserControlBindingValidatorFactory
+  /// <seealso cref="IBocListValidatorFactory"/>
+  [ImplementationFor (typeof (IBocListValidatorFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple, Position = Position)]
+  public class ValidationBocListValidatorFactory : IBocListValidatorFactory
   {
-    public const int Position = UserControlBindingValidatorFactory.Position + 1;
+    public const int Position = BocListValidatorFactory.Position + 1;
 
-    public FluentValidationUserControlBindingValidatorFactory ()
+    public ValidationBocListValidatorFactory ()
     {
     }
 
-    public IEnumerable<BaseValidator> CreateValidators (UserControlBinding control, bool isReadOnly)
+    public IEnumerable<BaseValidator> CreateValidators (IBocList control, bool isReadOnly)
     {
       ArgumentUtility.CheckNotNull ("control", control);
 
@@ -48,9 +49,9 @@ namespace Remotion.ObjectBinding.Web.Validation.UI.Controls.Factories
       yield return CreateBocListValidator (control);
     }
 
-    private BaseValidator CreateBocListValidator (UserControlBinding control)
+    private BaseValidator CreateBocListValidator (IBocList control)
     {
-      var bocValidator = new UserControlBindingValidationFailureDisptacher();
+      var bocValidator = new BocListValidator();
       bocValidator.ControlToValidate = control.ID;
       bocValidator.ID = control.ID + "_BocListValidator";
       return bocValidator;
