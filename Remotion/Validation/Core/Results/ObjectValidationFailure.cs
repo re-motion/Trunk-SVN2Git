@@ -15,22 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remotion.Validation.Results;
-using Remotion.Validation.Validators;
+using JetBrains.Annotations;
 
-namespace Remotion.Validation.Mixins.IntegrationTests.TestDomain.Validators
+namespace Remotion.Validation.Results
 {
-  public class FakeCreditCardValidator : IPropertyValidator
+  public class ObjectValidationFailure : ValidationFailure
   {
-    public FakeCreditCardValidator ()
+    public ObjectValidationFailure (
+        [NotNull] object validatedObject,
+        [NotNull] string errorMessage,
+        [NotNull] string localizedValidationMessage)
+        :base (validatedObject, errorMessage, localizedValidationMessage)
     {
-    }
-
-    public IEnumerable<PropertyValidationFailure> Validate (PropertyValidatorContext context)
-    {
-      return Enumerable.Empty<PropertyValidationFailure>();
     }
   }
 }
