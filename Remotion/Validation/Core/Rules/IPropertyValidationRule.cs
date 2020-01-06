@@ -16,21 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Utilities;
-using Remotion.Validation.Rules;
+using Remotion.Reflection;
+using Remotion.Validation.Validators;
 
-namespace Remotion.Validation
+namespace Remotion.Validation.Rules
 {
-  /// <summary>Used for providing metadata about a validator.</summary>
-  public class ValidatorDescriptor
+  public interface IPropertyValidationRule : IValidationRule
   {
-    public IReadOnlyCollection<IValidationRule> ValidationRules { get; }
-
-    public ValidatorDescriptor (IReadOnlyCollection<IValidationRule> validationRules)
-    {
-      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
-
-      ValidationRules = validationRules;
-    }
+    IPropertyInformation Property { get; }
+    IReadOnlyCollection<IPropertyValidator> Validators { get; }
   }
 }
