@@ -16,9 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Reflection;
 using Remotion.Validation.Results;
-using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.Rules
 {
@@ -27,13 +25,6 @@ namespace Remotion.Validation.Rules
   /// </summary>
   public interface IValidationRule
   {
-    // TODO RM-5960: remove member
-    IPropertyInformation Property { get; }
-
-    // TODO RM-5960: Switch to type-irreverent form (property and object validators)
-    /// <summary>The validators that are grouped under this rule.</summary>
-    IReadOnlyCollection<IPropertyValidator> Validators { get; }
-
     /// <summary>
     /// Performs validation using a validation context and returns a collection of Validation Failures.
     /// </summary>
