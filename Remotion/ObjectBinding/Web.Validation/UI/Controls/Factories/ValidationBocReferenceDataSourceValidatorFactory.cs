@@ -30,11 +30,11 @@ namespace Remotion.ObjectBinding.Web.Validation.UI.Controls.Factories
   /// </summary>
   /// <seealso cref="IBusinessObjectReferenceDataSourceControlValidatorFactory"/>
   [ImplementationFor (typeof (IBusinessObjectReferenceDataSourceControlValidatorFactory), Lifetime = LifetimeKind.Singleton, RegistrationType = RegistrationType.Multiple, Position = Position)]
-  public class FluentValidationBocReferenceDataSourceValidatorFactory : IBusinessObjectReferenceDataSourceControlValidatorFactory
+  public class ValidationBocReferenceDataSourceValidatorFactory : IBusinessObjectReferenceDataSourceControlValidatorFactory
   {
     public const int Position = 0;
 
-    public FluentValidationBocReferenceDataSourceValidatorFactory ()
+    public ValidationBocReferenceDataSourceValidatorFactory ()
     {
     }
 
