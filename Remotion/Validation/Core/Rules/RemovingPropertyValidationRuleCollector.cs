@@ -24,16 +24,16 @@ using Remotion.Utilities;
 namespace Remotion.Validation.Rules
 {
   /// <summary>
-  /// Default implementation of the <see cref="IRemovingComponentPropertyRule"/> interface.
+  /// Default implementation of the <see cref="IRemovingPropertyValidationRuleCollector"/> interface.
   /// </summary>
-  public sealed class RemovingComponentPropertyRule : IRemovingComponentPropertyRule
+  public sealed class RemovingPropertyValidationRuleCollector : IRemovingPropertyValidationRuleCollector
   {
 
-    public static RemovingComponentPropertyRule Create<TValidatedType, TProperty> (Expression<Func<TValidatedType, TProperty>> expression, Type collectorType)
+    public static RemovingPropertyValidationRuleCollector Create<TValidatedType, TProperty> (Expression<Func<TValidatedType, TProperty>> expression, Type collectorType)
     {
       var propertyInfo = MemberInfoFromExpressionUtility.GetProperty (expression);
 
-      return new RemovingComponentPropertyRule (PropertyInfoAdapter.Create (propertyInfo), collectorType);
+      return new RemovingPropertyValidationRuleCollector (PropertyInfoAdapter.Create (propertyInfo), collectorType);
     }
 
     public IPropertyInformation Property { get; }
@@ -41,7 +41,7 @@ namespace Remotion.Validation.Rules
 
     private readonly List<ValidatorRegistration> _registeredValidators;
 
-    public RemovingComponentPropertyRule (IPropertyInformation property, Type collectorType)
+    public RemovingPropertyValidationRuleCollector (IPropertyInformation property, Type collectorType)
     {
       ArgumentUtility.CheckNotNull ("property", property);
       ArgumentUtility.CheckNotNull ("collectorType", collectorType); // TODO RM-5906: Add type check for IComponentValidationCollector

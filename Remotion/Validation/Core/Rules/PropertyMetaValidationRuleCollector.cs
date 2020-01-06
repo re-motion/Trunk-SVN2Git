@@ -25,22 +25,22 @@ using Remotion.Validation.MetaValidation;
 namespace Remotion.Validation.Rules
 {
   /// <summary>
-  /// Default implementation of the <see cref="IAddingComponentPropertyMetaValidationRule"/> interface.
+  /// Default implementation of the <see cref="IPropertyMetaValidationRuleCollector"/> interface.
   /// </summary>
-  public sealed class AddingComponentPropertyMetaValidationRule : IAddingComponentPropertyMetaValidationRule
+  public sealed class PropertyMetaValidationRuleCollector : IPropertyMetaValidationRuleCollector
   {
-    public static AddingComponentPropertyMetaValidationRule Create<TValidatedType, TProperty> (Expression<Func<TValidatedType, TProperty>> expression, Type collectorType)
+    public static PropertyMetaValidationRuleCollector Create<TValidatedType, TProperty> (Expression<Func<TValidatedType, TProperty>> expression, Type collectorType)
     {
       var propertyInfo = MemberInfoFromExpressionUtility.GetProperty (expression);
 
-      return new AddingComponentPropertyMetaValidationRule (PropertyInfoAdapter.Create (propertyInfo), collectorType);
+      return new PropertyMetaValidationRuleCollector (PropertyInfoAdapter.Create (propertyInfo), collectorType);
     }
 
     public IPropertyInformation Property { get; }
     public Type CollectorType { get; }
     private readonly List<IMetaValidationRule> _metaValidationRules;
 
-    public AddingComponentPropertyMetaValidationRule (IPropertyInformation property, Type collectorType)
+    public PropertyMetaValidationRuleCollector (IPropertyInformation property, Type collectorType)
     {
       ArgumentUtility.CheckNotNull ("property", property);
       ArgumentUtility.CheckNotNull ("collectorType", collectorType); // TODO RM-5906: Add type check for IComponentValidationCollector
