@@ -456,10 +456,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
     private bool ColumnHasDiagnosticMetadata (ElementScope scope)
     {
-      if (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata] == null)
+      if (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasContentAttribute] == null)
         return false;
 
-      return bool.Parse (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasDiagnosticMetadata]);
+      return bool.Parse (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasContentAttribute]);
     }
 
     private void EnsureBocListHasBeenFullyInitialized ()
