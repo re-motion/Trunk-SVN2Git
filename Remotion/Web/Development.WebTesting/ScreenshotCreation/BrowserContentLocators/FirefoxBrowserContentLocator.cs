@@ -17,7 +17,9 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Automation;
+using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
 
@@ -60,13 +62,36 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       return result;
     }
 
+    [NotNull]
     private static AutomationElement GetFirefoxContentElement (AutomationElement firefoxWindow)
+    {
+      foreach (var _ in Enumerable.Range (0, 3))
+      {
+        try
+        {
+          var result = GetFirefoxDocumentControl (firefoxWindow);
+
+          if (result != null)
+            return result;
+        }
+        catch (ElementNotAvailableException)
+        {
+        }
+
+        Thread.Sleep (TimeSpan.FromSeconds (1));
+      }
+
+      throw new TimeoutException ("The Firefox content window could not be found within a timeout of 2 seconds.");
+    }
+
+    [CanBeNull]
+    private static AutomationElement GetFirefoxDocumentControl (AutomationElement firefoxWindow)
     {
       return firefoxWindow.FindFirst (
           TreeScope.Subtree,
           new PropertyCondition (
-              AutomationElement.LocalizedControlTypeProperty,
-              "document"));
+              AutomationElement.ControlTypeProperty,
+              ControlType.Document));
     }
 
     private Tuple<int, AutomationElement> RateAutomationElement (AutomationElement window, IWebDriver driver)
