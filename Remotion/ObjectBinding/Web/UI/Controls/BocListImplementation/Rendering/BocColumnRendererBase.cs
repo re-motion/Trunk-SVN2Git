@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary>
     /// Returns whether the renderer is able to render diagnostic metadata.
     /// </summary>
-    protected virtual bool HasDiagnoticMetadata
+    protected virtual bool HasContentAttribute
     {
       get { return false; }
     }
@@ -134,7 +134,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
         renderingContext.Writer.AddAttribute (
             DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasContentAttribute,
-            HasDiagnoticMetadata.ToString().ToLower());
+            HasContentAttribute.ToString().ToLower());
       }
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
 

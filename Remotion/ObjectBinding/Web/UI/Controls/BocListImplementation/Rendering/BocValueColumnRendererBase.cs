@@ -178,7 +178,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// <summary>
     /// <see cref="BocValueColumnRendererBase{TBocColumnDefinition}"/> renders diagnostic metadata.
     /// </summary>
-    protected override bool HasDiagnoticMetadata
+    protected override bool HasContentAttribute
     {
       get { return true; }
     }

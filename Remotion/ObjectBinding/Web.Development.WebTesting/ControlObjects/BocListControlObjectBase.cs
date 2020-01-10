@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
                           s[DiagnosticMetadataAttributes.Content],
                           s[DiagnosticMetadataAttributesForObjectBinding.HasPropertyPaths] == "true",
                           s[DiagnosticMetadataAttributesForObjectBinding.BoundPropertyPaths]?.Split ('\u001e'),
-                          ColumnHasDiagnosticMetadata (s)))
+                          ColumnHasContentAttribute (s)))
               .ToList());
     }
 
@@ -454,7 +454,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       return Scope;
     }
 
-    private bool ColumnHasDiagnosticMetadata (ElementScope scope)
+    private bool ColumnHasContentAttribute (ElementScope scope)
     {
       if (scope[DiagnosticMetadataAttributesForObjectBinding.BocListColumnHasContentAttribute] == null)
         return false;
