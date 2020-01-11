@@ -77,10 +77,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
                           { "WebApplicationPort", _configurationParameters.WebApplicationPort.ToString() }
                       };
 
-      if (_configurationParameters.Is32BitProcess)
-        buildArgs.Add ("Is32BitProcess", "true");
-      else
-        buildArgs.Add ("Is32BitProcess", "false");
+      var is32BitProcess = _configurationParameters.Is32BitProcess ? "true" : "false";
+      buildArgs.Add ("Is32BitProcess", is32BitProcess);
 
       _dockerHelper.Pull (_configurationParameters.DockerImageName);
 

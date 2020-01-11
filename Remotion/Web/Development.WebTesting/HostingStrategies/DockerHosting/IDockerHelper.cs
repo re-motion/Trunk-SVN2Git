@@ -31,7 +31,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
         bool detached,
         bool removeContainer,
         [NotNull] IReadOnlyDictionary<int, int> publishedPorts,
-        [NotNull] string containerName, [CanBeNull] string hostName,
+        [NotNull] string containerName,
+        [CanBeNull] string hostName,
         [NotNull] string imageName);
     void Stop ([NotNull] string containerName);
     void RemoveImage ([NotNull] string imageName);

@@ -74,7 +74,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     public void StopAndUndeployWebApplication ()
     {
       _aspNetDockerContainerWrapper?.Dispose();
-        _aspNetDockerContainerWrapper.Dispose();
     }
   }
 }
