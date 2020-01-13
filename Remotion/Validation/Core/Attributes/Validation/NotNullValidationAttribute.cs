@@ -25,33 +25,12 @@ using Remotion.Validation.Validators;
 namespace Remotion.Validation.Attributes.Validation
 {
   /// <summary>
-  /// Apply the <see cref="LengthAttribute"/> to introduce a <see cref="LengthValidator"/> constraint for a string property.
+  /// Apply the <see cref="NotNullValidationAttribute"/> to introduce a <see cref="NotNullValidator"/> constraint for a property.
   /// </summary>
-  public class LengthAttribute : AddingValidationAttributeBase
+  public class NotNullValidationAttribute : AddingValidationAttributeBase
   {
-    // TODO RM-5906: make max-length nullable and create specific type of length-validator based on min and max-length values
-    private readonly int _maxLength;
-    private readonly int _minLength;
-
-    /// <summary>
-    /// Instantiates a new <see cref="LengthAttribute"/>.
-    /// </summary>
-    /// <param name="minLength">The minimum number of characters required.</param>
-    /// <param name="maxLength">The maximum number of characters allowed.</param>
-    public LengthAttribute (int minLength, int maxLength)
+    public NotNullValidationAttribute ()
     {
-      _minLength = minLength;
-      _maxLength = maxLength;
-    }
-
-    public int MinLength
-    {
-      get { return _minLength; }
-    }
-
-    public int MaxLength
-    {
-      get { return _maxLength; }
     }
 
     protected override IEnumerable<IPropertyValidator> GetValidators (IPropertyInformation property, IValidationMessageFactory validationMessageFactory)
@@ -59,21 +38,21 @@ namespace Remotion.Validation.Attributes.Validation
       ArgumentUtility.CheckNotNull ("property", property);
       ArgumentUtility.CheckNotNull ("validationMessageFactory", validationMessageFactory);
 
-      LengthValidator validator;
+      NotNullValidator validator;
       if (string.IsNullOrEmpty (ErrorMessage))
       {
-        var validatorType = typeof (LengthValidator);
+        var validatorType = typeof (NotNullValidator);
         var validationMessage = validationMessageFactory.CreateValidationMessageForPropertyValidator (validatorType, property);
         if (validationMessage == null)
         {
           throw new InvalidOperationException (
               $"The {nameof (IValidationMessageFactory)} did not return a result for {validatorType.Name} applied to property '{property.Name}' on type '{property.GetOriginalDeclaringType().FullName}'.");
         }
-        validator = new LengthValidator (MinLength, MaxLength, validationMessage);
+        validator = new NotNullValidator (validationMessage);
       }
       else
       {
-        validator = new LengthValidator (MinLength, MaxLength, new InvariantValidationMessage (ErrorMessage));
+        validator = new NotNullValidator (new InvariantValidationMessage (ErrorMessage));
       }
 
       return EnumerableUtility.Singleton (validator);
