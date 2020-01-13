@@ -212,5 +212,37 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
               0,
               List.ClientID + "_0_Title"));
     }
+
+    [Test]
+    public void RenderEditModeControl_HasDiagnosticMetadata ()
+    {
+      var firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
+
+      IEditableRow editableRow = MockRepository.GenerateMock<IEditableRow>();
+      editableRow.Stub (mock => mock.HasEditControl (0)).IgnoreArguments().Return (true);
+      editableRow.Stub (mock => mock.GetEditControl (0)).IgnoreArguments().Return (MockRepository.GenerateStub<IBocTextValue>());
+
+      List.EditModeController.Stub (mock => mock.GetEditableRow (EventArgs.ListIndex)).Return (editableRow);
+
+      IBocColumnRenderer renderer = new BocSimpleColumnRenderer (new FakeResourceUrlFactory(), RenderingFeatures.WithDiagnosticMetadata, _bocListCssClassDefinition);
+      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+
+      var document = Html.GetResultDocument();
+
+      var td = Html.GetAssertedChildElement (document, "td", 0);
+      Html.AssertAttribute (td, DiagnosticMetadataAttributesForObjectBinding.BocListCellIndex, "1");
+      var span = Html.GetAssertedChildElement (td, "span", 0);
+      var clickSpan = Html.GetAssertedChildElement (span, "span", 0);
+      Html.AssertAttribute (clickSpan, "onclick", "BocList_OnCommandClick();");
+      Html.AssertAttribute (clickSpan, DiagnosticMetadataAttributesForObjectBinding.BocListCellContents, "referencedObject1");
+
+      editableRow.AssertWasCalled (
+          mock => mock.RenderSimpleColumnCellEditModeControl (
+              Html.Writer,
+              Column,
+              firstObject,
+              0,
+              List.ClientID + "_0_Title"));
+    }
   }
 }
