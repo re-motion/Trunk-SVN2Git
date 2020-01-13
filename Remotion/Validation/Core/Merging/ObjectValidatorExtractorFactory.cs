@@ -15,22 +15,30 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using JetBrains.Annotations;
+using System.Collections.Generic;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Validation.Implementation;
 
-namespace Remotion.Validation.Rules
+namespace Remotion.Validation.Merging
 {
-  public class PropertyRuleInitializationParameters
+  /// <summary>
+  /// Default implementation of the <see cref="IObjectValidatorExtractorFactory"/> interface.
+  /// </summary>
+  [ImplementationFor (typeof (IObjectValidatorExtractorFactory), Lifetime = LifetimeKind.Singleton)]
+  public class ObjectValidatorExtractorFactory : IObjectValidatorExtractorFactory
   {
-    [NotNull]
-    public ValidationMessage ValidationMessage { get; }
-
-    public PropertyRuleInitializationParameters ([NotNull] ValidationMessage validationMessage)
+    public ObjectValidatorExtractorFactory ()
     {
-      ArgumentUtility.CheckNotNull ("validationMessage", validationMessage);
+    }
 
-      ValidationMessage = validationMessage;
+    public IObjectValidatorExtractor Create (
+        IEnumerable<ObjectValidatorRegistrationWithContext> validatorRegistrationWithContexts, ILogContext logContext)
+    {
+      ArgumentUtility.CheckNotNull ("validatorRegistrationWithContexts", validatorRegistrationWithContexts);
+      ArgumentUtility.CheckNotNull ("logContext", logContext);
+      
+      return new ObjectValidatorExtractor (validatorRegistrationWithContexts, logContext);
     }
   }
 }

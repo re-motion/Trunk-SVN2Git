@@ -23,28 +23,28 @@ namespace Remotion.Validation.Implementation
   /// <summary>
   /// Aggregates information about removed validators during merging of the collectors.
   /// </summary>
-  public sealed class LogContextInfo
+  public sealed class ObjectValidatorLogContextInfo
   {
-    private readonly IPropertyValidator _remvovedValidator;
-    private readonly ValidatorRegistrationWithContext[] _removingValidatorRegistrationsWithContext;
+    private readonly IObjectValidator _removedValidator;
+    private readonly ObjectValidatorRegistrationWithContext[] _removingObjectValidatorRegistrationsWithContext;
 
-    public LogContextInfo (IPropertyValidator removedValidator, ValidatorRegistrationWithContext[] removingValidatorRegistrationsWithContext)
+    public ObjectValidatorLogContextInfo (IObjectValidator removedValidator, ObjectValidatorRegistrationWithContext[] removingObjectValidatorRegistrationsWithContext)
     {
       ArgumentUtility.CheckNotNull ("removedValidator", removedValidator);
-      ArgumentUtility.CheckNotNull ("removingValidatorRegistrationsWithContext", removingValidatorRegistrationsWithContext);
+      ArgumentUtility.CheckNotNull ("removingObjectValidatorRegistrationsWithContext", removingObjectValidatorRegistrationsWithContext);
 
-      _remvovedValidator = removedValidator;
-      _removingValidatorRegistrationsWithContext = removingValidatorRegistrationsWithContext;
+      _removedValidator = removedValidator;
+      _removingObjectValidatorRegistrationsWithContext = removingObjectValidatorRegistrationsWithContext;
     }
 
-    public IPropertyValidator RemvovedValidator
+    public IObjectValidator RemovedValidator
     {
-      get { return _remvovedValidator; }
+      get { return _removedValidator; }
     }
 
-    public ValidatorRegistrationWithContext[] RemovingValidatorRegistrationsWithContext
+    public ObjectValidatorRegistrationWithContext[] RemovingObjectValidatorRegistrationsWithContext
     {
-      get { return _removingValidatorRegistrationsWithContext; }
+      get { return _removingObjectValidatorRegistrationsWithContext; }
     }
   }
 }

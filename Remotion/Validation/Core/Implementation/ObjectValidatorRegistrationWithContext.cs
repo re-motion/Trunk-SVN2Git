@@ -23,20 +23,20 @@ namespace Remotion.Validation.Implementation
   /// <summary>
   /// Extends a <see cref="RuleCollectors.ValidatorRegistration"/> with information about the property for which it applies.
   /// </summary>
-  public class ValidatorRegistrationWithContext
+  public class ObjectValidatorRegistrationWithContext
   {
     private readonly ValidatorRegistration _validatorRegistration;
-    private readonly IRemovingPropertyValidationRuleCollector _removingPropertyValidationRuleCollector;
+    private readonly IRemovingObjectValidationRuleCollector _removingObjectValidationRuleCollector;
 
-    public ValidatorRegistrationWithContext (
+    public ObjectValidatorRegistrationWithContext (
         ValidatorRegistration validatorRegistration,
-        IRemovingPropertyValidationRuleCollector removingPropertyValidationRuleCollector)
+        IRemovingObjectValidationRuleCollector removingObjectValidationRuleCollector)
     {
       ArgumentUtility.CheckNotNull ("validatorRegistration", validatorRegistration);
-      ArgumentUtility.CheckNotNull ("removingPropertyValidationRuleCollector", removingPropertyValidationRuleCollector);
+      ArgumentUtility.CheckNotNull ("removingObjectValidationRuleCollector", removingObjectValidationRuleCollector);
 
       _validatorRegistration = validatorRegistration;
-      _removingPropertyValidationRuleCollector = removingPropertyValidationRuleCollector;
+      _removingObjectValidationRuleCollector = removingObjectValidationRuleCollector;
     }
 
     public ValidatorRegistration ValidatorRegistration
@@ -44,9 +44,9 @@ namespace Remotion.Validation.Implementation
       get { return _validatorRegistration; }
     }
 
-    public IRemovingPropertyValidationRuleCollector RemovingPropertyValidationRuleCollector
+    public IRemovingObjectValidationRuleCollector RemovingObjectValidationRuleCollector
     {
-      get { return _removingPropertyValidationRuleCollector; }
+      get { return _removingObjectValidationRuleCollector; }
     }
   }
 }
