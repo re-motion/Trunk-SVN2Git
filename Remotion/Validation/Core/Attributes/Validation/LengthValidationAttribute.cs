@@ -25,26 +25,33 @@ using Remotion.Validation.Validators;
 namespace Remotion.Validation.Attributes.Validation
 {
   /// <summary>
-  /// Apply the <see cref="NotEqualAttribute"/> to introduce a <see cref="NotEqualValidator"/> constraint for a string property.
+  /// Apply the <see cref="LengthValidationAttribute"/> to introduce a <see cref="LengthValidator"/> constraint for a string property.
   /// </summary>
-  public class NotEqualAttribute : AddingValidationAttributeBase
+  public class LengthValidationAttribute : AddingValidationAttributeBase
   {
-    private readonly string _value;
+    // TODO RM-5906: make max-length nullable and create specific type of length-validator based on min and max-length values
+    private readonly int _maxLength;
+    private readonly int _minLength;
 
     /// <summary>
-    /// Instantiates a new <see cref="NotEqualValidator"/>.
+    /// Instantiates a new <see cref="LengthValidationAttribute"/>.
     /// </summary>
-    /// <param name="value">The value the string property must not be equal to. Must not be <see langword="null" /> or empty.</param>
-    public NotEqualAttribute (string value)
+    /// <param name="minLength">The minimum number of characters required.</param>
+    /// <param name="maxLength">The maximum number of characters allowed.</param>
+    public LengthValidationAttribute (int minLength, int maxLength)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
-
-      _value = value;
+      _minLength = minLength;
+      _maxLength = maxLength;
     }
 
-    public string Value
+    public int MinLength
     {
-      get { return _value; }
+      get { return _minLength; }
+    }
+
+    public int MaxLength
+    {
+      get { return _maxLength; }
     }
 
     protected override IEnumerable<IPropertyValidator> GetValidators (IPropertyInformation property, IValidationMessageFactory validationMessageFactory)
@@ -52,21 +59,21 @@ namespace Remotion.Validation.Attributes.Validation
       ArgumentUtility.CheckNotNull ("property", property);
       ArgumentUtility.CheckNotNull ("validationMessageFactory", validationMessageFactory);
 
-      NotEqualValidator validator;
+      LengthValidator validator;
       if (string.IsNullOrEmpty (ErrorMessage))
       {
-        var validatorType = typeof (NotEqualValidator);
+        var validatorType = typeof (LengthValidator);
         var validationMessage = validationMessageFactory.CreateValidationMessageForPropertyValidator (validatorType, property);
         if (validationMessage == null)
         {
           throw new InvalidOperationException (
               $"The {nameof (IValidationMessageFactory)} did not return a result for {validatorType.Name} applied to property '{property.Name}' on type '{property.GetOriginalDeclaringType().FullName}'.");
         }
-        validator = new NotEqualValidator (Value, validationMessage);
+        validator = new LengthValidator (MinLength, MaxLength, validationMessage);
       }
       else
       {
-        validator = new NotEqualValidator (Value, new InvariantValidationMessage (ErrorMessage));
+        validator = new LengthValidator (MinLength, MaxLength, new InvariantValidationMessage (ErrorMessage));
       }
 
       return EnumerableUtility.Singleton (validator);

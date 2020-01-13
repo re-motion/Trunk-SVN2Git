@@ -27,22 +27,16 @@ using Rhino.Mocks;
 namespace Remotion.Validation.UnitTests.Attributes.Validation
 {
   [TestFixture]
-  public class NotEqualAttributeTest
+  public class NotEmptyValidationAttributeTest
   {
-    private NotEqualAttribute _attribute;
+    private NotEmptyValidationAttribute _attribute;
     private IValidationMessageFactory _validationMessageFactoryStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _attribute = new NotEqualAttribute ("test");
+      _attribute = new NotEmptyValidationAttribute();
       _validationMessageFactoryStub = MockRepository.GenerateStub<IValidationMessageFactory>();
-    }
-
-    [Test]
-    public void Initialization ()
-    {
-      Assert.That (_attribute.Value, Is.EqualTo ("test"));
     }
 
     [Test]
@@ -51,15 +45,14 @@ namespace Remotion.Validation.UnitTests.Attributes.Validation
       var propertyInformation = PropertyInfoAdapter.Create (typeof (Customer).GetProperty ("LastName"));
       var invariantValidationMessageStub = MockRepository.GenerateStub<ValidationMessage>();
       _validationMessageFactoryStub
-          .Stub (_ => _.CreateValidationMessageForPropertyValidator (typeof (NotEqualValidator), propertyInformation))
+          .Stub (_ => _.CreateValidationMessageForPropertyValidator (typeof (NotEmptyValidator), propertyInformation))
           .Return (invariantValidationMessageStub);
 
       var result = _attribute.GetPropertyValidators (propertyInformation, _validationMessageFactoryStub).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (result[0], Is.TypeOf (typeof (NotEqualValidator)));
-      Assert.That (((NotEqualValidator) result[0]).ValidationMessage, Is.SameAs (invariantValidationMessageStub));
-      Assert.That (((NotEqualValidator) result[0]).ComparisonValue, Is.EqualTo ("test"));
+      Assert.That (result[0], Is.TypeOf (typeof (NotEmptyValidator)));
+      Assert.That (((NotEmptyValidator) result[0]).ValidationMessage, Is.SameAs (invariantValidationMessageStub));
     }
 
     [Test]
@@ -71,8 +64,8 @@ namespace Remotion.Validation.UnitTests.Attributes.Validation
       var result = _attribute.GetPropertyValidators (propertyInformation, _validationMessageFactoryStub).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (1));
-      Assert.That (((NotEqualValidator) result[0]).ValidationMessage, Is.InstanceOf<InvariantValidationMessage>());
-      Assert.That (((NotEqualValidator) result[0]).ValidationMessage.ToString(), Is.EqualTo ("CustomMessage"));
+      Assert.That (((NotEmptyValidator) result[0]).ValidationMessage, Is.InstanceOf<InvariantValidationMessage>());
+      Assert.That (((NotEmptyValidator) result[0]).ValidationMessage.ToString(), Is.EqualTo ("CustomMessage"));
     }
 
     [Test]

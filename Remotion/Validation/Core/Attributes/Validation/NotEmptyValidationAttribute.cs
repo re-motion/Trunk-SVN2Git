@@ -25,11 +25,11 @@ using Remotion.Validation.Validators;
 namespace Remotion.Validation.Attributes.Validation
 {
   /// <summary>
-  /// Apply the <see cref="NotEmptyAttribute"/> to introduce a <see cref="NotEmptyValidator"/> constraint for a property.
+  /// Apply the <see cref="NotEmptyValidationAttribute"/> to introduce a <see cref="NotEmptyValidator"/> constraint for a property.
   /// </summary>
-  public class NotEmptyAttribute : AddingValidationAttributeBase
+  public class NotEmptyValidationAttribute : AddingValidationAttributeBase
   {
-    public NotEmptyAttribute ()
+    public NotEmptyValidationAttribute ()
     {
     }
 
