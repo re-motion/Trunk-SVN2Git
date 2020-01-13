@@ -23,26 +23,26 @@ using Rhino.Mocks;
 namespace Remotion.Validation.UnitTests.Implementation
 {
   [TestFixture]
-  public class LogContextInfoTest
+  public class PropertyValidatorLogContextInfoTest
   {
     private IPropertyValidator _propertyValidatorStub1;
-    private ValidatorRegistrationWithContext[] _validatorRegistrationWithContext;
-    private LogContextInfo _logContextInfo;
+    private PropertyValidatorRegistrationWithContext[] _propertyValidatorRegistrationWithContext;
+    private PropertyValidatorLogContextInfo _logContextInfo;
 
     [SetUp]
     public void SetUp ()
     {
       _propertyValidatorStub1 = MockRepository.GenerateStub<IPropertyValidator>();
-      _validatorRegistrationWithContext = new ValidatorRegistrationWithContext[0];
+      _propertyValidatorRegistrationWithContext = new PropertyValidatorRegistrationWithContext[0];
 
-      _logContextInfo = new LogContextInfo (_propertyValidatorStub1, _validatorRegistrationWithContext);
+      _logContextInfo = new PropertyValidatorLogContextInfo (_propertyValidatorStub1, _propertyValidatorRegistrationWithContext);
     }
 
     [Test]
     public void Initialization ()
     {
-      Assert.That (_logContextInfo.RemvovedValidator, Is.SameAs (_propertyValidatorStub1));
-      Assert.That (_logContextInfo.RemovingValidatorRegistrationsWithContext, Is.SameAs (_validatorRegistrationWithContext));
+      Assert.That (_logContextInfo.RemovedValidator, Is.SameAs (_propertyValidatorStub1));
+      Assert.That (_logContextInfo.RemovingPropertyValidatorRegistrationsWithContext, Is.SameAs (_propertyValidatorRegistrationWithContext));
     }
   }
 }
