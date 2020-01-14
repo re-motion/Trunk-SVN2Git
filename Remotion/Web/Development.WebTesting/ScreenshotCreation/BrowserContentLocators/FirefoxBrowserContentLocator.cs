@@ -65,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
     [NotNull]
     private AutomationElement GetFirefoxContentElement (AutomationElement firefoxWindow)
     {
-      foreach (var _ in Enumerable.Range (0, 3))
+      for (var i = 0; i < 3; i++)
       {
         try
         {
