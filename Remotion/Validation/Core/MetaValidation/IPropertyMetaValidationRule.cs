@@ -16,26 +16,16 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Utilities;
 using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.MetaValidation
 {
   /// <summary>
-  /// Base class for implementations of the <see cref="IMetaValidationRule"/> interface which are constrained to a specific <see cref="IPropertyValidator"/> type.
+  /// Implementations of the <see cref="IPropertyMetaValidationRule"/> interface are used to verify the consistency 
+  /// of the merged set of <see cref="IPropertyValidator"/>s for a property. 
   /// </summary>
-  /// <typeparam name="TValidator">The type of the <see cref="IPropertyValidator"/> validated by this meta validator.</typeparam>
-  public abstract class MetaValidationRuleBase<TValidator> : IMetaValidationRule
-      where TValidator: IPropertyValidator
+  public interface IPropertyMetaValidationRule
   {
-    public abstract IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<TValidator> validationRules);
-
-    IEnumerable<MetaValidationRuleValidationResult> IMetaValidationRule.Validate (IEnumerable<IPropertyValidator> validationRules)
-    {
-      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
-
-      return Validate (validationRules.OfType<TValidator>());
-    }
+    IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<IPropertyValidator> validationRules);
   }
 }

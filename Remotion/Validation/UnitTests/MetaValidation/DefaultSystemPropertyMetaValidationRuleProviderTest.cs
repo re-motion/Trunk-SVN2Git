@@ -15,29 +15,31 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
+using Remotion.Reflection;
 using Remotion.Validation.MetaValidation;
-using Remotion.Validation.Validators;
+using Remotion.Validation.UnitTests.TestDomain;
 
-namespace Remotion.Validation.UnitTests.TestDomain.ValidationRules
+namespace Remotion.Validation.UnitTests.MetaValidation
 {
-  public class MaxLengthMetaValidationRule : MetaValidationRuleBase<LengthValidator>
+  [TestFixture]
+  public class DefaultSystemPropertyMetaValidationRuleProviderTest
   {
-    public override IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<LengthValidator> validationRules)
+    private DefaultSystemPropertyMetaValidationRuleProvider _provider;
+
+    [SetUp]
+    public void SetUp ()
     {
-      var invalidValidators = validationRules.Where (lengthValidator => lengthValidator.Max > 50).ToArray();
-      if (invalidValidators.Any())
-      {
-        foreach (var lengthValidator in invalidValidators)
-        {
-          yield return
-              MetaValidationRuleValidationResult.CreateInvalidResult (
-                  "MaxLength-Constraints greater 50 not allowed for validator '{0}'!", lengthValidator.GetType().Name);
-        }
-      }
-      else
-        yield return MetaValidationRuleValidationResult.CreateValidResult();
+      _provider = new DefaultSystemPropertyMetaValidationRuleProvider (PropertyInfoAdapter.Create(typeof (Customer).GetProperty ("UserName")));
+    }
+
+    [Test]
+    public void GetSystemMetaValidationRules ()
+    {
+      var result = _provider.GetSystemPropertyMetaValidationRules();
+
+      Assert.That (result.Any(), Is.True);
     }
   }
 }

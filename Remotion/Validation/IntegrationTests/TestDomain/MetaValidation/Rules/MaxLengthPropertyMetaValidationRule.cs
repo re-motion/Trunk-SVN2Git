@@ -22,14 +22,20 @@ using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.Rules
 {
-  public class MaxValidatorCountRule : PropertyMetaValidationRuleBase<IPropertyValidator>
+  public class MaxLengthPropertyMetaValidationRule : PropertyMetaValidationRuleBase<LengthValidator>
   {
-    public override IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<IPropertyValidator> validationRules)
+    public override IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<LengthValidator> validationRules)
     {
-      if(validationRules.Count()>3)
-        yield return
-            MetaValidationRuleValidationResult.CreateInvalidResult (
-                "More than three validators per property are not allowed!");
+      var invalidValidators = validationRules.Where (lengthValidator => lengthValidator.Max > 50).ToArray();
+      if (invalidValidators.Any())
+      {
+        foreach (var lengthValidator in invalidValidators)
+        {
+          yield return
+              MetaValidationRuleValidationResult.CreateInvalidResult (
+                  "MaxLength-Constraints greater 50 not allowed for validator '{0}'!", lengthValidator.GetType().Name);
+        }
+      }
       else
         yield return MetaValidationRuleValidationResult.CreateValidResult();
     }

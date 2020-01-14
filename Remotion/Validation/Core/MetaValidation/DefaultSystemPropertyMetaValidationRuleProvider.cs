@@ -14,20 +14,36 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using System.Collections.Generic;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Validation.MetaValidation.Rules.System;
 
 namespace Remotion.Validation.MetaValidation
 {
-  [ImplementationFor (typeof (ISystemMetaValidationRulesProviderFactory), Lifetime = LifetimeKind.Singleton)]
-  public class DefaultSystemMetaValidationRulesProviderFactory : ISystemMetaValidationRulesProviderFactory
+  /// <summary>
+  /// Default implementation of the <see cref="ISystemPropertyMetaValidationRuleProvider"/> interface. Provides a <see cref="LengthSystemPropertyMetaValidationRule"/>.
+  /// </summary>
+  public class DefaultSystemPropertyMetaValidationRuleProvider : ISystemPropertyMetaValidationRuleProvider
   {
-    public ISystemMetaValidationRulesProvider Create (IPropertyInformation propertyInformation)
+    private readonly IPropertyInformation _propertyInformation;
+
+    public DefaultSystemPropertyMetaValidationRuleProvider (IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      return new DefaultSystemMetaValidationRulesProvider (propertyInformation);
+      _propertyInformation = propertyInformation;
+    }
+
+    public IPropertyInformation PropertyInformation
+    {
+      get { return _propertyInformation; }
+    }
+
+    public IEnumerable<IPropertyMetaValidationRule> GetSystemPropertyMetaValidationRules ()
+    {
+      yield return new LengthSystemPropertyMetaValidationRule (_propertyInformation);
     }
   }
 }

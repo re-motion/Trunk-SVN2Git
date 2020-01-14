@@ -15,12 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Reflection;
+using NUnit.Framework;
+using Remotion.Validation.MetaValidation;
+using System.Linq;
+using Remotion.Validation.Validators;
 
-namespace Remotion.Validation.MetaValidation
+namespace Remotion.Validation.UnitTests.MetaValidation
 {
-  public interface ISystemMetaValidationRulesProviderFactory
+  [TestFixture]
+  public class DelegatePropertyMetaValidationRuleTest
   {
-    ISystemMetaValidationRulesProvider Create (IPropertyInformation propertyInformation);
+    [Test]
+    public void Validate ()
+    {
+      var fakeResult = MetaValidationRuleValidationResult.CreateValidResult();
+      var delegateRule = new DelegatePropertyMetaValidationRule<IPropertyValidator> (v => fakeResult);
+
+      var result = delegateRule.Validate (new IPropertyValidator[0]).First();
+
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
   }
 }

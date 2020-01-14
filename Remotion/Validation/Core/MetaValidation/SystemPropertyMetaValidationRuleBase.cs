@@ -22,15 +22,15 @@ using Remotion.Validation.Validators;
 namespace Remotion.Validation.MetaValidation
 {
   /// <summary>
-  /// Base class for implementations of the <see cref="IMetaValidationRule"/> interface which are inherent to the validation specification of any given any application.
+  /// Base class for implementations of the <see cref="IPropertyMetaValidationRule"/> interface which are inherent to the validation specification of any given any application.
   /// </summary>
   /// <typeparam name="TValidator">The type of the <see cref="IPropertyValidator"/> validated by this meta validator.</typeparam>
-  public abstract class SystemMetaValidationRuleBase<TValidator> : MetaValidationRuleBase<TValidator>
+  public abstract class SystemPropertyMetaValidationRuleBase<TValidator> : PropertyMetaValidationRuleBase<TValidator>
       where TValidator: IPropertyValidator
   {
     private readonly IPropertyInformation _propertyInfo;
 
-    protected SystemMetaValidationRuleBase (IPropertyInformation propertyInfo)
+    protected SystemPropertyMetaValidationRuleBase (IPropertyInformation propertyInfo)
     {
       ArgumentUtility.CheckNotNull ("propertyInfo", propertyInfo);
 
