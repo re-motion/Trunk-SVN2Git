@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -81,7 +81,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
         Thread.Sleep (TimeSpan.FromSeconds (1));
       }
 
-      throw new TimeoutException ("The Firefox content window could not be found within a timeout of 2 seconds.");
+      throw new InvalidOperationException ("The Firefox content window could not be found within a timeout of 2 seconds.");
     }
 
     [CanBeNull]
