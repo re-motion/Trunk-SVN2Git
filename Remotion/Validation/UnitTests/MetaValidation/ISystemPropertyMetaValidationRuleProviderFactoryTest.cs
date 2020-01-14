@@ -16,24 +16,38 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.ServiceLocation;
 using Remotion.Validation.MetaValidation;
-using System.Linq;
-using Remotion.Validation.Validators;
 
 namespace Remotion.Validation.UnitTests.MetaValidation
 {
   [TestFixture]
-  public class DelegateMetaValidationRuleTest
+  public class ISystemPropertyMetaValidationRuleProviderFactoryTest
   {
-    [Test]
-    public void Validate ()
+    private DefaultServiceLocator _serviceLocator;
+
+    [SetUp]
+    public void SetUp ()
     {
-      var fakeResult = MetaValidationRuleValidationResult.CreateValidResult();
-      var delegateRule = new DelegateMetaValidationRule<IPropertyValidator> (v => fakeResult);
-
-      var result = delegateRule.Validate (new IPropertyValidator[0]).First();
-
-      Assert.That (result, Is.SameAs (fakeResult));
+      _serviceLocator = DefaultServiceLocator.Create ();
     }
+
+    [Test]
+    public void GetInstance ()
+    {
+      var factory = _serviceLocator.GetInstance<ISystemPropertyMetaValidationRuleProviderFactory>();
+
+      Assert.That (factory, Is.Not.Null);
+      Assert.That (factory, Is.TypeOf (typeof (DefaultSystemPropertyMetaValidationRuleProviderFactory)));
+    }
+
+    [Test]
+    public void GetInstance_Twice_ReturnsSameInstance ()
+    {
+      var factory1 = _serviceLocator.GetInstance<ISystemPropertyMetaValidationRuleProviderFactory> ();
+      var factory2 = _serviceLocator.GetInstance<ISystemPropertyMetaValidationRuleProviderFactory> ();
+      
+      Assert.That (factory1, Is.SameAs(factory2));
+    } 
   }
 }

@@ -17,27 +17,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Validation.MetaValidation;
+using Remotion.Utilities;
 using Remotion.Validation.Validators;
 
-namespace Remotion.Validation.IntegrationTests.TestDomain.MetaValidation.Rules
+namespace Remotion.Validation.MetaValidation
 {
-  public class MaxLengthMetaValidationRule : MetaValidationRuleBase<LengthValidator>
+  /// <summary>
+  /// Base class for implementations of the <see cref="IPropertyMetaValidationRule"/> interface which are constrained to a specific <see cref="IPropertyValidator"/> type.
+  /// </summary>
+  /// <typeparam name="TValidator">The type of the <see cref="IPropertyValidator"/> validated by this meta validator.</typeparam>
+  public abstract class PropertyMetaValidationRuleBase<TValidator> : IPropertyMetaValidationRule
+      where TValidator: IPropertyValidator
   {
-    public override IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<LengthValidator> validationRules)
+    public abstract IEnumerable<MetaValidationRuleValidationResult> Validate (IEnumerable<TValidator> validationRules);
+
+    IEnumerable<MetaValidationRuleValidationResult> IPropertyMetaValidationRule.Validate (IEnumerable<IPropertyValidator> validationRules)
     {
-      var invalidValidators = validationRules.Where (lengthValidator => lengthValidator.Max > 50).ToArray();
-      if (invalidValidators.Any())
-      {
-        foreach (var lengthValidator in invalidValidators)
-        {
-          yield return
-              MetaValidationRuleValidationResult.CreateInvalidResult (
-                  "MaxLength-Constraints greater 50 not allowed for validator '{0}'!", lengthValidator.GetType().Name);
-        }
-      }
-      else
-        yield return MetaValidationRuleValidationResult.CreateValidResult();
+      ArgumentUtility.CheckNotNull ("validationRules", validationRules);
+
+      return Validate (validationRules.OfType<TValidator>());
     }
   }
 }

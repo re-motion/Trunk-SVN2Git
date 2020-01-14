@@ -21,12 +21,13 @@ using Remotion.Validation.RuleCollectors;
 namespace Remotion.Validation.MetaValidation
 {
   /// <summary>
-  /// Implementations of the <see cref="IMetaRuleValidator"/> interface can be used to validate the consistency of a 
-  /// set of <see cref="IAddingPropertyValidationRuleCollector"/>s.
+  /// Defines a API for instantiating an implementation of the <see cref="IPropertyMetaValidationRuleValidator"/> interface based on a set of 
+  /// <see cref="IPropertyMetaValidationRuleCollector"/>s.
   /// </summary>
-  /// <seealso cref="MetaRulesValidator"/>
-  public interface IMetaRuleValidator
+  /// <seealso cref="PropertyMetaValidationRuleValidatorFactory"/>
+  public interface IPropertyMetaValidationRuleValidatorFactory
   {
-    IEnumerable<MetaValidationRuleValidationResult> Validate (IAddingPropertyValidationRuleCollector[] addingPropertyValidationRulesCollector);
+    IPropertyMetaValidationRuleValidator CreatePropertyMetaValidationRuleValidator (
+        IEnumerable<IPropertyMetaValidationRuleCollector> propertyMetaValidationRuleCollectors);
   }
 }

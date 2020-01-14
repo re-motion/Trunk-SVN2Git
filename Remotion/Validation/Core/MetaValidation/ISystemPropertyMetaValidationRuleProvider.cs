@@ -16,17 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Validation.RuleCollectors;
 
 namespace Remotion.Validation.MetaValidation
 {
-  /// <summary>
-  /// Defines a API for instantiating an implementation of the <see cref="IMetaRuleValidator"/> interface based on a set of 
-  /// <see cref="IPropertyMetaValidationRuleCollector"/>s.
-  /// </summary>
-  /// <seealso cref="MetaRulesValidatorFactory"/>
-  public interface IMetaRulesValidatorFactory
+  public interface ISystemPropertyMetaValidationRuleProvider
   {
-    IMetaRuleValidator CreateMetaRuleValidator (IEnumerable<IPropertyMetaValidationRuleCollector> metaValidatorRules);
+    IEnumerable<IPropertyMetaValidationRule> GetSystemPropertyMetaValidationRules ();
   }
 }
