@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -65,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
     [NotNull]
     private AutomationElement GetFirefoxContentElement (AutomationElement firefoxWindow)
     {
-      for (var i = 0; i < 3; i++)
+      for (var i = 0; i < 11; i++)
       {
         try
         {
@@ -78,7 +78,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
         {
         }
 
-        Thread.Sleep (TimeSpan.FromSeconds (1));
+        Thread.Sleep (TimeSpan.FromMilliseconds (200));
       }
 
       throw new InvalidOperationException ("The Firefox content window could not be found within a timeout of 2 seconds.");
