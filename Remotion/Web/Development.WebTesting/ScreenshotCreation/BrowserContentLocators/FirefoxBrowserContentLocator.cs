@@ -63,7 +63,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
     }
 
     [NotNull]
-    private static AutomationElement GetFirefoxContentElement (AutomationElement firefoxWindow)
+    private AutomationElement GetFirefoxContentElement (AutomationElement firefoxWindow)
     {
       foreach (var _ in Enumerable.Range (0, 3))
       {
@@ -85,7 +85,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
     }
 
     [CanBeNull]
-    private static AutomationElement GetFirefoxDocumentControl (AutomationElement firefoxWindow)
+    private AutomationElement GetFirefoxDocumentControl (AutomationElement firefoxWindow)
     {
       return firefoxWindow.FindFirst (
           TreeScope.Subtree,
