@@ -62,6 +62,12 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       return result;
     }
 
+    /// <summary>
+    /// Despite the browser being ready, the automation tree used to query Firefox' content location and bounds
+    /// sometimes yields outdated/not ready results, which leads to <see cref="AutomationElement.FindFirst"/>
+    /// returning <see langword="null"/>, or throwing an <see cref="ElementNotAvailableException"/>. Therefore
+    /// retries are performed.
+    /// </summary>
     [NotNull]
     private AutomationElement GetFirefoxContentElement (AutomationElement firefoxWindow)
     {
