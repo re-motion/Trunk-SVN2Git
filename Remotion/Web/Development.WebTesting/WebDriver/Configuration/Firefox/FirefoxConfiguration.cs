@@ -104,6 +104,8 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Firefox
       profile.SetPreference ("browser.download.folderList", useCustomDownloadDirectory);
       profile.SetPreference ("browser.helperApps.neverAsk.saveToDisk", mimeTypesToSkipDownloadDialog);
       profile.SetPreference ("layout.css.devPixelsPerPx", 1);
+      profile.SetPreference ("dom.disable_beforeunload", false);
+      profile.SetPreference ("dom.require_user_interaction_for_beforeunload", false);
 
       var firefoxOptions =  new FirefoxOptions
              {
