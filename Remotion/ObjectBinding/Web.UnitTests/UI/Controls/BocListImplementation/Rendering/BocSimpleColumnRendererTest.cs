@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void RenderCell_WithEmptyDisplayName ()
+    public void TestDiagnosticMetadataRenderingWithEmptyDisplayName ()
     {
       var businessObject = TypeWithReference.Create ("");
       EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject, false, true);
@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void RenderCell_WithNullAsContent ()
+    public void TestDiagnosticMetadataRenderingWithNullValue ()
     {
       var businessObject = TypeWithReference.Create();
       EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject, false, true);
@@ -214,7 +214,7 @@ namespace Remotion.ObjectBinding.Web.UnitTests.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void RenderEditModeControl_HasDiagnosticMetadata ()
+    public void TestDiagnosticMetadataRenderingWithEditModeControl ()
     {
       var firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
 
