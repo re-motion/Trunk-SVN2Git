@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
   {
     private TimeSpan _driverShutdownWaitTime = TimeSpan.FromMilliseconds (250);
     private TimeSpan _browserShutdownWaitTime = TimeSpan.FromMilliseconds (500);
-    private TimeSpan _browserSubProcessShutdownWaitTime = TimeSpan.FromMilliseconds (100);
+    private TimeSpan _browserSubProcessShutdownWaitTime = TimeSpan.FromMilliseconds (250);
 
     private readonly T _browserConfiguration;
     private readonly Coypu.BrowserSession _value;
