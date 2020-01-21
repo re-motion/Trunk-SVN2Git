@@ -15,14 +15,19 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 
-namespace Remotion.Validation.Globalization
+namespace Remotion.ObjectBinding.Validation
 {
-  /// <summary>
-  /// Apply this <see cref="Attribute"/> to an assembly to force the inclusing of the globalization-extension for validation.
-  /// </summary>
-  [AttributeUsage (AttributeTargets.Assembly)]
-  public class EnsureValidationSupportForGlobalizationAttribute : Attribute
+  public interface IBusinessObjectValidationResult
   {
+    IEnumerable<BusinessObjectValidationFailure> GetValidationFailures (
+        [NotNull] IBusinessObject businessObject,
+        [NotNull] IBusinessObjectProperty businessObjectProperty,
+        bool markAsHandled);
+
+    IEnumerable<UnhandledBusinessObjectValidationFailure> GetUnhandledValidationFailures (
+        [NotNull] IBusinessObject businessObject);
   }
 }
