@@ -110,11 +110,11 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
           (int) Math.Round (rawBounds.Height));
     }
 
-    private TResult RetryUntil<TResult> (Func<TResult> action, TResult defaultValue, int retries, TimeSpan interval)
+    private TResult RetryUntil<TResult> (Func<TResult> function, TResult defaultValue, int retries, TimeSpan interval)
     {
       for (var i = 0; i < retries; i++)
       {
-        var result = action();
+        var result = function();
 
         if (!EqualityComparer<TResult>.Default.Equals (result, defaultValue))
           return result;
