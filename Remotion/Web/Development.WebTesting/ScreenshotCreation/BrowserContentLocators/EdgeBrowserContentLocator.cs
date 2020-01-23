@@ -27,6 +27,9 @@ using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentLocators
 {
+  /// <summary>
+  /// Locates the browser content area for Edge.
+  /// </summary>
   public class EdgeBrowserContentLocator : IBrowserContentLocator
   {
     private const string c_setWindowTitle =
