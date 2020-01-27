@@ -16,6 +16,18 @@
             <xs:anyAttribute processContents="skip" />
           </xs:complexType>
         </xs:element>
+        <xs:element name="testsite" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0">
+              <xs:element name="resource">
+                <xs:complexType>
+                  <xs:attribute name="path" type="c:RequiredStringType" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="path" type="c:RequiredStringType" use="required" />
+          </xs:complexType>
+        </xs:element>
         <xs:element name="chrome" type="c:ChromiumConfigurationElement" minOccurs="0" maxOccurs="1" />
         <xs:element name="edge" type="c:ChromiumConfigurationElement" minOccurs="0" maxOccurs="1" />
       </xs:all>

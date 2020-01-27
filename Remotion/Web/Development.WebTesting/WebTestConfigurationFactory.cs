@@ -124,6 +124,13 @@ namespace Remotion.Web.Development.WebTesting
       return CreateHostingConfiguration (configSettings);
     }
 
+    public ITestSiteConfiguration CreateTestSiteConfiguration ()
+    {
+      var configSettings = WebTestConfigurationSection.Current;
+
+      return new TestSiteConfiguration (configSettings);
+    }
+
     /// <summary>
     /// Responsible for handling Browsers other than Chrome and Internet Explorer.
     /// Note that the <see cref="WebTestConfigurationFactory"/> itself does not provide support for other browsers so this implementation throws an not supported exception.

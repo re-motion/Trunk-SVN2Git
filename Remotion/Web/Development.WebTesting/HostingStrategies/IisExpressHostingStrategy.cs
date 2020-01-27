@@ -20,6 +20,7 @@ using System.IO;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
+using Remotion.Web.Development.WebTesting.HostingStrategies.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
@@ -28,16 +29,13 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class IisExpressHostingStrategy : IHostingStrategy
   {
-    private readonly IisExpressProcessWrapper _iisExpressInstance;
+    private readonly int _port;
+    private IisExpressProcessWrapper _iisExpressInstance;
 
-    /// <param name="webApplicationPath">Absolute or relative path to the web application source.</param>
     /// <param name="port">Port to be used.</param>
-    public IisExpressHostingStrategy ([NotNull] string webApplicationPath, int port)
+    public IisExpressHostingStrategy (int port)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("webApplicationPath", webApplicationPath);
-
-      var absoluteWebApplicationPath = Path.GetFullPath (webApplicationPath);
-      _iisExpressInstance = new IisExpressProcessWrapper (absoluteWebApplicationPath, port);
+      _port = port;
     }
 
     /// <summary>
@@ -46,15 +44,19 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     /// <param name="properties">The configuration properties.</param>
     [UsedImplicitly]
     public IisExpressHostingStrategy ([NotNull] NameValueCollection properties)
-        : this (
-            ArgumentUtility.CheckNotNull ("properties", properties)["path"],
-            int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
+        : this (int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
     {
     }
 
     /// <inheritdoc/>
-    public void DeployAndStartWebApplication ()
+    public void DeployAndStartWebApplication (ITestSiteConfiguration configuration)
     {
+      if (_iisExpressInstance != null)
+        throw new InvalidOperationException ("WebApplication is already running.");
+
+      var absoluteWebApplicationPath = Path.GetFullPath (configuration.Path);
+
+      _iisExpressInstance = new IisExpressProcessWrapper (absoluteWebApplicationPath, _port);
       _iisExpressInstance.Run();
     }
 

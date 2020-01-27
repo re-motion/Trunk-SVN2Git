@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.Development.WebTesting.HostingStrategies.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
@@ -23,9 +24,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class NullHostingStrategy : IHostingStrategy
   {
-    /// <inheritdoc/>
-    public void DeployAndStartWebApplication ()
+    /// <inheritdoc />
+    public void DeployAndStartWebApplication (ITestSiteConfiguration configuration)
     {
+      throw new NotImplementedException();
     }
 
     /// <inheritdoc/>

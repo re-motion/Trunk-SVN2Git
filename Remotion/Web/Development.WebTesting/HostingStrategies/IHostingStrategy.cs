@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Web.Development.WebTesting.HostingStrategies.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
@@ -26,7 +27,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     /// <summary>
     /// Deploys the web application and starts the corresponding server.
     /// </summary>
-    void DeployAndStartWebApplication ();
+    void DeployAndStartWebApplication (ITestSiteConfiguration configuration);
 
     /// <summary>
     /// Stops the corresponding server and undeploys the web application.
