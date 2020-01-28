@@ -101,6 +101,7 @@
     <Compile Include="Configuration\ChromiumConfigurationElement.cs" />
     <Compile Include="Configuration\DriverConfiguration.cs" />
     <Compile Include="Configuration\TestSiteConfigurationElement.cs" />
+    <Compile Include="Configuration\TestSiteResourceConfigurationElement.cs" />
     <Compile Include="DriverConfigurationOverride.cs" />
     <Compile Include="BrowserSession\BrowserLogEntry.cs" />
     <Compile Include="BrowserSession\Edge\EdgeBrowserSession.cs" />
