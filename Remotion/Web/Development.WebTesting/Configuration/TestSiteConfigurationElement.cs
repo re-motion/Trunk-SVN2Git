@@ -36,15 +36,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       /// <summary>
       /// Path to the resource needed by the testsite.
       /// </summary>
-      public string Path
-      {
-        get { return (string) this["path"]; }
-      }
+      public string Path => (string) this["path"];
 
-      protected override ConfigurationPropertyCollection Properties
-      {
-        get { return new ConfigurationPropertyCollection { _pathProperty }; }
-      }
+      protected override ConfigurationPropertyCollection Properties => new ConfigurationPropertyCollection { _pathProperty };
     }
 
     private readonly ConfigurationProperty _path;
@@ -57,27 +51,15 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     /// <summary>
     /// Returns the relative path to the testsite used in the integration test project.
     /// </summary>
-    public string Path
-    {
-      get { return (string) this["path"]; }
-    }
+    public string Path => (string) this["path"];
 
     public IReadOnlyList<TestSiteResourceConfigurationElement> Resources => this.Cast<TestSiteResourceConfigurationElement>().ToArray();
 
-    public override ConfigurationElementCollectionType CollectionType
-    {
-      get { return ConfigurationElementCollectionType.BasicMap; }
-    }
+    public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
 
-    protected override string ElementName
-    {
-      get { return "resource"; }
-    }
+    protected override string ElementName => "resource";
 
-    protected override ConfigurationPropertyCollection Properties
-    {
-      get { return new ConfigurationPropertyCollection { _path }; }
-    }
+    protected override ConfigurationPropertyCollection Properties => new ConfigurationPropertyCollection { _path };
 
     protected override ConfigurationElement CreateNewElement ()
     {
