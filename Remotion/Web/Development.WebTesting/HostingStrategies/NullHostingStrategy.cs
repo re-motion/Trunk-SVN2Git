@@ -27,7 +27,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     /// <inheritdoc />
     public void DeployAndStartWebApplication (ITestSiteConfiguration configuration)
     {
-      throw new NotImplementedException();
     }
 
     /// <inheritdoc/>
