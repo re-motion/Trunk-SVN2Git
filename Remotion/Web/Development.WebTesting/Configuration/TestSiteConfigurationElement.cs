@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
@@ -85,8 +86,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
 
     protected override object GetElementKey (ConfigurationElement element)
     {
-      if (element == null)
-        throw new ArgumentNullException ("element");
+      ArgumentUtility.CheckNotNull ("element", element);
 
       return ((TestSiteResourceConfigurationElement) element).Path;
     }
