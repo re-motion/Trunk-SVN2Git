@@ -18,6 +18,9 @@ using System.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
+  /// <summary>
+  /// Configures the path to a resource required by the test site.
+  /// </summary>
   public class TestSiteResourceConfigurationElement : ConfigurationElement
   {
     private readonly ConfigurationProperty _pathProperty;

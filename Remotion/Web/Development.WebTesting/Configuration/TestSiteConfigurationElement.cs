@@ -22,6 +22,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
+  /// <summary>
+  /// Configures the path to the test site and its required resources.
+  /// </summary>
   public class TestSiteConfigurationElement : ConfigurationElementCollection
   {
     private readonly ConfigurationProperty _path;
