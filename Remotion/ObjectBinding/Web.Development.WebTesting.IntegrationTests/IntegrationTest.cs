@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Threading;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects;
@@ -79,6 +80,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var url = string.Format ("{0}ControlTest.wxe?UserControl={1}", _webTestHelper.TestInfrastructureConfiguration.WebApplicationRoot, userControlUrl);
       _webTestHelper.MainBrowserSession.Window.Visit (url);
       _webTestHelper.AcceptPossibleModalDialog();
+
+      if (_webTestHelper.BrowserConfiguration.IsFirefox())
+        Thread.Sleep (200);
 
       return _webTestHelper.CreateInitialPageObject<WxePageObject> (_webTestHelper.MainBrowserSession);
     }
