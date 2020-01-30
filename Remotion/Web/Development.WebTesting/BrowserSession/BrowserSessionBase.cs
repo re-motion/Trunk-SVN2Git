@@ -23,6 +23,7 @@ using JetBrains.Annotations;
 using OpenQA.Selenium;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.Development.WebTesting.WebDriver;
 using Remotion.Web.Development.WebTesting.WebDriver.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.BrowserSession
@@ -116,6 +117,12 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
         browserSubProcesses = FindSubProcesses (browserProcess).ToList();
 
       // Dispose the underlying BrowserSession
+      if (BrowserConfiguration.IsFirefox())
+      {
+        browserSubProcesses.ForEach (p => p.Kill());
+        browserProcess.Kill();
+      }
+
       _value.Dispose();
 
       // Check driver and main browser for null
