@@ -82,7 +82,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       var executor = (IJavaScriptExecutor) driver;
       var previousTitle = JavaScriptExecutor.ExecuteStatement<string> (executor, c_setWindowTitle, id);
 
-      var result = RetryUntil (
+      var result = RetryUntilValueChanges (
           () => windows.SingleOrDefault (w => w.Current.Name.StartsWith (id)),
           null,
           3,
@@ -98,7 +98,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
 
     private Rectangle ResolveBoundsFromWindow (AutomationElement window)
     {
-      var element = RetryUntil (
+      var element = RetryUntilValueChanges (
           () => window.FindFirst (
               TreeScope.Subtree,
               new AndCondition (
@@ -111,7 +111,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       if (element == null)
         throw new InvalidOperationException ("Could not find the content window of the found Edge browser window.");
 
-      var rawBounds = RetryUntil (() => element.Current.BoundingRectangle, Rect.Empty, 3, TimeSpan.FromMilliseconds (100));
+      var rawBounds = RetryUntilValueChanges (() => element.Current.BoundingRectangle, Rect.Empty, 3, TimeSpan.FromMilliseconds (100));
 
       if (rawBounds == Rect.Empty)
         throw new InvalidOperationException ("Could not resolve the bounds of the Edge browser window.");
@@ -123,19 +123,19 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
           (int) Math.Round (rawBounds.Height));
     }
 
-    private TResult RetryUntil<TResult> (Func<TResult> function, TResult defaultValue, int retries, TimeSpan interval)
+    private TResult RetryUntilValueChanges<TResult> (Func<TResult> func, TResult value, int retries, TimeSpan interval)
     {
       for (var i = 0; i < retries; i++)
       {
-        var result = function();
+        var result = func();
 
-        if (!EqualityComparer<TResult>.Default.Equals (result, defaultValue))
+        if (!EqualityComparer<TResult>.Default.Equals (result, value))
           return result;
 
         Thread.Sleep (interval);
       }
 
-      return defaultValue;
+      return value;
     }
   }
 }
