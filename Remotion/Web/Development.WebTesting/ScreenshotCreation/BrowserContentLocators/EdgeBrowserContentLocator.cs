@@ -82,13 +82,19 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       var executor = (IJavaScriptExecutor) driver;
       var previousTitle = JavaScriptExecutor.ExecuteStatement<string> (executor, c_setWindowTitle, id);
 
-      var result = RetryUntilValueChanges (
-          () => windows.SingleOrDefault (w => w.Current.Name.StartsWith (id)),
-          null,
-          3,
-          TimeSpan.FromMilliseconds (100));
-
-      JavaScriptExecutor.ExecuteStatement<string> (executor, c_setWindowTitle, previousTitle);
+      AutomationElement result;
+      try
+      {
+        result = RetryUntilValueChanges (
+            () => windows.SingleOrDefault (w => w.Current.Name.StartsWith (id)),
+            null,
+            3,
+            TimeSpan.FromMilliseconds (100));
+      }
+      finally
+      {
+        JavaScriptExecutor.ExecuteStatement<string> (executor, c_setWindowTitle, previousTitle);
+      }
 
       if (result == null)
         throw new InvalidOperationException ("Could not find a matching Edge window by changing its window title.");
