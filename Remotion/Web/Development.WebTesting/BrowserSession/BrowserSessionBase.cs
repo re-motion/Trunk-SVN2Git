@@ -33,9 +33,9 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
   public abstract class BrowserSessionBase<T> : IBrowserSession
       where T : IBrowserConfiguration
   {
-    private const int c_driverShutdownWaitTime = 250;
-    private const int c_browserShutdownWaitTime = 500;
-    private const int c_browserSubProcessShutdownWaitTime = 100;
+    private TimeSpan _driverShutdownWaitTime = TimeSpan.FromMilliseconds (250);
+    private TimeSpan _browserShutdownWaitTime = TimeSpan.FromMilliseconds (500);
+    private TimeSpan _browserSubProcessShutdownWaitTime = TimeSpan.FromMilliseconds (100);
 
     private readonly T _browserConfiguration;
     private readonly Coypu.BrowserSession _value;
@@ -121,13 +121,13 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
       // Check driver and main browser for null
       if (driverProcess != null)
       {
-        ProcessUtils.GracefulProcessShutdown (driverProcess, c_driverShutdownWaitTime);
+        ProcessUtils.GracefulProcessShutdown (driverProcess, (int) _driverShutdownWaitTime.TotalMilliseconds);
         driverProcess.WaitForExit (60000);
       }
 
       if (browserProcess != null)
       {
-        ProcessUtils.GracefulProcessShutdown (browserProcess, c_browserShutdownWaitTime);
+        ProcessUtils.GracefulProcessShutdown (browserProcess, (int) _browserShutdownWaitTime.TotalMilliseconds);
         CheckForSubProcessesExited (browserSubProcesses, browserProcess);
       }
     }
@@ -137,7 +137,7 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
       // Wait for every sub process of the browser process to be closed
       for (int i = 0; i < 5; i++)
       {
-        if (WaitForSubProcessExit (browserSubProcesses, c_browserSubProcessShutdownWaitTime))
+        if (WaitForSubProcessExit (browserSubProcesses, (int) _browserSubProcessShutdownWaitTime.TotalMilliseconds))
           return;
       }
 
