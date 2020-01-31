@@ -15,8 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Threading;
 using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Remotion.Web.Development.WebTesting;
 using Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects;
 using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure;
@@ -82,9 +83,21 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper.AcceptPossibleModalDialog();
 
       if (_webTestHelper.BrowserConfiguration.IsFirefox())
-        Thread.Sleep (200);
+        WaitUntilDomReady();
 
       return _webTestHelper.CreateInitialPageObject<WxePageObject> (_webTestHelper.MainBrowserSession);
+    }
+
+    private void WaitUntilDomReady ()
+    {
+      var selenium = (IWebDriver) _webTestHelper.MainBrowserSession.Driver.Native;
+      var wait = new WebDriverWait (selenium, TimeSpan.FromMilliseconds (500));
+      wait.Until (
+          driver =>
+          {
+            var javaScriptExecutor = (IJavaScriptExecutor) driver;
+            return (bool) javaScriptExecutor.ExecuteScript ("return document.readyState === 'interactive' || document.readyState === 'complete';");
+          });
     }
 
     private static void KillAnyExistingWindowsErrorReportingProcesses ()

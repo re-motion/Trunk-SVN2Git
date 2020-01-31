@@ -16,6 +16,8 @@
 // 
 using System;
 using NUnit.Framework;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure;
 using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebDriver;
@@ -81,8 +83,24 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       var url = _webTestHelper.TestInfrastructureConfiguration.WebApplicationRoot + page;
       _webTestHelper.MainBrowserSession.Window.Visit (url);
+      _webTestHelper.AcceptPossibleModalDialog();
+
+      if (_webTestHelper.BrowserConfiguration.IsFirefox())
+        WaitUntilDomReady();
 
       return _webTestHelper.CreateInitialPageObject<TPageObject> (_webTestHelper.MainBrowserSession);
+    }
+
+    private void WaitUntilDomReady ()
+    {
+      var selenium = (IWebDriver) _webTestHelper.MainBrowserSession.Driver.Native;
+      var wait = new WebDriverWait (selenium, TimeSpan.FromMilliseconds (500));
+      wait.Until (
+          driver =>
+          {
+            var javaScriptExecutor = (IJavaScriptExecutor) driver;
+            return (bool) javaScriptExecutor.ExecuteScript ("return document.readyState === 'interactive' || document.readyState === 'complete';");
+          });
     }
 
     private static void KillAnyExistingWindowsErrorReportingProcesses ()
