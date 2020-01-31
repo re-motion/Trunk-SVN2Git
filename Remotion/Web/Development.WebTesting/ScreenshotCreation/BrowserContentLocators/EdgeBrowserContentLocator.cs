@@ -35,6 +35,16 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
     private const string c_setWindowTitle =
         "var w = window; while (w.frameElement) w = w.frameElement.ownerDocument.defaultView; var t = w.document.title; w.document.title = arguments[0]; return t;";
 
+    /// <summary>
+    /// Edge exposes Chrome IDs to the automation api.
+    /// </summary>
+    private const string c_edgeWindowClassName = "Chrome_WidgetWin_1";
+
+    /// <summary>
+    /// Edge exposes Chrome IDs to the automation api.
+    /// </summary>
+    private const string c_edgeFrameworkID = "Chrome";
+
     public EdgeBrowserContentLocator ()
     {
     }
@@ -48,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
                   new OrCondition (
                       new PropertyCondition (AutomationElement.ControlTypeProperty, ControlType.Window),
                       new PropertyCondition (AutomationElement.ControlTypeProperty, ControlType.Pane)),
-                  new PropertyCondition (AutomationElement.ClassNameProperty, "Chrome_WidgetWin_1")))
+                  new PropertyCondition (AutomationElement.ClassNameProperty, c_edgeWindowClassName)))
           .Cast<AutomationElement>()
           .ToArray();
 
@@ -93,7 +103,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
               TreeScope.Subtree,
               new AndCondition (
                   new PropertyCondition (AutomationElement.ControlTypeProperty, ControlType.Document),
-                  new PropertyCondition (AutomationElement.FrameworkIdProperty, "Chrome"))),
+                  new PropertyCondition (AutomationElement.FrameworkIdProperty, c_edgeFrameworkID))),
           null,
           5,
           TimeSpan.Zero);
