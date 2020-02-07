@@ -18,7 +18,16 @@ using System;
 
 namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
 {
-  public class MixinTypeWithDomainObjectAttributes_AnnotatedPropertiesNotPartOfInterface : DomainObjectMixin<MixinTarget_AnnotatedPropertiesNotPartOfInterface>
+  public interface IMixinTypeWithDomainObjectAttributes_SomeAnnotatedPropertiesNotPartOfInterface
+  {
+    string PropertyWithoutAttribute { get; set; }
+
+    string PropertyWithMandatoryStringPropertyAttributePartOfInterface { get; set; }
+  }
+
+  public class MixinTypeWithDomainObjectAttributes_SomeAnnotatedPropertiesNotPartOfInterface
+      : DomainObjectMixin<MixinTarget_SomeAnnotatedPropertiesNotPartOfInterface>,
+          IMixinTypeWithDomainObjectAttributes_SomeAnnotatedPropertiesNotPartOfInterface
   {
     public string PropertyWithoutAttribute { get; set; }
 
@@ -30,5 +39,8 @@ namespace Remotion.Data.DomainObjects.Validation.UnitTests.Testdomain
 
     [StringProperty (IsNullable = false, MaximumLength = 20)]
     public string PropertyWithMandatoryStringPropertyAttribute { get; set; }
+
+    [StringProperty (IsNullable = false, MaximumLength = 20)]
+    public string PropertyWithMandatoryStringPropertyAttributePartOfInterface { get; set; }
   }
 }
