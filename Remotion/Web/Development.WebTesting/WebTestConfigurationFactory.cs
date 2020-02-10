@@ -204,8 +204,10 @@ namespace Remotion.Web.Development.WebTesting
     protected virtual IHostingConfiguration CreateHostingConfiguration ([NotNull] WebTestConfigurationSection configSettings)
     {
       ArgumentUtility.CheckNotNull ("configSettings", configSettings);
+
+      var testSiteConfiguration = CreateTestSiteConfiguration();
       
-      return new HostingConfiguration (configSettings);
+      return new HostingConfiguration (configSettings, testSiteConfiguration);
     }
 
     /// <summary>

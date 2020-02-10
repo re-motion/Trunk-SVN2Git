@@ -33,6 +33,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   /// </remarks>
   public class HostingConfiguration : IHostingConfiguration
   {
+    private readonly ITestSiteConfiguration _testSiteConfiguration;
+
     private static readonly Dictionary<string, Type> s_wellKnownHostingStrategyTypes =
         new Dictionary<string, Type>
         {
@@ -42,12 +44,14 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
     private readonly ProviderSettings _hostingProviderSettings;
     private TimeSpan _verifyWebApplicationStartedTimeout;
 
-    public HostingConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection)
+    public HostingConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection, ITestSiteConfiguration testSiteConfiguration)
     {
       ArgumentUtility.CheckNotNull ("webTestConfigurationSection", webTestConfigurationSection);
+      ArgumentUtility.CheckNotNull ("testSiteConfiguration", testSiteConfiguration);
 
       _hostingProviderSettings = webTestConfigurationSection.HostingProviderSettings;
       _verifyWebApplicationStartedTimeout = webTestConfigurationSection.VerifyWebApplicationStartedTimeout;
+      _testSiteConfiguration = testSiteConfiguration;
     }
 
     public TimeSpan VerifyWebApplicationStartedTimeout => _verifyWebApplicationStartedTimeout;
@@ -61,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
       var hostingStrategyType = GetHostingStrategyType (hostingStrategyTypeName);
       Assertion.IsNotNull (hostingStrategyType, string.Format ("Hosting strategy '{0}' could not be loaded.", hostingStrategyTypeName));
 
-      var hostingStrategy = (IHostingStrategy) Activator.CreateInstance (hostingStrategyType, new object[] { _hostingProviderSettings.Parameters });
+      var hostingStrategy = (IHostingStrategy) Activator.CreateInstance (hostingStrategyType, new object[] { _testSiteConfiguration, _hostingProviderSettings.Parameters });
       return hostingStrategy;
     }
 

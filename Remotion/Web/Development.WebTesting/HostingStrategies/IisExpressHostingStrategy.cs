@@ -29,32 +29,38 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class IisExpressHostingStrategy : IHostingStrategy
   {
+    private readonly TestSiteConfiguration _testSiteConfiguration;
     private readonly int _port;
     private IisExpressProcessWrapper _iisExpressInstance;
 
+    /// <param name="testSiteConfiguration">The configuration of the used test site.</param>
     /// <param name="port">Port to be used.</param>
-    public IisExpressHostingStrategy (int port)
+    public IisExpressHostingStrategy (TestSiteConfiguration testSiteConfiguration, int port)
     {
+      ArgumentUtility.CheckNotNull ("testSiteConfiguration", testSiteConfiguration);
+
+      _testSiteConfiguration = testSiteConfiguration;
       _port = port;
     }
 
     /// <summary>
     /// Constructor required for direct usage in <see cref="WebTestConfigurationSection"/>.
     /// </summary>
+    /// <param name="testSiteConfiguration">The configuration of the used test site.</param>
     /// <param name="properties">The configuration properties.</param>
     [UsedImplicitly]
-    public IisExpressHostingStrategy ([NotNull] NameValueCollection properties)
-        : this (int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
+    public IisExpressHostingStrategy (TestSiteConfiguration testSiteConfiguration, [NotNull] NameValueCollection properties)
+        : this (testSiteConfiguration, int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
     {
     }
 
     /// <inheritdoc/>
-    public void DeployAndStartWebApplication (ITestSiteConfiguration configuration)
+    public void DeployAndStartWebApplication ()
     {
       if (_iisExpressInstance != null)
         throw new InvalidOperationException ("WebApplication is already running.");
 
-      var absoluteWebApplicationPath = Path.GetFullPath (configuration.Path);
+      var absoluteWebApplicationPath = Path.GetFullPath (_testSiteConfiguration.Path);
 
       _iisExpressInstance = new IisExpressProcessWrapper (absoluteWebApplicationPath, _port);
       _iisExpressInstance.Run();
