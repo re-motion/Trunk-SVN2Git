@@ -65,7 +65,6 @@ namespace Remotion.Web.Development.WebTesting
     private readonly string _screenshotDirectory;
     private readonly string _logDirectory;
     private readonly string _webApplicationRoot;
-    private readonly ITestSiteConfiguration _testSite;
 
     [PublicAPI]
     protected WebTestSetUpFixtureHelper ([NotNull] WebTestConfigurationFactory webTestConfigurationFactory)
@@ -80,8 +79,6 @@ namespace Remotion.Web.Development.WebTesting
       _screenshotDirectory = testInfrastructureConfiguration.ScreenshotDirectory;
       _logDirectory = testInfrastructureConfiguration.ScreenshotDirectory;
       _webApplicationRoot = testInfrastructureConfiguration.WebApplicationRoot;
-
-      _testSite = webTestConfigurationFactory.CreateTestSiteConfiguration();
     }
 
     public string ScreenshotDirectory
@@ -135,7 +132,7 @@ namespace Remotion.Web.Development.WebTesting
 
     private void HostWebApplication ()
     {
-      _hostingStrategy.DeployAndStartWebApplication (_testSite);
+      _hostingStrategy.DeployAndStartWebApplication();
     }
 
     private void VerifyWebApplicationStarted (string webApplicationRoot, TimeSpan applicationPingTimeout)
