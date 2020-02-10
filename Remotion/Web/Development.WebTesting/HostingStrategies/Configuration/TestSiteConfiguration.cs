@@ -14,12 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 //
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
+  /// <inheritdoc />
   public class TestSiteConfiguration : ITestSiteConfiguration
   {
     public TestSiteConfiguration (WebTestConfigurationSection configSettings)
@@ -28,7 +30,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
       Resources = configSettings.TestSiteConfiguration.Resources.Select (element => new TestSiteResource (element.Path)).ToArray();
     }
 
+    /// <inheritdoc />
     public string Path { get; }
+
+    /// <inheritdoc />
     public IReadOnlyList<ITestSiteResource> Resources { get; }
   }
 }

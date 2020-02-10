@@ -14,14 +14,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 //
+using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
+  /// <summary>
+  /// Represents a test site.
+  /// </summary>
   public interface ITestSiteConfiguration
   {
+    /// <summary>
+    /// The path to the test site folder.
+    /// </summary>
+    [NotNull]
     string Path { get; }
 
+    /// <summary>
+    /// The runtime dependencies of the test site.
+    /// </summary>
+    [NotNull]
     IReadOnlyList<ITestSiteResource> Resources { get; }
   }
 }
