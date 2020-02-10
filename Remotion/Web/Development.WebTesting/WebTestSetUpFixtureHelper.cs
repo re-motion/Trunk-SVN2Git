@@ -23,7 +23,6 @@ using log4net;
 using log4net.Config;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.HostingStrategies;
-using Remotion.Web.Development.WebTesting.HostingStrategies.Configuration;
 
 namespace Remotion.Web.Development.WebTesting
 {

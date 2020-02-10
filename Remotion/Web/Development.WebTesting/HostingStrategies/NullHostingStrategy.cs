@@ -23,7 +23,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class NullHostingStrategy : IHostingStrategy
   {
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void DeployAndStartWebApplication ()
     {
     }
