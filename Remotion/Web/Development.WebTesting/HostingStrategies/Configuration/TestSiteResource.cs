@@ -14,12 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 //
+using JetBrains.Annotations;
+using Remotion.Utilities;
+
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
   public class TestSiteResource : ITestSiteResource
   {
-    public TestSiteResource (string path)
+    public TestSiteResource ([NotNull] string path)
     {
+      ArgumentUtility.CheckNotNull ("path", path);
+
       Path = path;
     }
 
