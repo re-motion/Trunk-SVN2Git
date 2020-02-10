@@ -35,7 +35,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
 
     /// <param name="testSiteConfiguration">The configuration of the used test site.</param>
     /// <param name="port">Port to be used.</param>
-    public IisExpressHostingStrategy (TestSiteConfiguration testSiteConfiguration, int port)
+    public IisExpressHostingStrategy ([NotNull] TestSiteConfiguration testSiteConfiguration, int port)
     {
       ArgumentUtility.CheckNotNull ("testSiteConfiguration", testSiteConfiguration);
 
@@ -49,7 +49,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     /// <param name="testSiteConfiguration">The configuration of the used test site.</param>
     /// <param name="properties">The configuration properties.</param>
     [UsedImplicitly]
-    public IisExpressHostingStrategy (TestSiteConfiguration testSiteConfiguration, [NotNull] NameValueCollection properties)
+    public IisExpressHostingStrategy ([NotNull] TestSiteConfiguration testSiteConfiguration, [NotNull] NameValueCollection properties)
         : this (testSiteConfiguration, int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
     {
     }
