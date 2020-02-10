@@ -19,6 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
+  /// <inheritdoc />
   public class TestSiteResource : ITestSiteResource
   {
     public TestSiteResource ([NotNull] string path)
@@ -28,6 +29,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
       Path = path;
     }
 
+    /// <inheritdoc />
     public string Path { get; }
   }
 }

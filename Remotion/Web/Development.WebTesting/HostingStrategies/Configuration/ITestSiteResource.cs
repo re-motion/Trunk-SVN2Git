@@ -18,8 +18,14 @@ using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
+  /// <summary>
+  /// Represents a runtime dependency of a <see cref="ITestSiteConfiguration"/>.
+  /// </summary>
   public interface ITestSiteResource
   {
+    /// <summary>
+    /// The path to the resource folder needed, relative to the test site folder location.
+    /// </summary>
     [NotNull]
     string Path { get; }
   }
