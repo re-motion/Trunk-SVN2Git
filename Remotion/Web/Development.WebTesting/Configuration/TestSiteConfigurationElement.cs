@@ -18,48 +18,35 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
   /// <summary>
   /// Configures the path to the test site and its required resources.
   /// </summary>
-  public class TestSiteConfigurationElement : ConfigurationElementCollection
+  public class TestSiteConfigurationElement : ConfigurationElement
   {
-    private readonly ConfigurationProperty _path;
+    private readonly ConfigurationProperty _pathProperty;
+    private readonly ConfigurationProperty _resourcesProperty;
 
     public TestSiteConfigurationElement ()
     {
-      _path = new ConfigurationProperty ("path", typeof (string));
+      _pathProperty = new ConfigurationProperty ("path", typeof (string));
+      _resourcesProperty = new ConfigurationProperty ("resources", typeof (TestSiteResourceConfigurationElementCollection));
     }
 
     /// <summary>
     /// Returns the relative path to the test site used in the integration test project.
     /// </summary>
-    public string Path => (string) this["path"];
+    public string Path => (string) this[_pathProperty];
 
     /// <summary>
     /// Returns the resources needed by the test site.
     /// </summary>
-    public IReadOnlyList<TestSiteResourceConfigurationElement> Resources => this.Cast<TestSiteResourceConfigurationElement>().ToArray();
+    public IReadOnlyList<TestSiteResourceConfigurationElement> Resources => ((ConfigurationElementCollection) this[_resourcesProperty])
+        .Cast<TestSiteResourceConfigurationElement>()
+        .ToArray();
 
-    public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.BasicMap;
-
-    protected override string ElementName => "resource";
-
-    protected override ConfigurationPropertyCollection Properties => new ConfigurationPropertyCollection { _path };
-
-    protected override ConfigurationElement CreateNewElement ()
-    {
-      return new TestSiteResourceConfigurationElement();
-    }
-
-    protected override object GetElementKey (ConfigurationElement element)
-    {
-      ArgumentUtility.CheckNotNull ("element", element);
-
-      return ((TestSiteResourceConfigurationElement) element).Path;
-    }
+    protected override ConfigurationPropertyCollection Properties => new ConfigurationPropertyCollection { _pathProperty, _resourcesProperty };
   }
 }

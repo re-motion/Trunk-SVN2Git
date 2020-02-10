@@ -44,7 +44,9 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
     requestErrorDetectionStrategy=""requestErrorDetectionStrategy"">
   <hosting name=""IisExpress"" type=""IisExpress"" path="".\..\..\..\Development.WebTesting.TestSite"" port=""60042"" />
   <testsite path="".\Some\Path"">
-    <resource path="".\Some\Resource"" />
+    <resources>
+      <add path="".\Some\Resource"" />
+    </resources>
   </testsite>
   <chrome disableSecurityWarningsBehavior=""Require"" />
   <edge disableSecurityWarningsBehavior=""Automatic"" />
@@ -74,7 +76,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
       Assert.That (_section.HostingProviderSettings.Parameters["port"], Is.EqualTo ("60042"));
       Assert.That (_section.HostingProviderSettings.Type, Is.EqualTo ("IisExpress"));
       Assert.That (_section.TestSiteConfiguration.Path, Is.EqualTo (@".\Some\Path"));
-      Assert.That (_section.TestSiteConfiguration.Count, Is.EqualTo (1));
+      Assert.That (_section.TestSiteConfiguration.Resources.Count, Is.EqualTo (1));
       Assert.That (_section.TestSiteConfiguration.Resources[0].Path, Is.EqualTo (@".\Some\Resource"));
       Assert.That (_section.DownloadStartedTimeout, Is.EqualTo (TimeSpan.FromSeconds (13)));
       Assert.That (_section.DownloadUpdatedTimeout, Is.EqualTo (TimeSpan.FromSeconds (37)));
