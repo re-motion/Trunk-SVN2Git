@@ -137,7 +137,7 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
       // Wait for every sub process of the browser process to be closed
       for (int i = 0; i < 5; i++)
       {
-        if (WaitForSubProcessExit (browserSubProcesses, (int) _browserSubProcessShutdownWaitTime.TotalMilliseconds))
+        if (WaitForSubProcessExit (browserSubProcesses, _browserSubProcessShutdownWaitTime))
           return;
       }
 
@@ -186,11 +186,11 @@ namespace Remotion.Web.Development.WebTesting.BrowserSession
     /// WaitForExit for <paramref name="browserSubProcesses"/>.
     /// Returns false if any process failed to exit in the specified <paramref name="timeout"/>.
     /// </summary>
-    private bool WaitForSubProcessExit (IEnumerable<Process> browserSubProcesses, int timeout)
+    private bool WaitForSubProcessExit (IEnumerable<Process> browserSubProcesses, TimeSpan timeout)
     {
       foreach (var browserSubProcess in browserSubProcesses)
       {
-        if (!browserSubProcess.WaitForExit (timeout))
+        if (!browserSubProcess.WaitForExit ((int) timeout.TotalMilliseconds))
         {
           // There is still a minimum of 1 sub process running --> Try again
           return false;
