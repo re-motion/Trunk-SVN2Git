@@ -46,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     private readonly ConfigurationProperty _hostingProperty;
     private readonly ConfigurationProperty _chrome;
     private readonly ConfigurationProperty _edge;
-    private readonly ConfigurationProperty _testSiteProperty;
+    private readonly ConfigurationProperty _testSiteLayoutProperty;
 
     static WebTestConfigurationSection ()
     {
@@ -88,7 +88,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       _cleanUpUnmatchedDownloadedFiles = new ConfigurationProperty ("cleanUpUnmatchedDownloadedFiles", typeof (bool), false);
       _requestErrorDetectionStrategyProperty = new ConfigurationProperty ("requestErrorDetectionStrategy", typeof (string), "None");
       _hostingProperty = new ConfigurationProperty ("hosting", typeof (ProviderSettings));
-      _testSiteProperty = new ConfigurationProperty ("testsite", typeof (TestSiteConfigurationElement));
+      _testSiteLayoutProperty = new ConfigurationProperty ("testSiteLayout", typeof (TestSiteLayoutConfigurationElement));
       _chrome = new ConfigurationProperty ("chrome", typeof (ChromiumConfigurationElement));
       _edge = new ConfigurationProperty ("edge", typeof (ChromiumConfigurationElement));
 
@@ -109,7 +109,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
                         _cleanUpUnmatchedDownloadedFiles,
                         _requestErrorDetectionStrategyProperty,
                         _hostingProperty,
-                        _testSiteProperty,
+                        _testSiteLayoutProperty,
                         _chrome,
                         _edge
                     };
@@ -252,9 +252,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       get { return (ProviderSettings) this [_hostingProperty]; }
     }
 
-    public TestSiteConfigurationElement TestSiteConfiguration
+    public TestSiteLayoutConfigurationElement TestSiteLayoutConfiguration
     {
-      get { return (TestSiteConfigurationElement) this [_testSiteProperty]; }
+      get { return (TestSiteLayoutConfigurationElement) this [_testSiteLayoutProperty]; }
     }
 
     /// <summary>

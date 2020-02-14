@@ -100,7 +100,7 @@
     <Compile Include="Accessibility\AxeJsonResultDtos\AxeExecutionConstraint.cs" />
     <Compile Include="Configuration\ChromiumConfigurationElement.cs" />
     <Compile Include="Configuration\DriverConfiguration.cs" />
-    <Compile Include="Configuration\TestSiteConfigurationElement.cs" />
+    <Compile Include="Configuration\TestSiteLayoutConfigurationElement.cs" />
     <Compile Include="Configuration\TestSiteResourceConfigurationElement.cs" />
     <Compile Include="Configuration\TestSiteResourceConfigurationElementCollection.cs" />
     <Compile Include="DriverConfigurationOverride.cs" />
@@ -155,9 +155,9 @@
     <Compile Include="DownloadInfrastructure\InternetExplorer\WindowAutomation\Win32WindowSupport\IWin32WindowsNativeMethodsExtended.cs" />
     <Compile Include="DownloadInfrastructure\InternetExplorer\WindowAutomation\Win32WindowSupport\Win32WindowsNativeMethodsExtended.cs" />
     <Compile Include="DownloadInfrastructure\PartialFileState.cs" />
-    <Compile Include="HostingStrategies\Configuration\ITestSiteConfiguration.cs" />
+    <Compile Include="HostingStrategies\Configuration\ITestSiteLayoutConfiguration.cs" />
     <Compile Include="HostingStrategies\Configuration\ITestSiteResource.cs" />
-    <Compile Include="HostingStrategies\Configuration\TestSiteConfiguration.cs" />
+    <Compile Include="HostingStrategies\Configuration\TestSiteLayoutConfiguration.cs" />
     <Compile Include="HostingStrategies\Configuration\TestSiteResource.cs" />
     <Compile Include="IControlObjectNotifier.cs" />
     <Compile Include="ISupportsValidationErrorsForReadOnly.cs" />

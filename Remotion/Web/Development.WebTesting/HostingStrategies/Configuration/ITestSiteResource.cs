@@ -20,7 +20,7 @@ using JetBrains.Annotations;
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
   /// <summary>
-  /// Represents a runtime dependency of a <see cref="ITestSiteConfiguration"/>.
+  /// Represents a runtime dependency of a <see cref="ITestSiteLayoutConfiguration"/>.
   /// </summary>
   public interface ITestSiteResource
   {

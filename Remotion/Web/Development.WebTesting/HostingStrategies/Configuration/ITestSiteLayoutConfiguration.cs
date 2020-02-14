@@ -16,24 +16,25 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Remotion.Web.Development.WebTesting.Configuration;
+using JetBrains.Annotations;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 {
-  /// <inheritdoc />
-  public class TestSiteConfiguration : ITestSiteConfiguration
+  /// <summary>
+  /// Represents a test site.
+  /// </summary>
+  public interface ITestSiteLayoutConfiguration
   {
-    public TestSiteConfiguration (WebTestConfigurationSection configSettings)
-    {
-      Path = configSettings.TestSiteConfiguration.Path;
-      Resources = configSettings.TestSiteConfiguration.Resources.Select (element => new TestSiteResource (element.Path)).ToArray();
-    }
+    /// <summary>
+    /// The path to the test site folder.
+    /// </summary>
+    [NotNull]
+    string RootPath { get; }
 
-    /// <inheritdoc />
-    public string Path { get; }
-
-    /// <inheritdoc />
-    public IReadOnlyList<ITestSiteResource> Resources { get; }
+    /// <summary>
+    /// The runtime dependencies of the test site.
+    /// </summary>
+    [NotNull]
+    IReadOnlyList<ITestSiteResource> Resources { get; }
   }
 }

@@ -198,9 +198,9 @@ namespace Remotion.Web.Development.WebTesting
     {
       ArgumentUtility.CheckNotNull ("configSettings", configSettings);
 
-      var testSiteConfiguration = CreateTestSiteConfiguration();
-      
-      return new HostingConfiguration (configSettings, testSiteConfiguration);
+      var testSiteLayoutConfiguration = CreateTestSiteLayoutConfiguration();
+
+      return new HostingConfiguration (configSettings, testSiteLayoutConfiguration);
     }
 
     /// <summary>
@@ -211,11 +211,11 @@ namespace Remotion.Web.Development.WebTesting
       return new AccessibilityConfiguration();
     }
 
-    private ITestSiteConfiguration CreateTestSiteConfiguration ()
+    private ITestSiteLayoutConfiguration CreateTestSiteLayoutConfiguration ()
     {
       var configSettings = WebTestConfigurationSection.Current;
 
-      return new TestSiteConfiguration (configSettings);
+      return new TestSiteLayoutConfiguration (configSettings);
     }
   }
 }

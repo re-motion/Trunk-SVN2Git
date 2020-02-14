@@ -29,28 +29,28 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class IisExpressHostingStrategy : IHostingStrategy
   {
-    private readonly TestSiteConfiguration _testSiteConfiguration;
+    private readonly TestSiteLayoutConfiguration _testSiteLayoutConfiguration;
     private readonly int _port;
     private IisExpressProcessWrapper _iisExpressInstance;
 
-    /// <param name="testSiteConfiguration">The configuration of the used test site.</param>
+    /// <param name="testSiteLayoutConfiguration">The configuration of the layout of the used test site.</param>
     /// <param name="port">Port to be used.</param>
-    public IisExpressHostingStrategy ([NotNull] TestSiteConfiguration testSiteConfiguration, int port)
+    public IisExpressHostingStrategy ([NotNull] TestSiteLayoutConfiguration testSiteLayoutConfiguration, int port)
     {
-      ArgumentUtility.CheckNotNull ("testSiteConfiguration", testSiteConfiguration);
+      ArgumentUtility.CheckNotNull ("testSiteLayoutConfiguration", testSiteLayoutConfiguration);
 
-      _testSiteConfiguration = testSiteConfiguration;
+      _testSiteLayoutConfiguration = testSiteLayoutConfiguration;
       _port = port;
     }
 
     /// <summary>
     /// Constructor required for direct usage in <see cref="WebTestConfigurationSection"/>.
     /// </summary>
-    /// <param name="testSiteConfiguration">The configuration of the used test site.</param>
+    /// <param name="testSiteLayoutConfiguration">The configuration of the layout of the used test site.</param>
     /// <param name="properties">The configuration properties.</param>
     [UsedImplicitly]
-    public IisExpressHostingStrategy ([NotNull] TestSiteConfiguration testSiteConfiguration, [NotNull] NameValueCollection properties)
-        : this (testSiteConfiguration, int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
+    public IisExpressHostingStrategy ([NotNull] TestSiteLayoutConfiguration testSiteLayoutConfiguration, [NotNull] NameValueCollection properties)
+        : this (testSiteLayoutConfiguration, int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]))
     {
     }
 
@@ -60,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
       if (_iisExpressInstance != null)
         throw new InvalidOperationException ("WebApplication is already running.");
 
-      var absoluteWebApplicationPath = Path.GetFullPath (_testSiteConfiguration.Path);
+      var absoluteWebApplicationPath = Path.GetFullPath (_testSiteLayoutConfiguration.RootPath);
 
       _iisExpressInstance = new IisExpressProcessWrapper (absoluteWebApplicationPath, _port);
       _iisExpressInstance.Run();
