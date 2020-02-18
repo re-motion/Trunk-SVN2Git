@@ -26,13 +26,13 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   public interface ITestSiteLayoutConfiguration
   {
     /// <summary>
-    /// The path to the test site folder.
+    /// Gets the absolute path to the test site used in the integration test project.
     /// </summary>
     [NotNull]
     string RootPath { get; }
 
     /// <summary>
-    /// The runtime dependencies of the test site.
+    /// Gets the runtime dependencies of the test site.
     /// </summary>
     [NotNull]
     IReadOnlyList<ITestSiteResource> Resources { get; }

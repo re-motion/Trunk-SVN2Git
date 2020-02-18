@@ -63,8 +63,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
     [Test]
     public void FullConfiguration ()
     {
-      var expectedTestSiteLayoutRootPath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, @"Some\Path");
-
       DeserializeSection (c_fullConfigurationXml);
 
       Assert.That (_section.BrowserName, Is.EqualTo ("Chrome"));
@@ -77,9 +75,9 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
       Assert.That (_section.HostingProviderSettings.Parameters["path"], Is.EqualTo (@".\..\..\..\Development.WebTesting.TestSite"));
       Assert.That (_section.HostingProviderSettings.Parameters["port"], Is.EqualTo ("60042"));
       Assert.That (_section.HostingProviderSettings.Type, Is.EqualTo ("IisExpress"));
-      Assert.That (_section.TestSiteLayoutConfiguration.RootPath, Is.EqualTo (expectedTestSiteLayoutRootPath));
+      Assert.That (_section.TestSiteLayoutConfiguration.RootPath, Is.EqualTo (@".\Some\Path"));
       Assert.That (_section.TestSiteLayoutConfiguration.Resources.Count, Is.EqualTo (1));
-      Assert.That (_section.TestSiteLayoutConfiguration.Resources[0], Is.EqualTo (Path.Combine (expectedTestSiteLayoutRootPath, @"Some\Resource")));
+      Assert.That (_section.TestSiteLayoutConfiguration.Resources[0].Path, Is.EqualTo (@".\Some\Resource"));
       Assert.That (_section.DownloadStartedTimeout, Is.EqualTo (TimeSpan.FromSeconds (13)));
       Assert.That (_section.DownloadUpdatedTimeout, Is.EqualTo (TimeSpan.FromSeconds (37)));
       Assert.That (_section.LogsDirectory, Is.EqualTo (@".\SomeLogsDirectory"));

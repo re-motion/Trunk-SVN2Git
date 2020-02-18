@@ -25,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   public interface ITestSiteResource
   {
     /// <summary>
-    /// The path to the resource folder needed, relative to the test site folder location.
+    /// Gets the absolute path to the required resource folder.
     /// </summary>
     [NotNull]
     string Path { get; }

@@ -32,7 +32,7 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     }
 
     /// <summary>
-    /// Path to the resource needed by the testsite.
+    /// Path to the resource needed by the test site.
     /// </summary>
     public string Path => (string) this[_pathProperty];
 

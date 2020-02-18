@@ -17,10 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using JetBrains.Annotations;
-using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
@@ -39,41 +36,18 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     }
 
     /// <summary>
-    /// Returns the absolute path to the test site used in the integration test project.
+    /// Gets the path to the test site used in the integration test project.
     /// </summary>
-    public string RootPath => GetRootedRootPath ((string) this[_rootPathProperty]);
+    public string RootPath => (string) this[_rootPathProperty];
 
     /// <summary>
-    /// Returns the resources needed by the test site.
+    /// Gets the resources needed by the test site.
     /// </summary>
-    public IReadOnlyList<string> Resources => ((ConfigurationElementCollection) this[_resourcesProperty])
+    public IReadOnlyList<TestSiteResourceConfigurationElement> Resources => ((ConfigurationElementCollection) this[_resourcesProperty])
         .Cast<TestSiteResourceConfigurationElement>()
-        .Select (resource => EnsureRootedPath (RootPath, resource.Path))
         .ToArray();
 
     /// <inheritdoc />
     protected override ConfigurationPropertyCollection Properties => new ConfigurationPropertyCollection { _rootPathProperty, _resourcesProperty };
-
-    private string GetRootedRootPath ([NotNull] string path)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
-
-      return EnsureRootedPath (AppDomain.CurrentDomain.BaseDirectory, path);
-    }
-
-    private static string EnsureRootedPath (string rootPath, string path)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("rootPath", rootPath);
-      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
-
-      if (Path.IsPathRooted (path))
-      {
-        return Path.GetFullPath (path);
-      }
-
-      var combinedPath = Path.Combine (rootPath, path);
-
-      return Path.GetFullPath (combinedPath);
-    }
   }
 }

@@ -16,6 +16,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -30,8 +31,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
     {
       ArgumentUtility.CheckNotNull ("configSettings", configSettings);
 
-      RootPath = configSettings.TestSiteLayoutConfiguration.RootPath;
-      Resources = configSettings.TestSiteLayoutConfiguration.Resources.Select (element => new TestSiteResource (element)).ToArray();
+      RootPath = GetRootedRootPath (configSettings.TestSiteLayoutConfiguration.RootPath);
+      Resources = configSettings.TestSiteLayoutConfiguration.Resources
+          .Select (resourceElement => EnsureRootedPath (RootPath, resourceElement.Path))
+          .Select (rootedPath => new TestSiteResource (rootedPath)).ToArray();
     }
 
     /// <inheritdoc />
@@ -39,5 +42,27 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
 
     /// <inheritdoc />
     public IReadOnlyList<ITestSiteResource> Resources { get; }
+
+    private static string GetRootedRootPath ([NotNull] string path)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
+
+      return EnsureRootedPath (AppDomain.CurrentDomain.BaseDirectory, path);
+    }
+
+    private static string EnsureRootedPath (string rootPath, string path)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("rootPath", rootPath);
+      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
+
+      if (Path.IsPathRooted (path))
+      {
+        return Path.GetFullPath (path);
+      }
+
+      var combinedPath = Path.Combine (rootPath, path);
+
+      return Path.GetFullPath (combinedPath);
+    }
   }
 }
