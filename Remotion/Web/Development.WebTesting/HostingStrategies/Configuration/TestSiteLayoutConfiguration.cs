@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
+using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
 
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
@@ -24,8 +26,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   /// <inheritdoc />
   public class TestSiteLayoutConfiguration : ITestSiteLayoutConfiguration
   {
-    public TestSiteLayoutConfiguration (WebTestConfigurationSection configSettings)
+    public TestSiteLayoutConfiguration ([NotNull] WebTestConfigurationSection configSettings)
     {
+      ArgumentUtility.CheckNotNull ("configSettings", configSettings);
+
       RootPath = configSettings.TestSiteLayoutConfiguration.RootPath;
       Resources = configSettings.TestSiteLayoutConfiguration.Resources.Select (element => new TestSiteResource (element)).ToArray();
     }
