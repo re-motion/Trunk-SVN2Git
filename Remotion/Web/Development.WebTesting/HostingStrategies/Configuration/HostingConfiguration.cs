@@ -44,7 +44,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
     private readonly ProviderSettings _hostingProviderSettings;
     private TimeSpan _verifyWebApplicationStartedTimeout;
 
-    public HostingConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection, ITestSiteLayoutConfiguration testSiteLayoutConfiguration)
+    public HostingConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection, [NotNull] ITestSiteLayoutConfiguration testSiteLayoutConfiguration)
     {
       ArgumentUtility.CheckNotNull ("webTestConfigurationSection", webTestConfigurationSection);
       ArgumentUtility.CheckNotNull ("testSiteLayoutConfiguration", testSiteLayoutConfiguration);
