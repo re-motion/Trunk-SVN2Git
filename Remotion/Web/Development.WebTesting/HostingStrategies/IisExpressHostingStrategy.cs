@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Specialized;
-using System.IO;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.Configuration;
@@ -29,9 +28,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class IisExpressHostingStrategy : IHostingStrategy
   {
-    private readonly TestSiteLayoutConfiguration _testSiteLayoutConfiguration;
-    private readonly int _port;
-    private IisExpressProcessWrapper _iisExpressInstance;
+    private readonly IisExpressProcessWrapper _iisExpressInstance;
 
     /// <param name="testSiteLayoutConfiguration">The configuration of the layout of the used test site.</param>
     /// <param name="port">Port to be used.</param>
@@ -39,8 +36,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     {
       ArgumentUtility.CheckNotNull ("testSiteLayoutConfiguration", testSiteLayoutConfiguration);
 
-      _testSiteLayoutConfiguration = testSiteLayoutConfiguration;
-      _port = port;
+      _iisExpressInstance = new IisExpressProcessWrapper (testSiteLayoutConfiguration.RootPath, port);
     }
 
     /// <summary>
@@ -57,12 +53,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     /// <inheritdoc/>
     public void DeployAndStartWebApplication ()
     {
-      if (_iisExpressInstance != null)
-        throw new InvalidOperationException ("WebApplication is already running.");
-
-      var absoluteWebApplicationPath = Path.GetFullPath (_testSiteLayoutConfiguration.RootPath);
-
-      _iisExpressInstance = new IisExpressProcessWrapper (absoluteWebApplicationPath, _port);
       _iisExpressInstance.Run();
     }
 
