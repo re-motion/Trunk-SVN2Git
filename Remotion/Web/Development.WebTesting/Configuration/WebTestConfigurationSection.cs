@@ -252,6 +252,9 @@ namespace Remotion.Web.Development.WebTesting.Configuration
       get { return (ProviderSettings) this [_hostingProperty]; }
     }
 
+    /// <summary>
+    /// Gets the test site layout configuration.
+    /// </summary>
     public TestSiteLayoutConfigurationElement TestSiteLayoutConfiguration
     {
       get { return (TestSiteLayoutConfigurationElement) this [_testSiteLayoutProperty]; }

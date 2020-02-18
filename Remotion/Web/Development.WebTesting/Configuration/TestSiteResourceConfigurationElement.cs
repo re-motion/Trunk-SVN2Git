@@ -32,10 +32,11 @@ namespace Remotion.Web.Development.WebTesting.Configuration
     }
 
     /// <summary>
-    /// Path to the resource needed by the test site.
+    /// Gets the path to the resource needed by the test site.
     /// </summary>
     public string Path => (string) this[_pathProperty];
 
+    /// <inheritdoc />
     protected override ConfigurationPropertyCollection Properties => new ConfigurationPropertyCollection { _pathProperty };
   }
 }

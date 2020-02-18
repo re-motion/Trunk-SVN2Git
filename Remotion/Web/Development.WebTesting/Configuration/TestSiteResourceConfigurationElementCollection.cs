@@ -20,15 +20,21 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Configuration
 {
+  /// <summary>
+  /// Contains the resources required by the test site.
+  /// </summary>
   public class TestSiteResourceConfigurationElementCollection : ConfigurationElementCollection
   {
+    /// <inheritdoc />
     public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.AddRemoveClearMap;
 
+    /// <inheritdoc />
     protected override ConfigurationElement CreateNewElement ()
     {
       return new TestSiteResourceConfigurationElement();
     }
 
+    /// <inheritdoc />
     protected override object GetElementKey (ConfigurationElement element)
     {
       ArgumentUtility.CheckNotNull ("element", element);
