@@ -25,7 +25,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   {
     public TestSiteResource ([NotNull] string path)
     {
-      ArgumentUtility.CheckNotNull ("path", path);
+      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
 
       Path = path;
     }
