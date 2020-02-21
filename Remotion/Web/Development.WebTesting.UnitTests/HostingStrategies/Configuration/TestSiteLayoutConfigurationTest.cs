@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Config
   [TestFixture]
   public class TestSiteLayoutConfigurationTest
   {
-    private const string c_configurationXml = @"
+    private const string c_configurationXmlWithRelativePaths = @"
 <remotion.webTesting xmlns=""http://www.re-motion.org/WebTesting/Configuration/2.0""
     browser=""Chrome""
     searchTimeout=""00:00:43""
@@ -40,18 +40,45 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Config
   </testSiteLayout>
 </remotion.webTesting>";
 
+    private const string c_configurationXmlWithAbsolutePaths = @"
+<remotion.webTesting xmlns=""http://www.re-motion.org/WebTesting/Configuration/2.0""
+    browser=""Chrome""
+    searchTimeout=""00:00:43""
+    retryInterval=""00:00:00.042""
+    webApplicationRoot=""http://some.url:1337/"">
+  <hosting name=""IisExpress"" type=""IisExpress"" path="".\..\..\..\Development.WebTesting.TestSite"" port=""60042"" />
+  <testSiteLayout rootPath=""C:\Some\Path"">
+    <resources>
+      <add path=""C:\Some\Resource"" />
+    </resources>
+  </testSiteLayout>
+</remotion.webTesting>";
+
     [Test]
-    public void CreateFromWebTestConfigurationSection ()
+    public void CreateFromWebTestConfigurationSection_WithRelativePaths ()
     {
       var currentBasePath = AppDomain.CurrentDomain.BaseDirectory;
       var configurationSection = (WebTestConfigurationSection) Activator.CreateInstance (typeof (WebTestConfigurationSection), true);
-      ConfigurationHelper.DeserializeSection (configurationSection, c_configurationXml);
+      ConfigurationHelper.DeserializeSection (configurationSection, c_configurationXmlWithRelativePaths);
 
       var testSiteLayoutConfiguration = new TestSiteLayoutConfiguration (configurationSection);
 
       Assert.That (testSiteLayoutConfiguration.RootPath, Is.EqualTo (Path.Combine (currentBasePath, @"Some\Path")));
       Assert.That (testSiteLayoutConfiguration.Resources.Count, Is.EqualTo (1));
       Assert.That (testSiteLayoutConfiguration.Resources[0].Path, Is.EqualTo (Path.Combine (currentBasePath, @"Some\Path\Some\Resource")));
+    }
+
+    [Test]
+    public void CreateFromWebTestConfigurationSection_WithAbsolutePaths ()
+    {
+      var configurationSection = (WebTestConfigurationSection) Activator.CreateInstance (typeof (WebTestConfigurationSection), true);
+      ConfigurationHelper.DeserializeSection (configurationSection, c_configurationXmlWithAbsolutePaths);
+
+      var testSiteLayoutConfiguration = new TestSiteLayoutConfiguration (configurationSection);
+
+      Assert.That (testSiteLayoutConfiguration.RootPath, Is.EqualTo (@"C:\Some\Path"));
+      Assert.That (testSiteLayoutConfiguration.Resources.Count, Is.EqualTo (1));
+      Assert.That (testSiteLayoutConfiguration.Resources[0].Path, Is.EqualTo (@"C:\Some\Resource"));
     }
   }
 }
