@@ -23,14 +23,14 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   /// <inheritdoc />
   public class TestSiteResource : ITestSiteResource
   {
+    /// <inheritdoc />
+    public string Path { get; }
+
     public TestSiteResource ([NotNull] string path)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("path", path);
 
       Path = path;
     }
-
-    /// <inheritdoc />
-    public string Path { get; }
   }
 }

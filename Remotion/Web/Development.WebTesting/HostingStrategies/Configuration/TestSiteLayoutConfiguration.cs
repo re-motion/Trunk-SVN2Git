@@ -27,6 +27,12 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   /// <inheritdoc />
   public class TestSiteLayoutConfiguration : ITestSiteLayoutConfiguration
   {
+    /// <inheritdoc />
+    public string RootPath { get; }
+
+    /// <inheritdoc />
+    public IReadOnlyList<ITestSiteResource> Resources { get; }
+
     public TestSiteLayoutConfiguration ([NotNull] WebTestConfigurationSection configSettings)
     {
       ArgumentUtility.CheckNotNull ("configSettings", configSettings);
@@ -36,12 +42,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
           .Select (resourceElement => EnsureRootedPath (RootPath, resourceElement.Path))
           .Select (rootedPath => new TestSiteResource (rootedPath)).ToArray();
     }
-
-    /// <inheritdoc />
-    public string RootPath { get; }
-
-    /// <inheritdoc />
-    public IReadOnlyList<ITestSiteResource> Resources { get; }
 
     private string GetRootedRootPath ([NotNull] string path)
     {
