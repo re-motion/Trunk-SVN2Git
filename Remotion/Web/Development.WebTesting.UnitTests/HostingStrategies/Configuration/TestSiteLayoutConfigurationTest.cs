@@ -32,7 +32,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Config
     searchTimeout=""00:00:43""
     retryInterval=""00:00:00.042""
     webApplicationRoot=""http://some.url:1337/"">
-  <hosting name=""IisExpress"" type=""IisExpress"" path="".\..\..\..\Development.WebTesting.TestSite"" port=""60042"" />
+  <hosting name=""IisExpress"" type=""IisExpress"" port=""60042"" />
   <testSiteLayout rootPath="".\Some\Path"">
     <resources>
       <add path="".\Some\Resource"" />
@@ -46,7 +46,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Config
     searchTimeout=""00:00:43""
     retryInterval=""00:00:00.042""
     webApplicationRoot=""http://some.url:1337/"">
-  <hosting name=""IisExpress"" type=""IisExpress"" path="".\..\..\..\Development.WebTesting.TestSite"" port=""60042"" />
+  <hosting name=""IisExpress"" type=""IisExpress"" port=""60042"" />
   <testSiteLayout rootPath=""C:\Some\Path"">
     <resources>
       <add path=""C:\Some\Resource"" />

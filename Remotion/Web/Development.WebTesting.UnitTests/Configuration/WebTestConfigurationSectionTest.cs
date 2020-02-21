@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
     closeBrowserWindowsOnSetUpAndTearDown=""false""
     cleanUpUnmatchedDownloadedFiles=""false""
     requestErrorDetectionStrategy=""requestErrorDetectionStrategy"">
-  <hosting name=""IisExpress"" type=""IisExpress"" path="".\..\..\..\Development.WebTesting.TestSite"" port=""60042"" />
+  <hosting name=""IisExpress"" type=""IisExpress"" port=""60042"" />
   <testSiteLayout rootPath="".\Some\Path"">
     <resources>
       <add path="".\Some\Resource"" />
@@ -72,7 +72,6 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.Configuration
       Assert.That (_section.WebApplicationRoot, Is.EqualTo ("http://some.url:1337/"));
       Assert.That (_section.ScreenshotDirectory, Is.EqualTo (Path.GetFullPath (@".\SomeScreenshotDirectory")));
       Assert.That (_section.HostingProviderSettings.Name, Is.EqualTo ("IisExpress"));
-      Assert.That (_section.HostingProviderSettings.Parameters["path"], Is.EqualTo (@".\..\..\..\Development.WebTesting.TestSite"));
       Assert.That (_section.HostingProviderSettings.Parameters["port"], Is.EqualTo ("60042"));
       Assert.That (_section.HostingProviderSettings.Type, Is.EqualTo ("IisExpress"));
       Assert.That (_section.TestSiteLayoutConfiguration.RootPath, Is.EqualTo (@".\Some\Path"));
