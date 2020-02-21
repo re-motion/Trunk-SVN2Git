@@ -43,18 +43,13 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
     /// <inheritdoc />
     public IReadOnlyList<ITestSiteResource> Resources { get; }
 
-    private static string GetRootedRootPath ([NotNull] string path)
+    private string GetRootedRootPath ([NotNull] string path)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
-
       return EnsureRootedPath (AppDomain.CurrentDomain.BaseDirectory, path);
     }
 
-    private static string EnsureRootedPath (string rootPath, string path)
+    private string EnsureRootedPath ([NotNull] string rootPath, [NotNull] string path)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("rootPath", rootPath);
-      ArgumentUtility.CheckNotNullOrEmpty ("path", path);
-
       if (Path.IsPathRooted (path))
       {
         return Path.GetFullPath (path);
