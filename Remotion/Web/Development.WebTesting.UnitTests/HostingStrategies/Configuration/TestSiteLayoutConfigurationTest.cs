@@ -50,6 +50,7 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Config
   <testSiteLayout rootPath=""C:\Some\Path"">
     <resources>
       <add path=""C:\Some\Resource"" />
+      <add path=""Some\Other\Resource"" />
     </resources>
   </testSiteLayout>
 </remotion.webTesting>";
@@ -77,8 +78,9 @@ namespace Remotion.Web.Development.WebTesting.UnitTests.HostingStrategies.Config
       var testSiteLayoutConfiguration = new TestSiteLayoutConfiguration (configurationSection);
 
       Assert.That (testSiteLayoutConfiguration.RootPath, Is.EqualTo (@"C:\Some\Path"));
-      Assert.That (testSiteLayoutConfiguration.Resources.Count, Is.EqualTo (1));
+      Assert.That (testSiteLayoutConfiguration.Resources.Count, Is.EqualTo (2));
       Assert.That (testSiteLayoutConfiguration.Resources[0].Path, Is.EqualTo (@"C:\Some\Resource"));
+      Assert.That (testSiteLayoutConfiguration.Resources[1].Path, Is.EqualTo (@"C:\Some\Path\Some\Other\Resource"));
     }
   }
 }
