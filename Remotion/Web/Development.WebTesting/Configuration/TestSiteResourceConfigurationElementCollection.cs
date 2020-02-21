@@ -25,6 +25,10 @@ namespace Remotion.Web.Development.WebTesting.Configuration
   /// </summary>
   public class TestSiteResourceConfigurationElementCollection : ConfigurationElementCollection
   {
+    public TestSiteResourceConfigurationElementCollection ()
+    {
+    }
+
     /// <inheritdoc />
     public override ConfigurationElementCollectionType CollectionType => ConfigurationElementCollectionType.AddRemoveClearMap;
 
