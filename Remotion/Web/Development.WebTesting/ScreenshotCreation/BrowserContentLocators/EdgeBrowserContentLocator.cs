@@ -104,12 +104,14 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
 
     private Rectangle ResolveBoundsFromWindow (AutomationElement window)
     {
+      Func<AutomationElement> elementQuery = () => window.FindFirst (
+          TreeScope.Subtree,
+          new AndCondition (
+              new PropertyCondition (AutomationElement.ControlTypeProperty, ControlType.Document),
+              new PropertyCondition (AutomationElement.FrameworkIdProperty, c_edgeFrameworkID)));
+
       var element = RetryUntilValueChanges (
-          () => window.FindFirst (
-              TreeScope.Subtree,
-              new AndCondition (
-                  new PropertyCondition (AutomationElement.ControlTypeProperty, ControlType.Document),
-                  new PropertyCondition (AutomationElement.FrameworkIdProperty, c_edgeFrameworkID))),
+          elementQuery,
           null,
           5,
           TimeSpan.Zero);
@@ -117,7 +119,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       if (element == null)
         throw new InvalidOperationException ("Could not find the content window of the found Edge browser window.");
 
-      var rawBounds = RetryUntilValueChanges (() => element.Current.BoundingRectangle, Rect.Empty, 3, TimeSpan.FromMilliseconds (100));
+      var rawBounds = RetryUntilValueChanges (() => elementQuery().Current.BoundingRectangle, Rect.Empty, 3, TimeSpan.FromMilliseconds (100));
 
       if (rawBounds == Rect.Empty)
         throw new InvalidOperationException ("Could not resolve the bounds of the Edge browser window.");
