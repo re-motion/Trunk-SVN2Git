@@ -358,14 +358,19 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void ResolveBorderElementA ()
     {
-      var home = Start();
+      RetryTest (
+          () =>
+          {
+            var home = Start();
 
-      ScreenshotTestingDelegate<IFluentScreenshotElement<ElementScope>> test =
-          (builder, target) => { builder.Crop (target, new WebPadding (1)); };
+            ScreenshotTestingDelegate<IFluentScreenshotElement<ElementScope>> test =
+                (builder, target) => { builder.Crop (target, new WebPadding (1)); };
 
-      var element = home.Scope.FindId ("borderElementA").ForElementScopeScreenshot();
+            var element = home.Scope.FindId ("borderElementA").ForElementScopeScreenshot();
 
-      Helper.RunScreenshotTestExact<IFluentScreenshotElement<ElementScope>, ScreenshotTest> (element, ScreenshotTestingType.Both, test);
+            Helper.RunScreenshotTestExact<IFluentScreenshotElement<ElementScope>, ScreenshotTest> (element, ScreenshotTestingType.Both, test);
+          },
+          3);
     }
 
     [Category ("Screenshot")]
@@ -659,6 +664,32 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
           };
 
       Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Browser, test);
+    }
+
+    private void RetryTest (Action action, int times)
+    {
+      Exception lastThrownException = null;
+
+      for (int i = 0; i < times; i++)
+      {
+        try
+        {
+          action();
+        }
+        catch (AssertionException ex)
+        {
+          lastThrownException = ex;
+          continue;
+        }
+
+        lastThrownException = null;
+        break;
+      }
+
+      if (lastThrownException != null)
+      {
+        throw lastThrownException;
+      }
     }
 
     private ScreenshotTooltipStyle GetTooltipStyleForCurrentBrowser ()
