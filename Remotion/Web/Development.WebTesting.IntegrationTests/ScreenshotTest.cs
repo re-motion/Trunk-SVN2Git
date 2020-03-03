@@ -358,6 +358,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void ResolveBorderElementA ()
     {
+      // TODO: Remove when RM-7187 is resolved, use the RetryAttribute provided by NUnit instead.
       RetryTest (
           () =>
           {
