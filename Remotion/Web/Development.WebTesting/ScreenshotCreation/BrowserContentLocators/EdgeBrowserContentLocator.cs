@@ -113,6 +113,7 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentL
       if (contentElement == null)
         throw new InvalidOperationException ("Could not find the content window of the found Edge browser window.");
 
+      // The content element must always be fetched anew. If the content element from the first query is reused, this yields wrong coordinates in some cases.
       var rawBounds = RetryUntilValueChanges (() => GetContentElement (window).Current.BoundingRectangle, Rect.Empty, 3, TimeSpan.FromMilliseconds (100));
 
       if (rawBounds == Rect.Empty)
