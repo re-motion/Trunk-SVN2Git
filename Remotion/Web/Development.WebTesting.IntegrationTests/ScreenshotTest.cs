@@ -667,29 +667,21 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Helper.RunScreenshotTestExact<ScreenshotTest> (PrepareTest(), ScreenshotTestingType.Browser, test);
     }
 
-    private void RetryTest (Action action, int times)
+    private void RetryTest (Action action, int retries)
     {
-      Exception lastThrownException = null;
-
-      for (int i = 0; i < times; i++)
+      for (int i = 0; i < retries; i++)
       {
         try
         {
           action();
         }
-        catch (AssertionException ex)
+        catch (AssertionException) when (i + 1 == retries)
         {
-          lastThrownException = ex;
-          continue;
+          throw;
         }
-
-        lastThrownException = null;
-        break;
-      }
-
-      if (lastThrownException != null)
-      {
-        throw lastThrownException;
+        catch (AssertionException)
+        {
+        }
       }
     }
 
