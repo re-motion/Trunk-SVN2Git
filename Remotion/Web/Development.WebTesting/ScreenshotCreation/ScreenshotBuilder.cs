@@ -133,12 +133,12 @@ namespace Remotion.Web.Development.WebTesting.ScreenshotCreation
     {
       ArgumentUtility.CheckNotNullOrEmpty ("path", path);
 
-      var fileExists = File.Exists (path);
+      var isFileExisting = File.Exists (path);
 
-      if (!@override && fileExists)
+      if (!@override && isFileExisting)
         throw new InvalidOperationException (string.Format ("A screenshot with the file name '{0}' does already exist.", path));
 
-      if (@override && fileExists)
+      if (@override && isFileExisting)
         s_log.InfoFormat ("Overwriting existing screenshot with file name '{0}'.", path);
 
       var directory = Path.GetDirectoryName (path);
