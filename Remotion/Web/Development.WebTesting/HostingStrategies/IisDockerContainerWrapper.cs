@@ -52,9 +52,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
       _docker.Pull (_configurationParameters.DockerImageName);
 
       var mounts = GetMounts (_configurationParameters.Mounts);
+      var portMappings = new Dictionary<int, int> { { _configurationParameters.WebApplicationPort, _configurationParameters.WebApplicationPort } };
 
       _containerName = _docker.Run (
-          new Dictionary<int, int> { { _configurationParameters.WebApplicationPort, _configurationParameters.WebApplicationPort } },
+          portMappings,
           mounts,
           _configurationParameters.DockerImageName,
           _configurationParameters.Hostname,
