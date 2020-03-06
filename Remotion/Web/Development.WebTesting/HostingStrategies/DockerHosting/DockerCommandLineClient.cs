@@ -96,7 +96,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       }
 
       if (entryPoint != null)
-        commandBuilder.Append (@"--entrypoint=""powershell""").Append (' ');
+        commandBuilder.Append ($@"--entrypoint=""{entryPoint}""").Append (' ');
 
       if (hostname != null)
         commandBuilder.Append ($@"--hostname ""{hostname}""").Append (' ');
