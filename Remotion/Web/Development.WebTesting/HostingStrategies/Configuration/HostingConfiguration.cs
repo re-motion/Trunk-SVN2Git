@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.Configuration
   /// <remarks>
   /// <see cref="WebTestConfigurationSection"/> <see cref="WebTestConfigurationSection.HostingProviderSettings"/> 
   /// provides the hosting strategy type, use <c>IisExpress</c> for hosting the application in an auto-configured IIS Express or <c>Docker</c>
-  /// in an auto configured Docker container. Leave <see cref="WebTestConfigurationSection.HostingProviderSettings"/> empty if the web
+  /// in an auto-configured Docker container. Leave <see cref="WebTestConfigurationSection.HostingProviderSettings"/> empty if the web
   /// application is already hosted, eg. in IIS.
   /// </remarks>
   public class HostingConfiguration : IHostingConfiguration
