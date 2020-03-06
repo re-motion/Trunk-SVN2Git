@@ -208,7 +208,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
         dockerProcess.WaitForExit (timeout.Milliseconds);
 
         if (stopwatch.ElapsedMilliseconds > timeout.TotalMilliseconds)
-          throw new InvalidOperationException ($"Docker command '{dockerCommand}' ran longer than the configured timeout of '{timeout}'. Abort.");
+          throw new TimeoutException ($"Docker command '{dockerCommand}' ran longer than the configured timeout of '{timeout}'.");
       }
     }
 
