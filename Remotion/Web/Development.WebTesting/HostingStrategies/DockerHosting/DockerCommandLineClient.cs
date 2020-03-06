@@ -47,13 +47,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     {
       ArgumentUtility.CheckNotNullOrEmpty ("imageName", imageName);
 
-      var commandBuilder = new StringBuilder()
-          .Append ("pull").Append (' ')
-          .Append (imageName);
-
-      var command = commandBuilder.ToString();
-
-      RunDockerCommand (command, timeout: _pullTimeout);
+      RunDockerCommand ($"pull {imageName}", timeout: _pullTimeout);
     }
 
     /// <inheritdoc />
