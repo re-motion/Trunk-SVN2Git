@@ -34,7 +34,7 @@
       <_dockerEnabled>False</_dockerEnabled>
       <_dockerEnabled Condition="'$(DisableDocker)' == 'False'">True</_dockerEnabled>
       <_dockerImageName>mcr.microsoft.com/dotnet/framework/aspnet:4.6.2</_dockerImageName>
-      <!-- Hostname can not be longer than 63 characters-->
+      <!-- Hostname cannot be longer than 63 characters-->
       <_dockerHostName>RemotionWebTestContainer</_dockerHostName>
       <_dockerPortNumber>60402</_dockerPortNumber>
       <_dockerWebApplicationRoot>http://$(_dockerHostName):$(_dockerPortNumber)/</_dockerWebApplicationRoot>
