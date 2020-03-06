@@ -74,7 +74,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     public DockerHostingStrategy ([NotNull] TestSiteLayoutConfiguration testSiteLayoutConfiguration, [NotNull] NameValueCollection properties)
         : this (
             testSiteLayoutConfiguration,
-            int.Parse (properties["port"]),
+            int.Parse (ArgumentUtility.CheckNotNull ("properties", properties)["port"]),
             properties["dockerImageName"],
             TimeSpan.Parse (properties["dockerPullTimeout"]),
             properties["hostname"])
