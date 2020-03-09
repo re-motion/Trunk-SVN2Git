@@ -39,6 +39,8 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
     /// <inheritdoc/>
     public object PrepareWaitForCompletion (PageObjectContext context)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       var states = new List<object>();
 
       // ReSharper disable once LoopCanBeConvertedToQuery
@@ -54,6 +56,8 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
     /// <inheritdoc/>
     public void WaitForCompletion (PageObjectContext context, object state)
     {
+      ArgumentUtility.CheckNotNull ("context", context);
+
       var states = (List<object>) state;
       Assertion.IsNotNull (states, "The state should never be null - developer error.");
 
