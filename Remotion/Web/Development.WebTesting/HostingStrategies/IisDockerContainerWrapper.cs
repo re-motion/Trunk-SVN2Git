@@ -60,7 +60,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
           _configurationParameters.DockerImageName,
           _configurationParameters.Hostname,
           true,
-          true,
           "powershell",
           $@"-Command ""
 C:\Windows\System32\inetsrv\appcmd.exe set apppool /apppool.name:DefaultAppPool /enable32bitapponwin64:{_configurationParameters.Is32BitProcess};

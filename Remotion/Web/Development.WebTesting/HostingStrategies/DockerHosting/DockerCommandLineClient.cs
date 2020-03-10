@@ -56,7 +56,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
         IDictionary<string, string> mounts,
         string imageName,
         string hostname,
-        bool detach,
         bool remove,
         string entryPoint,
         string args)
@@ -69,10 +68,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       ArgumentUtility.CheckNotEmpty ("args", args);
 
       var commandBuilder = new StringBuilder()
-          .Append ("run").Append (' ');
-
-      if (detach)
-        commandBuilder.Append ("-d").Append (' ');
+          .Append ("run").Append (' ')
+          .Append ("-d").Append (' ');
 
       if (remove)
         commandBuilder.Append ("--rm").Append (' ');

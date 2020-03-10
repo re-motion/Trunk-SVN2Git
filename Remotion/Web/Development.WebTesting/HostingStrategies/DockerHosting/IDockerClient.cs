@@ -33,6 +33,13 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     /// <summary>
     /// Runs the docker image with the given settings.
     /// </summary>
+    /// <param name="ports">The ports to publish, the keys represent the ports on the host system, the values represent the ports in the container.</param>
+    /// <param name="mounts">The directories to mount, the keys represent the paths on the host system, the values represent the path in the container.</param>
+    /// <param name="imageName">The name and tag of the image to use.</param>
+    /// <param name="hostname">The hostname to associate with the container.</param>
+    /// <param name="remove">Indicates whether the container should be removed upon stopping.</param>
+    /// <param name="entryPoint">Overrides the default entry point of the image. Can be null.</param>
+    /// <param name="args">Overrides the default arguments (CMD) of the image. Can be null.</param>
     /// <returns>The container ID of the started container.</returns>
     [NotNull]
     string Run (
@@ -40,7 +47,6 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
         [NotNull] IDictionary<string, string> mounts,
         [NotNull] string imageName,
         [CanBeNull] string hostname,
-        bool detach,
         bool remove,
         [CanBeNull] string entryPoint,
         [CanBeNull] string args);
