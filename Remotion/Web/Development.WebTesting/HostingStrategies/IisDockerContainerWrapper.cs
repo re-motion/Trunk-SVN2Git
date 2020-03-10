@@ -72,15 +72,15 @@ C:\ServiceMonitor.exe w3svc;
     public void Dispose ()
     {
       _docker.Stop (_containerName);
-      var containerRemovedAfterStop = WaitForContainerRemoval();
+      var isContainerRemovedAfterStop = WaitForContainerRemoval();
 
-      if (containerRemovedAfterStop)
+      if (isContainerRemovedAfterStop)
         return;
 
       _docker.Remove (_containerName, true);
-      var containerRemovedAfterForceRemove = WaitForContainerRemoval();
+      var isContainerRemovedAfterForceRemove = WaitForContainerRemoval();
 
-      if (containerRemovedAfterForceRemove)
+      if (isContainerRemovedAfterForceRemove)
         return;
 
       throw new InvalidOperationException ($"The container with the id '{_containerName}' could not be removed.");
