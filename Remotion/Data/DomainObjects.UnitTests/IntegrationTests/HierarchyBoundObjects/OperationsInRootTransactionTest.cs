@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.UnitTests.TestDomain;
@@ -95,12 +96,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.HierarchyBoundO
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
     public void SetRelatedObject_FailsWithItemFromOtherRootTransaction ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        _order1LoadedInRootTransaction.OrderTicket = OrderTicket.NewObject ();
+        Assert.That (
+            () => _order1LoadedInRootTransaction.OrderTicket = OrderTicket.NewObject (), 
+            Throws.InstanceOf<ClientTransactionsDifferException>());
       }
     }
 
@@ -113,12 +115,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.HierarchyBoundO
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
     public void InsertRelatedObject_FailsWithItemFromOtherRootTransaction ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
-        _order1LoadedInRootTransaction.OrderItems.Add (OrderItem.NewObject ());
+        Assert.That (
+            () => _order1LoadedInRootTransaction.OrderItems.Add (OrderItem.NewObject ()),
+            Throws.InstanceOf<ClientTransactionsDifferException>());
       }
     }
 

@@ -19,6 +19,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.TypePipe;
@@ -323,23 +324,26 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.TypePipe
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void ExplicitInterfaceProperty ()
     {
       IPropertyInterface domainObject = ClassWithExplicitInterfaceProperty.NewObject();
-      domainObject.Property = 5;
+      
+      Assert.That (
+          () => domainObject.Property = 5,
+          NUnit.Framework.Throws.InvalidOperationException
+              .With.Message.EqualTo ("There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?"));
       Assert.That (domainObject.Property, Is.EqualTo (5));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void CurrentPropertyThrowsWhenNotInitializes ()
     {
       Order order = Order.NewObject();
-      Dev.Null = order.CurrentProperty;
-      Assert.Fail ("Expected exception");
+      
+      Assert.That (
+          () => Dev.Null = order.CurrentProperty,
+          NUnit.Framework.Throws.InvalidOperationException
+              .With.Message.EqualTo ("There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?"));
     }
 
     [Test]
@@ -368,20 +372,18 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.TypePipe
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = 
-        "The domain object type 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Order' does not have a mapping property named 'Bla'.")]
     public void CurrentProperty_ThrowsOnInvalidPropertyName ()
     {
       Order order = DomainObjectIDs.Order1.GetObject<Order> ();
       order.PreparePropertyAccess ("Bla");
-      try
-      {
-        Dev.Null = order.CurrentProperty;
-      }
-      finally
-      {
-        order.PropertyAccessFinished();
-      }
+
+      Assert.That (
+          () => Dev.Null = order.CurrentProperty,
+          NUnit.Framework.Throws.InstanceOf<MappingException>()
+              .With.Message.EqualTo (
+                  "The domain object type 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Order' does not have a mapping property named 'Bla'."));
+
+      order.PropertyAccessFinished();
     }
 
     [Test]

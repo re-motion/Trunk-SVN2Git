@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Utilities;
@@ -189,14 +191,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "is not fulfilled - public or protected method 'System.String MethodImplementedOnBase()' could not be found", 
-        MatchType = MessageMatch.Contains)]
     public void ThrowsWhenUnfulfilledDuckTargetCall()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (DuckTargetCallMixinWithoutOverrides)).EnterScope())
       {
-        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
+        Assert.That (
+            () => DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)),
+            Throws.InstanceOf<ConfigurationException>()
+                .With.Message.Contains ("is not fulfilled - public or protected method 'System.String MethodImplementedOnBase()' could not be found"));
       }
     }
 
@@ -229,14 +231,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "is not fulfilled - public or protected method 'System.String MethodImplementedOnBase()' could not be found", 
-        MatchType = MessageMatch.Contains)]
     public void ThrowsWhenUnfulfilledDuckBase ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (DuckBaseMixinWithoutOverrides)).EnterScope())
       {
-        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
+        Assert.That (
+            () => DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)),
+            Throws.InstanceOf<ConfigurationException>()
+                .With.Message.Contains ("is not fulfilled - public or protected method 'System.String MethodImplementedOnBase()' could not be found"));
       }
     }
 
