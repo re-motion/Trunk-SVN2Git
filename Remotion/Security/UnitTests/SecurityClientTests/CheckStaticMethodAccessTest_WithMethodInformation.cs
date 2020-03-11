@@ -83,12 +83,24 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll();
 
-      _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation);
       Assert.That (
-          () => _testHelper.VerifyAll(),
+          () => _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation),
           Throws.ArgumentException
-              .With.Message.EqualTo (
-                  "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
+              .With.Message.EqualTo ("The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
+      _testHelper.VerifyAll();
+    }
+
+    [Test]
+    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ReplayAll();
+
+      Assert.That (
+          () => _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
+      _testHelper.VerifyAll();
     }
 
     [Test]
@@ -99,30 +111,18 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation);
+        Assert.That (
+            () => _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation),
+            Throws.ArgumentException
+                .With.Message.EqualTo ("The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
       }
-      Assert.That (
-          () => _testHelper.VerifyAll(),
-          Throws.ArgumentException
-              .With.Message.EqualTo (
-                  "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
+      
+      _testHelper.VerifyAll();
     }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
 #endif
-    [Test]
-    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
-    {
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
-      _testHelper.ReplayAll();
-
-      _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation);
-      Assert.That (
-          () => _testHelper.VerifyAll(),
-          Throws.InvalidOperationException
-              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
-    }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
@@ -135,12 +135,13 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation);
+        Assert.That (
+            () => _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
       }
-      Assert.That (
-          () => _testHelper.VerifyAll(),
-          Throws.InvalidOperationException
-              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
+
+      _testHelper.VerifyAll();
     }
   }
 }
