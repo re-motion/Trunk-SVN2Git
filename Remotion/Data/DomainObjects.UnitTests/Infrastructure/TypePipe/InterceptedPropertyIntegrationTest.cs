@@ -355,7 +355,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure.TypePipe
           () => domainObject.Property = 5,
           NUnit.Framework.Throws.InvalidOperationException
               .With.Message.EqualTo ("There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?"));
-      Assert.That (domainObject.Property, Is.EqualTo (5));
     }
 
     [Test]
