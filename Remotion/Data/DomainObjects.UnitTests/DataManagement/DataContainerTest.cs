@@ -186,7 +186,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.GetValue (_nonOrderProperty), 
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -286,7 +286,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.SetValue (_nonOrderProperty, 17), 
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -333,7 +333,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.GetValueWithoutEvents (_nonOrderProperty, ValueAccess.Current), 
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -349,7 +349,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.HasValueBeenTouched (_nonOrderProperty), 
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -375,7 +375,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.TouchValue (_nonOrderProperty), 
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -405,7 +405,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.HasValueChanged (_nonOrderProperty), 
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -524,7 +524,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.CommitValue (_nonOrderProperty),
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -582,7 +582,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       Assert.That (
           () => _existingDataContainer.RollbackValue (_nonOrderProperty),
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
@@ -635,7 +635,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
       var sourceDataContainer = DataContainerObjectMother.Create (_existingDataContainer.ID);
       Assert.That (
           () => _existingDataContainer.SetValueDataFromSubTransaction (_nonOrderProperty, sourceDataContainer),
-          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+          Throws.ArgumentException.With.Message.Contains ("Parameter name: propertyDefinition"));
     }
 
     [Test]
