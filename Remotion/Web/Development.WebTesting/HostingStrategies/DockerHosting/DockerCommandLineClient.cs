@@ -107,16 +107,12 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     {
       ArgumentUtility.CheckNotNullOrEmpty ("containerName", containerName);
 
-      try
+      using (var p = Process.Start (_dockerExeFullPath, $"inspect {containerName}"))
       {
-        RunDockerCommand ($"inspect {containerName}");
-      }
-      catch (InvalidOperationException)
-      {
-        return false;
-      }
+        p.WaitForExit ((int) _commandTimeout.TotalMilliseconds);
 
-      return true;
+        return p.ExitCode == 0;
+      }
     }
 
     /// <inheritdoc />
