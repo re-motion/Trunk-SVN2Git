@@ -681,7 +681,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
         }
         catch (AssertionException)
         {
+          continue;
         }
+
+        return;
       }
     }
 
