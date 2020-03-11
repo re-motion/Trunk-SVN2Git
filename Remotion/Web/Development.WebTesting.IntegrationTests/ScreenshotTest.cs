@@ -675,11 +675,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
         {
           action();
         }
-        catch (AssertionException) when (i + 1 == retries)
-        {
-          throw;
-        }
-        catch (AssertionException)
+        catch (AssertionException) when (i + 1 < retries)
         {
           continue;
         }
