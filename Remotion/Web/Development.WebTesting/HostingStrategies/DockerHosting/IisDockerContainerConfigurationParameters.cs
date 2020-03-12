@@ -58,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     /// Gets the directories that should be mounted in the container.
     /// </summary>
     [NotNull]
-    public IEnumerable<string> Mounts { get; }
+    public IReadOnlyCollection<string> Mounts { get; }
 
     public IisDockerContainerConfigurationParameters (
         [NotNull] string absoluteWebApplicationPath,
@@ -66,7 +66,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
         [NotNull] string dockerImageName,
         [CanBeNull] string hostname,
         bool is32BitProcess,
-        IEnumerable<string> mounts)
+        IReadOnlyCollection<string> mounts)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("absoluteWebApplicationPath", absoluteWebApplicationPath);
       ArgumentUtility.CheckNotNullOrEmpty ("dockerImageName", dockerImageName);

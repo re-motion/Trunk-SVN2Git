@@ -52,7 +52,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
       var resources = testSiteLayoutConfiguration.Resources.Select (resource => resource.Path);
       var mounts = resources
           .Select (path => GetAbsolutePath (path, absoluteWebApplicationPath))
-          .Distinct (StringComparer.OrdinalIgnoreCase);
+          .Distinct (StringComparer.OrdinalIgnoreCase)
+          .ToArray();
 
       var configurationParameters = new IisDockerContainerConfigurationParameters (
           absoluteWebApplicationPath,
