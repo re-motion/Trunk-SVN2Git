@@ -215,7 +215,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     {
       _newOrder.Delete ();
       Assert.That (
-          () => Dev.Null = _newOrderContext.Timestamp,
+          () => _newOrderContext.Timestamp,
           Throws.InstanceOf<ObjectInvalidException>());
     }
 

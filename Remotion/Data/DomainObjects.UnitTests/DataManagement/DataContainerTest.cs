@@ -1257,7 +1257,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       DataContainer dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       Assert.That (
-          () => Dev.Null = dc.ClientTransaction,
+          () => dc.ClientTransaction,
           Throws.InvalidOperationException
               .With.Message.EqualTo (
                   "DataContainer has not been registered with a transaction."));
@@ -1268,7 +1268,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       Assert.That (
-          () => Dev.Null = dc.DomainObject,
+          () => dc.DomainObject,
           Throws.InvalidOperationException
               .With.Message.EqualTo (
                   "This DataContainer has not been associated with a DomainObject yet."));
