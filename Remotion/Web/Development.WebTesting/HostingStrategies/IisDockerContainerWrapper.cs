@@ -86,10 +86,6 @@ C:\ServiceMonitor.exe w3svc;
       throw new InvalidOperationException ($"The container with the id '{_containerName}' could not be removed.");
     }
 
-    /// <summary>
-    /// Polls the container for existence.
-    /// </summary>
-    /// <returns>True if the container no longer exists, false otherwise.</returns>
     private bool IsContainerRemoved (int retries, TimeSpan interval)
     {
       for (var i = 0; i <= retries; i++)
