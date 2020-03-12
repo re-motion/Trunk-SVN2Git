@@ -57,9 +57,7 @@ namespace Remotion.Web.Development.WebTesting.CompletionDetectionStrategies
     public void WaitForCompletion (PageObjectContext context, object state)
     {
       ArgumentUtility.CheckNotNull ("context", context);
-
-      var states = (List<object>) state;
-      Assertion.IsNotNull (states, "The state should never be null - developer error.");
+      var states = ArgumentUtility.CheckNotNullAndType<List<object>> ("state", state);
 
       var stragiesWithState = _strategies.Zip (states, (s, ss) => new { Strategy = s, State = ss });
       foreach (var strategyWithState in stragiesWithState)
