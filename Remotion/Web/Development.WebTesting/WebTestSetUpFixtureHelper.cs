@@ -177,7 +177,7 @@ namespace Remotion.Web.Development.WebTesting
 
       stopwatch.Stop();
 
-      s_log.Info ($"Verified that '{resolvedUri}' is accessible after '{stopwatch.Elapsed}'.");
+      s_log.Info ($"Verified that '{resolvedUri}' is accessible after {stopwatch.Elapsed.TotalMilliseconds:N0} ms.");
     }
 
     private Uri ResolveHostname (Uri uri)
