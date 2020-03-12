@@ -72,13 +72,13 @@ C:\ServiceMonitor.exe w3svc;
     public void Dispose ()
     {
       _docker.Stop (_containerName);
-      var isContainerRemovedAfterStop = WaitForContainerRemoval();
+      var isContainerRemovedAfterStop = IsContainerRemoved (retries: 15, interval: TimeSpan.FromMilliseconds (100));
 
       if (isContainerRemovedAfterStop)
         return;
 
       _docker.Remove (_containerName, true);
-      var isContainerRemovedAfterForceRemove = WaitForContainerRemoval();
+      var isContainerRemovedAfterForceRemove = IsContainerRemoved (retries: 15, interval: TimeSpan.FromMilliseconds (100));
 
       if (isContainerRemovedAfterForceRemove)
         return;
@@ -90,14 +90,14 @@ C:\ServiceMonitor.exe w3svc;
     /// Polls the container for existence.
     /// </summary>
     /// <returns>True if the container no longer exists, false otherwise.</returns>
-    private bool WaitForContainerRemoval ()
+    private bool IsContainerRemoved (int retries, TimeSpan interval)
     {
-      for (var i = 0; i < 15; i++)
+      for (var i = 0; i <= retries; i++)
       {
         if (!_docker.ContainerExists (_containerName))
           return true;
 
-        Thread.Sleep (100);
+        Thread.Sleep ((int) interval.TotalMilliseconds);
       }
 
       return false;
