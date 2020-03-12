@@ -24,7 +24,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
   /// <summary>
   /// Contains the parameters used by <see cref="IisDockerContainerWrapper"/> while preparing and starting the Docker container.
   /// </summary>
-  public class IisDockerContainerWrapperConfigurationParameters
+  public class IisDockerContainerConfigurationParameters
   {
     /// <summary>
     /// Gets the path to the web application project that should be hosted.
@@ -60,7 +60,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     [NotNull]
     public IEnumerable<string> Mounts { get; }
 
-    public IisDockerContainerWrapperConfigurationParameters (
+    public IisDockerContainerConfigurationParameters (
         [NotNull] string absoluteWebApplicationPath,
         int webApplicationPort,
         [NotNull] string dockerImageName,

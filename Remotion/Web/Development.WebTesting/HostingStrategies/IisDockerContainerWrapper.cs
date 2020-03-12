@@ -25,17 +25,17 @@ using Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting;
 namespace Remotion.Web.Development.WebTesting.HostingStrategies
 {
   /// <summary>
-  /// Wraps an IIS Docker container and its lifecycle.
+  /// Represents an IIS Docker container and manages its lifecycle.
   /// </summary>
   public class IisDockerContainerWrapper : IDisposable
   {
     private readonly IDockerClient _docker;
-    private readonly IisDockerContainerWrapperConfigurationParameters _configurationParameters;
+    private readonly IisDockerContainerConfigurationParameters _configurationParameters;
     private string _containerName;
 
     public IisDockerContainerWrapper (
         [NotNull] IDockerClient docker,
-        [NotNull] IisDockerContainerWrapperConfigurationParameters configurationParameters)
+        [NotNull] IisDockerContainerConfigurationParameters configurationParameters)
     {
       ArgumentUtility.CheckNotNull ("docker", docker);
       ArgumentUtility.CheckNotNull ("configurationParameters", configurationParameters);

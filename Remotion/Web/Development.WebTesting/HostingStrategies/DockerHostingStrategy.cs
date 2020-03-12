@@ -54,7 +54,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
           .Select (path => GetAbsolutePath (path, absoluteWebApplicationPath))
           .Distinct (StringComparer.OrdinalIgnoreCase);
 
-      var configurationParameters = new IisDockerContainerWrapperConfigurationParameters (
+      var configurationParameters = new IisDockerContainerConfigurationParameters (
           absoluteWebApplicationPath,
           port,
           dockerImageName,
