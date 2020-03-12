@@ -210,9 +210,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 
     private static string GetDockerExeFullPath ()
     {
-      //Note: We explicitly do not use Environment.ProgramFiles, as it chooses ProgramFiles (x86) when we run our Unit Tests in a 32 Bit Context
-      // As the Build Server is 64 bit, Docker cannot be found there under these circumstances.
-      const string programFiles = "C:\\Program Files";
+      var programFiles = Environment.GetFolderPath (Environment.SpecialFolder.ProgramFiles);
 
       var listOfKnownDockerLocations = new List<string>
                                        {
