@@ -185,7 +185,10 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 
         if (dockerProcess.ExitCode != 0)
         {
-          throw new InvalidOperationException ($"Docker command '{dockerCommand}' failed: {error}");
+          var errorMessage = $"Docker command '{dockerCommand}' failed: {error}";
+
+          s_log.Error (errorMessage);
+          throw new InvalidOperationException (errorMessage);
         }
 
         return output;
@@ -220,10 +223,14 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       var foundDockers = listOfKnownDockerLocations.Where (File.Exists).ToList();
 
       if (!foundDockers.Any())
-        throw new FileNotFoundException (
-            "Could not find Docker installed on this system. Checked paths: " +
-            Environment.NewLine +
-            string.Join (Environment.NewLine, listOfKnownDockerLocations.ToArray()));
+      {
+        var errorMessage = "Could not find Docker installed on this system. Checked paths:" +
+                           Environment.NewLine +
+                           string.Join (Environment.NewLine, listOfKnownDockerLocations.ToArray());
+
+        s_log.Fatal (errorMessage);
+        throw new FileNotFoundException (errorMessage);
+      }
 
       return foundDockers.First();
     }
