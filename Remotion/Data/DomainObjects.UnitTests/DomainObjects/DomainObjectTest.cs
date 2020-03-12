@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
       Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (2147483647), "Int32Property");
       Assert.That (classWithAllDataTypes.Int64Property, Is.EqualTo (9223372036854775807L), "Int64Property");
       Assert.That (classWithAllDataTypes.SingleProperty, Is.EqualTo (6789.321f), "SingleProperty");
-      Assert.That (classWithAllDataTypes.StringProperty, Is.EqualTo ("abcdef���"), "StringProperty");
+      Assert.That (classWithAllDataTypes.StringProperty, Is.EqualTo ("abcdeföäü"), "StringProperty");
       Assert.That (classWithAllDataTypes.StringPropertyWithoutMaxLength, Is.EqualTo ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"), "StringPropertyWithoutMaxLength");
       ResourceManager.IsEqualToImage1 (classWithAllDataTypes.BinaryProperty, "BinaryProperty");
 

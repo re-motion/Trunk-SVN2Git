@@ -135,7 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
               Vertraulichkeit
             </localizedName>
             <localizedName ref=""93969f13-65d7-49f4-a456-a1686a4de3de|0"" comment=""Confidentiality|Public"">
-              �ffentlich
+              Öffentlich
             </localizedName>
           </localizedNames>
           ";
@@ -149,7 +149,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         Assert.That (_importer.LocalizedNames[0].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420")));
         Assert.That (_importer.LocalizedNames[1].Text, Is.EqualTo ("Vertraulichkeit"));
         Assert.That (_importer.LocalizedNames[1].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de")));
-        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("�ffentlich"));
+        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Öffentlich"));
       }
     }
 
@@ -205,7 +205,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
               Vertraulichkeit
             </localizedName>
             <localizedName ref=""93969f13-65d7-49f4-a456-a1686a4de3de|0"" comment=""Confidentiality|Public"">
-              �ffentlich
+              Öffentlich
             </localizedName>
           </localizedNames>
           ";
@@ -221,7 +221,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         Assert.That (_importer.LocalizedNames[1].Text, Is.EqualTo ("Vertraulichkeit"));
         Assert.That (_importer.LocalizedNames[1].ID, Is.EqualTo (confidentialityNameID));
         Assert.That (_importer.LocalizedNames[1].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de")));
-        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("�ffentlich"));
+        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Öffentlich"));
       }
     }
 

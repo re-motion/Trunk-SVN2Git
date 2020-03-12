@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property"), Is.EqualTo (2147483647));
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property"), Is.EqualTo (9223372036854775807));
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty"), Is.EqualTo (6789.321f));
-      Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"), Is.EqualTo ("abcdef���"));
+      Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"), Is.EqualTo ("abcdeföäü"));
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"), Is.EqualTo ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
       ResourceManager.IsEqualToImage1 (
           (byte[]) GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BinaryProperty"));

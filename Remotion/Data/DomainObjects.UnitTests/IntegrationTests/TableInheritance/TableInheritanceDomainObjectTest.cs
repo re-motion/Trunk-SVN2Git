@@ -148,10 +148,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.TableInheritanc
       expectedCustomer.CustomerSince = DateTime.Now;
 
       TIAddress expectedAddress = TIAddress.NewObject();
-      expectedAddress.Street = "Linzer Stra�e 1";
+      expectedAddress.Street = "Linzer Straße 1";
       expectedAddress.Zip = "3100";
-      expectedAddress.City = "St. P�lten";
-      expectedAddress.Country = "�sterreich";
+      expectedAddress.City = "St. Pölten";
+      expectedAddress.Country = "Österreich";
       expectedAddress.Person = expectedCustomer;
 
       ClientTransactionScope.CurrentTransaction.Commit ();
