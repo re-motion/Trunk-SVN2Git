@@ -371,7 +371,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
             Helper.RunScreenshotTestExact<IFluentScreenshotElement<ElementScope>, ScreenshotTest> (element, ScreenshotTestingType.Both, test);
           },
-          3);
+          2);
     }
 
     [Category ("Screenshot")]
@@ -669,13 +669,16 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
     private void RetryTest (Action action, int retries)
     {
-      for (int i = 0; i < retries; i++)
+      if (retries < 0)
+        throw new ArgumentOutOfRangeException ("retries", "Retries must be greater than or equal to zero.");
+
+      for (int i = 0; i <= retries; i++)
       {
         try
         {
           action();
         }
-        catch (AssertionException) when (i + 1 < retries)
+        catch (AssertionException) when (i < retries)
         {
           continue;
         }
