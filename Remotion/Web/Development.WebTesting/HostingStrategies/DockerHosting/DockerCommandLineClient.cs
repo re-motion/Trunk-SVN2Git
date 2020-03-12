@@ -154,7 +154,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
       var startInfo = new ProcessStartInfo
                       {
                           WindowStyle = ProcessWindowStyle.Hidden,
-                          ErrorDialog = true,
+                          ErrorDialog = false,
                           LoadUserProfile = true,
                           CreateNoWindow = false,
                           UseShellExecute = false,
