@@ -66,7 +66,7 @@ namespace Remotion.Web.Development.WebTesting
     private readonly TimeSpan _verifyWebApplicationStartedTimeout;
     private readonly string _screenshotDirectory;
     private readonly string _logDirectory;
-    private readonly string _webApplicationRoot;
+    private readonly Uri _webApplicationRoot;
 
     [PublicAPI]
     protected WebTestSetUpFixtureHelper ([NotNull] WebTestConfigurationFactory webTestConfigurationFactory)
@@ -80,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting
       var testInfrastructureConfiguration = webTestConfigurationFactory.CreateTestInfrastructureConfiguration();
       _screenshotDirectory = testInfrastructureConfiguration.ScreenshotDirectory;
       _logDirectory = testInfrastructureConfiguration.ScreenshotDirectory;
-      _webApplicationRoot = testInfrastructureConfiguration.WebApplicationRoot;
+      _webApplicationRoot = new Uri (testInfrastructureConfiguration.WebApplicationRoot);
     }
 
     public string ScreenshotDirectory
@@ -137,10 +137,9 @@ namespace Remotion.Web.Development.WebTesting
       _hostingStrategy.DeployAndStartWebApplication();
     }
 
-    private void VerifyWebApplicationStarted (string webApplicationRoot, TimeSpan applicationPingTimeout)
+    private void VerifyWebApplicationStarted (Uri webApplicationRoot, TimeSpan applicationPingTimeout)
     {
-      var webApplicationRootUri = new Uri (webApplicationRoot);
-      var resolvedUri = ResolveHostname (webApplicationRootUri);
+      var resolvedUri = ResolveHostname (webApplicationRoot);
       s_log.Info ($"Verifying that '{resolvedUri}' is accessible within {applicationPingTimeout}.");
 
       var stopwatch = Stopwatch.StartNew();
@@ -148,7 +147,7 @@ namespace Remotion.Web.Development.WebTesting
       var webRequest = (HttpWebRequest) HttpWebRequest.Create (resolvedUri);
       webRequest.Method = WebRequestMethods.Http.Head;
       webRequest.AllowAutoRedirect = true;
-      webRequest.Host = webApplicationRootUri.Host;
+      webRequest.Host = webApplicationRoot.Host;
 
       HttpStatusCode statusCode = default;
       Assertion.DebugAssert (statusCode != HttpStatusCode.OK);
@@ -167,10 +166,10 @@ namespace Remotion.Web.Development.WebTesting
         }
         catch (WebException ex)
         {
-          CheckTimeout (webApplicationRoot, applicationPingTimeout, stopwatch, $"Failed with WebException '{ex.Message}'");
+          CheckTimeout (webApplicationRoot.ToString(), applicationPingTimeout, stopwatch, $"Failed with WebException '{ex.Message}'");
         }
 
-        CheckTimeout (webApplicationRoot, applicationPingTimeout, stopwatch, $"Failed with HttpStatusCode '{statusCode}'");
+        CheckTimeout (webApplicationRoot.ToString(), applicationPingTimeout, stopwatch, $"Failed with HttpStatusCode '{statusCode}'");
 
         Thread.Sleep (TimeSpan.FromMilliseconds (500));
       }
