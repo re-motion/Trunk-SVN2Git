@@ -91,19 +91,6 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     }
 
     [Test]
-    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
-    {
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
-      _testHelper.ReplayAll();
-
-      Assert.That (
-          () => _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation),
-          Throws.InvalidOperationException
-              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
-      _testHelper.VerifyAll();
-    }
-
-    [Test]
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
@@ -123,6 +110,19 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
 #endif
+    [Test]
+    public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
+    {
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ReplayAll();
+
+      Assert.That (
+          () => _securityClient.CheckStaticMethodAccess (typeof (SecurableObject), _methodInformation),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
+
+      _testHelper.VerifyAll();
+    }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
