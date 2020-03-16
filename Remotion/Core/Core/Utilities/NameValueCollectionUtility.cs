@@ -49,7 +49,7 @@ namespace Remotion.Utilities
     /// <summary>
     ///   Merges two collections. If a key occurs in both collections, the value of the second collections is taken.
     /// </summary>
-    public static NameValueCollection Merge (NameValueCollection first, NameValueCollection second)
+    public static NameValueCollection? Merge (NameValueCollection first, NameValueCollection second)
     {
       if (first == null && second == null)
         return null;
@@ -58,8 +58,8 @@ namespace Remotion.Utilities
       else if (first == null && second != null)
         return Clone (second);
 
-      NameValueCollection result = Clone (first);
-      Append (result, second);
+      NameValueCollection result = Clone (first!);
+      Append (result, second!);
       return result;
     }
   }

@@ -24,7 +24,7 @@ namespace Remotion.Configuration
       where TBase : class
   {
     //TODO: test
-    public static ConfigurationProperty CreateTypeProperty (Type defaultValue)
+    public static ConfigurationProperty CreateTypeProperty (Type? defaultValue)
     {
       return new ConfigurationProperty (
           "type",
@@ -43,7 +43,7 @@ namespace Remotion.Configuration
     {
     }
 
-    protected TypeElement (Type defaultValue)
+    protected TypeElement (Type? defaultValue)
     {
       _typeProperty = CreateTypeProperty (defaultValue);
 
@@ -62,7 +62,7 @@ namespace Remotion.Configuration
       set { base[_typeProperty] = value; }
     }
 
-    public TBase CreateInstance ()
+    public TBase? CreateInstance ()
     {
       if (Type == null)
         return null;

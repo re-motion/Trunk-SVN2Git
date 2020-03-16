@@ -32,9 +32,9 @@ namespace Remotion.Logging
     /// </summary>
     /// <param name="name">The name of the logger to retrieve.</param>
     /// <returns>A logger for the <paramref name="name"/> specified.</returns>
-    public static ILog GetLogger (string name)
+    public static ILog? GetLogger (string name)
     {
-      return SafeServiceLocator.Current.GetInstance<ILogManager>().GetLogger (name);
+      return SafeServiceLocator.Current?.GetInstance<ILogManager>().GetLogger (name);
     }
 
     /// <summary>

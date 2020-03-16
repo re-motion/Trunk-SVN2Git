@@ -33,10 +33,10 @@ namespace Remotion.Utilities
     {
     }
 
-    public TypeConverter CreateTypeConverterOrDefault (Type type)
+    public TypeConverter? CreateTypeConverterOrDefault (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      TypeConverterAttribute typeConverter = AttributeUtility.GetCustomAttribute<TypeConverterAttribute> (type, true);
+      TypeConverterAttribute? typeConverter = AttributeUtility.GetCustomAttribute<TypeConverterAttribute> (type, true);
       if (typeConverter == null)
         return null;
 

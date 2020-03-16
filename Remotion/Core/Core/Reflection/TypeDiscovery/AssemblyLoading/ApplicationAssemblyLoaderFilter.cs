@@ -52,9 +52,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       return "^((" + string.Join (")|(", assemblyMatchStrings) + "))$";
     }
 
-    private List<string> _nonApplicationAssemblyNames;
+    private List<string> _nonApplicationAssemblyNames = null!;
 
-    private RegexAssemblyLoaderFilter _assemblyNameFilter;
+    private RegexAssemblyLoaderFilter? _assemblyNameFilter;
     private readonly object _assemblyNameFilterLock = new object();
 
     private ApplicationAssemblyLoaderFilter ()

@@ -55,7 +55,7 @@ namespace Remotion.Configuration.TypeDiscovery
 
     private static TypeDiscoveryConfiguration GetTypeDiscoveryConfiguration ()
     {
-      return (TypeDiscoveryConfiguration) 
+      return (TypeDiscoveryConfiguration?)
              ConfigurationWrapper.Current.GetSection ("remotion.typeDiscovery", false) ?? new TypeDiscoveryConfiguration();
     }
 

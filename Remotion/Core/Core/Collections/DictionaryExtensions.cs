@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using Remotion.Utilities;
 
 namespace Remotion.Collections
@@ -27,30 +28,34 @@ namespace Remotion.Collections
   /// </summary>
   public static class DictionaryExtensions
   {
+    [return: MaybeNull]
     public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
 
-      return GetValueOrDefault (dictionary, key, default (TValue));
+      return GetValueOrDefault (dictionary, key, default (TValue)!);
     }
 
+    [return: MaybeNull]
     public static TValue GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
 
-      return GetValueOrDefault (dictionary, key, default (TValue));
+      return GetValueOrDefault (dictionary, key, default (TValue)!);
     }
 
+    [return: MaybeNull]
     public static TValue GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key)
     {
-      return ((IDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key);
+      return ((IDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key)!;
     }
 
+    [return: MaybeNull]
     public static TValue GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
     {
-      return ((IReadOnlyDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key);
+      return ((IReadOnlyDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key)!;
     }
 
     public static TValue GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)

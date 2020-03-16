@@ -27,7 +27,7 @@ namespace Remotion
   public class DoubleCheckedLockingContainer<T>
       where T : class
   {
-    private T _value = null;
+    private T? _value = null;
     private readonly Func<T> _defaultFactory;
     private readonly object _sync = new object();
 
@@ -63,7 +63,7 @@ namespace Remotion
     {
       get
       {
-        T localValue = Volatile.Read (ref _value);
+        T? localValue = Volatile.Read (ref _value)!;
         if (localValue == null)
         {
           lock (_sync)

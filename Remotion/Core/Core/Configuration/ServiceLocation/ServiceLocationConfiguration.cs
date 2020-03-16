@@ -51,8 +51,8 @@ namespace Remotion.Configuration.ServiceLocation
 
     private static ServiceLocationConfiguration GetServiceLocationConfiguration ()
     {
-      return (ServiceLocationConfiguration) 
-             ConfigurationWrapper.Current.GetSection ("remotion.serviceLocation", false) ?? new ServiceLocationConfiguration();
+      return (ServiceLocationConfiguration)
+             (ConfigurationWrapper.Current.GetSection ("remotion.serviceLocation", false) ?? new ServiceLocationConfiguration());
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace Remotion.Configuration.ServiceLocation
     /// <see cref="ServiceLocatorProvider"/> is set, an instance of <see cref="DefaultServiceLocatorProvider"/> is returned.
     /// </summary>
     /// <returns>An new <see cref="IServiceLocatorProvider"/> instance.</returns>
-    public IServiceLocatorProvider CreateServiceLocatorProvider ()
+    public IServiceLocatorProvider? CreateServiceLocatorProvider ()
     {
       return ServiceLocatorProvider.CreateInstance();
     }

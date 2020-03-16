@@ -33,7 +33,7 @@ namespace Remotion.Collections
   public class AutoInitDictionary<TKey, TValue> : IDictionary<TKey, TValue>
   {
     private Dictionary<TKey, TValue> _dictionary;
-    private Func<TValue> _createMethod;
+    private Func<TValue>? _createMethod;
 
     public AutoInitDictionary ()
       : this (null, null)
@@ -50,7 +50,7 @@ namespace Remotion.Collections
     {
     }
 
-    public AutoInitDictionary (Func<TValue> createMethod, IEqualityComparer<TKey> comparer)
+    public AutoInitDictionary (Func<TValue>? createMethod, IEqualityComparer<TKey>? comparer)
     {
       _createMethod = createMethod;
       _dictionary = new Dictionary<TKey, TValue> (comparer);

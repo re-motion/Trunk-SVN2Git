@@ -51,7 +51,7 @@ namespace Remotion.Utilities
     /// <returns> A standard type name as expected by <see cref="Type.GetType(string)"/>. </returns>
     [CanBeNull]
     [ContractAnnotation ("typeName:notnull => notnull;typeName:null => null")]
-    public static string ParseAbbreviatedTypeName ([CanBeNull]string typeName)
+    public static string? ParseAbbreviatedTypeName ([CanBeNull]string typeName)
     {
       if (typeName == null)
         return null;
@@ -76,7 +76,7 @@ namespace Remotion.Utilities
     /// In the designer context, <see cref="IDesignerHost"/> is used for the lookup.
     /// </remarks>
     [CanBeNull]
-    public static Type GetType ([NotNull]string name)
+    public static Type? GetType ([NotNull]string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
@@ -99,7 +99,7 @@ namespace Remotion.Utilities
     /// </remarks>
     [CanBeNull]
     [ContractAnnotation ("throwOnError:true => notnull")]
-    public static Type GetType ([NotNull]string name, bool throwOnError)
+    public static Type? GetType ([NotNull]string name, bool throwOnError)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 

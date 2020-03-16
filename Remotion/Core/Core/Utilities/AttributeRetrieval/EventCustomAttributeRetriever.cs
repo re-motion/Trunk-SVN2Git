@@ -26,7 +26,7 @@ namespace Remotion.Utilities.AttributeRetrieval
   /// </summary>
   public sealed class EventCustomAttributeRetriever : InheritanceAwareCustomAttributeRetriever<EventInfo>
   {
-    protected override EventInfo GetBaseMember (EventInfo memberInfo)
+    protected override EventInfo? GetBaseMember (EventInfo memberInfo)
     {
       var accessorMethod = memberInfo.GetAddMethod (true);
       Assertion.DebugAssert (accessorMethod != null, "A Event must have an add accessor.");

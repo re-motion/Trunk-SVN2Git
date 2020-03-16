@@ -26,6 +26,6 @@ namespace Remotion.Configuration.ServiceLocation
     /// <see cref="ServiceLocationConfiguration.ServiceLocatorProvider"/> is set, an instance of <see cref="DefaultServiceLocatorProvider"/> is returned.
     /// </summary>
     /// <returns>An new <see cref="IServiceLocatorProvider"/> instance.</returns>
-    IServiceLocatorProvider CreateServiceLocatorProvider ();
+    IServiceLocatorProvider? CreateServiceLocatorProvider ();
   }
 }

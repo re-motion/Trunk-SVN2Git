@@ -23,7 +23,7 @@ namespace Remotion.Utilities
   public static class DesignerUtility
   {
     private static bool s_isDesignMode;
-    private static IDesignModeHelper s_designModeHelper;
+    private static IDesignModeHelper? s_designModeHelper;
 
     public static void SetDesignMode (IDesignModeHelper designModeHelper)
     {
@@ -44,7 +44,7 @@ namespace Remotion.Utilities
       get
       {
         CheckDesignMode();
-        return s_designModeHelper;
+        return s_designModeHelper!;
       }
     }
 

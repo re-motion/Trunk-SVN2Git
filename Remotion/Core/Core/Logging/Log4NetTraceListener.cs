@@ -157,7 +157,7 @@ namespace Remotion.Logging
     /// <summary>
     /// Writes trace information, a data object and event information to the <b>log4net</b> log.
     /// </summary>
-    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
+    /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml'
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Object/param[@name="data"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
@@ -218,10 +218,10 @@ namespace Remotion.Logging
         string source,
         TraceEventType eventType,
         int id,
-        string formatOrMessage,
-        object[] args,
-        object data1,
-        object[] data)
+        string? formatOrMessage,
+        object[]? args,
+        object? data1,
+        object[]? data)
     {
       return ((Filter == null) || Filter.ShouldTrace (cache, source, eventType, id, formatOrMessage, args, data1, data));
     }

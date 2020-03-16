@@ -59,8 +59,8 @@ namespace Remotion.ServiceLocation
     // any exceptions thrown by GetDefaultServiceLocator to bubble up to the caller normally. (Exceptions during static field initialization get
     // wrapped in a TypeInitializationException.)
     private static readonly DoubleCheckedLockingContainer<IServiceLocator> s_defaultServiceLocator = 
-        new DoubleCheckedLockingContainer<IServiceLocator> (GetDefaultServiceLocator);
-    
+        new DoubleCheckedLockingContainer<IServiceLocator> (GetDefaultServiceLocator!);
+
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
     /// If no service locator is configured or <see cref="ServiceLocator.Current"/> returns <see langword="null" />, 
@@ -112,7 +112,7 @@ namespace Remotion.ServiceLocation
       s_defaultServiceLocator.Value = s_bootstrapServiceConfiguration.BootstrapServiceLocator;
 
       var serviceLocatorProvider = ServiceLocationConfiguration.Current.CreateServiceLocatorProvider();
-      return serviceLocatorProvider.GetServiceLocator (Array.AsReadOnly (s_bootstrapServiceConfiguration.Registrations));
+      return serviceLocatorProvider!.GetServiceLocator (Array.AsReadOnly (s_bootstrapServiceConfiguration.Registrations));
     }
   }
 }
