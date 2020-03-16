@@ -166,10 +166,10 @@ namespace Remotion.Web.Development.WebTesting
         }
         catch (WebException ex)
         {
-          CheckTimeout (webApplicationRoot.ToString(), applicationPingTimeout, stopwatch, $"Failed with WebException '{ex.Message}'");
+          CheckTimeout (webApplicationRoot, applicationPingTimeout, stopwatch, $"Failed with WebException '{ex.Message}'");
         }
 
-        CheckTimeout (webApplicationRoot.ToString(), applicationPingTimeout, stopwatch, $"Failed with HttpStatusCode '{statusCode}'");
+        CheckTimeout (webApplicationRoot, applicationPingTimeout, stopwatch, $"Failed with HttpStatusCode '{statusCode}'");
 
         Thread.Sleep (TimeSpan.FromMilliseconds (500));
       }
@@ -194,7 +194,7 @@ namespace Remotion.Web.Development.WebTesting
     }
 
     // ReSharper disable once ParameterOnlyUsedForPreconditionCheck.Local
-    private void CheckTimeout (string webApplicationRoot, TimeSpan applicationPingTimeout, Stopwatch stopwatch, string failureReason)
+    private void CheckTimeout (Uri webApplicationRoot, TimeSpan applicationPingTimeout, Stopwatch stopwatch, string failureReason)
     {
       if (stopwatch.ElapsedMilliseconds > applicationPingTimeout.TotalMilliseconds)
       {
