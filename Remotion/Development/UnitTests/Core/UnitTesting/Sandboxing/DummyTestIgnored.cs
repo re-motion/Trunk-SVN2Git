@@ -20,7 +20,7 @@ using Remotion.Development.UnitTesting.Sandboxing;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
-  [Ignore]
+  [Ignore("")]
   public class DummyTestIgnored
   {
     [Test]

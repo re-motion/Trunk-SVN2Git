@@ -22,7 +22,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
 {
   public class DummyTest5
   {
-    [Ignore]
+    [Ignore("")]
     public void TestIgnored ()
     {
       throw new TestFailedException (typeof (DummyTest5), "TestIgnored", SandboxTestStatus.Failed, new NotSupportedException ());
