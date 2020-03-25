@@ -34,9 +34,13 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       Messages = new List<string>();
     }
 
-    public override bool Matches (object actual)
+    public override ConstraintResult ApplyTo<TActual> (TActual actual)
     {
-      base.actual = actual;
+      return new XmlDocumentConstraintResult(this, actual, Matches(actual), Messages);
+    }
+
+    public bool Matches (object actual)
+    {
       var actualAsXmlDocument = actual as XmlDocument;
       if (actualAsXmlDocument == null && _expectedDocument == null)
         return true;
@@ -47,15 +51,6 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       return CompareDocuments (_expectedDocument, actualAsXmlDocument);
     }
 
-    public override void WriteDescriptionTo (MessageWriter writer)
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void WriteMessageTo (MessageWriter writer)
-    {
-      writer.Write (String.Join("\n", Messages.ToArray()));
-    }
 
     protected abstract bool CompareDocuments (XmlDocument expectedDocument, XmlDocument actualDocument);
 
