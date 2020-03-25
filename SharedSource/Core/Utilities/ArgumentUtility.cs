@@ -17,9 +17,10 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using JetBrains.Annotations;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -56,7 +57,8 @@ namespace Remotion.Utilities
     [AssertionMethod]
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName,
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL), NoEnumeration] T actualValue)
+        where T : notnull
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
@@ -71,6 +73,7 @@ namespace Remotion.Utilities
     public static void DebugCheckNotNull<T> (
         [InvokerParameterName] string argumentName,
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
+        where T : notnull
     {
       CheckNotNull (argumentName, actualValue);
     }
@@ -150,7 +153,8 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static string CheckNotEmpty ([InvokerParameterName] string argumentName, string actualValue)
+    [return: NotNullIfNotNull ("actualValue")]
+    public static string? CheckNotEmpty ([InvokerParameterName] string argumentName, string? actualValue)
     {
       if (actualValue != null && actualValue.Length == 0)
         throw CreateArgumentEmptyException (argumentName);
@@ -159,8 +163,9 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+    [return: NotNullIfNotNull ("enumerable")]
     public static T CheckNotEmpty<T> ([InvokerParameterName] string argumentName, T enumerable)
-        where T: IEnumerable
+        where T: IEnumerable?
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (enumerable != null)
@@ -231,7 +236,7 @@ namespace Remotion.Utilities
     public static TExpected CheckNotNullAndType<TExpected> (
         [InvokerParameterName] string argumentName,
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue)
-        // where TExpected: struct
+        where TExpected : notnull
     {
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
@@ -254,7 +259,8 @@ namespace Remotion.Utilities
       CheckNotNullAndType (argumentName, actualValue, expectedType);
     }
 
-    public static object CheckType ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue, Type expectedType)
+    [return: NotNullIfNotNull ("actualValue")]
+    public static object? CheckType ([InvokerParameterName] string argumentName, [NoEnumeration] object? actualValue, Type expectedType)
     {
       if (actualValue == null)
       {
@@ -282,13 +288,14 @@ namespace Remotion.Utilities
     ///   For non-nullable value types, you should use either <see cref="CheckNotNullAndType{TExpected}"/> or pass the type 
     ///   <see cref="Nullable{T}" /> instead.
     /// </remarks>
-    public static TExpected CheckType<TExpected> ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue)
+    [return: NotNullIfNotNull ("actualValue")]
+    public static TExpected CheckType<TExpected> ([InvokerParameterName] string argumentName, [NoEnumeration] object? actualValue)
     {
       if (actualValue == null)
       {
         try
         {
-          return (TExpected) actualValue;
+          return (TExpected) actualValue!;
         }
         catch (NullReferenceException)
         {
@@ -318,9 +325,10 @@ namespace Remotion.Utilities
 
     /// <summary>Checks whether <paramref name="actualType"/> can be assigned to <paramref name="expectedType"/>.</summary>
     /// <exception cref="ArgumentException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
-    public static Type CheckTypeIsAssignableFrom (
+    [return: NotNullIfNotNull ("actualType")]
+    public static Type? CheckTypeIsAssignableFrom (
         [InvokerParameterName] string argumentName, 
-        Type actualType, 
+        Type? actualType, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       CheckNotNull ("expectedType", expectedType);
@@ -346,7 +354,7 @@ namespace Remotion.Utilities
     [AssertionMethod]
     public static void DebugCheckTypeIsAssignableFrom (
         [InvokerParameterName] string argumentName, 
-        Type actualType, 
+        Type? actualType, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       CheckTypeIsAssignableFrom (argumentName, actualType, expectedType);
@@ -354,8 +362,9 @@ namespace Remotion.Utilities
 
     /// <summary>Checks whether all items in <paramref name="collection"/> are of type <paramref name="itemType"/> or a null reference.</summary>
     /// <exception cref="ArgumentException"> If at least one element is not of the specified type or a derived type. </exception>
+    [return: NotNullIfNotNull ("collection")]
     public static T CheckItemsType<T> ([InvokerParameterName] string argumentName, T collection, Type itemType)
-        where T: ICollection
+        where T: ICollection?
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
@@ -379,8 +388,9 @@ namespace Remotion.Utilities
     /// <summary>Checks whether all items in <paramref name="collection"/> are of type <paramref name="itemType"/> and not null references.</summary>
     /// <exception cref="ArgumentException"> If at least one element is not of the specified type or a derived type. </exception>
     /// <exception cref="ArgumentNullException"> If at least one element is a null reference. </exception>
+    [return: NotNullIfNotNull ("collection")]
     public static T CheckItemsNotNullAndType<T> ([InvokerParameterName] string argumentName, T collection, Type itemType)
-        where T: ICollection
+        where T: ICollection?
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
@@ -410,7 +420,7 @@ namespace Remotion.Utilities
     }
 
     [MustUseReturnValue]
-    public static ArgumentException CreateArgumentTypeException ([InvokerParameterName] string argumentName, Type actualType, Type expectedType)
+    public static ArgumentException CreateArgumentTypeException ([InvokerParameterName] string argumentName, Type? actualType, Type expectedType)
     {
       string actualTypeName = actualType != null ? actualType.ToString() : "<null>";
       if (expectedType == null)
