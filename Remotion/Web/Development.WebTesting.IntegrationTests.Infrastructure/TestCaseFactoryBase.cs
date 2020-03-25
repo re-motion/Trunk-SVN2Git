@@ -20,6 +20,8 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using JetBrains.Annotations;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
+using NUnit.Framework.Internal;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.PageObjects;
 
@@ -150,12 +152,20 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
             // Handle IgnoreAttribute
             var ignoreAttribute = (IgnoreAttribute) Attribute.GetCustomAttribute (method, typeof (IgnoreAttribute));
             if (ignoreAttribute != null)
-              testCaseData.Ignore (ignoreAttribute.Reason);
+            {
+              var dummyTest = new TestSuite("");
+              ignoreAttribute.ApplyToTest(dummyTest);
+              testCaseData.Ignore ((string) dummyTest.Properties.Get(PropertyNames.SkipReason));
+            }
 
             // Handle ExplicitAttribute
             var explicitAttribute = (ExplicitAttribute) Attribute.GetCustomAttribute (method, typeof (ExplicitAttribute));
             if (explicitAttribute != null)
-              testCaseData.MakeExplicit (explicitAttribute.Reason);
+            {
+              var dummyTest = new TestSuite ("");
+              explicitAttribute.ApplyToTest (dummyTest);
+              testCaseData.Explicit ((string) dummyTest.Properties.Get(PropertyNames.SkipReason));
+            }
 
             testCaseAttribute.Apply (testCaseData);
 
