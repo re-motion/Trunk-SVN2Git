@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.FunctionalProgramming
 {
@@ -74,3 +74,4 @@ namespace Remotion.FunctionalProgramming
     }
   }
 }
+#nullable restore

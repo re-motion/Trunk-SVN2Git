@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Reflection;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -65,3 +65,4 @@ namespace Remotion.Utilities
     }
   }
 }
+#nullable restore

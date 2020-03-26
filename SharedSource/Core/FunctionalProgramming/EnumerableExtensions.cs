@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Utilities;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.FunctionalProgramming
 {
@@ -101,7 +101,7 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("source", source);
       ArgumentUtility.CheckNotNull ("createEmptySequenceException", createEmptySequenceException);
 
-      TSource result = default (TSource);
+      TSource result = default (TSource)!;
       bool isElementFound = false;
       foreach (TSource current in source)
       {
@@ -139,7 +139,7 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("predicate", predicate);
       ArgumentUtility.CheckNotNull ("createNoMatchingElementException", createNoMatchingElementException);
 
-      TSource result = default (TSource);
+      TSource result = default (TSource)!;
       bool isElementFound = false;
       foreach (TSource current in source)
       {
@@ -249,7 +249,7 @@ namespace Remotion.FunctionalProgramming
         this TSource source,
         Func<TSource, TSource> nextElementSelector,
         Func<TSource, bool> predicate,
-        [CanBeNull] IEqualityComparer<TSource> equalityComparer,
+        [CanBeNull] IEqualityComparer<TSource>? equalityComparer,
         Func<TSource, TException> createCycleFoundException)
         where TException : Exception
     {
@@ -396,7 +396,7 @@ namespace Remotion.FunctionalProgramming
       using (var enumerator = source.GetEnumerator())
       {
         if (!enumerator.MoveNext())
-          return default (TSource);
+          return default (TSource)!;
 
         var element = enumerator.Current;
         if (enumerator.MoveNext())
@@ -452,3 +452,4 @@ namespace Remotion.FunctionalProgramming
     }
   }
 }
+#nullable restore

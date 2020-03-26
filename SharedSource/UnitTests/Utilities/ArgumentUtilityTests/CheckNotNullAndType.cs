@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Utilities;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
@@ -136,7 +137,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Null_String_NonGeneric ()
     {
-      ArgumentUtility.CheckNotNullAndType ("arg", (object) null, typeof (string));
+      ArgumentUtility.CheckNotNullAndType ("arg", (object?) null, typeof (string));
     }
 
     [Test]
@@ -152,7 +153,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Null_Int_NonGeneric ()
     {
-      ArgumentUtility.CheckNotNullAndType ("arg", (object) null, typeof (int));
+      ArgumentUtility.CheckNotNullAndType ("arg", (object?) null, typeof (int));
     }
 
     [Test]

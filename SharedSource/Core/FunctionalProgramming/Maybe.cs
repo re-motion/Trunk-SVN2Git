@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.FunctionalProgramming
 {
@@ -170,7 +170,7 @@ namespace Remotion.FunctionalProgramming
     /// <returns>The value held by this instance, or the default value of <typeparamref name="T"/> if this instance does not have a value.</returns>
     public T ValueOrDefault ()
     {
-      return ValueOrDefault (default (T));
+      return ValueOrDefault (default (T)!);
     }
 
     /// <summary>
@@ -364,3 +364,4 @@ namespace Remotion.FunctionalProgramming
     }
   }
 }
+#nullable restore

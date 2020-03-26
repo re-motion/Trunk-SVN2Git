@@ -17,8 +17,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -47,7 +48,7 @@ namespace Remotion.Utilities
     /// The idea for this method, but not the code, was taken from http://blogs.msdn.com/b/kingces/archive/2005/08/17/452774.aspx.
     /// </para>
     /// </returns>
-    public bool Equals (T one, T two)
+    public bool Equals ([AllowNull] T one, [AllowNull] T two)
     {
       // Same reference => true of course
       if (ReferenceEquals (one, two))
@@ -109,7 +110,7 @@ namespace Remotion.Utilities
     /// </summary>
     /// <param name="memberInfo">The <see cref="MemberInfo"/> for which the hash code should be calculated.</param>
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
-    public int GetHashCode (T memberInfo)
+    public int GetHashCode ([AllowNull] T memberInfo)
     {
       if (memberInfo == null)
         throw new ArgumentNullException ("memberInfo");
@@ -123,9 +124,10 @@ namespace Remotion.Utilities
         return GetHashCodeOrZero (memberInfo.DeclaringType) ^ GetHashCodeOrZero (memberInfo.MetadataToken) ^ GetHashCodeOrZero (memberInfo.Module);
     }
 
-    private int GetHashCodeOrZero (object valueOrNull)
+    private int GetHashCodeOrZero (object? valueOrNull)
     {
       return valueOrNull != null ? valueOrNull.GetHashCode () : 0;
     }
   }
 }
+#nullable restore

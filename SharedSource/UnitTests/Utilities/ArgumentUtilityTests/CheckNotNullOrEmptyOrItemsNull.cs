@@ -20,6 +20,7 @@ using System.Collections;
 using NUnit.Framework;
 using Remotion.Utilities;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
@@ -30,7 +31,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Value cannot be null.\r\nParameter name: arg")]
     public void Fail_NullICollection ()
     {
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", (ICollection) null);
+      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", (ICollection?) null);
     }
 
     [Test]

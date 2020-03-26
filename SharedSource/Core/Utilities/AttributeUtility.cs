@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -45,7 +45,7 @@ namespace Remotion.Utilities
       return usage.AllowMultiple;
     }
 
-    public static AttributeUsageAttribute GetAttributeUsage (Type attributeType)
+    public static AttributeUsageAttribute GetAttributeUsage (Type? attributeType)
     {
       if (attributeType == null)
         throw new ArgumentNullException ("attributeType");
@@ -76,3 +76,4 @@ namespace Remotion.Utilities
     }
   }
 }
+#nullable restore

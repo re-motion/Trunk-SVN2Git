@@ -20,6 +20,7 @@ using System.IO;
 using Microsoft.Win32;
 using Remotion.FunctionalProgramming;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Development.UnitTesting.PEVerifyPathSources
 {
@@ -42,7 +43,7 @@ namespace Remotion.Development.UnitTesting.PEVerifyPathSources
       }
     }
 
-    protected override string GetPotentialPEVerifyPath (PEVerifyVersion version)
+    protected override string? GetPotentialPEVerifyPath (PEVerifyVersion version)
     {
       if (version != PEVerifyVersion.DotNet2)
         return null;

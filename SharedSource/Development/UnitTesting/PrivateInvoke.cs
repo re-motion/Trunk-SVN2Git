@@ -20,6 +20,7 @@ using System.Globalization;
 using System.Reflection;
 using Remotion.Utilities;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Development.UnitTesting
 {
@@ -30,20 +31,20 @@ namespace Remotion.Development.UnitTesting
   {
     // static members
 
-    private static MethodInfo GetMethod (Type type, string methodName, BindingFlags bindingFlags, object[] arguments)
+    private static MethodInfo GetMethod (Type type, string methodName, BindingFlags bindingFlags, object?[] arguments)
     {
       Debug.Assert (methodName != null);
       return (MethodInfo) GetMethodBaseInternal (type, methodName, type.GetMethods (bindingFlags), arguments);
     }
 
-    private static ConstructorInfo GetConstructor (Type type, BindingFlags bindingFlags, object[] arguments)
+    private static ConstructorInfo GetConstructor (Type type, BindingFlags bindingFlags, object?[] arguments)
     {
       return (ConstructorInfo) GetMethodBaseInternal (type, null, type.GetConstructors (bindingFlags), arguments);
     }
 
-    private static MethodBase GetMethodBaseInternal (Type type, string methodName, MethodBase[] methods, object[] arguments)
+    private static MethodBase GetMethodBaseInternal (Type type, string? methodName, MethodBase[] methods, object?[] arguments)
     {
-      MethodBase callMethod = null;
+      MethodBase? callMethod = null;
 
       foreach (MethodBase method in methods)
       {
@@ -55,7 +56,7 @@ namespace Remotion.Development.UnitTesting
             bool isMatch = true;
             for (int i = 0; i < parameters.Length; ++i)
             {
-              object argument = arguments[i];
+              object? argument = arguments[i];
               Type parameterType = parameters[i].ParameterType;
 
               if (! (    (argument == null && ! parameterType.IsValueType)        // null is a valid argument for any reference type
@@ -84,9 +85,9 @@ namespace Remotion.Development.UnitTesting
       return callMethod;
     }
 
-    private static PropertyInfo GetPropertyRecursive (Type type, BindingFlags bindingFlags, string propertyName)
+    private static PropertyInfo? GetPropertyRecursive (Type type, BindingFlags bindingFlags, string propertyName)
     {
-      for (PropertyInfo property = null; type != null; type = type.BaseType)
+      for (PropertyInfo? property = null; type != null; type = type.BaseType)
       {
         property = type.GetProperty (propertyName, bindingFlags);
         if (property != null)
@@ -95,9 +96,9 @@ namespace Remotion.Development.UnitTesting
       return null;
     }
 
-    private static FieldInfo GetFieldRecursive (Type type, BindingFlags bindingFlags, string fieldName)
+    private static FieldInfo? GetFieldRecursive (Type type, BindingFlags bindingFlags, string fieldName)
     {
-      for (FieldInfo field = null; type != null; type = type.BaseType)
+      for (FieldInfo? field = null; type != null; type = type.BaseType)
       {
         field = type.GetField (fieldName, bindingFlags);
         if (field != null)
@@ -149,10 +150,10 @@ namespace Remotion.Development.UnitTesting
       return InvokeMethodInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.Public, methodName, arguments);
     }
 
-    private static object InvokeMethodInternal (object instance, Type type, BindingFlags bindingFlags, string methodName, object[] arguments)
+    private static object InvokeMethodInternal (object? instance, Type type, BindingFlags bindingFlags, string methodName, object?[] arguments)
     {
       if (arguments == null)
-        arguments = new object[] { null };
+        arguments = new object?[] { null };
 
       MethodInfo callMethod = GetMethod (type, methodName, bindingFlags, arguments);
 
@@ -200,10 +201,10 @@ namespace Remotion.Development.UnitTesting
       return CreateInstanceInternal (type, false, arguments);
     }
 
-    private static object CreateInstanceInternal (Type type, bool isPublic, object[] arguments)
+    private static object CreateInstanceInternal (Type type, bool isPublic, object?[] arguments)
     {
       if (arguments == null)
-        arguments = new object[] { null };
+        arguments = new object?[] { null };
 
       BindingFlags bindingFlags = BindingFlags.Instance;
       bindingFlags |= isPublic ? BindingFlags.Public : BindingFlags.NonPublic;
@@ -256,9 +257,9 @@ namespace Remotion.Development.UnitTesting
       return GetPropertyInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, propertyName);
     }
 
-    private static object GetPropertyInternal (object instance, Type type, BindingFlags bindingFlags, string propertyName)
+    private static object GetPropertyInternal (object? instance, Type type, BindingFlags bindingFlags, string propertyName)
     {
-      PropertyInfo property = GetPropertyRecursive (type, bindingFlags, propertyName);
+      PropertyInfo? property = GetPropertyRecursive (type, bindingFlags, propertyName);
       if (property == null)
       {
         throw new ArgumentException ("No property '" + propertyName + "' found on type '" + type.FullName + "' with binding flags '" + bindingFlags + "'.",
@@ -311,9 +312,9 @@ namespace Remotion.Development.UnitTesting
       SetPropertyInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, propertyName, value);
     }
 
-    private static void SetPropertyInternal (object instance, Type type, BindingFlags bindingFlags, string propertyName, object value)
+    private static void SetPropertyInternal (object? instance, Type type, BindingFlags bindingFlags, string propertyName, object value)
     {
-      PropertyInfo property = GetPropertyRecursive (type, bindingFlags, propertyName);
+      PropertyInfo property = GetPropertyRecursive (type, bindingFlags, propertyName)!;
       try
       {
         property.SetValue (instance, value, new object[] {});
@@ -361,9 +362,9 @@ namespace Remotion.Development.UnitTesting
       return GetFieldInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, fieldName);
     }
 
-    private static object GetFieldInternal (object instance, Type type, BindingFlags bindingFlags, string fieldName)
+    private static object GetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName)
     {
-      FieldInfo field = GetFieldRecursive (type, bindingFlags, fieldName);
+      FieldInfo? field = GetFieldRecursive (type, bindingFlags, fieldName);
       if (field == null)
       {
         throw new ArgumentException ("No field '" + fieldName + "' found on type '" + type.FullName + "' with binding flags '" + bindingFlags + "'.",
@@ -408,12 +409,12 @@ namespace Remotion.Development.UnitTesting
       SetFieldInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, fieldName, value);
     }
 
-    private static void SetFieldInternal (object instance, Type type, BindingFlags bindingFlags, string fieldName, object value)
+    private static void SetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName, object value)
     {
-      FieldInfo field = GetFieldRecursive (type, bindingFlags, fieldName);
+      FieldInfo? field = GetFieldRecursive (type, bindingFlags, fieldName);
       try
       {
-        field.SetValue (instance, value);
+        field!.SetValue (instance, value);
       }
       catch (TargetInvocationException e)
       {
@@ -424,3 +425,4 @@ namespace Remotion.Development.UnitTesting
     #endregion
   }
 }
+#nullable restore

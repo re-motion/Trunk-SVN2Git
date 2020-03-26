@@ -22,15 +22,16 @@ using NUnit.Framework;
 using Remotion.FunctionalProgramming;
 using Remotion.UnitTests.FunctionalProgramming.TestDomain;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.FunctionalProgramming
 {
   [TestFixture]
   public class EnumerableExtensionsTest
   {
-    private IEnumerable<string> _enumerableWithoutValues;
-    private IEnumerable<string> _enumerableWithOneValue;
-    private IEnumerable<string> _enumerableWithThreeValues;
+    private IEnumerable<string> _enumerableWithoutValues = default!;
+    private IEnumerable<string> _enumerableWithOneValue = default!;
+    private IEnumerable<string> _enumerableWithThreeValues = default!;
 
     [SetUp]
     public void SetUp ()
@@ -152,7 +153,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var third = new Element (3, second);
       var fourth = new Element (4, third);
 
-      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent);
+      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent!);
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second, first }));
     }
 
@@ -164,14 +165,14 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var third = new Element (3, second);
       var fourth = new Element (4, third);
 
-      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent, e => e != first);
+      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent!, e => e != first);
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second }));
     }
 
     [Test]
     public void CreateSequence_WhilePredicateEvaluatesTrue_WithNull ()
     {
-      IEnumerable<Element> actual = ((Element)null).CreateSequence (e => e.Parent, e => e != null);
+      IEnumerable<Element> actual = ((Element?)null).CreateSequence (e => e!.Parent, e => e != null)!;
       Assert.That (actual.ToArray (), Is.Empty);
     }
 
@@ -180,7 +181,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     {
       var element = new Element (0, null);
 
-      IEnumerable<Element> actual = element.CreateSequence (e => e.Parent, e => e != null);
+      IEnumerable<Element> actual = element.CreateSequence (e => e!.Parent!, e => e != null);
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { element }));
     }
 
@@ -199,7 +200,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var third = new Element (3, second);
       var fourth = new Element (4, third);
 
-      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (e => e.Parent, e => new Exception());
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (e => e!.Parent!, e => new Exception());
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second, first }));
     }
 
@@ -211,14 +212,14 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var third = new Element (3, second);
       var fourth = new Element (4, third);
 
-      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (e => e.Parent, e => e != first, null, e => new Exception());
+      IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (e => e!.Parent!, e => e != first, null, e => new Exception());
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second }));
     }
 
     [Test]
     public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue_WithNull ()
     {
-      IEnumerable<Element> actual = ((Element)null).CreateSequenceWithCycleCheck (e => e.Parent, e => e != null, null, e => new Exception());
+      IEnumerable<Element> actual = ((Element?)null).CreateSequenceWithCycleCheck (e => e!.Parent, e => e != null, null, e => new Exception())!;
       Assert.That (actual.ToArray (), Is.Empty);
     }
 
@@ -227,7 +228,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     {
       var element = new Element (0, null);
 
-      IEnumerable<Element> actual = element.CreateSequenceWithCycleCheck (e => e.Parent, e => e != null, null, e => new Exception());
+      IEnumerable<Element> actual = element.CreateSequenceWithCycleCheck (e => e.Parent!, e => e != null, null, e => new Exception());
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { element }));
     }
 
@@ -249,7 +250,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       first.SetParent (fourth);
 
       IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
-          e => e.Parent,
+          e => e.Parent!,
           e => e != null,
           EqualityComparer<Element>.Default,
           e => new Exception (string.Format ("element: '{0}'", e)));
@@ -264,7 +265,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       first.SetParent (first);
 
       IEnumerable<Element> actual = first.CreateSequenceWithCycleCheck (
-          e => e.Parent,
+          e => e.Parent!,
           e => e != null,
           EqualityComparer<Element>.Default,
           e => new Exception (string.Format ("element: '{0}'", e)));
@@ -283,7 +284,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       first.SetParent (third);
 
       IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
-          e => e.Parent,
+          e => e.Parent!,
           e => e != null,
           EqualityComparer<Element>.Default,
           e => new Exception (string.Format ("element: '{0}'", e)));
@@ -302,7 +303,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       first.SetParent (first);
 
       IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
-          e => e.Parent,
+          e => e.Parent!,
           e => e != null,
           EqualityComparer<Element>.Default,
           e => new Exception (string.Format ("element: '{0}'", e)));
@@ -322,7 +323,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var fakeComparer = new FakeElementEqualityComparer ((x, y) => second.Equals (x) || second.Equals (y));
 
       IEnumerable<Element> actual = fourth.CreateSequenceWithCycleCheck (
-          e => e.Parent,
+          e => e.Parent!,
           e => e != null,
           fakeComparer,
           e => new Exception (string.Format ("element: '{0}'", e)));
@@ -444,7 +445,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
     [Test]
     public void Concat_WithSingleElement_NullItem ()
     {
-      var result = new[] { "test" }.Concat ((string) null);
+      var result = new[] { "test" }.Concat ((string?) null);
       Assert.That (result, Is.EqualTo (new[] { "test", null }));
     }
 

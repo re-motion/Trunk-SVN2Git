@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -47,3 +47,4 @@ namespace Remotion.Utilities
     }
   }
 }
+#nullable restore
