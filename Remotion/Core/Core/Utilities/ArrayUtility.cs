@@ -80,7 +80,7 @@ namespace Remotion.Utilities
       return result;
     }
 
-    public static TResult[] Convert<TSource, TResult> (ICollection<TSource> collection)
+    public static TResult[]? Convert<TSource, TResult> (ICollection<TSource> collection)
         where TResult: TSource
     {
       if (collection == null)
@@ -117,7 +117,7 @@ namespace Remotion.Utilities
       return result;
     }
 
-    public static T[] Convert<T> (ICollection<T> collection)
+    public static T[]? Convert<T> (ICollection<T> collection)
     {
       return Convert<T, T> (collection);
     }

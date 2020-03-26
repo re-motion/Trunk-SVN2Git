@@ -62,7 +62,7 @@ namespace Remotion.Configuration
       set { base[_typeProperty] = value; }
     }
 
-    public TBase CreateInstance ()
+    public TBase? CreateInstance ()
     {
       if (Type == null)
         return null;

@@ -99,7 +99,7 @@ public class BidirectionalStringConverter: TypeConverter
   /// <param name="destinationType"> The destination <see cref="Type"/>. Must not be <see langword="null"/>. </param>
   /// <returns> An <see cref="Object"/> that represents the converted value. </returns>
   /// <exception cref="NotSupportedException"> The conversion could not be performed. </exception>
-  public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+  public override object? ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
   {
     ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 

@@ -219,7 +219,7 @@ namespace Remotion.ServiceLocation
       return factoryLambda.Compile();
     }
 
-    private ConstructorInfo GetSingleConstructor (ServiceImplementationInfo serviceImplementationInfo, Type expectedParameterType)
+    private ConstructorInfo GetSingleConstructor (ServiceImplementationInfo serviceImplementationInfo, Type? expectedParameterType)
     {
       var argumentTypesDoNotMatchMessage = string.Format (
           " The public constructor must at least accept an argument of type '{0}'.",
@@ -262,7 +262,7 @@ namespace Remotion.ServiceLocation
       return Expression.Call (serviceLocator, resolutionMethod, arguments);
     }
 
-    private T ResolveIndirectDependency<T> (string context)
+    private T? ResolveIndirectDependency<T> (string context)
     {
       try
       {

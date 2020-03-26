@@ -27,7 +27,7 @@ namespace Remotion.Collections
   /// </summary>
   public static class DictionaryExtensions
   {
-    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue>? dictionary, TKey key)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
@@ -35,7 +35,7 @@ namespace Remotion.Collections
       return GetValueOrDefault (dictionary, key, default (TValue));
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue>? dictionary, TKey key)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
@@ -43,17 +43,17 @@ namespace Remotion.Collections
       return GetValueOrDefault (dictionary, key, default (TValue));
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key)
     {
       return ((IDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key);
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key)
     {
       return ((IReadOnlyDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key);
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue>? dictionary, TKey? key, TValue? defaultValue)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
@@ -66,7 +66,7 @@ namespace Remotion.Collections
         return defaultValue;
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue>? dictionary, TKey? key, TValue? defaultValue)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
@@ -79,17 +79,17 @@ namespace Remotion.Collections
         return defaultValue;
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
     {
       return ((IDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key, defaultValue);
     }
 
-    public static TValue GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    public static TValue? GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
     {
       return ((IReadOnlyDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key, defaultValue);
     }
 
-    public static TValue GetOrCreateValue<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
+    public static TValue? GetOrCreateValue<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.

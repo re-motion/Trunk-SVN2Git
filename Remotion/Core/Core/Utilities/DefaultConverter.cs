@@ -64,7 +64,7 @@ namespace Remotion.Utilities
       return destinationType == _type || Nullable.GetUnderlyingType (destinationType) == _type;
     }
 
-    public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
       // ReSharper disable ConditionIsAlwaysTrueOrFalse
       // ReSharper disable HeuristicUnreachableCode

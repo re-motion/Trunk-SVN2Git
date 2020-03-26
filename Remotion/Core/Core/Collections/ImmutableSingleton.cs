@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -26,7 +26,7 @@ namespace Remotion.Collections
   /// </summary>
   public static class ImmutableSingleton
   {
-    public static ImmutableSingleton<T> Create<T> ([CanBeNull]T item)
+    public static ImmutableSingleton<T> Create<T> ([CanBeNull]T? item)
     {
       return new ImmutableSingleton<T> (item);
     }
