@@ -17,6 +17,7 @@
 
 using System;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Development.UnitTesting
 {
@@ -40,3 +41,4 @@ namespace Remotion.Development.UnitTesting
     }
   }
 }
+#nullable restore

@@ -19,7 +19,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 using JetBrains.Annotations;
-
+#nullable disable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -449,3 +449,4 @@ namespace Remotion.Utilities
     }
   }
 }
+#nullable restore

@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.UnitTests.Utilities.MemberInfoEqualityComparerTestDomain;
 using Remotion.Utilities;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities
 {

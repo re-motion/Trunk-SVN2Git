@@ -16,8 +16,9 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -142,14 +143,14 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj)
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [MaybeNull] T obj)
     {
       return IsNotNull (obj, c_msgIsNull);
     }
 
     [AssertionMethod]
     [StringFormatMethod ("message")]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message, params object[] arguments)
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [MaybeNull] T obj, string message, params object[] arguments)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (obj == null)
@@ -160,23 +161,24 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
-    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj, string message)
+    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object? obj, string message)
     {
       IsNull (obj, message, s_emptyArguments);
     }
 
     [AssertionMethod]
-    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj)
+    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object? obj)
     {
       IsNull (obj, c_msgIsNotNull);
     }
 
     [AssertionMethod]
     [StringFormatMethod("message")]
-    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object obj, string message, params object[] arguments)
+    public static void IsNull ([AssertionCondition (AssertionConditionType.IS_NULL)] object? obj, string message, params object[] arguments)
     {
       if (obj != null)
         throw new InvalidOperationException (string.Format (message, arguments));
     }
   }
 }
+#nullable restore

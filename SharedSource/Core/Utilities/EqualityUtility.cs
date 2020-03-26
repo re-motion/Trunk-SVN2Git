@@ -17,7 +17,7 @@
 
 using System;
 using System.Collections;
-
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.Utilities
 {
@@ -133,7 +133,7 @@ namespace Remotion.Utilities
     }
 
     /// <inheritdoc cref="GetRotatedHashCode{A0,A1}" />
-    public static int GetRotatedHashCode (params object[] fields)
+    public static int GetRotatedHashCode (params object?[] fields)
     {
       int hc = 0;
       for (int i = 0; i < fields.Length; ++i)
@@ -207,7 +207,7 @@ namespace Remotion.Utilities
     public static bool EqualsEquatable<T> (T a, object b)
       where T : class, IEquatable<T>
     {
-      T other = b as T;
+      T? other = b as T;
       if (other != null)
         return a.Equals (other);
       else
@@ -244,8 +244,9 @@ namespace Remotion.Utilities
       if (a == null)
         return (b == null);
       else
-        return a.Equals ((object) b);
+        return a.Equals ((object?) b);
     }
    
   }
 }
+#nullable restore

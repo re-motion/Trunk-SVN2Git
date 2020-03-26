@@ -16,11 +16,13 @@
 // 
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Utilities;
 
+#nullable enable
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities
 {
@@ -678,15 +680,15 @@ namespace Remotion.UnitTests.Utilities
       public void InstanceVoidMethod () { }
       public int InstanceMethod () { return 0; }
 
-      public static void StaticVoidGenericMethod<T> (T t) { }
-      public static int StaticGenericMethod<T> (T t) { return 0; }
-      public void InstanceVoidGenericMethod<T> (T t) { }
-      public int InstanceGenericMethod<T> (T t) { return 0; }
+      public static void StaticVoidGenericMethod<T> ([AllowNull] T t) { }
+      public static int StaticGenericMethod<T> ([AllowNull] T t) { return 0; }
+      public void InstanceVoidGenericMethod<T> ([AllowNull] T t) { }
+      public int InstanceGenericMethod<T> ([AllowNull] T t) { return 0; }
 
       public override void OverridingVoidMethod () { }
       public override int OverridingMethod () { return 0; }
-      public override void OverridingVoidGenericMethod<T> (T t) { }
-      public override int OverridingGenericMethod<T> (T t) { return 0; }
+      public override void OverridingVoidGenericMethod<T> ([AllowNull] T t) { }
+      public override int OverridingGenericMethod<T> ([AllowNull] T t) { return 0; }
 
       public static int StaticProperty { get; set; }
       public int InstanceProperty { get; set; }
