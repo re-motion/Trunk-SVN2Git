@@ -47,7 +47,7 @@ namespace Remotion.Utilities
 
     [Conditional ("DEBUG")]
     [AssertionMethod]
-    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion, string message)
     {
       IsTrue (assertion, message);
     }
@@ -55,21 +55,21 @@ namespace Remotion.Utilities
     [Conditional ("DEBUG")]
     [AssertionMethod]
     [StringFormatMethod("message")]
-    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion, string message, params object[] arguments)
     {
       IsTrue (assertion, message, arguments);
     }
 
     [Conditional ("DEBUG")]
     [AssertionMethod]
-    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion)
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion)
     {
       IsTrue (assertion);
     }
 
     [Conditional ("TRACE")]
     [AssertionMethod]
-    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
+    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion, string message)
     {
       IsTrue (assertion, message);
     }
@@ -77,53 +77,53 @@ namespace Remotion.Utilities
     [Conditional ("TRACE")]
     [AssertionMethod]
     [StringFormatMethod ("message")]
-    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
+    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion, string message, params object[] arguments)
     {
       IsTrue (assertion, message, arguments);
     }
 
     [Conditional ("TRACE")]
     [AssertionMethod]
-    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion)
+    public static void TraceAssert ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion)
     {
       IsTrue (assertion);
     }
 
     [AssertionMethod]
-    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
+    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion, string message)
     {
       IsTrue (assertion, message, s_emptyArguments);
     }
 
     [AssertionMethod]
     [StringFormatMethod("message")]
-    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message, params object[] arguments)
+    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion, string message, params object[] arguments)
     {
       if (!assertion)
         throw new InvalidOperationException (string.Format (message, arguments));
     }
 
     [AssertionMethod]
-    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion)
+    public static void IsTrue ([AssertionCondition (AssertionConditionType.IS_TRUE), DoesNotReturnIf (false)] bool assertion)
     {
       IsTrue (assertion, c_msgIsFalse);
     }
 
     [AssertionMethod]
-    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression, string message)
+    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE), DoesNotReturnIf (true)] bool expression, string message)
     {
       IsFalse (expression, message, s_emptyArguments);
     }
 
     [AssertionMethod]
-    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression)
+    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE), DoesNotReturnIf (true)] bool expression)
     {
       IsFalse (expression, c_msgIsTrue);
     }
 
     [AssertionMethod]
     [StringFormatMethod ("message")]
-    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE)] bool expression, string message, params object[] arguments)
+    public static void IsFalse ([AssertionCondition (AssertionConditionType.IS_FALSE), DoesNotReturnIf (true)] bool expression, string message, params object[] arguments)
     {
       if (expression)
         throw new InvalidOperationException (string.Format (message, arguments));
@@ -131,19 +131,19 @@ namespace Remotion.Utilities
 
     [Conditional ("DEBUG")]
     [AssertionMethod]
-    public static void DebugIsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message)
+    public static void DebugIsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), MaybeNull] T obj, string message)
     {
       IsNotNull (obj, message, s_emptyArguments);
     }
 
     [AssertionMethod]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T obj, string message)
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), MaybeNull] T obj, string message)
     {
       return IsNotNull (obj, message, s_emptyArguments);
     }
 
     [AssertionMethod]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [MaybeNull] T obj)
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), System.Diagnostics.CodeAnalysis.NotNull, MaybeNull] T obj)
     {
       return IsNotNull (obj, c_msgIsNull);
     }
