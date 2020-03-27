@@ -31,13 +31,13 @@ namespace Remotion.ServiceLocation
   {
     private class Registration
     {
-      public readonly Func<object> SingleFactory;
-      public readonly Func<object> CompoundFactory;
+      public readonly Func<object>? SingleFactory;
+      public readonly Func<object>? CompoundFactory;
       public readonly IReadOnlyCollection<Func<object>> MultipleFactories;
 
       public Registration (
-          Func<object> singleFactory,
-          Func<object> compoundFactory,
+          Func<object>? singleFactory,
+          Func<object>? compoundFactory,
           IReadOnlyCollection<Func<object>> multipleFactories)
       {
         SingleFactory = singleFactory;
@@ -262,7 +262,7 @@ namespace Remotion.ServiceLocation
       return Expression.Call (serviceLocator, resolutionMethod, arguments);
     }
 
-    private T? ResolveIndirectDependency<T> (string context)
+    private T ResolveIndirectDependency<T> (string? context)
     {
       try
       {
@@ -275,7 +275,7 @@ namespace Remotion.ServiceLocation
       }
     }
 
-    private IEnumerable<T> ResolveIndirectCollectionDependency<T> (string context, bool isCompoundResolution)
+    private IEnumerable<T> ResolveIndirectCollectionDependency<T> (string? context, bool isCompoundResolution)
     {
       IEnumerable<object> enumerable;
       try

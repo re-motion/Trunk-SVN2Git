@@ -30,7 +30,7 @@ namespace Remotion.Utilities
   [ImplementationFor (typeof (ITypeConversionProvider), Lifetime = LifetimeKind.Singleton)]
   public class TypeConversionProvider : ITypeConversionProvider
   {
-    private readonly ConcurrentDictionary<Type, TypeConverter> _typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
+    private readonly ConcurrentDictionary<Type, TypeConverter?> _typeConverters = new ConcurrentDictionary<Type, TypeConverter?>();
 
     private readonly ITypeConverterFactory _typeConverterFactory;
 
@@ -131,7 +131,7 @@ namespace Remotion.Utilities
       return !typeConverterResult.Equals (TypeConverterResult.Empty);
     }
 
-    public object Convert (Type sourceType, Type destinationType, object value)
+    public object? Convert (Type sourceType, Type destinationType, object value)
     {
       return Convert (null, null, sourceType, destinationType, value);
     }
@@ -246,7 +246,7 @@ namespace Remotion.Utilities
       return TypeConverterResult.Empty;
     }
 
-    protected void AddTypeConverterToCache (Type type, TypeConverter converter)
+    protected void AddTypeConverterToCache (Type type, TypeConverter? converter)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -257,7 +257,7 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
      
-      TypeConverter typeConverter;
+      TypeConverter? typeConverter;
       if (_typeConverters.TryGetValue (type, out typeConverter))
         return typeConverter;
 

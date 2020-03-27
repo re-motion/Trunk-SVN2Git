@@ -50,7 +50,7 @@ namespace Remotion.Utilities
       public bool IsQuoted;
     }
 
-    private static readonly ConcurrentDictionary<Type, MethodInfo> s_parseMethods = new ConcurrentDictionary<Type, MethodInfo>();
+    private static readonly ConcurrentDictionary<Type, MethodInfo?> s_parseMethods = new ConcurrentDictionary<Type, MethodInfo?>();
 
 
     public static string GetFileNameTimestamp (DateTime dt)
@@ -419,7 +419,7 @@ namespace Remotion.Utilities
 
     private static object ParseScalarValue (Type type, string value, IFormatProvider formatProvider)
     {
-      MethodInfo parseMethod = GetParseMethod (type, true);
+      MethodInfo parseMethod = GetParseMethod (type, true)!;
 
       object[] args;
       if (parseMethod.GetParameters().Length == 2)
@@ -470,11 +470,11 @@ namespace Remotion.Utilities
           return false;
         return CanParse (elementType);
       }
-      MethodInfo parseMethod = GetParseMethod (type, false);
+      MethodInfo? parseMethod = GetParseMethod (type, false);
       return parseMethod != null;
     }
 
-    private static MethodInfo GetParseMethod (Type type, bool throwIfNotFound)
+    private static MethodInfo? GetParseMethod (Type type, bool throwIfNotFound)
     {
       // C# compiler 7.2 already provides caching for anonymous method.
       var parseMethod = s_parseMethods.GetOrAdd (type, key => GetParseMethodWithFormatProviderFromType (key) ?? GetParseMethodFromType (key));

@@ -42,7 +42,7 @@ namespace Remotion.Utilities
       get { return _typeConverterFactories; }
     }
 
-    public TypeConverter CreateTypeConverterOrDefault (Type type)
+    public TypeConverter? CreateTypeConverterOrDefault (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 

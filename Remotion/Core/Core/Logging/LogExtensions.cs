@@ -38,7 +38,7 @@ namespace Remotion.Logging
     /// <paramref name="messageCreator"/> is not called.</param>
     /// <param name="messageCreator">A function object building the message to be logged.</param>
     /// <returns>The <paramref name="value"/> passed in to the method.</returns>
-    public static T? LogAndReturnValue<T> (this T value, ILog log, LogLevel logLevel, Func<T, string> messageCreator)
+    public static T LogAndReturnValue<T> (this T value, ILog log, LogLevel logLevel, Func<T, string> messageCreator)
     {
       if (log.IsEnabled (logLevel))
       {

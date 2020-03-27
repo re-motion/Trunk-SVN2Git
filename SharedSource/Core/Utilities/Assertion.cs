@@ -47,7 +47,7 @@ namespace Remotion.Utilities
 
     [Conditional ("DEBUG")]
     [AssertionMethod]
-    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] bool assertion, string message)
+    public static void DebugAssert ([AssertionCondition (AssertionConditionType.IS_TRUE)] [DoesNotReturnIf(false)] bool assertion, string message)
     {
       IsTrue (assertion, message);
     }
@@ -143,6 +143,7 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+    [return:System.Diagnostics.CodeAnalysis.NotNull]
     public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [MaybeNull] T obj)
     {
       return IsNotNull (obj, c_msgIsNull);
@@ -150,7 +151,7 @@ namespace Remotion.Utilities
 
     [AssertionMethod]
     [StringFormatMethod ("message")]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [MaybeNull] T obj, string message, params object[] arguments)
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [System.Diagnostics.CodeAnalysis.NotNull] T obj, string message, params object[] arguments)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (obj == null)

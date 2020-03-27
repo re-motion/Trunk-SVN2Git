@@ -63,6 +63,7 @@ using System;
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
 
+#nullable disable
 namespace JetBrains.Annotations
 {
   /// <summary>
@@ -92,3 +93,4 @@ namespace JetBrains.Annotations
     public ImplicitUseTargetFlags TargetFlags { get; private set; }
   }
 }
+#nullable restore

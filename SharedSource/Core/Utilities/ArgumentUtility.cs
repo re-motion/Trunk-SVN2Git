@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using JetBrains.Annotations;
 #nullable disable
@@ -56,7 +57,7 @@ namespace Remotion.Utilities
     [AssertionMethod]
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName,
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] [System.Diagnostics.CodeAnalysis.NotNull] T actualValue)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)

@@ -63,6 +63,7 @@ using System;
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
 
+#nullable disable
 namespace JetBrains.Annotations
 {
   [Flags]
@@ -92,3 +93,4 @@ namespace JetBrains.Annotations
     InstantiatedNoFixedConstructorSignature = 8,
   }
 }
+#nullable restore

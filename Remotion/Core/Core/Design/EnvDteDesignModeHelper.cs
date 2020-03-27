@@ -79,7 +79,7 @@ namespace Remotion.Design
         if (environment != null)
         {
           //EnvDTE.Project project = environment.ActiveDocument.ProjectItem.ContainingProject;
-          object activeDocument = _DTEType.InvokeMember ("ActiveDocument", BindingFlags.GetProperty, null, environment, null);
+          object activeDocument = _DTEType!.InvokeMember ("ActiveDocument", BindingFlags.GetProperty, null, environment, null);
           object projectItem = activeDocument.GetType().InvokeMember ("ProjectItem", BindingFlags.GetProperty, null, activeDocument, null);
           object project = projectItem.GetType().InvokeMember ("ContainingProject", BindingFlags.GetProperty, null, projectItem, null);
 

@@ -63,6 +63,7 @@ using System;
 // ReSharper disable InconsistentNaming
 // ReSharper disable once CheckNamespace
 
+#nullable disable
 namespace JetBrains.Annotations
 {
   /// <summary>
@@ -86,3 +87,4 @@ namespace JetBrains.Annotations
     WithMembers = Itself | Members
   }
 }
+#nullable restore

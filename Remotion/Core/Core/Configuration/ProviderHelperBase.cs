@@ -43,8 +43,8 @@ namespace Remotion.Configuration
     private readonly ExtendedConfigurationSection _configurationSection;
     private readonly DoubleCheckedLockingContainer<TProvider> _provider;
     private readonly DoubleCheckedLockingContainer<ProviderCollection<TProvider>> _providers;
-    private ConfigurationProperty _providerSettingsProperty;
-    private ConfigurationProperty _defaultProviderNameProperty;
+    private ConfigurationProperty _providerSettingsProperty = default!;
+    private ConfigurationProperty _defaultProviderNameProperty = default!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProviderHelperBase{TProvider}"/> class. 
@@ -58,7 +58,7 @@ namespace Remotion.Configuration
       ArgumentUtility.CheckNotNull ("configurationSection", configurationSection);
 
       _configurationSection = configurationSection;
-      _provider = new DoubleCheckedLockingContainer<TProvider> (GetProviderFromConfiguration);
+      _provider = new DoubleCheckedLockingContainer<TProvider> (GetProviderFromConfiguration!);
       _providers = new DoubleCheckedLockingContainer<ProviderCollection<TProvider>> (GetProvidersFromConfiguration);
     }
 

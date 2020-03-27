@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace Remotion.Collections
@@ -26,7 +27,7 @@ namespace Remotion.Collections
   /// </summary>
   public static class ImmutableSingleton
   {
-    public static ImmutableSingleton<T> Create<T> ([CanBeNull]T? item)
+    public static ImmutableSingleton<T> Create<T> ([CanBeNull] [AllowNull] T item)
     {
       return new ImmutableSingleton<T> (item);
     }
@@ -80,7 +81,7 @@ namespace Remotion.Collections
         }
       }
 
-      object IEnumerator.Current
+      object? IEnumerator.Current
       {
         get { return Current; }
       }
