@@ -19,7 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Utilities;
 
-#nullable enable
+#nullable disable
 // ReSharper disable once CheckNamespace
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
@@ -53,7 +53,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     public void Reference_Fail ()
     {
       Assert.That (
-          () => ArgumentUtility.DebugCheckNotNull ("arg", (string?) null),
+          () => ArgumentUtility.DebugCheckNotNull ("arg", (string) null),
           Throws.InstanceOf<ArgumentNullException>());
     }
   }
