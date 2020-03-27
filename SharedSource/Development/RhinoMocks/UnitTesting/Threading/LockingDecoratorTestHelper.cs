@@ -47,6 +47,7 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
     }
 
     public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> action, TResult fakeResult)
+        where TResult : notnull
     {
       ArgumentUtility.CheckNotNull ("action", action);
       ArgumentUtility.CheckNotNull ("fakeResult", fakeResult);
