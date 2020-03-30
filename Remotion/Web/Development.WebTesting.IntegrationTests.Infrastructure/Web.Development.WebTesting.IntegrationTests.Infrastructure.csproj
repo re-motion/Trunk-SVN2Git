@@ -100,7 +100,6 @@
     <Compile Include="TestCaseFactories\TextContentControlSelectorTestCaseFactory.cs" />
     <Compile Include="IGenericTestPageParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemotionTestCaseSourceAttribute.cs" />
     <Compile Include="TestCaseFactories\FirstControlSelectorTestCaseFactory.cs" />
     <Compile Include="TestCaseFactories\HtmlIDControlSelectorTestCaseFactory.cs" />
     <Compile Include="TestCaseFactories\IndexControlSelectorTestCaseFactory.cs" />

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -30,7 +31,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
   /// <summary>
   /// Represents a class which contains test that are executed by using the <see cref="TestCaseSourceAttribute"/>.
   /// </summary>
-  public abstract class TestCaseFactoryBase
+  public abstract class TestCaseFactoryBase: IEnumerable
   {
     /// <summary>
     /// Marks a methods as a test method.
@@ -222,6 +223,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
             PrepareTest (attribute, helper, url);
             RunTest (method);
           }));
+    }
+
+    public IEnumerator GetEnumerator ()
+    {
+      return GetTests().GetEnumerator();
     }
   }
 }
