@@ -40,8 +40,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       get { return _webTestHelper; }
     }
 
-    [TestFixtureSetUp]
-    public void IntegrationTestTestFixtureSetUp ()
+    [OneTimeSetUp]
+    public void IntegrationTestOneTimeSetUp ()
     {
       _webTestHelper = WebTestHelper.CreateFromConfiguration<CustomWebTestConfigurationFactory>();
       _webTestHelper.OnFixtureSetUp (MaximizeMainBrowserSession);
@@ -70,7 +70,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       _aspNetRequestErrorDetectionScope.Dispose();
     }
 
-    [TestFixtureTearDown]
+    [OneTimeTearDown]
     public void IntegrationTestTestFixtureTearDown ()
     {
       _webTestHelper.OnFixtureTearDown();

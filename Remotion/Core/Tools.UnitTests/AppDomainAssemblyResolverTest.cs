@@ -37,15 +37,15 @@ namespace Remotion.Tools.UnitTests
     private string _domainBase;
     private AppDomain _appDomain;
 
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
+    [OneTimeSetUp]
+    public void OneTimeSetUp ()
     {
       _testDllPath = CreateAssembly ("TestDll", "TestDll" + "." + "dll");
       _testExePath = CreateAssembly ("TestExe", "TestExe" + "." + "exe");
       _testInvalidDllPath = CreateAssembly ("TestDllWhatever", "TestDllInvalid" + "." + "dll");
     }
 
-    [TestFixtureTearDown]
+    [OneTimeTearDown]
     public void TestFixtureTearDown ()
     {
       FileUtility.DeleteAndWaitForCompletion (_testDllPath);
@@ -132,27 +132,29 @@ namespace Remotion.Tools.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (FileNotFoundException), ExpectedMessage = 
-        "Could not load file or assembly 'TestTxt' or one of its dependencies. The system cannot find the file specified.")]
     public void Resolve_NonExistingAssembly ()
     {
       var resolver = CreateResolver ();
 
       resolver.Register (_appDomain);
-
-      _appDomain.DoCallBack (() => Assembly.Load ("TestTxt"));
+      Assert.That (
+          () => _appDomain.DoCallBack (() => Assembly.Load ("TestTxt")),
+          Throws.InstanceOf<FileNotFoundException>()
+              .With.Message.EqualTo (
+                  "Could not load file or assembly 'TestTxt' or one of its dependencies. The system cannot find the file specified."));
     }
 
     [Test]
-    [ExpectedException (typeof (FileLoadException), ExpectedMessage =
-        "Could not load file or assembly 'TestDllInvalid' or one of its dependencies. Could not find or load a specific file. (Exception from HRESULT: 0x80131621)")]
     public void Resolve_ManifestDoesntMatch ()
     {
       var resolver = CreateResolver ();
 
       resolver.Register (_appDomain);
-
-      _appDomain.DoCallBack (() => Assembly.Load ("TestDllInvalid"));
+      Assert.That (
+          () => _appDomain.DoCallBack (() => Assembly.Load ("TestDllInvalid")),
+          Throws.InstanceOf<FileLoadException>()
+              .With.Message.EqualTo (
+                  "Could not load file or assembly 'TestDllInvalid' or one of its dependencies. Could not find or load a specific file. (Exception from HRESULT: 0x80131621)"));
     }
 
     private AppDomainAssemblyResolver CreateResolver ()

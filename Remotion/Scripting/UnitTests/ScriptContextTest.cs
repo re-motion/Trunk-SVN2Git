@@ -53,7 +53,7 @@ namespace Remotion.Scripting.UnitTests
       
       var moduleScope = scriptContext.StableBindingProxyProvider.ModuleScope;
       Assert.That (moduleScope, Is.Not.Null);
-      Assert.That (moduleScope.StrongNamedModuleName,Is.StringContaining("Scripting.ScriptContext.ContextXyz1"));
+      Assert.That (moduleScope.StrongNamedModuleName,Does.Contain("Scripting.ScriptContext.ContextXyz1"));
     }
 
     [Test]
@@ -65,13 +65,15 @@ namespace Remotion.Scripting.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "ScriptContext 'DuplicateContext' already exists.")]
     public void Create_CreatingSameNamedContextFails ()
     {
       var scriptContext = ScriptContext.Create ("DuplicateContext", _typeFilterStub);
       Assert.That (scriptContext, Is.Not.Null);
-     
-      ScriptContext.Create ("DuplicateContext", _typeFilterStub);
+      Assert.That (
+          () => ScriptContext.Create ("DuplicateContext", _typeFilterStub),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "ScriptContext 'DuplicateContext' already exists."));
     }
 
     [Test]

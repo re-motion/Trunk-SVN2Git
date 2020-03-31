@@ -81,21 +81,19 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation);
-
+      Assert.That (
+          () => _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
       _testHelper.VerifyAll ();
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
@@ -103,7 +101,10 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation);
+        Assert.That (
+          () => _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("The member 'InstanceMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
       }
 
       _testHelper.VerifyAll ();
@@ -113,7 +114,6 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
@@ -121,9 +121,11 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation);
+        Assert.That (
+            () => _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
       }
-
       _testHelper.VerifyAll ();
     }
 
@@ -131,14 +133,15 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation);
-
+      Assert.That (
+          () => _securityClient.HasStatelessMethodAccess (typeof (SecurableObject), _methodInformation),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
       _testHelper.VerifyAll ();
     }
   }

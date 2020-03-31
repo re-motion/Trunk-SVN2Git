@@ -31,8 +31,8 @@ namespace Remotion.Mixins.UnitTests.Core
     private Type _targetType;
     private Type _concreteType;
 
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
+    [OneTimeSetUp]
+    public void OneTimeSetUp ()
     {
       Console.WriteLine (
           "{0}\t{1}\t{2}\t{3}\t{4}",

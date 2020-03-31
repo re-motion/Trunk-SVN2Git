@@ -234,7 +234,6 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     }
 
     [Test]
-    [ExpectedException (typeof (AssemblyLoaderException))]
     public void TryLoadAssembly_WithExceptionInShouldConsiderAssembly ()
     {
       var name = typeof (FilteringAssemblyLoaderTest).Assembly.GetName ();
@@ -242,12 +241,12 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       _filterMock.Expect (mock => mock.ShouldConsiderAssembly (name)).Throw (new Exception ("Fatal error"));
 
       _filterMock.Replay ();
-
-      _loader.TryLoadAssembly (name, "my context");
+      Assert.That (
+          () => _loader.TryLoadAssembly (name, "my context"),
+          Throws.InstanceOf<AssemblyLoaderException>());
     }
 
     [Test]
-    [ExpectedException (typeof (AssemblyLoaderException))]
     public void TryLoadAssembly_WithExceptionInShouldIncludeAssembly ()
     {
       var name = typeof (FilteringAssemblyLoaderTest).Assembly.GetName();
@@ -256,8 +255,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
       _filterMock.Expect (mock => mock.ShouldIncludeAssembly (typeof (FilteringAssemblyLoaderTest).Assembly)).Throw (new Exception ("Fatal error"));
 
       _filterMock.Replay ();
-
-      _loader.TryLoadAssembly (name, "my context");
+      Assert.That (
+          () => _loader.TryLoadAssembly (name, "my context"),
+          Throws.InstanceOf<AssemblyLoaderException>());
     }
 
     [Test]
@@ -387,12 +387,12 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
 
     private void CheckLog (string fullLog, string expectedLogMessage)
     {
-      Assert.That (fullLog, Is.StringContaining(expectedLogMessage));
+      Assert.That (fullLog, Does.Contain(expectedLogMessage));
     }
 
     private void CheckLogRegEx (string fullLog, string expectedLogRegEx)
     {
-      Assert.That (fullLog, Is.StringMatching (expectedLogRegEx));
+      Assert.That (fullLog, Does.Match (expectedLogRegEx));
     }
   }
 }

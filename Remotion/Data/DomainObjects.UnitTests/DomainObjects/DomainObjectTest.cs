@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
   [TestFixture]
   public class DomainObjectTest : ClientTransactionBaseTest
   {
-    public override void TestFixtureSetUp ()
+    public override void OneTimeSetUp ()
     {
-      base.TestFixtureSetUp ();
+      base.OneTimeSetUp ();
       SetDatabaseModifyable ();
     }
 
@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
       Assert.That (classWithAllDataTypes.Int32Property, Is.EqualTo (2147483647), "Int32Property");
       Assert.That (classWithAllDataTypes.Int64Property, Is.EqualTo (9223372036854775807L), "Int64Property");
       Assert.That (classWithAllDataTypes.SingleProperty, Is.EqualTo (6789.321f), "SingleProperty");
-      Assert.That (classWithAllDataTypes.StringProperty, Is.EqualTo ("abcdeföäü"), "StringProperty");
+      Assert.That (classWithAllDataTypes.StringProperty, Is.EqualTo ("abcdefÃ¶Ã¤Ã¼"), "StringProperty");
       Assert.That (classWithAllDataTypes.StringPropertyWithoutMaxLength, Is.EqualTo ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"), "StringPropertyWithoutMaxLength");
       ResourceManager.IsEqualToImage1 (classWithAllDataTypes.BinaryProperty, "BinaryProperty");
 
@@ -415,13 +415,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidTypeException))]
     public void TypeCheck ()
     {
       Customer customer = DomainObjectIDs.Customer1.GetObject<Customer> ();
 
       const int invalidName = 123;
-      customer.NamePropertyOfInvalidType = invalidName;
+      Assert.That (
+          () => customer.NamePropertyOfInvalidType = invalidName,
+          Throws.InstanceOf<InvalidTypeException>());
     }
 
     [Test]

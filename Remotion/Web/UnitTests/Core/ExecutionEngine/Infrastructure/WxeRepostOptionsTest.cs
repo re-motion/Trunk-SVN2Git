@@ -59,19 +59,22 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The 'sender' must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.")]
     public void SuppressRepost_SenderNotIPostBackDataHandler_And_SenderNotIPostBackDataHandler_ThrowsArgumentException ()
     {
-      WxeRepostOptions.SuppressRepost (new Control(), false);
+      Assert.That (
+          () => WxeRepostOptions.SuppressRepost (new Control(), false),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "The 'sender' must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event."));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Parameter name: sender", MatchType = MessageMatch.Contains)]
     public void SuppressRepost_NoSender_ThrowsArgumentNullException ()
     {
-      // ReSharper disable AssignNullToNotNullAttribute
-      WxeRepostOptions.SuppressRepost (null, false);
+      Assert.That (
+          () => WxeRepostOptions.SuppressRepost (null, false),
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.Contains ("Parameter name: sender"));
       // ReSharper restore AssignNullToNotNullAttribute
     }
 

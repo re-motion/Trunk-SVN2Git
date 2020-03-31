@@ -29,8 +29,8 @@ namespace Remotion.SecurityManager.UnitTests
     {
     }
 
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp ()
+    [OneTimeSetUp]
+    public virtual void OneTimeSetUp ()
     {
     }
 
@@ -45,7 +45,7 @@ namespace Remotion.SecurityManager.UnitTests
       ClientTransactionScope.ResetActiveScope();
     }
 
-    [TestFixtureTearDown]
+    [OneTimeTearDown]
     public virtual void TestFixtureTearDown ()
     {
     }

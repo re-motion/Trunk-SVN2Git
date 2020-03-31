@@ -22,12 +22,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
   [SetUpFixture]
   public class SetUpFixture
   {
-    [SetUp]
-    public void SetUp ()
+    [OneTimeSetUp]
+    public void OneTimeSetUp ()
     {
       try
       {
-        // This does not set the current configuration properties, SchemaGenerationTestBase.TestFixtureSetUp does this
+        // This does not set the current configuration properties, SchemaGenerationTestBase.OneTimeSetUp does this
         SchemaGenerationConfiguration.Initialize ();
       }
       catch (Exception ex)

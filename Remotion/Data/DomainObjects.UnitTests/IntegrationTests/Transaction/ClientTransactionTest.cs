@@ -37,9 +37,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
 
     private ClientTransactionEventReceiver _eventReceiver;
 
-    public override void TestFixtureSetUp ()
+    public override void OneTimeSetUp ()
     {
-      base.TestFixtureSetUp ();
+      base.OneTimeSetUp ();
       SetDatabaseModifyable ();
     }
 
@@ -229,13 +229,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void NoAutoInitializationOfCurrent ()
     {
       using (ClientTransactionScope.EnterNullScope())
       {
         Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
-        Dev.Null = ClientTransactionScope.CurrentTransaction;
+        Assert.That (
+            () => ClientTransactionScope.CurrentTransaction,
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("No ClientTransaction has been associated with the current thread."));
       }
     }
 
@@ -345,12 +347,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transaction can no longer be used because it has been discarded.")]
     public void DiscardRendersTransactionUnusable ()
     {
       TestableClientTransaction.Discard ();
       Assert.That (TestableClientTransaction.IsDiscarded, Is.True);
-      TestableClientTransaction.GetObject (DomainObjectIDs.Order1, false);
+      Assert.That (
+          () => TestableClientTransaction.GetObject (DomainObjectIDs.Order1, false),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The transaction can no longer be used because it has been discarded."));
     }
 
     [Test]

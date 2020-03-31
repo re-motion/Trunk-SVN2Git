@@ -157,11 +157,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation 'Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.OrderItem:"
-        + "Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.OrderItem.Order->"
-        +"Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Order.OrderItems' has no association with class 'Customer' "
-        + "and property 'Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Customer.Orders'.")]
     public void GetMandatoryOppositeRelationEndPointDefinitionWithNotAssociatedRelationDefinitionID ()
     {
       RelationDefinition orderToOrderItem =
@@ -170,12 +165,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
               + "Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.OrderItem.Order->"
               +"Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Order.OrderItems"];
 
-      IRelationEndPointDefinition wrongEndPointDefinition =
-          orderToOrderItem.GetMandatoryOppositeRelationEndPointDefinition (
+      Assert.That (
+          () => orderToOrderItem.GetMandatoryOppositeRelationEndPointDefinition (
               _customerClass.GetMandatoryRelationEndPointDefinition (
-                  "Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Customer.Orders"));
-
-      orderToOrderItem.GetMandatoryOppositeRelationEndPointDefinition (wrongEndPointDefinition);
+                  "Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Customer.Orders")),
+          Throws.InstanceOf<MappingException>()
+              .With.Message.EqualTo (
+                  "Relation 'Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.OrderItem:"
+                  + "Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.OrderItem.Order->"
+                  +"Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Order.OrderItems' has no association with class 'Customer' "
+                  + "and property 'Remotion.Data.DomainObjects.UnitTests.Mapping.TestDomain.Integration.Customer.Orders'."));
     }
 
     [Test]

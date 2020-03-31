@@ -30,9 +30,9 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
   [TestFixture]
   public class SqlProviderSaveExistingTest : SqlProviderBaseTest
   {
-    public override void TestFixtureSetUp ()
+    public override void OneTimeSetUp ()
     {
-      base.TestFixtureSetUp();
+      base.OneTimeSetUp();
       SetDatabaseModifyable();
     }
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int32Property"), Is.EqualTo (2147483647));
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "Int64Property"), Is.EqualTo (9223372036854775807));
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "SingleProperty"), Is.EqualTo (6789.321f));
-      Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"), Is.EqualTo ("abcdeföäü"));
+      Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringProperty"), Is.EqualTo ("abcdefÃ¶Ã¤Ã¼"));
       Assert.That (GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"), Is.EqualTo ("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"));
       ResourceManager.IsEqualToImage1 (
           (byte[]) GetPropertyValue (savedClassWithAllDataTypes, typeof (ClassWithAllDataTypes), "BinaryProperty"));
@@ -292,14 +292,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException))]
     public void WrapSqlException ()
     {
       DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
 
       SetPropertyValue (orderContainer, typeof (Order), "Customer", new ObjectID(typeof (Customer), Guid.NewGuid()));
-
-      Provider.Save (new[] { orderContainer });
+      Assert.That (
+          () => Provider.Save (new[] { orderContainer }),
+          Throws.InstanceOf<RdbmsProviderException>());
     }
 
     [Test]
@@ -418,15 +418,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Commit cannot be called without calling BeginTransaction first.")]
     public void CommitWithoutBeginTransaction ()
     {
       DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
       SetPropertyValue (orderContainer, typeof (Order), "OrderNumber", 10);
 
       Provider.Save (new[] { orderContainer });
-      Provider.Commit ();
+      Assert.That (
+          () => Provider.Commit (),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Commit cannot be called without calling BeginTransaction first."));
     }
 
     [Test]
@@ -446,15 +447,16 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms.SqlServer.Inte
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Rollback cannot be called without calling BeginTransaction first.")]
     public void RollbackWithoutBeginTransaction ()
     {
       DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
       SetPropertyValue (orderContainer, typeof (Order), "OrderNumber", 10);
 
       Provider.Save (new[] { orderContainer });
-      Provider.Rollback ();
+      Assert.That (
+          () => Provider.Rollback (),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Rollback cannot be called without calling BeginTransaction first."));
     }
 
     [Test]

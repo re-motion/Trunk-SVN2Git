@@ -37,10 +37,11 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Int_Null ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (int));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (int)),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
@@ -56,10 +57,11 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_NullableInt_Null ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (int?));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (int?)),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
@@ -75,10 +77,11 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_StringNull ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (string));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (string)),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     private enum TestEnum
@@ -93,10 +96,11 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Enum_Null ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (TestEnum));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", null, typeof (TestEnum)),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
@@ -106,27 +110,30 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'arg' has type 'System.Int32' when type 'System.String' was expected.\r\nParameter name: arg")]
     public void Fail_String_Int ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (string));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (string)),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Parameter 'arg' has type 'System.Int32' when type 'System.String' was expected.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'arg' has type 'System.Int32' when type 'System.Int64' was expected.\r\nParameter name: arg")]
     public void Fail_Long_Int ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (long));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", 1, typeof (long)),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Parameter 'arg' has type 'System.Int32' when type 'System.Int64' was expected.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'arg' has type 'System.String' when type 'System.Int32' was expected.\r\nParameter name: arg")]
     public void Fail_Int_String ()
     {
-      ArgumentUtility.DebugCheckNotNullAndType ("arg", "test", typeof (int));
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullAndType ("arg", "test", typeof (int)),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Parameter 'arg' has type 'System.String' when type 'System.Int32' was expected.\r\nParameter name: arg"));
     }
   }
 }

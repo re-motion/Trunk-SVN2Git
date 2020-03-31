@@ -345,22 +345,30 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClientTransactionScope has already been left.")]
     public void LeaveTwiceThrows ()
     {
       ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
       scope.Leave();
-      scope.Leave();
+      Assert.That (
+          () => scope.Leave(),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The ClientTransactionScope has already been left."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The ClientTransactionScope has already been left.")]
     public void LeaveAndDisposeThrows ()
     {
-      using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-      {
-        scope.Leave();
-      }
+      Assert.That (
+          () =>
+          {
+            using (ClientTransactionScope scope = ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+            {
+              scope.Leave();
+            }
+          },
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("The ClientTransactionScope has already been left."));
     }
 
     [Test]
@@ -434,21 +442,25 @@ namespace Remotion.Data.DomainObjects.UnitTests.IntegrationTests.Transaction
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "This ClientTransactionScope is not the active scope. Leave the active scope before leaving this one.")]
     public void LeaveNonActiveScopeThrows ()
     {
-      try
-      {
-        using (ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.Rollback))
-        {
-          ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
-        }
-      }
-      finally
-      {
-        ClientTransactionScope.ResetActiveScope(); // for TearDown
-      }
+      Assert.That (
+          () =>
+          {
+            try
+            {
+              using (ClientTransaction.CreateRootTransaction().EnterScope (AutoRollbackBehavior.Rollback))
+              {
+                ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope();
+              }
+            }
+            finally
+            {
+              ClientTransactionScope.ResetActiveScope(); // for TearDown
+            }
+          },
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("This ClientTransactionScope is not the active scope. Leave the active scope before leaving this one."));
     }
 
     [Test]

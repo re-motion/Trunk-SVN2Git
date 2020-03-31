@@ -27,40 +27,55 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
   public class CheckNotNullOrEmptyOrItemsNull
   {
     [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Value cannot be null.\r\nParameter name: arg")]
     public void Fail_NullICollection ()
     {
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", (ICollection) null);
+      Assert.That (
+          () => ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", (ICollection) null),
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.EqualTo (
+                  "Value cannot be null.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Item 0 of parameter 'arg' is null.\r\nParameter name: arg")]
     public void Fail_zItemNullICollection ()
     {
       ArrayList list = new ArrayList();
       list.Add (null);
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", list);
+      Assert.That (
+          () => ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", list),
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.EqualTo (
+                  "Item 0 of parameter 'arg' is null.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyArray ()
     {
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", new string[0]);
+      Assert.That (
+          () => ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", new string[0]),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyCollection ()
     {
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", new ArrayList());
+      Assert.That (
+          () => ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", new ArrayList()),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyIEnumerable ()
     {
-      ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", GetEmptyEnumerable());
+      Assert.That (
+          () => ArgumentUtility.CheckNotNullOrEmptyOrItemsNull ("arg", GetEmptyEnumerable()),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]

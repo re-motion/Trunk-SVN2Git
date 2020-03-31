@@ -38,27 +38,31 @@ namespace Remotion.ObjectBinding.UnitTests.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentOutOfRangeException))]
     public void InitializeWithInvalidValue ()
     {
       TestEnum invalidValue = (TestEnum) (-1);
-      UndefinedEnumValueAttribute undefinedValueAttribute = new UndefinedEnumValueAttribute (invalidValue);
+      Assert.That (
+          () => new UndefinedEnumValueAttribute (invalidValue),
+          Throws.InstanceOf<ArgumentOutOfRangeException>());
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'value' has type 'Remotion.ObjectBinding.UnitTests.BindableObject.UndefinedEnumValueAttributeTest' "
-        + "when type 'System.Enum' was expected.\r\nParameter name: value")]
     public void InitializeWithObjectOfInvalidType ()
     {
-      UndefinedEnumValueAttribute undefinedValueAttribute = new UndefinedEnumValueAttribute (this);
+      Assert.That (
+          () => new UndefinedEnumValueAttribute (this),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'value' has type 'Remotion.ObjectBinding.UnitTests.BindableObject.UndefinedEnumValueAttributeTest' "
+                  + "when type 'System.Enum' was expected.\r\nParameter name: value"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void InitializeWithNull ()
     {
-      UndefinedEnumValueAttribute undefinedValueAttribute = new UndefinedEnumValueAttribute (null);
+      Assert.That (
+          () => new UndefinedEnumValueAttribute (null),
+          Throws.InstanceOf<ArgumentNullException>());
     }
   }
 }

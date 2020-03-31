@@ -219,39 +219,48 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
-                                                                           + ".*MixinWithAmbiguousSource.ToString specifies an ambiguous attribute "
-                                                                           + "source: The source member string Source matches several members on type "
-                                                                           + ".*MixinWithAmbiguousSource.", MatchType = MessageMatch.Regex)]
     public void CopyAttributes_Ambiguous ()
     {
       var builder = new AttributeDefinitionBuilder (DefinitionObjectMother.CreateMixinDefinition (typeof (MixinWithAmbiguousSource)));
       var method = typeof (MixinWithAmbiguousSource).GetMethod ("ToString", BindingFlags.NonPublic | BindingFlags.Instance);
       var data = CustomAttributeData.GetCustomAttributes (method).Select (d => (ICustomAttributeData) new CustomAttributeDataAdapter (d));
-      builder.Apply (method, data, true);
+      Assert.That (
+          () => builder.Apply (method, data, true),
+          Throws.InstanceOf<ConfigurationException>()
+              .With.Message.Matches (
+                  "The CopyCustomAttributes attribute on "
+                  + ".*MixinWithAmbiguousSource.ToString specifies an ambiguous attribute "
+                  + "source: The source member string Source matches several members on type "
+                  + ".*MixinWithAmbiguousSource."));
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
-                                                                           + ".*MixinWithUnknownSource.ToString specifies an unknown attribute "
-                                                                           + "source .*MixinWithUnknownSource.Source.", MatchType = MessageMatch.Regex)]
     public void CopyAttributes_Unknown ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithUnknownSource)).EnterScope())
       {
-        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
+        Assert.That (
+            () => DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)),
+            Throws.InstanceOf<ConfigurationException>()
+                .With.Message.Matches (
+                    "The CopyCustomAttributes attribute on "
+                    + ".*MixinWithUnknownSource.ToString specifies an unknown attribute "
+                    + "source .*MixinWithUnknownSource.Source."));
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The CopyCustomAttributes attribute on "
-                                                                           + ".*MixinWithInvalidSourceType.ToString specifies an attribute source "
-                                                                           + ".*MixinWithInvalidSourceType of a different member kind.", MatchType = MessageMatch.Regex)]
     public void CopyAttributes_Invalid ()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithInvalidSourceType)).EnterScope())
       {
-        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
+        Assert.That (
+            () => DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)),
+            Throws.InstanceOf<ConfigurationException>()
+                .With.Message.Matches (
+                    "The CopyCustomAttributes attribute on "
+                    + ".*MixinWithInvalidSourceType.ToString specifies an attribute source "
+                    + ".*MixinWithInvalidSourceType of a different member kind."));
       }
     }
 

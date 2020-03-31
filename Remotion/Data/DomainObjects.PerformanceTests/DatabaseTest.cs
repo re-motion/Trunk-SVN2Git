@@ -22,12 +22,12 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 {
   public class DatabaseTest
   {
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp()
+    [OneTimeSetUp]
+    public virtual void OneTimeSetUp()
     {
     }
 
-    [TestFixtureTearDown]
+    [OneTimeTearDown]
     public virtual void TestFixtureTearDown()
     {
     }

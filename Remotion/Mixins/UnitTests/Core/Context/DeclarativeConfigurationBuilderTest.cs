@@ -76,12 +76,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Type must be non-generic or a generic type definition.\r\nParameter name: type")]
     public void AddType_WithClosedGenericType ()
     {
-      _builder.AddType (typeof (List<int>));
-
-      Assert.That (_builder.AllTypes, Is.EquivalentTo (new[] { typeof (List<>) }));
+      Assert.That (
+          () => _builder.AddType (typeof (List<int>)),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Type must be non-generic or a generic type definition.\r\nParameter name: type"));
     }
 
     class DerivedList : List<int> { }
@@ -184,7 +184,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var builder = new DeclarativeConfigurationBuilder(null);
       builder.AddType (typeof (TypeWithDuplicateAttributeNotIgnoringDuplicates));
 
-      Assert.That (() => builder.BuildConfiguration (), Throws.TypeOf<ConfigurationException>().With.Message.StringContaining ("already configured"));
+      Assert.That (() => builder.BuildConfiguration (), Throws.TypeOf<ConfigurationException>().With.Message.Contains ("already configured"));
     }
 
     [Test]

@@ -154,23 +154,25 @@ namespace Remotion.Reflection.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (TargetInvocationException))]
     public void Invoke_NullParameterForMethod_GetExceptionFromReflectionApi ()
     {
       var methodInfo = typeof (string).GetMethod ("Insert", new[] { typeof (int), typeof (string) });
       var adapter = MethodInfoAdapter.Create(methodInfo);
-      adapter.Invoke ("Test", new object[] { 5, null });
+      Assert.That (
+          () => adapter.Invoke ("Test", new object[] { 5, null }),
+          Throws.TargetInvocationException);
     }
 
     [Test]
-    [ExpectedException (typeof (TargetException), ExpectedMessage = "Object does not match target type.")]
     public void Invoke_WrongInstanceForMethod_GetExceptionFromReflectionApi ()
     {
       var methodInfo = typeof (ClassWithBaseMember).GetMethod ("BaseMethod");
       var adapter = MethodInfoAdapter.Create(methodInfo);
-      var result = adapter.Invoke ("Test", new object[0]);
 
-      Assert.That (result, Is.Null);
+      Assert.That (
+          () => adapter.Invoke ("Test", new object[0]),
+          Throws.InstanceOf<TargetException>()
+              .With.Message.EqualTo ("Object does not match target type."));
     }
 
     [Test]
@@ -200,24 +202,25 @@ namespace Remotion.Reflection.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This method is not an interface method.")]
     public void FindInterfaceImplementation_NonInterfaceMethod ()
     {
       var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
       var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
+      Assert.That (
+          () => adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>)),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("This method is not an interface method."));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The implementationType parameter must not be an interface.\r\nParameter name: implementationType")]
     public void FindInterfaceImplementation_ImplementationIsInterface ()
     {
       var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
       var adapter = MethodInfoAdapter.Create(methodInfo);
-
-      adapter.FindInterfaceImplementation (typeof (IInterfaceWithReferenceType<object>));
+      Assert.That (
+          () => adapter.FindInterfaceImplementation (typeof (IInterfaceWithReferenceType<object>)),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("The implementationType parameter must not be an interface.\r\nParameter name: implementationType"));
     }
 
     [Test]
@@ -232,12 +235,13 @@ namespace Remotion.Reflection.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "This method is itself an interface member, so it cannot have an interface declaration.")]
     public void FindInterfaceDeclaration_DeclaringTypeIsInterface ()
     {
       var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
-      MethodInfoAdapter.Create(methodInfo).FindInterfaceDeclarations();
+      Assert.That (
+          () => MethodInfoAdapter.Create(methodInfo).FindInterfaceDeclarations(),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("This method is itself an interface member, so it cannot have an interface declaration."));
     }
 
     [Test]

@@ -67,11 +67,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport
     }
 
     [Test]
-    [ExpectedException (typeof (TransportationException),
-        ExpectedMessage = "Invalid data specified: End of Stream encountered before parsing was completed.")]
     public void InvalidData ()
     {
-      DomainObjectTransporterTestHelper.Import (new byte[] { 1, 2, 3 });
+      Assert.That (
+          () => DomainObjectTransporterTestHelper.Import (new byte[] { 1, 2, 3 }),
+          Throws.InstanceOf<TransportationException>()
+              .With.Message.EqualTo ("Invalid data specified: End of Stream encountered before parsing was completed."));
     }
 
     [Test]
@@ -222,16 +223,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.DomainImplementation.Transport
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException),
-        ExpectedMessage = "Object(s) could not be found: 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid'.")]
     public void RelatedObjectChanges_NonExistentObject_RealSide ()
     {
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (DomainObjectIDs.Computer1);
       ModifyDatabase (() => DomainObjectIDs.Computer1.GetObject<Computer> ().Employee.Delete());
 
-      DomainObjectTransporterTestHelper.Import (binaryData);
-
-      Assert.Fail ("Expected exception");
+      Assert.That (
+          () => DomainObjectTransporterTestHelper.Import (binaryData),
+          Throws.InstanceOf<ObjectsNotFoundException>()
+              .With.Message.EqualTo ("Object(s) could not be found: 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid'."));
     }
 
     [Test]

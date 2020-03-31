@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       // LogManager.Initialize();
 
       var setUpFixture = new SetUpFixture();
-      setUpFixture.SetUp();
+      setUpFixture.OneTimeSetUp();
 
       // Have all xml files loaded, so if the code is instrumented by a profiler, 
       // the loading does not falsify the method run times during the first call of GetObject.
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
 
       //ClassDefinitionTest();
 
-      setUpFixture.TearDown();
+      setUpFixture.OneTimeTearDown();
 
       Console.WriteLine ("Tests complete");
       //Console.ReadLine();
@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private static void RunHasRelationChangedTest ()
     {
       var test = new HasRelationChangedTest();
-      test.TestFixtureSetUp();
+      test.OneTimeSetUp();
 
       test.SetUp();
       test.AskChanged();
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private static void RunCommitTest ()
     {
       var test = new CommitTest();
-      test.TestFixtureSetUp ();
+      test.OneTimeSetUp ();
 
       test.SetUp ();
       test.CommitSubTransaction_Relations();
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private static void RunLoadObjectsTest ()
     {
       var test = new LoadObjectsTest();
-      test.TestFixtureSetUp();
+      test.OneTimeSetUp();
 
       test.SetUp();
       test.LoadObjectsOverRelationTest();
@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     private static void RunSerializationTest ()
     {
       var test = new SerializationTest();
-      test.TestFixtureSetUp();
+      test.OneTimeSetUp();
 
       var testMethods = from m in test.GetType().GetMethods (BindingFlags.Public | BindingFlags.Instance)
                         where m.IsDefined (typeof (TestAttribute), true) && !m.IsDefined (typeof (IgnoreAttribute), true)

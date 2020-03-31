@@ -51,7 +51,6 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
 
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = @"No TextWriter with name ""yang"" registered => no relative path exists.")]
     public void GetRelativePathNoEntryWithNameExistsTest ()
     {
       var mocks = new MockRepository ();
@@ -59,7 +58,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion.TextWriterFactor
 
       textWriterFactoryBaseMock.Expect (x => x.TextWriterExists ("yang")).Return (false);
       textWriterFactoryBaseMock.Replay ();
-      textWriterFactoryBaseMock.GetRelativePath ("yin", "yang");
+
+      Assert.That (
+          () => textWriterFactoryBaseMock.GetRelativePath ("yin", "yang"),
+          Throws.ArgumentException
+              .With.Message.EqualTo (@"No TextWriter with name ""yang"" registered => no relative path exists."));
+
       textWriterFactoryBaseMock.VerifyAllExpectations();
     }   
 

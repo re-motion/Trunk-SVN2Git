@@ -61,8 +61,8 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
     {
     }
 
-    [TestFixtureSetUp]
-    public virtual void TestFixtureSetUp ()
+    [OneTimeSetUp]
+    public virtual void OneTimeSetUp ()
     {
       DomainObjectsConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetDomainObjectsConfiguration());
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());

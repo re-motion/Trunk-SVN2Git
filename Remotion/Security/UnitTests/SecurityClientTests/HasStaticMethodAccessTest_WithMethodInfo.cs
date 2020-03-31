@@ -89,22 +89,20 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissions_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
-
-      _testHelper.VerifyAll ();
+      Assert.That (
+          () => _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
+      _testHelper.VerifyAll();
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums")]
     public void Test_WithoutRequiredPermissionsAndWithinSecurityFreeSection_ShouldThrowArgumentException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
@@ -113,33 +111,35 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
+        Assert.That (
+            () => _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo),
+            Throws.ArgumentException
+                .With.Message.EqualTo ("The member 'StaticMethod' does not define required permissions.\r\nParameter name: requiredAccessTypeEnums"));
       }
-
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
-
-      _testHelper.VerifyAll ();
+      Assert.That (
+          () => _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
+      _testHelper.VerifyAll();
     }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Static, _methodInformation);
@@ -148,10 +148,12 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo);
+        Assert.That (
+            () => _securityClient.HasStaticMethodAccess (typeof (SecurableObject), _methodInfo),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
       }
-
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
 
   }

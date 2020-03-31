@@ -35,10 +35,11 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Int_Null ()
     {
-      ArgumentUtility.CheckType<int> ("arg", null);
+      Assert.That (
+          () => ArgumentUtility.CheckType<int> ("arg", null),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
@@ -96,10 +97,11 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_Enum_Null ()
     {
-      ArgumentUtility.CheckType<TestEnum> ("arg", null);
+      Assert.That (
+          () => ArgumentUtility.CheckType<TestEnum> ("arg", null),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
@@ -117,27 +119,30 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'arg' has type 'System.Int32' when type 'System.String' was expected.\r\nParameter name: arg")]
     public void Fail_String_Int ()
     {
-      ArgumentUtility.CheckType<string> ("arg", 1);
+      Assert.That (
+          () => ArgumentUtility.CheckType<string> ("arg", 1),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Parameter 'arg' has type 'System.Int32' when type 'System.String' was expected.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'arg' has type 'System.Int32' when type 'System.Int64' was expected.\r\nParameter name: arg")]
     public void Fail_Long_Int ()
     {
-      ArgumentUtility.CheckType<long> ("arg", 1);
+      Assert.That (
+          () => ArgumentUtility.CheckType<long> ("arg", 1),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Parameter 'arg' has type 'System.Int32' when type 'System.Int64' was expected.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'arg' has type 'System.String' when type 'System.Int32' was expected.\r\nParameter name: arg")]
     public void Fail_Int_String ()
     {
-      ArgumentUtility.CheckType<int> ("arg", "test");
+      Assert.That (
+          () => ArgumentUtility.CheckType<int> ("arg", "test"),
+          Throws.ArgumentException
+              .With.Message.EqualTo ("Parameter 'arg' has type 'System.String' when type 'System.Int32' was expected.\r\nParameter name: arg"));
     }
   }
 }

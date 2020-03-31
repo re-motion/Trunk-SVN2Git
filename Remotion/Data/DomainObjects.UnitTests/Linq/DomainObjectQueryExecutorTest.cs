@@ -89,21 +89,24 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     }
 
     [Test]
-    [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Scalar queries cannot perform eager fetching.")]
     public void ExecuteScalar_WithFetchRequests ()
     {
       AddFetchRequest (_someQueryModel);
-
-      _queryExecutor.ExecuteScalar<int> (_someQueryModel);
+      Assert.That (
+          () => _queryExecutor.ExecuteScalar<int> (_someQueryModel),
+          Throws.InstanceOf<NotSupportedException>()
+              .With.Message.EqualTo ("Scalar queries cannot perform eager fetching."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteScalar_NoActiveClientTransaction ()
     {
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _queryExecutor.ExecuteScalar<int> (_someQueryModel);
+        Assert.That (
+            () => _queryExecutor.ExecuteScalar<int> (_someQueryModel),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("No ClientTransaction has been associated with the current thread."));
       }
     }
 
@@ -144,12 +147,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteCollection_NoActiveClientTransaction ()
     {
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _queryExecutor.ExecuteCollection<Order> (_someQueryModel);
+        Assert.That (
+            () => _queryExecutor.ExecuteCollection<Order> (_someQueryModel),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("No ClientTransaction has been associated with the current thread."));
       }
     }
 
@@ -176,7 +181,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
     public void ExecuteSingle_MoreThanOneItem ()
     {
       _queryGeneratorMock
@@ -189,8 +193,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
       var fakeResult = new[] { _someOrder, DomainObjectMother.CreateFakeObject<Order>() };
       _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
-
-      _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
+      Assert.That (
+          () => _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Sequence contains more than one element"));
     }
 
     [Test]
@@ -213,7 +219,6 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
     public void ExecuteSingle_ZeroItems_ReturnDefaultFalse ()
     {
        _queryGeneratorMock
@@ -226,17 +231,21 @@ namespace Remotion.Data.DomainObjects.UnitTests.Linq
 
       var fakeResult = new Order[0];
       _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
-
-      _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
+      Assert.That (
+          () => _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Sequence contains no elements"));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void ExecuteSingle_NoActiveClientTransaction ()
     {
       using (ClientTransactionScope.EnterNullScope ())
       {
-        _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
+        Assert.That (
+            () => _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("No ClientTransaction has been associated with the current thread."));
       }
     }
 

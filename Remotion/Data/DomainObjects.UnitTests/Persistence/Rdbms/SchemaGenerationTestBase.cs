@@ -37,10 +37,10 @@ namespace Remotion.Data.DomainObjects.UnitTests.Persistence.Rdbms
     {
     }
 
-    [TestFixtureSetUp]
-    public override void TestFixtureSetUp ()
+    [OneTimeSetUp]
+    public override void OneTimeSetUp ()
     {
-      base.TestFixtureSetUp();
+      base.OneTimeSetUp();
     }
 
     [SetUp]

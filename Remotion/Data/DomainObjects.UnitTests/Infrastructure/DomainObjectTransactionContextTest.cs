@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
 
       Assert.That (
           () => _newOrderContext.RegisterForCommit(), 
-          Throws.TypeOf<ObjectInvalidException>().With.Message.StringContaining (_newOrder.ID.ToString()));
+          Throws.TypeOf<ObjectInvalidException>().With.Message.Contains (_newOrder.ID.ToString()));
       Assert.That (_newOrderContext.State.IsInvalid, Is.True);
     }
 
@@ -211,11 +211,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void Timestamp_Discarded ()
     {
       _newOrder.Delete ();
-      Dev.Null = _newOrderContext.Timestamp;
+      Assert.That (
+          () => _newOrderContext.Timestamp,
+          Throws.InstanceOf<ObjectInvalidException>());
     }
 
     [Test]
@@ -230,11 +231,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void EnsureDataAvailable_Discarded ()
     {
       _newOrder.Delete ();
-      _newOrderContext.EnsureDataAvailable ();
+      Assert.That (
+          () => _newOrderContext.EnsureDataAvailable (),
+          Throws.InstanceOf<ObjectInvalidException>());
     }
 
     [Test]
@@ -263,11 +265,12 @@ namespace Remotion.Data.DomainObjects.UnitTests.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void TryEnsureDataAvailable_Discarded ()
     {
       _newOrder.Delete ();
-      _newOrderContext.TryEnsureDataAvailable ();
+      Assert.That (
+          () => _newOrderContext.TryEnsureDataAvailable (),
+          Throws.InstanceOf<ObjectInvalidException>());
     }
 
     [Test]

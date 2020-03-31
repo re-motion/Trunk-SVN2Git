@@ -73,7 +73,6 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     }
 
     [Test]
-    [ExpectedException (typeof (PermissionDeniedException))]
     public void ExecutionPlay_WithAccessDenied ()
     {
       _securityAdapterMock.Expect (mock => mock.CheckAccess (_function)).Throw (new PermissionDeniedException());
@@ -81,8 +80,9 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
 
       var securityListener = CreateSecurityListener (_securityAdapterMock);
 
-      securityListener.OnExecutionPlay (_wxeContext);
-
+      Assert.That (
+          () => securityListener.OnExecutionPlay (_wxeContext),
+          Throws.InstanceOf<PermissionDeniedException>());
       _mockRepository.VerifyAll();
     }
 

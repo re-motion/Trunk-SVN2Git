@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -48,11 +48,12 @@ namespace Remotion.UnitTests.Development.RhinoMocks.UnitTesting.Threading
     }
 
     [Test]
-    [ExpectedException (typeof (AssertionException), MatchType = MessageMatch.Contains,
-        ExpectedMessage = "Parallel thread should have been blocked.")]
     public void CheckLockIsHeld_Throws ()
     {
-      LockTestHelper.CheckLockIsHeld (_lockObject);
+      Assert.That (
+          () => LockTestHelper.CheckLockIsHeld (_lockObject),
+          Throws.InstanceOf<AssertionException>()
+              .With.Message.Contains ("Parallel thread should have been blocked."));
     }
 
     [Test]
@@ -62,12 +63,15 @@ namespace Remotion.UnitTests.Development.RhinoMocks.UnitTesting.Threading
     }
 
     [Test]
-    [ExpectedException (typeof (AssertionException), MatchType = MessageMatch.Contains,
-        ExpectedMessage = "Parallel thread should NOT have been blocked.")]
     public void CheckLockIsNotHeld_Throws ()
     {
       lock (_lockObject)
-        LockTestHelper.CheckLockIsNotHeld (_lockObject);
+      {
+        Assert.That (
+            () => LockTestHelper.CheckLockIsNotHeld (_lockObject),
+            Throws.InstanceOf<AssertionException>()
+                .With.Message.Contains ("Parallel thread should NOT have been blocked."));
+      }
     }
 
     [Test]

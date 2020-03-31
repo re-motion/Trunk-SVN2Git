@@ -55,18 +55,24 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The items 1 and 2 are identified by the same key 1 and cannot both be added "
-        + "to the collection.\r\nParameter name: values")]
     public void NewCollection_DuplicateKeys_DifferentValues ()
     {
-      new ReadOnlyContextCollection<string, int> (delegate { return "1"; }, new int[] { 1, 2 });
+      Assert.That (
+          () => new ReadOnlyContextCollection<string, int> (delegate { return "1"; }, new int[] { 1, 2 }),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "The items 1 and 2 are identified by the same key 1 and cannot both be added "
+                  + "to the collection.\r\nParameter name: values"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Value cannot be null.\r\nParameter name: values[0]")]
     public void NewCollection_NullValue ()
     {
-      new ReadOnlyContextCollection<string, string> ( delegate { return ""; }, new string[] { null });
+      Assert.That (
+          () => new ReadOnlyContextCollection<string, string> ( delegate { return ""; }, new string[] { null }),
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.EqualTo (
+                  "Value cannot be null.\r\nParameter name: values[0]"));
     }
 
     [Test]
@@ -76,7 +82,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (_collection.ContainsKey ("2"), Is.True);
       Assert.That (_collection.ContainsKey ("3"), Is.True);
       Assert.That (_collection.ContainsKey ("4"), Is.False);
-      Assert.That (_collection.ContainsKey ("ง"), Is.False);
+      Assert.That (_collection.ContainsKey ("ยง"), Is.False);
     }
 
     [Test]
@@ -130,24 +136,27 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void Add ()
     {
-      ((ICollection<int>) _collection).Add (0);
+      Assert.That (
+          () => ((ICollection<int>) _collection).Add (0),
+          Throws.InstanceOf<NotSupportedException>());
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void Clear ()
     {
-      ((ICollection<int>) _collection).Clear ();
+      Assert.That (
+          () => ((ICollection<int>) _collection).Clear (),
+          Throws.InstanceOf<NotSupportedException>());
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void Remove ()
     {
-      ((ICollection<int>) _collection).Remove (1);
+      Assert.That (
+          () => ((ICollection<int>) _collection).Remove (1),
+          Throws.InstanceOf<NotSupportedException>());
     }
 
     [Test]

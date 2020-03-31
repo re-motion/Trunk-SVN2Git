@@ -137,7 +137,6 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The securableObject did not return an IObjectSecurityStrategy.")]
     public void Test_WithSecurityStrategyIsNull ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
@@ -145,32 +144,34 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       _testHelper.ReplayAll ();
 
-      _securityClient.HasPropertyReadAccess (new SecurableObject (null), _methodInfo);
-
-      _testHelper.VerifyAll ();
+      Assert.That (
+          () => _securityClient.HasPropertyReadAccess (new SecurableObject (null), _methodInfo),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("The securableObject did not return an IObjectSecurityStrategy."));
+      _testHelper.VerifyAll();
     }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
       _testHelper.ReplayAll ();
 
-      _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInfo);
-
-      _testHelper.VerifyAll ();
+      Assert.That (
+          () => _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInfo),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
+      _testHelper.VerifyAll();
     }
 
 #if !DEBUG
     [Ignore ("Skipped unless DEBUG build")]
 #endif
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null.")]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
@@ -179,10 +180,13 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
 
       using (SecurityFreeSection.Activate())
       {
-        _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInfo);
+        Assert.That (
+            () => _securityClient.HasPropertyReadAccess (_testHelper.SecurableObject, _methodInfo),
+            Throws.InvalidOperationException
+                .With.Message.EqualTo ("IPermissionProvider.GetRequiredMethodPermissions evaluated and returned null."));
       }
 
-      _testHelper.VerifyAll ();
+      _testHelper.VerifyAll();
     }
   }
 }

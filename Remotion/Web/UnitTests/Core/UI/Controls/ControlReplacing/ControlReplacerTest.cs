@@ -500,18 +500,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped during OnInit phase.")]
     public void WrapControlWithParentContainer_ThrowsIfNotInOnInit ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
       var control = new ReplaceableControlMock();
       MemberCallerMock.Stub (stub => stub.GetControlState (control)).Return (ControlState.Initialized);
-
-      replacer.ReplaceAndWrap (control, control, new StateLoadingStrategy ());
+      Assert.That (
+          () => replacer.ReplaceAndWrap (control, control, new StateLoadingStrategy ()),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "Controls can only be wrapped during OnInit phase."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Controls can only be wrapped before they are initialized.")]
     public void WrapControlWithParentContainer_ThrowsIfAlreadyInitialized ()
     {
       ControlReplacer replacer = new ControlReplacer (MemberCallerMock) { ID = "TheReplacer" };
@@ -520,16 +521,21 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.ControlReplacing
       control.EnsureLazyInitializationContainer ();
 
       MockRepository.ReplayAll ();
-
-      replacer.ReplaceAndWrap (control, control, new StateLoadingStrategy ());
+      Assert.That (
+          () => replacer.ReplaceAndWrap (control, control, new StateLoadingStrategy ()),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "Controls can only be wrapped before they are initialized."));
     }
 
     [Test]
     [Ignore]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The WrappedControl property can only be accessed after ReplaceAndWrap was invoked.")]
     public void GetWrappedControl_BeforeReplaceAndWrap ()
     {
-      
+      Assert.That (
+          () => { },
+          Throws.InvalidOperationException
+              .With.Message.EqualTo("The WrappedControl property can only be accessed after ReplaceAndWrap was invoked."));
     }
 
     [Test]

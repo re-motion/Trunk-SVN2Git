@@ -69,29 +69,34 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.CollectionData
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage =
-        "Item 1 of parameter 'domainObjects' is null.\r\nParameter name: domainObjects")]
     public void AddRangeAndCheckItems_NullItem ()
     {
-      _data.AddRangeAndCheckItems (new[] { _order3, null }, typeof (Order));
+      Assert.That (
+          () => _data.AddRangeAndCheckItems (new[] { _order3, null }, typeof (Order)),
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.EqualTo ("Item 1 of parameter 'domainObjects' is null.\r\nParameter name: domainObjects"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Item 1 of parameter 'domainObjects' is a duplicate ('Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid')."
-        + "\r\nParameter name: domainObjects")]
     public void AddRangeAndCheckItems_DuplicateItem ()
     {
-      _data.AddRangeAndCheckItems (new[] { _order3, _order3 }, typeof (Order));
+      Assert.That (
+          () => _data.AddRangeAndCheckItems (new[] { _order3, _order3 }, typeof (Order)),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Item 1 of parameter 'domainObjects' is a duplicate ('Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid')."
+                  + "\r\nParameter name: domainObjects"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "Item 0 of parameter 'domainObjects' has the type 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Order' " +
-        "instead of 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Customer'.\r\nParameter name: domainObjects")]
     public void AddRangeAndCheckItems_InvalidType ()
     {
-      _data.AddRangeAndCheckItems (new[] { _order3 }, typeof (Customer));
+      Assert.That (
+          () => _data.AddRangeAndCheckItems (new[] { _order3 }, typeof (Customer)),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Item 0 of parameter 'domainObjects' has the type 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Order' " +
+                  "instead of 'Remotion.Data.DomainObjects.UnitTests.TestDomain.Customer'.\r\nParameter name: domainObjects"));
     }
 
     [Test]

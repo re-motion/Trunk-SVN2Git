@@ -216,41 +216,48 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Add methods can only be assigned once.")]
     public void AddMethodCannotBeSetTwice ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetTwice", EventKind.Static, typeof (EventHandler));
       Dev.Null = eventEmitter.AddMethod;
-      eventEmitter.AddMethod = _classEmitter.CreateMethod (
-          "invalid", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) });
+      Assert.That (
+          () => eventEmitter.AddMethod = _classEmitter.CreateMethod (
+          "invalid", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) }),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo ("Add methods can only be assigned once."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Remove methods can only be assigned once.")]
     public void RemoveMethodCannotBeSetTwice ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetTwice", EventKind.Static, typeof (EventHandler));
       Dev.Null = eventEmitter.RemoveMethod;
-      eventEmitter.RemoveMethod = _classEmitter.CreateMethod (
-          "invalid", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) });
+      Assert.That (
+          () => eventEmitter.RemoveMethod = _classEmitter.CreateMethod (
+          "invalid", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) }),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "Remove methods can only be assigned once."));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException),
-        ExpectedMessage = "Event accessors cannot be set to null.", MatchType = MessageMatch.Contains)]
     public void AddMethodCannotBeSetToNull()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetToNull", EventKind.Static, typeof (string));
-      eventEmitter.AddMethod = null;
+      Assert.That (
+          () => eventEmitter.AddMethod = null,
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.Contains ("Event accessors cannot be set to null."));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException),
-       ExpectedMessage = "Event accessors cannot be set to null.", MatchType = MessageMatch.Contains)]
     public void RemoveMethodCannotBeSetToNull ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("RemoveMethodCannotBeSetToNull", EventKind.Static, typeof (string));
-      eventEmitter.RemoveMethod = null;
+      Assert.That (
+          () => eventEmitter.RemoveMethod = null,
+          Throws.InstanceOf<ArgumentNullException>()
+              .With.Message.Contains ("Event accessors cannot be set to null."));
     }
 
     [Test]

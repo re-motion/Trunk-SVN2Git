@@ -139,12 +139,15 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
     public void RegisterOriginalOppositeEndPoint_AlreadyRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
       _dataManager.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
-      _dataManager.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      Assert.That (
+          () => _dataManager.RegisterOriginalOppositeEndPoint (oppositeEndPoint),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The opposite end-point has already been registered."));
     }
 
     [Test]
@@ -199,11 +202,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
     public void UnregisterOriginalOppositeEndPoint_NotRegistered ()
     {
       var oppositeEndPoint = CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1);
-      _dataManager.UnregisterOriginalOppositeEndPoint (oppositeEndPoint);
+      Assert.That (
+          () => _dataManager.UnregisterOriginalOppositeEndPoint (oppositeEndPoint),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The opposite end-point has not been registered."));
     }
 
     [Test]
@@ -227,11 +233,14 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has already been registered.")]
     public void RegisterCurrentOppositeEndPoint_AlreadyRegistered ()
     {
       _dataManager.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
-      _dataManager.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+      Assert.That (
+          () => _dataManager.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The opposite end-point has already been registered."));
     }
 
     [Test]
@@ -247,10 +256,13 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The opposite end-point has not been registered.")]
     public void UnregisterCurrentOppositeEndPoint_NotRegistered ()
     {
-      _dataManager.UnregisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
+      Assert.That (
+          () => _dataManager.UnregisterCurrentOppositeEndPoint (_domainObjectEndPoint1),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The opposite end-point has not been registered."));
     }
     
     [Test]
@@ -283,29 +295,29 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
     public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithoutEndPoint ()
     {
       _dataManager.RegisterOriginalItemWithoutEndPoint (_domainObject2);
-      _dataManager.RegisterOriginalItemWithoutEndPoint (_domainObject2);
+      Assert.That (
+          () => _dataManager.RegisterOriginalItemWithoutEndPoint (_domainObject2),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'.")]
     public void RegisterOriginalItemWithoutEndPoint_AlreadyRegisteredWithEndPoint ()
     {
       _dataManager.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
-      try
-      {
-        _dataManager.RegisterOriginalItemWithoutEndPoint (_domainObject2);
-      }
-      catch
-      {
-        Assert.That (_dataManager.OriginalItemsWithoutEndPoints, Has.No.Member(_domainObject2));
-        throw;
-      }
+
+      Assert.That (
+          () => _dataManager.RegisterOriginalItemWithoutEndPoint (_domainObject2),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The original collection already contains a domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid'."));
+
+      Assert.That (_dataManager.OriginalItemsWithoutEndPoints, Has.No.Member(_domainObject2));
+
     }
 
     [Test]
@@ -325,29 +337,26 @@ namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.RelationEndPoints
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point.")]
     public void UnregisterOriginalItemWithoutEndPoint_ItemNotRegisteredWithoutEndPoint ()
     {
-      _dataManager.UnregisterOriginalItemWithoutEndPoint (_domainObject2);
+      Assert.That (
+          () => _dataManager.UnregisterOriginalItemWithoutEndPoint (_domainObject2),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point."));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point.")]
     public void UnregisterOriginalItemWithoutEndPoint_RegisteredWithEndPoint ()
     {
       _dataManager.RegisterOriginalOppositeEndPoint (_domainObjectEndPoint2);
 
-      try
-      {
-        _dataManager.UnregisterOriginalItemWithoutEndPoint (_domainObject2);
-      }
-      catch
-      {
-        Assert.That (_dataManager.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
-        throw;
-      }
+      Assert.That (
+          () => _dataManager.UnregisterOriginalItemWithoutEndPoint (_domainObject2),
+          Throws.InvalidOperationException
+              .With.Message.EqualTo (
+                  "The domain object with ID 'Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid' has not been registered as an item without end-point."));
+      Assert.That (_dataManager.OriginalCollectionData.ToArray (), Has.Member(_domainObject2));
     }
 
     [Test]

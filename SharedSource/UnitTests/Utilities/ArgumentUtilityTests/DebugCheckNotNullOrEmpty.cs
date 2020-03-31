@@ -30,47 +30,63 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
   public class DebugCheckNotNullOrEmpty
   {
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
     public void Fail_NullString ()
     {
       const string value = null;
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", value);
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", value),
+          Throws.InstanceOf<ArgumentNullException>());
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyString ()
     {
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", "");
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", ""),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyArray ()
     {
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", new string[0]);
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", new string[0]),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyCollection ()
     {
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", new ArrayList());
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", new ArrayList()),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_EmptyIEnumerable ()
     {
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", GetEmptyEnumerable());
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", GetEmptyEnumerable()),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Parameter 'arg' cannot be empty.\r\nParameter name: arg")]
     public void Fail_NonDisposableEnumerable ()
     {
       IEnumerable enumerable = new NonDisposableEnumerable (false);
-      ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", enumerable);
+      Assert.That (
+          () => ArgumentUtility.DebugCheckNotNullOrEmpty ("arg", enumerable),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'arg' cannot be empty.\r\nParameter name: arg"));
     }
 
     [Test]

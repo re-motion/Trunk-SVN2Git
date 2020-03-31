@@ -26,12 +26,12 @@ namespace Remotion.Extensions.UnitTests.Reflection
   public class TypesafeActivatorTest
   {
     [Test]
-    [ExpectedException (typeof (MissingMethodException))]
     public void TestWithObjectNull ()
     {
       object o = null;
-      TestClass testObject = TypesafeActivator.CreateInstance<TestClass> ().With (o);
-      Assert.That (testObject.InvocationType, Is.EqualTo (typeof (object)));
+      Assert.That (
+          () => TypesafeActivator.CreateInstance<TestClass>().With (o),
+          Throws.InstanceOf<MissingMethodException>());
     }
 
     [Test]
@@ -94,12 +94,14 @@ namespace Remotion.Extensions.UnitTests.Reflection
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Parameter 'type' is a 'Remotion.Extensions.UnitTests.Reflection.TestDomain.Base', "
-        + "which cannot be assigned to type 'Remotion.Extensions.UnitTests.Reflection.TestDomain.Derived'.\r\nParameter name: type")]
     public void TestWithUntypedAndTMinimalThrowsOnIncompatibleTypes ()
     {
-      TypesafeActivator.CreateInstance<Derived> (typeof (Base)).With();
+      Assert.That (
+          () => TypesafeActivator.CreateInstance<Derived> (typeof (Base)).With(),
+          Throws.ArgumentException
+              .With.Message.EqualTo (
+                  "Parameter 'type' is a 'Remotion.Extensions.UnitTests.Reflection.TestDomain.Base', "
+                  + "which cannot be assigned to type 'Remotion.Extensions.UnitTests.Reflection.TestDomain.Derived'.\r\nParameter name: type"));
     }
 
     [Test]

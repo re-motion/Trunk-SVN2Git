@@ -30,8 +30,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     private Type _generatedMixinType;
     private Type _generatedTargetTypeWithMethodOverride;
 
-    [TestFixtureSetUp]
-    public void TestFixtureSetUp ()
+    [OneTimeSetUp]
+    public void OneTimeSetUp ()
     {
       var generator = new AdHocCodeGenerator ("MixinTypeCodeGeneration.GeneratedTypeInConfigurationTest");
       generator.AddCustomAttribute(typeof(NonApplicationAssemblyAttribute));

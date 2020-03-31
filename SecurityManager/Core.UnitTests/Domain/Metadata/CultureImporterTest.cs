@@ -30,9 +30,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     private CultureImporter _importer;
     private ClientTransaction _transaction;
 
-    public override void TestFixtureSetUp ()
+    public override void OneTimeSetUp ()
     {
-      base.TestFixtureSetUp ();
+      base.OneTimeSetUp ();
 
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
       dbFixtures.CreateAndCommitSecurableClassDefinitionWithStates (ClientTransaction.CreateRootTransaction());
@@ -87,10 +87,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    [ExpectedException (typeof (ImportException),
-       ExpectedMessage = "The metadata object with the ID 'ad1efa4c-cf5d-46b0-b775-d4e45f2dce7c' "
-       + "('Clerk|Remotion.Security.UnitTests.TestDomain.DomainAbstractRoles, Remotion.Security.UnitTests.TestDomain') "
-       + "could not be found.")]
     public void Import_NotExistingMetadataObject ()
     {
       string cultureXml = @"
@@ -100,12 +96,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
             </localizedName>
           </localizedNames>
           ";
-
-      _importer.Import (GetXmlDocument (cultureXml));
+      Assert.That (
+          () => _importer.Import (GetXmlDocument (cultureXml)),
+          Throws.InstanceOf<ImportException>()
+              .With.Message.EqualTo (
+                  "The metadata object with the ID 'ad1efa4c-cf5d-46b0-b775-d4e45f2dce7c' "
+                  + "('Clerk|Remotion.Security.UnitTests.TestDomain.DomainAbstractRoles, Remotion.Security.UnitTests.TestDomain') "
+                  + "could not be found."));
     }
 
     [Test]
-    [ExpectedException (typeof (ImportException), ExpectedMessage = "The metadata object with the ID 'ad1efa4c-cf5d-46b0-b775-d4e45f2dce7c' could not be found.")]
     public void Import_NotExistingMetadataObjectWithoutComment ()
     {
       string cultureXml = @"
@@ -115,8 +115,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
             </localizedName>
           </localizedNames>
           ";
-
-      _importer.Import (GetXmlDocument (cultureXml));
+      Assert.That (
+          () => _importer.Import (GetXmlDocument (cultureXml)),
+          Throws.InstanceOf<ImportException>()
+              .With.Message.EqualTo (
+                  "The metadata object with the ID 'ad1efa4c-cf5d-46b0-b775-d4e45f2dce7c' could not be found."));
     }
 
     [Test]
@@ -132,7 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
               Vertraulichkeit
             </localizedName>
             <localizedName ref=""93969f13-65d7-49f4-a456-a1686a4de3de|0"" comment=""Confidentiality|Public"">
-              Öffentlich
+              Ã–ffentlich
             </localizedName>
           </localizedNames>
           ";
@@ -146,12 +149,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         Assert.That (_importer.LocalizedNames[0].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("b8621bc9-9ab3-4524-b1e4-582657d6b420")));
         Assert.That (_importer.LocalizedNames[1].Text, Is.EqualTo ("Vertraulichkeit"));
         Assert.That (_importer.LocalizedNames[1].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de")));
-        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Öffentlich"));
+        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Ã–ffentlich"));
       }
     }
 
     [Test]
-    [ExpectedException (typeof (XmlSchemaValidationException))]
     public void Import_InvalidXml ()
     {
       string cultureXml = @"
@@ -164,8 +166,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
             </localizedName>
           </localizedNames>
           ";
-
-      _importer.Import (GetXmlDocument (cultureXml));
+      Assert.That (
+          () => _importer.Import (GetXmlDocument (cultureXml)),
+          Throws.InstanceOf<XmlSchemaValidationException>());
     }
 
     [Test]
@@ -202,7 +205,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
               Vertraulichkeit
             </localizedName>
             <localizedName ref=""93969f13-65d7-49f4-a456-a1686a4de3de|0"" comment=""Confidentiality|Public"">
-              Öffentlich
+              Ã–ffentlich
             </localizedName>
           </localizedNames>
           ";
@@ -218,7 +221,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
         Assert.That (_importer.LocalizedNames[1].Text, Is.EqualTo ("Vertraulichkeit"));
         Assert.That (_importer.LocalizedNames[1].ID, Is.EqualTo (confidentialityNameID));
         Assert.That (_importer.LocalizedNames[1].MetadataObject.MetadataItemID, Is.EqualTo (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de")));
-        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Öffentlich"));
+        Assert.That (_importer.LocalizedNames[2].Text, Is.EqualTo ("Ã–ffentlich"));
       }
     }
 

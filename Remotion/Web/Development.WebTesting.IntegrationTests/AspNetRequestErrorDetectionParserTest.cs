@@ -37,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (result.HasError, Is.EqualTo (true));
       Assert.That (result.Message, Is.EqualTo ("SyncPostbackError"));
-      Assert.That (result.Stacktrace, Is.StringStarting ("\r\n[Exception: SyncPostbackError]\r\n"));
+      Assert.That (result.Stacktrace, Does.StartWith ("\r\n[Exception: SyncPostbackError]\r\n"));
     }
 
     [Test]
@@ -50,7 +50,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       
       Assert.That (result.HasError, Is.EqualTo (true));
       Assert.That (result.Message, Is.EqualTo ("ä&<\r\n'\""));
-      Assert.That (result.Stacktrace, Is.StringStarting ("\r\n[Exception: ä&<\r\n'\"]\r\n"));
+      Assert.That (result.Stacktrace, Does.StartWith ("\r\n[Exception: ä&<\r\n'\"]\r\n"));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       
       Assert.That (result.HasError, Is.EqualTo (true));
       Assert.That (result.Message, Is.EqualTo ("AsyncPostbackError"));
-      Assert.That (result.Stacktrace, Is.StringStarting ("\r\n[Exception: AsyncPostbackError]\r\n"));
+      Assert.That (result.Stacktrace, Does.StartWith ("\r\n[Exception: AsyncPostbackError]\r\n"));
     }
 
     [Test]
