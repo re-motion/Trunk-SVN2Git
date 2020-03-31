@@ -116,7 +116,7 @@ namespace Remotion.Utilities
     public static void DebugCheckNotNullOrEmpty<T> (
         [InvokerParameterName] string argumentName,
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
-        where T : IEnumerable
+        where T: IEnumerable
     {
       CheckNotNullOrEmpty (argumentName, enumerable);
     }

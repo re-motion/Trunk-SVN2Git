@@ -131,26 +131,29 @@ namespace Remotion.Utilities
 
     [Conditional ("DEBUG")]
     [AssertionMethod]
-    public static void DebugIsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), MaybeNull] T obj, string message)
+    public static void DebugIsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), System.Diagnostics.CodeAnalysis.NotNull] T obj, string message)
     {
       IsNotNull (obj, message, s_emptyArguments);
     }
 
     [AssertionMethod]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), MaybeNull] T obj, string message)
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), System.Diagnostics.CodeAnalysis.NotNull] T obj, string message)
     {
       return IsNotNull (obj, message, s_emptyArguments);
     }
 
     [AssertionMethod]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), System.Diagnostics.CodeAnalysis.NotNull, MaybeNull] T obj)
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), System.Diagnostics.CodeAnalysis.NotNull] T obj)
     {
       return IsNotNull (obj, c_msgIsNull);
     }
 
     [AssertionMethod]
     [StringFormatMethod ("message")]
-    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [MaybeNull] T obj, string message, params object[] arguments)
+    [return: System.Diagnostics.CodeAnalysis.NotNull]
+    public static T IsNotNull<T> ([AssertionCondition (AssertionConditionType.IS_NOT_NULL), System.Diagnostics.CodeAnalysis.NotNull] T obj, string message, params object[] arguments)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (obj == null)

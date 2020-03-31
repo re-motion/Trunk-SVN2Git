@@ -29,7 +29,7 @@ namespace Remotion.Development.UnitTesting
   /// <remarks>The methods of this class use a <see cref="BinaryFormatter"/> for serialization.</remarks>
   public static partial class Serializer
   {
-    public static T SerializeAndDeserialize<T> (T t)
+    public static T SerializeAndDeserialize<T> (T t) where T : notnull
     {
       if (t == null)
         throw new ArgumentNullException ("t");

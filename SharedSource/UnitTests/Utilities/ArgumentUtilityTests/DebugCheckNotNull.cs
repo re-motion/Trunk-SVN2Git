@@ -21,6 +21,7 @@ using Remotion.Utilities;
 
 #nullable disable
 // ReSharper disable once CheckNamespace
+
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
 #if !DEBUG

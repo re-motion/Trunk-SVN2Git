@@ -46,7 +46,7 @@ namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
     [Test]
     public void Succeed ()
     {
-      Type? result = ArgumentUtility.CheckTypeIsAssignableFrom ("arg", typeof (string), typeof (object));
+      Type result = ArgumentUtility.CheckTypeIsAssignableFrom ("arg", typeof (string), typeof (object));
       Assert.That (result, Is.SameAs (typeof (string)));
     }
   }

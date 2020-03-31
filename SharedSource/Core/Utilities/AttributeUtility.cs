@@ -45,7 +45,7 @@ namespace Remotion.Utilities
       return usage.AllowMultiple;
     }
 
-    public static AttributeUsageAttribute GetAttributeUsage (Type? attributeType)
+    public static AttributeUsageAttribute GetAttributeUsage (Type attributeType)
     {
       if (attributeType == null)
         throw new ArgumentNullException ("attributeType");

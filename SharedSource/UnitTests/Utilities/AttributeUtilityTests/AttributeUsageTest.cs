@@ -61,7 +61,7 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
     public void GetAttributeUsage_ParameterIsNull_ThrowsArgumentNullException ()
     {
       Assert.That (
-          () => AttributeUtility.GetAttributeUsage (null),
+          () => AttributeUtility.GetAttributeUsage (null!),
           Throws.TypeOf<ArgumentNullException>().With.Message.EqualTo ("Value cannot be null.\r\nParameter name: attributeType"));
     }
 

@@ -33,12 +33,14 @@ namespace Remotion.Development.UnitTesting.ObjectMothers
   static partial class DictionaryObjectMother
   {
     public static Dictionary<TKey, TValue> New<TKey, TValue> ()
+        where TKey : notnull
     {
       var container = new Dictionary<TKey, TValue> ();
       return container;
     }
 
     public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0)
+        where TKey : notnull
     {
       var container = new Dictionary<TKey, TValue> (1);
       container[key0] = value0;
@@ -46,6 +48,7 @@ namespace Remotion.Development.UnitTesting.ObjectMothers
     }
 
     public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1)
+        where TKey : notnull
     {
       var container = new Dictionary<TKey, TValue> (2);
       container[key0] = value0;
@@ -54,6 +57,7 @@ namespace Remotion.Development.UnitTesting.ObjectMothers
     }
 
     public static Dictionary<TKey, TValue> New<TKey, TValue> (TKey key0, TValue value0, TKey key1, TValue value1, TKey key2, TValue value2)
+        where TKey : notnull
     {
       var container = new Dictionary<TKey, TValue> (3);
       container[key0] = value0;
