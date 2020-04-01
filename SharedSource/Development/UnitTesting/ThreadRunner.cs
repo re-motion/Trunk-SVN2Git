@@ -115,4 +115,3 @@ namespace Remotion.Development.UnitTesting
     }
   }
 }
-#nullable restore
