@@ -110,7 +110,7 @@ namespace Remotion.Utilities
     /// </summary>
     /// <param name="memberInfo">The <see cref="MemberInfo"/> for which the hash code should be calculated.</param>
     /// <returns>The calculated hash code of the <see cref="MemberInfo"/>.</returns>
-    public int GetHashCode (T? memberInfo)
+    public int GetHashCode (T memberInfo)
     {
       if (memberInfo == null)
         throw new ArgumentNullException ("memberInfo");

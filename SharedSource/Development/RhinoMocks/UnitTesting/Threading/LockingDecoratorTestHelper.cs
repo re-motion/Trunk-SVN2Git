@@ -55,13 +55,13 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
       ExpectSynchronizedDelegation (action, fakeResult, r => Assert.That (r, Is.EqualTo (fakeResult)));
     }
 
-    public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> action, TResult fakeResult, Action<TResult> resultChecker) where TResult: notnull
+    public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> action, TResult fakeResult, Action<TResult> resultChecker) where TResult : notnull
     {
       ExpectSynchronizedDelegation (action, action, fakeResult, resultChecker);
     }
 
     public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> expectAction, Func<T, TResult> action, TResult fakeResult, Action<TResult> resultChecker)
-        where TResult: notnull
+        where TResult : notnull
     {
       _innerMock.BackToRecord();
       _innerMock

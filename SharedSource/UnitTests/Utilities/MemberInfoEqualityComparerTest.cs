@@ -369,7 +369,7 @@ namespace Remotion.UnitTests.Utilities
     [Test]
     public void GetHashCode_NullMember ()
     {
-      Assert.That (() => MemberInfoEqualityComparer<MemberInfo>.Instance.GetHashCode (null), Throws.Exception.TypeOf<ArgumentNullException>());
+      Assert.That (() => MemberInfoEqualityComparer<MemberInfo>.Instance.GetHashCode (null!), Throws.Exception.TypeOf<ArgumentNullException>());
     }
   }
 }

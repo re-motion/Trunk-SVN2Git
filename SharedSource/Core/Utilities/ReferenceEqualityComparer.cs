@@ -29,7 +29,7 @@ namespace Remotion.Utilities
   /// and not just equal for reference checking purposes.      
   /// </summary>      
   /// <typeparam name="T">the type of object to check</typeparam>  
-  partial class ReferenceEqualityComparer<T> : IEqualityComparer<T> where T: notnull
+  partial class ReferenceEqualityComparer<T> : IEqualityComparer<T> where T : class
   {
     public static readonly ReferenceEqualityComparer<T> Instance = new ReferenceEqualityComparer<T>();
 
@@ -37,7 +37,7 @@ namespace Remotion.Utilities
     {
     }
 
-    public bool Equals ([AllowNull] T x, [AllowNull] T y)
+    public bool Equals (T? x, T? y)
     {
       return object.ReferenceEquals (x, y);
     }
