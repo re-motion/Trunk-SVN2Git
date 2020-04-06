@@ -27,6 +27,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   /// </summary>
   public abstract class IntegrationTest
   {
+    private static Lazy<Uri> s_webApplicationRoot;
+
     private WebTestHelper _webTestHelper;
     private IDisposable _aspNetRequestErrorDetectionScope;
 
@@ -45,6 +47,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     {
       _webTestHelper = WebTestHelper.CreateFromConfiguration<CustomWebTestConfigurationFactory>();
       _webTestHelper.OnFixtureSetUp (MaximizeMainBrowserSession);
+      s_webApplicationRoot = new Lazy<Uri> (() => HostnameResolveHelper.ResolveHostname (new Uri (_webTestHelper.TestInfrastructureConfiguration.WebApplicationRoot)));
     }
 
     [SetUp]
@@ -79,7 +82,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     protected TPageObject Start<TPageObject> (string page)
       where TPageObject : PageObject
     {
-      var url = _webTestHelper.TestInfrastructureConfiguration.WebApplicationRoot + page;
+      var url = s_webApplicationRoot.Value + page;
       _webTestHelper.MainBrowserSession.Window.Visit (url);
 
       return _webTestHelper.CreateInitialPageObject<TPageObject> (_webTestHelper.MainBrowserSession);

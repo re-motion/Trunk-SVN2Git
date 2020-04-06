@@ -22,6 +22,7 @@ using System.Web.Script.Serialization;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
 {
@@ -29,6 +30,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
   public abstract class GenericTestPageTestCaseFactoryBase<TParameter> : GenericPageTestCaseFactoryBase
       where TParameter : IGenericTestPageParameter, new()
   {
+    private static Lazy<Uri> _webApplicationRoot;
+
     /// <summary>
     /// The page type of the generic page.
     /// </summary>
@@ -57,8 +60,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
       ArgumentUtility.CheckNotNull ("helper", helper);
       ArgumentUtility.CheckNotNullOrEmpty ("control", control);
 
+      if (_webApplicationRoot == null)
+      {
+        _webApplicationRoot = new Lazy<Uri> (() => HostnameResolveHelper.ResolveHostname (new Uri (helper.TestInfrastructureConfiguration.WebApplicationRoot)));
+      }
+
       var url = string.Concat (
-          helper.TestInfrastructureConfiguration.WebApplicationRoot,
+          _webApplicationRoot.Value.ToString(),
           string.Format (TestConstants.GenericPageUrlTemplate, control, (int) attribute.PageType));
 
       base.PrepareTest (attribute, helper, url);
