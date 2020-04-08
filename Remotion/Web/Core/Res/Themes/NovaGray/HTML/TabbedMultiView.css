@@ -28,23 +28,39 @@ div.tabbedMultiViewActiveView
   width: inherit;
 }
 
-div.tabbedMultiViewActiveView > div.contentBorder
+div.tabbedMultiViewActiveView > div[role=tabpanel]
 {
   position: relative;
   background-color: white;
-  margin: 0; 
-  padding: 0.5em;
-  overflow: auto;
+  overflow: hidden;
   height: 60%;
 }
 
-div.tabbedMultiViewActiveView > span:focus + div.contentBorder 
+div.tabbedMultiViewActiveView > span:focus + div[role=tabpanel]
 {
   outline: dotted black 1px;
   outline: auto 5px -webkit-focus-ring-color;
 }
 
-div.tabbedMultiViewActiveView > div.contentBorder > div.content
+div.tabbedMultiViewActiveView > div[role=tabpanel] > div > div.contentBorder
+{
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  margin: 0;
+  padding: 0.5em;
+  overflow: auto;
+}
+
+div.tabbedMultiViewActiveView > div[role=tabpanel] > div > *.heading:focus + div.contentBorder
+{
+  outline: dotted black 1px;
+  outline: auto 5px -webkit-focus-ring-color;
+}
+
+div.tabbedMultiViewActiveView > div[role=tabpanel] > div > div.contentBorder > div.content
 {
   position: relative;
   left: 0;

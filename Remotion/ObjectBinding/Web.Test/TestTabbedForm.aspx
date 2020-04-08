@@ -102,8 +102,10 @@
       </TopControls>
       <Views>
         <remotion:TabView ID="first" Title="First">
-          <remotion:WebTabStrip ID="PagesTabStrip" runat="server" Style="margin: 3em">
+            <br/>
+          <remotion:WebTabStrip ID="PagesTabStrip" runat="server">
           </remotion:WebTabStrip>
+            <br/>
           <asp:Literal ID="Literal" runat="server">
           01 foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar<br />
           02 foo bar foo bar foo bar foo bar foo bar foo bar foo bar foo bar<br />

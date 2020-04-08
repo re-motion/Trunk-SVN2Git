@@ -129,7 +129,7 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
       renderingContext.Control.ActiveViewStyle.AddAttributesToRender (renderingContext.Writer);
       if (string.IsNullOrEmpty (renderingContext.Control.ActiveViewStyle.CssClass))
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassActiveView);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // ActiveView DIV
       
       // For Internet Explorer + JAWS 2018ff, the tabindex-attribute on the table root will break a table with a scrollable header part.
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ClientID + "TabPanelControlType");
@@ -141,7 +141,6 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
       renderingContext.Writer.RenderEndTag();
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ActiveViewContentClientID);
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
       var activeTab = renderingContext.Control.TabStrip.Tabs.Cast<IWebTab>().FirstOrDefault (t => t.IsSelected);
       if (activeTab != null)
       {
@@ -149,12 +148,36 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
         var labelID = renderingContext.Control.TabStrip.ClientID + "_" + activeTab.ItemID + "_Command";
         _labelReferenceRenderer.AddLabelsReference (renderingContext.Writer, new[] { labelID });
       }
+
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Tabindex, "0");
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute2.Role, HtmlRoleAttributeValue.TabPanel);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // tabpanel DIV
+
+      var hasHeading = true;
+
+      if (hasHeading)
+      {
+        renderingContext.Writer.AddAttribute (
+            HtmlTextWriterAttribute2.AriaLabelledBy,
+            renderingContext.Control.ActiveViewContentClientID + "_Heading");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute2.Role, HtmlRoleAttributeValue.Region);
+      }
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // region DIV
+
+      if (hasHeading)
+      {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, renderingContext.Control.ActiveViewContentClientID + "_Heading");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "heading" + " "+ CssClassScreenReaderText);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Tabindex, "0");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.H3);
+        renderingContext.Writer.Write ("Associated Heading");
+        renderingContext.Writer.RenderEndTag();
+      }
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContentBorder);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // content-border DIV
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
-      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+      renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div); // content DIV
 
       var view = renderingContext.Control.GetActiveView ();
       if (view != null)
@@ -166,9 +189,11 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
         }
       }
 
-      renderingContext.Writer.RenderEndTag ();
-      renderingContext.Writer.RenderEndTag ();
-      renderingContext.Writer.RenderEndTag ();
+      renderingContext.Writer.RenderEndTag (); // content DIV
+      renderingContext.Writer.RenderEndTag (); // content-border DIV
+      renderingContext.Writer.RenderEndTag (); // region DIV
+      renderingContext.Writer.RenderEndTag (); // tabpanel DIV
+      renderingContext.Writer.RenderEndTag (); // ActiveView DIV
     }
 
     protected virtual void RenderTopControls (TabbedMultiViewRenderingContext renderingContext)
@@ -210,8 +235,23 @@ namespace Remotion.Web.UI.Controls.TabbedMultiViewImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
 
+      var hasHeading = true;
+      if (hasHeading)
+      {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Tabindex, "0");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute2.AriaLabelledBy, placeHolder.ClientID + "_Heading");
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute2.Role, HtmlRoleAttributeValue.Region);
+      }
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
+      if (hasHeading)
+      {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, placeHolder.ClientID + "_Heading");
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.H3);
+        renderingContext.Writer.Write ("Associated Heading");
+        renderingContext.Writer.RenderEndTag();
+      }
 
       placeHolder.RenderControl (renderingContext.Writer);
 

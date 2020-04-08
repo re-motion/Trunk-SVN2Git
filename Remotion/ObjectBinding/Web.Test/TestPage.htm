@@ -1,4 +1,4 @@
-
+﻿
    
 
 <!DOCTYPE html >
@@ -26,7 +26,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     
 
-
+  <style>
+    div
+    {
+      border: 1px red dotted;
+      padding: 0.5em;
+    }
+    h2:focus + span
+    {
+      background-color: red;
+    }
+  </style>
 
 
 </head>
@@ -38,5 +48,21 @@
   <br/>
   <label for="other">Charlie</label>
   <input id="other"/>
+  <a href="#x4">Jump</a>
+  <div role="region" aria-labelledby="x1">
+    <h1 id="x1">One</h1>Alpha
+    <div role="region" aria-labelledby="x2">
+      <h2 id="x2">Two</h2>Beta
+      <div role="region" aria-labelledby="x3">
+        <h3 id="x3">Three</h3>Alice
+      </div>
+      Bob
+    </div>
+    <div role="region" aria-labelledby="x4">
+      <h2 id="x4" tabindex="0">Four</h2>Gamma
+      <span>Text</span>
+    </div>
+    Delta
+  </div>
 </body>
 </html>

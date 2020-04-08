@@ -51,14 +51,15 @@ ViewLayout.AdjustTabbedMultiView = function(containerElement)
   if (BrowserUtility.GetIEVersion() > 0)
   {
     // For Internet Explorer + JAWS 2018ff, the tabindex-attribute on the table root will break a table with a scrollable header part.
-    var contentBorder = viewContent.children ('div[tabindex]').eq (0);
-    if (contentBorder.length > 0)
+    var tabPanel = viewContent.children ('div[tabindex]').eq (0);
+    if (tabPanel.length > 0)
     {
-      contentBorder.removeAttr ('tabindex');
-      var contentLabelledBy = contentBorder.attr ('aria-labelledby') || '';
+      tabPanel.removeAttr ('tabindex');
+      var tabPanelLabelledBy = tabPanel.attr ('aria-labelledby') || '';
       var caption = viewContent.children ('span[aria-hidden]').eq (0);
       caption.attr ('tabindex', 0);
-      caption.attr ('aria-labelledby', contentLabelledBy + ' ' + caption[0].id);
+      caption.attr ('aria-labelledby', tabPanelLabelledBy + ' ' + caption[0].id);
+      caption.removeAttr ('aria-hidden', 0);
     }
   }
 };
