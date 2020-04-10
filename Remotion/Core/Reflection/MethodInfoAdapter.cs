@@ -22,7 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Remotion.FunctionalProgramming;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -45,6 +45,15 @@ namespace Remotion.Reflection
       return s_dataStore.GetOrAdd (methodInfo, s_ctorFunc);
     }
 
+    [ContractAnnotation ("null => null; notnull => notnull")]
+    public static MethodInfoAdapter CreateOrNull (MethodInfo methodInfo)
+    {
+      if (methodInfo == null)
+        return null;
+
+      return s_dataStore.GetOrAdd (methodInfo, s_ctorFunc);
+    }
+
     private readonly MethodInfo _methodInfo;
     private readonly Lazy<ITypeInformation> _cachedDeclaringType;
     private readonly Lazy<ITypeInformation> _cachedOriginalDeclaringType;
@@ -57,7 +66,7 @@ namespace Remotion.Reflection
       _methodInfo = methodInfo;
 
       _cachedDeclaringType = new Lazy<ITypeInformation> (
-          () => Maybe.ForValue (_methodInfo.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault(),
+          () => TypeAdapter.CreateOrNull (_methodInfo.DeclaringType),
           LazyThreadSafetyMode.ExecutionAndPublication);
 
       _cachedOriginalDeclaringType = new Lazy<ITypeInformation> (
@@ -65,7 +74,7 @@ namespace Remotion.Reflection
           LazyThreadSafetyMode.ExecutionAndPublication);
 
       _declaringProperty = new Lazy<IPropertyInformation> (
-          () => Maybe.ForValue ( _methodInfo.FindDeclaringProperty()).Select (PropertyInfoAdapter.Create).ValueOrDefault(),
+          () => PropertyInfoAdapter.CreateOrNull (_methodInfo.FindDeclaringProperty()),
           LazyThreadSafetyMode.ExecutionAndPublication);
 
       _interfaceDeclarations = new Lazy<IReadOnlyCollection<IMethodInformation>> (

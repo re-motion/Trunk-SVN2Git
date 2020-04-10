@@ -22,7 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Remotion.FunctionalProgramming;
+using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Reflection
@@ -46,6 +46,15 @@ namespace Remotion.Reflection
       return s_dataStore.GetOrAdd (type, s_ctorFunc);
     }
 
+    [ContractAnnotation ("null => null; notnull => notnull")]
+    public static TypeAdapter CreateOrNull (Type type)
+    {
+      if (type == null)
+        return null;
+
+      return s_dataStore.GetOrAdd (type, s_ctorFunc);
+    }
+
     private readonly Type _type;
     private readonly Lazy<ITypeInformation> _cachedDeclaringType;
 
@@ -54,7 +63,7 @@ namespace Remotion.Reflection
       _type = type;
 
       _cachedDeclaringType = new Lazy<ITypeInformation> (
-          () => Maybe.ForValue (_type.DeclaringType).Select (TypeAdapter.Create).ValueOrDefault(),
+          () => TypeAdapter.CreateOrNull (_type.DeclaringType),
           LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
@@ -205,7 +214,7 @@ namespace Remotion.Reflection
 
     public ITypeInformation GetElementType ()
     {
-      return Maybe.ForValue (_type.GetElementType()).Select (TypeAdapter.Create).ValueOrDefault();
+      return TypeAdapter.CreateOrNull (_type.GetElementType());
     }
 
     public bool IsGenericType
@@ -271,7 +280,7 @@ namespace Remotion.Reflection
 
     public ITypeInformation BaseType
     {
-      get { return Maybe.ForValue (_type.BaseType).Select (TypeAdapter.Create).ValueOrDefault(); }
+      get { return TypeAdapter.CreateOrNull (_type.BaseType); }
     }
 
     public bool IsInstanceOfType (object o)
