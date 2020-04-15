@@ -17,31 +17,16 @@
 using System;
 using NUnit.Framework;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
+namespace Remotion.Development.Sandboxing.NUnit2.UnitTests.UnitTesting
 {
   [TestFixture]
-  public class DummyTest4
+  public class DummyTest2
   {
-    private int _value = Math.Abs (-5);
-
-    [TearDown]
-    public void TearDown ()
-    {
-      _value = Math.Abs (-5);
-    }
-
     [Test]
     public void Test1 ()
     {
-      Assert.That (_value, Is.EqualTo (5));
-      _value = 100;
-    }
-
-    [Test]
-    public void Test2 ()
-    {
-      Assert.That (_value, Is.EqualTo (5));
-      _value = 200;
+      var value = Math.Abs (-5);
+      Assert.That (value, Is.EqualTo (5));
     }
   }
 }
