@@ -17,11 +17,10 @@
 using System;
 using NUnit.Framework;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
+namespace Remotion.Development.Sandboxing.NUnit2.UnitTests.UnitTesting
 {
-  // This test is meant to be run by SandboxTestRunner.
   [TestFixture]
-  public class DummyTest1
+  public class DummyTest3
   {
     private int _value;
 
@@ -29,12 +28,6 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     public void SetUp ()
     {
       _value = 10;
-    }
-
-    [TearDown]
-    public void TearDown ()
-    {
-      _value = 0;
     }
 
     [Test]
@@ -50,26 +43,5 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
       Assert.That (_value, Is.EqualTo (10));
       _value = 200;
     }
-
-    [Test]
-    [Ignore]
-    public void IgnoreTest ()
-    {
-      Assert.Fail ("IgnoredTest");
-    }
-
-    [Test]
-    public void ExpectedExceptionTest ()
-    {
-      Assert.That (
-          () => { throw new NotImplementedException(); },
-          Throws.InstanceOf<NotImplementedException>());
-    }
-
-    //[Test]
-    //public void Test3 ()
-    //{
-    //  Assert.Fail ("Test");
-    //}
   }
 }
