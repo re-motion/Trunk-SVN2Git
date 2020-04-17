@@ -44,8 +44,8 @@
   <Target Name="FullBuildReduced_Configuration">
     <PropertyGroup>
       <Platforms>x64</Platforms>
-      <DatabaseSystems>SqlServer2012</DatabaseSystems>
-      <Browsers>Chrome+InternetExplorer</Browsers>
+      <DatabaseSystems>SqlServer2012+NoDB</DatabaseSystems>
+      <Browsers>Chrome+InternetExplorer+Firefox+Edge+NoBrowser</Browsers>
       <TestCategoriesToExclude></TestCategoriesToExclude>
     </PropertyGroup>
   </Target>
