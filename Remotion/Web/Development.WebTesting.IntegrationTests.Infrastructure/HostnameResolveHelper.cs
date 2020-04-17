@@ -22,6 +22,9 @@ using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
 {
+  /// <summary>
+  /// Provides a method to resolve the hostname of a <see cref="Uri"/>.
+  /// </summary>
   public static class HostnameResolveHelper
   {
     /// <summary>
