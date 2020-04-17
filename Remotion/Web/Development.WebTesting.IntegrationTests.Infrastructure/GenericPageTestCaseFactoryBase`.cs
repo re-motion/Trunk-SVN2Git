@@ -30,7 +30,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
   public abstract class GenericTestPageTestCaseFactoryBase<TParameter> : GenericPageTestCaseFactoryBase
       where TParameter : IGenericTestPageParameter, new()
   {
-    private static Lazy<Uri> _webApplicationRoot;
+    private static Lazy<Uri> s_webApplicationRoot;
 
     /// <summary>
     /// The page type of the generic page.
@@ -60,13 +60,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure
       ArgumentUtility.CheckNotNull ("helper", helper);
       ArgumentUtility.CheckNotNullOrEmpty ("control", control);
 
-      if (_webApplicationRoot == null)
+      if (s_webApplicationRoot == null)
       {
-        _webApplicationRoot = new Lazy<Uri> (() => HostnameResolveHelper.ResolveHostname (new Uri (helper.TestInfrastructureConfiguration.WebApplicationRoot)));
+        s_webApplicationRoot = new Lazy<Uri> (() => HostnameResolveHelper.ResolveHostname (new Uri (helper.TestInfrastructureConfiguration.WebApplicationRoot)));
       }
 
       var url = string.Concat (
-          _webApplicationRoot.Value.ToString(),
+          s_webApplicationRoot.Value.ToString(),
           string.Format (TestConstants.GenericPageUrlTemplate, control, (int) attribute.PageType));
 
       base.PrepareTest (attribute, helper, url);
