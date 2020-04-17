@@ -49,7 +49,17 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       _webTestHelper = WebTestHelper.CreateFromConfiguration<CustomWebTestConfigurationFactory>();
 
       _webTestHelper.OnFixtureSetUp (MaximizeMainBrowserSession);
-      s_webApplicationRoot = new Lazy<Uri> (() => HostnameResolveHelper.ResolveHostname (new Uri (_webTestHelper.TestInfrastructureConfiguration.WebApplicationRoot)));
+      s_webApplicationRoot = new Lazy<Uri> (
+          () =>
+          {
+            var uri = new Uri (_webTestHelper.TestInfrastructureConfiguration.WebApplicationRoot);
+
+            // RM-7401: Edge loads pages slower due to repeated hostname resolution.
+            if (_webTestHelper.BrowserConfiguration.IsEdge())
+              return HostnameResolveHelper.ResolveHostname (uri);
+
+            return uri;
+          });
     }
 
     [SetUp]
