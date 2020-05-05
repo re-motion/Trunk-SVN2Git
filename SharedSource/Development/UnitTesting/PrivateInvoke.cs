@@ -314,7 +314,12 @@ namespace Remotion.Development.UnitTesting
 
     private static void SetPropertyInternal (object? instance, Type type, BindingFlags bindingFlags, string propertyName, object value)
     {
-      PropertyInfo property = GetPropertyRecursive (type, bindingFlags, propertyName)!;
+      PropertyInfo? property = GetPropertyRecursive (type, bindingFlags, propertyName);
+      if (property == null)
+      {
+        throw new ArgumentException ("No property '" + propertyName + "' found on type '" + type.FullName + "' with binding flags '" + bindingFlags + "'.",
+            "propertyName");
+      }
       try
       {
         property.SetValue (instance, value, new object[] {});
@@ -412,9 +417,14 @@ namespace Remotion.Development.UnitTesting
     private static void SetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName, object value)
     {
       FieldInfo? field = GetFieldRecursive (type, bindingFlags, fieldName);
+      if (field == null)
+      {
+        throw new ArgumentException ("No field '" + field + "' found on type '" + type.FullName + "' with binding flags '" + bindingFlags + "'.",
+            "propertyName");
+      }
       try
       {
-        field!.SetValue (instance, value);
+        field.SetValue (instance, value);
       }
       catch (TargetInvocationException e)
       {
