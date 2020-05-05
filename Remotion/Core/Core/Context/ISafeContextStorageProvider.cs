@@ -36,7 +36,7 @@ namespace Remotion.Context
     /// </summary>
     /// <param name="key">The key identifying the data item.</param>
     /// <param name="value">The value to be stored in the context storage.</param>
-    void SetData (string key, object value);
+    void SetData (string key, object? value);
 
     /// <summary>
     /// Frees the resources used by a specific data item in the context storage.
