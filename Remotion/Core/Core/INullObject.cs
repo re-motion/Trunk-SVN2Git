@@ -26,6 +26,6 @@ namespace Remotion
     /// <summary>
     /// Gets a value indicating whether the object is a "Null Object".
     /// </summary>
-    bool IsNull {get;}
+    bool? IsNull {get;}
   }
 }

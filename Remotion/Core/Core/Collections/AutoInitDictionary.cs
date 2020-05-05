@@ -56,7 +56,7 @@ namespace Remotion.Collections
       _dictionary = new Dictionary<TKey, TValue> (comparer);
     }
 
-    private TValue CreateValue ()
+    private TValue? CreateValue ()
     {
       if (_createMethod != null)
         return _createMethod ();

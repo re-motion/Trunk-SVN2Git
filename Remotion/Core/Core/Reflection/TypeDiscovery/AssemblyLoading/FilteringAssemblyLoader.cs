@@ -50,12 +50,12 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       get { return _filter; }
     }
 
-    public virtual Assembly TryLoadAssembly (string filePath)
+    public virtual Assembly? TryLoadAssembly (string filePath)
     {
       ArgumentUtility.CheckNotNull ("filePath", filePath);
 
       s_log.Value.InfoFormat ("Attempting to get assembly name for path '{0}'.", filePath);
-      AssemblyName assemblyName = PerformGuardedLoadOperation (filePath, null, () => AssemblyNameCache.GetAssemblyName (filePath));
+      AssemblyName? assemblyName = PerformGuardedLoadOperation (filePath, null, () => AssemblyNameCache.GetAssemblyName (filePath));
       if (assemblyName == null)
         return null;
 
@@ -64,7 +64,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       return TryLoadAssembly(assemblyName, filePath);
     }
 
-    public virtual Assembly TryLoadAssembly (AssemblyName assemblyName, string context)
+    public virtual Assembly? TryLoadAssembly (AssemblyName assemblyName, string context)
     {
       ArgumentUtility.CheckNotNull ("assemblyName", assemblyName);
       ArgumentUtility.CheckNotNull ("context", context);
@@ -72,7 +72,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       if (PerformGuardedLoadOperation (assemblyName.FullName, context, () => _filter.ShouldConsiderAssembly (assemblyName)))
       {
         s_log.Value.InfoFormat ("Attempting to load assembly with name '{0}' in context '{1}'.", assemblyName, context);
-        Assembly loadedAssembly = PerformGuardedLoadOperation (assemblyName.FullName, context, () => Assembly.Load (assemblyName));
+        Assembly? loadedAssembly = PerformGuardedLoadOperation (assemblyName.FullName, context, () => Assembly.Load (assemblyName));
         s_log.Value.InfoFormat ("Success: {0}", loadedAssembly != null);
 
         if (loadedAssembly == null)
@@ -86,7 +86,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
         return null;
     }
 
-    public T PerformGuardedLoadOperation<T> (string assemblyDescription, string loadContext, Func<T> loadOperation)
+    public T? PerformGuardedLoadOperation<T> (string assemblyDescription, string? loadContext, Func<T> loadOperation)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("assemblyDescription", assemblyDescription);
       ArgumentUtility.CheckNotNull ("loadOperation", loadOperation);

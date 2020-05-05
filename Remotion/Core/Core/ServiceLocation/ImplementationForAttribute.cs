@@ -75,7 +75,7 @@ namespace Remotion.ServiceLocation
     /// implementations. The lowest position indicates the first implementation. In case of a decorator, it's the decorator closest to the implementation.
     /// </remarks>
     /// <value>The position of the concrete implementation in the list of all concrete implementations.</value>
-    public int Position  { get; set; }
+    public int? Position  { get; set; }
 
     /// <summary>
     /// Defines wether an implementation is registered as a single value or as a sequence, a compound type or a decorator.

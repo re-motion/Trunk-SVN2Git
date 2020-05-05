@@ -24,7 +24,7 @@ namespace Remotion.Utilities
   /// </summary>
   public static class NameValueCollectionUtility
   {
-    public static NameValueCollection Clone (this NameValueCollection collection)
+    public static NameValueCollection Clone (this NameValueCollection? collection)
     {
       return new NameValueCollection (collection);
     }
@@ -35,7 +35,7 @@ namespace Remotion.Utilities
     /// </summary>
     /// <param name="first"> Must not be <see langword="null"/>. </param>
     /// <param name="second"> Must not be <see langword="null"/>. </param>
-    public static void Append (NameValueCollection first, NameValueCollection second)
+    public static void Append (NameValueCollection first, NameValueCollection? second)
     {
       ArgumentUtility.CheckNotNull ("first", first);
       
@@ -49,7 +49,7 @@ namespace Remotion.Utilities
     /// <summary>
     ///   Merges two collections. If a key occurs in both collections, the value of the second collections is taken.
     /// </summary>
-    public static NameValueCollection Merge (NameValueCollection first, NameValueCollection second)
+    public static NameValueCollection? Merge (NameValueCollection first, NameValueCollection second)
     {
       if (first == null && second == null)
         return null;

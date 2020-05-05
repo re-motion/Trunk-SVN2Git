@@ -74,7 +74,7 @@ namespace Remotion.Utilities
     /// <returns>
     ///   A <see cref="TypeConverter"/> or <see langword="null"/> of no <see cref="TypeConverter"/> can be found.
     /// </returns>
-    TypeConverter GetTypeConverter (Type type);
+    TypeConverter? GetTypeConverter (Type type);
 
     /// <summary> 
     ///   Test whether the <see cref="TypeConversionProvider"/> object can convert an object of <see cref="Type"/> 
@@ -112,6 +112,6 @@ namespace Remotion.Utilities
     /// </param>
     /// <param name="value"> The <see cref="Object"/> to be converted.</param>
     /// <returns> An <see cref="Object"/> that represents the converted <paramref name="value"/>. </returns>
-    object Convert (ITypeDescriptorContext context, CultureInfo culture, Type sourceType, Type destinationType, object value);
+    object? Convert (ITypeDescriptorContext? context, CultureInfo? culture, Type sourceType, Type destinationType, object value);
   }
 }

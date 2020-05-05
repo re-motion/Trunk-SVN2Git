@@ -250,7 +250,7 @@ namespace Remotion.Utilities
       return str;
     }
 
-    public static string EmptyToNull (string str)
+    public static string? EmptyToNull (string str)
     {
       if (str != null && str.Length == 0)
         return null;
@@ -262,7 +262,7 @@ namespace Remotion.Utilities
       return string.IsNullOrEmpty (str);
     }
 
-    public static string[] ListToStringArray (IList list)
+    public static string[]? ListToStringArray (IList list)
     {
       if (list == null)
         return null;
@@ -278,7 +278,7 @@ namespace Remotion.Utilities
       return ConcatWithSeparator (list, separator, null, null);
     }
 
-    public static string ConcatWithSeparator (IList list, string separator, string format, IFormatProvider formatProvider)
+    public static string ConcatWithSeparator (IList list, string separator, string? format, IFormatProvider? formatProvider)
     {
       if (list == null)
         throw new ArgumentNullException ("list");
@@ -322,7 +322,7 @@ namespace Remotion.Utilities
     }
 
 
-    public static string Format (object value, IFormatProvider formatProvider)
+    public static string Format (object value, IFormatProvider? formatProvider)
     {
       if (value == null)
         return string.Empty;
@@ -337,23 +337,23 @@ namespace Remotion.Utilities
       return Format (value, null);
     }
 
-    private static string FormatArrayValue (object value, IFormatProvider formatProvider)
+    private static string FormatArrayValue (object value, IFormatProvider? formatProvider)
     {
       Type elementType = value.GetType().GetElementType();
-      string format = null;
+      string? format = null;
       if (elementType == typeof (float) || elementType == typeof (double))
         format = "R";
       return ConcatWithSeparator ((IList) value, ",", format, formatProvider);
     }
 
-    private static string FormatScalarValue (object value, IFormatProvider formatProvider)
+    private static string FormatScalarValue (object value, IFormatProvider? formatProvider)
     {
       if (value is string)
         return (string) value;
-      IFormattable formattable = value as IFormattable;
+      IFormattable? formattable = value as IFormattable;
       if (formattable != null)
       {
-        string format = null;
+        string? format = null;
         if (value is float || value is double)
           format = "R";
         return formattable.ToString (format, formatProvider);
@@ -373,7 +373,7 @@ namespace Remotion.Utilities
     /// <param name="formatProvider"> The format provider to be passed to the type's <b>Parse</b> method (if present). </param>
     /// <returns> An instance of the specified type. </returns>
     /// <exception cref="ParseException"> The <b>Parse</b> method was not found, or failed. </exception>
-    public static object Parse (Type type, string value, IFormatProvider formatProvider)
+    public static object? Parse (Type type, string value, IFormatProvider formatProvider)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -484,7 +484,7 @@ namespace Remotion.Utilities
       return parseMethod;
     }
 
-    private static MethodInfo GetParseMethodWithFormatProviderFromType (Type type)
+    private static MethodInfo? GetParseMethodWithFormatProviderFromType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       MethodInfo parseMethod = type.GetMethod (
@@ -500,7 +500,7 @@ namespace Remotion.Utilities
         return null;
     }
 
-    private static MethodInfo GetParseMethodFromType (Type type)
+    private static MethodInfo? GetParseMethodFromType (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       MethodInfo parseMethod = type.GetMethod (

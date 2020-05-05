@@ -45,16 +45,16 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
     /// </summary>
     public static readonly ApplicationAssemblyLoaderFilter Instance = new ApplicationAssemblyLoaderFilter();
 
-    private static string MakeMatchExpression (IEnumerable<string> assemblyMatchStrings)
+    private static string MakeMatchExpression (IEnumerable<string>? assemblyMatchStrings)
     {
       ArgumentUtility.CheckNotNull ("assemblyMatchStrings", assemblyMatchStrings);
 
       return "^((" + string.Join (")|(", assemblyMatchStrings) + "))$";
     }
 
-    private List<string> _nonApplicationAssemblyNames;
+    private List<string>? _nonApplicationAssemblyNames;
 
-    private RegexAssemblyLoaderFilter _assemblyNameFilter;
+    private RegexAssemblyLoaderFilter? _assemblyNameFilter;
     private readonly object _assemblyNameFilterLock = new object();
 
     private ApplicationAssemblyLoaderFilter ()
