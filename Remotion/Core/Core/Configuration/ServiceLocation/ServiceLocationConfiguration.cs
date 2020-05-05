@@ -84,7 +84,8 @@ namespace Remotion.Configuration.ServiceLocation
     /// <returns>An new <see cref="IServiceLocatorProvider"/> instance.</returns>
     public IServiceLocatorProvider CreateServiceLocatorProvider ()
     {
-      return ServiceLocatorProvider.CreateInstance();
+      // TODO RM-7432: CreateInstance should not be nullable
+      return ServiceLocatorProvider.CreateInstance()!;
     }
   }
 }
