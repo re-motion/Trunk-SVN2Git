@@ -171,7 +171,7 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var third = new Element (3, second);
       var fourth = new Element (4, third);
 
-      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent!);
+      IEnumerable<Element> actual = fourth.CreateSequence (e => e.Parent);
       Assert.That (actual.ToArray (), Is.EqualTo (new[] { fourth, third, second, first }));
     }
 

@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -190,12 +191,12 @@ namespace Remotion.FunctionalProgramming
     /// A sequence of elements containing the <paramref name="source"/> and all subsequent elements 
     /// until the <paramref name="nextElementSelector"/> returns <see langword="null" />.
     /// </returns>
-    public static IEnumerable<TSource> CreateSequence<TSource> (this TSource source, Func<TSource, TSource> nextElementSelector)
+    public static IEnumerable<TSource> CreateSequence<TSource> (this TSource source, Func<TSource, TSource?> nextElementSelector)
         where TSource : class
     {
       ArgumentUtility.CheckNotNull ("nextElementSelector", nextElementSelector);
 
-      return CreateSequence (source, nextElementSelector, e => e != null);
+      return CreateSequence (source, nextElementSelector!, e => e != null)!;
     }
 
     /// <summary>
@@ -387,6 +388,7 @@ namespace Remotion.FunctionalProgramming
     /// <param name="source">The source sequence.</param>
     /// <param name="createMultipleElementsException">The exception provider.</param>
     /// <returns></returns>
+    [return: MaybeNull]
     public static TSource SingleOrDefault<TSource, TException> (this IEnumerable<TSource> source, Func<TException> createMultipleElementsException)
         where TException : Exception
     {
@@ -416,6 +418,7 @@ namespace Remotion.FunctionalProgramming
     /// <param name="predicate">The predicate applied to the sequence.</param>
     /// <param name="createMultipleMatchingElementsException">The exception provider.</param>
     /// <returns></returns>
+    [return: MaybeNull]
     public static TSource SingleOrDefault<TSource, TException> (
         this IEnumerable<TSource> source, Func<TSource, bool> predicate, Func<TException> createMultipleMatchingElementsException)
         where TException : Exception
