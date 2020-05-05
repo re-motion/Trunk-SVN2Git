@@ -72,7 +72,7 @@ namespace Remotion.Utilities
     [AssertionMethod]
     public static void DebugCheckNotNull<T> (
         [InvokerParameterName] string argumentName,
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL), NoEnumeration] T actualValue)
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
         where T : notnull
     {
       CheckNotNull (argumentName, actualValue);
@@ -101,9 +101,9 @@ namespace Remotion.Utilities
 
     [AssertionMethod]
     public static T CheckNotNullOrEmpty<T> (
-        [InvokerParameterName] string argumentName,
+        [InvokerParameterName] string argumentName, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
-        where T : IEnumerable
+        where T: IEnumerable
     {
       CheckNotNull (argumentName, enumerable);
       CheckNotEmpty (argumentName, enumerable);
@@ -114,7 +114,7 @@ namespace Remotion.Utilities
     [Conditional ("DEBUG")]
     [AssertionMethod]
     public static void DebugCheckNotNullOrEmpty<T> (
-        [InvokerParameterName] string argumentName,
+        [InvokerParameterName] string argumentName, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
         where T: IEnumerable
     {
@@ -123,9 +123,9 @@ namespace Remotion.Utilities
 
     [AssertionMethod]
     public static T CheckNotNullOrItemsNull<T> (
-        [InvokerParameterName] string argumentName,
+        [InvokerParameterName] string argumentName, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
-        where T : IEnumerable
+        where T: IEnumerable
     {
       CheckNotNull (argumentName, enumerable);
 
@@ -142,9 +142,9 @@ namespace Remotion.Utilities
 
     [AssertionMethod]
     public static T CheckNotNullOrEmptyOrItemsNull<T> (
-        [InvokerParameterName] string argumentName,
+        [InvokerParameterName] string argumentName, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T enumerable)
-        where T : IEnumerable
+        where T: IEnumerable
     {
       CheckNotNullOrItemsNull (argumentName, enumerable);
       CheckNotEmpty (argumentName, enumerable);
@@ -165,7 +165,7 @@ namespace Remotion.Utilities
     [AssertionMethod]
     [return: NotNullIfNotNull ("enumerable")]
     public static T CheckNotEmpty<T> ([InvokerParameterName] string argumentName, T enumerable)
-        where T : IEnumerable?
+        where T: IEnumerable?
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (enumerable != null)
@@ -241,7 +241,7 @@ namespace Remotion.Utilities
       if (actualValue == null)
         throw new ArgumentNullException (argumentName);
 
-      if (!(actualValue is TExpected))
+      if (! (actualValue is TExpected))
         throw CreateArgumentTypeException (argumentName, actualValue.GetType(), typeof (TExpected));
       return (TExpected) actualValue;
     }
@@ -327,8 +327,8 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
     [return: NotNullIfNotNull ("actualType")]
     public static Type? CheckTypeIsAssignableFrom (
-        [InvokerParameterName] string argumentName,
-        Type? actualType,
+        [InvokerParameterName] string argumentName, 
+        Type? actualType, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       CheckNotNull ("expectedType", expectedType);
@@ -353,8 +353,8 @@ namespace Remotion.Utilities
     [Conditional ("DEBUG")]
     [AssertionMethod]
     public static void DebugCheckTypeIsAssignableFrom (
-        [InvokerParameterName] string argumentName,
-        Type? actualType,
+        [InvokerParameterName] string argumentName, 
+        Type? actualType, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] Type expectedType)
     {
       CheckTypeIsAssignableFrom (argumentName, actualType, expectedType);
@@ -364,7 +364,7 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentException"> If at least one element is not of the specified type or a derived type. </exception>
     [return: NotNullIfNotNull ("collection")]
     public static T CheckItemsType<T> ([InvokerParameterName] string argumentName, T collection, Type itemType)
-        where T : ICollection?
+        where T: ICollection?
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
@@ -390,7 +390,7 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentNullException"> If at least one element is a null reference. </exception>
     [return: NotNullIfNotNull ("collection")]
     public static T CheckItemsNotNullAndType<T> ([InvokerParameterName] string argumentName, T collection, Type itemType)
-        where T : ICollection?
+        where T: ICollection?
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (collection != null)
@@ -416,7 +416,7 @@ namespace Remotion.Utilities
     [MustUseReturnValue]
     public static ArgumentException CreateArgumentEmptyException ([InvokerParameterName] string argumentName)
     {
-      return new ArgumentException (string.Format ("Parameter '{0}' cannot be empty.", argumentName), argumentName);
+      return new ArgumentException (string.Format("Parameter '{0}' cannot be empty.", argumentName), argumentName);
     }
 
     [MustUseReturnValue]
