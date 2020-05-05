@@ -33,12 +33,20 @@ namespace Remotion.UnitTests.FunctionalProgramming
     private IEnumerable<string> _enumerableWithOneValue = default!;
     private IEnumerable<string> _enumerableWithThreeValues = default!;
 
+    private IEnumerable<string?> _enumerableWithOneNullableReferenceValue = default!;
+    private IEnumerable<int?> _enumerableWithOneNullableValueTypeValue = default!;
+    private IEnumerable<int> _enumerableWithOneValueTypeValue = default!;
+
     [SetUp]
     public void SetUp ()
     {
       _enumerableWithoutValues = new string[0];
       _enumerableWithOneValue = new[] { "test" };
       _enumerableWithThreeValues = new[] { "test1", "test2", "test3" };
+
+      _enumerableWithOneNullableReferenceValue = new string?[] { null };
+      _enumerableWithOneNullableValueTypeValue = new int?[] { null };
+      _enumerableWithOneValueTypeValue = new[] { 1 };
     }
 
     [Test]
@@ -125,6 +133,27 @@ namespace Remotion.UnitTests.FunctionalProgramming
           () => _enumerableWithoutValues.Single (() => new ApplicationException ("ExpectedText")),
           Throws.InstanceOf<ApplicationException>()
               .With.Message.EqualTo ("ExpectedText"));
+    }
+
+    [Test]
+    public void Single_WithOneNullableReferenceType ()
+    {
+      string? actual = _enumerableWithOneNullableReferenceValue.Single (() => new ApplicationException ("ExpectedText"));
+      Assert.That (actual, Is.Null);
+    }
+
+    [Test]
+    public void Single_WithOneNullableValueType ()
+    {
+      int? actual = _enumerableWithOneNullableValueTypeValue.Single (() => new ApplicationException ("ExpectedText"));
+      Assert.That (actual, Is.Null);
+    }
+    
+    [Test]
+    public void Single_WithOneValueType ()
+    {
+      int? actual = _enumerableWithOneValueTypeValue.Single (() => new ApplicationException ("ExpectedText"));
+      Assert.That (actual, Is.EqualTo(1));
     }
 
     [Test]
