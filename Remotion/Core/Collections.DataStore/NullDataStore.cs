@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Remotion.Collections.DataStore
 {
@@ -24,6 +25,7 @@ namespace Remotion.Collections.DataStore
   /// <typeparam name="TKey">The type of the keys.</typeparam>
   /// <typeparam name="TValue">The type of the values.</typeparam>
   public class NullDataStore<TKey, TValue> : IDataStore<TKey, TValue>
+      where TKey : notnull
   {
     public static readonly NullDataStore<TKey, TValue> Instance = new NullDataStore<TKey, TValue> ();
 
@@ -57,12 +59,16 @@ namespace Remotion.Collections.DataStore
 
     public TValue GetValueOrDefault (TKey key)
     {
+#nullable disable
       return default (TValue);
+#nullable enable
     }
 
-    public bool TryGetValue (TKey key, out TValue value)
+    public bool TryGetValue (TKey key, [AllowNull, MaybeNullWhen(false)] out TValue value)
     {
+#nullable disable
       value = default (TValue);
+#nullable enable
       return false;
     }
 

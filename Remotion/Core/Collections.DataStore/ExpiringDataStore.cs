@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Collections.DataStore
@@ -26,6 +26,8 @@ namespace Remotion.Collections.DataStore
   /// The <see cref="ExpiringDataStore{TKey,TValue,TExpirationInfo,TScanInfo}"/> stores values that can be expire.
   /// </summary>
   public class ExpiringDataStore<TKey, TValue, TExpirationInfo, TScanInfo> : IDataStore<TKey, TValue>
+      where TKey: notnull
+      where TValue: notnull
   {
     private readonly SimpleDataStore<TKey, Tuple<TValue, TExpirationInfo>> _innerDataStore;
     private readonly IExpirationPolicy<TValue, TExpirationInfo, TScanInfo> _expirationPolicy;
@@ -33,8 +35,8 @@ namespace Remotion.Collections.DataStore
     private TScanInfo _nextScanInfo;
 
     public ExpiringDataStore (
-        [NotNull] IExpirationPolicy<TValue, TExpirationInfo, TScanInfo> expirationPolicy,
-        [NotNull] IEqualityComparer<TKey> equalityComparer)
+        [JetBrains.Annotations.NotNull] IExpirationPolicy<TValue, TExpirationInfo, TScanInfo> expirationPolicy,
+        [JetBrains.Annotations.NotNull] IEqualityComparer<TKey> equalityComparer)
     {
       ArgumentUtility.CheckNotNull ("expirationPolicy", expirationPolicy);
       ArgumentUtility.CheckNotNull ("equalityComparer", equalityComparer);
@@ -99,6 +101,7 @@ namespace Remotion.Collections.DataStore
       }
     }
 
+    [return: MaybeNull]
     public TValue GetValueOrDefault (TKey key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
@@ -108,7 +111,7 @@ namespace Remotion.Collections.DataStore
       return value;
     }
 
-    public bool TryGetValue (TKey key, out TValue value)
+    public bool TryGetValue (TKey key, [AllowNull, MaybeNullWhen(false)] out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
@@ -125,8 +128,9 @@ namespace Remotion.Collections.DataStore
 
         RemoveWithoutScanning (key);
       }
-
+#nullable disable
       value = default (TValue);
+#nullable enable
       return false;
     }
 

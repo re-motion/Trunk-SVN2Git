@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Remotion.Utilities;
 
@@ -36,7 +37,8 @@ namespace Remotion.Collections.DataStore
   [Obsolete ("This type is only used in conjunction by obsolete factory method DataStoreFactory.CreateWithLazyLocking(...). (Version: 1.19.3)")]
   [Serializable]
   public class LazyLockingDataStoreAdapter<TKey, TValue> : IDataStore<TKey, TValue>
-      where TValue: class
+      where TValue : class
+      where TKey : notnull
   {
     public class Wrapper
     {
@@ -98,27 +100,28 @@ namespace Remotion.Collections.DataStore
       }
     }
 
+    [return: MaybeNull]
     public TValue GetValueOrDefault (TKey key)
     {
       ArgumentUtility.DebugCheckNotNull ("key", key);
 
       var result = _innerDataStore.GetValueOrDefault (key);
-      return result != null ? result.Value.Value : null;
+      return result != null ? result.Value.Value : null!;
     }
 
-    public bool TryGetValue (TKey key, out TValue value)
+    public bool TryGetValue (TKey key, [AllowNull, MaybeNullWhen(true)] out TValue value)
     {
       ArgumentUtility.DebugCheckNotNull ("key", key);
       
-      Lazy<Wrapper> result;
 
-      if (_innerDataStore.TryGetValue (key, out result))
+      if (_innerDataStore.TryGetValue (key, out var result))
       {
         value = result.Value.Value;
         return true;
       }
-
+#nullable disable
       value = null;
+#nullable enable
       return false;
     }
 
@@ -127,9 +130,8 @@ namespace Remotion.Collections.DataStore
       ArgumentUtility.DebugCheckNotNull ("key", key);
       ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
-      Lazy<Wrapper> value;
       Wrapper wrapper;
-      if (_innerDataStore.TryGetValue (key, out value))
+      if (_innerDataStore.TryGetValue (key, out var value))
         wrapper = value.Value;
       else
         wrapper = GetOrCreateValueWithClosure (key, valueFactory); // Split to prevent closure being created during the TryGetValue-operation

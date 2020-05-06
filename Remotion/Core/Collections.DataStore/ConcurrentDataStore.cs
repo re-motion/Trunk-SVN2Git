@@ -18,8 +18,8 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using JetBrains.Annotations;
 using Remotion.Utilities;
 
 namespace Remotion.Collections.DataStore
@@ -36,6 +36,7 @@ namespace Remotion.Collections.DataStore
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   public sealed class ConcurrentDataStore<TKey, TValue> : IDataStore<TKey, TValue>, IEnumerable<KeyValuePair<TKey, TValue>>
+      where TKey : notnull
   {
     private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
     {
@@ -84,8 +85,9 @@ namespace Remotion.Collections.DataStore
         get
         {
           var current = _inner.Current;
-
+#nullable disable
           return new KeyValuePair<TKey, TValue> (current.Key, current.Value.Boxed.Value);
+#nullable enable
         }
       }
 
@@ -105,7 +107,7 @@ namespace Remotion.Collections.DataStore
     /// </summary>
     private class SynchronizedValue
     {
-      public Boxed Boxed;
+      public Boxed? Boxed;
 
       public SynchronizedValue ()
       {
@@ -114,8 +116,9 @@ namespace Remotion.Collections.DataStore
 
     private class Boxed
     {
+#nullable disable
       public static readonly Boxed ExceptionSentinel = new Boxed (default);
-
+#nullable enable
       public readonly TValue Value;
 
       public Boxed (TValue value)
@@ -131,7 +134,7 @@ namespace Remotion.Collections.DataStore
       _innerDictionary = new ConcurrentDictionary<TKey, SynchronizedValue>();
     }
 
-    public ConcurrentDataStore ([NotNull] IEqualityComparer<TKey> comparer)
+    public ConcurrentDataStore ([JetBrains.Annotations.NotNull] IEqualityComparer<TKey> comparer)
     {
       _innerDictionary = new ConcurrentDictionary<TKey, SynchronizedValue> (comparer);
     }
@@ -215,6 +218,7 @@ namespace Remotion.Collections.DataStore
     /// <returns>
     /// The value of the element, or the default value if no such element exists.
     /// </returns>
+    [return: MaybeNull]
     public TValue GetValueOrDefault (TKey key)
     {
       ArgumentUtility.DebugCheckNotNull ("key", key);
@@ -321,7 +325,7 @@ namespace Remotion.Collections.DataStore
     }
 
     [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    private bool TryGetValueInternal (TKey key, out TValue value)
+    private bool TryGetValueInternal (TKey key, [AllowNull, MaybeNullWhen(false)] out TValue value)
     {
       if (_innerDictionary.TryGetValue (key, out var synchronizedValue))
       {
@@ -346,7 +350,9 @@ namespace Remotion.Collections.DataStore
       }
       else
       {
+#nullable disable
         value = default;
+#nullable enable
         return false;
       }
     }
