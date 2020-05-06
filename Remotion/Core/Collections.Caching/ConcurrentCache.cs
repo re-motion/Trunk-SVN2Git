@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using Remotion.Utilities;
@@ -36,6 +37,7 @@ namespace Remotion.Collections.Caching
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   public sealed class ConcurrentCache<TKey, TValue> : ICache<TKey, TValue>
+    where TKey: notnull
   {
     private sealed class Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
     {
@@ -84,8 +86,9 @@ namespace Remotion.Collections.Caching
         get
         {
           var current = _inner.Current;
-
+#nullable disable
           return new KeyValuePair<TKey, TValue> (current.Key, current.Value.Boxed.Value);
+#nullable enable
         }
       }
 
@@ -105,7 +108,7 @@ namespace Remotion.Collections.Caching
     /// </summary>
     private class SynchronizedValue
     {
-      public Boxed Boxed;
+      public Boxed? Boxed;
 
       public SynchronizedValue ()
       {
@@ -114,11 +117,13 @@ namespace Remotion.Collections.Caching
 
     private class Boxed
     {
+#nullable enable
       public static readonly Boxed ExceptionSentinel = new Boxed (default);
-
+#nullable disable
+      [MaybeNull]
       public readonly TValue Value;
 
-      public Boxed (TValue value)
+      public Boxed ([MaybeNull] TValue value)
       {
         Value = value;
       }
@@ -131,7 +136,7 @@ namespace Remotion.Collections.Caching
       _innerDictionary = new ConcurrentDictionary<TKey, SynchronizedValue>();
     }
 
-    public ConcurrentCache ([NotNull] IEqualityComparer<TKey> comparer)
+    public ConcurrentCache ([JetBrains.Annotations.NotNull] IEqualityComparer<TKey> comparer)
     {
       ArgumentUtility.CheckNotNull ("comparer", comparer);
 
@@ -147,7 +152,7 @@ namespace Remotion.Collections.Caching
     /// <returns>
     /// true if an element with the specified key was found; otherwise, false.
     /// </returns>
-    public bool TryGetValue (TKey key, out TValue value)
+    public bool TryGetValue (TKey key, [AllowNull, MaybeNullWhen(false)] out TValue value)
     {
       ArgumentUtility.DebugCheckNotNull ("key", key);
 
@@ -234,7 +239,7 @@ namespace Remotion.Collections.Caching
     }
 
     [MethodImpl (MethodImplOptions.AggressiveInlining)]
-    private bool TryGetValueInternal (TKey key, out TValue value)
+    private bool TryGetValueInternal (TKey key, [MaybeNullWhen(false), AllowNull] out TValue value)
     {
       if (_innerDictionary.TryGetValue (key, out var synchronizedValue))
       {
@@ -259,7 +264,9 @@ namespace Remotion.Collections.Caching
       }
       else
       {
+#nullable disable
         value = default;
+#nullable enable
         return false;
       }
     }

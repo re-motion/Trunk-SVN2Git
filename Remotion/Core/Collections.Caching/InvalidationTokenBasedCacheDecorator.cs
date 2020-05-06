@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Remotion.Utilities;
 
@@ -24,6 +25,7 @@ namespace Remotion.Collections.Caching
 {
   [Serializable]
   public sealed class InvalidationTokenBasedCacheDecorator<TKey, TValue> : ICache<TKey, TValue>
+    where TKey : notnull
   {
     private readonly ICache<TKey, TValue> _innerCache;
     private readonly InvalidationToken _invalidationToken;
@@ -55,7 +57,8 @@ namespace Remotion.Collections.Caching
       return _innerCache.GetOrCreateValue (key, valueFactory);
     }
 
-    public bool TryGetValue (TKey key, out TValue value)
+    [return: MaybeNull]
+    public bool TryGetValue (TKey key, [AllowNull, MaybeNull] out TValue value)
     {
       ArgumentUtility.DebugCheckNotNull ("key", key);
 
@@ -65,7 +68,9 @@ namespace Remotion.Collections.Caching
       }
       else
       {
+#nullable disable
         value = default;
+#nullable enable
         return false;
       }
     }
