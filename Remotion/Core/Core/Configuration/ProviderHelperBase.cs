@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using Remotion.Utilities;
 
+#nullable disable
 namespace Remotion.Configuration
 {
   /// <summary>Abstract base class for <see cref="ProviderHelperBase{T}"/>.</summary>
@@ -43,8 +44,8 @@ namespace Remotion.Configuration
     private readonly ExtendedConfigurationSection _configurationSection;
     private readonly DoubleCheckedLockingContainer<TProvider> _provider;
     private readonly DoubleCheckedLockingContainer<ProviderCollection<TProvider>> _providers;
-    private ConfigurationProperty? _providerSettingsProperty;
-    private ConfigurationProperty? _defaultProviderNameProperty;
+    private ConfigurationProperty _providerSettingsProperty;
+    private ConfigurationProperty _defaultProviderNameProperty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ProviderHelperBase{TProvider}"/> class. 
@@ -110,7 +111,7 @@ namespace Remotion.Configuration
       get { return (string) _configurationSection[DefaultProviderNameProperty]; }
     }
 
-    protected ConfigurationProperty? DefaultProviderNameProperty
+    protected ConfigurationProperty DefaultProviderNameProperty
     {
       get { return _defaultProviderNameProperty; }
     }
@@ -145,7 +146,7 @@ namespace Remotion.Configuration
       }
     }
 
-    protected Type? GetTypeWithMatchingVersionNumber (ConfigurationProperty property, string assemblyName, string typeName)
+    protected Type GetTypeWithMatchingVersionNumber (ConfigurationProperty property, string assemblyName, string typeName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("assemblyName", assemblyName);
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
@@ -158,7 +159,7 @@ namespace Remotion.Configuration
       return GetType (property, realAssemblyName, typeName);
     }
 
-    protected Type? GetType (ConfigurationProperty property, AssemblyName assemblyName, string typeName)
+    protected Type GetType (ConfigurationProperty property, AssemblyName assemblyName, string typeName)
     {
       ArgumentUtility.CheckNotNull ("property", property);
       ArgumentUtility.CheckNotNull ("assemblyName", assemblyName);
@@ -263,7 +264,7 @@ namespace Remotion.Configuration
       if (string.IsNullOrEmpty (providerSettings.Type))
         throw new ArgumentException ("Type name must be specified for this provider.");
 
-      Type? actualType = TypeUtility.GetType (providerSettings.Type, true);
+      Type actualType = TypeUtility.GetType (providerSettings.Type, true);
 
       if (!providerType.IsAssignableFrom (actualType))
         throw new ArgumentException (string.Format ("Provider must implement the class '{0}'.", providerType.FullName));
@@ -277,7 +278,7 @@ namespace Remotion.Configuration
       return (ExtendedProviderBase) Activator.CreateInstance (actualType, new object[] {name, collection});
     }
 
-    private TProvider? GetProviderFromConfiguration ()
+    private TProvider GetProviderFromConfiguration ()
     {
       if (DefaultProviderName == null)
         return null;
@@ -306,7 +307,7 @@ namespace Remotion.Configuration
     }
 
     private ConfigurationErrorsException CreateConfigurationErrorsException (
-        FileNotFoundException? e, PropertyInformation propertyInformation, string message, params object[] args)
+        FileNotFoundException e, PropertyInformation propertyInformation, string message, params object[] args)
     {
       return new ConfigurationErrorsException (string.Format (message, args), e, propertyInformation.Source, propertyInformation.LineNumber);
     }

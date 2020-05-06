@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace Remotion.Collections
@@ -26,7 +27,7 @@ namespace Remotion.Collections
   /// </summary>
   public static class ImmutableSingleton
   {
-    public static ImmutableSingleton<T> Create<T> ([CanBeNull]T? item)
+    public static ImmutableSingleton<T> Create<T> ([CanBeNull, AllowNull] T item)
     {
       return new ImmutableSingleton<T> (item);
     }
@@ -40,10 +41,11 @@ namespace Remotion.Collections
   {
     private sealed class Enumerator : IEnumerator<T>
     {
+      [AllowNull, MaybeNull]
       private readonly T _item;
       private sbyte _position = -1;
 
-      public Enumerator (T item)
+      public Enumerator ([AllowNull] T item)
       {
         _item = item;
       }
@@ -64,9 +66,9 @@ namespace Remotion.Collections
         _position = -1;
       }
 
-      public T? Current
+      public T Current
       {
-        get
+        [return: MaybeNull] get
         {
           switch (_position)
           {
@@ -86,9 +88,10 @@ namespace Remotion.Collections
       }
     }
 
+    [AllowNull, MaybeNull]
     private readonly T _item;
 
-    public ImmutableSingleton ([CanBeNull]T item)
+    public ImmutableSingleton ([CanBeNull, AllowNull] T item)
     {
       _item = item;
     }
@@ -110,7 +113,7 @@ namespace Remotion.Collections
 
     public T this [int index]
     {
-      get
+      [return: MaybeNull] get
       {
         if (index != 0)
           throw new ArgumentOutOfRangeException ("index", index, "The list contains only a single item.");

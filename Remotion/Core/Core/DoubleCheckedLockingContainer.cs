@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Remotion.Utilities;
 
+#nullable disable
 namespace Remotion
 {
   /// <summary>Provides a standard implementation of the double checked locking pattern.</summary>

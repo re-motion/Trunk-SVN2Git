@@ -35,8 +35,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       FollowReferences = followReferences;
     }
 
-    public Assembly? Assembly { get; private set; }
-    public bool? FollowReferences { get; private set; }
+    public Assembly Assembly { get; private set; }
+    public bool FollowReferences { get; private set; }
 
     public override bool Equals (object obj)
     {

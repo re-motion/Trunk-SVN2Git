@@ -35,6 +35,6 @@ namespace Remotion.ServiceLocation
     /// for the boostrapping service locator.
     /// </param>
     /// <returns>An instance of <see cref="IServiceLocator"/>.</returns>
-    IServiceLocator GetServiceLocator (ReadOnlyCollection<ServiceConfigurationEntry> bootstrapConfiguration);
+    IServiceLocator? GetServiceLocator (ReadOnlyCollection<ServiceConfigurationEntry> bootstrapConfiguration);
   }
 }

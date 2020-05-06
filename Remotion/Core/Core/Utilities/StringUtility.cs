@@ -18,12 +18,12 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
@@ -50,7 +50,7 @@ namespace Remotion.Utilities
       public bool IsQuoted;
     }
 
-    private static readonly ConcurrentDictionary<Type, MethodInfo> s_parseMethods = new ConcurrentDictionary<Type, MethodInfo>();
+    private static readonly ConcurrentDictionary<Type, MethodInfo?> s_parseMethods = new ConcurrentDictionary<Type, MethodInfo?>();
 
 
     public static string GetFileNameTimestamp (DateTime dt)
@@ -217,8 +217,8 @@ namespace Remotion.Utilities
     /// Carriage-return is trimmed. Empty lines are returned as empty strings in the result
     /// </summary>
     /// <param name="value">The input string. Must not be <see langword="null" />.</param>
-    [NotNull]
-    public static IEnumerable<string> ParseNewLineSeparatedString ([NotNull] string value)
+    [JetBrains.Annotations.NotNull]
+    public static IEnumerable<string> ParseNewLineSeparatedString ([JetBrains.Annotations.NotNull] string value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
@@ -419,7 +419,7 @@ namespace Remotion.Utilities
 
     private static object ParseScalarValue (Type type, string value, IFormatProvider formatProvider)
     {
-      MethodInfo parseMethod = GetParseMethod (type, true);
+      MethodInfo parseMethod = GetParseMethod (type, true)!;
 
       object[] args;
       if (parseMethod.GetParameters().Length == 2)
@@ -470,11 +470,11 @@ namespace Remotion.Utilities
           return false;
         return CanParse (elementType);
       }
-      MethodInfo parseMethod = GetParseMethod (type, false);
+      MethodInfo? parseMethod = GetParseMethod (type, false);
       return parseMethod != null;
     }
 
-    private static MethodInfo GetParseMethod (Type type, bool throwIfNotFound)
+    private static MethodInfo? GetParseMethod (Type type, bool throwIfNotFound)
     {
       // C# compiler 7.2 already provides caching for anonymous method.
       var parseMethod = s_parseMethods.GetOrAdd (type, key => GetParseMethodWithFormatProviderFromType (key) ?? GetParseMethodFromType (key));

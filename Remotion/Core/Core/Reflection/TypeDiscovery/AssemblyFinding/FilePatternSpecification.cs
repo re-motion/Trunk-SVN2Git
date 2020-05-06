@@ -33,7 +33,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       Kind = kind;
     }
 
-    public string? FilePattern { get; private set; }
+    public string FilePattern { get; private set; }
     public FilePatternSpecificationKind? Kind { get; private set; }
   }
 }

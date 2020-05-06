@@ -73,7 +73,7 @@ namespace Remotion.Design
       try
       {
         //EnvDTE._DTE environment = (EnvDTE._DTE) ((IServiceProvider)site).GetService (typeof (EnvDTE._DTE));
-        Type? _DTEType = TypeUtility.GetType ("EnvDTE._DTE, EnvDTE", true);
+        Type _DTEType = TypeUtility.GetType ("EnvDTE._DTE, EnvDTE", true)!;
         object environment = DesignerHost.GetService (_DTEType);
 
         if (environment != null)

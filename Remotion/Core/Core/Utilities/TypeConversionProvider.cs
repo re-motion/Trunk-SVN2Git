@@ -30,7 +30,7 @@ namespace Remotion.Utilities
   [ImplementationFor (typeof (ITypeConversionProvider), Lifetime = LifetimeKind.Singleton)]
   public class TypeConversionProvider : ITypeConversionProvider
   {
-    private readonly ConcurrentDictionary<Type, TypeConverter> _typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
+    private readonly ConcurrentDictionary<Type, TypeConverter?> _typeConverters = new ConcurrentDictionary<Type, TypeConverter?>();
 
     private readonly ITypeConverterFactory _typeConverterFactory;
 
@@ -257,7 +257,7 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("type", type);
      
-      TypeConverter typeConverter;
+      TypeConverter? typeConverter;
       if (_typeConverters.TryGetValue (type, out typeConverter))
         return typeConverter;
 

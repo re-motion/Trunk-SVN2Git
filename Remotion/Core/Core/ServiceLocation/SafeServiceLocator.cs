@@ -19,6 +19,7 @@ using System.Diagnostics;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Configuration.ServiceLocation;
 
+#nullable disable
 namespace Remotion.ServiceLocation
 {
   /// <summary>

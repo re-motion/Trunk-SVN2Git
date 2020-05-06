@@ -99,7 +99,7 @@ namespace Remotion.Utilities
     /// </param>
     /// <param name="value"> The value to be converted. Must not be <see langword="null"/>. </param>
     /// <returns> An <see cref="Object"/> that represents the converted <paramref name="value"/>. </returns>
-    object Convert (Type sourceType, Type destinationType, object value);
+    object? Convert (Type sourceType, Type destinationType, object value);
 
     /// <summary> Convertes the <paramref name="value"/> into the <paramref name="destinationType"/>. </summary>
     /// <param name="context"> An <see cref="ITypeDescriptorContext"/> that provides a format context. </param>

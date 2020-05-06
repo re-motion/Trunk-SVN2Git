@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Remotion.Logging;
@@ -86,7 +87,8 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
         return null;
     }
 
-    public T? PerformGuardedLoadOperation<T> (string assemblyDescription, string? loadContext, Func<T> loadOperation)
+    [return: MaybeNull]
+    public T PerformGuardedLoadOperation<T> (string assemblyDescription, string? loadContext, Func<T> loadOperation)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("assemblyDescription", assemblyDescription);
       ArgumentUtility.CheckNotNull ("loadOperation", loadOperation);
@@ -110,7 +112,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
             assemblyDescriptionText);
         s_log.Value.DebugFormat (ex, "The file {0} triggered a BadImageFormatException.", assemblyDescriptionText);
 
-        return default (T);
+        return default (T)!;
       }
       catch (FileLoadException ex)
       {
@@ -118,7 +120,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
             ex,
             "The assembly {0} triggered a FileLoadException and will be ignored - maybe the assembly is DelaySigned, but signing has not been completed?",
             assemblyDescriptionText);
-        return default (T);
+        return default (T)!;
       }
       catch (FileNotFoundException ex)
       {
@@ -131,7 +133,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
         if (assemblyDescription.Contains ("System.IdentityModel.Selectors"))
         {
           s_log.Value.WarnFormat (message, ex);
-          return default (T);
+          return default (T)!;
         }
 
         throw new AssemblyLoaderException (message, ex);
