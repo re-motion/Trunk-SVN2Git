@@ -72,9 +72,8 @@ namespace Remotion.Collections.Caching
       ArgumentUtility.DebugCheckNotNull ("key", key);
       ArgumentUtility.DebugCheckNotNull ("valueFactory", valueFactory);
 
-      Lazy<Wrapper>? value;
       Wrapper wrapper;
-      if (_innerCache.TryGetValue (key, out value))
+      if (_innerCache.TryGetValue (key, out var value))
         wrapper = value.Value;
       else
         wrapper = GetOrCreateValueWithClosure (key, valueFactory); // Split to prevent closure being created during the TryGetValue-operation

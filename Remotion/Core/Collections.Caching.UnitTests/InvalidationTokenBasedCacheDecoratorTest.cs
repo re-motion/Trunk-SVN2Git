@@ -51,7 +51,7 @@ namespace Remotion.Collections.Caching.UnitTests
 
       Assert.That (value, Is.EqualTo ("Value"));
 
-      string cachedValue;
+      string? cachedValue;
       cache.TryGetValue (key, out cachedValue);
       Assert.That (cachedValue, Is.EqualTo ("Value"));
     }
@@ -70,7 +70,7 @@ namespace Remotion.Collections.Caching.UnitTests
 
       Assert.That (value, Is.EqualTo ("Value2"));
 
-      string cachedValue;
+      string? cachedValue;
       cache.TryGetValue (key, out cachedValue);
       Assert.That (cachedValue, Is.EqualTo ("Value2"));
     }
@@ -95,9 +95,9 @@ namespace Remotion.Collections.Caching.UnitTests
     [Test]
     public void GetOrCreateValue_RetriesClearUntilInvalidationTokenIsCurrent ()
     {
-      var cacheStub = MockRepository.GenerateStub<ICache<object, string>>();
+      var cacheStub = MockRepository.GenerateStub<ICache<object, string?>>();
       var invalidationToken = InvalidationToken.Create();
-      var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cacheStub, invalidationToken);
+      var decorator = new InvalidationTokenBasedCacheDecorator<object, string?> (cacheStub, invalidationToken);
       var key = new object();
       var count = 0;
       cacheStub.Stub (_ => _.Clear()).WhenCalled (
@@ -124,7 +124,7 @@ namespace Remotion.Collections.Caching.UnitTests
       var key = new object();
       cache.GetOrCreateValue (key, o => "Value");
 
-      string value;
+      string? value;
       var result = decorator.TryGetValue (key, out value);
 
       Assert.That (result, Is.True);
@@ -138,7 +138,7 @@ namespace Remotion.Collections.Caching.UnitTests
       var decorator = new InvalidationTokenBasedCacheDecorator<object, string> (cache, InvalidationToken.Create());
       var key = new object();
 
-      string value;
+      string? value;
       var result = decorator.TryGetValue (key, out value);
 
       Assert.That (result, Is.False);
@@ -155,13 +155,13 @@ namespace Remotion.Collections.Caching.UnitTests
 
       decorator.InvalidationToken.Invalidate();
 
-      string value;
+      string? value;
       var result = decorator.TryGetValue (key, out value);
 
       Assert.That (result, Is.False);
       Assert.That (value, Is.Null);
 
-      string cachedValue;
+      string? cachedValue;
       bool cachedResult = cache.TryGetValue (key, out cachedValue);
       Assert.That (cachedResult, Is.False);
     }
@@ -176,13 +176,13 @@ namespace Remotion.Collections.Caching.UnitTests
       decorator.InvalidationToken.Invalidate();
 
       cache.GetOrCreateValue (key, o => "Value");
-      string valueOnFirstCall;
+      string? valueOnFirstCall;
       var resultOnFirstCall = decorator.TryGetValue (key, out valueOnFirstCall);
       Assert.That (resultOnFirstCall, Is.False);
       Assert.That (valueOnFirstCall, Is.Null);
 
       cache.GetOrCreateValue (key, o => "Value2");
-      string valueOnSecondCall;
+      string? valueOnSecondCall;
       var resultOnSecondCall = decorator.TryGetValue (key, out valueOnSecondCall);
       Assert.That (resultOnSecondCall, Is.True);
       Assert.That (valueOnSecondCall, Is.EqualTo ("Value2"));
@@ -272,7 +272,7 @@ namespace Remotion.Collections.Caching.UnitTests
 
       ((ICache<object, string>) decorator).Clear();
 
-      string cachedValue;
+      string? cachedValue;
       bool cachedResult = cache.TryGetValue (key, out cachedValue);
       Assert.That (cachedResult, Is.False);
     }
@@ -301,7 +301,7 @@ namespace Remotion.Collections.Caching.UnitTests
       var key = new object();
       cache.GetOrCreateValue (key, o => "Value");
 
-      string value;
+      string? value;
       var result = decorator.TryGetValue (key, out value);
 
       Assert.That (result, Is.True);
