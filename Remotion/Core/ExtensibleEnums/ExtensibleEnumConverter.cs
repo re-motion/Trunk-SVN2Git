@@ -102,7 +102,7 @@ namespace Remotion.ExtensibleEnums
     /// <exception cref="KeyNotFoundException">
     /// The value is of a convertible type, but the <see cref="ExtensibleEnumType"/> does not define a corresponding value.
     /// </exception>
-    public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
       if (value == null)
         return null;
@@ -139,7 +139,7 @@ namespace Remotion.ExtensibleEnums
     /// <exception cref="T:System.NotSupportedException">
     /// The conversion cannot be performed.
     /// </exception>
-    public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    public override object? ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 

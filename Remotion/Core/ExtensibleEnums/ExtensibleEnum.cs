@@ -85,7 +85,7 @@ namespace Remotion.ExtensibleEnums
     /// of the value. This identifier is used for equality comparisons and hash code calculations. Can be <see langword="null" />.</param>
     /// <param name="valueName">The name of the value being created. This identifier is used for equality comparisons
     /// and hash code calculations.</param>
-    protected ExtensibleEnum (string declarationSpace, string valueName)
+    protected ExtensibleEnum (string? declarationSpace, string valueName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("valueName", valueName);
 
@@ -100,7 +100,7 @@ namespace Remotion.ExtensibleEnums
     /// and hash code calculations.</param>
     protected ExtensibleEnum (string id)
         : this (
-            (string) null, 
+            (string?) null, 
             ArgumentUtility.CheckNotNullOrEmpty ("id", id))
     {
     }
@@ -151,7 +151,7 @@ namespace Remotion.ExtensibleEnums
     /// </summary>
     /// <value>The declaration space of this value, or <see langword="null" /> if the value does not define a declaration space.
     /// Once an <see cref="ExtensibleEnum{T}"/> instance is constructed, this value is guaranteed to never change.</value>
-    public string DeclarationSpace { get; private set; }
+    public string? DeclarationSpace { get; private set; }
 
     /// <summary>
     /// Gets name of this value. This is a part of the <see cref="ID"/> of this extensible enum value.
@@ -185,7 +185,7 @@ namespace Remotion.ExtensibleEnums
     ///   <see langword="true" /> if the specified <typeparamref name="T"/> value is an extensible enum value of the same
     ///   type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
     /// </returns>
-    public bool Equals (T obj)
+    public bool Equals (T? obj)
     {
       return !ReferenceEquals (obj, null) && obj.GetType() == GetType() && obj.ID == ID;
     }
