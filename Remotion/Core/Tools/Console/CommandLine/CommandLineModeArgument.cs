@@ -18,7 +18,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Text;
-
+#nullable disable
 namespace Remotion.Tools.Console.CommandLine
 {
 
