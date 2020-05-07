@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
-
+#nullable disable
 namespace Remotion.Reflection
 {
   public struct FuncInvoker<TResult> : IFuncInvoker<TResult>
