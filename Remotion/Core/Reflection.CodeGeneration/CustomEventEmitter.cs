@@ -36,8 +36,8 @@ namespace Remotion.Reflection.CodeGeneration
     private readonly EventKind _eventKind;
     private readonly Type _eventType;
 
-    private IMethodEmitter _addMethod;
-    private IMethodEmitter _removeMethod;
+    private IMethodEmitter? _addMethod;
+    private IMethodEmitter? _removeMethod;
 
     public CustomEventEmitter (CustomClassEmitter declaringType, string name, EventKind eventKind, Type eventType, EventAttributes attributes)
     {
@@ -53,7 +53,7 @@ namespace Remotion.Reflection.CodeGeneration
       declaringType.RegisterEventEmitter (this);
     }
 
-    public IMethodEmitter AddMethod
+    public IMethodEmitter? AddMethod
     {
       get
       {
@@ -75,7 +75,7 @@ namespace Remotion.Reflection.CodeGeneration
       }
     }
 
-    public IMethodEmitter RemoveMethod
+    public IMethodEmitter? RemoveMethod
     {
       get
       {
@@ -151,10 +151,10 @@ namespace Remotion.Reflection.CodeGeneration
 
     internal void EnsureValid ()
     {
-      IMethodEmitter addMethod = AddMethod; // cause generation of default method if none has been assigned
+      IMethodEmitter? addMethod = AddMethod; // cause generation of default method if none has been assigned
       Assertion.IsNotNull (addMethod);
 
-      IMethodEmitter removeMethod = RemoveMethod; // cause generation of default method if none has been assigned
+      IMethodEmitter? removeMethod = RemoveMethod; // cause generation of default method if none has been assigned
       Assertion.IsNotNull (removeMethod);
     }
   }
