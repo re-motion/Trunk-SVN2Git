@@ -24,10 +24,10 @@ namespace Remotion.Extensions.UnitTests.Utilities
   [TestFixture]
   public class PostActionDisposableDecoratorTest
   {
-    private IDisposable _innerDisposableMock;
-    private IAction _actionMock;
+    private IDisposable _innerDisposableMock = null!;
+    private IAction _actionMock = null!;
 
-    private PostActionDisposableDecorator _decorator;
+    private PostActionDisposableDecorator _decorator = null!;
 
     [SetUp]
     public void SetUp ()

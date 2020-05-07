@@ -24,7 +24,7 @@ namespace Remotion.Extensions.UnitTests.Reflection
   [TestFixture]
   public class DelegateFactoryTest
   {
-    private DelegateFactory _factory;
+    private DelegateFactory _factory = null!;
 
     [SetUp]
     public void SetUp ()
