@@ -27,7 +27,7 @@ namespace Remotion.ExtensibleEnums.UnitTests
   public class TypeConversionProviderTest
   {
     private readonly Type _string = typeof (string);
-    private ITypeConversionProvider _provider;
+    private ITypeConversionProvider _provider = null!;
 
     [SetUp]
     public void SetUp ()
@@ -80,13 +80,13 @@ namespace Remotion.ExtensibleEnums.UnitTests
     [Test]
     public void GetTypeConverter_ForExtensibleEnum ()
     {
-      TypeConverter converterFirstRun = _provider.GetTypeConverter (typeof (Color));
-      TypeConverter converterSecondRun = _provider.GetTypeConverter (typeof (Color));
+      TypeConverter? converterFirstRun = _provider.GetTypeConverter (typeof (Color));
+      TypeConverter? converterSecondRun = _provider.GetTypeConverter (typeof (Color));
       Assert.That (converterFirstRun, Is.Not.Null, "TypeConverter from first run is null.");
       Assert.That (converterSecondRun, Is.Not.Null, "TypeConverter from second run is null.");
       Assert.That (converterSecondRun, Is.SameAs (converterFirstRun));
       Assert.That (converterFirstRun, Is.InstanceOf (typeof (ExtensibleEnumConverter)));
-      Assert.That (((ExtensibleEnumConverter) converterFirstRun).ExtensibleEnumType, Is.SameAs (typeof (Color)));
+      Assert.That (((ExtensibleEnumConverter) converterFirstRun!).ExtensibleEnumType, Is.SameAs (typeof (Color)));
     }
   }
 }

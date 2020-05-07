@@ -41,10 +41,10 @@ namespace Remotion.ExtensibleEnums.UnitTests.Infrastructure
     private readonly MethodInfo _greenMethod = typeof (ColorExtensions).GetMethod ("Green");
     private readonly MethodInfo _redMetallicMethod = typeof (MetallicColorExtensions).GetMethod ("RedMetallic");
 
-    private ExtensibleEnumDefinition<Color> _fakeColorDefinition;
-    private ExtensibleEnumDefinition<Planet> _fakePlanetDefinition;
-    private ITypeDiscoveryService _typeDiscoveryServiceStub;
-    private ExtensibleEnumValueDiscoveryService _service;
+    private ExtensibleEnumDefinition<Color> _fakeColorDefinition = null!;
+    private ExtensibleEnumDefinition<Planet> _fakePlanetDefinition = null!;
+    private ITypeDiscoveryService _typeDiscoveryServiceStub = null!;
+    private ExtensibleEnumValueDiscoveryService _service = null!;
 
     [SetUp]
     public void SetUp ()

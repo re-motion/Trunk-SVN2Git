@@ -28,8 +28,8 @@ namespace Remotion.ExtensibleEnums.UnitTests.Infrastructure
   [TestFixture]
   public class ExtensibleEnumDefinitionCacheTest
   {
-    private ExtensibleEnumDefinitionCache _cache;
-    private DefaultServiceLocator _serviceLocator;
+    private ExtensibleEnumDefinitionCache _cache = null!;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

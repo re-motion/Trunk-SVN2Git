@@ -24,7 +24,7 @@ namespace Remotion.ExtensibleEnums.UnitTests
   [TestFixture]
   public class ExtensibleEnumConverterTest
   {
-    private ExtensibleEnumConverter _converter;
+    private ExtensibleEnumConverter _converter = null!;
 
     [SetUp]
     public void SetUp ()
