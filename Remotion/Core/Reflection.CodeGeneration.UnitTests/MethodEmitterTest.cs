@@ -87,7 +87,7 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
       Assert.That (method.MethodBuilder, Is.Not.Null);
       Assert.That (method.ReturnType, Is.EqualTo (typeof (string)));
       Assert.That (method.ParameterTypes, Has.Length.EqualTo (3));
-      Assert.That (method.ParameterTypes[0].IsGenericParameter, Is.True);
+      Assert.That (method.ParameterTypes![0].IsGenericParameter, Is.True);
       Assert.That (method.ParameterTypes[0].Name, Is.EqualTo ("T1"));
       Assert.That (method.ParameterTypes[1].IsGenericParameter, Is.True);
       Assert.That (method.ParameterTypes[1].Name, Is.EqualTo ("T2"));

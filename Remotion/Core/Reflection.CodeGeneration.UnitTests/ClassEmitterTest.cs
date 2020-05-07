@@ -275,8 +275,8 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
     {
       var classEmitter = new CustomClassEmitter (Scope, "CreateEvent", typeof (object));
       CustomEventEmitter eventEmitter = classEmitter.CreateEvent ("Eve", EventKind.Instance, typeof (Func<string>));
-      eventEmitter.AddMethod.AddStatement (new ReturnStatement ());
-      eventEmitter.RemoveMethod.AddStatement (new ReturnStatement ());
+      eventEmitter.AddMethod?.AddStatement (new ReturnStatement ());
+      eventEmitter.RemoveMethod?.AddStatement (new ReturnStatement ());
 
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
       Assert.That (instance.GetType ().GetEvent ("Eve"), Is.Not.Null);
@@ -517,7 +517,7 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
 
     public interface IInterfaceWithProperty
     {
-      int Property { set; }
+      int? Property { set; }
     }
 
     [Test]
@@ -837,7 +837,7 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
       Type type = classEmitter.BuildType ();
       MethodInfo publicWrapper = type.GetMethod ("__wrap__GetSecret");
 
-      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false);
+      var attribute = AttributeUtility.GetCustomAttribute<GeneratedMethodWrapperAttribute> (publicWrapper, false)!;
       Assert.That (attribute.DeclaringType, Is.EqualTo (typeof (ClassWithProtectedMethod)));
       Assert.That (attribute.MethodName, Is.EqualTo ("GetSecret"));
       Assert.That (attribute.MethodSignature, Is.EqualTo (methodToBeWrapped.ToString()));
