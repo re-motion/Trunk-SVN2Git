@@ -29,9 +29,9 @@ namespace Remotion.Reflection.CodeGeneration.TypePipe.UnitTests
   [TestFixture]
   public class RemotionModuleBuilderFactoryDecoratorTest
   {
-    private IModuleBuilderFactory _innerFactoryMock;
+    private IModuleBuilderFactory _innerFactoryMock = null!;
 
-    private RemotionModuleBuilderFactoryDecorator _factory;
+    private RemotionModuleBuilderFactoryDecorator _factory = null!;
 
     [SetUp]
     public void SetUp ()

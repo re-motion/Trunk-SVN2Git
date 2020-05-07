@@ -24,7 +24,7 @@ namespace Remotion.Reflection.CodeGeneration.TypePipe.UnitTests
   [TestFixture]
   public class IPipelineRegistryTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()
