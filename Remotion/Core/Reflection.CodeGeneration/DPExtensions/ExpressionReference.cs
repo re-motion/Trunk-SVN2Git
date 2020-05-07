@@ -65,7 +65,7 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
       return local;
     }
 
-    public override void StoreReference (ILGenerator gen)
+    public override void StoreReference (ILGenerator? gen)
     {
       throw new NotSupportedException ("Expressions cannot be assigned to.");
     }

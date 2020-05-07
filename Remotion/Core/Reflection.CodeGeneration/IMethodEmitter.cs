@@ -24,7 +24,7 @@ namespace Remotion.Reflection.CodeGeneration
   public interface IMethodEmitter : IAttributableEmitter
   {
     MethodBuilder MethodBuilder { get; }
-    ILGenerator? ILGenerator { get; }
+    ILGenerator ILGenerator { get; }
     string? Name { get; }
     ArgumentReference[] ArgumentReferences { get; }
     Type? ReturnType { get; }
