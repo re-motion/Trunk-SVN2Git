@@ -23,9 +23,9 @@ namespace Remotion.Text
 
 public class IdentifierGenerator: ICloneable
 {
-  private static IdentifierGenerator s_cStyle = null;
-  private static IdentifierGenerator s_htmlStyle = null;
-  private static IdentifierGenerator s_xmlStyle = null;
+  private static IdentifierGenerator? s_cStyle = null;
+  private static IdentifierGenerator? s_htmlStyle = null;
+  private static IdentifierGenerator? s_xmlStyle = null;
 
   /// <summary>
   ///   Returns an identifier generator for C-style identifiers.
@@ -145,32 +145,32 @@ public class IdentifierGenerator: ICloneable
   }
 
   /// <summary> Hashtable&lt;object uniqueObject, string uniqueIdentifier&gt; </summary>
-  private Hashtable _uniqueIdentfiersByObject; 
+  private Hashtable? _uniqueIdentfiersByObject; 
   /// <summary> Hashtable&lt;string uniqueIdentifier, null&gt; </summary>
-  private Hashtable _uniqueIdentifiers;
+  private Hashtable? _uniqueIdentifiers;
   /// <summary> Specifies that the IdentifierGenerator must be cloned and cannot be used directly. </summary>
   private bool _isTemplate = false;
 
-  private string _uniqueSeparator = null;
+  private string? _uniqueSeparator = null;
 
   private bool _allowEnglishLetters = false;
   private bool _allowLanguageSpecificLetters = false;
   private bool _allowDigits = false;
-  private string _allowAdditionalCharacters = null;
-  private string _defaultReplaceString = null;
+  private string? _allowAdditionalCharacters = null;
+  private string? _defaultReplaceString = null;
 
   private bool _treatFirstCharacterSpecial = false;
   private bool _allowFirstCharacterEnglishLetters = false;
   private bool _allowFirstCharacterLanguageSpecificLetters = false;
   private bool _allowFirstCharacterDigits = false;
-  private string _allowFirstCharacterAdditionalCharacters = null;
-  private string _defaultFirstCharacterReplaceString = null;
+  private string? _allowFirstCharacterAdditionalCharacters = null;
+  private string? _defaultFirstCharacterReplaceString = null;
 
   private bool _isCaseSensitive = true;
   private bool _useCaseSensitiveNames = true;
 
   /// <summary> IDictionary&lt;char, string&gt; </summary>
-  private IDictionary _specificReplaceStrings = null;
+  private IDictionary? _specificReplaceStrings = null;
 
   public void AddSpecificReplaceString (char characterToReplace, string stringToReplaceWith)
   {
@@ -190,8 +190,8 @@ public class IdentifierGenerator: ICloneable
     bool allowEnglishLetters;
     bool allowLanguageSpecificLetters;
     bool allowDigits;
-    string allowAdditionalCharacters;
-    string defaultReplaceString;
+    string? allowAdditionalCharacters;
+    string? defaultReplaceString;
 
     if (_treatFirstCharacterSpecial)
     {
@@ -257,6 +257,7 @@ public class IdentifierGenerator: ICloneable
 
   public string GetUniqueIdentifier (object uniqueObject, string name)
   {
+#nullable disable
     if (_isTemplate)
       throw new InvalidOperationException ("This instance of IdentifierGenerator is a template. Use the Clone method to create a new IdentifierGenerator that can be used to create unique identifieres.");
 
@@ -296,6 +297,7 @@ public class IdentifierGenerator: ICloneable
 
     _uniqueIdentfiersByObject.Add (uniqueObject, identifier);
     _uniqueIdentifiers.Add (identifier, null);
+#nullable enable
     return identifier;
   }
 
@@ -312,7 +314,7 @@ public class IdentifierGenerator: ICloneable
   ///   If <c>UniqueSeparator</c> is an underscore ("_"), an identifier "id" is generated and has to be 
   ///   appended with the number 2 to be unique, the resulting unique identifier is "id_2".
   /// </example>
-  public string UniqueSeparator
+  public string? UniqueSeparator
   {
     get { return _uniqueSeparator; }
     set { _uniqueSeparator = value; }
@@ -350,7 +352,7 @@ public class IdentifierGenerator: ICloneable
   /// <summary>
   /// Provides a list of characters that are valid as a string.
   /// </summary>
-  public string AllowAdditionalCharacters
+  public string? AllowAdditionalCharacters
   {
     get { return _allowAdditionalCharacters; }
     set { _allowAdditionalCharacters = value; }
@@ -359,7 +361,7 @@ public class IdentifierGenerator: ICloneable
   /// <summary>
   /// Characters that are not valid and have no special replace string defined are replaced with this value.
   /// </summary>
-  public string DefaultReplaceString
+  public string? DefaultReplaceString
   {
     get { return _defaultReplaceString; }
     set { _defaultReplaceString = value; }
@@ -430,7 +432,7 @@ public class IdentifierGenerator: ICloneable
   /// <remarks>
   /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
-  public string AllowFirstCharacterAdditionalCharacters
+  public string? AllowFirstCharacterAdditionalCharacters
   {
     get { return _allowFirstCharacterAdditionalCharacters; }
     set { _allowFirstCharacterAdditionalCharacters = value; }
@@ -442,7 +444,7 @@ public class IdentifierGenerator: ICloneable
   /// <remarks>
   /// This property is only considered if <see cref="TreatFirstCharacterSpecial"/> is <see langword="true" />.
   /// </remarks>
-  public string DefaultFirstCharacterReplaceString
+  public string? DefaultFirstCharacterReplaceString
   {
     get { return _defaultFirstCharacterReplaceString; }
     set { _defaultFirstCharacterReplaceString = value; }
