@@ -25,22 +25,22 @@ namespace Remotion.Reflection
   /// </summary>
   public sealed class NullPropertyInformation : IPropertyInformation
   {
-    public string Name
+    public string? Name
     {
       get { return null; }
     }
 
-    public ITypeInformation DeclaringType
+    public ITypeInformation? DeclaringType
     {
       get { return null; }
     }
 
-    public ITypeInformation GetOriginalDeclaringType ()
+    public ITypeInformation? GetOriginalDeclaringType ()
     {
       return null;
     }
 
-    public T GetCustomAttribute<T> (bool inherited) where T: class
+    public T? GetCustomAttribute<T> (bool inherited) where T: class
     {
       return null;
     }
@@ -65,12 +65,12 @@ namespace Remotion.Reflection
       get { return false; }
     }
 
-    public object GetValue (object instance, object[] indexParameters)
+    public object? GetValue (object? instance, object[]? indexParameters)
     {
       return null;
     }
 
-    public void SetValue (object instance, object value, object[] indexParameters)
+    public void SetValue (object? instance, object? value, object[]? indexParameters)
     {
     }
 
@@ -89,7 +89,7 @@ namespace Remotion.Reflection
       throw new InvalidOperationException("FindInterfaceImplementation can only be called on inteface properties.");
     }
 
-    public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
+    public IEnumerable<IPropertyInformation>? FindInterfaceDeclarations ()
     {
       return null;
     }

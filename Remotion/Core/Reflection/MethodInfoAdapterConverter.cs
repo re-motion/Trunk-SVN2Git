@@ -72,7 +72,7 @@ namespace Remotion.Reflection
     /// <exception cref="System.NotSupportedException">
     /// The conversion cannot be performed.
     /// </exception>
-    public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
       if (value == null)
         return null;
@@ -106,7 +106,7 @@ namespace Remotion.Reflection
     /// <exception cref="T:System.NotSupportedException">
     /// The conversion cannot be performed.
     /// </exception>
-    public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    public override object? ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 

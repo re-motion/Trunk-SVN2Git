@@ -18,6 +18,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -47,7 +48,8 @@ namespace Remotion.Reflection
     }
 
     [ContractAnnotation ("null => null; notnull => notnull")]
-    public static TypeAdapter CreateOrNull (Type type)
+    [return: NotNullIfNotNull ("type")]
+    public static TypeAdapter? CreateOrNull (Type? type)
     {
       if (type == null)
         return null;
@@ -263,7 +265,7 @@ namespace Remotion.Reflection
     }
 
 
-    public T GetCustomAttribute<T> (bool inherited) where T : class
+    public T? GetCustomAttribute<T> (bool inherited) where T : class
     {
       return AttributeUtility.GetCustomAttribute<T> (_type, inherited);
     }
@@ -278,12 +280,12 @@ namespace Remotion.Reflection
       return AttributeUtility.IsDefined<T> (_type, inherited);
     }
 
-    public ITypeInformation BaseType
+    public ITypeInformation? BaseType
     {
       get { return TypeAdapter.CreateOrNull (_type.BaseType); }
     }
 
-    public bool IsInstanceOfType (object o)
+    public bool IsInstanceOfType (object? o)
     {
       return _type.IsInstanceOfType (o);
     }

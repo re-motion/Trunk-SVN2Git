@@ -18,6 +18,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -46,7 +47,8 @@ namespace Remotion.Reflection
     }
 
     [ContractAnnotation ("null => null; notnull => notnull")]
-    public static PropertyInfoAdapter CreateOrNull (PropertyInfo propertyInfo)
+    [return: NotNullIfNotNull ("propertyInfo")]
+    public static PropertyInfoAdapter? CreateOrNull (PropertyInfo propertyInfo)
     {
       if (propertyInfo == null)
         return null;
@@ -109,7 +111,7 @@ namespace Remotion.Reflection
           LazyThreadSafetyMode.ExecutionAndPublication);
 
       _interfaceDeclarations = new Lazy<IReadOnlyCollection<IPropertyInformation>> (
-          FindInterfaceDeclarationsImplementation,
+          FindInterfaceDeclarationsImplementation!,
           LazyThreadSafetyMode.ExecutionAndPublication);
     }
 
@@ -148,7 +150,7 @@ namespace Remotion.Reflection
       get { return _publicSetMethod.Value != null; }
     }
 
-    public T GetCustomAttribute<T> (bool inherited) where T: class
+    public T? GetCustomAttribute<T> (bool inherited) where T: class
     {
       return AttributeUtility.GetCustomAttribute<T> (_propertyInfo, inherited);
     }
@@ -163,16 +165,16 @@ namespace Remotion.Reflection
       return AttributeUtility.IsDefined<T> (_propertyInfo, inherited);
     }
 
-    public object GetValue (object instance, object[] indexParameters)
+    public object GetValue (object? instance, object[]? indexParameters)
     {
-      ArgumentUtility.CheckNotNull ("instance", instance);
+      ArgumentUtility.CheckNotNull ("instance", instance!);
 
       return _propertyInfo.GetValue (instance, indexParameters);
     }
 
-    public void SetValue (object instance, object value, object[] indexParameters)
+    public void SetValue (object? instance, object? value, object[]? indexParameters)
     {
-      ArgumentUtility.CheckNotNull ("instance", instance);
+      ArgumentUtility.CheckNotNull ("instance", instance!);
 
       _propertyInfo.SetValue (instance, value, indexParameters);
     }
@@ -206,7 +208,7 @@ namespace Remotion.Reflection
         return _publicAccessors.Value.ToArray();
     }
 
-    public IPropertyInformation FindInterfaceImplementation (Type implementationType)
+    public IPropertyInformation? FindInterfaceImplementation (Type implementationType)
     {
       ArgumentUtility.CheckNotNull ("implementationType", implementationType);
 
@@ -232,7 +234,7 @@ namespace Remotion.Reflection
       return _interfaceDeclarations.Value.ToArray();
     }
 
-    private IReadOnlyCollection<IPropertyInformation> FindInterfaceDeclarationsImplementation ()
+    private IReadOnlyCollection<IPropertyInformation?> FindInterfaceDeclarationsImplementation ()
     {
       if (DeclaringType.IsInterface)
         throw new InvalidOperationException ("This property is itself an interface member, so it cannot have an interface declaration.");
