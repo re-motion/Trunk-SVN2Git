@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -71,7 +71,7 @@ namespace Remotion.Reflection
     /// <exception cref="System.NotSupportedException">
     /// The conversion cannot be performed.
     /// </exception>
-    public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
     {
       if (value == null)
         return null;
@@ -105,7 +105,7 @@ namespace Remotion.Reflection
     /// <exception cref="T:System.NotSupportedException">
     /// The conversion cannot be performed.
     /// </exception>
-    public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    public override object? ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 

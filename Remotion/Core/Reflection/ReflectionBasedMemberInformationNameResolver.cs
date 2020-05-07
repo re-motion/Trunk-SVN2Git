@@ -35,7 +35,7 @@ namespace Remotion.Reflection
 
     private readonly ConcurrentDictionary<Enum, string> s_enumCache = new ConcurrentDictionary<Enum, string>();
 
-    private readonly Func<ITypeInformation, string> _getTypeNameInternalFunc;
+    private readonly Func<ITypeInformation, string?> _getTypeNameInternalFunc;
     private readonly Func<Enum, string> _getEnumNameInternalFunc;
     private readonly Func<IPropertyInformation, string> _getPropertyNameInternalFunc;
 
@@ -67,8 +67,9 @@ namespace Remotion.Reflection
     public string GetTypeName (ITypeInformation typeInformation)
     {
       ArgumentUtility.CheckNotNull ("typeInformation", typeInformation);
-
+#nullable disable
       return s_typeNameCache.GetOrAdd (typeInformation, _getTypeNameInternalFunc);
+#nullable enable
     }
 
     public string GetEnumName (Enum enumValue)
@@ -80,10 +81,12 @@ namespace Remotion.Reflection
 
     private string GetPropertyNameInternal (IPropertyInformation propertyInformation)
     {
+#nullable disable
       return GetTypeName (propertyInformation.GetOriginalDeclaringType()) + "." + propertyInformation.Name;
+#nullable enable
     }
 
-    private string GetTypeNameInternal (ITypeInformation typeInformation)
+    private string? GetTypeNameInternal (ITypeInformation typeInformation)
     {
       if (typeInformation.IsGenericType && !typeInformation.IsGenericTypeDefinition)
         typeInformation = typeInformation.GetGenericTypeDefinition();

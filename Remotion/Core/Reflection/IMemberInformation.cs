@@ -31,7 +31,7 @@ namespace Remotion.Reflection
     /// Gets the simple name of the member identifying it within its declaring type.
     /// </summary>
     /// <value>The simple property name.</value>
-    [NotNull]string Name { get; }
+    [NotNull]string? Name { get; }
 
     /// <summary>
     /// Gets the type declaring the member.
