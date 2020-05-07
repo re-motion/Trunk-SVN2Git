@@ -34,7 +34,7 @@ namespace Remotion.ExtensibleEnums
   /// </remarks>
   /// <threadsafety static="true" instance="true" />
   [Serializable]
-  public abstract class ExtensibleEnum<T> : IExtensibleEnum, IEquatable<T>
+  public abstract class ExtensibleEnum<T> : IExtensibleEnum, IEquatable<T?>
       where T: ExtensibleEnum<T>
   {
     private static readonly Lazy<ExtensibleEnumDefinition<T>> s_values =
@@ -59,7 +59,7 @@ namespace Remotion.ExtensibleEnums
     /// <param name="value2">The second value to be compared for equality.</param>
     /// <returns><see langword="true" /> if both <paramref name="value1"/> and <paramref name="value2"/> are <see langword="null" /> or if they both 
     /// have equal types and <see cref="ID"/> values. Otherwise, <see langword="false" />.</returns>
-    public static bool operator == (ExtensibleEnum<T> value1, ExtensibleEnum<T> value2)
+    public static bool operator == (ExtensibleEnum<T>? value1, ExtensibleEnum<T>? value2)
     {
       return object.Equals (value1, value2);
     }
@@ -71,7 +71,7 @@ namespace Remotion.ExtensibleEnums
     /// <param name="value2">The second value to be compared for inequality.</param>
     /// <returns><see langword="true" /> if only one of <paramref name="value1"/> and <paramref name="value2"/> is <see langword="null" /> or if they 
     /// have different types or <see cref="ID"/> values. Otherwise, <see langword="false" />.</returns>
-    public static bool operator != (ExtensibleEnum<T> value1, ExtensibleEnum<T> value2)
+    public static bool operator != (ExtensibleEnum<T>? value1, ExtensibleEnum<T>? value2)
     {
       return !(value1 == value2);
     }
@@ -199,7 +199,7 @@ namespace Remotion.ExtensibleEnums
     ///   <see langword="true" /> if the specified <see cref="System.Object"/> is an extensible enum value of the same
     ///   type and with an equal <see cref="ID"/> as this instance; otherwise, <see langword="false" />.
     /// </returns>
-    public override bool Equals (object obj)
+    public override bool Equals (object? obj)
     {
       return Equals (obj as T);
     }
