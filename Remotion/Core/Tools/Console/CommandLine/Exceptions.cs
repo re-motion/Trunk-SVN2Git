@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Runtime.Serialization;
-
+#nullable disable
 namespace Remotion.Tools.Console.CommandLine
 {
 

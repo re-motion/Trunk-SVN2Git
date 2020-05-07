@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Text;
-
+#nullable disable
 namespace Remotion.Tools.Console.CommandLine
 {
 /// <summary>
