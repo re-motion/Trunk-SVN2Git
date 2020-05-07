@@ -27,7 +27,7 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
   [TestFixture]
   public class EventEmitterTest : CodeGenerationTestBase
   {
-    private CustomClassEmitter _classEmitter;
+    private CustomClassEmitter _classEmitter = null!;
 
     public override void SetUp ()
     {
@@ -86,8 +86,8 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
       else
         field = _classEmitter.CreateField ("AddCalled", typeof (bool));
 
-      eventEmitter.AddMethod.AddStatement (new AssignStatement (field, new ConstReference (true).ToExpression ()));
-      eventEmitter.AddMethod.ImplementByReturningVoid ();
+      eventEmitter.AddMethod!.AddStatement (new AssignStatement (field, new ConstReference (true).ToExpression ()));
+      eventEmitter.AddMethod!.ImplementByReturningVoid ();
     }
 
     private void ImplementEventRemoveMethod (CustomEventEmitter eventEmitter)
@@ -98,8 +98,8 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
       else
         field = _classEmitter.CreateField ("RemoveCalled", typeof (bool));
 
-      eventEmitter.RemoveMethod.AddStatement (new AssignStatement (field, new ConstReference (true).ToExpression ()));
-      eventEmitter.RemoveMethod.ImplementByReturningVoid ();
+      eventEmitter.RemoveMethod!.AddStatement (new AssignStatement (field, new ConstReference (true).ToExpression ()));
+      eventEmitter.RemoveMethod!.ImplementByReturningVoid ();
     }
 
     private bool AddCalled (object instance)
@@ -170,12 +170,12 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
       Assert.That (AddCalled (type), Is.False);
       Assert.That (RemoveCalled (type), Is.False);
 
-      AddEventMethod (type, eventEmitter, (Func<string>) delegate { return null; });
+      AddEventMethod (type, eventEmitter, (Func<string?>) delegate { return null; });
 
       Assert.That (AddCalled (type), Is.True);
       Assert.That (RemoveCalled (type), Is.False);
 
-      RemoveEventMethod (type, eventEmitter, (Func<string>) delegate { return null; });
+      RemoveEventMethod (type, eventEmitter, (Func<string?>) delegate { return null; });
 
       Assert.That (AddCalled (type), Is.True);
       Assert.That (RemoveCalled (type), Is.True);

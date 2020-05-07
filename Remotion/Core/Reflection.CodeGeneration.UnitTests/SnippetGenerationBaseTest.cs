@@ -24,12 +24,12 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
   {
     private static int s_typeCount;
 
-    private CustomClassEmitter _classEmitter;
-    private IMethodEmitter _methodEmitter;
-    private Type _builtType;
-    private object _builtInstance;
-    private Type _unsavedBuiltType;
-    private CustomClassEmitter _unsavedClassEmitter;
+    private CustomClassEmitter? _classEmitter;
+    private IMethodEmitter? _methodEmitter;
+    private Type? _builtType;
+    private object? _builtInstance;
+    private Type? _unsavedBuiltType;
+    private CustomClassEmitter? _unsavedClassEmitter;
 
     public override void SetUp ()
     {
@@ -110,9 +110,9 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
       else
       {
         if (_methodEmitter.MethodBuilder.IsStatic)
-          return PrivateInvoke.InvokePublicStaticMethod (GetBuiltType (), _methodEmitter.Name, args);
+          return PrivateInvoke.InvokePublicStaticMethod (GetBuiltType (), _methodEmitter.Name!, args);
         else
-          return PrivateInvoke.InvokePublicMethod (GetBuiltInstance (), _methodEmitter.Name, args);
+          return PrivateInvoke.InvokePublicMethod (GetBuiltInstance (), _methodEmitter.Name!, args);
       }
     }
   }
