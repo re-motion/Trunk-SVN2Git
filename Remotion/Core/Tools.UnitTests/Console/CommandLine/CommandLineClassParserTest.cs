@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Tools.Console.CommandLine;
-
+#nullable disable
 namespace Remotion.Tools.UnitTests.Console.CommandLine
 {
   public class Arguments

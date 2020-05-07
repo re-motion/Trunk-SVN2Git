@@ -18,7 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Tools.Console.CommandLine;
-
+#nullable disable
 namespace Remotion.Tools.UnitTests.Console.CommandLine
 {
 
