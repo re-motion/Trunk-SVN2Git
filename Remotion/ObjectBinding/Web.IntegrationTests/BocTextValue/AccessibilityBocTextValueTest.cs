@@ -123,7 +123,7 @@ namespace Remotion.ObjectBinding.Web.IntegrationTests.BocTextValue
       Assert.That (result.Violations, Is.Empty);
     }
 
-    [Test]
+    [Test, Category ("RM-7412")]
     public void NormalRequired_WithValidationErrors ()
     {
       var home = Start();
