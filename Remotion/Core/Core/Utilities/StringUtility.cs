@@ -243,7 +243,7 @@ namespace Remotion.Utilities
       return 0 == String.Compare (strA, strB, ignoreCase, CultureInfo.InvariantCulture);
     }
 
-    public static string NullToEmpty (string str)
+    public static string NullToEmpty (string? str)
     {
       if (str == null)
         return string.Empty;
@@ -257,7 +257,7 @@ namespace Remotion.Utilities
       return str;
     }
 
-    public static bool IsNullOrEmpty (string str)
+    public static bool IsNullOrEmpty (string? str)
     {
       return string.IsNullOrEmpty (str);
     }
@@ -322,7 +322,7 @@ namespace Remotion.Utilities
     }
 
 
-    public static string Format (object value, IFormatProvider? formatProvider)
+    public static string Format (object? value, IFormatProvider? formatProvider)
     {
       if (value == null)
         return string.Empty;
@@ -373,7 +373,7 @@ namespace Remotion.Utilities
     /// <param name="formatProvider"> The format provider to be passed to the type's <b>Parse</b> method (if present). </param>
     /// <returns> An instance of the specified type. </returns>
     /// <exception cref="ParseException"> The <b>Parse</b> method was not found, or failed. </exception>
-    public static object? Parse (Type type, string value, IFormatProvider formatProvider)
+    public static object? Parse (Type type, string? value, IFormatProvider? formatProvider)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -383,7 +383,9 @@ namespace Remotion.Utilities
       if (underlyingType == typeof (string))
         return value;
       if (underlyingType.IsArray)
+#nullable disable
         return ParseArrayValue (type, value, formatProvider);
+#nullable enable
       if (underlyingType == typeof (DBNull))
         return DBNull.Value;
       if (isNullableType && string.IsNullOrEmpty (value))
@@ -396,7 +398,7 @@ namespace Remotion.Utilities
         return ParseScalarValue (underlyingType, value, formatProvider);
     }
 
-    private static object ParseArrayValue (Type type, string value, IFormatProvider formatProvider)
+    private static object ParseArrayValue (Type type, string value, IFormatProvider? formatProvider)
     {
       Type elementType = type.GetElementType();
       if (elementType.IsArray)
@@ -417,15 +419,15 @@ namespace Remotion.Utilities
       return results;
     }
 
-    private static object ParseScalarValue (Type type, string value, IFormatProvider formatProvider)
+    private static object ParseScalarValue (Type type, string? value, IFormatProvider? formatProvider)
     {
       MethodInfo parseMethod = GetParseMethod (type, true)!;
 
-      object[] args;
+      object?[] args;
       if (parseMethod.GetParameters().Length == 2)
-        args = new object[] { value, formatProvider };
+        args = new object?[] { value, formatProvider };
       else
-        args = new object[] { value };
+        args = new object?[] { value };
 
       try
       {
@@ -437,7 +439,7 @@ namespace Remotion.Utilities
       }
     }
 
-    private static object ParseEnumValue (Type underlyingType, string value)
+    private static object ParseEnumValue (Type underlyingType, string? value)
     {
       try
       {

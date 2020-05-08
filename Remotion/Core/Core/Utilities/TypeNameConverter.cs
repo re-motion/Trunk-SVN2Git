@@ -47,7 +47,7 @@ namespace Remotion.Utilities
       return destinationType == typeof (string);
     }
 
-    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object? ConvertFrom (ITypeDescriptorContext? context, CultureInfo? culture, object value)
     {
       if (value is string)
       {
@@ -62,7 +62,7 @@ namespace Remotion.Utilities
       return null;
     }
 
-    public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    public override object ConvertTo (ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
     {
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);
 

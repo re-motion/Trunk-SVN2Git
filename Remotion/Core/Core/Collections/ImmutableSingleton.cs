@@ -27,7 +27,7 @@ namespace Remotion.Collections
   /// </summary>
   public static class ImmutableSingleton
   {
-    public static ImmutableSingleton<T> Create<T> ([CanBeNull, AllowNull] T item)
+    public static ImmutableSingleton<T> Create<T> (T item)
     {
       return new ImmutableSingleton<T> (item);
     }
@@ -41,11 +41,10 @@ namespace Remotion.Collections
   {
     private sealed class Enumerator : IEnumerator<T>
     {
-      [AllowNull, MaybeNull]
       private readonly T _item;
       private sbyte _position = -1;
 
-      public Enumerator ([AllowNull] T item)
+      public Enumerator (T item)
       {
         _item = item;
       }
@@ -67,8 +66,8 @@ namespace Remotion.Collections
       }
 
       public T Current
-      {
-        [return: MaybeNull] get
+      { 
+        get
         {
           switch (_position)
           {
@@ -88,10 +87,9 @@ namespace Remotion.Collections
       }
     }
 
-    [AllowNull, MaybeNull]
     private readonly T _item;
 
-    public ImmutableSingleton ([CanBeNull, AllowNull] T item)
+    public ImmutableSingleton (T item)
     {
       _item = item;
     }
@@ -113,7 +111,7 @@ namespace Remotion.Collections
 
     public T this [int index]
     {
-      [return: MaybeNull] get
+      get
       {
         if (index != 0)
           throw new ArgumentOutOfRangeException ("index", index, "The list contains only a single item.");

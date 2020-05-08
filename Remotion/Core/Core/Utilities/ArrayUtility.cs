@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Remotion.Utilities
 {
@@ -80,7 +81,8 @@ namespace Remotion.Utilities
       return result;
     }
 
-    public static TResult[]? Convert<TSource, TResult> (ICollection<TSource> collection)
+    [return: NotNullIfNotNull("collection")]
+    public static TResult[]? Convert<TSource, TResult> (ICollection<TSource>? collection)
         where TResult: TSource
     {
       if (collection == null)

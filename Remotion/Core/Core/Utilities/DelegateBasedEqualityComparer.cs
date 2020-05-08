@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Remotion.Utilities
 {
@@ -38,9 +39,11 @@ namespace Remotion.Utilities
       _hash = hash;
     }
 
-    public bool Equals (T x, T y)
+    public bool Equals ([AllowNull] T x, [AllowNull] T y)
     {
+#nullable disable
       return _comparison (x, y);
+#nullable enable
     }
 
     public int GetHashCode (T obj)

@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -28,7 +28,7 @@ namespace Remotion.ServiceLocation
     /// <summary>
     /// Returns the <see cref="ServiceConfigurationEntry"/> instances registered so far.
     /// </summary>
-    ServiceConfigurationEntry[]? Registrations { get; }
+    ServiceConfigurationEntry[] Registrations { get; }
 
     /// <summary>
     /// Registers the given <see cref="ServiceConfigurationEntry"/> with this <see cref="IBootstrapServiceConfiguration"/>.

@@ -58,8 +58,8 @@ namespace Remotion.Collections
       return ((IReadOnlyDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key);
     }
 
-    [return: MaybeNull]
-    public static TValue GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    [return: MaybeNull, NotNullIfNotNull ("defaultValue")]
+    public static TValue GetValueOrDefault<TKey, TValue> (this IReadOnlyDictionary<TKey, TValue> dictionary, TKey key, [AllowNull] TValue defaultValue)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
@@ -72,8 +72,8 @@ namespace Remotion.Collections
         return defaultValue;
     }
 
-    [return: MaybeNull]
-    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    [return: MaybeNull, NotNullIfNotNull ("defaultValue")]
+    public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dictionary, TKey key, [AllowNull] TValue defaultValue)
     {
       ArgumentUtility.CheckNotNull ("dictionary", dictionary);
       // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
@@ -86,14 +86,14 @@ namespace Remotion.Collections
         return defaultValue;
     }
 
-    [return: MaybeNull]
-    public static TValue GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    [return: MaybeNull, NotNullIfNotNull ("defaultValue")]
+    public static TValue GetValueOrDefault<TKey, TValue> (this Dictionary<TKey, TValue> dictionary, TKey key, [AllowNull] TValue defaultValue)
     {
       return ((IDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key, defaultValue);
     }
 
-    [return: MaybeNull]
-    public static TValue GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key, TValue defaultValue)
+    [return: MaybeNull, NotNullIfNotNull ("defaultValue")]
+    public static TValue GetValueOrDefault<TKey, TValue> (this ReadOnlyDictionary<TKey, TValue> dictionary, TKey key, [AllowNull] TValue defaultValue)
     {
       return ((IReadOnlyDictionary<TKey, TValue>) dictionary).GetValueOrDefault (key, defaultValue);
     }

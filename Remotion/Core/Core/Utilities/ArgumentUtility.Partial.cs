@@ -45,7 +45,7 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentException"> If <paramref name="enumValue"/> is not of the specified type. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> If <paramref name="enumValue"/> has a numeric value that is not completely defined within its 
     /// enumeration type. For flag types, every bit must correspond to at least one enumeration value. </exception>
-    public static TEnum? CheckValidEnumValueAndType<TEnum> ([InvokerParameterName] string argumentName, object enumValue)
+    public static TEnum? CheckValidEnumValueAndType<TEnum> ([InvokerParameterName] string argumentName, object? enumValue)
         where TEnum: struct
     {
       if (enumValue == null)

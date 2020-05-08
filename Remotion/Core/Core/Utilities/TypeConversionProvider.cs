@@ -131,12 +131,12 @@ namespace Remotion.Utilities
       return !typeConverterResult.Equals (TypeConverterResult.Empty);
     }
 
-    public object? Convert (Type sourceType, Type destinationType, object value)
+    public object? Convert (Type sourceType, Type destinationType, object? value)
     {
       return Convert (null, null, sourceType, destinationType, value);
     }
 
-    public virtual object? Convert (ITypeDescriptorContext? context, CultureInfo? culture, Type sourceType, Type destinationType, object value)
+    public virtual object? Convert (ITypeDescriptorContext? context, CultureInfo? culture, Type sourceType, Type destinationType, object? value)
     {
       ArgumentUtility.CheckNotNull ("sourceType", sourceType);
       ArgumentUtility.CheckNotNull ("destinationType", destinationType);

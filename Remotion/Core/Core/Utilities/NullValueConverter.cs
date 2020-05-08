@@ -45,14 +45,14 @@ namespace Remotion.Utilities
       return NullableTypeUtility.IsNullableType (sourceType);
     }
 
-    public override bool IsValid (ITypeDescriptorContext context, object value)
+    public override bool IsValid (ITypeDescriptorContext context, object? value)
     {
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
       return value == null;
 // ReSharper restore ConditionIsAlwaysTrueOrFalse
     }
 
-    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object? ConvertFrom (ITypeDescriptorContext context, CultureInfo? culture, object? value)
     {
 // ReSharper disable HeuristicUnreachableCode
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -64,7 +64,7 @@ namespace Remotion.Utilities
       throw new NotSupportedException (string.Format ("Value '{0}' cannot be converted to null.", value));
     }
 
-    public override object? ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+    public override object? ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object? value, Type destinationType)
     {
       if (value != null)
         throw new NotSupportedException (string.Format ("Value '{0}' is not supported by this converter.", value));
