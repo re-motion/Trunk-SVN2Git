@@ -31,13 +31,13 @@ namespace Remotion.UnitTests.Logging
   [TestFixture]
   public class Log4NetTraceListenerTest
   {
-    private MemoryAppender _memoryAppender;
-    private Log4NetTraceListener _listener;
-    private Log4NetTraceListener _filterListener;
-    private ILoggerRepository _repository;
-    private TraceEventCache _traceEventCache;
-    private MockRepository _mocks;
-    private TraceFilter _mockFilter;
+    private MemoryAppender _memoryAppender = null!;
+    private Log4NetTraceListener _listener = null!;
+    private Log4NetTraceListener _filterListener = null!;
+    private ILoggerRepository _repository = null!;
+    private TraceEventCache _traceEventCache = null!;
+    private MockRepository _mocks = null!;
+    private TraceFilter _mockFilter = null!;
 
     [SetUp]
     public void SetUp ()

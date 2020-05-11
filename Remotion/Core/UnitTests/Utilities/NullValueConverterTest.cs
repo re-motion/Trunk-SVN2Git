@@ -26,8 +26,8 @@ namespace Remotion.UnitTests.Utilities
   [TestFixture]
   public class NullValueConverterTest
   {
-    private NullValueConverter _nullValueConverter;
-    private ITypeDescriptorContext _typeDescriptorContextStub;
+    private NullValueConverter _nullValueConverter = null!;
+    private ITypeDescriptorContext _typeDescriptorContextStub = null!;
 
     [SetUp]
     public void SetUp ()

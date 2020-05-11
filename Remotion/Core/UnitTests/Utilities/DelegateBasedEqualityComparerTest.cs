@@ -23,9 +23,9 @@ namespace Remotion.UnitTests.Utilities
   [TestFixture]
   public class DelegateBasedEqualityComparerTest
   {
-    private DelegateBasedEqualityComparer<object> _comparer;
-    private object _obj1;
-    private object _obj2;
+    private DelegateBasedEqualityComparer<object> _comparer = null!;
+    private object _obj1 = null!;
+    private object _obj2 = null!;
 
     [SetUp]
     public void SetUp ()

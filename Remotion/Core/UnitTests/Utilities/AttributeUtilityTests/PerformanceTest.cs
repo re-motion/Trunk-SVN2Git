@@ -28,8 +28,8 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
   [Explicit]
   public class PerformanceTest
   {
-    private Type[] _types;
-    private PropertyInfo[] _properties;
+    private Type[] _types = null!;
+    private PropertyInfo[] _properties = null!;
 
     [SetUp]
     public void SetUp ()

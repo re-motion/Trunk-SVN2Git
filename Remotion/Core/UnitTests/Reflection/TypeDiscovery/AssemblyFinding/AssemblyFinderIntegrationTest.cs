@@ -33,22 +33,22 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
   public class AssemblyFinderIntegrationTest
   {
     private const string c_testAssemblySourceDirectoryRoot = @"Reflection\TypeDiscovery\TestAssemblies";
-    private AssemblyCompilerBuildOutputManager _baseDirectoryBuildOutputManager;
-    private AssemblyCompilerBuildOutputManager _dynamicDirectoryBuildOutputManager;
-    private AssemblyCompilerBuildOutputManager _searchPathForDllsBuildOutputManager;
-    private AssemblyCompilerBuildOutputManager _searchPathForExesBuildOutputManager;
+    private AssemblyCompilerBuildOutputManager _baseDirectoryBuildOutputManager = null!;
+    private AssemblyCompilerBuildOutputManager _dynamicDirectoryBuildOutputManager = null!;
+    private AssemblyCompilerBuildOutputManager _searchPathForDllsBuildOutputManager = null!;
+    private AssemblyCompilerBuildOutputManager _searchPathForExesBuildOutputManager = null!;
 
-    private string _markedAssemblyPath;
-    private string _markedExeAssemblyPath;
-    private string _markedAssemblyWithDerivedAttributePath;
-    private string _markedReferencedAssemblyPath;
+    private string _markedAssemblyPath = null!;
+    private string _markedExeAssemblyPath = null!;
+    private string _markedAssemblyWithDerivedAttributePath = null!;
+    private string _markedReferencedAssemblyPath = null!;
 
-    private string _markedAssemblyInSearchPathPath;
-    private string _markedExeAssemblyInSearchPathPath;
-    private string _markedAssemblyInSearchPathWithNameMismatchPath;
+    private string _markedAssemblyInSearchPathPath = null!;
+    private string _markedExeAssemblyInSearchPathPath = null!;
+    private string _markedAssemblyInSearchPathWithNameMismatchPath = null!;
 
-    private string _markedAssemblyInDynamicDirectoryPath;
-    private string _markedExeAssemblyInDynamicDirectoryPath;
+    private string _markedAssemblyInDynamicDirectoryPath = null!;
+    private string _markedExeAssemblyInDynamicDirectoryPath = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp ()
@@ -228,7 +228,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
     private void ExecuteInSeparateAppDomain (CrossAppDomainDelegate test)
     {
-      AppDomain appDomain = null;
+      AppDomain? appDomain = null;
 
       try
       {

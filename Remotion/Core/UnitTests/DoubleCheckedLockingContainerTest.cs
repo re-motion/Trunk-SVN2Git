@@ -38,7 +38,7 @@ namespace Remotion.UnitTests
     {
     }
 
-    private MockRepository _mocks;
+    private MockRepository _mocks = null!;
 
     [SetUp]
     public void SetUp()
@@ -78,8 +78,8 @@ namespace Remotion.UnitTests
     {
       SampleClass expected = new SampleClass ();
       IFactory mockFactory = _mocks.StrictMock<IFactory> ();
-      DoubleCheckedLockingContainer<SampleClass> container =
-          new DoubleCheckedLockingContainer<SampleClass> (delegate { return mockFactory.Create (); });
+      DoubleCheckedLockingContainer<SampleClass?> container =
+          new DoubleCheckedLockingContainer<SampleClass?> (delegate { return mockFactory.Create (); });
       _mocks.ReplayAll ();
 
       container.Value = null;
@@ -91,7 +91,7 @@ namespace Remotion.UnitTests
 
       _mocks.ReplayAll ();
 
-      SampleClass actual = container.Value;
+      SampleClass? actual = container.Value;
 
       _mocks.VerifyAll ();
       Assert.That (actual, Is.SameAs (expected));
@@ -102,8 +102,8 @@ namespace Remotion.UnitTests
     {
       SampleClass expected = new SampleClass ();
       IFactory mockFactory = _mocks.StrictMock<IFactory> ();
-      DoubleCheckedLockingContainer<SampleClass> container =
-          new DoubleCheckedLockingContainer<SampleClass> (delegate { return mockFactory.Create (); });
+      DoubleCheckedLockingContainer<SampleClass?> container =
+          new DoubleCheckedLockingContainer<SampleClass?> (delegate { return mockFactory.Create (); });
 
       _mocks.ReplayAll ();
 
@@ -116,7 +116,7 @@ namespace Remotion.UnitTests
 
       _mocks.ReplayAll ();
 
-      SampleClass actual = container.Value;
+      SampleClass? actual = container.Value;
 
       Assert.That (container.HasValue, Is.True);
       _mocks.VerifyAll ();

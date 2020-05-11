@@ -25,10 +25,10 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
   [TestFixture]
   public class IsDefinedFromPropertyInfoTest
   {
-    private PropertyInfo _basePropertyWithSingleAttribute;
-    private PropertyInfo _derivedPropertyWithSingleAttribute;
-    private PropertyInfo _derivedPropertyWithMultipleAttribute;
-    private PropertyInfo _derivedProtectedProperty;
+    private PropertyInfo _basePropertyWithSingleAttribute = null!;
+    private PropertyInfo _derivedPropertyWithSingleAttribute = null!;
+    private PropertyInfo _derivedPropertyWithMultipleAttribute = null!;
+    private PropertyInfo _derivedProtectedProperty = null!;
 
     [SetUp]
     public void SetUp ()

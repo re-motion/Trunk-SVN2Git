@@ -24,7 +24,7 @@ namespace Remotion.UnitTests.ServiceLocation
   [TestFixture]
   public class BootstrapServiceConfigurationTest
   {
-    private BootstrapServiceConfiguration _configuration;
+    private BootstrapServiceConfiguration _configuration = null!;
 
     [SetUp]
     public void SetUp ()

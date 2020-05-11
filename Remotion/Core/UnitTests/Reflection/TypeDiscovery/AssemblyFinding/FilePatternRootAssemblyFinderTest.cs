@@ -29,11 +29,11 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
   [TestFixture]
   public class FilePatternRootAssemblyFinderTest
   {
-    private IFileSearchService _searchServiceStub;
-    private IAssemblyLoader _loaderMock;
-    private Assembly _assembly1;
-    private Assembly _assembly2;
-    private Assembly _assembly3;
+    private IFileSearchService _searchServiceStub = null!;
+    private IAssemblyLoader _loaderMock = null!;
+    private Assembly _assembly1 = null!;
+    private Assembly _assembly2 = null!;
+    private Assembly _assembly3 = null!;
 
     [SetUp]
     public void SetUp ()

@@ -31,8 +31,8 @@ public class NameValueCollectionUtilityTest
 
   // member fields
 
-  private NameValueCollection _collection;
-  private NameValueCollection _otherCollection;
+  private NameValueCollection _collection = null!;
+  private NameValueCollection _otherCollection = null!;
 
   // construction and disposing
 
@@ -136,7 +136,7 @@ public class NameValueCollectionUtilityTest
   [Test]
   public void MergeWithFirstValueAndSecondNull()
   {
-    NameValueCollection actual = NameValueCollectionUtility.Merge (_collection, null);
+    NameValueCollection actual = NameValueCollectionUtility.Merge (_collection, null)!;
 
     Assert.That (actual, Is.Not.Null);
     Assert.That (ReferenceEquals (_collection, actual), Is.False);
@@ -154,7 +154,7 @@ public class NameValueCollectionUtilityTest
   [Test]
   public void MergeWithFirstNullAndSecondValue()
   {
-    NameValueCollection actual = NameValueCollectionUtility.Merge (null, _collection);
+    NameValueCollection actual = NameValueCollectionUtility.Merge (null, _collection)!;
 
     Assert.That (actual, Is.Not.Null);
     Assert.That (ReferenceEquals (_collection, actual), Is.False);
@@ -172,7 +172,7 @@ public class NameValueCollectionUtilityTest
   [Test]
   public void MergeWithFirstValueAndSecondValue()
   {
-    NameValueCollection actual = NameValueCollectionUtility.Merge (_collection, _otherCollection);
+    NameValueCollection actual = NameValueCollectionUtility.Merge (_collection, _otherCollection)!;
 
     Assert.That (actual, Is.Not.Null);
     Assert.That (ReferenceEquals (_collection, actual), Is.False);

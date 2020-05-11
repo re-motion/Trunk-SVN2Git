@@ -29,8 +29,8 @@ namespace Remotion.UnitTests.ServiceLocation
   [TestFixture]
   public class DefaultServiceConfigurationDiscoveryServiceTest
   {
-    private DefaultServiceConfigurationDiscoveryService _defaultServiceConfigurationDiscoveryService;
-    private ITypeDiscoveryService _typeDiscoveryServiceStub;
+    private DefaultServiceConfigurationDiscoveryService _defaultServiceConfigurationDiscoveryService = null!;
+    private ITypeDiscoveryService _typeDiscoveryServiceStub = null!;
     private bool _excludeGlobalTypes;
 
     [SetUp]
