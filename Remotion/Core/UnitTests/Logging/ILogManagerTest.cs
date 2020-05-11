@@ -24,7 +24,7 @@ namespace Remotion.UnitTests.Logging
   [TestFixture]
   public class ILogManagerTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

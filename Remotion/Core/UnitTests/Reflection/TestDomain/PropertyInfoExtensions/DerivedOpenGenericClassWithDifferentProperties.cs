@@ -15,14 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-
+using System.Diagnostics.CodeAnalysis;
+#nullable disable
 namespace Remotion.UnitTests.Reflection.TestDomain.PropertyInfoExtensions
 {
   public abstract class DerivedOpenGenericClassWithDifferentProperties<T> : GenericClassWithDifferentProperties<T>
   {
     public override T AbstractT
     {
-      get { return default(T); }
+      get { return default(T)!; }
       set { }
     }
 

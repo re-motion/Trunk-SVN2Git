@@ -28,8 +28,8 @@ namespace Remotion.UnitTests.ServiceLocation
   [TestFixture]
   public class SafeServiceLocatorTest
   {
-    private ServiceLocatorProvider _serviceLocatorProviderBackup;
-    private IServiceLocationConfiguration _previousConfiguration;
+    private ServiceLocatorProvider _serviceLocatorProviderBackup = null!;
+    private IServiceLocationConfiguration? _previousConfiguration;
 
     [OneTimeSetUp]
     public void OneTimeSetUp ()
@@ -237,7 +237,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       var defaultServiceLocatorContainer = 
           (DoubleCheckedLockingContainer<IServiceLocator>) PrivateInvoke.GetNonPublicStaticField (typeof (SafeServiceLocator), "s_defaultServiceLocator");
-      defaultServiceLocatorContainer.Value = null;
+      defaultServiceLocatorContainer.Value = null!;
     }
 
     interface IService1 { }

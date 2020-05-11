@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.Logging
       var logMock = MockRepository.GenerateMock<ILog> ();
 
       "test".LogAndReturnValue (logMock, LogLevel.Debug, value => { throw new Exception ("Should not be called"); });
-      logMock.AssertWasNotCalled (mock => mock.Log (Arg<LogLevel>.Is.Anything, Arg<int?>.Is.Anything, Arg<object>.Is.Anything, Arg<Exception>.Is.Anything));
+      logMock.AssertWasNotCalled (mock => mock.Log (Arg<LogLevel>.Is.Anything, Arg<int?>.Is.Anything, Arg<object>.Is.Anything!, Arg<Exception>.Is.Anything));
     }
 
     [Test]
@@ -52,7 +52,7 @@ namespace Remotion.UnitTests.Logging
       logMock.Replay ();
 
       "test".LogAndReturnValue (logMock, LogLevel.Debug, value => string.Format ("x{0}y", value));
-      logMock.AssertWasCalled (mock => mock.Log (LogLevel.Debug, (int?) null, "xtesty", (Exception) null));
+      logMock.AssertWasCalled (mock => mock.Log (LogLevel.Debug, (int?) null, "xtesty", (Exception?) null));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.UnitTests.Logging
 
       var result = sequenceMock.LogAndReturnItems (logMock, LogLevel.Debug, value => { throw new Exception ("Should not be called"); });
       Assert.That (result, Is.SameAs (sequenceMock));
-      logMock.AssertWasNotCalled (mock => mock.Log (Arg<LogLevel>.Is.Anything, Arg<int?>.Is.Anything, Arg<object>.Is.Anything, Arg<Exception>.Is.Anything));
+      logMock.AssertWasNotCalled (mock => mock.Log (Arg<LogLevel>.Is.Anything, Arg<int?>.Is.Anything, Arg<object>.Is.Anything!, Arg<Exception>.Is.Anything));
     }
 
     [Test]

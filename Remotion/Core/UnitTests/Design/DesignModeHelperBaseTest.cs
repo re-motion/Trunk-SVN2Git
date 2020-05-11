@@ -25,8 +25,8 @@ namespace Remotion.UnitTests.Design
   [TestFixture]
   public class DesignModeHelperBaseTest
   {
-    private MockRepository _mockRepository;
-    private IDesignerHost _mockDesignerHost;
+    private MockRepository _mockRepository = null!;
+    private IDesignerHost _mockDesignerHost = null!;
 
     [SetUp]
     public void SetUp()

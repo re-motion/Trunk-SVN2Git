@@ -26,9 +26,9 @@ namespace Remotion.UnitTests.Logging.LogExtensionsTests
 {
   public class BaseTest
   {
-    private ILogger _logger;
-    private ILog _log;
-    private MemoryAppender _memoryAppender;
+    private ILogger _logger = null!;
+    private ILog _log = null!;
+    private MemoryAppender _memoryAppender = null!;
 
     [SetUp]
     public virtual void SetUp ()

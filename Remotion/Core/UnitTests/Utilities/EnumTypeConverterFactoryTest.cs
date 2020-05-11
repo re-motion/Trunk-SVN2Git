@@ -30,7 +30,7 @@ namespace Remotion.UnitTests.Utilities
 
     // ReSharper restore EnumUnderlyingTypeIsInt
 
-    private ITypeConverterFactory _factory;
+    private ITypeConverterFactory _factory = null!;
 
     [SetUp]
     public void SetUp ()
@@ -42,8 +42,8 @@ namespace Remotion.UnitTests.Utilities
     public void CreateTypeConverterOrDefault_WithEnum_ReturnsAdvancedEnumConverter ()
     {
       var typeConverter = _factory.CreateTypeConverterOrDefault (typeof (Int32Enum));
-      Assert.That (typeConverter, Is.TypeOf<AdvancedEnumConverter>());
-      Assert.That (((AdvancedEnumConverter) typeConverter).EnumType, Is.EqualTo (typeof (Int32Enum)));
+      Assert.That (typeConverter, Is.TypeOf<AdvancedEnumConverter?>());
+      Assert.That (((AdvancedEnumConverter?) typeConverter)!.EnumType, Is.EqualTo (typeof (Int32Enum)));
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.UnitTests.Utilities
     {
       var typeConverter = _factory.CreateTypeConverterOrDefault (typeof (Int32Enum?));
       Assert.That (typeConverter, Is.TypeOf<AdvancedEnumConverter>());
-      Assert.That (((AdvancedEnumConverter) typeConverter).EnumType, Is.EqualTo (typeof (Int32Enum?)));
+      Assert.That (((AdvancedEnumConverter?) typeConverter)!.EnumType, Is.EqualTo (typeof (Int32Enum?)));
     }
 
     [Test]

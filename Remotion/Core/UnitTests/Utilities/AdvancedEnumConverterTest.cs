@@ -23,9 +23,9 @@ namespace Remotion.UnitTests.Utilities
   [TestFixture]
   public class AdvancedEnumConverterTest
   {
-    private AdvancedEnumConverter _int32EnumConverter;
-    private AdvancedEnumConverter _int16EnumConverter;
-    private AdvancedEnumConverter _nullableInt32EnumConverter;
+    private AdvancedEnumConverter _int32EnumConverter = null!;
+    private AdvancedEnumConverter _int16EnumConverter = null!;
+    private AdvancedEnumConverter _nullableInt32EnumConverter = null!;
 
     // Explicitly declare an Int32 enum
     // ReSharper disable EnumUnderlyingTypeIsInt

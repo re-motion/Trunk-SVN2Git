@@ -37,7 +37,7 @@ namespace Remotion.UnitTests.Utilities
     {
     }
 
-    private ITypeConverterFactory _factory;
+    private ITypeConverterFactory _factory = null!;
 
     [SetUp]
     public void SetUp ()

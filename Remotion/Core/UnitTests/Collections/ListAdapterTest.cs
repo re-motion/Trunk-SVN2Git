@@ -26,8 +26,8 @@ namespace Remotion.UnitTests.Collections
   [TestFixture]
   public class ListAdapterTest
   {
-    private List<int> _innerList;
-    private ListAdapter<int, string> _adapter;
+    private List<int> _innerList = null!;
+    private ListAdapter<int, string> _adapter = null!;
 
     [SetUp]
     public void SetUp ()
