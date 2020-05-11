@@ -118,7 +118,7 @@ namespace Remotion.Logging
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
-    public override void TraceEvent (TraceEventCache eventCache, string source, TraceEventType eventType, int id)
+    public override void TraceEvent (TraceEventCache? eventCache, string source, TraceEventType eventType, int id)
     {
       TraceEvent (eventCache, source, eventType, id, string.Empty, new object[0]);
     }
@@ -129,7 +129,7 @@ namespace Remotion.Logging
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' 
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id" or @name="message"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
-    public override void TraceEvent (TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
+    public override void TraceEvent (TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string message)
     {
       TraceEvent (eventCache, source, eventType, id, message, new object[0]);
     }
@@ -142,7 +142,7 @@ namespace Remotion.Logging
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceEvent/param[@name="format" or @name="args"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
     public override void TraceEvent (
-        TraceEventCache eventCache, 
+        TraceEventCache? eventCache, 
         string source, 
         TraceEventType eventType, int id, 
         string format, 
@@ -161,7 +161,7 @@ namespace Remotion.Logging
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Object/param[@name="data"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
-    public override void TraceData (TraceEventCache eventCache, string source, TraceEventType eventType, int id, Object data)
+    public override void TraceData (TraceEventCache? eventCache, string source, TraceEventType eventType, int id, Object data)
     {
       TraceData (eventCache, source, eventType, id, new object[] { data } );
     }
@@ -173,7 +173,7 @@ namespace Remotion.Logging
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="eventType" or @name="id"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceData_Array/param[@name="data"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
-    public override void TraceData (TraceEventCache eventCache, string source, TraceEventType eventType, int id, params Object[] data)
+    public override void TraceData (TraceEventCache? eventCache, string source, TraceEventType eventType, int id, params Object[] data)
     {
       if (ShouldTrace (eventCache, source, eventType, id, null, null, null, data)) 
       {
@@ -206,7 +206,7 @@ namespace Remotion.Logging
     ///     path='Log4NetTraceListener/Trace/param[@name="eventCache" or @name="source" or @name="id" or @name="message"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/TraceTransfer/param[@name="relatedActivityId"]' />
     /// <include file='..\doc\include\Logging\Log4NetTraceListener.xml' path='Log4NetTraceListener/Trace/remarks' />
-    public override void TraceTransfer (TraceEventCache eventCache, string source, int id, string message, Guid relatedActivityId) 
+    public override void TraceTransfer (TraceEventCache? eventCache, string source, int id, string? message, Guid relatedActivityId) 
     {
       TraceEvent (eventCache, source, TraceEventType.Information, id,
           message + ", relatedActivityId=" + relatedActivityId, new object[0]); 
@@ -214,7 +214,7 @@ namespace Remotion.Logging
 
 
     private bool ShouldTrace (
-        TraceEventCache cache,
+        TraceEventCache? cache,
         string source,
         TraceEventType eventType,
         int id,

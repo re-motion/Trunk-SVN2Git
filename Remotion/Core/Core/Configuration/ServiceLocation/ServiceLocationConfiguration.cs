@@ -26,8 +26,8 @@ namespace Remotion.Configuration.ServiceLocation
   /// </summary>
   public sealed class ServiceLocationConfiguration : ConfigurationSection, IServiceLocationConfiguration
   {
-    private static readonly DoubleCheckedLockingContainer<IServiceLocationConfiguration> s_current =
-        new DoubleCheckedLockingContainer<IServiceLocationConfiguration> (GetServiceLocationConfiguration);
+    private static readonly DoubleCheckedLockingContainer<IServiceLocationConfiguration?> s_current =
+        new DoubleCheckedLockingContainer<IServiceLocationConfiguration?> (GetServiceLocationConfiguration);
 
     /// <summary>
     /// Gets the current <see cref="IServiceLocationConfiguration"/> instance. This is used by 
@@ -35,7 +35,7 @@ namespace Remotion.Configuration.ServiceLocation
     /// <see cref="IServiceLocator"/> was configured via <see cref="ServiceLocator.SetLocatorProvider"/>.
     /// </summary>
     /// <value>The current <see cref="IServiceLocationConfiguration"/>.</value>
-    public static IServiceLocationConfiguration Current
+    public static IServiceLocationConfiguration? Current
     {
       get { return s_current.Value; }
     }
@@ -44,7 +44,7 @@ namespace Remotion.Configuration.ServiceLocation
     /// Sets the <see cref="Current"/> <see cref="IServiceLocationConfiguration"/> instance.
     /// </summary>
     /// <param name="configuration">The new configuration to set as the <see cref="Current"/> configuration.</param>
-    public static void SetCurrent (IServiceLocationConfiguration configuration)
+    public static void SetCurrent (IServiceLocationConfiguration? configuration)
     {
       s_current.Value = configuration;
     }

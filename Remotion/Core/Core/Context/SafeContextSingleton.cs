@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Remotion.Utilities;
 
 namespace Remotion.Context
@@ -57,7 +58,7 @@ namespace Remotion.Context
     {
       get
       {
-        T current = GetCurrentInternal();
+        T? current = GetCurrentInternal();
           
         if (current == null)
         {
@@ -69,14 +70,14 @@ namespace Remotion.Context
       }
     }
 
-    public void SetCurrent (T value)
+    public void SetCurrent ([AllowNull] T value)
     {
       SafeContext.Instance.SetData (_currentKey, value);
     }
 
-    private T GetCurrentInternal ()
+    private T? GetCurrentInternal ()
     {
-      return (T) SafeContext.Instance.GetData (_currentKey);
+      return (T?) SafeContext.Instance.GetData (_currentKey);
     }
   }
 }
