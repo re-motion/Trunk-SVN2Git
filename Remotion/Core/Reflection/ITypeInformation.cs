@@ -249,7 +249,7 @@ namespace Remotion.Reflection
     /// or <see langword="null"/> if the current type is not an array or a pointer, or is not passed by reference, 
     /// or represents a generic type or a type parameter in the definition of a generic type or generic method.
     /// </returns>
-    [CanBeNull]ITypeInformation GetElementType ();
+    [CanBeNull] ITypeInformation? GetElementType ();
 
     /// <summary>
     /// Gets a value indicating whether the current type is a generic type.

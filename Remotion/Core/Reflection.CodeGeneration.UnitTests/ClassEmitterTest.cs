@@ -517,7 +517,7 @@ namespace Remotion.Reflection.CodeGeneration.UnitTests
 
     public interface IInterfaceWithProperty
     {
-      int? Property { set; }
+      int Property { set; }
     }
 
     [Test]

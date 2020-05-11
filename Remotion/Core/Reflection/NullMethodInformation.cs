@@ -28,14 +28,24 @@ namespace Remotion.Reflection
   /// </summary>
   public sealed class NullMethodInformation : IMethodInformation
   {
-    public string? Name
+    public string Name
     {
-      get { return null; }
+#nullable disable
+      get 
+      {
+        return null;
+      }
+#nullable enable
     }
 
     public ITypeInformation? DeclaringType
     {
-      get { return null; }
+#nullable disable
+      get 
+      {
+        return null;
+      }
+#nullable enable
     }
 
     public ITypeInformation? GetOriginalDeclaringType ()

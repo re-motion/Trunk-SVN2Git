@@ -31,13 +31,13 @@ namespace Remotion.Reflection
     /// Gets the simple name of the member identifying it within its declaring type.
     /// </summary>
     /// <value>The simple property name.</value>
-    [NotNull]string? Name { get; }
+    [NotNull]string Name { get; }
 
     /// <summary>
     /// Gets the type declaring the member.
     /// </summary>
     /// <value>The declaring type of the member.</value>
-    [CanBeNull]ITypeInformation? DeclaringType { get; }
+    [CanBeNull]ITypeInformation DeclaringType { get; }
 
     /// <summary>
     /// Gets the type the member was originally declared on.
@@ -55,7 +55,7 @@ namespace Remotion.Reflection
     /// <exception cref="AmbiguousMatchException">More than one instance of the given attribute type <typeparamref name="T"/> is declared on this
     /// member.</exception>
     /// <returns>An instance of type <typeparamref name="T"/>, or <see langword="null"/> if no attribute of that type is declared on this member.</returns>
-    [CanBeNull]T? GetCustomAttribute<T> (bool inherited) where T : class;
+    [CanBeNull] T? GetCustomAttribute<T> (bool inherited) where T : class;
 
     /// <summary>
     /// Gets the custom attributes of type <typeparamref name="T"/> declared on this member, or null if no such attribute exists.

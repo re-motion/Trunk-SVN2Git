@@ -25,10 +25,10 @@ namespace Remotion.Reflection.CodeGeneration
   {
     MethodBuilder MethodBuilder { get; }
     ILGenerator ILGenerator { get; }
-    string? Name { get; }
+    string Name { get; }
     ArgumentReference[] ArgumentReferences { get; }
-    Type? ReturnType { get; }
-    Type[]? ParameterTypes { get; }
+    Type ReturnType { get; }
+    Type[] ParameterTypes { get; }
     
     Expression[] GetArgumentExpressions ();
     IMethodEmitter ImplementByReturning (Expression result);

@@ -30,7 +30,7 @@ namespace Remotion.Reflection
     /// Gets the type of the property, i.e. the type of values the property can store.
     /// </summary>
     /// <value>The type of the property.</value>
-    [NotNull]Type? PropertyType { get; }
+    [NotNull] Type PropertyType { get; }
     
     /// <summary>
     /// Determines whether the property can be set from the outside.
@@ -93,7 +93,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// An instance of <see cref="IMethodInformation"/> for the get method.
     /// </returns>
-    [CanBeNull]IMethodInformation GetGetMethod (bool nonPublic);
+    [CanBeNull] IMethodInformation? GetGetMethod (bool nonPublic);
 
     /// <summary>
     /// Gets the <see cref="IMethodInformation"/> of the set method for the current <see cref="PropertyInfo"/>.
@@ -102,7 +102,7 @@ namespace Remotion.Reflection
     /// <returns>
     /// An instance of <see cref="IMethodInformation"/> for the set method.
     /// </returns>
-    [CanBeNull]IMethodInformation GetSetMethod (bool nonPublic);
+    [CanBeNull] IMethodInformation GetSetMethod (bool nonPublic);
 
     /// <summary>
     /// Finds the implementation <see cref="IPropertyInformation"/> corresponding to this <see cref="IPropertyInformation"/> on the given 
