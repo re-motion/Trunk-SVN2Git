@@ -29,7 +29,7 @@ namespace Remotion.Context
     /// </summary>
     /// <param name="key">The key identifying the data item.</param>
     /// <returns>The data item identified by the given key, or <see langword="null"/> if no such item exists in the storage.</returns>
-    object GetData (string key);
+    object? GetData (string key);
 
     /// <summary>
     /// Sets a data item in the context storage, overwriting a previous value identified by the same key.

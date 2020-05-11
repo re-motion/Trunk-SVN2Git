@@ -31,7 +31,7 @@ namespace Remotion.Context
   /// The data managed by this class is held in the <see cref="SafeContext"/> and therefore thread-local. The class is safe to be used from multiple
   /// threads at the same time, but each thread will have its own copy of the data.
   /// </threadsafety>
-  public class SafeContextSingleton<T> where T : class?
+  public class SafeContextSingleton<T> where T : class
   {
     private readonly string _currentKey;
     private readonly Func<T> _creator;
@@ -57,7 +57,7 @@ namespace Remotion.Context
     {
       get
       {
-        T current = GetCurrentInternal();
+        T? current = GetCurrentInternal();
           
         if (current == null)
         {
@@ -69,14 +69,14 @@ namespace Remotion.Context
       }
     }
 
-    public void SetCurrent (T value)
+    public void SetCurrent (T? value)
     {
       SafeContext.Instance.SetData (_currentKey, value);
     }
 
-    private T GetCurrentInternal ()
+    private T? GetCurrentInternal ()
     {
-      return (T) SafeContext.Instance.GetData (_currentKey);
+      return (T?) SafeContext.Instance.GetData (_currentKey);
     }
   }
 }
