@@ -71,7 +71,7 @@ namespace Remotion.Mixins.Definitions
       }
     }
 
-    public IVisitableDefinition Parent
+    public IVisitableDefinition? Parent
     {
       get { return DeclaringDefinition as IVisitableDefinition; }
     }

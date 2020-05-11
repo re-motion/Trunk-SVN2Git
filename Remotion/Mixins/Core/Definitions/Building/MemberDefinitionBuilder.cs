@@ -63,8 +63,8 @@ namespace Remotion.Mixins.Definitions.Building
         MethodInfo getMethod = property.GetGetMethod (true);
         MethodInfo setMethod = property.GetSetMethod (true);
 
-        MethodDefinition getMethodDefinition = CreateSpecialMethodDefinition (getMethod);
-        MethodDefinition setMethodDefinition = CreateSpecialMethodDefinition (setMethod);
+        MethodDefinition? getMethodDefinition = CreateSpecialMethodDefinition (getMethod);
+        MethodDefinition? setMethodDefinition = CreateSpecialMethodDefinition (setMethod);
 
         if (getMethodDefinition != null || setMethodDefinition != null)
         {
@@ -83,8 +83,8 @@ namespace Remotion.Mixins.Definitions.Building
         MethodInfo addMethod = eventInfo.GetAddMethod (true);
         MethodInfo removeMethod = eventInfo.GetRemoveMethod (true);
 
-        MethodDefinition addMethodDefinition = CreateSpecialMethodDefinition (addMethod);
-        MethodDefinition removeMethodDefinition = CreateSpecialMethodDefinition (removeMethod);
+        MethodDefinition? addMethodDefinition = CreateSpecialMethodDefinition (addMethod);
+        MethodDefinition? removeMethodDefinition = CreateSpecialMethodDefinition (removeMethod);
 
         if (addMethodDefinition != null || removeMethodDefinition != null)
         {
@@ -110,7 +110,7 @@ namespace Remotion.Mixins.Definitions.Building
       }
     }
 
-    private MethodDefinition CreateSpecialMethodDefinition (MethodInfo methodInfo)
+    private MethodDefinition? CreateSpecialMethodDefinition (MethodInfo methodInfo)
     {
       if (methodInfo != null && _methodFilter (methodInfo))
       {

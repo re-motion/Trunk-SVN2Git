@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -43,7 +43,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     private readonly IAttributeGenerator _attributeGenerator;
     private readonly string _pipelineIdentifier;
 
-    private Expression _identifierField;
+    private Expression? _identifierField;
 
     public MixinTypeGenerator (ConcreteMixinTypeIdentifier identifier, MutableType type, IAttributeGenerator attributeGenerator, string pipelineIdentifier)
     {

@@ -24,10 +24,10 @@ namespace Remotion.Mixins.Context.Serialization
   /// </summary>
   public class AttributeMixinContextOriginSerializer : ArrayMixinContextOriginSerializer
   {
-    protected override object ConvertToStorageFormat<T> (T value)
+    protected override object? ConvertToStorageFormat<T> (T value)
     {
       if (typeof (T) == typeof (Assembly))
-        return ((Assembly) (object) (value)).FullName;
+        return ((Assembly?) (object) (value)).FullName;
 
       return base.ConvertToStorageFormat (value);
     }

@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -31,7 +31,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     {
     }
 
-    public TargetClassDefinition GetTargetClassDefinition (ClassContext classContext)
+    public TargetClassDefinition? GetTargetClassDefinition (ClassContext? classContext)
     {
       if (classContext == null)
         return null;
@@ -39,7 +39,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       return TargetClassDefinitionFactory.CreateAndValidate (classContext);
     }
 
-    public TargetClassDefinition GetTargetClassDefinition (Type requestedType)
+    public TargetClassDefinition? GetTargetClassDefinition (Type requestedType)
     {
       ArgumentUtility.CheckNotNull ("requestedType", requestedType);
 

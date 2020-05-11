@@ -45,7 +45,7 @@ namespace Remotion.Mixins.Utilities
       return currentType;
     }
 
-    public static PropertyInfo GetTargetProperty (Type concreteMixinType)
+    public static PropertyInfo? GetTargetProperty (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
@@ -56,7 +56,7 @@ namespace Remotion.Mixins.Utilities
         return mixinBaseType.GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
-    public static PropertyInfo GetNextProperty (Type concreteMixinType)
+    public static PropertyInfo? GetNextProperty (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
@@ -88,7 +88,7 @@ namespace Remotion.Mixins.Utilities
     /// </summary>
     /// <param name="concreteMixedType">The concrete mixed type whose mixins should be retrieved.</param>
     /// <returns>An ordered array of mixin types that directly corresponds to the mixins held by instances of the mixed type.</returns>
-    public static Type[] GetOrderedMixinTypesFromConcreteType (Type concreteMixedType)
+    public static Type[]? GetOrderedMixinTypesFromConcreteType (Type concreteMixedType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
 

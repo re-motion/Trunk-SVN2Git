@@ -94,7 +94,7 @@ namespace Remotion.Mixins.Definitions
       return mapping;
     }
 
-    public abstract IVisitableDefinition Parent { get; }
+    public abstract IVisitableDefinition? Parent { get; }
 
     public HashSet<Type> ImplementedInterfaces
     {

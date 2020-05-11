@@ -77,7 +77,7 @@ namespace Remotion.Mixins.Context
       ((ICollection) _values.Values).CopyTo (array, index);
     }
 
-    public ClassContext GetExact (Type type)
+    public ClassContext? GetExact (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
@@ -98,7 +98,7 @@ namespace Remotion.Mixins.Context
         return _inheritedContextCache.GetOrAdd (type, _deriveInheritedContextFunc);
     }
 
-    private ClassContext DeriveInheritedContext (Type type)
+    private ClassContext? DeriveInheritedContext (Type type)
     {
       var contextsToInheritFrom = _inheritancePolicy.GetClassContextsToInheritFrom (type, GetWithInheritance); // Recursion!
 

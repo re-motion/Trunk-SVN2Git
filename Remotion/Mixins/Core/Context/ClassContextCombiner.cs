@@ -44,7 +44,7 @@ namespace Remotion.Mixins.Context
         AddIfNotNull (context);
     }
     
-    public ClassContext GetCombinedContexts (Type contextType)
+    public ClassContext? GetCombinedContexts (Type contextType)
     {
       switch (_classContexts.Count)
       {

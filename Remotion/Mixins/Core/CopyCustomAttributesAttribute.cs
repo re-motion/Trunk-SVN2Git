@@ -83,7 +83,7 @@ namespace Remotion.Mixins
       set { _copiedAttributeTypes = value; }
     }
 
-    public MemberInfo GetAttributeSource (MemberTypes memberType)
+    public MemberInfo? GetAttributeSource (MemberTypes memberType)
     {
       if (AttributeSourceMemberName == null)
         return AttributeSourceType;

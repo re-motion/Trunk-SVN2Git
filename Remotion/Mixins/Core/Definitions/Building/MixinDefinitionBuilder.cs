@@ -109,7 +109,7 @@ namespace Remotion.Mixins.Definitions.Building
         InitializeOverride (eventOverride.Overrider, eventOverride.BaseMember);
     }
 
-    private void InitializeOverride (MemberDefinitionBase overrider, MemberDefinitionBase baseMember)
+    private void InitializeOverride (MemberDefinitionBase? overrider, MemberDefinitionBase? baseMember)
     {
       overrider.BaseAsMember = baseMember;
       if (baseMember.Overrides.ContainsKey (overrider.DeclaringClass.Type))

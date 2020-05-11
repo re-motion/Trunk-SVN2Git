@@ -109,7 +109,7 @@ namespace Remotion.Mixins.Context
       serializer.AddLocation (_location);
     }
 
-    public bool Equals (MixinContextOrigin other)
+    public bool Equals (MixinContextOrigin? other)
     {
       if (ReferenceEquals (null, other))
         return false;

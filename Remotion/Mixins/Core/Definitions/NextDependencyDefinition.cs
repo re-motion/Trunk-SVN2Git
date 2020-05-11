@@ -54,9 +54,9 @@ namespace Remotion.Mixins.Definitions
       return string.Format ("mixin '{0}'", _dependingMixin.FullName);
     }
 
-    public override ClassDefinitionBase GetImplementer ()
+    public override ClassDefinitionBase? GetImplementer ()
     {
-      ClassDefinitionBase implementer = base.GetImplementer ();
+      ClassDefinitionBase? implementer = base.GetImplementer ();
       // check for duck interface
       if (implementer == null && !RequiredType.IsEmptyInterface)
       {

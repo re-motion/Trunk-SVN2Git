@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -30,7 +30,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   {
     private static readonly MethodInfo s_createFlatClassContext = MemberInfoFromExpressionUtility.GetMethod (() => FlatClassContext.Create (null));
 
-    public object GetID (Type requestedType)
+    public object? GetID (Type requestedType)
     {
       ArgumentUtility.DebugCheckNotNull ("requestedType", requestedType);
 

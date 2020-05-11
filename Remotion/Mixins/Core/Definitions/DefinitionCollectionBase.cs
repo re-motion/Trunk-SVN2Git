@@ -67,14 +67,14 @@ namespace Remotion.Mixins.Definitions
         throw new ArgumentException (string.Format ("The item does not match the criteria to be added to the collection: {0}.", _guardian.Method),
             "newItem");
 
-      TKey key = _keyMaker (newItem);
+      TKey? key = _keyMaker (newItem);
 
       CustomizedAdd (key, newItem);
 
       _orderedItems.Add (newItem);
     }
 
-    protected abstract void CustomizedAdd (TKey key, TValue value);
+    protected abstract void CustomizedAdd (TKey? key, TValue value);
 
     public void Clear ()
     {

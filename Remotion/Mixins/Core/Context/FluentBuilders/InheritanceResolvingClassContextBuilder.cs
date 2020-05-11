@@ -120,14 +120,14 @@ namespace Remotion.Mixins.Context.FluentBuilders
       }
     }
 
-    private ClassContext CreateContextWithBuilder (ClassContextBuilder builder, ClassContext inheritedContext)
+    private ClassContext CreateContextWithBuilder (ClassContextBuilder builder, ClassContext? inheritedContext)
     {
       var inheritedContexts = inheritedContext != null ? new[] { inheritedContext } : new ClassContext[0];
       var builtContext = builder.BuildClassContext (inheritedContexts);
       return builtContext;
     }
 
-    private ClassContext CreateContextWithoutBuilder (Type type, ClassContext inheritedContext)
+    private ClassContext CreateContextWithoutBuilder (Type type, ClassContext? inheritedContext)
     {
       var builtContext = inheritedContext ?? new ClassContext (type, Enumerable.Empty<MixinContext>(), Enumerable.Empty<Type>());
       Assertion.IsTrue (builtContext.Type == type, "Guaranteed by ClassContextCombiner");

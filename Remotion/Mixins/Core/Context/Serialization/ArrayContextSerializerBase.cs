@@ -41,10 +41,10 @@ namespace Remotion.Mixins.Context.Serialization
       Values[index] = ConvertToStorageFormat (value);
     }
 
-    protected virtual object ConvertToStorageFormat<T> (T value)
+    protected virtual object? ConvertToStorageFormat<T> (T? value)
     {
       if (typeof (T) == typeof (Assembly))
-        return ConvertToStorageFormat (((Assembly) (object) value).FullName);
+        return ConvertToStorageFormat (((Assembly?) (object) value).FullName);
 
       return value;
     }

@@ -42,7 +42,7 @@ namespace Remotion.Mixins.Context
 
     public void ApplyInheritance (Type targetClass, IEnumerable<MixinContext> ownMixins, ClassContext baseContext, ICollection<MixinContext> mixins, ICollection<Type> interfaces)
     {
-      Tuple<MixinContext, MixinContext> overridden_override = GetFirstOverrideThatIsNotOverriddenByBase (mixins, baseContext.Mixins);
+      Tuple<MixinContext, MixinContext>? overridden_override = GetFirstOverrideThatIsNotOverriddenByBase (mixins, baseContext.Mixins);
       if (overridden_override != null)
       {
         string message = string.Format (
@@ -78,7 +78,7 @@ namespace Remotion.Mixins.Context
     }
 
     // A = overridden, B = override
-    public Tuple<MixinContext, MixinContext> GetFirstOverrideThatIsNotOverriddenByBase (IEnumerable<MixinContext> baseMixins,
+    public Tuple<MixinContext, MixinContext>? GetFirstOverrideThatIsNotOverriddenByBase (IEnumerable<MixinContext> baseMixins,
         IEnumerable<MixinContext> potentialOverrides)
     {
       foreach (MixinContext mixin in baseMixins)

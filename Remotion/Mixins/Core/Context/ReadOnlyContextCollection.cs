@@ -43,7 +43,7 @@ namespace Remotion.Mixins.Context
       {
         ArgumentUtility.CheckNotNull ("values[" + _internalCollection.Count + "]", value);
 
-        TKey key = _keyGenerator (value);
+        TKey? key = _keyGenerator (value);
         TValue existingValue;
         if (_internalCollection.TryGetValue (key, out existingValue))
         {
@@ -76,7 +76,7 @@ namespace Remotion.Mixins.Context
     public virtual bool Contains (TValue value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      TKey key = _keyGenerator (value);
+      TKey? key = _keyGenerator (value);
       TValue foundValue;
       if (!_internalCollection.TryGetValue (key, out foundValue))
         return false;

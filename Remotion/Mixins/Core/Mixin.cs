@@ -38,10 +38,10 @@ namespace Remotion.Mixins
     /// This method cannot be used with mixins that have been configured as open generic type definitions. Use the <see cref="Get(Type, object)">
     /// non-generic</see> variant instead.
     /// </remarks>
-    public static TMixin Get<TMixin> (object mixinTarget) where TMixin : class
+    public static TMixin? Get<TMixin> (object mixinTarget) where TMixin : class
     {
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
-      return (TMixin) Get (typeof (TMixin), mixinTarget);
+      return (TMixin?) Get (typeof (TMixin), mixinTarget);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace Remotion.Mixins
     /// This method can also be used with mixins that have been configured as open generic type definitions. Use the open generic type definition
     /// to retrieve them, but be prepared to get an instance of a specialized (closed) generic type back.
     /// </remarks>
-    public static object Get (Type mixinType, object mixinTarget)
+    public static object? Get (Type mixinType, object mixinTarget)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("mixinTarget", mixinTarget);
@@ -70,9 +70,9 @@ namespace Remotion.Mixins
       return null;
     }
 
-    private static object FindMixin (IMixinTarget mixinTarget, Type mixinType)
+    private static object? FindMixin (IMixinTarget mixinTarget, Type mixinType)
     {
-      object mixin = null;
+      object? mixin = null;
       foreach (var potentialMixin in mixinTarget.Mixins)
       {
         if (IsTypeMatch (potentialMixin.GetType (), mixinType))

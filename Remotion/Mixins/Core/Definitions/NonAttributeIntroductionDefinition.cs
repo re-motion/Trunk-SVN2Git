@@ -54,7 +54,7 @@ namespace Remotion.Mixins.Definitions
       get { return Attribute.AttributeType.FullName; }
     }
 
-    public IVisitableDefinition Parent
+    public IVisitableDefinition? Parent
     {
       get { return Attribute.Parent; }
     }

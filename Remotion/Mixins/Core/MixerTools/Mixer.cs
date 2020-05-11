@@ -63,7 +63,7 @@ namespace Remotion.Mixins.MixerTools
     private readonly HashSet<Type> _processedTypes = new HashSet<Type>();
     private readonly Dictionary<Type, Type> _finishedTypes = new Dictionary<Type, Type> ();
 
-    private IReadOnlyCollection<string> _generatedFiles;
+    private IReadOnlyCollection<string>? _generatedFiles;
 
     public Mixer (IMixedTypeFinder mixedTypeFinder, IMixerPipelineFactory mixerPipelineFactory, string assemblyOutputDirectory)
     {
@@ -95,7 +95,7 @@ namespace Remotion.Mixins.MixerTools
       get { return new ReadOnlyDictionary<Type, Type>(_finishedTypes); }
     }
 
-    public IReadOnlyCollection<string> GeneratedFiles
+    public IReadOnlyCollection<string>? GeneratedFiles
     {
       get { return _generatedFiles; }
     }

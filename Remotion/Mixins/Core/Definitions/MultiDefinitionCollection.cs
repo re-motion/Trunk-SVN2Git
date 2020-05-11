@@ -62,7 +62,7 @@ namespace Remotion.Mixins.Definitions
       }
     }
 
-    public int GetItemCount (TKey key)
+    public int GetItemCount (TKey? key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
       return _items[key].Count;

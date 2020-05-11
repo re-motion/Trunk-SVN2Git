@@ -84,6 +84,7 @@ namespace Remotion.Mixins
     /// instantiated, without code generation.
     /// </para>
     /// </remarks>
+    
     public static T Create<T> ()
     {
       return Create<T> (ParamList.Empty);

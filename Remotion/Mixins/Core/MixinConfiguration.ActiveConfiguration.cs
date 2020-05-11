@@ -56,7 +56,7 @@ namespace Remotion.Mixins
       get { return s_activeConfiguration.Current; }
     }
 
-    private static MixinConfiguration PeekActiveConfiguration
+    private static MixinConfiguration? PeekActiveConfiguration
     {
       get { return HasActiveConfiguration ? ActiveConfiguration : null; }
     }

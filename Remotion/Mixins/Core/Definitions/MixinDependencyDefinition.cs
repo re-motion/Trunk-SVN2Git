@@ -54,7 +54,7 @@ namespace Remotion.Mixins.Definitions
       return string.Format ("mixin '{0}'", _dependingMixin.FullName);
     }
 
-    public override ClassDefinitionBase GetImplementer ()
+    public override ClassDefinitionBase? GetImplementer ()
     {
       if (RequiredType.Type.IsInterface)
         return TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type)

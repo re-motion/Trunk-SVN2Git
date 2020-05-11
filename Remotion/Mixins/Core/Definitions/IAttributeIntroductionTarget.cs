@@ -20,6 +20,6 @@ namespace Remotion.Mixins.Definitions
 {
   public interface IAttributeIntroductionTarget : IAttributableDefinition, IVisitableDefinition
   {
-    MultiDefinitionCollection<Type, AttributeIntroductionDefinition> ReceivedAttributes { get; }
+    MultiDefinitionCollection<Type, AttributeIntroductionDefinition>? ReceivedAttributes { get; }
   }
 }

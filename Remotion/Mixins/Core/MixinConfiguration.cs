@@ -142,7 +142,7 @@ namespace Remotion.Mixins
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned.
     /// </para>
     /// </remarks>
-    public ClassContext GetContext (Type targetOrConcreteType)
+    public ClassContext? GetContext (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 

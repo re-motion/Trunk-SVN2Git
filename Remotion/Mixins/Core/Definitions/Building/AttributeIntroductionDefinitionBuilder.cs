@@ -70,7 +70,7 @@ namespace Remotion.Mixins.Definitions.Building
 
     public AttributeDefinition GetSuppressor (AttributeDefinition attribute)
     {
-      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
+      ICustomAttributeProvider? declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
       var suppressors = from s in Suppressors
                         let instance = (SuppressAttributesAttribute) s.Data.CreateInstance()
                         let suppressingEntity = s.DeclaringDefinition.CustomAttributeProvider

@@ -41,7 +41,7 @@ namespace Remotion.Mixins.Definitions
           HasSameDepender);
     }
 
-    public abstract IVisitableDefinition Depender { get; }
+    public abstract IVisitableDefinition? Depender { get; }
 
     public abstract void Accept (IDefinitionVisitor visitor);
     public abstract string GetDependencyDescription ();
@@ -72,7 +72,7 @@ namespace Remotion.Mixins.Definitions
       get { return RequiredType.FullName; }
     }
 
-    public IVisitableDefinition Parent
+    public IVisitableDefinition? Parent
     {
       get
       {
@@ -98,7 +98,7 @@ namespace Remotion.Mixins.Definitions
       get { return _aggregatedDependencies; }
     }
 
-    public virtual ClassDefinitionBase GetImplementer()
+    public virtual ClassDefinitionBase? GetImplementer()
     {
       if (RequiredType.Type.IsAssignableFrom (TargetClass.Type))
         return TargetClass;

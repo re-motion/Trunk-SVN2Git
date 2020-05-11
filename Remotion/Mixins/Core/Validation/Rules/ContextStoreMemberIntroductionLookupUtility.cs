@@ -48,7 +48,7 @@ namespace Remotion.Mixins.Validation.Rules
       {
         foreach (IMemberIntroductionDefinition memberIntroduction in interfaceIntroduction.GetIntroducedMembers())
         {
-          TMemberIntroductionDefinition castMemberIntroduction = memberIntroduction as TMemberIntroductionDefinition;
+          TMemberIntroductionDefinition? castMemberIntroduction = memberIntroduction as TMemberIntroductionDefinition;
           if (castMemberIntroduction != null && castMemberIntroduction.Visibility == MemberVisibility.Public)
             introductionDefinitions.Add (castMemberIntroduction.Name, castMemberIntroduction);
         }

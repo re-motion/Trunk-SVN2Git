@@ -21,8 +21,8 @@ namespace Remotion.Mixins.Definitions
 {
   public interface IAttributableDefinition
   {
-    MultiDefinitionCollection<Type, AttributeDefinition> CustomAttributes { get; }
-    ICustomAttributeProvider CustomAttributeProvider { get; }
-    string FullName { get; }
+    MultiDefinitionCollection<Type, AttributeDefinition>? CustomAttributes { get; }
+    ICustomAttributeProvider? CustomAttributeProvider { get; }
+    string? FullName { get; }
   }
 }

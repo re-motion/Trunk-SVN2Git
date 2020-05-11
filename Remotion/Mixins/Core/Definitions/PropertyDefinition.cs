@@ -25,7 +25,7 @@ namespace Remotion.Mixins.Definitions
     public new readonly UniqueDefinitionCollection<Type, PropertyDefinition> Overrides =
         new UniqueDefinitionCollection<Type, PropertyDefinition> (m => m.DeclaringClass.Type);
 
-    private PropertyDefinition _base;
+    private PropertyDefinition? _base;
     private readonly MethodDefinition _getMethod;
     private readonly MethodDefinition _setMethod;
 
@@ -56,14 +56,14 @@ namespace Remotion.Mixins.Definitions
       get { return _setMethod; }
     }
 
-    public override MemberDefinitionBase BaseAsMember
+    public override MemberDefinitionBase? BaseAsMember
     {
       get { return _base; }
       protected internal set
       {
         if (value == null || value is PropertyDefinition)
         {
-          _base = (PropertyDefinition) value;
+          _base = (PropertyDefinition?) value;
           if (GetMethod != null)
             GetMethod.Base = _base == null ? null : _base.GetMethod;
           if (SetMethod != null)
@@ -74,7 +74,7 @@ namespace Remotion.Mixins.Definitions
       }
     }
 
-    public PropertyDefinition Base
+    public PropertyDefinition? Base
     {
       get { return _base; }
       protected internal set { BaseAsMember = value; }
