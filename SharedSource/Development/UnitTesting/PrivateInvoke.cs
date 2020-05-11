@@ -408,13 +408,13 @@ namespace Remotion.Development.UnitTesting
       SetFieldInternal (null, type, BindingFlags.Static | BindingFlags.Public, fieldName, value);
     }
 
-    public static void SetNonPublicStaticField (Type type, string fieldName, object value)
+    public static void SetNonPublicStaticField (Type type, string fieldName, object? value)
     {
       if (type == null) throw new ArgumentNullException ("type");
       SetFieldInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, fieldName, value);
     }
 
-    private static void SetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName, object value)
+    private static void SetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName, object? value)
     {
       FieldInfo? field = GetFieldRecursive (type, bindingFlags, fieldName);
       if (field == null)
