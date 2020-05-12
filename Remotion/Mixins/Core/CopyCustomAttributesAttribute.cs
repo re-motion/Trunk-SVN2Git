@@ -29,7 +29,7 @@ namespace Remotion.Mixins
   public class CopyCustomAttributesAttribute : Attribute
   {
     private readonly Type _attributeSourceType;
-    private readonly string _attributeSourceMemberName;
+    private readonly string? _attributeSourceMemberName;
     
     private Type[] _copiedAttributeTypes;
 
@@ -64,7 +64,7 @@ namespace Remotion.Mixins
       get { return _attributeSourceType; }
     }
 
-    public string AttributeSourceMemberName
+    public string? AttributeSourceMemberName
     {
       get { return _attributeSourceMemberName; }
     }

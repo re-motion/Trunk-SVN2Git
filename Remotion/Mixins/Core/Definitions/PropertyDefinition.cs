@@ -26,10 +26,10 @@ namespace Remotion.Mixins.Definitions
         new UniqueDefinitionCollection<Type, PropertyDefinition> (m => m.DeclaringClass.Type);
 
     private PropertyDefinition? _base;
-    private readonly MethodDefinition _getMethod;
-    private readonly MethodDefinition _setMethod;
+    private readonly MethodDefinition? _getMethod;
+    private readonly MethodDefinition? _setMethod;
 
-    public PropertyDefinition (PropertyInfo memberInfo, ClassDefinitionBase declaringClass, MethodDefinition getMethod, MethodDefinition setMethod)
+    public PropertyDefinition (PropertyInfo memberInfo, ClassDefinitionBase declaringClass, MethodDefinition? getMethod, MethodDefinition? setMethod)
         : base (memberInfo, declaringClass)
     {
       _getMethod = getMethod;
@@ -46,12 +46,12 @@ namespace Remotion.Mixins.Definitions
       get { return (PropertyInfo) MemberInfo; }
     }
 
-    public MethodDefinition GetMethod
+    public MethodDefinition? GetMethod
     {
       get { return _getMethod; }
     }
 
-    public MethodDefinition SetMethod
+    public MethodDefinition? SetMethod
     {
       get { return _setMethod; }
     }

@@ -70,7 +70,7 @@ namespace Remotion.Mixins.Definitions.Building
 
       var copyAttribute = (CopyCustomAttributesAttribute) copyAttributeData.CreateInstance();
 
-      MemberInfo copiedAttributesSource;
+      MemberInfo? copiedAttributesSource;
       try
       {
         copiedAttributesSource = copyAttribute.GetAttributeSource (UnifyTypeMemberTypes (copyAttributeSource.MemberType));

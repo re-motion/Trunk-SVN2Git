@@ -42,7 +42,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
         MemberInfoFromExpressionUtility.GetProperty ((DebuggerDisplayAttribute o) => o.Name);
 
     private static readonly ConstructorInfo s_introducedMemberAttributeConstructor =
-        MemberInfoFromExpressionUtility.GetConstructor (() => new IntroducedMemberAttribute (null, "mixinMemberName", null, "interfaceMemberName"));
+        MemberInfoFromExpressionUtility.GetConstructor (() => new IntroducedMemberAttribute (null!, "mixinMemberName", null!, "interfaceMemberName"));
 
     private static readonly ConstructorInfo s_concreteMixedTypeAttributeConstructor =
         MemberInfoFromExpressionUtility.GetConstructor (() => new ConcreteMixedTypeAttribute (new object[0], new Type[0]));
@@ -51,10 +51,10 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
         MemberInfoFromExpressionUtility.GetConstructor (() => new ConcreteMixinTypeAttribute (new object[0]));
 
     private static readonly ConstructorInfo s_overrideInterfaceMappingAttributeConstructor =
-        MemberInfoFromExpressionUtility.GetConstructor (() => new OverrideInterfaceMappingAttribute (null, "methodName", "methodSignature"));
+        MemberInfoFromExpressionUtility.GetConstructor (() => new OverrideInterfaceMappingAttribute (null!, "methodName", "methodSignature"));
 
     private static readonly ConstructorInfo s_generatedMethodWrapperAttributeConstructor =
-        MemberInfoFromExpressionUtility.GetConstructor (() => new GeneratedMethodWrapperAttribute (null, "methodName", "methodSignature"));
+        MemberInfoFromExpressionUtility.GetConstructor (() => new GeneratedMethodWrapperAttribute (null!, "methodName", "methodSignature"));
 
     public void AddDebuggerBrowsableAttribute (IMutableMember member, DebuggerBrowsableState debuggerBrowsableState)
     {
@@ -64,7 +64,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       member.AddCustomAttribute (attribute);
     }
 
-    public void AddDebuggerDisplayAttribute (IMutableMember member, string debuggerDisplayString, string debuggerDisplayNameStringOrNull)
+    public void AddDebuggerDisplayAttribute (IMutableMember member, string debuggerDisplayString, string? debuggerDisplayNameStringOrNull)
     {
       ArgumentUtility.CheckNotNull ("member", member);
       ArgumentUtility.CheckNotNullOrEmpty ("debuggerDisplayString", debuggerDisplayString);

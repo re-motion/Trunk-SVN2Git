@@ -28,6 +28,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
   /// </summary>
   /// <typeparam name="TAnalyzedEntity">The type of entity searched for <see cref="IMixinConfigurationAttribute{TTarget}"/> is applied to.</typeparam>
   public class MixinConfigurationAttributeAnalyzer<TAnalyzedEntity> : IMixinDeclarationAnalyzer<TAnalyzedEntity>
+      where TAnalyzedEntity : notnull
   {
     private readonly Func<TAnalyzedEntity, IEnumerable<IMixinConfigurationAttribute<TAnalyzedEntity>>> _attributeProvider;
 

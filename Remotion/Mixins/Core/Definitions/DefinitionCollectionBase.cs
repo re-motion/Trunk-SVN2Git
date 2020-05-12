@@ -22,6 +22,7 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Definitions
 {
   public abstract class DefinitionCollectionBase<TKey, TValue> : IEnumerable<TValue>
+      where TKey : notnull
       where TValue : IVisitableDefinition
   {
     private List<TValue> _orderedItems = new List<TValue> ();
@@ -29,9 +30,9 @@ namespace Remotion.Mixins.Definitions
     public delegate TKey KeyMaker (TValue value);
     private KeyMaker _keyMaker;
 
-    private Predicate<TValue> _guardian;
+    private Predicate<TValue>? _guardian;
 
-    public DefinitionCollectionBase (KeyMaker keyMaker, Predicate<TValue> guardian)
+    public DefinitionCollectionBase (KeyMaker keyMaker, Predicate<TValue>? guardian)
     {
       ArgumentUtility.CheckNotNull ("keyMaker", keyMaker);
       _keyMaker = keyMaker;
@@ -67,14 +68,14 @@ namespace Remotion.Mixins.Definitions
         throw new ArgumentException (string.Format ("The item does not match the criteria to be added to the collection: {0}.", _guardian.Method),
             "newItem");
 
-      TKey? key = _keyMaker (newItem);
+      TKey key = _keyMaker (newItem);
 
       CustomizedAdd (key, newItem);
 
       _orderedItems.Add (newItem);
     }
 
-    protected abstract void CustomizedAdd (TKey? key, TValue value);
+    protected abstract void CustomizedAdd (TKey key, TValue value);
 
     public void Clear ()
     {

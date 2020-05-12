@@ -30,6 +30,8 @@ using Remotion.TypePipe.MutableReflection.BodyBuilding;
 using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 
+#nullable disable
+
 namespace Remotion.Mixins.CodeGeneration.TypePipe
 {
   /// <summary>
@@ -38,7 +40,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   public class TargetTypeGenerator
   {
     private static readonly ConstructorInfo s_mixinArrayInitializerCtor =
-        MemberInfoFromExpressionUtility.GetConstructor (() => new MixinArrayInitializer (null, Type.EmptyTypes));
+        MemberInfoFromExpressionUtility.GetConstructor (() => new MixinArrayInitializer (null!, Type.EmptyTypes));
     private static readonly MethodInfo s_createMixinArrayMethod =
         MemberInfoFromExpressionUtility.GetMethod ((MixinArrayInitializer o) => o.CreateMixinArray (new object[0]));
     private static readonly MethodInfo s_checkMixinArrayMethod =
@@ -61,15 +63,15 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     private readonly IAttributeGenerator _attributeGenerator;
     private readonly INextCallProxyGenerator _nextCallProxyGenerator;
 
-    private INextCallProxy? _nextCallProxy;
-    private MutableFieldInfo? _extensionsFieldInfo;
-    private MethodInfo? _initializationMethod;
+    private INextCallProxy _nextCallProxy;
+    private MutableFieldInfo _extensionsFieldInfo;
+    private MethodInfo _initializationMethod;
 
-    private Expression? _extensionsField;
-    private Expression? _classContextField;
-    private Expression? _mixinArrayInitializerField;
-    private Expression? _extensionsInitializedField;
-    private Expression? _firstField;
+    private Expression _extensionsField;
+    private Expression _classContextField;
+    private Expression _mixinArrayInitializerField;
+    private Expression _extensionsInitializedField;
+    private Expression _firstField;
 
     public TargetTypeGenerator (
         MutableType concreteTarget,
@@ -278,7 +280,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var overriders = targetClassDefinition.GetAllMethods().Where (methodDefinition => methodDefinition.Base != null);
       foreach (var overrider in overriders)
       {
-        var mixin = overrider.Base.DeclaringClass as MixinDefinition;
+        var mixin = overrider.Base!.DeclaringClass as MixinDefinition;
         Assertion.IsNotNull (mixin, "We only support mixins as overriders of target class members.");
         var mixinInfo = mixinInfos[mixin.MixinIndex];
         var methodInOverrideInterface = mixinInfo.GetOverrideInterfaceMethod (overrider.Base.MethodInfo);
@@ -290,7 +292,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       }
     }
 
-    private Expression AddDebuggerInvisibleField (string name, Type? type, FieldAttributes attributes)
+    private Expression AddDebuggerInvisibleField (string name, Type type, FieldAttributes attributes)
     {
       var field = _concreteTarget.AddField (name, attributes, type);
       _attributeGenerator.AddDebuggerBrowsableAttribute (field, DebuggerBrowsableState.Never);
@@ -444,7 +446,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var implementingProperty = introducedProperty.ImplementingMember;
       var visibility = introducedProperty.Visibility;
 
-      MutableMethodInfo? getMethod = null, setMethod = null;
+      MutableMethodInfo getMethod = null, setMethod = null;
       if (introducedProperty.IntroducesGetMethod)
       {
         getMethod = ImplementIntroducedMethod (implementer, interfaceProperty.GetGetMethod (), implementingProperty.GetMethod, visibility);
@@ -530,7 +532,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
 
     private IMutableMember ImplementPropertyOverride (PropertyDefinition property)
     {
-      MutableMethodInfo? getMethodOverride = null, setMethodOverride = null;
+      MutableMethodInfo getMethodOverride = null, setMethodOverride = null;
       if (property.GetMethod != null && property.GetMethod.Overrides.Count > 0)
         getMethodOverride = ImplementMethodOverride (property.GetMethod);
       if (property.SetMethod != null && property.SetMethod.Overrides.Count > 0)
@@ -541,7 +543,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
 
     private IMutableMember ImplementEventOverride (EventDefinition @event)
     {
-      MutableMethodInfo? addMethodOverride = null, removeMethodOverride = null;
+      MutableMethodInfo addMethodOverride = null, removeMethodOverride = null;
       if (@event.AddMethod.Overrides.Count > 0)
         addMethodOverride = ImplementMethodOverride (@event.AddMethod);
       if (@event.RemoveMethod.Overrides.Count > 0)

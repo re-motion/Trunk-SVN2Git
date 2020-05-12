@@ -39,11 +39,11 @@ namespace Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding
       {
         var getMethod = propertyIntroduction.InterfaceMember.GetGetMethod();
         if (getMethod != null)
-          yield return new RequiredMethodDefinition (requirement, getMethod, propertyIntroduction.ImplementingMember.GetMethod);
+          yield return new RequiredMethodDefinition (requirement, getMethod, propertyIntroduction.ImplementingMember.GetMethod!);
 
         var setMethod = propertyIntroduction.InterfaceMember.GetSetMethod();
         if (setMethod != null)
-          yield return new RequiredMethodDefinition (requirement, setMethod, propertyIntroduction.ImplementingMember.SetMethod);
+          yield return new RequiredMethodDefinition (requirement, setMethod, propertyIntroduction.ImplementingMember.SetMethod!);
       }
       
       foreach (MethodIntroductionDefinition methodIntroduction in introduction.IntroducedMethods)

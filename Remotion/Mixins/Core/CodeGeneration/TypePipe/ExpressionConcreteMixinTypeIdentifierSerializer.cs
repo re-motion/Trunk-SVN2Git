@@ -32,13 +32,13 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   public class ExpressionConcreteMixinTypeIdentifierSerializer : ConcreteMixinTypeIdentifierSerializerBase
   {
     private static readonly ConstructorInfo s_constructor =
-        MemberInfoFromExpressionUtility.GetConstructor (() => new ConcreteMixinTypeIdentifier (null, null, null));
+        MemberInfoFromExpressionUtility.GetConstructor (() => new ConcreteMixinTypeIdentifier (null!, null!, null!));
 
     private static readonly ConstructorInfo s_hashSetConstructor =
         MemberInfoFromExpressionUtility.GetConstructor (() => new HashSet<MethodInfo> (new MethodInfo[0]));
 
     private static readonly MethodInfo s_resolveMethodMethod =
-        MemberInfoFromExpressionUtility.GetMethod (() => MethodResolver.ResolveMethod (null, null, null));
+        MemberInfoFromExpressionUtility.GetMethod (() => MethodResolver.ResolveMethod (null!, null!, null!));
 
     public Expression CreateExpression ()
     {

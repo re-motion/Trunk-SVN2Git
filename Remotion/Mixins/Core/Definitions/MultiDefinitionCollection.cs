@@ -25,6 +25,7 @@ namespace Remotion.Mixins.Definitions
   [DebuggerDisplay ("Count = {Count}")]
   public class MultiDefinitionCollection<TKey, TValue> : DefinitionCollectionBase<TKey, TValue>
       where TValue : IVisitableDefinition
+      where TKey : notnull
   {
     private MultiDictionary<TKey, TValue> _items = new MultiDictionary<TKey, TValue>();
 
@@ -62,7 +63,7 @@ namespace Remotion.Mixins.Definitions
       }
     }
 
-    public int GetItemCount (TKey? key)
+    public int GetItemCount (TKey key)
     {
       ArgumentUtility.CheckNotNull ("key", key);
       return _items[key].Count;

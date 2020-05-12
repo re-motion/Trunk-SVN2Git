@@ -31,7 +31,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   public class ExpressionClassContextSerializer : ClassContextSerializerBase
   {
     private static readonly ConstructorInfo s_constructor =
-        MemberInfoFromExpressionUtility.GetConstructor (() => new ClassContext (null, new MixinContext[0], Type.EmptyTypes));
+        MemberInfoFromExpressionUtility.GetConstructor (() => new ClassContext (null!, new MixinContext[0], Type.EmptyTypes));
 
     public Expression CreateNewExpression ()
     {

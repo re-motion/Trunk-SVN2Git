@@ -21,7 +21,7 @@ namespace Remotion.Mixins.Definitions
   public interface IMemberIntroductionDefinition : IVisitableDefinition
   {
     InterfaceIntroductionDefinition? DeclaringInterface { get; }
-    string? Name { get; }
-    MemberVisibility? Visibility { get; }
+    string Name { get; }
+    MemberVisibility Visibility { get; }
   }
 }

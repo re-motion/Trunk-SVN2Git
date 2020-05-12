@@ -25,7 +25,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// </summary>
   public interface IMixinInfo
   {
-    Type? MixinType { get; }
+    Type MixinType { get; }
 
     IEnumerable<Type> GetInterfacesToImplement ();
 

@@ -61,6 +61,7 @@ namespace Remotion
     /// The object assigned via the set accessor<br />or,<br />
     /// if the value is <see langword="null" />, the object created by the <b>defaultFactory</b> assigned during the initialization of the container.
     /// </value>
+    [AllowNull]
     public T Value
     {
       get

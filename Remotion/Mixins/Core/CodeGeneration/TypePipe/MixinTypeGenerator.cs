@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -34,7 +34,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   public class MixinTypeGenerator
   {
     private static readonly MethodInfo s_getObjectDataForGeneratedTypesMethod = MemberInfoFromExpressionUtility.GetMethod (
-        () => MixinSerializationHelper.GetObjectDataForGeneratedTypes(null, new StreamingContext(), null, null, false, null));
+        () => MixinSerializationHelper.GetObjectDataForGeneratedTypes(null!, new StreamingContext(), null!, null!, false, null!));
 
     private readonly Dictionary<MethodInfo, MethodInfo> _publicMethodWrappers = new Dictionary<MethodInfo, MethodInfo>();
 

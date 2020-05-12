@@ -75,7 +75,7 @@ namespace Remotion.Mixins.CodeGeneration
                      let wrappedMethod = GetWrappedMethod (potentialWrapper)
                      where wrappedMethod != null
                      select new { Method = wrappedMethod, Wrapper = potentialWrapper };
-      return wrappers.ToDictionary (pair => pair.Method, pair => pair.Wrapper);
+      return wrappers.ToDictionary (pair => pair.Method, pair => pair.Wrapper)!;
     }
 
     // Searches the mixin methods corresponding to the methods of the override interface based on a signature comparison and returns a mapping from

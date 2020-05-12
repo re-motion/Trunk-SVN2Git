@@ -96,7 +96,7 @@ namespace Remotion.Mixins.Definitions
       get { return TargetClass; }
     }
 
-    public int? MixinIndex { get; internal set; }
+    public int MixinIndex { get; internal set; }
 
     public UniqueDefinitionCollection<Type, TargetCallDependencyDefinition> TargetCallDependencies
     {

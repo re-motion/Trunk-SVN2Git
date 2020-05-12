@@ -26,7 +26,7 @@ namespace Remotion.Mixins.Definitions
   {
     private readonly MixinDefinition _dependingMixin;
 
-    public NextCallDependencyDefinition (RequiredNextCallTypeDefinition requiredType, MixinDefinition dependingMixin, NextCallDependencyDefinition aggregator)
+    public NextCallDependencyDefinition (RequiredNextCallTypeDefinition requiredType, MixinDefinition dependingMixin, NextCallDependencyDefinition? aggregator)
       : base (requiredType, aggregator)
     {
       ArgumentUtility.CheckNotNull ("dependingMixin", dependingMixin);

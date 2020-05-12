@@ -31,7 +31,7 @@ namespace Remotion.Mixins.Context.Serialization
     {
     }
 
-    public Type? GetClassType ()
+    public Type GetClassType ()
     {
       return GetValue<Type> (0);
     }
@@ -42,7 +42,7 @@ namespace Remotion.Mixins.Context.Serialization
       return mixins.Select (oa => MixinContext.Deserialize (CreateMixinContextDeserializer ((object[]) oa)));
     }
 
-    public IEnumerable<Type>? GetComposedInterfaces()
+    public IEnumerable<Type> GetComposedInterfaces()
     {
       return GetValue<Type[]> (2);
     }

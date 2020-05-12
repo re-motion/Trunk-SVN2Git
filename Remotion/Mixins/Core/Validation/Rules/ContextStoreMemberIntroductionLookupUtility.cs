@@ -25,7 +25,7 @@ namespace Remotion.Mixins.Validation.Rules
       where TMemberIntroductionDefinition : class, IMemberIntroductionDefinition
   {
     // ReSharper disable once StaticMemberInGenericType
-    private static Func<object, object> s_contextStoreValueFactory;
+    private static Func<object, object>? s_contextStoreValueFactory;
 
     public IEnumerable<TMemberIntroductionDefinition> GetCachedPublicIntroductionsByName (IDictionary<object, object> contextStore, TargetClassDefinition targetClass, string name)
     {

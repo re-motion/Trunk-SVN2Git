@@ -35,7 +35,7 @@ namespace Remotion.Mixins.Definitions.Building
       Overrider = overrider;
     }
 
-    public TMember? BaseMember { get; private set; }
-    public TMember? Overrider { get; private set; }
+    public TMember BaseMember { get; private set; }
+    public TMember Overrider { get; private set; }
   }
 }

@@ -28,21 +28,21 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// </summary>
   public class ConcreteMixinTypeIdentifierSerializerBase : IConcreteMixinTypeIdentifierSerializer
   {
-    private Type _mixinType;
-    private IReadOnlyCollection<MethodInfo> _overriders;
-    private IReadOnlyCollection<MethodInfo> _overridden;
+    private Type? _mixinType;
+    private IReadOnlyCollection<MethodInfo>? _overriders;
+    private IReadOnlyCollection<MethodInfo>? _overridden;
 
-    public Type MixinType
+    public Type? MixinType
     {
       get { return _mixinType; }
     }
 
-    public IReadOnlyCollection<MethodInfo> Overriders
+    public IReadOnlyCollection<MethodInfo>? Overriders
     {
       get { return _overriders; }
     }
 
-    public IReadOnlyCollection<MethodInfo> Overridden
+    public IReadOnlyCollection<MethodInfo>? Overridden
     {
       get { return _overridden; }
     }

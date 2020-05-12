@@ -46,7 +46,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       var identifierSerializer = new SerializationInfoConcreteMixinTypeIdentifierSerializer (info, "__identifier");
       identifier.Serialize (identifierSerializer);
       
-      object[] baseMemberValues;
+      object[]? baseMemberValues;
       if (serializeBaseMembers)
       {
         var baseType = mixin.GetType ().BaseType;

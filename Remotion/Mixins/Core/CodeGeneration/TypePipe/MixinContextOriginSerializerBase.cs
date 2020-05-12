@@ -26,21 +26,21 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// </summary>
   public class MixinContextOriginSerializerBase : IMixinContextOriginSerializer
   {
-    private string _kind;
-    private Assembly _assembly;
-    private string _locaction;
+    private string? _kind;
+    private Assembly? _assembly;
+    private string? _locaction;
 
-    public string Kind
+    public string? Kind
     {
       get { return _kind; }
     }
 
-    public Assembly Assembly
+    public Assembly? Assembly
     {
       get { return _assembly; }
     }
 
-    public string Locaction
+    public string? Locaction
     {
       get { return _locaction; }
     }

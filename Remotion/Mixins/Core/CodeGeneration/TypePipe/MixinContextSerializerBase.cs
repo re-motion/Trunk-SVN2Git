@@ -27,13 +27,13 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
   /// </summary>
   public class MixinContextSerializerBase : IMixinContextSerializer
   {
-    private Type _mixinType;
+    private Type? _mixinType;
     private MixinKind _mixinKind;
     private MemberVisibility _introducedMemberVisibility;
-    private IEnumerable<Type> _explicitDependencies;
-    private MixinContextOrigin _origin;
+    private IEnumerable<Type>? _explicitDependencies;
+    private MixinContextOrigin? _origin;
 
-    public Type MixinType
+    public Type? MixinType
     {
       get { return _mixinType; }
     }
@@ -48,12 +48,12 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
       get { return _introducedMemberVisibility; }
     }
 
-    public IEnumerable<Type> ExplicitDependencies
+    public IEnumerable<Type>? ExplicitDependencies
     {
       get { return _explicitDependencies; }
     }
 
-    public MixinContextOrigin Origin
+    public MixinContextOrigin? Origin
     {
       get { return _origin; }
     }

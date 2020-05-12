@@ -160,7 +160,7 @@ namespace Remotion.Mixins
       where TNext: class
   {
     [NonSerialized]
-    private TNext _next;
+    private TNext? _next;
 
     /// <summary>
     /// Provides a way to call the next or base implementation from member overrides.
@@ -197,10 +197,10 @@ namespace Remotion.Mixins
       }
     }
 
-    void IInitializableMixin.Initialize (object target, object next, bool deserialization)
+    void IInitializableMixin.Initialize (object? target, object? next, bool deserialization)
     {
-      _target = (TTarget) target;
-      _next = (TNext) next;
+      _target = (TTarget?) target;
+      _next = (TNext?) next;
       if (deserialization)
         OnDeserialized ();
       else
@@ -255,7 +255,7 @@ namespace Remotion.Mixins
       where TTarget: class
   {
     [NonSerialized]
-    internal TTarget _target;
+    internal TTarget? _target;
 
     /// <summary>
     /// Gets a reference to the concrete mixed object.
@@ -299,9 +299,9 @@ namespace Remotion.Mixins
       // nothing
     }
 
-    void IInitializableMixin.Initialize (object target, object next, bool deserialization)
+    void IInitializableMixin.Initialize (object? target, object? next, bool deserialization)
     {
-      _target = (TTarget) target;
+      _target = (TTarget?) target;
       if (deserialization)
         OnDeserialized();
       else

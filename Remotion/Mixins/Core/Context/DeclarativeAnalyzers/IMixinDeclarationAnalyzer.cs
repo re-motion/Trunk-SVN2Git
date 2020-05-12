@@ -24,6 +24,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
   /// </summary>
   /// <typeparam name="TAnalyzedObject">The type of entity the declaration is applied to.</typeparam>
   public interface IMixinDeclarationAnalyzer<in TAnalyzedObject>
+      where TAnalyzedObject : notnull
   {
     void Analyze (TAnalyzedObject entity, MixinConfigurationBuilder configurationBuilder);
   }

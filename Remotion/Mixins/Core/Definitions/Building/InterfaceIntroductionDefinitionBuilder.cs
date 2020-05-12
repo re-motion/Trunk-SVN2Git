@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
@@ -153,7 +154,7 @@ namespace Remotion.Mixins.Definitions.Building
         return _defaultVisibility;
     }
 
-    private void CheckMemberImplementationFound (object? implementation, MemberInfo interfaceMember)
+    private void CheckMemberImplementationFound ([NotNull] object? implementation, MemberInfo interfaceMember)
     {
       if (implementation == null)
       {

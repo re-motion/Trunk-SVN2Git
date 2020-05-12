@@ -29,7 +29,7 @@ namespace Remotion.Mixins.Utilities
   {
     public enum InitializationMode { Construction, Deserialization }
 
-    public static Type GetMixinBaseType (Type mixinType)
+    public static Type? GetMixinBaseType (Type mixinType)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
@@ -49,7 +49,7 @@ namespace Remotion.Mixins.Utilities
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
-      Type mixinBaseType = GetMixinBaseType (concreteMixinType);
+      Type? mixinBaseType = GetMixinBaseType (concreteMixinType);
       if (mixinBaseType == null)
         return null;
       else
@@ -60,7 +60,7 @@ namespace Remotion.Mixins.Utilities
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);
 
-      Type mixinBaseType = GetMixinBaseType (concreteMixinType);
+      Type? mixinBaseType = GetMixinBaseType (concreteMixinType);
       if (mixinBaseType == null)
         return null;
       else

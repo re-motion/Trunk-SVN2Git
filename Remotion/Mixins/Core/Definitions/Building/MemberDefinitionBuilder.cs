@@ -88,7 +88,9 @@ namespace Remotion.Mixins.Definitions.Building
 
         if (addMethodDefinition != null || removeMethodDefinition != null)
         {
+#nullable disable
           var definition = new EventDefinition (eventInfo, _classDefinition, addMethodDefinition, removeMethodDefinition);
+#nullable enable
           var attributeBuilder = new AttributeDefinitionBuilder (definition);
           attributeBuilder.Apply (eventInfo);
           _classDefinition.Events.Add (definition);

@@ -20,8 +20,8 @@ namespace Remotion.Mixins.Definitions
 {
   public interface IAttributeIntroductionSource : IAttributableDefinition
   {
-    MultiDefinitionCollection<Type, AttributeIntroductionDefinition>? AttributeIntroductions { get; }
-    MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition>? NonAttributeIntroductions { get; }
-    MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition>? SuppressedAttributeIntroductions { get; }
+    MultiDefinitionCollection<Type, AttributeIntroductionDefinition> AttributeIntroductions { get; }
+    MultiDefinitionCollection<Type, NonAttributeIntroductionDefinition> NonAttributeIntroductions { get; }
+    MultiDefinitionCollection<Type, SuppressedAttributeIntroductionDefinition> SuppressedAttributeIntroductions { get; }
   }
 }

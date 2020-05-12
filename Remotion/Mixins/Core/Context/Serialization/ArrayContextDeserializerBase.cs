@@ -37,7 +37,7 @@ namespace Remotion.Mixins.Context.Serialization
       _values = values;
     }
 
-    protected T? GetValue<T> (int index)
+    protected T GetValue<T> (int index)
     {
       var value = _values[index];
 

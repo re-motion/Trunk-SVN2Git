@@ -137,7 +137,7 @@ namespace Remotion.Mixins.Context
       return ContextAwareTypeUtility.GetTypeDiscoveryService();
     }
 
-    private readonly MixinConfiguration _parentConfiguration;
+    private readonly MixinConfiguration? _parentConfiguration;
     private readonly HashSet<Type> _allTypes = new HashSet<Type> ();
 
     /// <summary>
@@ -145,7 +145,7 @@ namespace Remotion.Mixins.Context
     /// mixin configuration attributes in order to build an <see cref="MixinConfiguration"/>.
     /// </summary>
     /// <param name="parentConfiguration">The parent configuration used when this instance builds a new <see cref="MixinConfiguration"/>.</param>
-    public DeclarativeConfigurationBuilder (MixinConfiguration parentConfiguration)
+    public DeclarativeConfigurationBuilder (MixinConfiguration? parentConfiguration)
     {
       _parentConfiguration = parentConfiguration;
     }

@@ -31,7 +31,7 @@ namespace Remotion.Mixins.Definitions.Building
     private readonly Type _attributeType;
     private readonly IEnumerable<TMember> _baseMembers;
 
-    private MultiDictionary<string, TMember>? _baseMembersByNameCache = null;
+    private MultiDictionary<string, TMember> _baseMembersByNameCache = null!;
 
     public OverridesAnalyzer (Type attributeType, IEnumerable<TMember> baseMembers)
     {
@@ -67,7 +67,7 @@ namespace Remotion.Mixins.Definitions.Building
       }
     }
 
-    private MultiDictionary<string, TMember>? BaseMembersByName
+    private MultiDictionary<string, TMember> BaseMembersByName
     {
       get
       {

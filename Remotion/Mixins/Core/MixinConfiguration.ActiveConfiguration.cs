@@ -65,7 +65,7 @@ namespace Remotion.Mixins
     /// Sets the active mixin configuration configuration for the current thread.
     /// </summary>
     /// <param name="configuration">The configuration to be set, can be <see langword="null"/>.</param>
-    public static void SetActiveConfiguration (MixinConfiguration configuration)
+    public static void SetActiveConfiguration (MixinConfiguration? configuration)
     {
       s_activeConfiguration.SetCurrent (configuration);
     }
