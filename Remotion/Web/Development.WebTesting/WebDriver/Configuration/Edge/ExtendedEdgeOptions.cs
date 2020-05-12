@@ -23,7 +23,6 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Edge
   /// <summary>
   /// Extends <see cref="EdgeOptions"/> provided by Selenium with additional data used by the web testing infrastructure.
   /// </summary>
-#pragma warning disable CS3009
   public class ExtendedEdgeOptions : EdgeOptions
   {
     /// <summary>
@@ -32,5 +31,4 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.Edge
     [CanBeNull]
     public string UserDirectory { get; set; }
   }
-#pragma warning restore CS3009
 }
