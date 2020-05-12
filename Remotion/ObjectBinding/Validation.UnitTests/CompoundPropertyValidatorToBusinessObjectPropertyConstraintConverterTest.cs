@@ -15,28 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using JetBrains.Annotations;
-using Remotion.Utilities;
+using NUnit.Framework;
 
-namespace Remotion.Validation.Validators
+namespace Remotion.ObjectBinding.Validation.UnitTests
 {
-  public class ObjectValidatorContext
+  [TestFixture]
+  public class CompoundPropertyValidatorToBusinessObjectPropertyConstraintConverterTest
   {
-    [NotNull]
-    public ValidationContext ParentContext { get; }
-
-    [NotNull]
-    public object Instance { get; }
-
-    public ObjectValidatorContext ([NotNull] ValidationContext parentContext, [NotNull] object instance)
+    [Test]
+    [Ignore ("TODO RM-5906")]
+    public void Convert ()
     {
-      ArgumentUtility.CheckNotNull ("parentContext", parentContext);
-      ArgumentUtility.CheckNotNull ("instance", instance);
-      if (parentContext.InstanceToValidate != instance)
-        throw new ArgumentException ("parentContext.Instance does not match instance parameter.", "instance");
-
-      ParentContext = parentContext;
-      Instance = instance;
     }
   }
 }
