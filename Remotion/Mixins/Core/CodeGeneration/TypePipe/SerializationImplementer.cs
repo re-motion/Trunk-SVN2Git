@@ -119,7 +119,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     //    return null;
     //}
 
-    public static void RaiseOnDeserialization (object deserializedObject, object sender)
+    public static void RaiseOnDeserialization (object deserializedObject, object? sender)
     {
       ArgumentUtility.CheckNotNull ("deserializedObject", deserializedObject);
       s_serializationEventRaiser.RaiseDeserializationEvent (deserializedObject, sender);

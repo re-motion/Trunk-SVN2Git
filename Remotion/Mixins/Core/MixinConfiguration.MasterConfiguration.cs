@@ -50,7 +50,7 @@ namespace Remotion.Mixins
     /// first time after this method has been called.
     /// </remarks>
     /// <seealso cref="GetMasterConfiguration"/>
-    public static void SetMasterConfiguration (MixinConfiguration newMasterConfiguration)
+    public static void SetMasterConfiguration (MixinConfiguration? newMasterConfiguration)
     {
       s_masterConfiguration.Value = newMasterConfiguration;
     }

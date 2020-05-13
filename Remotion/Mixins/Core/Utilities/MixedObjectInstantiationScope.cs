@@ -54,7 +54,7 @@ namespace Remotion.Mixins.Utilities
       get { return s_current != null; }
     }
 
-    public static void SetCurrent (MixedObjectInstantiationScope value)
+    public static void SetCurrent (MixedObjectInstantiationScope? value)
     {
       s_current = value;
     }

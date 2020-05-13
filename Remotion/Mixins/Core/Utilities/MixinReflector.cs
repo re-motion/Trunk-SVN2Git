@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
@@ -56,6 +57,7 @@ namespace Remotion.Mixins.Utilities
         return mixinBaseType.GetProperty ("Target", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 
+    [return: NotNullIfNotNull("concreteMixinType")]
     public static PropertyInfo? GetNextProperty (Type concreteMixinType)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinType", concreteMixinType);

@@ -30,13 +30,13 @@ namespace Remotion.Mixins.Context
       get { return _classContexts; }
     }
 
-    public void AddIfNotNull (ClassContext context)
+    public void AddIfNotNull (ClassContext? context)
     {
       if (context != null)
         _classContexts.Add (context);
     }
 
-    public void AddRangeAllowingNulls (IEnumerable<ClassContext> contexts)
+    public void AddRangeAllowingNulls (IEnumerable<ClassContext?> contexts)
     {
       ArgumentUtility.CheckNotNull ("contexts", contexts);
 

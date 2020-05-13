@@ -58,7 +58,7 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    public object[] CreateMixinArray (object[] suppliedMixins)
+    public object[] CreateMixinArray (object[]? suppliedMixins)
     {
       var mixins = new object[_expectedMixinTypes.Length];
 
@@ -72,7 +72,7 @@ namespace Remotion.Mixins.CodeGeneration
       return mixins;
     }
 
-    private void FillInSuppliedMixins (object[] targetArray, object[] suppliedMixins)
+    private void FillInSuppliedMixins (object[] targetArray, object[]? suppliedMixins)
     {
       if (suppliedMixins == null)
         return;

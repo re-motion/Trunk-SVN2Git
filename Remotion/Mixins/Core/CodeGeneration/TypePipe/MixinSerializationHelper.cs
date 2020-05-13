@@ -110,7 +110,7 @@ namespace Remotion.Mixins.CodeGeneration.TypePipe
     }
 
     // Here, we can rely on everything being deserialized as needed.
-    public void OnDeserialization (object sender)
+    public void OnDeserialization (object? sender)
     {
       if (_baseMemberValues != null)
       {

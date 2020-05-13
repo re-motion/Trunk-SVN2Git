@@ -62,7 +62,7 @@ namespace Remotion.Mixins.Context
     /// <returns>A mixin configuration inheriting from <paramref name="parentConfiguration"/> and incorporating the configuration information
     /// held by the given assemblies.</returns>
     /// <exception cref="ArgumentNullException">The <paramref name="assemblies"/> parameter is <see langword="null"/>.</exception>
-    public static MixinConfiguration BuildConfigurationFromAssemblies (MixinConfiguration parentConfiguration, params Assembly[] assemblies)
+    public static MixinConfiguration BuildConfigurationFromAssemblies (MixinConfiguration? parentConfiguration, params Assembly[] assemblies)
     {
       ArgumentUtility.CheckNotNull ("assemblies", assemblies);
 

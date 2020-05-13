@@ -123,7 +123,7 @@ namespace Remotion.Mixins.Context
           && Equals (other._location, _location);
     }
 
-    public override bool Equals (object obj)
+    public override bool Equals (object? obj)
     {
       return Equals (obj as MixinContextOrigin);
     }
