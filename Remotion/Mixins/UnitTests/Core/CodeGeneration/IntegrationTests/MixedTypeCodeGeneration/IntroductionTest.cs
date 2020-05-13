@@ -38,7 +38,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var bt1 = ObjectFactory.Create<BaseType1> (ParamList.Empty);
       var bt1AsMixedIface = bt1 as IBT1Mixin1;
       Assert.That (bt1AsMixedIface, Is.Not.Null);
-      Assert.That (bt1AsMixedIface.IntroducedMethod (), Is.EqualTo ("BT1Mixin1.IntroducedMethod"));
+      Assert.That (bt1AsMixedIface!.IntroducedMethod (), Is.EqualTo ("BT1Mixin1.IntroducedMethod"));
     }
 
     [Test]
@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithExplicitImplementation));
       var explicito = bt1 as IExplicit;
       Assert.That (explicito, Is.Not.Null);
-      Assert.That (explicito.Explicit (), Is.EqualTo ("XXX"));
+      Assert.That (explicito!.Explicit (), Is.EqualTo ("XXX"));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var bt1 = CreateMixedObject<BaseType1> (typeof (MixinIntroducingGenericInterface<>));
       var generic = bt1 as IGeneric<BaseType1>;
       Assert.That (generic, Is.Not.Null);
-      Assert.That (generic.Generic (bt1), Is.EqualTo ("Generic"));
+      Assert.That (generic!.Generic (bt1), Is.EqualTo ("Generic"));
     }
 
     [Test]

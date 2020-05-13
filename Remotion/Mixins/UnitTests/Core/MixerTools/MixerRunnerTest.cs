@@ -25,7 +25,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   [TestFixture]
   public class MixerRunnerTest
   {
-    private MixerParameters _parameters;
+    private MixerParameters _parameters = null!;
 
     [SetUp]
     public void SetUp ()

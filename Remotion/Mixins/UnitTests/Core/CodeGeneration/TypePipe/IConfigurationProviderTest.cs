@@ -25,7 +25,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
   [TestFixture]
   public class IConfigurationProviderTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

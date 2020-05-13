@@ -30,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     public void FailsIfOverriddenMethodNotVirtual ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
-      var log = Validator.Validate (definition.Methods[typeof (BaseType4).GetMethod ("NonVirtualMethod")]);
+      var log = Validator.Validate (definition.Methods[typeof (BaseType4).GetMethod ("NonVirtualMethod")]!);
 
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodRules.OverriddenMethodMustBeVirtual", log), Is.True);
     }
@@ -57,7 +57,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     public void FailsIfOverriddenPropertyMethodNotVirtual ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
-      var log = Validator.Validate (definition.Properties[typeof (BaseType4).GetProperty ("NonVirtualProperty")]);
+      var log = Validator.Validate (definition.Properties[typeof (BaseType4).GetProperty ("NonVirtualProperty")]!);
 
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodRules.OverriddenMethodMustBeVirtual", log), Is.True);
     }
@@ -66,7 +66,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     public void FailsIfOverriddenEventMethodNotVirtual ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType4), typeof (BT4Mixin1));
-      var log = Validator.Validate (definition.Events[typeof (BaseType4).GetEvent ("NonVirtualEvent")]);
+      var log = Validator.Validate (definition.Events[typeof (BaseType4).GetEvent ("NonVirtualEvent")]!);
 
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodRules.OverriddenMethodMustBeVirtual", log), Is.True);
     }

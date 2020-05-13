@@ -27,7 +27,7 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities.TestDomain.AssociatedMethods
     public int Property { get; set; }
     protected int ProtectedProperty { get; set; }
 
-    public event EventHandler Event;
-    protected event EventHandler ProtectedEvent;
+    public event EventHandler? Event;
+    protected event EventHandler? ProtectedEvent;
   }
 }

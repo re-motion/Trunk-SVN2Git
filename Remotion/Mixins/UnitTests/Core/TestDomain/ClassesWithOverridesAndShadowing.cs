@@ -28,7 +28,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { }
     }
 
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
   
   public class BaseWithOverrideAttributes
@@ -46,7 +46,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
     [OverrideTarget]
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
 
   public class DerivedWithoutOverrideAttributes : BaseWithOverrideAttributes
@@ -61,7 +61,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { }
     }
 
-    public override event EventHandler Event;
+    public override event EventHandler? Event;
   }
 
   public class DerivedNewWithAdditionalOverrideAttributes : BaseWithOverrideAttributes
@@ -79,7 +79,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
     [OverrideTarget]
-    public new event EventHandler Event;
+    public new event EventHandler? Event;
   }
 
   public class BaseWithoutOverrideAttributes
@@ -94,7 +94,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { }
     }
 
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
 
   public class DerivedNewWithOverrideAttributes : BaseWithoutOverrideAttributes
@@ -112,7 +112,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
     [OverrideTarget]
-    public new event EventHandler Event;
+    public new event EventHandler? Event;
   }
 
   
@@ -128,6 +128,6 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { }
     }
 
-    public new event EventHandler Event;
+    public new event EventHandler? Event;
   }
 }

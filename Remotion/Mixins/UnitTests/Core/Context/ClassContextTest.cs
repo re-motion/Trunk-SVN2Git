@@ -63,13 +63,13 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var classContext = ClassContextObjectMother.Create(typeof (BaseType7));
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT7Mixin1)), Is.False);
-      MixinContext mixinContext = classContext.Mixins[typeof (BT7Mixin1)];
+      MixinContext mixinContext = classContext.Mixins[typeof (BT7Mixin1)]!;
       Assert.That (mixinContext, Is.Null);
 
       classContext = ClassContextObjectMother.Create(typeof (BaseType7), typeof (BT7Mixin1));
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT7Mixin1)), Is.True);
-      mixinContext = classContext.Mixins[typeof (BT7Mixin1)];
-      Assert.That (classContext.Mixins[typeof (BT7Mixin1)], Is.SameAs (mixinContext));
+      mixinContext = classContext.Mixins[typeof (BT7Mixin1)]!;
+      Assert.That (classContext.Mixins[typeof (BT7Mixin1)]!, Is.SameAs (mixinContext));
     }
 
     [Test]
@@ -137,7 +137,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (specialized, Is.Not.Null);
       Assert.That (specialized.Type, Is.EqualTo (typeof (List<int>)));
       Assert.That (specialized.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
-      Assert.That (specialized.Mixins[typeof (BT1Mixin1)].ExplicitDependencies, Has.Member (typeof (IBaseType2)));
+      Assert.That (specialized.Mixins[typeof (BT1Mixin1)]!.ExplicitDependencies, Has.Member (typeof (IBaseType2)));
     }
 
     [Test]
@@ -391,7 +391,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
           originalClassContext.ComposedInterfaces);
       Assert.That (result, Is.EqualTo (expectedResult));
 
-      Assert.That (originalClassContext.Mixins[typeof (string)].ExplicitDependencies, Has.No.Member (typeof (float)), "Original is not changed");
+      Assert.That (originalClassContext.Mixins[typeof (string)]!.ExplicitDependencies, Has.No.Member (typeof (float)), "Original is not changed");
     }
 
     [Test]

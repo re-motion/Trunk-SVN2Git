@@ -40,10 +40,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (targetClass.Methods.ContainsKey (baseMethod1), Is.True);
       Assert.That (targetClass.Methods.ContainsKey (mixinMethod1), Is.False);
 
-      MemberDefinitionBase member = targetClass.Methods[baseMethod1];
+      MemberDefinitionBase member = targetClass.Methods[baseMethod1]!;
 
       Assert.That (new List<MemberDefinitionBase> (targetClass.GetAllMembers()).Contains (member), Is.True);
-      Assert.That (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member), Is.False);
+      Assert.That (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)]!.GetAllMembers()).Contains (member), Is.False);
 
       Assert.That (member.Name, Is.EqualTo ("VirtualMethod"));
       Assert.That (member.FullName, Is.EqualTo (typeof (BaseType1).FullName + ".VirtualMethod"));
@@ -56,11 +56,11 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (targetClass.Methods.ContainsKey (baseMethod2), Is.True);
       Assert.That (targetClass.Methods[baseMethod2], Is.Not.SameAs (member));
 
-      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
+      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)]!;
 
       Assert.That (mixin1.Methods.ContainsKey (baseMethod1), Is.False);
       Assert.That (mixin1.Methods.ContainsKey (mixinMethod1), Is.True);
-      member = mixin1.Methods[mixinMethod1];
+      member = mixin1.Methods[mixinMethod1]!;
 
       Assert.That (new List<MemberDefinitionBase> (mixin1.GetAllMembers()).Contains (member), Is.True);
 
@@ -87,10 +87,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (targetClass.Properties.ContainsKey (indexedProperty2), Is.True);
       Assert.That (targetClass.Properties.ContainsKey (mixinProperty), Is.False);
 
-      PropertyDefinition member = targetClass.Properties[baseProperty];
+      PropertyDefinition member = targetClass.Properties[baseProperty]!;
 
       Assert.That (new List<MemberDefinitionBase> (targetClass.GetAllMembers()).Contains (member), Is.True);
-      Assert.That (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member), Is.False);
+      Assert.That (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)]!.GetAllMembers()).Contains (member), Is.False);
 
       Assert.That (member.Name, Is.EqualTo ("VirtualProperty"));
       Assert.That (member.FullName, Is.EqualTo (typeof (BaseType1).FullName + ".VirtualProperty"));
@@ -101,29 +101,29 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (member.GetMethod, Is.Not.Null);
       Assert.That (member.SetMethod, Is.Not.Null);
 
-      Assert.That (targetClass.Methods.ContainsKey (member.GetMethod.MethodInfo), Is.False);
-      Assert.That (targetClass.Methods.ContainsKey (member.SetMethod.MethodInfo), Is.False);
+      Assert.That (targetClass.Methods.ContainsKey (member.GetMethod!.MethodInfo), Is.False);
+      Assert.That (targetClass.Methods.ContainsKey (member.SetMethod!.MethodInfo), Is.False);
 
       Assert.That (member.GetMethod.Parent, Is.SameAs (member));
       Assert.That (member.SetMethod.Parent, Is.SameAs (member));
 
-      member = targetClass.Properties[indexedProperty1];
-      Assert.That (targetClass.Properties[indexedProperty2], Is.Not.SameAs (member));
+      member = targetClass.Properties[indexedProperty1]!;
+      Assert.That (targetClass.Properties[indexedProperty2]!, Is.Not.SameAs (member));
 
       Assert.That (member.GetMethod, Is.Not.Null);
       Assert.That (member.SetMethod, Is.Null);
 
-      member = targetClass.Properties[indexedProperty2];
+      member = targetClass.Properties[indexedProperty2]!;
 
       Assert.That (member.GetMethod, Is.Null);
       Assert.That (member.SetMethod, Is.Not.Null);
 
-      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
+      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)]!;
 
       Assert.That (mixin1.Properties.ContainsKey (baseProperty), Is.False);
       Assert.That (mixin1.Properties.ContainsKey (mixinProperty), Is.True);
 
-      member = mixin1.Properties[mixinProperty];
+      member = mixin1.Properties[mixinProperty]!;
 
       Assert.That (new List<MemberDefinitionBase> (mixin1.GetAllMembers()).Contains (member), Is.True);
 
@@ -151,10 +151,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (targetClass.Events.ContainsKey (baseEvent2), Is.True);
       Assert.That (targetClass.Events.ContainsKey (mixinEvent), Is.False);
 
-      EventDefinition member = targetClass.Events[baseEvent1];
+      EventDefinition member = targetClass.Events[baseEvent1]!;
 
       Assert.That (new List<MemberDefinitionBase> (targetClass.GetAllMembers()).Contains (member), Is.True);
-      Assert.That (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)].GetAllMembers()).Contains (member), Is.False);
+      Assert.That (new List<MemberDefinitionBase> (targetClass.Mixins[typeof (BT1Mixin1)]!.GetAllMembers()).Contains (member), Is.False);
 
       Assert.That (member.Name, Is.EqualTo ("VirtualEvent"));
       Assert.That (member.FullName, Is.EqualTo (typeof (BaseType1).FullName + ".VirtualEvent"));
@@ -171,16 +171,16 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (member.AddMethod.Parent, Is.SameAs (member));
       Assert.That (member.RemoveMethod.Parent, Is.SameAs (member));
 
-      member = targetClass.Events[baseEvent2];
+      member = targetClass.Events[baseEvent2]!;
       Assert.That (member.AddMethod, Is.Not.Null);
       Assert.That (member.RemoveMethod, Is.Not.Null);
 
-      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
+      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)]!;
 
       Assert.That (mixin1.Events.ContainsKey (baseEvent1), Is.False);
       Assert.That (mixin1.Events.ContainsKey (mixinEvent), Is.True);
 
-      member = mixin1.Events[mixinEvent];
+      member = mixin1.Events[mixinEvent]!;
 
       Assert.That (new List<MemberDefinitionBase> (mixin1.GetAllMembers()).Contains (member), Is.True);
 

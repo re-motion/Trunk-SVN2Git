@@ -32,7 +32,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           .AddType (typeof (ClassWithComposedInterface.IComposedInterface))
           .BuildConfiguration ();
 
-      var classContext = result.GetContext (typeof (ClassWithComposedInterface));
+      var classContext = result.GetContext (typeof (ClassWithComposedInterface))!;
       Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ClassWithComposedInterface.IComposedInterface)));
     }
 
@@ -46,10 +46,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           .AddType (typeof (DerivedClassWithComposedInterface))
           .BuildConfiguration ();
 
-      var baseClassContext = result.GetContext (typeof (ClassWithComposedInterface));
+      var baseClassContext = result.GetContext (typeof (ClassWithComposedInterface))!;
       Assert.That (baseClassContext.ComposedInterfaces, Has.Member (typeof (ClassWithComposedInterface.IComposedInterface)));
 
-      var derivedClassContext = result.GetContext (typeof (DerivedClassWithComposedInterface));
+      var derivedClassContext = result.GetContext (typeof (DerivedClassWithComposedInterface))!;
       Assert.That (derivedClassContext.ComposedInterfaces, Has.Member (typeof (ClassWithComposedInterface.IComposedInterface)));
     }
 
@@ -58,7 +58,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       var result = new DeclarativeConfigurationBuilder (null).AddType (typeof (ClassWithHasComposedInterfaces)).BuildConfiguration ();
 
-      var classContext = result.GetContext (typeof (ClassWithHasComposedInterfaces));
+      var classContext = result.GetContext (typeof (ClassWithHasComposedInterfaces))!;
       Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ClassWithHasComposedInterfaces.IComposedInterface1)));
       Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ClassWithHasComposedInterfaces.IComposedInterface2)));
     }
@@ -68,7 +68,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       var result = new DeclarativeConfigurationBuilder (null).AddType (typeof (ClassDerivedFromBaseClassWithHasComleteInterface)).BuildConfiguration ();
 
-      var classContext = result.GetContext (typeof (ClassDerivedFromBaseClassWithHasComleteInterface));
+      var classContext = result.GetContext (typeof (ClassDerivedFromBaseClassWithHasComleteInterface))!;
       Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface)));
     }
 
@@ -79,10 +79,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           .AddType (typeof (ClassDerivedFromBaseClassWithHasComleteInterface))
           .AddType (typeof (DerivedClassDerivedFromBaseClassWithHasComleteInterface)).BuildConfiguration ();
 
-      var baseClassContext = result.GetContext (typeof (ClassDerivedFromBaseClassWithHasComleteInterface));
+      var baseClassContext = result.GetContext (typeof (ClassDerivedFromBaseClassWithHasComleteInterface))!;
       Assert.That (baseClassContext.ComposedInterfaces, Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface)));
 
-      var derivedClassContext = result.GetContext (typeof (DerivedClassDerivedFromBaseClassWithHasComleteInterface));
+      var derivedClassContext = result.GetContext (typeof (DerivedClassDerivedFromBaseClassWithHasComleteInterface))!;
       Assert.That (derivedClassContext.ComposedInterfaces, Has.Member (typeof (ClassDerivedFromBaseClassWithHasComleteInterface.IComposedInterface)));
     }
   }

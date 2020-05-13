@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class MixinContextOriginTest
   {
-    private Assembly _someAssembly;
+    private Assembly _someAssembly = null!;
 
     [SetUp]
     public void SetUp ()
@@ -144,11 +144,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (origin.Equals (originWithDifferentLocation), Is.False);
       Assert.That (origin.Equals (null), Is.False);
 
-      Assert.That (origin.Equals ((object) originWithDifferentKind), Is.False);
+      Assert.That (origin!.Equals ((object) originWithDifferentKind), Is.False);
       Assert.That (origin.Equals ((object) originWithDifferentAssembly), Is.False);
       Assert.That (origin.Equals ((object) originWithDifferentLocation), Is.False);
-      Assert.That (origin.Equals ((object) null), Is.False);
-      Assert.That (origin.Equals ("some other object"), Is.False);
+      Assert.That (origin.Equals ((object?) null), Is.False);
+      Assert.That (origin!.Equals ("some other object"), Is.False);
     }
 
     [Test]

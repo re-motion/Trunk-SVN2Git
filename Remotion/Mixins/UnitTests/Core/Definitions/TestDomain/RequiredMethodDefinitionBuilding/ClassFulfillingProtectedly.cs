@@ -31,6 +31,6 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.TestDomain.RequiredMethodDe
       set { throw new NotImplementedException(); }
     }
 
-    protected event Func<string> Event;
+    protected event Func<string>? Event;
   }
 }

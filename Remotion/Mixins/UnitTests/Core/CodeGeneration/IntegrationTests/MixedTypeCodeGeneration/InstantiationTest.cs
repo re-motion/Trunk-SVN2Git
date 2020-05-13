@@ -33,10 +33,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
       var bt3 = (BaseType3) Activator.CreateInstance (generatedType);
       Assert.That (bt3, Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Next, Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.SameAs (bt3));
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Target, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Next, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Target, Is.SameAs (bt3));
     }
 
     [Test]
@@ -58,10 +58,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var bt3 = (BaseType3) Activator.CreateInstance (evenDerivedType);
       Assert.That (bt3.GetType ().BaseType, Is.SameAs (generatedType));
       Assert.That (bt3, Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Next, Is.Not.Null);
-      Assert.That (Mixin.Get<BT3Mixin1> (bt3).Target, Is.SameAs (bt3));
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Target, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Next, Is.Not.Null);
+      Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Target, Is.SameAs (bt3));
     }
 
     [Test]
@@ -76,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
         Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.Not.Null);
         Assert.That (Mixin.Get<BT3Mixin1> (bt3), Is.SameAs (suppliedMixinInstance));
         Assert.That (suppliedMixinInstance.Target, Is.SameAs (bt3));
-        Assert.That (Mixin.Get<BT3Mixin1> (bt3).Next, Is.Not.Null);
+        Assert.That (Mixin.Get<BT3Mixin1> (bt3)!.Next, Is.Not.Null);
       }
     }
 
@@ -104,7 +104,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var instance = CreateMixedObject<TargetClassCallingOverriddenMethodFromCtor> (typeof (MixinOverridingMethodCalledFromCtor));
       var mixin = Mixin.Get<MixinOverridingMethodCalledFromCtor> (instance);
       Assert.That (instance.Result, Is.SameAs (mixin));
-      Assert.That (mixin.MyThis, Is.SameAs (instance));
+      Assert.That (mixin!.MyThis, Is.SameAs (instance));
       Assert.That (mixin.MyBase, Is.Not.Null);
     }
 
@@ -115,7 +115,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       
       var mixin = Mixin.Get<MixinIntroducingMethodCalledFromCtor> (instance);
       Assert.That (instance.Result, Is.SameAs (mixin));
-      Assert.That (mixin.MyThis, Is.SameAs (instance));
+      Assert.That (mixin!.MyThis, Is.SameAs (instance));
       Assert.That (mixin.MyBase, Is.Not.Null);
     }
 

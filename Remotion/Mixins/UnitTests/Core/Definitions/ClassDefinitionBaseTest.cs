@@ -28,18 +28,18 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
   [TestFixture]
   public class ClassDefinitionBaseTest
   {
-    private TestClassDefinition _classDefinition1;
-    private TestClassDefinition _classDefinition2;
-    private MethodInfo _methodInfo1;
-    private MethodInfo _methodInfo2;
-    private MethodInfo _methodInfo3;
-    private MethodInfo _methodInfoProtected;
-    private MethodInfo _methodInfoProtectedInternal;
-    private PropertyInfo _propertyInfoWithGetAndSet;
-    private PropertyInfo _propertyInfoWithGet;
-    private PropertyInfo _propertyInfoWithSet;
-    private EventInfo _eventInfo1;
-    private EventInfo _eventInfo2;
+    private TestClassDefinition _classDefinition1 = null!;
+    private TestClassDefinition _classDefinition2 = null!;
+    private MethodInfo _methodInfo1 = null!;
+    private MethodInfo _methodInfo2 = null!;
+    private MethodInfo _methodInfo3 = null!;
+    private MethodInfo _methodInfoProtected = null!;
+    private MethodInfo _methodInfoProtectedInternal = null!;
+    private PropertyInfo _propertyInfoWithGetAndSet = null!;
+    private PropertyInfo _propertyInfoWithGet = null!;
+    private PropertyInfo _propertyInfoWithSet = null!;
+    private EventInfo _eventInfo1 = null!;
+    private EventInfo _eventInfo2 = null!;
 
     [SetUp]
     public void SetUp ()

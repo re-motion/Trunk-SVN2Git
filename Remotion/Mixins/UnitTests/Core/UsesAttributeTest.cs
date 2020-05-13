@@ -27,14 +27,14 @@ namespace Remotion.Mixins.UnitTests.Core
   {
     private readonly Type _userType = typeof (object);
 
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _configurationBuilderMock = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?) null);
     }
 
     [Test]
@@ -69,7 +69,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, _userType);
@@ -92,7 +92,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, _userType);
@@ -115,7 +115,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, _userType);
@@ -139,7 +139,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, _userType);
@@ -163,7 +163,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, _userType);
@@ -175,7 +175,7 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
       _configurationBuilderMock
-          .Expect (mock => mock.AddMixinToClass (MixinKind.Used, null, null, MemberVisibility.Private, null, null, null))
+          .Expect (mock => mock.AddMixinToClass (MixinKind.Used, null!, null!, MemberVisibility.Private, null!, null!, null!))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Text"));
 
@@ -186,7 +186,7 @@ namespace Remotion.Mixins.UnitTests.Core
               .With.Message.EqualTo ("Text"));
     }
 
-    private MixinContextOrigin CreateExpectedOrigin (UsesAttribute attribute, Type userType = null)
+    private MixinContextOrigin CreateExpectedOrigin (UsesAttribute attribute, Type? userType = null)
     {
       return MixinContextOrigin.CreateForCustomAttribute (attribute, userType ?? _userType);
     }

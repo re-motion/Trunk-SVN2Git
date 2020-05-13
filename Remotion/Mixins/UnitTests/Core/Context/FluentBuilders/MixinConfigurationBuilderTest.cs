@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class MixinConfigurationBuilderTest
   {
-    private MixinContextOrigin _mixinContextOrigin;
+    private MixinContextOrigin _mixinContextOrigin = null!;
 
     [SetUp]
     public void SetUp ()
@@ -111,7 +111,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       MixinConfiguration configuration = builder.BuildConfiguration ();
       Assert.That (configuration.ClassContexts.Count, Is.EqualTo (1));
 
-      var classContext = configuration.GetContext (typeof (BaseType1));
+      var classContext = configuration.GetContext (typeof (BaseType1))!;
       Assert.That (classContext, Is.Not.Null);
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.False);
@@ -129,7 +129,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       MixinConfiguration configuration = builder.BuildConfiguration ();
       Assert.That (configuration.ClassContexts.Count, Is.EqualTo (1));
 
-      var classContext = configuration.GetContext (typeof (BaseType1));
+      var classContext = configuration.GetContext (typeof (BaseType1))!;
       Assert.That (classContext, Is.Not.Null);
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
@@ -144,7 +144,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var builder = new MixinConfigurationBuilder (parentConfiguration);
 
       MixinConfiguration configuration = builder.BuildConfiguration ();
-      Assert.That (configuration.GetContext (typeof (BaseType3)).ComposedInterfaces, Has.Member (typeof (IBaseType31)));
+      Assert.That (configuration.GetContext (typeof (BaseType3))!.ComposedInterfaces, Has.Member (typeof (IBaseType31)));
     }
 
     [Test]
@@ -167,7 +167,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           new MixinConfigurationBuilder (null).ForClass<NullTarget>().AddMixin (typeof (NullMixin)).BuildConfiguration();
       MixinConfiguration configuration =
           new MixinConfigurationBuilder (parentConfiguration).ForClass<DerivedNullTarget>().AddMixin (typeof (NullMixin2)).BuildConfiguration();
-      ClassContext derivedContext = configuration.GetContext (typeof (DerivedNullTarget));
+      ClassContext derivedContext = configuration.GetContext (typeof (DerivedNullTarget))!;
       Assert.That (derivedContext.Mixins.Count, Is.EqualTo (2));
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin2)), Is.True);
@@ -180,7 +180,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           new MixinConfigurationBuilder (null).ForClass (typeof (GenericTargetClass<>)).AddMixin (typeof (NullMixin)).BuildConfiguration ();
       MixinConfiguration configuration =
           new MixinConfigurationBuilder (parentConfiguration).ForClass<GenericTargetClass<int>> ().AddMixin (typeof (NullMixin2)).BuildConfiguration ();
-      ClassContext derivedContext = configuration.GetContext (typeof (GenericTargetClass<int>));
+      ClassContext derivedContext = configuration.GetContext (typeof (GenericTargetClass<int>))!;
       Assert.That (derivedContext.Mixins.Count, Is.EqualTo (2));
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin2)), Is.True);
@@ -197,7 +197,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       MixinConfiguration configuration = new MixinConfigurationBuilder (parentConfiguration)
           .ForClass<DerivedGenericTargetClass<int>> ().AddMixin (typeof (NullMixin4))
           .BuildConfiguration ();
-      ClassContext derivedContext = configuration.GetContext (typeof (DerivedGenericTargetClass<int>));
+      ClassContext derivedContext = configuration.GetContext (typeof (DerivedGenericTargetClass<int>))!;
       Assert.That (derivedContext.Mixins.Count, Is.EqualTo (4));
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin2)), Is.True);
@@ -217,12 +217,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           .ForClass<GenericTargetClass<int>> ().AddMixin (typeof (DerivedNullMixin))
           .BuildConfiguration ();
 
-      ClassContext derivedContext1 = configuration.GetContext (typeof (DerivedNullTarget));
+      ClassContext derivedContext1 = configuration.GetContext (typeof (DerivedNullTarget))!;
       Assert.That (derivedContext1.Mixins.Count, Is.EqualTo (1));
       Assert.That (derivedContext1.Mixins.ContainsKey (typeof (DerivedNullMixin)), Is.True);
       Assert.That (derivedContext1.Mixins.ContainsKey (typeof (NullMixin)), Is.False);
 
-      ClassContext derivedContext2 = configuration.GetContext (typeof (GenericTargetClass<int>));
+      ClassContext derivedContext2 = configuration.GetContext (typeof (GenericTargetClass<int>))!;
       Assert.That (derivedContext2.Mixins.Count, Is.EqualTo (1));
       Assert.That (derivedContext2.Mixins.ContainsKey (typeof (DerivedNullMixin)), Is.True);
       Assert.That (derivedContext2.Mixins.ContainsKey (typeof (NullMixin)), Is.False);
@@ -235,7 +235,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           .ForClass<DerivedNullTarget> ().AddMixin (typeof (NullMixin2))
           .ForClass<NullTarget> ().AddMixin (typeof (NullMixin))
           .BuildConfiguration ();
-      ClassContext derivedContext = configuration.GetContext (typeof (DerivedNullTarget));
+      ClassContext derivedContext = configuration.GetContext (typeof (DerivedNullTarget))!;
       Assert.That (derivedContext.Mixins.Count, Is.EqualTo (2));
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin2)), Is.True);
@@ -248,7 +248,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           .ForClass<GenericTargetClass<int>> ().AddMixin (typeof (NullMixin2))
           .ForClass (typeof (GenericTargetClass<>)).AddMixin (typeof (NullMixin))
           .BuildConfiguration ();
-      ClassContext derivedContext = configuration.GetContext (typeof (GenericTargetClass<int>));
+      ClassContext derivedContext = configuration.GetContext (typeof (GenericTargetClass<int>))!;
       Assert.That (derivedContext.Mixins.Count, Is.EqualTo (2));
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin2)), Is.True);
@@ -263,7 +263,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           .ForClass (typeof (GenericTargetClass<int>)).AddMixin (typeof (NullMixin2))
           .ForClass (typeof (GenericTargetClass<int>)).AddMixin (typeof (NullMixin3))
           .BuildConfiguration ();
-      ClassContext derivedContext = configuration.GetContext (typeof (DerivedGenericTargetClass<int>));
+      ClassContext derivedContext = configuration.GetContext (typeof (DerivedGenericTargetClass<int>))!;
       Assert.That (derivedContext.Mixins.Count, Is.EqualTo (4));
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
       Assert.That (derivedContext.Mixins.ContainsKey (typeof (NullMixin2)), Is.True);
@@ -281,12 +281,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
           .ForClass<GenericTargetClass<int>> ().AddMixin (typeof (DerivedNullMixin))
           .BuildConfiguration ();
 
-      ClassContext derivedContext1 = configuration.GetContext (typeof (DerivedNullTarget));
+      ClassContext derivedContext1 = configuration.GetContext (typeof (DerivedNullTarget))!;
       Assert.That (derivedContext1.Mixins.Count, Is.EqualTo (1));
       Assert.That (derivedContext1.Mixins.ContainsKey (typeof (DerivedNullMixin)), Is.True);
       Assert.That (derivedContext1.Mixins.ContainsKey (typeof (NullMixin)), Is.False);
 
-      ClassContext derivedContext2 = configuration.GetContext (typeof (GenericTargetClass<int>));
+      ClassContext derivedContext2 = configuration.GetContext (typeof (GenericTargetClass<int>))!;
       Assert.That (derivedContext2.Mixins.Count, Is.EqualTo (1));
       Assert.That (derivedContext2.Mixins.ContainsKey (typeof (DerivedNullMixin)), Is.True);
       Assert.That (derivedContext2.Mixins.ContainsKey (typeof (NullMixin)), Is.False);
@@ -296,7 +296,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void AddMixinToClass ()
     {
       var mockRepository = new MockRepository();
-      var builder = mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      var builder = mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration?) null);
 
       var targetType = typeof (object);
       var mixinType = typeof (string);
@@ -332,7 +332,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void AddMixinToClass_WithoutOrigin ()
     {
       var mockRepository = new MockRepository ();
-      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?) null);
 
       var targetType = typeof (object);
       var mixinType = typeof (string);
@@ -360,7 +360,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void AddMixinToClass_Used ()
     {
       var mockRepository = new MockRepository ();
-      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?) null);
 
       Type targetType = typeof (object);
       Type mixinType = typeof (string);
@@ -396,7 +396,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void AddMixinToClass_PublicMemberVisibility ()
     {
       var mockRepository = new MockRepository ();
-      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?) null);
 
       Type targetType = typeof (object);
       Type mixinType = typeof (string);

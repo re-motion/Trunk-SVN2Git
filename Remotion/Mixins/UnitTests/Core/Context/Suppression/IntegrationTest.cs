@@ -29,14 +29,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
     [Test]
     public void MixinSuppressingOther ()
     {
-      var mixins = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassWithSuppressingMixins)).Mixins.Select (mc => mc.MixinType).ToArray();
+      var mixins = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassWithSuppressingMixins))!.Mixins.Select (mc => mc.MixinType).ToArray();
       Assert.That (mixins, Is.EquivalentTo (new[] { typeof (MixinSuppressingOther) }));
     }
 
     [Test]
     public void MixinSuppressingItsBase ()
     {
-      var mixins = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassWithMixinSuppressingBase)).Mixins.Select (mc => mc.MixinType).ToArray ();
+      var mixins = MixinConfiguration.ActiveConfiguration.GetContext (typeof (ClassWithMixinSuppressingBase))!.Mixins.Select (mc => mc.MixinType).ToArray ();
       Assert.That (mixins, Is.EquivalentTo (new[] { typeof (MixinSuppressingBase) }));
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (MixinWithCircularSuppress1))
           .AddType (typeof (MixinWithCircularSuppress2))
           .BuildConfiguration ();
-      ClassContext classContext = configuration.ClassContexts.GetExact (typeof (ClassWithMixins));
+      ClassContext classContext = configuration.ClassContexts.GetExact (typeof (ClassWithMixins))!;
       Assert.That (classContext.IsEmpty (), Is.True);
     }
 
@@ -70,7 +70,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (GenericMixinWithSpecialization<,>))
           .AddType (typeof (MixinSuppressingOpenGenericMixin))
           .BuildConfiguration ();
-      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
+      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins))!;
       Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)), Is.False);
     }
 
@@ -81,7 +81,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
           .AddType (typeof (GenericMixinWithoutSpecialization<,>))
           .AddType (typeof (MixinSuppressingOpenGenericMixin))
           .BuildConfiguration ();
-      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
+      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins))!;
       Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithoutSpecialization<,>)), Is.False);
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null)
           .AddType (typeof (GenericMixinWithSpecialization<,>))
           .AddType (typeof (MixinSuppressingClosedGenericMixin)).BuildConfiguration ();
-      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
+      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins))!;
       Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)), Is.False);
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null)
           .AddType (typeof (GenericMixinWithSpecialization<,>))
           .AddType (typeof (MixinSuppressingGenericMixinWithWrongTypeParameters)).BuildConfiguration ();
-      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins));
+      ClassContext classContext = configuration.GetContext (typeof (ClassWithMixins))!;
       Assert.That (classContext.Mixins.ContainsKey (typeof (GenericMixinWithSpecialization<List<int>, IList<int>>)), Is.True);
     }
   }

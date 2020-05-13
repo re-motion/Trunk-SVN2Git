@@ -39,7 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       ClassWithMixedMixin instance = ObjectFactory.Create<ClassWithMixedMixin> (ParamList.Empty);
       Assert.That (Mixin.Get<MixinMixingClass> (instance), Is.Not.Null);
-      Assert.That (Mixin.Get<MixinMixingMixin> (Mixin.Get<MixinMixingClass> (instance)), Is.Not.Null);
+      Assert.That (Mixin.Get<MixinMixingMixin> (Mixin.Get<MixinMixingClass> (instance)!), Is.Not.Null);
 
       Assert.That (instance.StringMethod (3), Is.EqualTo ("MixinMixingMixin-MixinMixingClass-ClassWithMixedMixin.StringMethod (3)"));
     }
@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
           .EnterScope())
       {
         var instance = ObjectFactory.Create<ClassOverridingSingleMixinMethod>(ParamList.Empty);
-        Assert.That (Mixin.Get<MixinWithOverridableMember> (instance).ToString(), Does.StartWith("Overridden: "));
+        Assert.That (Mixin.Get<MixinWithOverridableMember> (instance)!.ToString(), Does.StartWith("Overridden: "));
       }
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var instance = ObjectFactory.Create<ClassWithMixedDerivedMixin> (ParamList.Empty);
 
-      var derivedMixin = Mixin.Get<MixinMixingClassRequiringToBeDerived> (instance);
+      var derivedMixin = Mixin.Get<MixinMixingClassRequiringToBeDerived> (instance)!;
       var mixinType = derivedMixin.GetType();
       Assert.That (Pipeline.ReflectionService.IsAssembledType (mixinType), Is.True, "Mixed mixin.");
 

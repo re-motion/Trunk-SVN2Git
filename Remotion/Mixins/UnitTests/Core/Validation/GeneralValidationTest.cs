@@ -34,7 +34,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
   [TestFixture]
   public class GeneralValidationTest : ValidationTestBase
   {
-    private IDisposable _configurationScope;
+    private IDisposable _configurationScope = null!;
 
     [SetUp]
     public void SetUp ()
@@ -145,63 +145,63 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
           DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember));
       AssertVisitedEquivalent (validationResults, targetClassWinningOverMixinAddingBT1AttributeToMember);
 
-      MixinDefinition bt1m1 = bt1.Mixins[typeof (BT1Mixin1)];
+      MixinDefinition bt1m1 = bt1.Mixins[typeof (BT1Mixin1)]!;
       AssertVisitedEquivalent (validationResults, bt1m1);
-      MixinDefinition bt1m2 = bt1.Mixins[typeof (BT1Mixin2)];
+      MixinDefinition bt1m2 = bt1.Mixins[typeof (BT1Mixin2)]!;
       AssertVisitedEquivalent (validationResults, bt1m2);
-      MixinDefinition bt3m1 = bt3.Mixins[typeof (BT3Mixin1)];
+      MixinDefinition bt3m1 = bt3.Mixins[typeof (BT3Mixin1)]!;
       AssertVisitedEquivalent (validationResults, bt3m1);
-      MixinDefinition bt3m2 = bt3.Mixins[typeof (BT3Mixin2)];
+      MixinDefinition bt3m2 = bt3.Mixins[typeof (BT3Mixin2)]!;
       AssertVisitedEquivalent (validationResults, bt3m2);
       MixinDefinition bt3m3 = bt3.GetMixinByConfiguredType (typeof (BT3Mixin3<,>));
       AssertVisitedEquivalent (validationResults, bt3m3);
-      MixinDefinition bt3m4 = bt3.Mixins[typeof (BT3Mixin4)];
+      MixinDefinition bt3m4 = bt3.Mixins[typeof (BT3Mixin4)]!;
       AssertVisitedEquivalent (validationResults, bt3m4);
-      MixinDefinition bt3m5 = bt3.Mixins[typeof (BT3Mixin5)];
+      MixinDefinition bt3m5 = bt3.Mixins[typeof (BT3Mixin5)]!;
       AssertVisitedEquivalent (validationResults, bt3m5);
-      MixinDefinition mixinWithSuppressedAttribute = targetWithSuppressAttribute.Mixins[typeof (MixinAddingBT1Attribute)];
+      MixinDefinition mixinWithSuppressedAttribute = targetWithSuppressAttribute.Mixins[typeof (MixinAddingBT1Attribute)]!;
       AssertVisitedEquivalent (validationResults, mixinWithSuppressedAttribute);
-      MixinDefinition mixinWithNonIntroducedAttribute = targetWithNonIntroducedAttribute.Mixins[typeof (MixinNonIntroducingSimpleAttribute)];
+      MixinDefinition mixinWithNonIntroducedAttribute = targetWithNonIntroducedAttribute.Mixins[typeof (MixinNonIntroducingSimpleAttribute)]!;
       AssertVisitedEquivalent (validationResults, mixinWithNonIntroducedAttribute);
 
-      MethodDefinition m1 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)];
+      MethodDefinition m1 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", Type.EmptyTypes)]!;
       AssertVisitedEquivalent (validationResults, m1);
-      MethodDefinition m2 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", new[] { typeof (string) })];
+      MethodDefinition m2 = bt1.Methods[typeof (BaseType1).GetMethod ("VirtualMethod", new[] { typeof (string) })]!;
       AssertVisitedEquivalent (validationResults, m2);
-      MethodDefinition m3 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("VirtualMethod")];
+      MethodDefinition m3 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("VirtualMethod")]!;
       AssertVisitedEquivalent (validationResults, m3);
-      MethodDefinition m4 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")];
+      MethodDefinition m4 = bt1m1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")]!;
       AssertVisitedEquivalent (validationResults, m4);
       MethodDefinition memberWinningOverMixinAddingAttribute =
           targetClassWinningOverMixinAddingBT1AttributeToMember.Methods[
-              typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")];
+              typeof (TargetClassWinningOverMixinAddingBT1AttributeToMember).GetMethod ("VirtualMethod")]!;
       AssertVisitedEquivalent (validationResults, memberWinningOverMixinAddingAttribute);
 
-      PropertyDefinition p1 = bt1.Properties[typeof (BaseType1).GetProperty ("VirtualProperty")];
+      PropertyDefinition p1 = bt1.Properties[typeof (BaseType1).GetProperty ("VirtualProperty")]!;
       AssertVisitedEquivalent (validationResults, p1);
-      MethodDefinition m5 = p1.GetMethod;
+      MethodDefinition m5 = p1.GetMethod!;
       AssertVisitedEquivalent (validationResults, m5);
-      MethodDefinition m6 = p1.SetMethod;
+      MethodDefinition m6 = p1.SetMethod!;
       AssertVisitedEquivalent (validationResults, m6);
-      PropertyDefinition p2 = bt1m1.Properties[typeof (BT1Mixin1).GetProperty ("VirtualProperty")];
+      PropertyDefinition p2 = bt1m1.Properties[typeof (BT1Mixin1).GetProperty ("VirtualProperty")]!;
       AssertVisitedEquivalent (validationResults, p2);
 
-      EventDefinition e1 = bt1.Events[typeof (BaseType1).GetEvent ("VirtualEvent")];
+      EventDefinition e1 = bt1.Events[typeof (BaseType1).GetEvent ("VirtualEvent")]!;
       AssertVisitedEquivalent (validationResults, e1);
       MethodDefinition m7 = e1.AddMethod;
       AssertVisitedEquivalent (validationResults, m7);
       MethodDefinition m8 = e1.RemoveMethod;
       AssertVisitedEquivalent (validationResults, m8);
-      EventDefinition e2 = bt1m1.Events[typeof (BT1Mixin1).GetEvent ("VirtualEvent")];
+      EventDefinition e2 = bt1m1.Events[typeof (BT1Mixin1).GetEvent ("VirtualEvent")]!;
       AssertVisitedEquivalent (validationResults, e2);
 
-      InterfaceIntroductionDefinition i1 = bt1m1.InterfaceIntroductions[typeof (IBT1Mixin1)];
+      InterfaceIntroductionDefinition i1 = bt1m1.InterfaceIntroductions[typeof (IBT1Mixin1)]!;
       AssertVisitedEquivalent (validationResults, i1);
-      MethodIntroductionDefinition im1 = i1.IntroducedMethods[typeof (IBT1Mixin1).GetMethod ("IntroducedMethod")];
+      MethodIntroductionDefinition im1 = i1.IntroducedMethods[typeof (IBT1Mixin1).GetMethod ("IntroducedMethod")]!;
       AssertVisitedEquivalent (validationResults, im1);
-      PropertyIntroductionDefinition im2 = i1.IntroducedProperties[typeof (IBT1Mixin1).GetProperty ("IntroducedProperty")];
+      PropertyIntroductionDefinition im2 = i1.IntroducedProperties[typeof (IBT1Mixin1).GetProperty ("IntroducedProperty")]!;
       AssertVisitedEquivalent (validationResults, im2);
-      EventIntroductionDefinition im3 = i1.IntroducedEvents[typeof (IBT1Mixin1).GetEvent ("IntroducedEvent")];
+      EventIntroductionDefinition im3 = i1.IntroducedEvents[typeof (IBT1Mixin1).GetEvent ("IntroducedEvent")]!;
       AssertVisitedEquivalent (validationResults, im3);
 
       AttributeDefinition a1 = bt1.CustomAttributes.GetFirstItem (typeof (BT1Attribute));
@@ -226,32 +226,32 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       AttributeIntroductionDefinition ai2 = m1.ReceivedAttributes.GetFirstItem (typeof (BT1M1Attribute));
       AssertVisitedEquivalent (validationResults, ai2);
 
-      RequiredNextCallTypeDefinition bc1 = bt3.RequiredNextCallTypes[typeof (IBaseType34)];
+      RequiredNextCallTypeDefinition bc1 = bt3.RequiredNextCallTypes[typeof (IBaseType34)]!;
       AssertVisitedEquivalent (validationResults, bc1);
-      RequiredMethodDefinition bcm1 = bc1.Methods[typeof (IBaseType34).GetMethod ("IfcMethod")];
+      RequiredMethodDefinition bcm1 = bc1.Methods[typeof (IBaseType34).GetMethod ("IfcMethod")]!;
       AssertVisitedEquivalent (validationResults, bcm1);
 
-      RequiredTargetCallTypeDefinition ft1 = bt3.RequiredTargetCallTypes[typeof (IBaseType32)];
+      RequiredTargetCallTypeDefinition ft1 = bt3.RequiredTargetCallTypes[typeof (IBaseType32)]!;
       AssertVisitedEquivalent (validationResults, ft1);
-      RequiredMethodDefinition fm1 = ft1.Methods[typeof (IBaseType32).GetMethod ("IfcMethod")];
+      RequiredMethodDefinition fm1 = ft1.Methods[typeof (IBaseType32).GetMethod ("IfcMethod")]!;
       AssertVisitedEquivalent (validationResults, fm1);
 
-      RequiredMixinTypeDefinition rmt1 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (IMixinWithAdditionalClassDependency)];
+      RequiredMixinTypeDefinition rmt1 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (IMixinWithAdditionalClassDependency)]!;
       AssertVisitedEquivalent (validationResults, rmt1);
-      RequiredMixinTypeDefinition rmt2 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
+      RequiredMixinTypeDefinition rmt2 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)]!;
       AssertVisitedEquivalent (validationResults, rmt2);
 
-      ComposedInterfaceDependencyDefinition cid1 = bt6.ComposedInterfaceDependencies[typeof (ICBT6Mixin1)];
+      ComposedInterfaceDependencyDefinition cid1 = bt6.ComposedInterfaceDependencies[typeof (ICBT6Mixin1)]!;
       AssertVisitedEquivalent (validationResults, cid1);
 
-      TargetCallDependencyDefinition td1 = bt3m1.TargetCallDependencies[typeof (IBaseType31)];
+      TargetCallDependencyDefinition td1 = bt3m1.TargetCallDependencies[typeof (IBaseType31)]!;
       AssertVisitedEquivalent (validationResults, td1);
 
-      NextCallDependencyDefinition bd1 = bt3m1.NextCallDependencies[typeof (IBaseType31)];
+      NextCallDependencyDefinition bd1 = bt3m1.NextCallDependencies[typeof (IBaseType31)]!;
       AssertVisitedEquivalent (validationResults, bd1);
 
       MixinDependencyDefinition md1 =
-          btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)].MixinDependencies[typeof (MixinWithNoAdditionalDependency)];
+          btWithAdditionalDependencies.Mixins[typeof (MixinWithAdditionalClassDependency)]!.MixinDependencies[typeof (MixinWithNoAdditionalDependency)]!;
       AssertVisitedEquivalent (validationResults, md1);
 
       SuppressedAttributeIntroductionDefinition suppressedAttribute1 =
@@ -261,7 +261,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       NonAttributeIntroductionDefinition nonIntroducedAttribute1 =
           mixinWithNonIntroducedAttribute.NonAttributeIntroductions.GetFirstItem (typeof (SimpleAttribute));
       AssertVisitedEquivalent (validationResults, nonIntroducedAttribute1);
-      NonAttributeIntroductionDefinition nonIntroducedAttribute2 = memberWinningOverMixinAddingAttribute.Overrides[0].NonAttributeIntroductions[0];
+      NonAttributeIntroductionDefinition nonIntroducedAttribute2 = memberWinningOverMixinAddingAttribute.Overrides[0]!.NonAttributeIntroductions[0];
       AssertVisitedEquivalent (validationResults, nonIntroducedAttribute2);
     }
 

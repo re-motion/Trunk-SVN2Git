@@ -29,9 +29,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class ObjectFactoryImplementationTest
   {
-    private IPipeline _defaultPipelineMock;
+    private IPipeline _defaultPipelineMock = null!;
     
-    private ObjectFactoryImplementation _implementation;
+    private ObjectFactoryImplementation _implementation = null!;
     
     [SetUp]
     public void SetUp ()
@@ -61,7 +61,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void CreateInstance_WithNoPreparedMixinInstances_SetsUpEmptyPreparedMixins ()
     {
-      object[] actualSuppliedInstances = null;
+      object[]? actualSuppliedInstances = null;
       _defaultPipelineMock
           .Expect (mock => mock.Create (typeof (BaseType1), ParamList.Empty, allowNonPublicConstructor: false))
           .Return (new object ())
@@ -82,7 +82,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       var preparedMixin1 = new object();
       var preparedMixin2 = new object();
 
-      object[] actualSuppliedInstances = null;
+      object[]? actualSuppliedInstances = null;
 
       _defaultPipelineMock
           .Expect (mock => mock.Create (typeof (BaseType1), ParamList.Empty, allowNonPublicConstructor: false))

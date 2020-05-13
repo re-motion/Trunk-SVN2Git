@@ -64,7 +64,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       Assert.That (instance.Mixins, Is.Not.Null);
       Assert.That (instance.Mixins, Is.Not.SameAs (oldMixins));
       Assert.That (instance.Mixins.Length, Is.EqualTo (1));
-      Assert.That (instance.Mixins[0], Is.InstanceOf (typeof (NullMixin)));
+      Assert.That (instance.Mixins[0]!, Is.InstanceOf (typeof (NullMixin)));
     }
 
     [Test]
@@ -82,22 +82,22 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     public void Initialize_InitializesMixins ()
     {
       var instance = (IMixinTarget) CreateMixedObject<NullTarget> (typeof (MixinWithOnInitializedAndOnDeserialized));
-      ((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled = false;
+      ((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]!).OnInitializedCalled = false;
 
       CallInitializeMixins (instance, InitializationSemantics.Construction);
 
-      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled, Is.True);
+      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]!).OnInitializedCalled, Is.True);
     }
 
     [Test]
     public void Initialize_InitializesMixins_OnlyOnce ()
     {
       var instance = (IMixinTarget) CreateMixedObject<NullTarget> (typeof (MixinWithOnInitializedAndOnDeserialized));
-      ((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled = false;
+      ((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]!).OnInitializedCalled = false;
 
       CallInitializeMixins (instance, InitializationSemantics.Construction, extensionsInitializedValue: true);
 
-      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled, Is.False);
+      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]!).OnInitializedCalled, Is.False);
     }
 
     [Test]
@@ -111,11 +111,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       // __extensionsInitialized is _not_ deserialized
       Assert.That (PrivateInvoke.GetNonPublicField (deserialized, "__extensionsInitialized"), Is.False);
 
-      ((MixinWithOnInitializedAndOnDeserialized) deserialized.Mixins[0]).OnInitializedCalled = false;
+      ((MixinWithOnInitializedAndOnDeserialized) deserialized.Mixins[0]!).OnInitializedCalled = false;
 
       CallInitializeMixins (instance, InitializationSemantics.Construction);
 
-      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]).OnInitializedCalled, Is.True);
+      Assert.That (((MixinWithOnInitializedAndOnDeserialized) instance.Mixins[0]!).OnInitializedCalled, Is.True);
     }
 
     [Test]
@@ -123,13 +123,13 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var instance = (IMixinTarget) ObjectFactory.Create<BaseType7> (ParamList.Empty);
 
-      Assert.That (GetDepthValue (instance.Mixins[0]), Is.EqualTo (1));
+      Assert.That (GetDepthValue (instance.Mixins[0]!), Is.EqualTo (1));
       Assert.That (GetDepthValue (instance.Mixins[1]), Is.EqualTo (2));
-      Assert.That (GetDepthValue (instance.Mixins[2]), Is.EqualTo (3));
-      Assert.That (GetDepthValue (instance.Mixins[3]), Is.EqualTo (4));
-      Assert.That (GetDepthValue (instance.Mixins[4]), Is.EqualTo (5));
-      Assert.That (GetDepthValue (instance.Mixins[5]), Is.EqualTo (6));
-      Assert.That (GetDepthValue (instance.Mixins[6]), Is.EqualTo (7));
+      Assert.That (GetDepthValue (instance.Mixins[2]!), Is.EqualTo (3));
+      Assert.That (GetDepthValue (instance.Mixins[3]!), Is.EqualTo (4));
+      Assert.That (GetDepthValue (instance.Mixins[4]!), Is.EqualTo (5));
+      Assert.That (GetDepthValue (instance.Mixins[5]!), Is.EqualTo (6));
+      Assert.That (GetDepthValue (instance.Mixins[6]!), Is.EqualTo (7));
     }
 
     [Test]
@@ -178,7 +178,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
 
       CallInitializeMixins (deserialized, InitializationSemantics.Deserialization, mixinInstances: mixins);
 
-      Assert.That (((MixinWithOnInitializedAndOnDeserialized) deserialized.Mixins[0]).OnDeserializedCalled, Is.True);
+      Assert.That (((MixinWithOnInitializedAndOnDeserialized) deserialized.Mixins[0]!).OnDeserializedCalled, Is.True);
     }
 
     [Test]
@@ -194,13 +194,13 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
 
       CallInitializeMixins(deserialized, InitializationSemantics.Deserialization, mixinInstances: mixins);
 
-      Assert.That (GetDepthValue (deserialized.Mixins[0]), Is.EqualTo (1));
-      Assert.That (GetDepthValue (deserialized.Mixins[1]), Is.EqualTo (2));
-      Assert.That (GetDepthValue (deserialized.Mixins[2]), Is.EqualTo (3));
-      Assert.That (GetDepthValue (deserialized.Mixins[3]), Is.EqualTo (4));
-      Assert.That (GetDepthValue (deserialized.Mixins[4]), Is.EqualTo (5));
-      Assert.That (GetDepthValue (deserialized.Mixins[5]), Is.EqualTo (6));
-      Assert.That (GetDepthValue (deserialized.Mixins[6]), Is.EqualTo (7));
+      Assert.That (GetDepthValue (deserialized.Mixins[0]!), Is.EqualTo (1));
+      Assert.That (GetDepthValue (deserialized.Mixins[1]!), Is.EqualTo (2));
+      Assert.That (GetDepthValue (deserialized.Mixins[2]!), Is.EqualTo (3));
+      Assert.That (GetDepthValue (deserialized.Mixins[3]!), Is.EqualTo (4));
+      Assert.That (GetDepthValue (deserialized.Mixins[4]!), Is.EqualTo (5));
+      Assert.That (GetDepthValue (deserialized.Mixins[5]!), Is.EqualTo (6));
+      Assert.That (GetDepthValue (deserialized.Mixins[6]!), Is.EqualTo (7));
     }
 
     private object GetDepthValue (object mixin)
@@ -211,7 +211,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     }
 
     private void CallInitializeMixins (
-        object instance, InitializationSemantics initializationSemantics, bool extensionsInitializedValue = false, object[] mixinInstances = null)
+        object instance, InitializationSemantics initializationSemantics, bool extensionsInitializedValue = false, object[]? mixinInstances = null)
     {
       Assert.That (instance, Is.InstanceOf<IInitializableObject>());
 

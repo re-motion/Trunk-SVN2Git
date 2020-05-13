@@ -35,8 +35,8 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
       public int FooP { get { return 0; } set { } }
       public virtual int BarP { get { return 0; } set { } }
 
-      public event Func<int> FooE;
-      public virtual event Func<int> BarE;
+      public event Func<int>? FooE;
+      public virtual event Func<int>? BarE;
     }
 
     class Derived : Base
@@ -49,9 +49,9 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
       public override int BarP { get { return 0; } set { } }
       public int BazP { get { return 0; } set { } }
 
-      public virtual new event Func<int> FooE;
-      public override event Func<int> BarE;
-      public event Func<int> BazE;
+      public virtual new event Func<int>? FooE;
+      public override event Func<int>? BarE;
+      public event Func<int>? BazE;
     }
 
     private class Mixin1 : Mixin<Derived>

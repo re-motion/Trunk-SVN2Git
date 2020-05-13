@@ -34,17 +34,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       TargetClassDefinition def1 =
           DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),typeof (BaseWithOverrideAttributes));
-      MixinDefinition mix1 = def1.Mixins[typeof (BaseWithOverrideAttributes)];
+      MixinDefinition mix1 = def1.Mixins[typeof (BaseWithOverrideAttributes)]!;
       Assert.That (mix1, Is.Not.Null);
 
-      Assert.That (def1.Methods[method].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Methods[method].Overrides[typeof (BaseWithOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Methods[method]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Methods[method]!.Overrides[typeof (BaseWithOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
 
-      Assert.That (def1.Properties[property].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Properties[property].Overrides[typeof (BaseWithOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Properties[property]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Properties[property]!.Overrides[typeof (BaseWithOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
 
-      Assert.That (def1.Events[eve].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Events[eve].Overrides[typeof (BaseWithOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Events[eve]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Events[eve]!.Overrides[typeof (BaseWithOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
     }
 
     [Test]
@@ -56,17 +56,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
                                                                                       typeof (DerivedWithoutOverrideAttributes));
-      MixinDefinition mix1 = def1.Mixins[typeof (DerivedWithoutOverrideAttributes)];
+      MixinDefinition mix1 = def1.Mixins[typeof (DerivedWithoutOverrideAttributes)]!;
       Assert.That (mix1, Is.Not.Null);
 
-      Assert.That (def1.Methods[method].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Methods[method].Overrides[typeof (DerivedWithoutOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Methods[method]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Methods[method]!.Overrides[typeof (DerivedWithoutOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
 
-      Assert.That (def1.Properties[property].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Properties[property].Overrides[typeof (DerivedWithoutOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Properties[property]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Properties[property]!.Overrides[typeof (DerivedWithoutOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
 
-      Assert.That (def1.Events[eve].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Events[eve].Overrides[typeof (DerivedWithoutOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Events[eve]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Events[eve]!.Overrides[typeof (DerivedWithoutOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
     }
 
     [Test]
@@ -87,12 +87,12 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
                                                                                       typeof (BaseWithoutOverrideAttributes));
-      MixinDefinition mix1 = def1.Mixins[typeof (BaseWithoutOverrideAttributes)];
+      MixinDefinition mix1 = def1.Mixins[typeof (BaseWithoutOverrideAttributes)]!;
       Assert.That (mix1, Is.Not.Null);
 
-      Assert.That (def1.Methods[method].Overrides.Count, Is.EqualTo (0));
-      Assert.That (def1.Properties[property].Overrides.Count, Is.EqualTo (0));
-      Assert.That (def1.Events[eve].Overrides.Count, Is.EqualTo (0));
+      Assert.That (def1.Methods[method]!.Overrides.Count, Is.EqualTo (0));
+      Assert.That (def1.Properties[property]!.Overrides.Count, Is.EqualTo (0));
+      Assert.That (def1.Events[eve]!.Overrides.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -104,15 +104,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
                                                                                       typeof (DerivedNewWithOverrideAttributes));
-      MixinDefinition mix1 = def1.Mixins[typeof (DerivedNewWithOverrideAttributes)];
+      MixinDefinition mix1 = def1.Mixins[typeof (DerivedNewWithOverrideAttributes)]!;
       Assert.That (mix1, Is.Not.Null);
 
-      Assert.That (def1.Methods[method].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Methods[method].Overrides[typeof (DerivedNewWithOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
-      Assert.That (def1.Properties[property].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Properties[property].Overrides[typeof (DerivedNewWithOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
-      Assert.That (def1.Events[eve].Overrides.Count, Is.EqualTo (1));
-      Assert.That (def1.Events[eve].Overrides[typeof (DerivedNewWithOverrideAttributes)].DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Methods[method]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Methods[method]!.Overrides[typeof (DerivedNewWithOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Properties[property]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Properties[property]!.Overrides[typeof (DerivedNewWithOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
+      Assert.That (def1.Events[eve]!.Overrides.Count, Is.EqualTo (1));
+      Assert.That (def1.Events[eve]!.Overrides[typeof (DerivedNewWithOverrideAttributes)]!.DeclaringClass, Is.SameAs (mix1));
     }
 
     [Test]
@@ -124,12 +124,12 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       TargetClassDefinition def1 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (TargetForOverridesAndShadowing),
                                                                                       typeof (DerivedNewWithoutOverrideAttributes));
-      MixinDefinition mix1 = def1.Mixins[typeof (DerivedNewWithoutOverrideAttributes)];
+      MixinDefinition mix1 = def1.Mixins[typeof (DerivedNewWithoutOverrideAttributes)]!;
       Assert.That (mix1, Is.Not.Null);
 
-      Assert.That (def1.Methods[method].Overrides.Count, Is.EqualTo (0));
-      Assert.That (def1.Properties[property].Overrides.Count, Is.EqualTo (0));
-      Assert.That (def1.Events[eve].Overrides.Count, Is.EqualTo (0));
+      Assert.That (def1.Methods[method]!.Overrides.Count, Is.EqualTo (0));
+      Assert.That (def1.Properties[property]!.Overrides.Count, Is.EqualTo (0));
+      Assert.That (def1.Events[eve]!.Overrides.Count, Is.EqualTo (0));
     }
   }
 }

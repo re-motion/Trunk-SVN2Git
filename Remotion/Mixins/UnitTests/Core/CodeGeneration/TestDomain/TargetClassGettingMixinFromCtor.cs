@@ -22,7 +22,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
   [Uses (typeof (NullMixin))]
   public class TargetClassGettingMixinFromCtor
   {
-    public NullMixin MixinInstance;
+    public NullMixin? MixinInstance;
 
     public TargetClassGettingMixinFromCtor ()
     {

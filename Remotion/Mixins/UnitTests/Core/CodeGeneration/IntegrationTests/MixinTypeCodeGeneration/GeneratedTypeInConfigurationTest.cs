@@ -27,8 +27,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
   [TestFixture]
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
-    private Type _generatedMixinType;
-    private Type _generatedTargetTypeWithMethodOverride;
+    private Type _generatedMixinType = null!;
+    private Type _generatedTargetTypeWithMethodOverride = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp ()
@@ -58,7 +58,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
       using (MixinConfiguration.BuildNew().ForClass<ClassOverridingMixinMethod> ().Clear().AddMixins (_generatedMixinType).EnterScope())
       {
         object instance = ObjectFactory.Create (typeof (ClassOverridingMixinMethod), ParamList.Empty);
-        Assert.That (Mixin.Get (_generatedMixinType, instance).ToString (), Is.EqualTo ("Overridden!"));
+        Assert.That (Mixin.Get (_generatedMixinType, instance)!.ToString (), Is.EqualTo ("Overridden!"));
       }
     }
 
@@ -68,7 +68,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
       using (MixinConfiguration.BuildNew().ForClass(_generatedTargetTypeWithMethodOverride).Clear().AddMixins(typeof(SimpleMixin)).EnterScope())
       {
         object instance = ObjectFactory.Create(_generatedTargetTypeWithMethodOverride, ParamList.Empty);
-        Assert.That (Mixin.Get<SimpleMixin> (instance).ToString (), Is.EqualTo ("Generated _and_ overridden"));
+        Assert.That (Mixin.Get<SimpleMixin> (instance)!.ToString (), Is.EqualTo ("Generated _and_ overridden"));
       }
     }
   }

@@ -27,14 +27,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class ClassContextCollectionTest
   {
-    private ClassContext _ccObjectWithMixin;
-    private ClassContext _ccString;
-    private ClassContextCollection _collectionWithObjectAndString;
+    private ClassContext _ccObjectWithMixin = null!;
+    private ClassContext _ccString = null!;
+    private ClassContextCollection _collectionWithObjectAndString = null!;
 
-    private ClassContext _ccListOfT;
-    private ClassContext _ccListOfString;
+    private ClassContext _ccListOfT = null!;
+    private ClassContext _ccListOfString = null!;
 
-    private ClassContextCollection _emptyCollection;
+    private ClassContextCollection _emptyCollection = null!;
 
     [SetUp]
     public void SetUp ()

@@ -21,7 +21,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
   public class ReplicatableAttribute : Attribute
   {
     private readonly int _i;
-    private readonly string _s;
+    private readonly string? _s;
 
     public ReplicatableAttribute (int i)
     {
@@ -38,7 +38,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       get { return _i; }
     }
 
-    public string S
+    public string? S
     {
       get { return _s; }
     }

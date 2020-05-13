@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     public void WarnsIfPropertyOverrideAddsMethods ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseWithGetterOnly), typeof (MixinOverridingSetterOnly));
-      var log = Validator.Validate (definition.Properties[typeof (BaseWithGetterOnly).GetProperty ("Property")].Overrides[0]);
+      var log = Validator.Validate (definition.Properties[typeof (BaseWithGetterOnly).GetProperty ("Property")]!.Overrides[0]);
 
       Assert.That (HasWarning ("Remotion.Mixins.Validation.Rules.DefaultPropertyRules.NewMemberAddedByOverride", log), Is.True);
     }

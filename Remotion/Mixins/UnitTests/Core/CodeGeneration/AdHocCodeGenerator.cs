@@ -54,7 +54,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       get { return _moduleBuilder; }
     }
 
-    public TypeBuilder CreateType (string typeName = null, Type baseType = null)
+    public TypeBuilder CreateType (string? typeName = null, Type? baseType = null)
     {
       typeName = typeName ?? ("Test_" + _typeCounter++);
 
@@ -62,12 +62,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     public Tuple<TypeBuilder, MethodBuilder> CreateMethod (
-        string typeName = null,
-        string methodName = null,
+        string? typeName = null,
+        string? methodName = null,
         MethodAttributes methodAttributes = MethodAttributes.Public | MethodAttributes.Static,
-        Type returnType = null,
-        Type[] parameterTypes = null,
-        Action<MethodBuilder> action = null)
+        Type? returnType = null,
+        Type[]? parameterTypes = null,
+        Action<MethodBuilder>? action = null)
     {
       var typeBuilder = CreateType (typeName);
 
@@ -78,11 +78,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
     public MethodBuilder CreateMethod (
         TypeBuilder typeBuilder,
-        string methodName = null,
+        string? methodName = null,
         MethodAttributes methodAttributes = MethodAttributes.Public | MethodAttributes.Static,
-        Type returnType = null,
-        Type[] parameterTypes = null,
-        Action<MethodBuilder> action = null)
+        Type? returnType = null,
+        Type[]? parameterTypes = null,
+        Action<MethodBuilder>? action = null)
     {
       methodName = methodName ?? ("Test_" + Guid.NewGuid().ToString().Replace("-", ""));
       returnType = returnType ?? typeof(void);
@@ -95,10 +95,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     public T CreateMethodAndRun<T> (
-        string typeName = null,
+        string? typeName = null,
         MethodAttributes methodAttributes = MethodAttributes.Public | MethodAttributes.Static,
-        string methodName = null,
-        Action<MethodBuilder> action = null,
+        string? methodName = null,
+        Action<MethodBuilder>? action = null,
         bool saveOnError = false)
     {
       var returnType = typeof (T);

@@ -50,10 +50,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     public void IntroducedInterface ()
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
+      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)]!;
 
       Assert.That (mixin1.InterfaceIntroductions.ContainsKey (typeof (IBT1Mixin1)), Is.True);
-      InterfaceIntroductionDefinition introducedInterface = mixin1.InterfaceIntroductions[typeof (IBT1Mixin1)];
+      InterfaceIntroductionDefinition introducedInterface = mixin1.InterfaceIntroductions[typeof (IBT1Mixin1)]!;
       Assert.That (introducedInterface.Parent, Is.SameAs (mixin1));
       Assert.That (introducedInterface.Implementer, Is.SameAs (mixin1));
       Assert.That (targetClass.ReceivedInterfaces.ContainsKey (typeof (IBT1Mixin1)), Is.True);
@@ -81,7 +81,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         set { throw new NotImplementedException(); }
       }
 
-      public event EventHandler FooE;
+      public event EventHandler? FooE;
     }
 
     public interface IIntroducedDerived : IIntroducedBase
@@ -101,21 +101,21 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         Assert.That (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedDerived)), Is.True);
         Assert.That (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedBase)), Is.True);
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)].IntroducedMethods.Count, Is.EqualTo (0));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)].IntroducedProperties.Count, Is.EqualTo (0));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)].IntroducedEvents.Count, Is.EqualTo (0));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)]!.IntroducedMethods.Count, Is.EqualTo (0));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)]!.IntroducedProperties.Count, Is.EqualTo (0));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)]!.IntroducedEvents.Count, Is.EqualTo (0));
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedMethods.Count, Is.EqualTo (1));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedProperties.Count, Is.EqualTo (1));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedEvents.Count, Is.EqualTo (1));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedMethods.Count, Is.EqualTo (1));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedProperties.Count, Is.EqualTo (1));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedEvents.Count, Is.EqualTo (1));
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedMethods[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetMethod ("Foo")));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedProperties[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetProperty ("FooP")));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedEvents[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetEvent ("FooE")));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedMethods[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetMethod ("Foo")));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedProperties[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetProperty ("FooP")));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedEvents[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetEvent ("FooE")));
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedMethods[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (DerivedIntroducer)]));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedProperties[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (DerivedIntroducer)]));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedEvents[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (DerivedIntroducer)]));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedMethods[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (DerivedIntroducer)]));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedProperties[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (DerivedIntroducer)]));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedEvents[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (DerivedIntroducer)]));
       }
     }
 
@@ -152,21 +152,21 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         Assert.That (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedDerived)), Is.True);
         Assert.That (bt1.ReceivedInterfaces.ContainsKey (typeof (IIntroducedBase)), Is.True);
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)].IntroducedMethods.Count, Is.EqualTo (0));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)].IntroducedProperties.Count, Is.EqualTo (0));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)].IntroducedEvents.Count, Is.EqualTo (0));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)]!.IntroducedMethods.Count, Is.EqualTo (0));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)]!.IntroducedProperties.Count, Is.EqualTo (0));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedDerived)]!.IntroducedEvents.Count, Is.EqualTo (0));
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedMethods.Count, Is.EqualTo (1));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedProperties.Count, Is.EqualTo (1));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedEvents.Count, Is.EqualTo (1));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedMethods.Count, Is.EqualTo (1));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedProperties.Count, Is.EqualTo (1));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedEvents.Count, Is.EqualTo (1));
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedMethods[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetMethod ("Foo")));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedProperties[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetProperty ("FooP")));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedEvents[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetEvent ("FooE")));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedMethods[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetMethod ("Foo")));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedProperties[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetProperty ("FooP")));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedEvents[0].InterfaceMember, Is.EqualTo (typeof (IIntroducedBase).GetEvent ("FooE")));
 
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedMethods[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (ExplicitDerivedIntroducer)]));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedProperties[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (ExplicitDerivedIntroducer)]));
-        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)].IntroducedEvents[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (ExplicitDerivedIntroducer)]));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedMethods[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (ExplicitDerivedIntroducer)]));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedProperties[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (ExplicitDerivedIntroducer)]));
+        Assert.That (bt1.ReceivedInterfaces[typeof (IIntroducedBase)]!.IntroducedEvents[0].ImplementingMember.DeclaringClass, Is.EqualTo (bt1.Mixins[typeof (ExplicitDerivedIntroducer)]));
       }
     }
 
@@ -174,26 +174,26 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     public void IntroducedMembers ()
     {
       TargetClassDefinition targetClass = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
-      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)];
-      InterfaceIntroductionDefinition introducedInterface = mixin1.InterfaceIntroductions[typeof (IBT1Mixin1)];
+      MixinDefinition mixin1 = targetClass.Mixins[typeof (BT1Mixin1)]!;
+      InterfaceIntroductionDefinition introducedInterface = mixin1.InterfaceIntroductions[typeof (IBT1Mixin1)]!;
 
       Assert.That (introducedInterface.IntroducedMethods.ContainsKey (typeof (IBT1Mixin1).GetMethod ("IntroducedMethod")), Is.True);
       Assert.That (introducedInterface.IntroducedProperties.ContainsKey (typeof (IBT1Mixin1).GetProperty ("IntroducedProperty")), Is.True);
       Assert.That (introducedInterface.IntroducedEvents.ContainsKey (typeof (IBT1Mixin1).GetEvent ("IntroducedEvent")), Is.True);
 
-      MethodIntroductionDefinition method = introducedInterface.IntroducedMethods[typeof (IBT1Mixin1).GetMethod ("IntroducedMethod")];
-      Assert.That (method, Is.Not.EqualTo (mixin1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")]));
+      MethodIntroductionDefinition method = introducedInterface.IntroducedMethods[typeof (IBT1Mixin1).GetMethod ("IntroducedMethod")]!;
+      Assert.That (method, Is.Not.EqualTo (mixin1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")]!));
       Assert.That (method.ImplementingMember, Is.SameAs (mixin1.Methods[typeof (BT1Mixin1).GetMethod ("IntroducedMethod")]));
       Assert.That (method.DeclaringInterface, Is.SameAs (introducedInterface));
       Assert.That (method.Parent, Is.SameAs (introducedInterface));
 
-      PropertyIntroductionDefinition property = introducedInterface.IntroducedProperties[typeof (IBT1Mixin1).GetProperty ("IntroducedProperty")];
-      Assert.That (property, Is.Not.EqualTo (mixin1.Properties[typeof (BT1Mixin1).GetProperty ("IntroducedProperty")]));
-      Assert.That (property.ImplementingMember, Is.SameAs (mixin1.Properties[typeof (BT1Mixin1).GetProperty ("IntroducedProperty")]));
+      PropertyIntroductionDefinition property = introducedInterface.IntroducedProperties[typeof (IBT1Mixin1).GetProperty ("IntroducedProperty")]!;
+      Assert.That (property, Is.Not.EqualTo (mixin1.Properties[typeof (BT1Mixin1).GetProperty ("IntroducedProperty")]!));
+      Assert.That (property.ImplementingMember, Is.SameAs (mixin1.Properties[typeof (BT1Mixin1).GetProperty ("IntroducedProperty")]!));
       Assert.That (property.DeclaringInterface, Is.SameAs (introducedInterface));
       Assert.That (method.Parent, Is.SameAs (introducedInterface));
 
-      EventIntroductionDefinition eventDefinition = introducedInterface.IntroducedEvents[typeof (IBT1Mixin1).GetEvent ("IntroducedEvent")];
+      EventIntroductionDefinition eventDefinition = introducedInterface.IntroducedEvents[typeof (IBT1Mixin1).GetEvent ("IntroducedEvent")]!;
       Assert.That (eventDefinition, Is.Not.EqualTo (mixin1.Events[typeof (BT1Mixin1).GetEvent ("IntroducedEvent")]));
       Assert.That (eventDefinition.ImplementingMember, Is.SameAs (mixin1.Events[typeof (BT1Mixin1).GetEvent ("IntroducedEvent")]));
       Assert.That (eventDefinition.DeclaringInterface, Is.SameAs (introducedInterface));
@@ -212,7 +212,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
             "Remotion.Mixins.UnitTests.Core.TestDomain.IExplicit.Explicit", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.That (explicitMethod, Is.Not.Null);
 
-        MixinDefinition m1 = bt1.Mixins[typeof (MixinWithExplicitImplementation)];
+        MixinDefinition m1 = bt1.Mixins[typeof (MixinWithExplicitImplementation)]!;
         Assert.That (m1.Methods.ContainsKey (explicitMethod), Is.True);
       }
     }
@@ -222,8 +222,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingISerializable)).EnterScope())
       {
-        Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (ISerializable)], Is.Null);
-        Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (IDisposable)], Is.Not.Null);
+        Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)]!.InterfaceIntroductions[typeof (ISerializable)], Is.Null);
+        Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)]!.InterfaceIntroductions[typeof (IDisposable)], Is.Not.Null);
       }
     }
 
@@ -232,14 +232,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingISerializable)).EnterScope())
       {
-        Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)].InterfaceIntroductions[typeof (IDeserializationCallback)], Is.Null);
+        Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinImplementingISerializable)]!.InterfaceIntroductions[typeof (IDeserializationCallback)], Is.Null);
       }
     }
 
     [Test]
     public void IInitializableMixinIsNotIntroduced ()
     {
-      Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)].InterfaceIntroductions[typeof (IInitializableMixin)], Is.Null);
+      Assert.That (DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)]!.InterfaceIntroductions[typeof (IInitializableMixin)], Is.Null);
     }
 
     [Test]
@@ -247,9 +247,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinImplementingFullPropertiesWithPartialIntroduction)).EnterScope())
       {
-        InterfaceIntroductionDefinition introduction = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).ReceivedInterfaces[typeof (InterfaceWithPartialProperties)];
-        PropertyIntroductionDefinition prop1 = introduction.IntroducedProperties[typeof (InterfaceWithPartialProperties).GetProperty ("Prop1")];
-        PropertyIntroductionDefinition prop2 = introduction.IntroducedProperties[typeof (InterfaceWithPartialProperties).GetProperty ("Prop2")];
+        InterfaceIntroductionDefinition introduction = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).ReceivedInterfaces[typeof (InterfaceWithPartialProperties)]!;
+        PropertyIntroductionDefinition prop1 = introduction.IntroducedProperties[typeof (InterfaceWithPartialProperties).GetProperty ("Prop1")]!;
+        PropertyIntroductionDefinition prop2 = introduction.IntroducedProperties[typeof (InterfaceWithPartialProperties).GetProperty ("Prop2")]!;
         Assert.That (prop1.IntroducesGetMethod, Is.True);
         Assert.That (prop1.IntroducesSetMethod, Is.False);
         Assert.That (prop2.IntroducesSetMethod, Is.True);
@@ -281,7 +281,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingSimpleInterface));
         Assert.That (definition.ImplementedInterfaces.Contains (typeof (ISimpleInterface)), Is.True);
         Assert.That (definition.ReceivedInterfaces.ContainsKey (typeof (ISimpleInterface)), Is.False);
-        Assert.That (definition.Mixins[typeof (MixinImplementingSimpleInterface)].NonInterfaceIntroductions.ContainsKey (
+        Assert.That (definition.Mixins[typeof (MixinImplementingSimpleInterface)]!.NonInterfaceIntroductions.ContainsKey (
             typeof (ISimpleInterface)), Is.True);
       }
     }
@@ -294,7 +294,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         Assert.That (definition.ImplementedInterfaces.Contains (typeof (ISimpleInterface)), Is.False);
         Assert.That (definition.ReceivedInterfaces.ContainsKey (typeof (ISimpleInterface)), Is.False);
-        Assert.That (definition.Mixins[typeof (MixinNonIntroducingSimpleInterface)].NonInterfaceIntroductions.ContainsKey (
+        Assert.That (definition.Mixins[typeof (MixinNonIntroducingSimpleInterface)]!.NonInterfaceIntroductions.ContainsKey (
             typeof (ISimpleInterface)), Is.True);
       }
     }
@@ -306,7 +306,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         NonInterfaceIntroductionDefinition nonIntroductionDefinition =
-            definition.Mixins[typeof (MixinNonIntroducingSimpleInterface)].NonInterfaceIntroductions[typeof (ISimpleInterface)];
+            definition.Mixins[typeof (MixinNonIntroducingSimpleInterface)]!.NonInterfaceIntroductions[typeof (ISimpleInterface)]!;
         Assert.That (nonIntroductionDefinition.IsExplicitlySuppressed, Is.True);
         Assert.That (nonIntroductionDefinition.IsShadowed, Is.False);
         Assert.That (nonIntroductionDefinition.InterfaceType, Is.SameAs (typeof (ISimpleInterface)));
@@ -321,7 +321,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassImplementingSimpleInterface));
         NonInterfaceIntroductionDefinition nonIntroductionDefinition =
-            definition.Mixins[typeof (MixinImplementingSimpleInterface)].NonInterfaceIntroductions[typeof (ISimpleInterface)];
+            definition.Mixins[typeof (MixinImplementingSimpleInterface)]!.NonInterfaceIntroductions[typeof (ISimpleInterface)]!;
         Assert.That (nonIntroductionDefinition.IsExplicitlySuppressed, Is.False);
         Assert.That (nonIntroductionDefinition.IsShadowed, Is.True);
         Assert.That (nonIntroductionDefinition.InterfaceType, Is.SameAs (typeof (ISimpleInterface)));
@@ -340,17 +340,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         MixinDefinition mixinDefinition = definition.GetMixinByConfiguredType (typeof (MixinIntroducingInterfacesImplementingEachOther<>));
 
         Assert.That (definition.ReceivedInterfaces.ContainsKey (typeof (IList)), Is.True);
-        Assert.That (definition.ReceivedInterfaces[typeof (IList)].Implementer, Is.SameAs (mixinDefinition));
+        Assert.That (definition.ReceivedInterfaces[typeof (IList)]!.Implementer, Is.SameAs (mixinDefinition));
 
         Assert.That (definition.ReceivedInterfaces.ContainsKey (typeof (ICollection<ClassImplementingSimpleInterface>)), Is.True);
-        Assert.That (definition.ReceivedInterfaces[typeof (ICollection<ClassImplementingSimpleInterface>)].Implementer, Is.SameAs (mixinDefinition));
+        Assert.That (definition.ReceivedInterfaces[typeof (ICollection<ClassImplementingSimpleInterface>)]!.Implementer, Is.SameAs (mixinDefinition));
 
-        Assert.That (definition.ReceivedInterfaces[typeof (IList)].IntroducedProperties.ContainsKey (typeof (IList).GetProperty ("IsReadOnly")), Is.True);
-        Assert.That (definition.ReceivedInterfaces[typeof (ICollection<ClassImplementingSimpleInterface>)].IntroducedProperties.ContainsKey (
+        Assert.That (definition.ReceivedInterfaces[typeof (IList)]!.IntroducedProperties.ContainsKey (typeof (IList).GetProperty ("IsReadOnly")), Is.True);
+        Assert.That (definition.ReceivedInterfaces[typeof (ICollection<ClassImplementingSimpleInterface>)]!.IntroducedProperties.ContainsKey (
             typeof (ICollection<ClassImplementingSimpleInterface>).GetProperty ("IsReadOnly")), Is.True);
 
-        Assert.That (definition.ReceivedInterfaces[typeof (ICollection<ClassImplementingSimpleInterface>)].IntroducedProperties[
-            typeof (ICollection<ClassImplementingSimpleInterface>).GetProperty ("IsReadOnly")].ImplementingMember, Is.Not.EqualTo (definition.ReceivedInterfaces[typeof (IList)].IntroducedProperties[typeof (IList).GetProperty ("IsReadOnly")].ImplementingMember));
+        Assert.That (definition.ReceivedInterfaces[typeof (ICollection<ClassImplementingSimpleInterface>)]!.IntroducedProperties[
+            typeof (ICollection<ClassImplementingSimpleInterface>).GetProperty ("IsReadOnly")]!.ImplementingMember, Is.Not.EqualTo (definition.ReceivedInterfaces[typeof (IList)]!.IntroducedProperties[typeof (IList).GetProperty ("IsReadOnly")]!.ImplementingMember));
       }
     }
 
@@ -363,13 +363,13 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
           .EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
-        InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
+        InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!;
 
-        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Private));
-        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Private));
-        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Private));
       }
     }
@@ -383,13 +383,13 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
           .EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
-        InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
+        InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!;
 
-        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Public));
-        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithDefaultVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Public));
-        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithDefaultVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Public));
       }
     }
@@ -403,13 +403,13 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
           .EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
-        InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)];
+        InterfaceIntroductionDefinition interfaceDefinition = definition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!;
 
-        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Public));
-        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedProperties[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetProperty ("PropertyWithPublicVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Public));
-        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")].Visibility,
+        Assert.That (interfaceDefinition.IntroducedEvents[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetEvent ("EventWithPublicVisibility")]!.Visibility,
                      Is.EqualTo (MemberVisibility.Public));
       }
     }

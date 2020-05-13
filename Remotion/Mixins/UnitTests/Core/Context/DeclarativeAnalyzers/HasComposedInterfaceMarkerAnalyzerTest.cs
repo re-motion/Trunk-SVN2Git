@@ -26,16 +26,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   [TestFixture]
   public class HasComposedInterfaceMarkerAnalyzerTest
   {
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _configurationBuilderMock = null!;
 
-    private HasComposedInterfaceMarkerAnalyzer _analyzer;
+    private HasComposedInterfaceMarkerAnalyzer _analyzer = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration?) null);
 
       _analyzer = new HasComposedInterfaceMarkerAnalyzer();
     }
@@ -52,7 +52,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
           .Expect (mock => mock.AddComposedInterfaces (
               typeof (ClassWithHasComposedInterfaces.IComposedInterface1), 
               typeof (ClassWithHasComposedInterfaces.IComposedInterface2)))
-          .Return (null);
+          .Return (null!);
       classBuilderMock.Replay ();
 
       _analyzer.Analyze (typeof (ClassWithHasComposedInterfaces), _configurationBuilderMock);

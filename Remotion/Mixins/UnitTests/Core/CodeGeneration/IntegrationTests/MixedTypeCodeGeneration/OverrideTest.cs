@@ -44,11 +44,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (BT1Mixin1));
 
       Assert.That (bt1.VirtualProperty, Is.EqualTo ("BaseType1.BackingField"));
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).BackingField, Is.Not.EqualTo ("FooBar"));
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.BackingField, Is.Not.EqualTo ("FooBar"));
 
       bt1.VirtualProperty = "FooBar";
       Assert.That (bt1.VirtualProperty, Is.EqualTo ("BaseType1.BackingField"));
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).BackingField, Is.EqualTo ("FooBar"));
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.BackingField, Is.EqualTo ("FooBar"));
 
       Assert.IsNotNull (bt1.GetType ().GetProperty ("VirtualProperty"), "overridden member is public and has the same name");
 
@@ -65,11 +65,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (BT1Mixin1));
 
       Assert.That (bt1.VirtualProperty, Is.EqualTo ("BaseType1.BackingField"));
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).BackingField, Is.Not.EqualTo ("FooBar"));
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.BackingField, Is.Not.EqualTo ("FooBar"));
 
       bt1.VirtualProperty = "FooBar";
       Assert.That (bt1.VirtualProperty, Is.EqualTo ("BaseType1.BackingField"));
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).BackingField, Is.EqualTo ("FooBar"));
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.BackingField, Is.EqualTo ("FooBar"));
 
       Assert.IsNotNull (bt1.GetType ().GetProperty ("VirtualProperty",
           BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly), "overridden member is public and has the same name");
@@ -88,13 +88,13 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
 
       EventHandler eventHandler = delegate { };
 
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).VirtualEventAddCalled, Is.False);
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.VirtualEventAddCalled, Is.False);
       bt1.VirtualEvent += eventHandler;
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).VirtualEventAddCalled, Is.True);
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.VirtualEventAddCalled, Is.True);
 
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).VirtualEventRemoveCalled, Is.False);
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.VirtualEventRemoveCalled, Is.False);
       bt1.VirtualEvent -= eventHandler;
-      Assert.That (Mixin.Get<BT1Mixin1> (bt1).VirtualEventRemoveCalled, Is.True);
+      Assert.That (Mixin.Get<BT1Mixin1> (bt1)!.VirtualEventRemoveCalled, Is.True);
 
       Assert.IsNotNull (bt1.GetType ().GetEvent ("VirtualEvent"), "overridden member is public and has the same name");
     }
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
 
       Assert.That (obj.GetVirtualEventInvocationList(), Is.EqualTo (null));
       obj.VirtualEvent += delegate { };
-      Assert.That (obj.GetVirtualEventInvocationList ().Length, Is.EqualTo (2));
+      Assert.That (obj.GetVirtualEventInvocationList ()!.Length, Is.EqualTo (2));
     }
 
     [Test]

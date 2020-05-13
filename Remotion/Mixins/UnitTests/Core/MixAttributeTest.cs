@@ -27,16 +27,16 @@ namespace Remotion.Mixins.UnitTests.Core
   [TestFixture]
   public class MixAttributeTest
   {
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _configurationBuilderMock = null!;
 
-    private Assembly _assembly;
+    private Assembly _assembly = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository ();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?) null);
 
       _assembly = GetType ().Assembly;
     }
@@ -75,7 +75,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);
@@ -98,7 +98,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);
@@ -121,7 +121,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);
@@ -144,7 +144,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);
@@ -167,7 +167,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);
@@ -190,7 +190,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);
@@ -213,7 +213,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _assembly);

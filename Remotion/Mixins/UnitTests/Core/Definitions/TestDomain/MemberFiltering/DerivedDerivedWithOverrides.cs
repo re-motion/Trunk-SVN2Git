@@ -31,6 +31,6 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.TestDomain.MemberFiltering
       set { Dev.Null = value; }
     }
 
-    public override event Func<int> Event;
+    public override event Func<int>? Event;
   }
 }

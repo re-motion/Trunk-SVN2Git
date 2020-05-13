@@ -31,6 +31,6 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
       set { Dev.Null = value; }
     }
 
-    public event Action EventWithPublicVisibility;
+    public event Action? EventWithPublicVisibility;
   }
 }

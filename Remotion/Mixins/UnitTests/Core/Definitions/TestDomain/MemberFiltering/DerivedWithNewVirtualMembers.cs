@@ -31,6 +31,6 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.TestDomain.MemberFiltering
       set { Dev.Null = value; }
     }
 
-    public new virtual event Func<int> Event;
+    public new virtual event Func<int>? Event;
   }
 }

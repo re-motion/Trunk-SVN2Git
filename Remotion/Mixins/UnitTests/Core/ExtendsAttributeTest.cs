@@ -28,14 +28,14 @@ namespace Remotion.Mixins.UnitTests.Core
   {
     private readonly Type _extenderType = typeof (List<>);
 
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _configurationBuilderMock = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration?) null);
     }
 
     [Test]
@@ -70,7 +70,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _extenderType);
@@ -93,7 +93,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll();
       attribute.Apply (_configurationBuilderMock, _extenderType);
@@ -116,7 +116,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _extenderType);
@@ -139,7 +139,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _extenderType);
@@ -162,7 +162,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _extenderType);
@@ -187,7 +187,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute)))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, _extenderType);
@@ -235,7 +235,7 @@ namespace Remotion.Mixins.UnitTests.Core
                   attribute.AdditionalDependencies,
                   attribute.SuppressedMixins,
                   CreateExpectedOrigin (attribute, typeof (List<>))))
-          .Return (null);
+          .Return (null!);
 
       _mockRepository.ReplayAll ();
       attribute.Apply (_configurationBuilderMock, typeof (List<>));
@@ -274,7 +274,7 @@ namespace Remotion.Mixins.UnitTests.Core
       var attribute = new ExtendsAttribute (typeof (object));
 
       _configurationBuilderMock
-          .Expect (mock => mock.AddMixinToClass (MixinKind.Extending, null, null, MemberVisibility.Private, null, null, null))
+          .Expect (mock => mock.AddMixinToClass (MixinKind.Extending, null!, null!, MemberVisibility.Private, null!, null!, null!))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Foofa."));
 
@@ -285,7 +285,7 @@ namespace Remotion.Mixins.UnitTests.Core
               .With.Message.EqualTo ("Foofa."));
     }
 
-    private MixinContextOrigin CreateExpectedOrigin (ExtendsAttribute attribute, Type extenderType = null)
+    private MixinContextOrigin CreateExpectedOrigin (ExtendsAttribute attribute, Type? extenderType = null)
     {
       return MixinContextOrigin.CreateForCustomAttribute (attribute, extenderType ?? _extenderType);
     }

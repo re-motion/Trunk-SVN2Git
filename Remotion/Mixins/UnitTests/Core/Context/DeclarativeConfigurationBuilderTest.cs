@@ -29,8 +29,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class DeclarativeConfigurationBuilderTest
   {
-    private DeclarativeConfigurationBuilder _builder;
-    private ClassContext _globalClassContext;
+    private DeclarativeConfigurationBuilder _builder = null!;
+    private ClassContext _globalClassContext = null!;
 
     [SetUp]
     public void SetUp ()
@@ -175,7 +175,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       MixinConfiguration configuration = builder.BuildConfiguration ();
       ClassContext c1 = new ClassContextBuilder (typeof (User)).AddMixin (typeof (NullMixin)).OfKind (MixinKind.Used).BuildClassContext ();
       Assert.That (configuration.ClassContexts,
-          Is.EquivalentTo (new object[] { c1, parentConfiguration.GetContext (typeof (int)), _globalClassContext }));
+          Is.EquivalentTo (new object[] { c1, parentConfiguration.GetContext (typeof (int))!, _globalClassContext }));
     }
     
     [Test]
@@ -196,7 +196,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       var configuration = builder.BuildConfiguration();
 
-      Assert.That (configuration.GetContext (typeof (TypeWithDuplicateAttributeIgnoringDuplicates1)).Mixins, Has.Count.EqualTo (1));
+      Assert.That (configuration.GetContext (typeof (TypeWithDuplicateAttributeIgnoringDuplicates1))!.Mixins, Has.Count.EqualTo (1));
       Assert.That (configuration.GetContext (typeof (TypeWithDuplicateAttributeIgnoringDuplicates2)), Is.Null, "Ignored attributes - no mixins.");
     }
 
@@ -207,7 +207,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
 
-      ClassContext contextForBaseType1 = configuration.GetContext (typeof (BaseType1));
+      ClassContext contextForBaseType1 = configuration.GetContext (typeof (BaseType1))!;
       Assert.That (contextForBaseType1.Mixins.Count, Is.EqualTo (2));
 
       Assert.That (contextForBaseType1.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);

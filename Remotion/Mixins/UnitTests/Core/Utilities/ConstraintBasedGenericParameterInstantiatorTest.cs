@@ -25,7 +25,7 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
   [TestFixture]
   public class ConstraintBasedGenericParameterInstantiatorTest
   {
-    private ConstraintBasedGenericParameterInstantiator _instantiator;
+    private ConstraintBasedGenericParameterInstantiator _instantiator = null!;
 
     [SetUp]
     public void SetUp ()

@@ -24,14 +24,14 @@ namespace Remotion.Mixins.UnitTests.Core
   [TestFixture]
   public class ComposedInterfaceAttributeTest
   {
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _configurationBuilderMock = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration?) null);
     }
 
     [Test]

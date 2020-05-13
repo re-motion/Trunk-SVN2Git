@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-
+#nullable disable
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
 {
   public class GenericClassWithAllKindsOfMembers<T>

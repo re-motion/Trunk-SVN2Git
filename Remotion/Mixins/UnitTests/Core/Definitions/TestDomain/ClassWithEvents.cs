@@ -20,7 +20,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.TestDomain
 {
   public class ClassWithEvents
   {
-    public event EventHandler Event1;
-    public event EventHandler Event2;
+    public event EventHandler? Event1;
+    public event EventHandler? Event2;
   }
 }

@@ -41,6 +41,6 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
     }
 
     [MemberVisibility (MemberVisibility.Public)]
-    public event Action EventWithPublicVisibility;
+    public event Action? EventWithPublicVisibility;
   }
 }

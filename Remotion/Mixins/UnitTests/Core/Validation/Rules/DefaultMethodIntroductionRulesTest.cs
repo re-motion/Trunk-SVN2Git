@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")]!;
 
       var log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -46,7 +46,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesDifferentSignaturesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!;
 
       var log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -59,7 +59,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (TargetClassWithSameNamesAsIntroducedMembers),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!;
 
       var log = Validator.Validate (definition);
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodIntroductionRules.PublicMethodNameMustBeUniqueInTargetClass", log), Is.True);
@@ -73,7 +73,8 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!
+          .IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithDefaultVisibility")]!;
 
       var log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -86,7 +87,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
           DefinitionObjectMother.BuildUnvalidatedDefinition (
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!;
 
       var log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -100,7 +101,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (MixinIntroducingMembersWithPrivateVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!;
 
       var log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -114,7 +115,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithPublicVisibilityDifferentSignatures));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!;
 
       var log = Validator.Validate (definition);
       AssertSuccess (log);
@@ -128,7 +129,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
               typeof (NullTarget),
               typeof (MixinIntroducingMembersWithDifferentVisibilities),
               typeof (OtherMixinIntroducingMembersWithDifferentVisibilities));
-      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)].IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")];
+      MethodIntroductionDefinition definition = classDefinition.ReceivedInterfaces[typeof (IMixinIntroducingMembersWithDifferentVisibilities)]!.IntroducedMethods[typeof (IMixinIntroducingMembersWithDifferentVisibilities).GetMethod ("MethodWithPublicVisibility")]!;
 
       var log = Validator.Validate (definition);
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMethodIntroductionRules.PublicMethodNameMustBeUniqueInOtherMixins", log), Is.True);

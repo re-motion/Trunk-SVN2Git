@@ -29,30 +29,30 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     [Test]
     public void MixAttributeIsAnalyzed ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix))!;
       Assert.That (context.Mixins.ContainsKey (typeof (MixinForGlobalMix)), Is.True);
     }
 
     [Test]
     public void Origin ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix))!;
       
       var expectedOrigin = new MixinContextOrigin ("MixAttribute", typeof (TargetClassForGlobalMix).Assembly, "assembly");
-      Assert.That (context.Mixins[typeof (MixinForGlobalMix)].Origin, Is.EqualTo (expectedOrigin));
+      Assert.That (context.Mixins[typeof (MixinForGlobalMix)]!.Origin, Is.EqualTo (expectedOrigin));
     }
 
     [Test]
     public void AdditionalDependenciesAreAnalyzed ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
-      Assert.That (context.Mixins[typeof (MixinForGlobalMix)].ExplicitDependencies, Has.Member(typeof (AdditionalDependencyForGlobalMix)));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix))!;
+      Assert.That (context.Mixins[typeof (MixinForGlobalMix)]!.ExplicitDependencies, Has.Member(typeof (AdditionalDependencyForGlobalMix)));
     }
 
     [Test]
     public void SuppressedMixinsAreAnalyzed ()
     {
-      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix));
+      ClassContext context = MixinConfiguration.ActiveConfiguration.GetContext (typeof (TargetClassForGlobalMix))!;
       Assert.That (context.Mixins.ContainsKey (typeof (SuppressedMixinForGlobalMix)), Is.False);
     }
 
@@ -67,7 +67,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
 
       var mixinConfiguration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (assemblyBuilder1, assemblyBuilder2);
 
-      ClassContext context = mixinConfiguration.GetContext (typeof (TargetClassForGlobalMix));
+      ClassContext context = mixinConfiguration.GetContext (typeof (TargetClassForGlobalMix))!;
       Assert.That (context.Mixins.ContainsKey (typeof (MixinForGlobalMix)), Is.True);
       Assert.That (context.Mixins.Count, Is.EqualTo (1));
     }

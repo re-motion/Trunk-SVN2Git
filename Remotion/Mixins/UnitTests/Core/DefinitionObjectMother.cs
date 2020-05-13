@@ -226,7 +226,7 @@ namespace Remotion.Mixins.UnitTests.Core
 
       var addMethod = eventInfo.GetAddMethod (true) != null ? new MethodDefinition (eventInfo.GetAddMethod (true), declaringClass) : null;
       var removeMethod = eventInfo.GetRemoveMethod (true) != null ? new MethodDefinition (eventInfo.GetRemoveMethod (true), declaringClass) : null;
-      var eventDefinition = new EventDefinition (eventInfo, declaringClass, addMethod, removeMethod);
+      var eventDefinition = new EventDefinition (eventInfo, declaringClass, addMethod!, removeMethod!);
       PrivateInvoke.InvokeNonPublicMethod (declaringClass.Events, "Add", eventDefinition);
       return eventDefinition;
     }
@@ -248,7 +248,7 @@ namespace Remotion.Mixins.UnitTests.Core
       var classContext = MixinConfiguration.ActiveConfiguration.GetContext (type);
 
       Assert.That (classContext, Is.Not.Null, "The given type '" + type.Name + "' must be configured as a mixin target.");
-      return TargetClassDefinitionFactory.CreateAndValidate (classContext);
+      return TargetClassDefinitionFactory.CreateAndValidate (classContext!);
     }
 
     public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)

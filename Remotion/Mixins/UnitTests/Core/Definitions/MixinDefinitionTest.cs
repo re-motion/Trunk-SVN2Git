@@ -34,7 +34,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
     public void NeedsDerivedMixinType_True_OverriddenMember()
     {
       var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (ClassOverridingMixinMembers))
-          .Mixins[typeof (MixinWithAbstractMembers)];
+          .Mixins[typeof (MixinWithAbstractMembers)]!;
       Assert.That (definition.NeedsDerivedMixinType (), Is.True);
     }
 
@@ -43,7 +43,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
     {
       using (MixinConfiguration.BuildNew().ForClass<BaseType1>().AddMixin<MixinWithProtectedOverrider>().EnterScope())
       {
-        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinWithProtectedOverrider)];
+        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (MixinWithProtectedOverrider)]!;
         Assert.That (definition.NeedsDerivedMixinType(), Is.True);
       }
     }
@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
     {
       using (MixinConfiguration.BuildNew ().ForClass<NullTarget> ().AddMixin<AbstractMixinWithoutAbstractMembers> ().EnterScope ())
       {
-        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (AbstractMixinWithoutAbstractMembers)];
+        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (AbstractMixinWithoutAbstractMembers)]!;
         Assert.That (definition.NeedsDerivedMixinType (), Is.True);
       }
     }
@@ -61,7 +61,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
     [Test]
     public void NeedsDerivedMixinType_False ()
     {
-      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)];
+      var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1)).Mixins[typeof (BT1Mixin1)]!;
       Assert.That (definition.NeedsDerivedMixinType (), Is.False);
     }
 
@@ -85,7 +85,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
 
       var definition = DefinitionObjectMother
           .GetActiveTargetClassDefinition (typeof (DerivedClassOverridingMixinMethod))
-          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)];
+          .Mixins[typeof (MixinWithMethodsOverriddenByDifferentClasses)]!;
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
 
       var definition = DefinitionObjectMother.
           BuildUnvalidatedDefinition (typeof (object), typeof (MixinOverridingToString))
-          .Mixins[typeof (MixinOverridingToString)];
+          .Mixins[typeof (MixinOverridingToString)]!;
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
 
@@ -122,7 +122,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
           new HashSet<MethodInfo> ());
 
       var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (MixinWithProtectedOverrider))
-          .Mixins[typeof (MixinWithProtectedOverrider)];
+          .Mixins[typeof (MixinWithProtectedOverrider)]!;
       Assert.That (definition.GetConcreteMixinTypeIdentifier (), Is.EqualTo (expectedIdentifier));
     }
     
@@ -133,7 +133,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions
           .AddMixin<BT3Mixin1> ().WithDependency<NullMixin>()
           .AddMixin<NullMixin>().EnterScope ())
       {
-        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)];
+        var definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).Mixins[typeof (BT3Mixin1)]!;
         var dependencies = definition.GetOrderRelevantDependencies ().ToArray();
         Assert.That (dependencies, Is.EquivalentTo (new DependencyDefinitionBase[] { definition.NextCallDependencies[0], definition.MixinDependencies[0] }));
       }

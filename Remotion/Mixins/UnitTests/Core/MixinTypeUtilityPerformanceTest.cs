@@ -27,9 +27,9 @@ namespace Remotion.Mixins.UnitTests.Core
   [Explicit ("Performance tests")]
   public class MixinTypeUtilityPerformanceTest
   {
-    private Type _unmixedType;
-    private Type _targetType;
-    private Type _concreteType;
+    private Type _unmixedType = null!;
+    private Type _targetType = null!;
+    private Type _concreteType = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp ()
@@ -205,7 +205,7 @@ namespace Remotion.Mixins.UnitTests.Core
       });
     }
 
-    private void TimeThis<T> (MethodBase callingMethod, Func<Type, long, T> testLoop, long runs = 100000, Tuple<Type, string>[] types = null)
+    private void TimeThis<T> (MethodBase callingMethod, Func<Type, long, T> testLoop, long runs = 100000, Tuple<Type, string>[]? types = null)
     {
       types = types ?? new[] { Tuple.Create (_unmixedType, "unmixed type"), Tuple.Create (_targetType, "target type"), Tuple.Create (_concreteType, "concrete type") };
       foreach (var tuple in types)

@@ -26,7 +26,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class DefaultMixinInheritancePolicyTest
   {
-    private DefaultMixinInheritancePolicy _policy;
+    private DefaultMixinInheritancePolicy _policy = null!;
 
     [SetUp]
     public void SetUp ()

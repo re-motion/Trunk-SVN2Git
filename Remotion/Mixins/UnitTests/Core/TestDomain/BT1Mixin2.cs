@@ -36,7 +36,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       // no setter
     }
 
-    public EventHandler BackingEventField;
+    public EventHandler? BackingEventField;
 
     [OverrideTarget]
     public virtual event EventHandler VirtualEvent

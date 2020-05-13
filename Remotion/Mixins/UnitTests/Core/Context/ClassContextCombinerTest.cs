@@ -24,9 +24,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class ClassContextCombinerTest
   {
-    private ClassContextCombiner _combiner;
-    private ClassContext _context1;
-    private ClassContext _context2;
+    private ClassContextCombiner _combiner = null!;
+    private ClassContext _context1 = null!;
+    private ClassContext _context2 = null!;
 
     [SetUp]
     public void SetUp ()
@@ -75,7 +75,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     public void GetCombinedContexts_One ()
     {
       _combiner.AddIfNotNull (_context1);
-      ClassContext result = _combiner.GetCombinedContexts (typeof (int));
+      ClassContext result = _combiner.GetCombinedContexts (typeof (int))!;
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
       Assert.That (result.ComposedInterfaces, Is.EquivalentTo (_context1.ComposedInterfaces));
     }
@@ -86,7 +86,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       _combiner.AddIfNotNull (_context1);
       _combiner.AddIfNotNull (_context2);
 
-      ClassContext result = _combiner.GetCombinedContexts (typeof (int));
+      ClassContext result = _combiner.GetCombinedContexts (typeof (int))!;
       Assert.That (result.Type, Is.EqualTo (typeof (int)));
 
       var expectedInterfaces = _context1.ComposedInterfaces.Union (_context2.ComposedInterfaces);

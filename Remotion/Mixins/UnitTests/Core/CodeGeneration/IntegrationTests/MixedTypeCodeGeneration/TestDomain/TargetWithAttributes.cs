@@ -33,6 +33,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     }
 
     [MultiInherited, MultiNonInherited, NonMultiInherited, NonMultiNonInherited]
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
 }

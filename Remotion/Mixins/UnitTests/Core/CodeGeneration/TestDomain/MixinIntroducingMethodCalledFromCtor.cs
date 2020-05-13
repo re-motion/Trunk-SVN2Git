@@ -25,8 +25,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
 
   public class MixinIntroducingMethodCalledFromCtor : Mixin<object, object>, IIntroducedMethodCalledFromCtor
   {
-    public object MyThis;
-    public object MyBase;
+    public object? MyThis;
+    public object? MyBase;
 
     public object IfcMethod ()
     {

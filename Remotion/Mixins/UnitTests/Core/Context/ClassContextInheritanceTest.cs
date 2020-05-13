@@ -41,7 +41,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       ClassContext baseContext = new ClassContextBuilder (typeof (string)).AddMixin<DateTime>().WithDependency<int>().BuildClassContext();
       ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (new[] { baseContext });
 
-      Assert.That (inheritor.Mixins[typeof (DateTime)], Is.EqualTo (baseContext.Mixins[typeof (DateTime)]));
+      Assert.That (inheritor.Mixins[typeof (DateTime)]!, Is.EqualTo (baseContext.Mixins[typeof (DateTime)]!));
     }
 
     [Test]
@@ -52,8 +52,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (1));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DateTime)), Is.True);
-      Assert.That (inheritor.Mixins[typeof (DateTime)].ExplicitDependencies, Has.No.Member (typeof (int)));
-      Assert.That (inheritor.Mixins[typeof (DateTime)].ExplicitDependencies, Has.Member (typeof (decimal)));
+      Assert.That (inheritor.Mixins[typeof (DateTime)]!.ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (DateTime)]!.ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -66,8 +66,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (1));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (NullTarget)), Is.False);
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DerivedNullTarget)), Is.True);
-      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)].ExplicitDependencies, Has.No.Member (typeof (int)));
-      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)].ExplicitDependencies, Has.Member (typeof (decimal)));
+      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)]!.ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)]!.ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -102,8 +102,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (1));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (GenericMixinWithVirtualMethod<>)), Is.False);
       Assert.That (inheritor.Mixins.ContainsKey (typeof (GenericMixinWithVirtualMethod<object>)), Is.True);
-      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies, Has.No.Member (typeof (int)));
-      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies, Has.Member (typeof (decimal)));
+      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)]!.ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)]!.ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -119,8 +119,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DerivedGenericMixin<>)), Is.False);
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DerivedGenericMixin<object>)), Is.True);
 
-      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)].ExplicitDependencies, Has.No.Member (typeof (int)));
-      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)].ExplicitDependencies, Has.Member (typeof (decimal)));
+      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)]!.ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)]!.ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -210,7 +210,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       MixinConfiguration configuration = MixinConfiguration.BuildNew ().ForClass<IBaseType2> ().AddMixin<BT2Mixin1> ().BuildConfiguration ();
 
-      ClassContext classContext = configuration.GetContext (typeof (IBaseType2));
+      ClassContext classContext = configuration.GetContext (typeof (IBaseType2))!;
       Assert.That (classContext, Is.Not.Null);
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT2Mixin1)), Is.True);

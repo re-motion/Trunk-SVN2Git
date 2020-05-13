@@ -26,7 +26,7 @@ namespace Remotion.Mixins.UnitTests.Core
   {
     public class MixinWithOnInitialize1 : Mixin<object>
     {
-      public object ThisValue;
+      public object? ThisValue;
 
       public MixinWithOnInitialize1()
       {
@@ -58,7 +58,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void ThisAccessInCtorAndInitialize()
     {
       BaseType1 bt1 = CreateMixedObject<BaseType1> (typeof (MixinWithOnInitialize1));
-      MixinWithOnInitialize1 mixin = Mixin.Get<MixinWithOnInitialize1> (bt1);
+      MixinWithOnInitialize1 mixin = Mixin.Get<MixinWithOnInitialize1> (bt1)!;
       Assert.That (mixin, Is.Not.Null);
       Assert.That (mixin.ThisValue, Is.Not.Null);
     }
@@ -73,8 +73,8 @@ namespace Remotion.Mixins.UnitTests.Core
 
     public class MixinWithOnInitialize2 : Mixin<object, IBaseType2>
     {
-      public object ThisValue;
-      public object BaseValue;
+      public object? ThisValue;
+      public object? BaseValue;
 
       public MixinWithOnInitialize2 ()
       {
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void BaseAccessInCtorAndInitialize ()
     {
       BaseType2 bt2 = CreateMixedObject<BaseType2> (typeof (MixinWithOnInitialize2));
-      MixinWithOnInitialize2 mixin = Mixin.Get<MixinWithOnInitialize2> (bt2);
+      MixinWithOnInitialize2 mixin = Mixin.Get<MixinWithOnInitialize2> (bt2)!;
       Assert.That (mixin, Is.Not.Null);
       Assert.That (mixin.ThisValue, Is.Not.Null);
       Assert.That (mixin.BaseValue, Is.Not.Null);

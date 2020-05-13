@@ -32,17 +32,17 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class ClassContextBuilderTest
   {
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _parentBuilderMock;
-    private ClassContextBuilder _classBuilder;
-    private ClassContextBuilder _classBuilderMock;
-    private MixinContextBuilder _mixinBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _parentBuilderMock = null!;
+    private ClassContextBuilder _classBuilder = null!;
+    private ClassContextBuilder _classBuilderMock = null!;
+    private MixinContextBuilder _mixinBuilderMock = null!;
     
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _parentBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration)null);
+      _parentBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?)null);
       _classBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
       _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_parentBuilderMock, typeof (BaseType2));
       _mixinBuilderMock = _mockRepository.StrictMock<MixinContextBuilder> (_classBuilderMock, typeof (BT2Mixin1), MixinContextOriginObjectMother.Create());
@@ -849,7 +849,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 
       var builtContext = _classBuilder.BuildClassContext ();
 
-      Assert.That (builtContext.Mixins[typeof (BT1Mixin1)].ExplicitDependencies, Has.Member (typeof (BT1Mixin2)));
+      Assert.That (builtContext.Mixins[typeof (BT1Mixin1)]!.ExplicitDependencies, Has.Member (typeof (BT1Mixin2)));
     }
 
     [Test]
@@ -862,8 +862,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var inheritedContext2 = ClassContextObjectMother.Create (typeof (NullTarget), typeof (BT1Mixin2));
       var builtContext = _classBuilder.BuildClassContext (new[] { inheritedContext1, inheritedContext2 });
 
-      Assert.That (builtContext.Mixins[typeof (BT1Mixin1)].ExplicitDependencies, Has.Member (typeof (BT1Mixin2)));
-      Assert.That (builtContext.Mixins[typeof (BT1Mixin2)].ExplicitDependencies, Has.Member (typeof (BT2Mixin1)));
+      Assert.That (builtContext.Mixins[typeof (BT1Mixin1)]!.ExplicitDependencies, Has.Member (typeof (BT1Mixin2)));
+      Assert.That (builtContext.Mixins[typeof (BT1Mixin2)]!.ExplicitDependencies, Has.Member (typeof (BT2Mixin1)));
     }
 
     [Test]

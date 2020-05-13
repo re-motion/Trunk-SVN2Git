@@ -30,11 +30,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class MixinContextBuilderTest
   {
-    private MockRepository _mockRepository;
-    private ClassContextBuilder _parentBuilderMock;
-    private MixinContextOrigin _origin;
+    private MockRepository _mockRepository = null!;
+    private ClassContextBuilder _parentBuilderMock = null!;
+    private MixinContextOrigin _origin = null!;
 
-    private MixinContextBuilder _mixinBuilder;
+    private MixinContextBuilder _mixinBuilder = null!;
 
     [SetUp]
     public void SetUp ()

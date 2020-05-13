@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
       {
         Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (previousConfiguration));
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)), Is.Not.Null);
-        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7))!.Mixins.ContainsKey (typeof (BT7Mixin0)), Is.True);
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)), Is.Null);
       }
       Assert.That (MixinConfiguration.ActiveConfiguration, Is.SameAs (previousConfiguration));
@@ -52,7 +52,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
         Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (previousConfiguration));
         Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (parentConfiguration));
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)), Is.Not.Null);
-        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7)).Mixins.ContainsKey (typeof (BT7Mixin0)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType7))!.Mixins.ContainsKey (typeof (BT7Mixin0)), Is.True);
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)), Is.Null);
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType2)), Is.Not.Null);
       }
@@ -68,9 +68,9 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
       {
         Assert.That (MixinConfiguration.ActiveConfiguration, Is.Not.SameAs (previousConfiguration));
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)), Is.Not.Null);
-        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1)).Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))!.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
         Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)), Is.Not.Null);
-        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4)).Mixins.ContainsKey (typeof (BT4Mixin1)), Is.True);
+        Assert.That (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType4))!.Mixins.ContainsKey (typeof (BT4Mixin1)), Is.True);
       }
       Assert.That (MixinConfiguration.ActiveConfiguration, Is.SameAs (previousConfiguration));
     }

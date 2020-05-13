@@ -31,6 +31,6 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { }
     }
 
-    public event System.Action<string> Event;
+    public event System.Action<string>? Event;
   }
 }

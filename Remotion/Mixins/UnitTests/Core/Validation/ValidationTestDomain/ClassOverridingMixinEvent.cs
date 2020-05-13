@@ -21,6 +21,6 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
   public class ClassOverridingMixinEvent
   {
     [OverrideMixin]
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
 }

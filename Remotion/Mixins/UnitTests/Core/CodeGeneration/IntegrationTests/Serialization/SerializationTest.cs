@@ -84,11 +84,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
         OverridableBaseType deserialiedInstance = Serializer.SerializeAndDeserialize (instance);
 
         Assert.That (deserialiedInstance.OverridableMethod (85), Is.EqualTo ("MixinOverridingClassMethod.OverridableMethod-85"));
-        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Target, Is.SameAs (deserialiedInstance));
+        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance)!.Target, Is.SameAs (deserialiedInstance));
 
-        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Next, Is.Not.Null);
+        Assert.That (Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance)!.Next, Is.Not.Null);
         Assert.That (
-                      ((MixinOverridingClassMethod.IRequirements) Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance).Next).OverridableMethod (84), Is.EqualTo ("OverridableBaseType.OverridableMethod(84)"));
+                      ((MixinOverridingClassMethod.IRequirements) Mixin.Get<MixinOverridingClassMethod> (deserialiedInstance)!.Next).OverridableMethod (84), Is.EqualTo ("OverridableBaseType.OverridableMethod(84)"));
       }
     }
 
@@ -187,10 +187,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithOnInitializedAndOnDeserialized)).EnterScope())
       {
         NullTarget instance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
-        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance).OnInitializedCalled, Is.True);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance)!.OnInitializedCalled, Is.True);
 
         NullTarget deserializedInstance = Serializer.SerializeAndDeserialize (instance);
-        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance).OnInitializedCalled, Is.False);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance)!.OnInitializedCalled, Is.False);
       }
     }
 
@@ -200,10 +200,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (MixinWithOnInitializedAndOnDeserialized)).EnterScope())
       {
         NullTarget instance = ObjectFactory.Create<NullTarget> (ParamList.Empty);
-        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance).OnDeserializedCalled, Is.False);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (instance)!.OnDeserializedCalled, Is.False);
 
         NullTarget deserializedInstance = Serializer.SerializeAndDeserialize (instance);
-        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance).OnDeserializedCalled, Is.True);
+        Assert.That (Mixin.Get<MixinWithOnInitializedAndOnDeserialized> (deserializedInstance)!.OnDeserializedCalled, Is.True);
       }
     }
 

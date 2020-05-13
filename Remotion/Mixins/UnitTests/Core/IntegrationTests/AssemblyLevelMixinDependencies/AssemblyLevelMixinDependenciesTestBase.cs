@@ -24,7 +24,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
 {
   public class AssemblyLevelMixinDependenciesTestBase
   {
-    private MixinConfiguration _previousConfiguration;
+    private MixinConfiguration? _previousConfiguration;
 
     [SetUp]
     public virtual void SetUp ()

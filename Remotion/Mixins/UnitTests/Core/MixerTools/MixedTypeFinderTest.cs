@@ -29,14 +29,14 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   [TestFixture]
   public class MixedTypeFinderTest
   {
-    private ClassContext _configuredClassContext1;
-    private ClassContext _configuredClassContext2;
-    private ClassContext _genericClassContext;
-    private ClassContext _interfaceClassContext;
+    private ClassContext _configuredClassContext1 = null!;
+    private ClassContext _configuredClassContext2 = null!;
+    private ClassContext _genericClassContext = null!;
+    private ClassContext _interfaceClassContext = null!;
 
-    private MixinConfiguration _configuration;
+    private MixinConfiguration _configuration = null!;
 
-    private ITypeDiscoveryService _configuredTypeDiscoveryServiceStub;
+    private ITypeDiscoveryService _configuredTypeDiscoveryServiceStub = null!;
 
     [SetUp]
     public void SetUp ()

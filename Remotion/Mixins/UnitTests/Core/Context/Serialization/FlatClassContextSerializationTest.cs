@@ -24,7 +24,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
   [TestFixture]
   public class FlatClassContextSerializationTest
   {
-    private FlatClassContextSerializer _serializer;
+    private FlatClassContextSerializer _serializer = null!;
 
     [SetUp]
     public void SetUp()

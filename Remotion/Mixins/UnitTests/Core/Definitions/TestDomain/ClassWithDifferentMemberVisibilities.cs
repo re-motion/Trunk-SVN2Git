@@ -54,11 +54,11 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.TestDomain
     private int PrivateProperty { get; set; }
     public int PropertyWithPrivateSetter { get; private set; }
 
-    public event EventHandler PublicEvent;
-    protected event EventHandler ProtectedEvent;
-    protected internal event EventHandler ProtectedInternalEvent;
-    internal event EventHandler InternalEvent;
-    private event EventHandler PrivateEvent;
+    public event EventHandler? PublicEvent;
+    protected event EventHandler? ProtectedEvent;
+    protected internal event EventHandler? ProtectedInternalEvent;
+    internal event EventHandler? InternalEvent;
+    private event EventHandler? PrivateEvent;
     // ReSharper restore UnusedAutoPropertyAccessor.Local
     // ReSharper restore UnusedMember.Local
     // ReSharper restore EventNeverSubscribedTo.Local

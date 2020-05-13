@@ -29,6 +29,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       get { return 0; }
     }
 
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
 }

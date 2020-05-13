@@ -26,7 +26,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class ReadOnlyContextCollectionTest
   {
-    private ReadOnlyContextCollection<string, int> _collection;
+    private ReadOnlyContextCollection<string, int> _collection = null!;
 
     [SetUp]
     public void SetUp ()
@@ -69,7 +69,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     public void NewCollection_NullValue ()
     {
       Assert.That (
-          () => new ReadOnlyContextCollection<string, string> ( delegate { return ""; }, new string[] { null }),
+          () => new ReadOnlyContextCollection<string, string> ( delegate { return ""; }, new string[] { null! }),
           Throws.InstanceOf<ArgumentNullException>()
               .With.Message.EqualTo (
                   "Value cannot be null.\r\nParameter name: values[0]"));
@@ -170,7 +170,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       object[] values = new object[5];
       ((ICollection) _collection).CopyTo (values, 1);
-      Assert.That (values, Is.EqualTo (new object[] { null, 1, 2, 3, null }));
+      Assert.That (values, Is.EqualTo (new object?[] { null, 1, 2, 3, null }));
     }
 
     [Test]

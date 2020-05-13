@@ -28,7 +28,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
   [TestFixture]
   public class MixinDefinitionSorterTest
   {
-    private IMixinDefinitionSorter _sorter;
+    private IMixinDefinitionSorter _sorter = null!;
 
     [SetUp]
     public void SetUp ()
@@ -253,7 +253,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       foreach (var tuple in mixinTypesAndDependencies)
       {
         foreach (var dependency in tuple.Item3)
-          DefinitionObjectMother.CreateMixinDependencyDefinition (targetClassDefinition.Mixins[tuple.Item1], targetClassDefinition.Mixins[dependency]);
+          DefinitionObjectMother.CreateMixinDependencyDefinition (targetClassDefinition.Mixins[tuple.Item1]!, targetClassDefinition.Mixins[dependency]!);
       }
 
       return targetClassDefinition;

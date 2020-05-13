@@ -46,7 +46,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     public void FailsIfMixinIsInterface ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType1), typeof (IBT1Mixin1));
-      var log = Validator.Validate (definition.Mixins[typeof (IBT1Mixin1)]);
+      var log = Validator.Validate (definition.Mixins[typeof (IBT1Mixin1)]!);
 
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinCannotBeInterface", log), Is.True);
     }
@@ -55,7 +55,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     public void FailsIfMixinNonPublic ()
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType5), typeof (BT5Mixin2));
-      var log = Validator.Validate (definition.Mixins[typeof (BT5Mixin2)]);
+      var log = Validator.Validate (definition.Mixins[typeof (BT5Mixin2)]!);
 
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultMixinRules.MixinMustBePublic", log), Is.True);
     }

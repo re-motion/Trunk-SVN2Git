@@ -50,7 +50,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
         Type proxyType = t.GetNestedType ("NextCallProxy");
 
         RequiredNextCallTypeDefinition bt3Mixin4Req =
-            DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredNextCallTypes[typeof (IBT3Mixin4)];
+                DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3)).RequiredNextCallTypes[typeof (IBT3Mixin4)]!;
         Assert.That (bt3Mixin4Req, Is.Not.Null);
         Assert.That (bt3Mixin4Req.Type.IsAssignableFrom (proxyType), Is.True);
 
@@ -90,7 +90,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
     public void NextCallsToIndirectlyRequiredInterfaces ()
     {
       ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> (ParamList.Empty);
-      MixinWithIndirectRequirements mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
+      MixinWithIndirectRequirements mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir)!;
       Assert.That (mixin.GetStuffViaBase (), Is.EqualTo ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
                                                          + "ClassImplementingIndirectRequirements.Method3"));
     }

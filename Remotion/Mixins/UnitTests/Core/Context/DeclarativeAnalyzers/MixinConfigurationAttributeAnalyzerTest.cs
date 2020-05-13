@@ -26,16 +26,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   [TestFixture]
   public class MixinConfigurationAttributeAnalyzerTest
   {
-    private string _fakeEntity;
+    private string _fakeEntity = null!;
 
-    private MixinConfigurationBuilder _fakeConfigurationBuilder;
+    private MixinConfigurationBuilder _fakeConfigurationBuilder = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _fakeEntity = "test entity";
 
-      _fakeConfigurationBuilder = MockRepository.GenerateStub<MixinConfigurationBuilder> (new object[] { null });
+      _fakeConfigurationBuilder = MockRepository.GenerateStub<MixinConfigurationBuilder> (new object?[] { null });
     }
 
     [Test]

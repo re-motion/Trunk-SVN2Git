@@ -24,7 +24,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class IObjectFactoryImplementationTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

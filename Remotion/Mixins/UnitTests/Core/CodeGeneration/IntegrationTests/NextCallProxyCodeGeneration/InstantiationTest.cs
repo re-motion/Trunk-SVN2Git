@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
     {
       Type t = CreateMixedType (typeof (BaseType3), typeof (BT3Mixin3<,>));
       Type proxyType = t.GetNestedType ("NextCallProxy");
-      Activator.CreateInstance (proxyType, new object[] { null, -1 });
+      Activator.CreateInstance (proxyType, new object?[] { null, -1 });
     }
 
     [Test]

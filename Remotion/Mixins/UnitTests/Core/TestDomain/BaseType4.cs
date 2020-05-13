@@ -33,6 +33,6 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       get { return "BaseType4.NonVirtualProperty"; }
     }
 
-    public event EventHandler NonVirtualEvent;
+    public event EventHandler? NonVirtualEvent;
   }
 }

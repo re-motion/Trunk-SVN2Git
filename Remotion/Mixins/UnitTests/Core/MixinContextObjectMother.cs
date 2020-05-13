@@ -24,10 +24,10 @@ namespace Remotion.Mixins.UnitTests.Core
   {
     public static MixinContext Create (
         MixinKind mixinKind = MixinKind.Extending,
-        Type mixinType = null,
+        Type? mixinType = null,
         MemberVisibility introducedMemberVisibility = MemberVisibility.Private,
-        IEnumerable<Type> explicitDependencies = null,
-        MixinContextOrigin origin = null)
+        IEnumerable<Type>? explicitDependencies = null,
+        MixinContextOrigin? origin = null)
     {
       return new MixinContext (
           mixinKind,

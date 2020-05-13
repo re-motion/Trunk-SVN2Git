@@ -57,7 +57,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo>(), new Dictionary<MethodInfo, MethodInfo>());
       importerMock.Replay ();
       
-      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
+      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers))!;
 
       Assert.That (result.Identifier, Is.SameAs (expectedIdentifier));
       
@@ -73,7 +73,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo> (), new Dictionary<MethodInfo, MethodInfo>());
       importerMock.Replay ();
 
-      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
+      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers))!;
 
       Assert.That (result.GeneratedType, Is.SameAs (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers)));
 
@@ -89,7 +89,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       SetupImporterMock (importerMock, expectedIdentifier, new Dictionary<MethodInfo, MethodInfo> (), new Dictionary<MethodInfo, MethodInfo>());
       importerMock.Replay ();
 
-      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
+      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers))!;
 
       Assert.That (result.GeneratedOverrideInterface, Is.SameAs (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers.IOverriddenMethods)));
 
@@ -130,7 +130,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
           new Dictionary<MethodInfo, MethodInfo> { { method1, wrapper1 }, { method2, wrapper2} });
       importerMock.Replay ();
 
-      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
+      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers))!;
       Assert.That (result.GetPubliclyCallableMixinMethod (method1), Is.EqualTo (wrapper1));
       Assert.That (result.GetPubliclyCallableMixinMethod (method2), Is.EqualTo (wrapper2));
 
@@ -155,7 +155,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
           new Dictionary<MethodInfo, MethodInfo> ());
       importerMock.Replay ();
 
-      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers));
+      var result = importerMock.GetMetadataForMixinType (typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers))!;
       Assert.That (result.GetOverrideInterfaceMethod (mixinMethod1), Is.SameAs (ifcMethod1));
       Assert.That (result.GetOverrideInterfaceMethod (mixinMethod2), Is.SameAs (ifcMethod2));
 
@@ -260,8 +260,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       // prepare importerMock.GetWrapperAttribute to return attribute1 and attribute2 for wrapperMethod1 and wrapperMethod2
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
-      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", nonWrapperMethod1)).Return (null);
-      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", nonWrapperMethod2)).Return (null);
+      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", nonWrapperMethod1)).Return (null!);
+      importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", nonWrapperMethod2)).Return (null!);
       importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", wrapperMethod1)).Return (attribute1);
       importerMock.Stub (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "GetWrapperAttribute", wrapperMethod2)).Return (attribute2);
       importerMock.Replay ();

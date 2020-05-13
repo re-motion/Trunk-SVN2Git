@@ -28,20 +28,20 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class InheritanceResolvingClassContextBuilderTest
   {
-    private ClassContext _parentContextWithoutBuilder;
-    private ClassContextCollection _parentContexts;
+    private ClassContext _parentContextWithoutBuilder = null!;
+    private ClassContextCollection _parentContexts = null!;
 
-    private ClassContextBuilder _classContextBuilderWithParent;
-    private ClassContext _parentContextWithBuilder;
-    private ClassContextBuilder _classContextBuilderWithIndirectParent;
-    private ClassContextBuilder _classContextBuilderWithoutParent;
+    private ClassContextBuilder _classContextBuilderWithParent = null!;
+    private ClassContext _parentContextWithBuilder = null!;
+    private ClassContextBuilder _classContextBuilderWithIndirectParent = null!;
+    private ClassContextBuilder _classContextBuilderWithoutParent = null!;
 
-    private Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> _buildersWithParentContexts;
+    private Dictionary<Type, Tuple<ClassContextBuilder, ClassContext?>> _buildersWithParentContexts = null!;
     
-    private IMixinInheritancePolicy _inheritancePolicyMock;
-    private ClassContext _inheritedContext;
+    private IMixinInheritancePolicy _inheritancePolicyMock = null!;
+    private ClassContext _inheritedContext = null!;
 
-    private InheritanceResolvingClassContextBuilder _builder;
+    private InheritanceResolvingClassContextBuilder _builder = null!;
 
     [SetUp]
     public void SetUp ()
@@ -55,9 +55,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       _classContextBuilderWithoutParent = new ClassContextBuilder (typeof (BaseType4));
       _classContextBuilderWithParent.AddMixin (typeof (BT4Mixin1));
 
-      _buildersWithParentContexts = new Dictionary<Type, Tuple<ClassContextBuilder, ClassContext>> ();
-      _buildersWithParentContexts.Add (_classContextBuilderWithParent.TargetType, Tuple.Create (_classContextBuilderWithParent, _parentContextWithBuilder));
-      _buildersWithParentContexts.Add (_classContextBuilderWithoutParent.TargetType, Tuple.Create (_classContextBuilderWithoutParent, (ClassContext) null));
+      _buildersWithParentContexts = new Dictionary<Type, Tuple<ClassContextBuilder, ClassContext?>> ();
+      _buildersWithParentContexts.Add (_classContextBuilderWithParent.TargetType, Tuple.Create<ClassContextBuilder, ClassContext?> (_classContextBuilderWithParent, _parentContextWithBuilder));
+      _buildersWithParentContexts.Add (_classContextBuilderWithoutParent.TargetType, Tuple.Create (_classContextBuilderWithoutParent, (ClassContext?) null));
 
       _parentContextWithoutBuilder = ClassContextObjectMother.Create(typeof (BaseType1));
       _parentContexts = new ClassContextCollection (_parentContextWithoutBuilder, _parentContextWithBuilder);

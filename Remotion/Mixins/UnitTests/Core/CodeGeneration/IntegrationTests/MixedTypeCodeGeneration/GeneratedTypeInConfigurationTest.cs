@@ -25,7 +25,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
   [TestFixture]
   public class GeneratedTypeInConfigurationTest : CodeGenerationBaseTest
   {
-    private Type _generatedType;
+    private Type _generatedType = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp ()

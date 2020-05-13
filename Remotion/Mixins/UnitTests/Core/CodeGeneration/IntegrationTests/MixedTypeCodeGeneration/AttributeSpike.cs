@@ -49,7 +49,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       }
 
       [MultiInherited, MultiNonInherited, NonMultiInherited, NonMultiNonInherited]
-      public virtual event EventHandler Event;
+      public virtual event EventHandler? Event;
     }
 
     [MultiInherited, MultiNonInherited, NonMultiInherited, NonMultiNonInherited]
@@ -68,7 +68,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       }
 
       [MultiInherited, MultiNonInherited, NonMultiInherited, NonMultiNonInherited]
-      public override event EventHandler Event;
+      public override event EventHandler? Event;
     }
 
     public class DerivedWithoutAttributes : Base
@@ -83,7 +83,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
         get { return base.Property; }
       }
 
-      public override event EventHandler Event;
+      public override event EventHandler? Event;
     }
 
     [Test]

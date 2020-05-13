@@ -42,7 +42,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     public void ThisCallToClassImplementingInternalInterface ()
     {
       ClassImplementingInternalInterface ciii = ObjectFactory.Create<ClassImplementingInternalInterface> (ParamList.Empty);
-      var mixin = Mixin.Get<MixinWithClassTargetCallImplementingInternalInterface> (ciii);
+      var mixin = Mixin.Get<MixinWithClassTargetCallImplementingInternalInterface> (ciii)!;
       Assert.That (mixin.GetStringViaThis (), Is.EqualTo ("ClassImplementingInternalInterface.Foo"));
     }
 
@@ -50,7 +50,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     public void ThisCallsToIndirectlyRequiredInterfaces ()
     {
       ClassImplementingIndirectRequirements ciir = ObjectFactory.Create<ClassImplementingIndirectRequirements> (ParamList.Empty);
-      var mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir);
+      var mixin = Mixin.Get<MixinWithIndirectRequirements> (ciir)!;
       Assert.That (mixin.GetStuffViaThis (), Is.EqualTo ("ClassImplementingIndirectRequirements.Method1-ClassImplementingIndirectRequirements.BaseMethod1-"
                                                          + "ClassImplementingIndirectRequirements.Method3"));
     }

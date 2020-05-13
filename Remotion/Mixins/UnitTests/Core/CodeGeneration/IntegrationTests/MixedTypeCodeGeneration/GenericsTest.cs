@@ -30,17 +30,17 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     public void GenericMixinsAreSpecialized ()
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (BT3Mixin3<,>));
-      object mixin = Mixin.Get (typeof (BT3Mixin3<,>), bt3);
+      object mixin = Mixin.Get (typeof (BT3Mixin3<,>), bt3)!;
       Assert.That (mixin, Is.Not.Null);
 
-      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (mixin.GetType ());
+      PropertyInfo targetProperty = MixinReflector.GetTargetProperty (mixin.GetType ())!;
       Assert.That (targetProperty, Is.Not.Null);
 
       Assert.That (targetProperty.GetValue (mixin, null), Is.Not.Null);
       Assert.That (targetProperty.GetValue (mixin, null), Is.SameAs (bt3));
       Assert.That (targetProperty.PropertyType, Is.EqualTo (typeof (BaseType3)));
 
-      PropertyInfo nextProperty = MixinReflector.GetNextProperty (mixin.GetType ());
+      PropertyInfo nextProperty = MixinReflector.GetNextProperty (mixin.GetType ())!;
       Assert.That (nextProperty, Is.Not.Null);
 
       Assert.That (nextProperty.GetValue (mixin, null), Is.Not.Null);
@@ -53,8 +53,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       BaseType3 bt3 = CreateMixedObject<BaseType3> (typeof (VeryGenericMixin<,>), typeof (BT3Mixin4));
       var m = bt3 as IVeryGenericMixin;
-      Assert.That (m, Is.Not.Null);
-      Assert.That (m.GetMessage ("5"), Is.EqualTo ("IVeryGenericMixin.GenericIfcMethod-5"));
+      Assert.That (m!, Is.Not.Null);
+      Assert.That (m!.GetMessage ("5"), Is.EqualTo ("IVeryGenericMixin.GenericIfcMethod-5"));
     }
 
     [Test]
@@ -63,7 +63,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       var cougs = CreateMixedObject<ClassOverridingUltraGenericStuff> (typeof (AbstractDerivedUltraGenericMixin<,>), typeof (BT3Mixin4));
       var m = cougs as IUltraGenericMixin;
       Assert.That (m, Is.Not.Null);
-      Assert.That (m.GetMessage ("5"), Is.EqualTo ("String-IVeryGenericMixin.GenericIfcMethod-5"));
+      Assert.That (m!.GetMessage ("5"), Is.EqualTo ("String-IVeryGenericMixin.GenericIfcMethod-5"));
     }
 
   }

@@ -20,8 +20,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
 {
   public class MixinOverridingMethodCalledFromCtor : Mixin<object, object>
   {
-    public object MyThis;
-    public object MyBase;
+    public object? MyThis;
+    public object? MyBase;
 
     [OverrideTarget]
     public virtual object VirtualMethod ()

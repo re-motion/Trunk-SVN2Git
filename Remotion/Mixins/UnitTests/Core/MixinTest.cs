@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void MixinGet_FindsMixinWithGenericMatch ()
     {
       BaseType3 bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
-      object mixin = Mixin.Get (typeof (BT3Mixin3<,>), bt3);
+      object mixin = Mixin.Get (typeof (BT3Mixin3<,>), bt3)!;
       Assert.That (mixin, Is.Not.Null);
     }
 

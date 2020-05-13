@@ -25,14 +25,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class MixinContextCollectionTest
   {
-    private MixinContextCollection _collection;
-    private MixinContextCollection _genericCollection;
+    private MixinContextCollection _collection = null!;
+    private MixinContextCollection _genericCollection = null!;
 
-    private MixinContext _mcObject;
-    private MixinContext _mcString;
-    private MixinContext _mcList;
-    private MixinContext _mcGeneric;
-    private MixinContext _mcDerived;
+    private MixinContext _mcObject = null!;
+    private MixinContext _mcString = null!;
+    private MixinContext _mcList = null!;
+    private MixinContext _mcGeneric = null!;
+    private MixinContext _mcDerived = null!;
 
     [SetUp]
     public void SetUp ()

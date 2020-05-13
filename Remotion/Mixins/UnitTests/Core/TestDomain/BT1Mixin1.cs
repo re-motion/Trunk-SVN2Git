@@ -74,6 +74,6 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
     [BT1M1]
-    public event EventHandler IntroducedEvent;
+    public event EventHandler? IntroducedEvent;
   }
 }

@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyTargetCallDependency));
       var log = Validator.Validate (
-          definition.Mixins[typeof (MixinWithUnsatisfiedEmptyTargetCallDependency)].TargetCallDependencies[typeof (IEmptyInterface)]);
+          definition.Mixins[typeof (MixinWithUnsatisfiedEmptyTargetCallDependency)]!.TargetCallDependencies[typeof (IEmptyInterface)]!);
 
       AssertSuccess (log);
     }
@@ -41,7 +41,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithCircularTargetCallDependency1), typeof (MixinWithCircularTargetCallDependency2));
       var log = Validator.Validate (
-          definition.Mixins[typeof (MixinWithCircularTargetCallDependency1)]);
+          definition.Mixins[typeof (MixinWithCircularTargetCallDependency1)]!);
 
       AssertSuccess (log);
     }

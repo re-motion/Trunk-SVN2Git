@@ -27,15 +27,15 @@ namespace Remotion.Mixins.UnitTests.Core
     private static readonly Type s_targetClassType = typeof (string);
     private static readonly Type s_mixinType = typeof (int);
 
-    private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
-    private ClassContextBuilder _classBuilderMock;
+    private MockRepository _mockRepository = null!;
+    private MixinConfigurationBuilder _configurationBuilderMock = null!;
+    private ClassContextBuilder _classBuilderMock = null!;
 
     [SetUp]
     public void SetUp ()
     {
       _mockRepository = new MockRepository ();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration?) null);
       _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, s_targetClassType);
     }
 

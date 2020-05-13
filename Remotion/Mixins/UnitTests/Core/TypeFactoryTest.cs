@@ -47,12 +47,12 @@ namespace Remotion.Mixins.UnitTests.Core
       var target = (BaseType3) FormatterServices.GetSafeUninitializedObject (concreteType);
 
 // ReSharper disable SuspiciousTypeConversion.Global
-      TypeFactory.InitializeUnconstructedInstance (target as IMixinTarget, InitializationSemantics.Construction);
+      TypeFactory.InitializeUnconstructedInstance ((target as IMixinTarget)!, InitializationSemantics.Construction);
 // ReSharper restore SuspiciousTypeConversion.Global
 
       var mixin = Mixin.Get<BT3Mixin1> (target);
       Assert.That (mixin, Is.Not.Null, "Mixin must have been created");
-      Assert.That (mixin.Target, Is.SameAs (target), "Mixin must have been initialized");
+      Assert.That (mixin!.Target, Is.SameAs (target), "Mixin must have been initialized");
     }
 
     [Test]
@@ -64,11 +64,11 @@ namespace Remotion.Mixins.UnitTests.Core
       var mixins = new object[] { new DeserializationMixin() };
       PrivateInvoke.SetNonPublicField (target, "__extensions", mixins);
 
-      TypeFactory.InitializeUnconstructedInstance (target as IMixinTarget, InitializationSemantics.Deserialization);
+      TypeFactory.InitializeUnconstructedInstance ((target as IMixinTarget)!, InitializationSemantics.Deserialization);
 
       var mixin = Mixin.Get<DeserializationMixin>(target);
       Assert.That (mixin, Is.SameAs (mixins[0]));
-      Assert.That (mixin.Target, Is.SameAs (target), "Mixin must have been initialized");
+      Assert.That (mixin!.Target, Is.SameAs (target), "Mixin must have been initialized");
     }
 
     [Uses (typeof (DeserializationMixin))]

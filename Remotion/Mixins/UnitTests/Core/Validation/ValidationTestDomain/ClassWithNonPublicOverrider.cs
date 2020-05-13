@@ -21,13 +21,13 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
   public class ClassWithNonPublicOverrider
   {
     [OverrideMixin]
-    private string AbstractMethod (int i)
+    private string? AbstractMethod (int i)
     {
       return null;
     }
 
     [OverrideMixin]
-    private string AbstractProperty
+    private string? AbstractProperty
     {
       get { return null; }
     }

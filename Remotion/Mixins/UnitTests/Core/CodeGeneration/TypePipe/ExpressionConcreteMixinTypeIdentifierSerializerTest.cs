@@ -30,11 +30,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
   [TestFixture]
   public class ExpressionConcreteMixinTypeIdentifierSerializerTest
   {
-    private MethodInfo _simpleMethod1;
-    private MethodInfo _simpleMethod2;
-    private MethodInfo _genericMethod;
-    private MethodInfo _methodOnGenericClosedWithReferenceType;
-    private MethodInfo _methodOnGenericClosedWithValueType;
+    private MethodInfo _simpleMethod1 = null!;
+    private MethodInfo _simpleMethod2 = null!;
+    private MethodInfo _genericMethod = null!;
+    private MethodInfo _methodOnGenericClosedWithReferenceType = null!;
+    private MethodInfo _methodOnGenericClosedWithValueType = null!;
 
     [SetUp]
     public /* override*/ void SetUp ()

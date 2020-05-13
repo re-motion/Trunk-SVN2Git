@@ -26,12 +26,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   [TestFixture]
   public class DeclarativeConfigurationAnalyzerTest
   {
-    private MockRepository _mockRepository;
+    private MockRepository _mockRepository = null!;
 
-    private IMixinDeclarationAnalyzer<Type> _typeAnalyzerMock;
-    private IMixinDeclarationAnalyzer<Assembly> _assemblyAnalyzerMock;
+    private IMixinDeclarationAnalyzer<Type> _typeAnalyzerMock = null!;
+    private IMixinDeclarationAnalyzer<Assembly> _assemblyAnalyzerMock = null!;
 
-    private MixinConfigurationBuilder _fakeConfigurationBuilder;
+    private MixinConfigurationBuilder _fakeConfigurationBuilder = null!;
 
     [SetUp]
     public void SetUp ()
@@ -41,7 +41,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
       _typeAnalyzerMock = _mockRepository.StrictMock<IMixinDeclarationAnalyzer<Type>> ();
       _assemblyAnalyzerMock = _mockRepository.StrictMock<IMixinDeclarationAnalyzer<Assembly>> ();
 
-      _fakeConfigurationBuilder = _mockRepository.Stub<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _fakeConfigurationBuilder = _mockRepository.Stub<MixinConfigurationBuilder> ((MixinConfiguration?) null);
     }
 
     [Test]

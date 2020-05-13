@@ -34,6 +34,6 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
     [OverrideTarget]
-    public event EventHandler NonVirtualEvent;
+    public event EventHandler? NonVirtualEvent;
   }
 }

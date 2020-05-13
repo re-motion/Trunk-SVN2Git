@@ -22,6 +22,6 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
   public class BT5Mixin5
   {
     [OverrideTarget]
-    public event EventHandler Event;
+    public event EventHandler? Event;
   }
 }

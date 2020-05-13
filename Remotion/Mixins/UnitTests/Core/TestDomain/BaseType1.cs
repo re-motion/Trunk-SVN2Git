@@ -46,7 +46,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       set { _backingField = value; }
     }
 
-    public object this [int index]
+    public object? this [int index]
     {
       get { return null; }
     }
@@ -57,7 +57,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
     }
 
     [BT1]
-    public virtual event EventHandler VirtualEvent;
+    public virtual event EventHandler? VirtualEvent;
 
     public event EventHandler ExplicitEvent
     {
@@ -65,7 +65,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
       remove { VirtualEvent -= value; }
     }
 
-    internal Delegate[] GetVirtualEventInvocationList ()
+    internal Delegate[]? GetVirtualEventInvocationList ()
     {
       if (VirtualEvent != null)
         return VirtualEvent.GetInvocationList ();

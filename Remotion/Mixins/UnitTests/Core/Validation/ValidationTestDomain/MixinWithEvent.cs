@@ -20,6 +20,6 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
 {
   public class MixinWithEvent
   {
-    public virtual event EventHandler Event;
+    public virtual event EventHandler? Event;
   }
 }

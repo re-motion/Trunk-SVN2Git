@@ -42,7 +42,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
       set { Dev.Null = value; }
     }
 
-    public event EventHandler EventWithDefaultVisibility;
+    public event EventHandler? EventWithDefaultVisibility;
 
     [MemberVisibility (MemberVisibility.Public)]
     public void MethodWithPublicVisibility ()
@@ -57,6 +57,6 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain
     }
 
     [MemberVisibility (MemberVisibility.Public)]
-    public event EventHandler EventWithPublicVisibility;
+    public event EventHandler? EventWithPublicVisibility;
   }
 }

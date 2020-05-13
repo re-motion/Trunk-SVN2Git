@@ -15,14 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
   public class GenericTargetClass<T>
   {
+    [return: MaybeNull]
     public virtual T VirtualMethod ()
     {
-      return default (T);
+      return default (T)!;
     }
   }
 }

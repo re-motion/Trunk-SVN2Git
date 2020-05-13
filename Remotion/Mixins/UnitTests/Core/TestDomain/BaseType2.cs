@@ -27,7 +27,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
   [Serializable]
   public class BaseType2 : IBaseType2, ISerializable
   {
-    public string S;
+    public string? S;
 
     public BaseType2 ()
     {

@@ -25,8 +25,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
   [TestFixture]
   public class FlatClassContextTest
   {
-    private ClassContext _originalClassContext;
-    private FlatClassContext _flatClassContext;
+    private ClassContext _originalClassContext = null!;
+    private FlatClassContext _flatClassContext = null!;
 
     [SetUp]
     public void SetUp ()

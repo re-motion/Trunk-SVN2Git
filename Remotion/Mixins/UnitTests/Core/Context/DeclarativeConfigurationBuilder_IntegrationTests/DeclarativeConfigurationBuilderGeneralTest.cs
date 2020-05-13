@@ -55,7 +55,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
 
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.True);
-      Assert.That (configuration.GetContext (typeof (BaseType6)).ComposedInterfaces, Has.Member (typeof (ICBT6Mixin1)));
+      Assert.That (configuration.GetContext (typeof (BaseType6))!.ComposedInterfaces, Has.Member (typeof (ICBT6Mixin1)));
     }
 
     [Test]
@@ -65,7 +65,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           Assembly.GetExecutingAssembly (), 
           Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = configuration.GetContext (typeof (BaseType1));
+      ClassContext classContext = configuration.GetContext (typeof (BaseType1))!;
       Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
@@ -84,7 +84,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           .AddType (typeof (BT1Mixin2))
           .BuildConfiguration ();
 
-      ClassContext classContext = configuration.GetContext (typeof (BaseType1));
+      ClassContext classContext = configuration.GetContext (typeof (BaseType1))!;
       Assert.That (classContext.Mixins.Count, Is.EqualTo (2));
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
@@ -124,7 +124,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           null, 
           new[] { typeof (BaseType1), typeof (BT1Mixin1), typeof (MixinWithIgnoreForMixinConfigurationAttribute) });
 
-      Assert.That (configuration.GetContext (typeof (BaseType1)).Mixins.ContainsKey (typeof (MixinWithIgnoreForMixinConfigurationAttribute)), Is.False);
+      Assert.That (configuration.GetContext (typeof (BaseType1))!.Mixins.ContainsKey (typeof (MixinWithIgnoreForMixinConfigurationAttribute)), Is.False);
     }
 
     [Test]
@@ -217,12 +217,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = configuration.GetContext (typeof (TargetClassWithAdditionalDependencies));
+      ClassContext classContext = configuration.GetContext (typeof (TargetClassWithAdditionalDependencies))!;
       Assert.That (classContext, Is.Not.Null);
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (MixinWithAdditionalClassDependency)), Is.True);
       Assert.That (
-          classContext.Mixins[typeof (MixinWithAdditionalClassDependency)].ExplicitDependencies, Has.Member (typeof (MixinWithNoAdditionalDependency)));
+              classContext.Mixins[typeof (MixinWithAdditionalClassDependency)]!.ExplicitDependencies, Has.Member (typeof (MixinWithNoAdditionalDependency)));
     }
 
     [Test]
@@ -230,7 +230,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = configuration.GetContext (typeof (BaseType1));
+      ClassContext classContext = configuration.GetContext (typeof (BaseType1))!;
       Assert.That (classContext, Is.Not.Null);
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (BT1Mixin1)), Is.True);
@@ -241,7 +241,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (Assembly.GetExecutingAssembly ());
 
-      ClassContext classContext = configuration.GetContext (typeof (BaseType6));
+      ClassContext classContext = configuration.GetContext (typeof (BaseType6))!;
       Assert.That (classContext, Is.Not.Null);
 
       Assert.That (classContext.ComposedInterfaces, Has.Member (typeof (ICBT6Mixin1)));

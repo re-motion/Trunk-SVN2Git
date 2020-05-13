@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       var attribute = new AdditionalMixinDependencyAttribute (typeof (string), typeof (int), typeof (double));
 
-      var configurationBuilderStub = MockRepository.GenerateStub<MixinConfigurationBuilder> (new object[] { null });
+      var configurationBuilderStub = MockRepository.GenerateStub<MixinConfigurationBuilder> (new object?[] { null });
       var classContextBuilderMock = MockRepository.GenerateStrictMock<ClassContextBuilder> (typeof (string));
       
       configurationBuilderStub.Stub (stub => stub.ForClass (typeof (string))).Return (classContextBuilderMock);

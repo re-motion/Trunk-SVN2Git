@@ -36,20 +36,20 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   [TestFixture]
   public class MixerTest
   {
-    private string _assemblyOutputDirectoy;
-    private string _modulePath;
+    private string _assemblyOutputDirectoy = null!;
+    private string _modulePath = null!;
 
-    private IMixedTypeFinder _mixedTypeFinderStub;
-    private IMixerPipelineFactory _mixerPipelineFactoryStub;
-    private IPipeline _pipelineStub;
+    private IMixedTypeFinder _mixedTypeFinderStub = null!;
+    private IMixerPipelineFactory _mixerPipelineFactoryStub = null!;
+    private IPipeline _pipelineStub = null!;
     
-    private Mixer _mixer;
+    private Mixer _mixer = null!;
 
-    private IReflectionService _reflectionServiceDynamicMock;
-    private ICodeManager _codeManagerDynamicMock;
+    private IReflectionService _reflectionServiceDynamicMock = null!;
+    private ICodeManager _codeManagerDynamicMock = null!;
 
-    private Type _fakeMixedType;
-    private MixinConfiguration _configuration;
+    private Type _fakeMixedType = null!;
+    private MixinConfiguration _configuration = null!;
 
 
     [SetUp]
@@ -140,20 +140,20 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     public void Execute_RaisesClassContextBeingProcessed ()
     {
       _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
-      object eventSender = null;
-      TypeEventArgs eventArgs = null;
+      object? eventSender = null;
+      TypeEventArgs? eventArgs = null;
 
       _mixer.TypeBeingProcessed += (sender, args) => { eventSender = sender; eventArgs = args; };
       _mixer.Execute (_configuration);
 
       Assert.That (eventSender, Is.SameAs (_mixer));
-      Assert.That (eventArgs.Type, Is.SameAs (_fakeMixedType));
+      Assert.That (eventArgs!.Type, Is.SameAs (_fakeMixedType));
     }
 
     [Test]
     public void Execute_GetsConcreteType_WithActivatedConfiguration ()
     {
-      MixinConfiguration activeConfiguration = null;
+      MixinConfiguration? activeConfiguration = null;
 
       _reflectionServiceDynamicMock
           .Expect (mock => _reflectionServiceDynamicMock.GetAssembledType (_fakeMixedType))
@@ -179,8 +179,8 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
           .Throw (validationException);
       _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
 
-      object eventSender = null;
-      ValidationErrorEventArgs eventArgs = null;
+      object? eventSender = null;
+      ValidationErrorEventArgs? eventArgs = null;
 
       _mixer.ValidationErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
       _mixer.Execute (_configuration);
@@ -188,7 +188,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _reflectionServiceDynamicMock.VerifyAllExpectations ();
 
       Assert.That (eventSender, Is.SameAs (_mixer));
-      Assert.That (eventArgs.ValidationException, Is.SameAs (validationException));
+      Assert.That (eventArgs!.ValidationException, Is.SameAs (validationException));
     }
 
     [Test]
@@ -201,8 +201,8 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
           .Throw (exception);
       _codeManagerDynamicMock.Stub (stub => stub.FlushCodeToDisk()).Return (new string[0]);
 
-      object eventSender = null;
-      ErrorEventArgs eventArgs = null;
+      object? eventSender = null;
+      ErrorEventArgs? eventArgs = null;
 
       _mixer.ErrorOccurred += (sender, args) => { eventSender = sender; eventArgs = args; };
       _mixer.Execute (_configuration);
@@ -210,7 +210,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _reflectionServiceDynamicMock.VerifyAllExpectations ();
 
       Assert.That (eventSender, Is.SameAs (_mixer));
-      Assert.That (eventArgs.Exception, Is.SameAs (exception));
+      Assert.That (eventArgs!.Exception, Is.SameAs (exception));
     }
 
     [Test]

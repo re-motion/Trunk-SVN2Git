@@ -23,7 +23,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
   [TestFixture]
   public class FlatMixinContextOriginSerializationTest
   {
-    private FlatMixinContextOriginSerializer _serializer;
+    private FlatMixinContextOriginSerializer _serializer = null!;
 
     [SetUp]
     public void SetUp()

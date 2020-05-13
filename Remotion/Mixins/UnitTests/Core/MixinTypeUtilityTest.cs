@@ -54,7 +54,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void IsGeneratedConcreteMixedType_OnGeneratedMixinType ()
     {
       var mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
-      Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType();
+      Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance)!.GetType();
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (mixinType), Is.False);
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void IsIsGeneratedByMixinEngine_OnGeneratedMixinType ()
     {
       var mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
-      Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType ();
+      Type mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance)!.GetType ();
       Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (mixinType), Is.True);
     }
 
@@ -91,7 +91,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void IsIsGeneratedByMixinEngine_OnOverriddenMethodsInterface ()
     {
       var mixedInstance = ObjectFactory.Create<ClassOverridingMixinMembers> (ParamList.Empty);
-      var mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance).GetType ();
+      var mixinType = Mixin.Get<MixinWithAbstractMembers> (mixedInstance)!.GetType ();
       var overriddenMembersInterface = mixinType.GetNestedType ("IOverriddenMethods");
       Assert.That (overriddenMembersInterface, Is.Not.Null);
       Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (overriddenMembersInterface), Is.True);

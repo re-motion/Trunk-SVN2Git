@@ -30,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
   [TestFixture]
   public class LoadingFlushedCodeTest : CodeGenerationBaseTest
   {
-    private IPipeline _savedPipeline;
+    private IPipeline _savedPipeline = null!;
 
     public override void SetUp ()
     {
@@ -46,12 +46,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     public void DeserializeAfterFlusheCode ()
     {
       var mixedInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
-      var mixin = Mixin.Get<MixinWithAbstractMembers> (mixedInstance);
+      var mixin = Mixin.Get<MixinWithAbstractMembers> (mixedInstance)!;
       var serializedData = Serializer.Serialize (mixedInstance);
 
       _savedPipeline.CodeManager.FlushCodeToDisk();
       var mixedInstanceA = (ClassOverridingMixinMembers) Serializer.Deserialize (serializedData);
-      var mixinA = Mixin.Get<MixinWithAbstractMembers> (mixedInstance);
+      var mixinA = Mixin.Get<MixinWithAbstractMembers> (mixedInstance)!;
 
       Assert.That (mixedInstanceA.GetType(), Is.SameAs (mixedInstance.GetType()));
       Assert.That (mixinA.GetType(), Is.SameAs (mixin.GetType()));
@@ -88,7 +88,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     public void LoadFlushedCode_DoesNotIncludesGeneratedMixinTypes ()
     {
       var mixedInstance = CreateMixedObject<ClassOverridingMixinMembers> (typeof (MixinWithAbstractMembers));
-      var mixin = Mixin.Get<MixinWithAbstractMembers> (mixedInstance);
+      var mixin = Mixin.Get<MixinWithAbstractMembers> (mixedInstance)!;
 
       var identifier = GetConcreteMixinIdentifier(mixin);
       var assembly = FlushAndLoadAssemblyWithoutLocking();

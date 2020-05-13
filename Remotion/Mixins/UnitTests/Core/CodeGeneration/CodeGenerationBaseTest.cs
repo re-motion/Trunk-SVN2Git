@@ -23,7 +23,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 {
   public abstract class CodeGenerationBaseTest
   {
-    private IPipeline _previousDefaultPipeline;
+    private IPipeline _previousDefaultPipeline = null!;
 
     [SetUp]
     public virtual void SetUp ()

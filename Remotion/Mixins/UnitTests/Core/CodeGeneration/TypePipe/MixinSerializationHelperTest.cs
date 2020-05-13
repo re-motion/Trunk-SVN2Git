@@ -29,12 +29,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
   [TestFixture]
   public class MixinSerializationHelperTest
   {
-    private SerializationInfo _serializationInfo;
+    private SerializationInfo _serializationInfo = null!;
     private StreamingContext _context;
-    private FakeConcreteMixinType _concreteMixin;
-    private ConcreteMixinTypeIdentifier _identifier;
+    private FakeConcreteMixinType _concreteMixin = null!;
+    private ConcreteMixinTypeIdentifier _identifier = null!;
 
-    private IPipeline _pipeline;
+    private IPipeline _pipeline = null!;
 
     [SetUp]
     public void SetUp ()

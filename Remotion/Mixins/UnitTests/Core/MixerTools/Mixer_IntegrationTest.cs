@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   [TestFixture]
   public class Mixer_IntegrationTest
   {
-    private string _assemblyOutputDirectory;
+    private string _assemblyOutputDirectory = null!;
 
     [SetUp]
     public void SetUp ()

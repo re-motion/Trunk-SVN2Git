@@ -8,7 +8,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
   [TestFixture]
   public class ITargetClassDefinitionBuilderTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

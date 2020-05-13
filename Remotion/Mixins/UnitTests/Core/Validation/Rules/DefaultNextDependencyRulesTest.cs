@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation.Rules
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (MixinWithUnsatisfiedEmptyNextCallDependency));
       var log = Validator.Validate (
-          definition.Mixins[typeof (MixinWithUnsatisfiedEmptyNextCallDependency)].NextCallDependencies[typeof (IEmptyInterface)]);
+          definition.Mixins[typeof (MixinWithUnsatisfiedEmptyNextCallDependency)]!.NextCallDependencies[typeof (IEmptyInterface)]!);
 
       Assert.That (HasFailure ("Remotion.Mixins.Validation.Rules.DefaultNextCallDependencyRules.DependencyMustBeSatisfied", log), Is.True);
     }

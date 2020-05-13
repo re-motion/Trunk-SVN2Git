@@ -24,7 +24,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
   [Uses (typeof (MixinWithSerializationCallbacks))]
   public class TargetTypeWithSerializationCallbacks : ClassWithSerializationCallbacksBase
   {
-    private static ISerializationEventReceiver s_receiver;
+    private static ISerializationEventReceiver s_receiver = null!;
 
     public static void SetStaticReceiver (ISerializationEventReceiver receiver)
     {

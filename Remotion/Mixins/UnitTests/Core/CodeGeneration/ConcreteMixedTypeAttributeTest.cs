@@ -131,8 +131,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
       ClassContext regeneratedContext = attribute.GetClassContext ();
-      Assert.That (regeneratedContext.Mixins[typeof (string)].MixinKind, Is.EqualTo (MixinKind.Extending));
-      Assert.That (regeneratedContext.Mixins[typeof (double)].MixinKind, Is.EqualTo (MixinKind.Used));
+      Assert.That (regeneratedContext.Mixins[typeof (string)]!.MixinKind, Is.EqualTo (MixinKind.Extending));
+      Assert.That (regeneratedContext.Mixins[typeof (double)]!.MixinKind, Is.EqualTo (MixinKind.Used));
     }
 
     [Test]
@@ -149,9 +149,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       Assert.That (regeneratedContext.Mixins.Count, Is.EqualTo (3));
 
-      Assert.That (regeneratedContext.Mixins[typeof (object)].ExplicitDependencies, Is.EqualTo (new object[] { typeof (double), typeof (bool) }));
-      Assert.That (regeneratedContext.Mixins[typeof (string)].ExplicitDependencies, Is.EqualTo (new object[] { typeof (bool) }));
-      Assert.That (regeneratedContext.Mixins[typeof (int)].ExplicitDependencies, Is.Empty);
+      Assert.That (regeneratedContext.Mixins[typeof (object)]!.ExplicitDependencies, Is.EqualTo (new object[] { typeof (double), typeof (bool) }));
+      Assert.That (regeneratedContext.Mixins[typeof (string)]!.ExplicitDependencies, Is.EqualTo (new object[] { typeof (bool) }));
+      Assert.That (regeneratedContext.Mixins[typeof (int)]!.ExplicitDependencies, Is.Empty);
     }
 
     [Test]

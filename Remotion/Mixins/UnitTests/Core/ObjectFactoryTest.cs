@@ -91,7 +91,7 @@ namespace Remotion.Mixins.UnitTests.Core
         Assert.That (((IBaseType33) composed).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
         Assert.That (((IBaseType34) composed).IfcMethod(), Is.EqualTo ("BaseType3.IfcMethod"));
         Assert.That (composed.IfcMethod2(), Is.EqualTo ("BaseType3.IfcMethod2"));
-        Assert.That (Mixin.Get<Bt3Mixin7TargetCall> (composed).InvokeThisMethods(), Is.EqualTo ("BaseType3.IfcMethod-BT3Mixin4.Foo"));
+        Assert.That (Mixin.Get<Bt3Mixin7TargetCall> (composed)!.InvokeThisMethods(), Is.EqualTo ("BaseType3.IfcMethod-BT3Mixin4.Foo"));
       }
     }
 
@@ -220,7 +220,7 @@ namespace Remotion.Mixins.UnitTests.Core
         var bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         var mixin = Mixin.Get<BT3Mixin1> (bt3);
         Assert.That (mixin, Is.Not.Null);
-        Assert.That (mixin.Target, Is.SameAs (bt3));
+        Assert.That (mixin!.Target, Is.SameAs (bt3));
         Assert.That (mixin.Next, Is.Not.Null);
         Assert.That (mixin.Next, Is.Not.SameAs (bt3));
       }
@@ -234,7 +234,7 @@ namespace Remotion.Mixins.UnitTests.Core
         var bt3 = ObjectFactory.Create<BaseType3> (ParamList.Empty);
         var mixin = Mixin.Get<BT3Mixin2> (bt3);
         Assert.That (mixin, Is.Not.Null);
-        Assert.That (mixin.Target, Is.SameAs (bt3));
+        Assert.That (mixin!.Target, Is.SameAs (bt3));
       }
     }
 

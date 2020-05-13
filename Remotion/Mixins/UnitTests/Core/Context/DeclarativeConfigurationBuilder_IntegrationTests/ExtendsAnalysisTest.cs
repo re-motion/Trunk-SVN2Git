@@ -37,7 +37,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     public void Origin ()
     {
       var configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (Extender)).BuildConfiguration ();
-      var context = configuration.GetContext (typeof (object));
+      var context = configuration.GetContext (typeof (object))!;
       var mixinContext = context.Mixins.Single ();
 
       var expectedOrigin = new MixinContextOrigin (
@@ -64,9 +64,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration =
           new DeclarativeConfigurationBuilder (null).AddType (typeof (ExtenderWithDependencies)).AddType (typeof (ExtenderWithoutDependencies)).BuildConfiguration ();
-      Assert.That (configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithoutDependencies)].ExplicitDependencies.Count, Is.EqualTo (0));
-      Assert.That (configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithDependencies)].ExplicitDependencies.Count, Is.EqualTo (1));
-      Assert.That (configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithDependencies)].ExplicitDependencies, Has.Member (typeof (string)));
+      Assert.That (configuration.GetContext (typeof (object))!.Mixins[typeof (ExtenderWithoutDependencies)]!.ExplicitDependencies.Count, Is.EqualTo (0));
+      Assert.That (configuration.GetContext (typeof (object))!.Mixins[typeof (ExtenderWithDependencies)]!.ExplicitDependencies.Count, Is.EqualTo (1));
+      Assert.That (configuration.GetContext (typeof (object))!.Mixins[typeof (ExtenderWithDependencies)]!.ExplicitDependencies, Has.Member (typeof (string)));
     }
 
     public class ExtendsTargetBase { }
@@ -83,8 +83,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (ExtendingMixin))
           .AddType (typeof (ExtendsTargetDerivedWithoutExtends)).BuildConfiguration ();
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends)).Mixins.ContainsKey (typeof (ExtendingMixin)), Is.True);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends)).Mixins.Count, Is.EqualTo (1));
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends))!.Mixins.ContainsKey (typeof (ExtendingMixin)), Is.True);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends))!.Mixins.Count, Is.EqualTo (1));
     }
 
     public class ExtendsTargetDerivedWithExtends : ExtendsTargetBase { }
@@ -94,8 +94,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (ExtendingMixin))
           .AddType (typeof (ExtendsTargetDerivedWithExtends)).BuildConfiguration ();
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithExtends)).Mixins.ContainsKey (typeof (ExtendingMixin)), Is.True);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithExtends)).Mixins.Count, Is.EqualTo (1));
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithExtends))!.Mixins.ContainsKey (typeof (ExtendingMixin)), Is.True);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithExtends))!.Mixins.Count, Is.EqualTo (1));
     }
 
     [Extends (typeof (ExtendsTargetDerivedWithDerivedExtends))]
@@ -112,7 +112,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           .AddType (typeof (DerivedExtendingMixin))
           .BuildConfiguration();
 
-      var classContext = configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends));
+      var classContext = configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends))!;
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (ExtendingMixin)), Is.False);
       Assert.That (classContext.Mixins.ContainsKey (typeof (DerivedExtendingMixin)), Is.True);
@@ -129,10 +129,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (ExtendingMixin)).AddType (typeof (DerivedExtendingMixin))
           .AddType (typeof (DerivedExtendingMixin2)).BuildConfiguration ();
 
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends)).Mixins.ContainsKey (typeof (ExtendingMixin)), Is.False);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends)).Mixins.ContainsKey (typeof (DerivedExtendingMixin)), Is.True);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends)).Mixins.ContainsKey (typeof (DerivedExtendingMixin2)), Is.True);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends)).Mixins.Count, Is.EqualTo (2));
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends))!.Mixins.ContainsKey (typeof (ExtendingMixin)), Is.False);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends))!.Mixins.ContainsKey (typeof (DerivedExtendingMixin)), Is.True);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends))!.Mixins.ContainsKey (typeof (DerivedExtendingMixin2)), Is.True);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithDerivedExtends))!.Mixins.Count, Is.EqualTo (2));
     }
 
     [Extends (typeof (ExtendsTargetBase))]
@@ -160,9 +160,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     public void DuplicateExtendsForSameClassInInheritanceHierarchyIsIgnored ()
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (MixinExtendingBaseAndDerived)).BuildConfiguration ();
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetBase)).Mixins.ContainsKey (typeof (MixinExtendingBaseAndDerived)), Is.True);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends)).Mixins.ContainsKey (typeof (MixinExtendingBaseAndDerived)), Is.True);
-      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends)).Mixins.Count, Is.EqualTo (1));
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetBase))!.Mixins.ContainsKey (typeof (MixinExtendingBaseAndDerived)), Is.True);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends))!.Mixins.ContainsKey (typeof (MixinExtendingBaseAndDerived)), Is.True);
+      Assert.That (configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends))!.Mixins.Count, Is.EqualTo (1));
     }
 
     [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new[] { typeof (List<int>), typeof (IList<int>) })]
@@ -177,7 +177,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     public void ExtendsCanSpecializeGenericMixin ()
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (GenericMixinWithSpecialization<,>)).BuildConfiguration ();
-      MixinContext mixinContext = new List<MixinContext> (configuration.GetContext (typeof (ExtendsTargetBase)).Mixins)[0];
+      MixinContext mixinContext = new List<MixinContext> (configuration.GetContext (typeof (ExtendsTargetBase))!.Mixins)[0];
       Assert.That (Reflection.TypeExtensions.CanAscribeTo (mixinContext.MixinType, typeof (GenericMixinWithSpecialization<,>)), Is.True);
       Assert.That (mixinContext.MixinType.IsGenericTypeDefinition, Is.False);
       Assert.That (mixinContext.MixinType.ContainsGenericParameters, Is.False);

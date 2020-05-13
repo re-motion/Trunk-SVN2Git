@@ -54,7 +54,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
     {
       Type t = CreateMixedType(typeof (BaseType3), typeof (BT3Mixin3<,>));
       Type proxyType = t.GetNestedType ("NextCallProxy");
-      object proxy = Activator.CreateInstance (proxyType, new object[] { null, -1 });
+      object proxy = Activator.CreateInstance (proxyType, new object?[] { null, -1 });
 
       Assert.That (proxyType.GetField ("__depth"), Is.Not.Null);
       Assert.That (proxyType.GetField ("__this"), Is.Not.Null);
