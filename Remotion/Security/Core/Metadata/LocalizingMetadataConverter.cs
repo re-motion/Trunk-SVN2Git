@@ -26,7 +26,7 @@ namespace Remotion.Security.Metadata
     private delegate LocalizedName CreateLocalizedName<T> (T item, string text);
 
     private CultureInfo[] _cultures;
-    private IMetadataConverter _metadataConverter;
+    private IMetadataConverter? _metadataConverter;
     private IMetadataLocalizationConverter _localizationConverter;
 
     public LocalizingMetadataConverter (IMetadataLocalizationConverter localizationConverter, CultureInfo[] cultures)
@@ -38,7 +38,7 @@ namespace Remotion.Security.Metadata
       _cultures = cultures;
     }
 
-    public IMetadataConverter MetadataConverter
+    public IMetadataConverter? MetadataConverter
     {
       get { return _metadataConverter; }
       set { _metadataConverter = value; }
@@ -78,18 +78,18 @@ namespace Remotion.Security.Metadata
 
     private LocalizedName CreateLocalizedNameFromClassInfo (SecurableClassInfo classInfo, string text)
     {
-      return new LocalizedName (classInfo.ID, classInfo.Name, classInfo.Description);
+      return new LocalizedName (classInfo.ID!, classInfo.Name!, classInfo.Description!);
     }
 
     private LocalizedName CreateLocalizedNameFromEnumValueInfo (EnumValueInfo enumValueInfo, string text)
     {
-      EnumWrapper enumWrapper = EnumWrapper.Get(enumValueInfo.Name, enumValueInfo.TypeName);
-      return new LocalizedName (enumValueInfo.ID, enumWrapper.ToString (), enumValueInfo.Name);
+      EnumWrapper enumWrapper = EnumWrapper.Get(enumValueInfo.Name!, enumValueInfo.TypeName);
+      return new LocalizedName (enumValueInfo.ID!, enumWrapper.ToString (), enumValueInfo.Name!);
     }
 
     private LocalizedName CreateLocalizedNameFromStatePropertyInfo (StatePropertyInfo propertyInfo, string text)
     {
-      return new LocalizedName (propertyInfo.ID, propertyInfo.Name, propertyInfo.Description);
+      return new LocalizedName (propertyInfo.ID!, propertyInfo.Name!, propertyInfo.Description!);
     }
 
     private LocalizedName CreateLocalizedNameForState (StatePropertyInfo property, EnumValueInfo state, string text)

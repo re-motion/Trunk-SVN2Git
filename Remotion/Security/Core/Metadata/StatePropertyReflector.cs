@@ -70,7 +70,7 @@ namespace Remotion.Security.Metadata
 
       ArgumentUtility.CheckNotNull ("cache", cache);
 
-      StatePropertyInfo info = cache.GetStatePropertyInfo (property);
+      StatePropertyInfo? info = cache.GetStatePropertyInfo (property);
       if (info == null)
       {
         info = new StatePropertyInfo ();

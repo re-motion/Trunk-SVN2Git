@@ -24,7 +24,7 @@ namespace Remotion.Security
     /// <summary>Gets the <see cref="IObjectSecurityStrategy"/> used by that business object.</summary>
     /// <remarks>Primarily used by a <see cref="T:Remotion.Security.SecurityClient"/> to dispatch security checks.</remarks>
     /// <returns>Returns the <see cref="IObjectSecurityStrategy"/>.</returns>
-    IObjectSecurityStrategy GetSecurityStrategy ();
+    IObjectSecurityStrategy? GetSecurityStrategy ();
 
     /// <summary>Gets the <see cref="Type"/> representing the <see cref="ISecurableObject"/> in the security infrastructure.</summary>
     /// <returns>Return a <see cref="Type"/> object.</returns>

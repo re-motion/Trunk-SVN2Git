@@ -31,6 +31,6 @@ namespace Remotion.Security
     /// <summary>
     /// The position the user is a member of. Can be <see langword="null" />.
     /// </summary>
-    string Position { get; }
+    string? Position { get; }
   }
 }

@@ -70,7 +70,7 @@ namespace Remotion.Security
     /// </param>
     /// <returns>A new instance of the <see cref="SecurityContext"/> type.</returns>
     public static SecurityContext Create (
-        Type type, string owner, string ownerGroup, string ownerTenant, IDictionary<string, Enum> states, ICollection<Enum> abstractRoles)
+        Type type, string? owner, string? ownerGroup, string? ownerTenant, IDictionary<string, Enum> states, ICollection<Enum> abstractRoles)
     {
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("type", type, typeof (ISecurableObject));
       ArgumentUtility.CheckNotNull ("states", states);
@@ -162,9 +162,9 @@ namespace Remotion.Security
     }
 
     private readonly string _class;
-    private readonly string _owner;
-    private readonly string _ownerGroup;
-    private readonly string _ownerTenant;
+    private readonly string? _owner;
+    private readonly string? _ownerGroup;
+    private readonly string? _ownerTenant;
     private readonly bool _isStateless;
     private readonly Dictionary<string, EnumWrapper> _states;
     private readonly EnumWrapper[] _abstractRoles;
@@ -172,9 +172,9 @@ namespace Remotion.Security
 
     private SecurityContext (
         Type classType,
-        string owner,
-        string ownerGroup,
-        string ownerTenant,
+        string? owner,
+        string? ownerGroup,
+        string? ownerTenant,
         bool isStateless,
         Dictionary<string, EnumWrapper> states,
         EnumWrapper[] abstractRoles)
@@ -194,17 +194,17 @@ namespace Remotion.Security
       get { return _class; }
     }
 
-    public string Owner
+    public string? Owner
     {
       get { return _owner; }
     }
 
-    public string OwnerGroup
+    public string? OwnerGroup
     {
       get { return _ownerGroup; }
     }
 
-    public string OwnerTenant
+    public string? OwnerTenant
     {
       get { return _ownerTenant; }
     }
@@ -239,7 +239,7 @@ namespace Remotion.Security
       return _hashCode;
     }
 
-    public override bool Equals (object obj)
+    public override bool Equals (object? obj)
     {
       return EqualityUtility.EqualsEquatable (this, obj);
     }

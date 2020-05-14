@@ -28,6 +28,6 @@ namespace Remotion.Security
     /// <param name="principal">The <see cref="ISecurityPrincipal"/> on whose behalf the permissions are evaluated.</param>
     /// <returns>An array of <see cref="AccessType"/>s.</returns>
     [NotNull]
-    AccessType[] GetAccess (ISecurityContext context, ISecurityPrincipal principal);
+    AccessType[] GetAccess (ISecurityContext? context, ISecurityPrincipal? principal);
   }
 }

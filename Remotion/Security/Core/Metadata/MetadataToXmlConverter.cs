@@ -98,7 +98,7 @@ namespace Remotion.Security.Metadata
       XmlAttribute enumValueIDAttribute = document.CreateAttribute ("id");
       enumValueIDAttribute.Value = enumValueInfo.ID;
 
-      EnumWrapper enumWrapper = EnumWrapper.Get(enumValueInfo.Name, enumValueInfo.TypeName);
+      EnumWrapper enumWrapper = EnumWrapper.Get(enumValueInfo.Name!, enumValueInfo.TypeName);
       XmlAttribute enumValueNameAttribute = document.CreateAttribute ("name");
       enumValueNameAttribute.Value = enumWrapper.Name;
 
@@ -134,7 +134,7 @@ namespace Remotion.Security.Metadata
       XmlElement propertyValueElement = document.CreateElement ("state", _metadataSchema.SchemaUri);
 
       XmlAttribute propertyValueNameAttribute = document.CreateAttribute ("name");
-      propertyValueNameAttribute.Value = EnumWrapper.Get(enumValueInfo.Name, enumValueInfo.TypeName).Name;
+      propertyValueNameAttribute.Value = EnumWrapper.Get(enumValueInfo.Name!, enumValueInfo.TypeName).Name;
       
       XmlAttribute propertyValueValueAttribute = document.CreateAttribute ("value");
       propertyValueValueAttribute.Value = enumValueInfo.Value.ToString ();
@@ -174,12 +174,12 @@ namespace Remotion.Security.Metadata
 
     private XmlElement CreateStatePropertyRefElement (XmlDocument document, StatePropertyInfo propertyInfo)
     {
-      return CreateRefElement (document, "statePropertyRef", propertyInfo.ID);
+      return CreateRefElement (document, "statePropertyRef", propertyInfo.ID!);
     }
 
     private XmlElement CreateAccessTypeRefElement (XmlDocument document, EnumValueInfo accessTypeInfo)
     {
-      return CreateRefElement (document, "accessTypeRef", accessTypeInfo.ID);
+      return CreateRefElement (document, "accessTypeRef", accessTypeInfo.ID!);
     }
 
     private XmlElement CreateRefElement (XmlDocument document, string elementName, string idText)

@@ -26,14 +26,14 @@ namespace Remotion.Security
   public sealed class SecurityPrincipalRole : ISecurityPrincipalRole, IEquatable<SecurityPrincipalRole>
   {
     private readonly string _group;
-    private readonly string _position;
+    private readonly string? _position;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SecurityPrincipalRole"/> type.
     /// </summary>
     /// <param name="group">The group the user is a member of when he is this role. Must not be <see langword="null" /> or empty.</param>
     /// <param name="position">The position in the <paramref name="group"/>. Must not be empty.</param>
-    public SecurityPrincipalRole (string group, string position)
+    public SecurityPrincipalRole (string group, string? position)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("group", group);
       ArgumentUtility.CheckNotEmpty ("position", position);
@@ -47,7 +47,7 @@ namespace Remotion.Security
       get { return _group; }
     }
 
-    public string Position
+    public string? Position
     {
       get { return _position; }
     }
@@ -66,9 +66,9 @@ namespace Remotion.Security
       return true;
     }
 
-    public override bool Equals (object obj)
+    public override bool Equals (object? obj)
     {
-      SecurityPrincipalRole other = obj as SecurityPrincipalRole;
+      SecurityPrincipalRole? other = obj as SecurityPrincipalRole;
       if (other == null)
         return false;
       return ((IEquatable<SecurityPrincipalRole>) this).Equals (other);

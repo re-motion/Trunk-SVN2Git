@@ -63,7 +63,7 @@ namespace Remotion.Security.Metadata
       ArgumentUtility.CheckNotNull ("value", value);
       ArgumentUtility.CheckNotNull ("cache", cache);
 
-      EnumValueInfo info = cache.GetEnumValueInfo (value);
+      EnumValueInfo? info = cache.GetEnumValueInfo (value);
       if (info == null)
       {
         string name = value.ToString ();
