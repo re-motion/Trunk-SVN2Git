@@ -26,10 +26,10 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class CachingPermissionProviderDecoratorTest
   {
-    private IPermissionProvider _innerProviderStub;
-    private CachingPermissionProviderDecorator _cacheDecorator;
-    private MethodInfoAdapter _methodInformation;
-    private Type _type;
+    private IPermissionProvider _innerProviderStub = null!;
+    private CachingPermissionProviderDecorator _cacheDecorator = null!;
+    private MethodInfoAdapter _methodInformation = null!;
+    private Type _type = null!;
 
     [SetUp]
     public void SetUp ()
@@ -69,7 +69,7 @@ namespace Remotion.Security.UnitTests.Metadata
     [Test]
     public void GetRequiredMethodPermissions_WithNullMethod_ReturnsValueCopyFromCache ()
     {
-      _innerProviderStub.Stub (_ => _.GetRequiredMethodPermissions (null, null)).IgnoreArguments().Throw (new InvalidOperationException());
+      _innerProviderStub.Stub (_ => _.GetRequiredMethodPermissions (null!, null!)).IgnoreArguments().Throw (new InvalidOperationException());
 
       var methodInformation = new NullMethodInformation();
 

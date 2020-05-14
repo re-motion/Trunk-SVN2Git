@@ -27,11 +27,11 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class SecurityClientIntegrationTest
   {
-    private SecurityClient _securityClient;
-    private ISecurityPrincipal _securityPrincipalStub;
-    private IFunctionalSecurityStrategy _functionalSecurityStrategyStub;
-    private ISecurityProvider _securityProviderStub;
-    private IPrincipalProvider _principalProviderStub;
+    private SecurityClient _securityClient = null!;
+    private ISecurityPrincipal _securityPrincipalStub = null!;
+    private IFunctionalSecurityStrategy _functionalSecurityStrategyStub = null!;
+    private ISecurityProvider _securityProviderStub = null!;
+    private IPrincipalProvider _principalProviderStub = null!;
 
     [SetUp]
     public void SetUp ()

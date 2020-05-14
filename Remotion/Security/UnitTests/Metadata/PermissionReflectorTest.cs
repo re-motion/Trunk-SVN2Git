@@ -25,7 +25,7 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class PermissionReflectorTest
   {
-    private IPermissionProvider _permissionReflector;
+    private IPermissionProvider _permissionReflector = null!;
 
     [SetUp]
     public void SetUp ()

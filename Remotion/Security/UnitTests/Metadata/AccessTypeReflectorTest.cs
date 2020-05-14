@@ -32,9 +32,9 @@ namespace Remotion.Security.UnitTests.Metadata
 
     // member fields
 
-    private IEnumerationReflector _enumeratedTypeReflector;
-    private AccessTypeReflector _accessTypeReflector;
-    private MetadataCache _cache;
+    private IEnumerationReflector _enumeratedTypeReflector = null!;
+    private AccessTypeReflector _accessTypeReflector = null!;
+    private MetadataCache _cache = null!;
 
     // construction and disposing
 

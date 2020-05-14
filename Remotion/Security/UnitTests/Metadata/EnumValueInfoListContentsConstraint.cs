@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework.Constraints;
 using Remotion.Security.Metadata;
-
+#nullable disable
 namespace Remotion.Security.UnitTests.Metadata
 {
   public class EnumValueInfoListContentsConstraint : Constraint

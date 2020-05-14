@@ -44,9 +44,9 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
       }
     }
 
-    private SecurityContext _context;
-    private InvalidationToken _invalidationToken;
-    private IObjectSecurityStrategy _strategy;
+    private SecurityContext _context = null!;
+    private InvalidationToken _invalidationToken = null!;
+    private IObjectSecurityStrategy _strategy = null!;
 
     [SetUp]
     public void SetUp ()

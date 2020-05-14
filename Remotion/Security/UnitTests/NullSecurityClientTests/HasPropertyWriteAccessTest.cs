@@ -26,11 +26,12 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
   [TestFixture]
   public class HasPropertyWriteAccessTest
   {
-    private NullSecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private PropertyInfo _propertyInfo;
-    private IPropertyInformation _propertyInformation;
-    private IMethodInformation _methodInformation;
+    private NullSecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+
+    private PropertyInfo _propertyInfo = null!;
+    private IPropertyInformation _propertyInformation = null!;
+    private IMethodInformation _methodInformation = null!;
 
     [SetUp]
     public void SetUp()

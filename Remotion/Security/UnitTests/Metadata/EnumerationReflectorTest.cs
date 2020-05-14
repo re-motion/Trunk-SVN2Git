@@ -32,8 +32,8 @@ namespace Remotion.Security.UnitTests.Metadata
 
     // member fields
 
-    private EnumerationReflector _enumerationReflector;
-    private MetadataCache _cache;
+    private EnumerationReflector _enumerationReflector = null!;
+    private MetadataCache _cache = null!;
 
     // construction and disposing
 

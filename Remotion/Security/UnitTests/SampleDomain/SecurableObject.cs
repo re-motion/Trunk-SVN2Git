@@ -43,23 +43,23 @@ namespace Remotion.Security.UnitTests.SampleDomain
     }
 
     [DemandPermission (GeneralAccessTypes.Read)]
-    public static string GetObjectName (SecurableObject securableObject)
+    public static string? GetObjectName (SecurableObject securableObject)
     {
       return null;
     }
 
-    private readonly IObjectSecurityStrategy _securityStrategy;
+    private readonly IObjectSecurityStrategy? _securityStrategy;
 
     public SecurableObject ()
     {
     }
 
-    public SecurableObject (IObjectSecurityStrategy objectSecurityStrategy)
+    public SecurableObject (IObjectSecurityStrategy? objectSecurityStrategy)
     {
       _securityStrategy = objectSecurityStrategy;
     }
 
-    public IObjectSecurityStrategy GetSecurityStrategy ()
+    public IObjectSecurityStrategy? GetSecurityStrategy ()
     {
       return _securityStrategy;
     }
@@ -134,7 +134,7 @@ namespace Remotion.Security.UnitTests.SampleDomain
       set { Dev.Null = value; }
     }
 
-    private object NonPublicProperty
+    private object? NonPublicProperty
     {
       [DemandPermission (TestAccessTypes.First)]
       get { return null; }
@@ -142,7 +142,7 @@ namespace Remotion.Security.UnitTests.SampleDomain
       set { Dev.Null = value; }
     }
 
-    object IInterfaceWithProperty.InterfaceProperty
+    object? IInterfaceWithProperty.InterfaceProperty
     {
       [DemandPermission (TestAccessTypes.First)]
       get { return null; }

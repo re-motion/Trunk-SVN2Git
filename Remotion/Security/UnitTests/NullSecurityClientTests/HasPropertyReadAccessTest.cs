@@ -24,9 +24,10 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
   [TestFixture]
   public class HasPropertyReadAccessTest
   {
-    private NullSecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private IMethodInformation _methodInformation;
+    private NullSecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+
+    private IMethodInformation _methodInformation = null!;
 
     [SetUp]
     public void SetUp()

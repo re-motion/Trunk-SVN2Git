@@ -27,10 +27,10 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class MultipleAccessTypesTest
   {
-    private SecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private IMethodInformation _methodInformation;
-    private MethodInfo _methodInfo;
+    private SecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+    private IMethodInformation _methodInformation = null!;
+    private MethodInfo _methodInfo = null!;
 
     [SetUp]
     public void SetUp ()

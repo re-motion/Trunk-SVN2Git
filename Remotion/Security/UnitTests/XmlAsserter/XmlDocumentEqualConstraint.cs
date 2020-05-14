@@ -23,7 +23,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
   {
     private readonly XmlnsAttributeHandler _xmlnsAttributeFilter;
 
-    public XmlDocumentEqualConstraint (XmlDocument expected)
+    public XmlDocumentEqualConstraint (XmlDocument? expected)
         : base(expected)
     {
       _xmlnsAttributeFilter = new XmlnsAttributeHandler ();

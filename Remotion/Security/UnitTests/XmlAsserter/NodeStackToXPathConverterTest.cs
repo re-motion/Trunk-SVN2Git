@@ -24,8 +24,8 @@ namespace Remotion.Security.UnitTests.XmlAsserter
   [TestFixture]
   public class NodeStackToXPathConverterTest
   {
-    private XmlDocument _document;
-    private NodeStackToXPathConverter _converter;
+    private XmlDocument _document = null!;
+    private NodeStackToXPathConverter _converter = null!;
 
     [SetUp]
     public void SetUp ()

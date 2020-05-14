@@ -26,9 +26,9 @@ namespace Remotion.Security.UnitTests.XmlAsserter
   {
     protected delegate void MessageListenerDelegate (string messageInfo);
     protected List<string> Messages;
-    private readonly XmlDocument _expectedDocument;
+    private readonly XmlDocument? _expectedDocument;
 
-    protected XmlDocumentBaseConstraint (XmlDocument expected)
+    protected XmlDocumentBaseConstraint (XmlDocument? expected)
     {
       _expectedDocument = expected;
       Messages = new List<string>();
@@ -40,7 +40,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       return new XmlDocumentConstraintResult (this, actual, isSuccess, Messages);
     }
 
-    public bool Matches (object actual)
+    public bool Matches (object? actual)
     {
       var actualAsXmlDocument = actual as XmlDocument;
       if (actualAsXmlDocument == null && _expectedDocument == null)

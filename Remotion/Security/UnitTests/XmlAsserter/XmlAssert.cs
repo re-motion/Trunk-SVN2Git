@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
 {
   public static class XmlAssert
   {
-    static public void AreDocumentsEqual (XmlDocument expectedDocument, XmlDocument actualDocument, string message, params object[] args)
+    static public void AreDocumentsEqual (XmlDocument expectedDocument, XmlDocument actualDocument, string message, params object[]? args)
     {
       var constraint = new XmlDocumentEqualConstraint (expectedDocument);
       Assert.That (actualDocument, constraint);
@@ -40,7 +40,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       AreDocumentsEqual (expectedDocument, actualDocument, string.Empty, null);
     }
 
-    static public void AreDocumentsEqual (string expectedXml, XmlDocument actualDocument, string message, params object[] args)
+    static public void AreDocumentsEqual (string expectedXml, XmlDocument actualDocument, string message, params object[]? args)
     {
       XmlDocument expectedDocument = new XmlDocument ();
       expectedDocument.LoadXml (expectedXml);
@@ -58,7 +58,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       AreDocumentsEqual (expectedXml, actualDocument, string.Empty, null);
     }
 
-    static public void AreDocumentsSimilar (XmlDocument expectedDocument, XmlDocument actualDocument, string message, params object[] args)
+    static public void AreDocumentsSimilar (XmlDocument expectedDocument, XmlDocument actualDocument, string message, params object[]? args)
     {
       var constraint = new XmlDocumentSimilarConstraint (expectedDocument);
       Assert.That (actualDocument, constraint);
@@ -74,7 +74,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       AreDocumentsSimilar (expectedDocument, actualDocument, string.Empty, null);
     }
 
-    static public void AreDocumentsSimilar (string expectedXml, XmlDocument actualDocument, string message, params object[] args)
+    static public void AreDocumentsSimilar (string expectedXml, XmlDocument actualDocument, string message, params object[]? args)
     {
       XmlDocument expectedDocument = new XmlDocument ();
       expectedDocument.LoadXml (expectedXml);

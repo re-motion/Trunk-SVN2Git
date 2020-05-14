@@ -11,7 +11,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
 
     public XmlDocumentConstraintResult (
         IConstraint constraint,
-        object actualValue,
+        object? actualValue,
         bool isSuccess,
         IReadOnlyCollection<string> messages)
         : base (constraint, actualValue, isSuccess)

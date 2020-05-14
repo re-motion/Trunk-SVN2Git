@@ -25,7 +25,7 @@ namespace Remotion.Security.UnitTests.Metadata.MemberResolverTests
   [TestFixture]
   public class GetInstanceMethodInformationTest
   {
-    private ReflectionBasedMemberResolver _resolver;
+    private ReflectionBasedMemberResolver _resolver = null!;
 
     [SetUp]
     public void SetUp ()

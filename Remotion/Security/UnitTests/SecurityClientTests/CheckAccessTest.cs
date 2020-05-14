@@ -24,8 +24,8 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class CheckAccessTest
   {
-    private SecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
+    private SecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
 
     [SetUp]
     public void SetUp ()

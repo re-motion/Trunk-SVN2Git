@@ -27,12 +27,12 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
   [TestFixture]
   public class HasAccess_ObjectSecurityStratetyTest
   {
-    private ISecurityProvider _securityProviderMock;
-    private ISecurityContextFactory _securityContextFactoryStub;
-    private ISecurityPrincipal _principalStub;
-    private SecurityContext _context;
-    private InvalidationToken _invalidationToken;
-    private IObjectSecurityStrategy _strategy;
+    private ISecurityProvider _securityProviderMock = null!;
+    private ISecurityContextFactory _securityContextFactoryStub = null!;
+    private ISecurityPrincipal _principalStub = null!;
+    private SecurityContext _context = null!;
+    private InvalidationToken _invalidationToken = null!;
+    private IObjectSecurityStrategy _strategy = null!;
 
     [SetUp]
     public void SetUp ()
@@ -103,7 +103,7 @@ namespace Remotion.Security.UnitTests.ObjectSecurityStrategyTests
     [Test]
     public void HasAccess_WithAllowedAccessTypesAreNull_ThrowsInvalidOperationException ()
     {
-      _securityProviderMock.Expect (_ => _.GetAccess (_context, _principalStub)).Return (null);
+      _securityProviderMock.Expect (_ => _.GetAccess (_context, _principalStub)).Return (null!);
 
       Assert.That (
           () => _strategy.HasAccess (

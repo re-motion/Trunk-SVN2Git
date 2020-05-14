@@ -20,7 +20,7 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.Security.Metadata;
 using Rhino.Mocks;
-
+#nullable disable
 namespace Remotion.Security.UnitTests.Metadata
 {
   [TestFixture]

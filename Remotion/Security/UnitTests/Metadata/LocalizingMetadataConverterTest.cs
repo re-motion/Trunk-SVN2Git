@@ -29,9 +29,9 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class LocalizingMetadataConverterTest
   {
-    private MockRepository _mocks;
-    private IMetadataLocalizationConverter _localizationConverter;
-    private IMetadataConverter _metadataConverter;
+    private MockRepository _mocks = null!;
+    private IMetadataLocalizationConverter _localizationConverter = null!;
+    private IMetadataConverter _metadataConverter = null!;
 
     [SetUp]
     public void SetUp ()
@@ -252,18 +252,18 @@ namespace Remotion.Security.UnitTests.Metadata
 
     private LocalizedName CreateLocalizedName (SecurableClassInfo classInfo)
     {
-      return new LocalizedName (classInfo.ID, classInfo.Name, classInfo.Name);
+      return new LocalizedName (classInfo.ID!, classInfo.Name!, classInfo.Name!);
     }
 
     private LocalizedName CreateLocalizedName (EnumValueInfo enumValueInfo)
     {
       string comment = enumValueInfo.Name + "|" + enumValueInfo.TypeName;
-      return new LocalizedName (enumValueInfo.ID, comment, enumValueInfo.Name);
+      return new LocalizedName (enumValueInfo.ID!, comment, enumValueInfo.Name!);
     }
 
     private LocalizedName CreateLocalizedName (StatePropertyInfo statePropertyInfo)
     {
-      return new LocalizedName (statePropertyInfo.ID, statePropertyInfo.Name, statePropertyInfo.Name);
+      return new LocalizedName (statePropertyInfo.ID!, statePropertyInfo.Name!, statePropertyInfo.Name!);
     }
 
     private LocalizedName CreateLocalizedName (StatePropertyInfo statePropertyInfo, int stateIndex, string text)

@@ -22,7 +22,7 @@ namespace Remotion.Security.UnitTests
   [TestFixture]
   public class NullPrincipalTest
   {
-    private ISecurityPrincipal _principal;
+    private ISecurityPrincipal _principal = null!;
 
     [SetUp]
     public void SetUp ()

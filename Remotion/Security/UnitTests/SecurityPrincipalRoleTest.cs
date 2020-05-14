@@ -45,7 +45,7 @@ namespace Remotion.Security.UnitTests
     public void Initialize_WithoutGroup ()
     {
       Assert.That (
-          () => new SecurityPrincipalRole (null, null),
+          () => new SecurityPrincipalRole (null!, null),
           Throws.InstanceOf<ArgumentNullException>()
               .With.Message.EqualTo (
                   "Value cannot be null.\r\nParameter name: group"));
@@ -135,7 +135,7 @@ namespace Remotion.Security.UnitTests
     public void Equals_WithNull ()
     {
       var left = new SecurityPrincipalRole ("TheGroup", "ThePosition");
-      var right = (SecurityPrincipalRole)null;
+      var right = (SecurityPrincipalRole?)null;
 
       Assert.That (left.Equals (right), Is.False);
     }
@@ -154,7 +154,7 @@ namespace Remotion.Security.UnitTests
     {
       var role = new SecurityPrincipalRole ("TheGroup", "ThePosition");
 
-      Assert.That (role.Equals ((object) null), Is.False);
+      Assert.That (role.Equals ((object?) null), Is.False);
     }
 
     [Test]

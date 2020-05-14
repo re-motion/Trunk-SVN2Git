@@ -25,9 +25,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class HasPropertyWriteAccessTest_WithMethodInformation
   {
-    private SecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private IMethodInformation _methodInformation;
+    private SecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+    private IMethodInformation _methodInformation = null!;
 
     [SetUp]
     public void SetUp ()
@@ -143,7 +143,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     [Test]
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null!);
       _testHelper.ReplayAll ();
       Assert.That (
           () => _securityClient.HasPropertyWriteAccess (_testHelper.SecurableObject, _methodInformation),
@@ -157,7 +157,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     [Test]
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, null!);
       _testHelper.ReplayAll ();
 
       using (SecurityFreeSection.Activate())

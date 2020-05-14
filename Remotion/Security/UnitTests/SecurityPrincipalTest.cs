@@ -78,7 +78,7 @@ namespace Remotion.Security.UnitTests
     public void Initialize_WithoutGroup ()
     {
       Assert.That (
-          () => new SecurityPrincipal (null, null, null, null),
+          () => new SecurityPrincipal (null!, null, null, null),
           Throws.InstanceOf<ArgumentNullException>()
               .With.Message.EqualTo (
                   "Value cannot be null.\r\nParameter name: user"));
@@ -217,7 +217,7 @@ namespace Remotion.Security.UnitTests
     public void Equals_WithNull ()
     {
       var left = CreatePrincipal ("TheUser", new[] { "TheGroup" }, "SomeUser", new[] { "SomeGroup" });
-      var right = (SecurityPrincipal) null;
+      var right = (SecurityPrincipal?) null;
 
       Assert.That (left.Equals (right), Is.False);
     }
@@ -236,7 +236,7 @@ namespace Remotion.Security.UnitTests
     {
       var left = CreatePrincipal ("TheUser", new[] { "TheGroup" }, "SomeUser", new[] { "SomeGroup" });
 
-      Assert.That (left.Equals ((object) null), Is.False);
+      Assert.That (left.Equals ((object?) null), Is.False);
     }
 
     [Test]
@@ -275,7 +275,7 @@ namespace Remotion.Security.UnitTests
       Assert.That (principal.IsNull, Is.False);
     }
 
-    private SecurityPrincipal CreatePrincipal (string user, string[] roleGroups, string substitutedUser, string[] substitutedRoleGroup)
+    private SecurityPrincipal CreatePrincipal (string user, string[]? roleGroups, string? substitutedUser, string[]? substitutedRoleGroup)
     {
       var roles = roleGroups == null ? null : roleGroups.Select (g => new SecurityPrincipalRole (g, null)).ToArray();
       var substitutedRole = substitutedRoleGroup == null ? null : substitutedRoleGroup.Select (g=> new SecurityPrincipalRole (g, null)).ToArray();

@@ -34,13 +34,13 @@ namespace Remotion.Security.UnitTests.Metadata
 
     // member fields
 
-    private MockRepository _mocks;
-    private IStatePropertyReflector _statePropertyReflectorMock;
-    private IAccessTypeReflector _accessTypeReflectorMock;
-    private ClassReflector _classReflector;
-    private MetadataCache _cache;
-    private StatePropertyInfo _confidentialityProperty;
-    private StatePropertyInfo _stateProperty;
+    private MockRepository _mocks = null!;
+    private IStatePropertyReflector _statePropertyReflectorMock = null!;
+    private IAccessTypeReflector _accessTypeReflectorMock = null!;
+    private ClassReflector _classReflector = null!;
+    private MetadataCache _cache = null!;
+    private StatePropertyInfo _confidentialityProperty = null!;
+    private StatePropertyInfo _stateProperty = null!;
 
     // construction and disposing
 
@@ -107,7 +107,7 @@ namespace Remotion.Security.UnitTests.Metadata
 
       Assert.That (info.DerivedClasses.Count, Is.EqualTo (0));
       Assert.That (info.BaseClass, Is.Not.Null);
-      Assert.That (info.BaseClass.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
+      Assert.That (info.BaseClass!.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
       Assert.That (info.BaseClass.DerivedClasses.Count, Is.EqualTo (1));
       Assert.That (info.BaseClass.DerivedClasses, Has.Member (info));
 
@@ -129,9 +129,9 @@ namespace Remotion.Security.UnitTests.Metadata
       Assert.That (paperFileInfo, Is.Not.Null);
       Assert.That (_cache.GetSecurableClassInfo (typeof (PaperFile)), Is.EqualTo (paperFileInfo));
 
-      SecurableClassInfo fileInfo = _cache.GetSecurableClassInfo (typeof (File));
+      SecurableClassInfo? fileInfo = _cache.GetSecurableClassInfo (typeof (File));
       Assert.That (fileInfo, Is.Not.Null);
-      Assert.That (fileInfo.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
+      Assert.That (fileInfo!.Name, Is.EqualTo ("Remotion.Security.UnitTests.TestDomain.File, Remotion.Security.UnitTests.TestDomain"));
     }
 
     [Test]

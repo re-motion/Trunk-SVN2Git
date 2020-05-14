@@ -26,10 +26,10 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
   [TestFixture]
   public class HasStaticMethodAccessTest
   {
-    private NullSecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private MethodInfo _methodInfo;
-    private IMethodInformation _methodInformation;
+    private NullSecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+    private MethodInfo _methodInfo = null!;
+    private IMethodInformation _methodInformation = null!;
 
     [SetUp]
     public void SetUp()

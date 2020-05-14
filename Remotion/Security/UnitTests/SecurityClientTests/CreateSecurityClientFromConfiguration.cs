@@ -27,12 +27,12 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class CreateSecurityClientFromConfiguration
   {
-    private ISecurityProvider _stubSecurityProvider;
-    private IPrincipalProvider _stubPrincipalProvider;
-    private IPermissionProvider _stubPermissionProvider;
-    private IMemberResolver _stubMemberResolver;
-    private IFunctionalSecurityStrategy _stubFunctionalSecurityStrategy;
-    private ServiceLocatorScope _serviceLocatorScope;
+    private ISecurityProvider _stubSecurityProvider = null!;
+    private IPrincipalProvider _stubPrincipalProvider = null!;
+    private IPermissionProvider _stubPermissionProvider = null!;
+    private IMemberResolver _stubMemberResolver = null!;
+    private IFunctionalSecurityStrategy _stubFunctionalSecurityStrategy = null!;
+    private ServiceLocatorScope _serviceLocatorScope = null!;
 
     [SetUp]
     public void SetUp ()

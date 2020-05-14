@@ -39,7 +39,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       XmlDocument expected = new XmlDocument ();
 
       var constraint = new XmlDocumentEqualConstraint (expected);
-      Assert.That (constraint.Matches ((object)null), Is.False);
+      Assert.That (constraint.Matches ((object?)null), Is.False);
     }
 
     [Test]
@@ -55,7 +55,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
     public void ExpectedAndActualDocumentsAreNull ()
     {
       var constraint = new XmlDocumentEqualConstraint (null);
-      Assert.That (constraint.Matches((object)null), Is.True);
+      Assert.That (constraint.Matches((object?)null), Is.True);
     }
 
     [Test]

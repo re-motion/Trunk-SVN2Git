@@ -26,9 +26,9 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class CheckMethodAccessTest_WithMethodName
   {
-    private SecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private IMethodInformation _methodInformation;
+    private SecurityClientTestHelper _testHelper  = null!;
+    private SecurityClient _securityClient = null!;
+    private IMethodInformation _methodInformation = null!;
 
     [SetUp]
     public void SetUp ()
@@ -139,7 +139,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null!);
 
       _testHelper.ReplayAll ();
 
@@ -158,7 +158,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation ("InstanceMethod", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null!);
       _testHelper.ReplayAll ();
 
       using (SecurityFreeSection.Activate())

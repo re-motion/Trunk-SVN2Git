@@ -23,7 +23,7 @@ namespace Remotion.Security.UnitTests.Metadata
 {
   public static class EnumValueInfoAssert
   {
-    public static void Contains (string expectedName, IList<EnumValueInfo> list, string message, params object[] args)
+    public static void Contains (string expectedName, IList<EnumValueInfo> list, string message, params object[]? args)
     {
       var constraint = new EnumValueInfoListContentsConstraint (expectedName);
       Assert.That (list, constraint);

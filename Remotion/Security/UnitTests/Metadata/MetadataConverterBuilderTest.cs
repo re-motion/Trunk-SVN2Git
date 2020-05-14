@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class MetadataConverterBuilderTest
   {
-    private MetadataConverterBuilder _converterBuilder;
+    private MetadataConverterBuilder _converterBuilder = null!;
 
     [SetUp]
     public void SetUp ()

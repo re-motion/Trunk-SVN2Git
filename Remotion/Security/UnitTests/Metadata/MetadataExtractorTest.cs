@@ -27,8 +27,8 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class MetadataExtractorTest
   {
-    private string _xmlTempFilename;
-    private MetadataExtractor _extractor;
+    private string _xmlTempFilename = null!;
+    private MetadataExtractor _extractor = null!;
 
     [SetUp]
     public void SetUp ()

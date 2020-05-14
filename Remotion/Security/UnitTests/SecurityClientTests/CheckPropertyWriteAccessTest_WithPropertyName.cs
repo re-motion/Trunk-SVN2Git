@@ -26,10 +26,10 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class CheckPropertyWriteAccessTest_WithPropertyName
   {
-    private SecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private IPropertyInformation _propertyInformation;
-    private IMethodInformation _methodInformation;
+    private SecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+    private IPropertyInformation _propertyInformation = null!;
+    private IMethodInformation _methodInformation = null!;
     
     [SetUp]
     public void SetUp ()
@@ -149,7 +149,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation ("set_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null!);
       _testHelper.ReplayAll ();
 
       Assert.That (
@@ -166,7 +166,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation ("set_InstanceProperty", MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null!);
       _testHelper.ReplayAll ();
 
       using (SecurityFreeSection.Activate())

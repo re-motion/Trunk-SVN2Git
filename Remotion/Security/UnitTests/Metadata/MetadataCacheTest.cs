@@ -33,7 +33,7 @@ namespace Remotion.Security.UnitTests.Metadata
 
     // member fields
 
-    private MetadataCache _cache;
+    private MetadataCache _cache = null!;
 
     // construction and disposing
 

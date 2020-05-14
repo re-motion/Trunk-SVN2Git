@@ -24,8 +24,8 @@ namespace Remotion.Security.UnitTests
   [TestFixture]
   public class InstanceBasedReEntrancyGuardedObjectSecurityStrategyDecoratorTest
   {
-    private ISecurityProvider _securityProviderStub;
-    private ISecurityPrincipal _principalStub;
+    private ISecurityProvider _securityProviderStub = null!;
+    private ISecurityPrincipal _principalStub = null!;
 
     [SetUp]
     public void SetUp ()

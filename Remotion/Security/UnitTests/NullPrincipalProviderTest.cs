@@ -22,7 +22,7 @@ namespace Remotion.Security.UnitTests
   [TestFixture]
   public class NullPrincipalProviderTest
   {
-    private IPrincipalProvider _provider;
+    private IPrincipalProvider _provider = null!;
 
     [SetUp]
     public void SetUp ()

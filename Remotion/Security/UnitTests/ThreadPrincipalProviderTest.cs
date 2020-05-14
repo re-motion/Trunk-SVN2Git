@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests
   [TestFixture]
   public class ThreadPrincipalProviderTest
   {
-    private IPrincipalProvider _principalProvider;
+    private IPrincipalProvider _principalProvider = null!;
 
     [SetUp]
     public void SetUp ()

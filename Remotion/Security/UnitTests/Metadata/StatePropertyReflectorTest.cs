@@ -33,10 +33,10 @@ namespace Remotion.Security.UnitTests.Metadata
 
     // member fields
 
-    private MockRepository _mocks;
-    private IEnumerationReflector _enumeratedTypeReflectorMock;
-    private StatePropertyReflector _statePropertyReflector;
-    private MetadataCache _cache;
+    private MockRepository _mocks = null!;
+    private IEnumerationReflector _enumeratedTypeReflectorMock = null!;
+    private StatePropertyReflector _statePropertyReflector = null!;
+    private MetadataCache _cache = null!;
 
     // construction and disposing
 
@@ -95,9 +95,9 @@ namespace Remotion.Security.UnitTests.Metadata
       reflector.GetMetadata (typeof (PaperFile).GetProperty ("Confidentiality"), _cache);
       reflector.GetMetadata (typeof (File).GetProperty ("Confidentiality"), _cache);
 
-      StatePropertyInfo paperFileConfidentialityInfo = _cache.GetStatePropertyInfo (typeof (PaperFile).GetProperty ("Confidentiality"));
+      StatePropertyInfo? paperFileConfidentialityInfo = _cache.GetStatePropertyInfo (typeof (PaperFile).GetProperty ("Confidentiality"));
       Assert.That (paperFileConfidentialityInfo, Is.Not.Null);
-      Assert.That (paperFileConfidentialityInfo.Name, Is.EqualTo ("Confidentiality"));
+      Assert.That (paperFileConfidentialityInfo!.Name, Is.EqualTo ("Confidentiality"));
       Assert.That (_cache.GetStatePropertyInfo (typeof (File).GetProperty ("Confidentiality")), Is.SameAs (paperFileConfidentialityInfo));
     }
 

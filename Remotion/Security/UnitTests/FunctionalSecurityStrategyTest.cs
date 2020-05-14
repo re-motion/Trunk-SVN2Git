@@ -24,10 +24,10 @@ namespace Remotion.Security.UnitTests
   [TestFixture]
   public class FunctionalSecurityStrategyTest
   {
-    private ISecurityProvider _securityProviderMock;
-    private ISecurityPrincipal _principalStub;
-    private IFunctionalSecurityStrategy _strategy;
-    private Type _securableType;
+    private ISecurityProvider _securityProviderMock = null!;
+    private ISecurityPrincipal _principalStub = null!;
+    private IFunctionalSecurityStrategy _strategy = null!;
+    private Type _securableType = null!;
 
     [SetUp]
     public void SetUp ()
@@ -101,7 +101,7 @@ namespace Remotion.Security.UnitTests
     {
       _securityProviderMock
           .Expect (_ => _.GetAccess (SecurityContext.CreateStateless (_securableType), _principalStub))
-          .Return (null);
+          .Return (null!);
 
       Assert.That (
           () => _strategy.HasAccess (

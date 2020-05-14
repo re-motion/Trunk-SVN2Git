@@ -24,8 +24,9 @@ namespace Remotion.Security.UnitTests.NullSecurityClientTests
   [TestFixture]
   public class CheckStatelessAccessTest
   {
-    private NullSecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
+    private NullSecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+
 
     [SetUp]
     public void SetUp ()

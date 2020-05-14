@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class IPermissionProviderTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

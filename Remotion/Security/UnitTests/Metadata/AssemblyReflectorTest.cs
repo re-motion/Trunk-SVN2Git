@@ -34,12 +34,12 @@ namespace Remotion.Security.UnitTests.Metadata
 
     // member fields
 
-    private MockRepository _mocks;
-    private IClassReflector _classReflectorMock;
-    private IAbstractRoleReflector _abstractRoleReflectorMock;
-    private IAccessTypeReflector _accessTypeReflectorMock;
-    private AssemblyReflector _assemblyReflector;
-    private MetadataCache _cache;
+    private MockRepository _mocks = null!;
+    private IClassReflector _classReflectorMock = null!;
+    private IAbstractRoleReflector _abstractRoleReflectorMock = null!;
+    private IAccessTypeReflector _accessTypeReflectorMock = null!;
+    private AssemblyReflector _assemblyReflector = null!;
+    private MetadataCache _cache = null!;
 
     // construction and disposing
 

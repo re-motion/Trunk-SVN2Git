@@ -23,7 +23,7 @@ namespace Remotion.Security.UnitTests
   [TestFixture]
   public class ISecurityProviderTest
   {
-    private DefaultServiceLocator _serviceLocator;
+    private DefaultServiceLocator _serviceLocator = null!;
 
     [SetUp]
     public void SetUp ()

@@ -20,6 +20,6 @@ namespace Remotion.Security.UnitTests.SampleDomain
 {
   public interface IInterfaceWithProperty
   {
-    object InterfaceProperty { get; set; }
+    object? InterfaceProperty { get; set; }
   }
 }

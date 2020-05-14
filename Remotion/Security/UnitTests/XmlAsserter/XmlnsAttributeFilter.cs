@@ -23,10 +23,10 @@ namespace Remotion.Security.UnitTests.XmlAsserter
   public class XmlnsAttributeEventArgs : EventArgs
   {
     private string _namespaceUri;
-    private string _prefix;
+    private string? _prefix;
     private bool _isDefaultNamespace;
 
-    public XmlnsAttributeEventArgs (string namespaceUri, string prefix)
+    public XmlnsAttributeEventArgs (string namespaceUri, string? prefix)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("namespaceUri", namespaceUri);
 
@@ -40,7 +40,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       get { return _namespaceUri; }
     }
 
-    public string Prefix
+    public string? Prefix
     {
       get { return _prefix; }
     }
@@ -55,7 +55,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
 
   public class XmlnsAttributeHandler
   {
-    public event XmlnsAttributeEventHandler XmlnsAttributeFound;
+    public event XmlnsAttributeEventHandler? XmlnsAttributeFound;
 
     private bool _filter;
 

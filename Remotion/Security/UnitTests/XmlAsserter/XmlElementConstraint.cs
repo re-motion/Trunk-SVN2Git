@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Xml;
 using NUnit.Framework.Constraints;
@@ -38,7 +39,7 @@ namespace Remotion.Security.UnitTests.XmlAsserter
       return new XmlElementConstraintResult (this, actual, isSuccess);
     }
 
-    private bool Matches (object actual)
+    private bool Matches (object? actual)
     {
       var actualAsXmlNode = actual as XmlNode;
       

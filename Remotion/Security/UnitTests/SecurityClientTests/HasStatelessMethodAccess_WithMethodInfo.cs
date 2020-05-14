@@ -27,10 +27,10 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
   [TestFixture]
   public class HasStatelessMethodAccess_WithMethodInfo
   {
-    private SecurityClientTestHelper _testHelper;
-    private SecurityClient _securityClient;
-    private IMethodInformation _methodInformation;
-    private MethodInfo _methodInfo;
+    private SecurityClientTestHelper _testHelper = null!;
+    private SecurityClient _securityClient = null!;
+    private IMethodInformation _methodInformation = null!;
+    private MethodInfo _methodInfo = null!;
 
     [SetUp]
     public void SetUp ()
@@ -126,7 +126,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     public void Test_WithPermissionProviderReturnedNullAndWithinSecurityFreeSection_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null!);
       _testHelper.ReplayAll ();
 
       using (SecurityFreeSection.Activate())
@@ -147,7 +147,7 @@ namespace Remotion.Security.UnitTests.SecurityClientTests
     public void Test_WithPermissionProviderReturnedNull_ShouldThrowInvalidOperationException ()
     {
       _testHelper.ExpectMemberResolverGetMethodInformation (_methodInfo, MemberAffiliation.Instance, _methodInformation);
-      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null);
+      _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_methodInformation, (Enum[]) null!);
       _testHelper.ReplayAll ();
 
       Assert.That (

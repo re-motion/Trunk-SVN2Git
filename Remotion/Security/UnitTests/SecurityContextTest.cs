@@ -377,7 +377,7 @@ namespace Remotion.Security.UnitTests
     {
       SecurityContext context = SecurityContext.CreateStateless (typeof (SecurableObject));
 
-      Assert.That (context.Equals ((object) null), Is.False);
+      Assert.That (context.Equals ((object?) null), Is.False);
     }
 
     [Test]

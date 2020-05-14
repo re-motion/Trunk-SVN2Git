@@ -29,8 +29,8 @@ namespace Remotion.Security.UnitTests.Metadata
   [TestFixture]
   public class MetadataToXmlConverterTest
   {
-    private MetadataCache _cache;
-    private MetadataToXmlConverter _converter;
+    private MetadataCache _cache = null!;
+    private MetadataToXmlConverter _converter = null!;
 
     [SetUp]
     public void SetUp ()
