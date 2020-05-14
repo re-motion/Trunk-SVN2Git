@@ -24,14 +24,14 @@ namespace Remotion.Security.Metadata.Extractor
   {
     public static int Main (string[] args)
     {
-      CommandLineArguments arguments = GetArguments (args);
+      CommandLineArguments? arguments = GetArguments (args);
       if (arguments == null)
         return 1;
 
       return ExtractMetadata (arguments);
     }
 
-    private static CommandLineArguments GetArguments (string[] args)
+    private static CommandLineArguments? GetArguments (string[] args)
     {
       CommandLineClassParser parser = new CommandLineClassParser (typeof (CommandLineArguments));
 
