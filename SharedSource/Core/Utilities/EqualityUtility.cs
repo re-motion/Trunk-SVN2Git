@@ -204,7 +204,7 @@ namespace Remotion.Utilities
     /// <summary>
     /// Returns whether an equatable object equals another object.
     /// </summary>
-    public static bool EqualsEquatable<T> (T a, object b)
+    public static bool EqualsEquatable<T> (T a, object? b)
       where T : class, IEquatable<T>
     {
       T? other = b as T;
