@@ -24,7 +24,7 @@ namespace Remotion.Security.UnitTests.TestDomain
     private Confidentiality _confidentiality;
     private SomeEnum _someEnum;
 	
-    private string _id;
+    private string? _id;
 
     public File ()
     {
@@ -43,7 +43,7 @@ namespace Remotion.Security.UnitTests.TestDomain
       set { _someEnum = value; }
     }
 
-    public string ID
+    public string? ID
     {
       get { return _id; }
       set { _id = value; }

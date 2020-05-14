@@ -22,7 +22,7 @@ namespace Remotion.Security.UnitTests.TestDomain
   public class PaperFile : File
   {
     private FileState _state;
-    private string _location;
+    private string? _location;
     
     public PaperFile ()
     {
@@ -35,7 +35,7 @@ namespace Remotion.Security.UnitTests.TestDomain
       set { _state = value; }
     }
 
-    public string Location
+    public string? Location
     {
       get { return _location; }
       set { _location = value; }
