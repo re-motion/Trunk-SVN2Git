@@ -479,6 +479,9 @@ namespace Remotion.Web.UI.Controls
         [CanBeNull] string onClick,
         [CanBeNull] ISecurableObject securableObject)
     {
+      ArgumentUtility.CheckNotNull ("writer", writer);
+      ArgumentUtility.CheckNotNull ("renderingFeatures", renderingFeatures);
+
       RenderBegin (
           writer,
           renderingFeatures,
