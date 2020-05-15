@@ -124,11 +124,9 @@ namespace Remotion.ObjectBinding.Web.IntegrationTests.BocTextValue
     }
 
     [Test]
+    [Retry (3)]
     public void NormalRequired_WithValidationErrors ()
     {
-      if (Helper.BrowserConfiguration.IsInternetExplorer())
-        Assert.Ignore ("RM-7412 This test currently does not work in Internet Explorer.");
-
       var home = Start();
       var bocTextValue = home.TextValues().GetByLocalID ("LastNameField_Normal_Required");
       bocTextValue.FillWith ("");

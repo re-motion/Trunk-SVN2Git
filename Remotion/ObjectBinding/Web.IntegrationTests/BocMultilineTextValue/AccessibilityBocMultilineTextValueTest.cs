@@ -64,11 +64,9 @@ namespace Remotion.ObjectBinding.Web.IntegrationTests.BocMultilineTextValue
     }
 
     [Test]
+    [Retry (3)]
     public void NormalRequired_WithValidationErrors ()
     {
-      if (Helper.BrowserConfiguration.IsInternetExplorer())
-        Assert.Ignore ("RM-7412 This test currently does not work in Internet Explorer.");
-
       var home = Start();
       var bocMultilineTextValue = home.MultilineTextValues().GetByLocalID ("CVField_Normal_Required");
       var validateButton = home.GetValidateButton();
