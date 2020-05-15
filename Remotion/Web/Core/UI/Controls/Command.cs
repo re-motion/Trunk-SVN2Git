@@ -413,8 +413,8 @@ namespace Remotion.Web.UI.Controls
     public virtual void RenderBegin (
         [NotNull] HtmlTextWriter writer,
         [NotNull] IRenderingFeatures renderingFeatures,
-        /*[CanBeNull]*/ string postBackEvent,
-        /*[CanBeNull]*/ string[] parameters,
+        [CanBeNull] string postBackEvent,
+        [CanBeNull] string[] parameters,
         [CanBeNull] string onClick,
         [CanBeNull] ISecurableObject securableObject,
         [NotNull] NameValueCollection additionalUrlParameters,
@@ -474,8 +474,8 @@ namespace Remotion.Web.UI.Controls
     public void RenderBegin (
         [NotNull] HtmlTextWriter writer,
         [NotNull] IRenderingFeatures renderingFeatures,
-        /*[CanBeNull]*/ string postBackEvent,
-        /*[CanBeNull]*/ string[] parameters,
+        [CanBeNull] string postBackEvent,
+        [CanBeNull] string[] parameters,
         [CanBeNull] string onClick,
         [CanBeNull] ISecurableObject securableObject)
     {
@@ -519,8 +519,8 @@ namespace Remotion.Web.UI.Controls
     ///   <see langword="true"/> to include URL parameters provided by <see cref="ISmartNavigablePage"/>.
     /// </param>
     public CommandInfo GetCommandInfo (
-        /*[CanBeNull]*/ string postBackEvent,
-        /*[CanBeNull]*/ string[] parameters,
+        [CanBeNull] string postBackEvent,
+        [CanBeNull] string[] parameters,
         [CanBeNull] string onClick,
         [CanBeNull] ISecurableObject securableObject,
         [NotNull] NameValueCollection additionalUrlParameters,
