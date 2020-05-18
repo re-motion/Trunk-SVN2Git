@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.Web.IntegrationTests.BocTextValue
     }
 
     [Test]
-    [Retry (3)]
+    [Retry (5)]
     public void NormalRequired_WithValidationErrors ()
     {
       var home = Start();
