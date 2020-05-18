@@ -203,10 +203,10 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
-    public void CreateSequence_WhilePredicateEvaluatesTrue_WithValueType ()
+    public void CreateSequence_WhilePredicateEvaluatesTrue_StopsOnNull ()
     {
-      IEnumerable<int> actual = 4.CreateSequence (e => e - 1, e => e > 0);
-      Assert.That (actual.ToArray(), Is.EqualTo (new[] { 4, 3, 2, 1 }));
+      IEnumerable<string> actual = "start".CreateSequence (e => null, e => e != "end");
+      Assert.That (actual.ToArray(), Is.EqualTo (new[] { "start" }));
     }
 
     [Test]
@@ -250,10 +250,10 @@ namespace Remotion.UnitTests.FunctionalProgramming
     }
 
     [Test]
-    public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue_WithValueType ()
+    public void CreateSequenceWithCycleCheck_WhilePredicateEvaluatesTrue_StopsOnNull ()
     {
-      IEnumerable<int> actual = 4.CreateSequenceWithCycleCheck (e => e - 1, e => e > 0, null, e => new Exception());
-      Assert.That (actual.ToArray(), Is.EqualTo (new[] { 4, 3, 2, 1 }));
+      IEnumerable<string> actual = "start".CreateSequenceWithCycleCheck (e => null, e => e != "end", null, e => new Exception());
+      Assert.That (actual.ToArray(), Is.EqualTo (new[] { "start" }));
     }
 
     [Test]
