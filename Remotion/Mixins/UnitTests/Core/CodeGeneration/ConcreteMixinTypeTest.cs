@@ -27,10 +27,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class ConcreteMixinTypeTest
   {
-    private ConcreteMixinType _concreteMixinType = null!;
-    private MethodInfo _nonPublicMethod = null!;
-    private MethodInfo _publicMethod = null!;
-    private MethodInfo _wrapperOrInterfaceMethod = null!;
+    private ConcreteMixinType _concreteMixinType = default!;
+    private MethodInfo _nonPublicMethod = default!;
+    private MethodInfo _publicMethod = default!;
+    private MethodInfo _wrapperOrInterfaceMethod = default!;
 
     [SetUp]
     public void SetUp ()

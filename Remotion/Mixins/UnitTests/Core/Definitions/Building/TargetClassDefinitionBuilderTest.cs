@@ -31,7 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
   [TestFixture]
   public class TargetClassDefinitionBuilderTest
   {
-    private TargetClassDefinitionBuilder _builder = null!;
+    private TargetClassDefinitionBuilder _builder = default!;
 
     [SetUp]
     public void SetUp ()

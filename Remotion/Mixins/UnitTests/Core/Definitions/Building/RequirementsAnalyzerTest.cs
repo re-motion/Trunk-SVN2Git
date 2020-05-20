@@ -26,8 +26,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
   [TestFixture]
   public class RequirementsAnalyzerTest
   {
-    private RequirementsAnalyzer _thisAnalyzer = null!;
-    private RequirementsAnalyzer _baseAnalyzer = null!;
+    private RequirementsAnalyzer _thisAnalyzer = default!;
+    private RequirementsAnalyzer _baseAnalyzer = default!;
 
     [SetUp]
     public void SetUp ()

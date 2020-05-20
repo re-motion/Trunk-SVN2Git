@@ -29,8 +29,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class DeclarativeConfigurationBuilderTest
   {
-    private DeclarativeConfigurationBuilder _builder = null!;
-    private ClassContext _globalClassContext = null!;
+    private DeclarativeConfigurationBuilder _builder = default!;
+    private ClassContext _globalClassContext = default!;
 
     [SetUp]
     public void SetUp ()

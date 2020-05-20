@@ -25,9 +25,9 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
   [TestFixture]
   public class ValidationResultTest
   {
-    private TargetClassDefinition _parentDefinition = null!;
-    private MixinDefinition _nestedDefinition = null!;
-    private MethodDefinition _nestedNestedDefinition = null!;
+    private TargetClassDefinition _parentDefinition = default!;
+    private MixinDefinition _nestedDefinition = default!;
+    private MethodDefinition _nestedNestedDefinition = default!;
 
     [SetUp]
     public void SetUp ()

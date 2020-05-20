@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class MixinContextOriginTest
   {
-    private Assembly _someAssembly = null!;
+    private Assembly _someAssembly = default!;
 
     [SetUp]
     public void SetUp ()

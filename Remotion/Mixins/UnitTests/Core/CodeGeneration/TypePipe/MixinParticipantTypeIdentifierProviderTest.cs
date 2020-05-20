@@ -25,9 +25,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TypePipe
   [TestFixture]
   public class MixinParticipantTypeIdentifierProviderTest
   {
-    private MixinParticipantTypeIdentifierProvider _provider = null!;
+    private MixinParticipantTypeIdentifierProvider _provider = default!;
 
-    private ClassContext _classContext = null!;
+    private ClassContext _classContext = default!;
 
     [SetUp]
     public void SetUp ()

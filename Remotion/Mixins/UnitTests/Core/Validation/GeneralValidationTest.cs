@@ -34,7 +34,7 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
   [TestFixture]
   public class GeneralValidationTest : ValidationTestBase
   {
-    private IDisposable _configurationScope = null!;
+    private IDisposable _configurationScope = default!;
 
     [SetUp]
     public void SetUp ()

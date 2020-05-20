@@ -25,8 +25,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
   [TestFixture]
   public class AttributeMixinContextSerializationTest
   {
-    private AttributeMixinContextSerializer _serializer = null!;
-    private AttributeMixinContextDeserializer _invalidDeserializer = null!;
+    private AttributeMixinContextSerializer _serializer = default!;
+    private AttributeMixinContextDeserializer _invalidDeserializer = default!;
 
     [SetUp]
     public void SetUp()

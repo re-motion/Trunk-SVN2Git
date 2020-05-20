@@ -36,20 +36,20 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
   [TestFixture]
   public class MixerTest
   {
-    private string _assemblyOutputDirectoy = null!;
-    private string _modulePath = null!;
+    private string _assemblyOutputDirectoy = default!;
+    private string _modulePath = default!;
 
-    private IMixedTypeFinder _mixedTypeFinderStub = null!;
-    private IMixerPipelineFactory _mixerPipelineFactoryStub = null!;
-    private IPipeline _pipelineStub = null!;
+    private IMixedTypeFinder _mixedTypeFinderStub = default!;
+    private IMixerPipelineFactory _mixerPipelineFactoryStub = default!;
+    private IPipeline _pipelineStub = default!;
     
-    private Mixer _mixer = null!;
+    private Mixer _mixer = default!;
 
-    private IReflectionService _reflectionServiceDynamicMock = null!;
-    private ICodeManager _codeManagerDynamicMock = null!;
+    private IReflectionService _reflectionServiceDynamicMock = default!;
+    private ICodeManager _codeManagerDynamicMock = default!;
 
-    private Type _fakeMixedType = null!;
-    private MixinConfiguration _configuration = null!;
+    private Type _fakeMixedType = default!;
+    private MixinConfiguration _configuration = default!;
 
 
     [SetUp]

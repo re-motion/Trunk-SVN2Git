@@ -30,14 +30,14 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.Serialization
   [TestFixture]
   public class SerializationInfoConcreteMixinTypeIdentifierDeserializerTest
   {
-    private MethodInfo _simpleMethod = null!;
-    private MethodInfo _genericMethod = null!;
-    private MethodInfo _methodOnGenericClosedWithReferenceType = null!;
-    private MethodInfo _methodOnGenericClosedWithValueType = null!;
+    private MethodInfo _simpleMethod = default!;
+    private MethodInfo _genericMethod = default!;
+    private MethodInfo _methodOnGenericClosedWithReferenceType = default!;
+    private MethodInfo _methodOnGenericClosedWithValueType = default!;
 
-    private SerializationInfoConcreteMixinTypeIdentifierSerializer _serializer = null!;
-    private SerializationInfoConcreteMixinTypeIdentifierDeserializer _deserializer = null!;
-    private SerializationInfo _serializationInfo = null!;
+    private SerializationInfoConcreteMixinTypeIdentifierSerializer _serializer = default!;
+    private SerializationInfoConcreteMixinTypeIdentifierDeserializer _deserializer = default!;
+    private SerializationInfo _serializationInfo = default!;
 
     [SetUp]
     public void SetUp ()

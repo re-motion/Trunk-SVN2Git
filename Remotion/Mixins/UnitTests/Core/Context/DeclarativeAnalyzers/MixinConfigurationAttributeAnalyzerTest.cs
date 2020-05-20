@@ -26,9 +26,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   [TestFixture]
   public class MixinConfigurationAttributeAnalyzerTest
   {
-    private string _fakeEntity = null!;
+    private string _fakeEntity = default!;
 
-    private MixinConfigurationBuilder _fakeConfigurationBuilder = null!;
+    private MixinConfigurationBuilder _fakeConfigurationBuilder = default!;
 
     [SetUp]
     public void SetUp ()

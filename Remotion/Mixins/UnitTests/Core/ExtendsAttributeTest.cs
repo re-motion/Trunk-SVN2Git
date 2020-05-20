@@ -28,8 +28,8 @@ namespace Remotion.Mixins.UnitTests.Core
   {
     private readonly Type _extenderType = typeof (List<>);
 
-    private MockRepository _mockRepository = null!;
-    private MixinConfigurationBuilder _configurationBuilderMock = null!;
+    private MockRepository _mockRepository = default!;
+    private MixinConfigurationBuilder _configurationBuilderMock = default!;
 
     [SetUp]
     public void SetUp ()

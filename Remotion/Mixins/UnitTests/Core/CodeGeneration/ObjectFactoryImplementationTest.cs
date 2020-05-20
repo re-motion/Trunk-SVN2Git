@@ -29,9 +29,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class ObjectFactoryImplementationTest
   {
-    private IPipeline _defaultPipelineMock = null!;
+    private IPipeline _defaultPipelineMock = default!;
     
-    private ObjectFactoryImplementation _implementation = null!;
+    private ObjectFactoryImplementation _implementation = default!;
     
     [SetUp]
     public void SetUp ()

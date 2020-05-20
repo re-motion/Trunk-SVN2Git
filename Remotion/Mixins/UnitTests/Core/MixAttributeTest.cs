@@ -27,10 +27,10 @@ namespace Remotion.Mixins.UnitTests.Core
   [TestFixture]
   public class MixAttributeTest
   {
-    private MockRepository _mockRepository = null!;
-    private MixinConfigurationBuilder _configurationBuilderMock = null!;
+    private MockRepository _mockRepository = default!;
+    private MixinConfigurationBuilder _configurationBuilderMock = default!;
 
-    private Assembly _assembly = null!;
+    private Assembly _assembly = default!;
 
     [SetUp]
     public void SetUp ()

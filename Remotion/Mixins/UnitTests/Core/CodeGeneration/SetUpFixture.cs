@@ -30,10 +30,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   {
     private static readonly IPipelineRegistry s_pipelineRegistry = SafeServiceLocator.Current.GetInstance<IPipelineRegistry>();
 
-    private static IPipeline s_pipeline = null!;
+    private static IPipeline s_pipeline = default!;
     private static bool s_skipDeletion;
 
-    private static AssemblyTrackingCodeManager s_assemblyTrackingCodeManager = null!;
+    private static AssemblyTrackingCodeManager s_assemblyTrackingCodeManager = default!;
 
     public static IPipelineRegistry PipelineRegistry
     {

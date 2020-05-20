@@ -30,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
   [TestFixture]
   public class LoadingFlushedCodeTest : CodeGenerationBaseTest
   {
-    private IPipeline _savedPipeline = null!;
+    private IPipeline _savedPipeline = default!;
 
     public override void SetUp ()
     {

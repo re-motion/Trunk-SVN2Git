@@ -26,10 +26,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   [TestFixture]
   public class HasComposedInterfaceMarkerAnalyzerTest
   {
-    private MockRepository _mockRepository = null!;
-    private MixinConfigurationBuilder _configurationBuilderMock = null!;
+    private MockRepository _mockRepository = default!;
+    private MixinConfigurationBuilder _configurationBuilderMock = default!;
 
-    private HasComposedInterfaceMarkerAnalyzer _analyzer = null!;
+    private HasComposedInterfaceMarkerAnalyzer _analyzer = default!;
 
     [SetUp]
     public void SetUp ()

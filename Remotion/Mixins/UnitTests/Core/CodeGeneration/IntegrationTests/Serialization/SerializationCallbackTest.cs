@@ -25,7 +25,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
   [TestFixture]
   public class SerializationCallbackTest : CodeGenerationBaseTest
   {
-    private TargetTypeWithSerializationCallbacks _instance = null!;
+    private TargetTypeWithSerializationCallbacks _instance = default!;
 
     public override void SetUp ()
     {

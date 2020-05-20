@@ -28,7 +28,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
   [TestFixture]
   public class MixinDefinitionSorterTest
   {
-    private IMixinDefinitionSorter _sorter = null!;
+    private IMixinDefinitionSorter _sorter = default!;
 
     [SetUp]
     public void SetUp ()

@@ -26,7 +26,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class ReadOnlyContextCollectionTest
   {
-    private ReadOnlyContextCollection<string, int> _collection = null!;
+    private ReadOnlyContextCollection<string, int> _collection = default!;
 
     [SetUp]
     public void SetUp ()

@@ -26,12 +26,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   [TestFixture]
   public class DeclarativeConfigurationAnalyzerTest
   {
-    private MockRepository _mockRepository = null!;
+    private MockRepository _mockRepository = default!;
 
-    private IMixinDeclarationAnalyzer<Type> _typeAnalyzerMock = null!;
-    private IMixinDeclarationAnalyzer<Assembly> _assemblyAnalyzerMock = null!;
+    private IMixinDeclarationAnalyzer<Type> _typeAnalyzerMock = default!;
+    private IMixinDeclarationAnalyzer<Assembly> _assemblyAnalyzerMock = default!;
 
-    private MixinConfigurationBuilder _fakeConfigurationBuilder = null!;
+    private MixinConfigurationBuilder _fakeConfigurationBuilder = default!;
 
     [SetUp]
     public void SetUp ()

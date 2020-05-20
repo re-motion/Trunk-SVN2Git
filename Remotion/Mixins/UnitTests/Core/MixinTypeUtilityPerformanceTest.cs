@@ -27,9 +27,9 @@ namespace Remotion.Mixins.UnitTests.Core
   [Explicit ("Performance tests")]
   public class MixinTypeUtilityPerformanceTest
   {
-    private Type _unmixedType = null!;
-    private Type _targetType = null!;
-    private Type _concreteType = null!;
+    private Type _unmixedType = default!;
+    private Type _targetType = default!;
+    private Type _concreteType = default!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp ()

@@ -24,9 +24,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context
   [TestFixture]
   public class ClassContextCombinerTest
   {
-    private ClassContextCombiner _combiner = null!;
-    private ClassContext _context1 = null!;
-    private ClassContext _context2 = null!;
+    private ClassContextCombiner _combiner = default!;
+    private ClassContext _context1 = default!;
+    private ClassContext _context2 = default!;
 
     [SetUp]
     public void SetUp ()

@@ -28,20 +28,20 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class InheritanceResolvingClassContextBuilderTest
   {
-    private ClassContext _parentContextWithoutBuilder = null!;
-    private ClassContextCollection _parentContexts = null!;
+    private ClassContext _parentContextWithoutBuilder = default!;
+    private ClassContextCollection _parentContexts = default!;
 
-    private ClassContextBuilder _classContextBuilderWithParent = null!;
-    private ClassContext _parentContextWithBuilder = null!;
-    private ClassContextBuilder _classContextBuilderWithIndirectParent = null!;
-    private ClassContextBuilder _classContextBuilderWithoutParent = null!;
+    private ClassContextBuilder _classContextBuilderWithParent = default!;
+    private ClassContext _parentContextWithBuilder = default!;
+    private ClassContextBuilder _classContextBuilderWithIndirectParent = default!;
+    private ClassContextBuilder _classContextBuilderWithoutParent = default!;
 
-    private Dictionary<Type, Tuple<ClassContextBuilder, ClassContext?>> _buildersWithParentContexts = null!;
+    private Dictionary<Type, Tuple<ClassContextBuilder, ClassContext?>> _buildersWithParentContexts = default!;
     
-    private IMixinInheritancePolicy _inheritancePolicyMock = null!;
-    private ClassContext _inheritedContext = null!;
+    private IMixinInheritancePolicy _inheritancePolicyMock = default!;
+    private ClassContext _inheritedContext = default!;
 
-    private InheritanceResolvingClassContextBuilder _builder = null!;
+    private InheritanceResolvingClassContextBuilder _builder = default!;
 
     [SetUp]
     public void SetUp ()

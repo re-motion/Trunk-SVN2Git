@@ -26,15 +26,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
   [TestFixture]
   public class OverriddenMemberFilterTest
   {
-    private OverriddenMemberFilter _filter = null!;
-    private MethodInfo _overriddenMethod = null!;
-    private MethodInfo _overridingMethod1 = null!;
-    private MethodInfo _overridingMethod2 = null!;
-    private PropertyInfo _overriddenProperty = null!;
-    private PropertyInfo _overridingPropertyWithGetAndSet = null!;
-    private PropertyInfo _overridingPropertyWithGetOnly = null!;
-    private PropertyInfo _overridingPropertyWithSetOnly = null!;
-    private PropertyInfo _overridingPropertyWithGetAndSetAfterSingleOverrides = null!;
+    private OverriddenMemberFilter _filter = default!;
+    private MethodInfo _overriddenMethod = default!;
+    private MethodInfo _overridingMethod1 = default!;
+    private MethodInfo _overridingMethod2 = default!;
+    private PropertyInfo _overriddenProperty = default!;
+    private PropertyInfo _overridingPropertyWithGetAndSet = default!;
+    private PropertyInfo _overridingPropertyWithGetOnly = default!;
+    private PropertyInfo _overridingPropertyWithSetOnly = default!;
+    private PropertyInfo _overridingPropertyWithGetAndSetAfterSingleOverrides = default!;
 
     [SetUp]
     public void SetUp ()

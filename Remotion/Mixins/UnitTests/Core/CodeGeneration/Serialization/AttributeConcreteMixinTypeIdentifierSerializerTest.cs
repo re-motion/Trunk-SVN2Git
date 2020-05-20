@@ -26,10 +26,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.Serialization
   [TestFixture]
   public class AttributeConcreteMixinTypeIdentifierSerializerTest
   {
-    private MethodInfo _simpleMethod = null!;
-    private MethodInfo _genericMethod = null!;
+    private MethodInfo _simpleMethod = default!;
+    private MethodInfo _genericMethod = default!;
 
-    private AttributeConcreteMixinTypeIdentifierSerializer _serializer = null!;
+    private AttributeConcreteMixinTypeIdentifierSerializer _serializer = default!;
 
     [SetUp]
     public void SetUp ()

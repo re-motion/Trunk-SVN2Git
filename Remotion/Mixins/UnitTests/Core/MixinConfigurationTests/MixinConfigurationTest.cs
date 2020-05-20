@@ -23,8 +23,8 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
   [TestFixture]
   public class MixinConfigurationTest
   {
-    private MixinConfiguration _oldMasterConfiguration = null!;
-    private MixinConfiguration _oldActiveConfiguration = null!;
+    private MixinConfiguration _oldMasterConfiguration = default!;
+    private MixinConfiguration _oldActiveConfiguration = default!;
 
     [SetUp]
     public void SetUp ()

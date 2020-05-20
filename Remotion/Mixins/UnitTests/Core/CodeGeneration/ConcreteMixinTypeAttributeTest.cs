@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class ConcreteMixinTypeAttributeTest
   {
-    private ConcreteMixinTypeIdentifier _simpleIdentifier = null!;
+    private ConcreteMixinTypeIdentifier _simpleIdentifier = default!;
 
     [SetUp]
     public void SetUp ()

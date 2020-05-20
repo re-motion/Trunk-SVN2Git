@@ -28,11 +28,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.Serialization
   [TestFixture]
   public class SerializationInfoConcreteMixinTypeIdentifierSerializerTest
   {
-    private MethodInfo _simpleMethod = null!;
-    private MethodInfo _genericMethod = null!;
+    private MethodInfo _simpleMethod = default!;
+    private MethodInfo _genericMethod = default!;
 
-    private SerializationInfo _serializationInfo = null!;
-    private SerializationInfoConcreteMixinTypeIdentifierSerializer _serializer = null!;
+    private SerializationInfo _serializationInfo = default!;
+    private SerializationInfoConcreteMixinTypeIdentifierSerializer _serializer = default!;
 
     [SetUp]
     public void SetUp ()

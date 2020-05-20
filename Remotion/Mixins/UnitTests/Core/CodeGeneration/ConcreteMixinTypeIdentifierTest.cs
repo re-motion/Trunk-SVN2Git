@@ -28,10 +28,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class ConcreteMixinTypeIdentifierTest
   {
-    private MethodInfo _overrider1 = null!;
-    private MethodInfo _overrider2 = null!;
-    private MethodInfo _overridden1 = null!;
-    private MethodInfo _overridden2 = null!;
+    private MethodInfo _overrider1 = default!;
+    private MethodInfo _overrider2 = default!;
+    private MethodInfo _overridden1 = default!;
+    private MethodInfo _overridden2 = default!;
 
     [SetUp]
     public void SetUp ()

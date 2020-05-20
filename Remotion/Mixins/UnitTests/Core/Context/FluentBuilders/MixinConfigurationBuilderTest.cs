@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class MixinConfigurationBuilderTest
   {
-    private MixinContextOrigin _mixinContextOrigin = null!;
+    private MixinContextOrigin _mixinContextOrigin = default!;
 
     [SetUp]
     public void SetUp ()
