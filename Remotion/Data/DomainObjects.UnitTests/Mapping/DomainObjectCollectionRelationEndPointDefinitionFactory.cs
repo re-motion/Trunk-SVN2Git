@@ -21,13 +21,12 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.DomainObjects.UnitTests.Mapping
 {
-  public static class VirtualRelationEndPointDefinitionFactory
+  public static class DomainObjectCollectionRelationEndPointDefinitionFactory
   {
-    public static VirtualRelationEndPointDefinition Create (
+    public static DomainObjectCollectionRelationEndPointDefinition Create (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
-        CardinalityType cardinality,
         Type propertyType,
         string sortExpressionString)
     {
@@ -36,18 +35,17 @@ namespace Remotion.Data.DomainObjects.UnitTests.Mapping
       propertyInformationStub.Stub (stub => stub.PropertyType).Return (propertyType);
       propertyInformationStub.Stub (stub => stub.DeclaringType).Return (TypeAdapter.Create (classDefinition.ClassType));
 
-      return new VirtualRelationEndPointDefinition (
-          classDefinition, propertyName, isMandatory, cardinality, sortExpressionString, propertyInformationStub);
+      return new DomainObjectCollectionRelationEndPointDefinition (
+          classDefinition, propertyName, isMandatory, sortExpressionString, propertyInformationStub);
     }
 
-    public static VirtualRelationEndPointDefinition Create (
+    public static DomainObjectCollectionRelationEndPointDefinition Create (
         ClassDefinition classDefinition,
         string propertyName,
         bool isMandatory,
-        CardinalityType cardinality,
         Type propertyType)
     {
-      return Create (classDefinition, propertyName, isMandatory, cardinality, propertyType, null);
+      return Create (classDefinition, propertyName, isMandatory, propertyType, null);
     }
   }
 }
