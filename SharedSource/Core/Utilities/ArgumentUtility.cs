@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 // ReSharper disable once CheckNamespace
@@ -53,6 +54,7 @@ namespace Remotion.Utilities
   /// </remarks>
   static partial class ArgumentUtility
   {
+    [MethodImpl (MethodImplOptions.AggressiveInlining)]
     [AssertionMethod]
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName,
@@ -75,6 +77,7 @@ namespace Remotion.Utilities
       CheckNotNull (argumentName, actualValue);
     }
 
+    [MethodImpl (MethodImplOptions.AggressiveInlining)]
     [AssertionMethod]
     public static string CheckNotNullOrEmpty (
         [InvokerParameterName] string argumentName,
@@ -149,6 +152,7 @@ namespace Remotion.Utilities
       return enumerable;
     }
 
+    [MethodImpl (MethodImplOptions.AggressiveInlining)]
     [AssertionMethod]
     public static string CheckNotEmpty ([InvokerParameterName] string argumentName, string actualValue)
     {
