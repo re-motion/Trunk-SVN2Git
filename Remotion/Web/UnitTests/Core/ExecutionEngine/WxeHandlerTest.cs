@@ -239,7 +239,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     [Test]
     public void RetrieveExistingFunctionState ()
     {
-      DateTime timeBeforeRefresh = DateTime.Now;
+      DateTime timeBeforeRefresh = DateTime.UtcNow;
       Thread.Sleep (20);
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithEnabledCleanUp);
@@ -392,7 +392,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       queryString.Set (WxeHandler.Parameters.WxeAction, WxeHandler.Actions.Refresh);
       HttpContextHelper.SetQueryString (CurrentHttpContext, queryString);
 
-      DateTime timeBeforeRefresh = DateTime.Now;
+      DateTime timeBeforeRefresh = DateTime.UtcNow;
       Thread.Sleep (20);
 
       WxeFunctionState functionState = _wxeHandler.ResumeExistingFunctionState (CurrentHttpContext, c_functionTokenForFunctionStateWithEnabledCleanUp);
@@ -412,7 +412,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       queryString.Set (WxeHandler.Parameters.WxeAction, WxeHandler.Actions.Refresh);
       HttpContextHelper.SetQueryString (CurrentHttpContext, queryString);
 
-      DateTime timeBeforeRefresh = DateTime.Now;
+      DateTime timeBeforeRefresh = DateTime.UtcNow;
       Thread.Sleep (20);
 
       WxeFunctionState functionState =

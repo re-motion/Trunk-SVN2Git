@@ -134,7 +134,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         _functionStates.Add (
             functionState.FunctionToken,
-            new WxeFunctionStateMetaData (functionState.FunctionToken, functionState.Lifetime, DateTime.Now));
+            new WxeFunctionStateMetaData (functionState.FunctionToken, functionState.Lifetime, DateTime.UtcNow));
         _session.Add (GetSessionKeyForFunctionState (functionState.FunctionToken), functionState);
       }
     }
@@ -210,7 +210,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         WxeFunctionStateMetaData functionStateMetaData;
         if (_functionStates.TryGetValue (functionToken, out functionStateMetaData))
-          return functionStateMetaData.LastAccess.AddMinutes (functionStateMetaData.Lifetime) < DateTime.Now;
+          return functionStateMetaData.LastAccess.AddMinutes (functionStateMetaData.Lifetime) < DateTime.UtcNow;
 
         return true;
       }
@@ -236,7 +236,7 @@ namespace Remotion.Web.ExecutionEngine
 
         s_log.Debug (string.Format ("Refreshing WxeFunctionState {0}.", functionToken));
         WxeFunctionStateMetaData old = _functionStates[functionToken];
-        _functionStates[functionToken] = new WxeFunctionStateMetaData (old.FunctionToken, old.Lifetime, DateTime.Now);
+        _functionStates[functionToken] = new WxeFunctionStateMetaData (old.FunctionToken, old.Lifetime, DateTime.UtcNow);
       }
     }
 
