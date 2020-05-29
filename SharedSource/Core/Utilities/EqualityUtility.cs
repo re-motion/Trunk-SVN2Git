@@ -200,7 +200,7 @@ namespace Remotion.Utilities
       if (a == null)
         return (b == null);
       else
-        return a.Equals ((T) b);
+        return a.Equals ((T) b!);
     }
 
     /// <summary>
