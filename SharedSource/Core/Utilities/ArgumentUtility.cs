@@ -55,7 +55,9 @@ namespace Remotion.Utilities
   static partial class ArgumentUtility
   {
     [AssertionMethod]
+#if !DEBUG
     [MethodImpl (MethodImplOptions.AggressiveInlining)]
+#endif
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName,
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
@@ -78,7 +80,9 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+#if !DEBUG
     [MethodImpl (MethodImplOptions.AggressiveInlining)]
+#endif
     public static string CheckNotNullOrEmpty (
         [InvokerParameterName] string argumentName,
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] string actualValue)
@@ -153,7 +157,9 @@ namespace Remotion.Utilities
     }
 
     [AssertionMethod]
+#if !DEBUG
     [MethodImpl (MethodImplOptions.AggressiveInlining)]
+#endif
     public static string CheckNotEmpty ([InvokerParameterName] string argumentName, string actualValue)
     {
       if (actualValue != null && actualValue.Length == 0)
