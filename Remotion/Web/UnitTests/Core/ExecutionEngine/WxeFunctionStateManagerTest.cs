@@ -59,7 +59,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
 
       var functionStateManager = new WxeFunctionStateManager (_session);
 
-      Assert.That (functionStateManager.GetLastAccess (functionStateMetaData.FunctionToken), Is.EqualTo (lastAccess));
+      Assert.That (functionStateManager.GetLastAccessUtc (functionStateMetaData.FunctionToken), Is.EqualTo (lastAccess));
     }
 
     [Test]
@@ -98,10 +98,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
     {
       WxeFunctionStateManager functionStateManager = new WxeFunctionStateManager (_session);
       functionStateManager.Add (_functionState);
-      DateTime lastAccess = functionStateManager.GetLastAccess (_functionState.FunctionToken);
+      DateTime lastAccess = functionStateManager.GetLastAccessUtc (_functionState.FunctionToken);
       Thread.Sleep (1000);
       functionStateManager.Touch (_functionState.FunctionToken);
-      Assert.Greater (functionStateManager.GetLastAccess (_functionState.FunctionToken), lastAccess);
+      Assert.Greater (functionStateManager.GetLastAccessUtc (_functionState.FunctionToken), lastAccess);
     }
 
     [Test]

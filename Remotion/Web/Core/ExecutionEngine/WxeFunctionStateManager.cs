@@ -33,8 +33,8 @@ namespace Remotion.Web.ExecutionEngine
     [Serializable]
     public class WxeFunctionStateMetaData : Tuple<string, int, DateTime>
     {
-      public WxeFunctionStateMetaData (string functionToken, int lifetime, DateTime lastAccess)
-          : base (functionToken, lifetime, lastAccess)
+      public WxeFunctionStateMetaData (string functionToken, int lifetime, DateTime lastAccessUtc)
+          : base (functionToken, lifetime, lastAccessUtc)
       {
       }
 
@@ -48,7 +48,7 @@ namespace Remotion.Web.ExecutionEngine
         get { return Item2; }
       }
 
-      public DateTime LastAccess
+      public DateTime LastAccessUtc
       {
         get { return Item3; }
       }
@@ -210,20 +210,20 @@ namespace Remotion.Web.ExecutionEngine
       {
         WxeFunctionStateMetaData functionStateMetaData;
         if (_functionStates.TryGetValue (functionToken, out functionStateMetaData))
-          return functionStateMetaData.LastAccess.AddMinutes (functionStateMetaData.Lifetime) < DateTime.UtcNow;
+          return functionStateMetaData.LastAccessUtc.AddMinutes (functionStateMetaData.Lifetime) < DateTime.UtcNow;
 
         return true;
       }
     }
 
-    public DateTime GetLastAccess (string functionToken)
+    public DateTime GetLastAccessUtc (string functionToken)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
       lock (_lockObject)
       {
         CheckFunctionTokenExists (functionToken);
 
-        return _functionStates[functionToken].LastAccess;
+        return _functionStates[functionToken].LastAccessUtc;
       }
     }
 
