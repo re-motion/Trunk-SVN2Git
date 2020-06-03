@@ -52,6 +52,12 @@ namespace Remotion.Web.ExecutionEngine
       {
         get { return Item3; }
       }
+
+      [Obsolete ("Use LastAccessUtc instead. (Version 1.21.8)", false)]
+      public DateTime LastAccess
+      {
+        get { return Item3; }
+      }
     }
 
     private static readonly ILog s_log = LogManager.GetLogger (typeof (WxeFunctionStateManager));
