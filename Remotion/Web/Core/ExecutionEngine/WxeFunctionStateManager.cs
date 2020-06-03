@@ -48,6 +48,12 @@ namespace Remotion.Web.ExecutionEngine
         get { return Item2; }
       }
 
+      [Obsolete ("Use LifetimeInMinutes instead. (Version 1.21.8)", false)]
+      public int Lifetime
+      {
+        get { return Item2; }
+      }
+
       public DateTime LastAccessUtc
       {
         get { return Item3; }
