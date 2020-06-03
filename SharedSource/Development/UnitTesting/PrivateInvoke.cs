@@ -280,39 +280,39 @@ namespace Remotion.Development.UnitTesting
 
     #region SetProperty methods
 
-    public static void SetPublicProperty (object target, string propertyName, object value)
+    public static void SetPublicProperty (object target, string propertyName, object? value)
     {
       if (target == null) throw new ArgumentNullException ("target");
       SetPropertyInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.Public, propertyName, value);
     }
 
-    public static void SetNonPublicProperty (object target, string propertyName, object value)
+    public static void SetNonPublicProperty (object target, string propertyName, object? value)
     {
       if (target == null) throw new ArgumentNullException ("target");
       SetPropertyInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.NonPublic, propertyName, value);
     }
 
-    public static void SetNonPublicProperty (object target, Type declaringType, string propertyName, object value)
+    public static void SetNonPublicProperty (object target, Type declaringType, string propertyName, object? value)
     {
       if (target == null)
         throw new ArgumentNullException ("target");
       SetPropertyInternal (target, declaringType, BindingFlags.Instance | BindingFlags.NonPublic, propertyName, value);
     }
 
-    public static void SetPublicStaticProperty (Type type, string propertyName, object value)
+    public static void SetPublicStaticProperty (Type type, string propertyName, object? value)
     {
       if (type == null) throw new ArgumentNullException ("type");
       PropertyInfo property = type.GetProperty (propertyName, BindingFlags.Static | BindingFlags.Public);
       SetPropertyInternal (null, type, BindingFlags.Static | BindingFlags.Public, propertyName, value);
     }
 
-    public static void SetNonPublicStaticProperty (Type type, string propertyName, object value)
+    public static void SetNonPublicStaticProperty (Type type, string propertyName, object? value)
     {
       if (type == null) throw new ArgumentNullException ("type");
       SetPropertyInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, propertyName, value);
     }
 
-    private static void SetPropertyInternal (object? instance, Type type, BindingFlags bindingFlags, string propertyName, object value)
+    private static void SetPropertyInternal (object? instance, Type type, BindingFlags bindingFlags, string propertyName, object? value)
     {
       PropertyInfo? property = GetPropertyRecursive (type, bindingFlags, propertyName);
       if (property == null)
@@ -390,31 +390,31 @@ namespace Remotion.Development.UnitTesting
 
     #region SetField methods
 
-    public static void SetPublicField (object target, string fieldName, object value)
+    public static void SetPublicField (object target, string fieldName, object? value)
     {
       if (target == null) throw new ArgumentNullException ("target");
       SetFieldInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.Public, fieldName, value);
     }
 
-    public static void SetNonPublicField (object target, string fieldName, object value)
+    public static void SetNonPublicField (object target, string fieldName, object? value)
     {
       if (target == null) throw new ArgumentNullException ("target");
       SetFieldInternal (target, target.GetType(), BindingFlags.Instance | BindingFlags.NonPublic, fieldName, value);
     }
 
-    public static void SetPublicStaticField (Type type, string fieldName, object value)
+    public static void SetPublicStaticField (Type type, string fieldName, object? value)
     {
       if (type == null) throw new ArgumentNullException ("type");
       SetFieldInternal (null, type, BindingFlags.Static | BindingFlags.Public, fieldName, value);
     }
 
-    public static void SetNonPublicStaticField (Type type, string fieldName, object value)
+    public static void SetNonPublicStaticField (Type type, string fieldName, object? value)
     {
       if (type == null) throw new ArgumentNullException ("type");
       SetFieldInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, fieldName, value);
     }
 
-    private static void SetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName, object value)
+    private static void SetFieldInternal (object? instance, Type type, BindingFlags bindingFlags, string fieldName, object? value)
     {
       FieldInfo? field = GetFieldRecursive (type, bindingFlags, fieldName);
       if (field == null)
