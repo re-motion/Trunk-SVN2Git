@@ -71,7 +71,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [OneTimeSetUp]
     public void OneTimeSetUp ()
     {
-      Environment.CurrentDirectory = TestContext.CurrentContext.TestDirectory;
       var assemblyTrackingPipelineFactory = new AssemblyTrackingPipelineFactory();
       var settings = PipelineSettings.New().SetEnableSerializationWithoutAssemblySaving (true).SetAssemblyDirectory (TestContext.CurrentContext.TestDirectory).Build();
       var participants = new IParticipant[]
