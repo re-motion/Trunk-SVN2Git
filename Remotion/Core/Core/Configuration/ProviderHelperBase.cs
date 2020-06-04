@@ -116,7 +116,7 @@ namespace Remotion.Configuration
       get { return _defaultProviderNameProperty; }
     }
 
-    protected ConfigurationProperty CreateDefaultProviderNameProperty (string name, string defaultValue)
+    protected ConfigurationProperty CreateDefaultProviderNameProperty (string name, string? defaultValue)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       return new ConfigurationProperty (name, typeof (string), defaultValue, null, new StringValidator (1), ConfigurationPropertyOptions.None);
