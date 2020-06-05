@@ -53,7 +53,7 @@ namespace Remotion.Web.ExecutionEngine
         get { return Item3; }
       }
 
-      [Obsolete ("Use LastAccessUtc instead. (Version 1.21.8)", false)]
+      [Obsolete ("Use LastAccessUtc instead. LastAccess now also returns the value as UTC. (Version 1.21.8)", false)]
       public DateTime LastAccess
       {
         get { return Item3; }
