@@ -33,8 +33,8 @@ namespace Remotion.Web.ExecutionEngine
     [Serializable]
     public class WxeFunctionStateMetaData : Tuple<string, int, DateTime>
     {
-      public WxeFunctionStateMetaData (string functionToken, int lifetime, DateTime lastAccess)
-          : base (functionToken, lifetime, lastAccess)
+      public WxeFunctionStateMetaData (string functionToken, int lifetimeInMinutes, DateTime lastAccessUtc)
+          : base (functionToken, lifetimeInMinutes, lastAccessUtc)
       {
       }
 
@@ -43,11 +43,23 @@ namespace Remotion.Web.ExecutionEngine
         get { return Item1; }
       }
 
+      public int LifetimeInMinutes
+      {
+        get { return Item2; }
+      }
+
+      [Obsolete ("Use LifetimeInMinutes instead. (Version 1.21.8)", false)]
       public int Lifetime
       {
         get { return Item2; }
       }
 
+      public DateTime LastAccessUtc
+      {
+        get { return Item3; }
+      }
+
+      [Obsolete ("Use LastAccessUtc instead. LastAccess now also returns the value as UTC. (Version 1.21.8)", false)]
       public DateTime LastAccess
       {
         get { return Item3; }
@@ -134,7 +146,7 @@ namespace Remotion.Web.ExecutionEngine
       {
         _functionStates.Add (
             functionState.FunctionToken,
-            new WxeFunctionStateMetaData (functionState.FunctionToken, functionState.Lifetime, DateTime.Now));
+            new WxeFunctionStateMetaData (functionState.FunctionToken, functionState.Lifetime, DateTime.UtcNow));
         _session.Add (GetSessionKeyForFunctionState (functionState.FunctionToken), functionState);
       }
     }
@@ -210,20 +222,20 @@ namespace Remotion.Web.ExecutionEngine
       {
         WxeFunctionStateMetaData functionStateMetaData;
         if (_functionStates.TryGetValue (functionToken, out functionStateMetaData))
-          return functionStateMetaData.LastAccess.AddMinutes (functionStateMetaData.Lifetime) < DateTime.Now;
+          return functionStateMetaData.LastAccessUtc.AddMinutes (functionStateMetaData.LifetimeInMinutes) < DateTime.UtcNow;
 
         return true;
       }
     }
 
-    public DateTime GetLastAccess (string functionToken)
+    public DateTime GetLastAccessUtc (string functionToken)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("functionToken", functionToken);
       lock (_lockObject)
       {
         CheckFunctionTokenExists (functionToken);
 
-        return _functionStates[functionToken].LastAccess;
+        return _functionStates[functionToken].LastAccessUtc;
       }
     }
 
@@ -236,7 +248,7 @@ namespace Remotion.Web.ExecutionEngine
 
         s_log.Debug (string.Format ("Refreshing WxeFunctionState {0}.", functionToken));
         WxeFunctionStateMetaData old = _functionStates[functionToken];
-        _functionStates[functionToken] = new WxeFunctionStateMetaData (old.FunctionToken, old.Lifetime, DateTime.Now);
+        _functionStates[functionToken] = new WxeFunctionStateMetaData (old.FunctionToken, old.LifetimeInMinutes, DateTime.UtcNow);
       }
     }
 
