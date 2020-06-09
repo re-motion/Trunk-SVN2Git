@@ -113,7 +113,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       return new SqlConnection (_connectionString);
     }
 
-    protected virtual IDbCommand CreateCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
+    protected virtual IDbCommand CreateCommand (IDbConnection connection, string commandText, IDbTransaction? transaction)
     {
       IDbCommand command = connection.CreateCommand ();
       command.CommandType = CommandType.Text;
