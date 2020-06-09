@@ -28,7 +28,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
   public class DatabaseAgent
   {
     private string _connectionString;
-    private string _fileName = null;
+    private string? _fileName = null;
 
     public DatabaseAgent (string connectionString)
     {
@@ -144,7 +144,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       }
     }
 
-    protected virtual int ExecuteBatchString (IDbConnection connection, string commandBatch, IDbTransaction transaction)
+    protected virtual int ExecuteBatchString (IDbConnection connection, string commandBatch, IDbTransaction? transaction)
     {
       ArgumentUtility.CheckNotNull ("connection", connection);
       ArgumentUtility.CheckNotNullOrEmpty ("commandBatch", commandBatch);
@@ -174,7 +174,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       return count;
     }
 
-    protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
+    protected virtual int ExecuteCommand (IDbConnection connection, string commandText, IDbTransaction? transaction)
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {
@@ -182,7 +182,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       }
     }
 
-    protected virtual object ExecuteScalarCommand (IDbConnection connection, string commandText, IDbTransaction transaction)
+    protected virtual object ExecuteScalarCommand (IDbConnection connection, string commandText, IDbTransaction? transaction)
     {
       using (IDbCommand command = CreateCommand (connection, commandText, transaction))
       {

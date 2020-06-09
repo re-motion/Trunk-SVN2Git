@@ -46,6 +46,7 @@ namespace Remotion.Development.UnitTesting
     }
 
     public static T XmlSerializeAndDeserialize<T> (T t)
+        where T : notnull
     {
       return XmlDeserialize<T> (XmlSerialize (t));
     }

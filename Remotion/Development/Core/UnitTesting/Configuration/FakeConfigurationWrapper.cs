@@ -61,7 +61,7 @@ namespace Remotion.Development.UnitTesting.Configuration
       _appSettings.Add (name, value);
     }
 
-    public override object GetSection (string sectionName)
+    public override object? GetSection (string sectionName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sectionName", sectionName);
 

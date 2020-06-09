@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -32,7 +32,7 @@ namespace Remotion.Development.UnitTesting.PEVerifyPathSources
       _path = path;
     }
 
-    public string GetPEVerifyPath (PEVerifyVersion version)
+    public string? GetPEVerifyPath (PEVerifyVersion version)
     {
       return  _path;
     }

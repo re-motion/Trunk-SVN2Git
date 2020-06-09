@@ -33,7 +33,7 @@ namespace Remotion.Development.UnitTesting.Configuration
     {
     }
 
-    public object GetSection (string configKey)
+    public object? GetSection (string configKey)
     {
       object value;
       if (_sections.TryGetValue (configKey, out value))

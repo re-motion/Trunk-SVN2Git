@@ -20,12 +20,13 @@ using System.Runtime.Serialization;
 namespace Remotion.Development.UnitTesting
 {
   public class SerializationCallbackTester<T>
+      where T : notnull
   {
     private readonly IMockRepository _mockRepository;
-    private readonly Action<ISerializationEventReceiver> _receiverSetter;
+    private readonly Action<ISerializationEventReceiver?> _receiverSetter;
     private readonly T _instance;
 
-    public SerializationCallbackTester (IMockRepository mockRepository, T instance, Action<ISerializationEventReceiver> receiverSetter)
+    public SerializationCallbackTester (IMockRepository mockRepository, T instance, Action<ISerializationEventReceiver?> receiverSetter)
     {
       _mockRepository = mockRepository;
       _instance = instance;
@@ -113,7 +114,7 @@ namespace Remotion.Development.UnitTesting
         receiver.OnDeserialized (context);
         _mockRepository.LastCall_IgnoreArguments ();
 
-        receiver.OnDeserialization (null);
+        receiver.OnDeserialization (null!);
         _mockRepository.LastCall_IgnoreArguments ();
       }
     }
