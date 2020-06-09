@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
               var assemblyCompiler = new AssemblyCompiler (@"Reflection\TypeDiscovery\TestAssemblies\NonApplicationMarkedAssembly", path,
                                                            typeof (NonApplicationAssemblyAttribute).Assembly.Location);
               assemblyCompiler.Compile ();
-              Assert.That (filter.ShouldIncludeAssembly (assemblyCompiler.CompiledAssembly), Is.False);
+              Assert.That (filter.ShouldIncludeAssembly (assemblyCompiler.CompiledAssembly!), Is.False);
             }, compiledAssemblyPath);
       }
       finally

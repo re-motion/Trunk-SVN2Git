@@ -97,8 +97,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     {
       ExecuteInSeparateAppDomain (delegate
       {
-        Assembly firstInMemoryAssembly = CompileTestAssemblyInMemory ("FirstInMemoryAssembly", _markedReferencedAssemblyPath);
-        Assembly secondInMemoryAssembly = CompileTestAssemblyInMemory ("SecondInMemoryAssembly");
+        Assembly firstInMemoryAssembly = CompileTestAssemblyInMemory ("FirstInMemoryAssembly", _markedReferencedAssemblyPath)!;
+        Assembly secondInMemoryAssembly = CompileTestAssemblyInMemory ("SecondInMemoryAssembly")!;
         CompileTestAssemblyInMemory ("UnmarkedInMemoryAssembly");
 
         InitializeDynamicDirectory ();
@@ -133,8 +133,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     {
       ExecuteInSeparateAppDomain (delegate
       {
-        Assembly firstInMemoryAssembly = CompileTestAssemblyInMemory ("FirstInMemoryAssembly", _markedReferencedAssemblyPath);
-        Assembly secondInMemoryAssembly = CompileTestAssemblyInMemory ("SecondInMemoryAssembly");
+        Assembly firstInMemoryAssembly = CompileTestAssemblyInMemory ("FirstInMemoryAssembly", _markedReferencedAssemblyPath)!;
+        Assembly secondInMemoryAssembly = CompileTestAssemblyInMemory ("SecondInMemoryAssembly")!;
         CompileTestAssemblyInMemory ("UnmarkedInMemoryAssembly");
 
         InitializeDynamicDirectory ();
@@ -255,7 +255,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       _dynamicDirectoryBuildOutputManager.CopyAllGeneratedAssembliesToNewDirectory (AppDomain.CurrentDomain.DynamicDirectory);
     }
 
-    private Assembly CompileTestAssemblyInMemory (string assemblyName, params string[] referencedAssemblies)
+    private Assembly? CompileTestAssemblyInMemory (string assemblyName, params string[] referencedAssemblies)
     {
       AssemblyCompiler assemblyCompiler = AssemblyCompiler.CreateInMemoryAssemblyCompiler (
           c_testAssemblySourceDirectoryRoot + "\\" + assemblyName,
