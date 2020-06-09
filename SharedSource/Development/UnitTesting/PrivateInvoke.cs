@@ -109,7 +109,7 @@ namespace Remotion.Development.UnitTesting
 
     #region InvokeMethod methods
 
-    public static object InvokeNonPublicStaticMethod (Type type, string methodName, params object[] arguments)
+    public static object InvokeNonPublicStaticMethod (Type type, string methodName, params object?[] arguments)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
@@ -117,7 +117,7 @@ namespace Remotion.Development.UnitTesting
       return InvokeMethodInternal (null, type, BindingFlags.Static | BindingFlags.NonPublic, methodName, arguments);
     }
 
-    public static object InvokePublicStaticMethod (Type type, string methodName, params object[] arguments)
+    public static object InvokePublicStaticMethod (Type type, string methodName, params object?[] arguments)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
@@ -125,14 +125,14 @@ namespace Remotion.Development.UnitTesting
       return InvokeMethodInternal (null, type, BindingFlags.Static | BindingFlags.Public, methodName, arguments);
     }
 
-    public static object InvokeNonPublicMethod (object target, string methodName, params object[] arguments)
+    public static object InvokeNonPublicMethod (object target, string methodName, params object?[] arguments)
     {
       ArgumentUtility.CheckNotNull ("target", target);
 
       return InvokeNonPublicMethod (target, target.GetType(), methodName, arguments);
     }
 
-    public static object InvokeNonPublicMethod (object target, Type definingType, string methodName, params object[] arguments)
+    public static object InvokeNonPublicMethod (object target, Type definingType, string methodName, params object?[] arguments)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("definingType", definingType);
@@ -142,7 +142,7 @@ namespace Remotion.Development.UnitTesting
       return InvokeMethodInternal (target, definingType, BindingFlags.Instance | BindingFlags.NonPublic, methodName, arguments);
     }
 
-    public static object InvokePublicMethod (object target, string methodName, params object[] arguments)
+    public static object InvokePublicMethod (object target, string methodName, params object?[] arguments)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNullOrEmpty ("methodName", methodName);
@@ -171,32 +171,32 @@ namespace Remotion.Development.UnitTesting
 
     #region CreateInstance methods
 
-    public static object CreateInstancePublicCtor (string assemblyString, string typeName, params object[] arguments)
+    public static object CreateInstancePublicCtor (string assemblyString, string typeName, params object?[] arguments)
     {
       return CreateInstancePublicCtor (Assembly.Load (assemblyString), typeName, arguments);
     }
 
-    public static object CreateInstancePublicCtor (Assembly assembly, string typeName, params object[] arguments)
+    public static object CreateInstancePublicCtor (Assembly assembly, string typeName, params object?[] arguments)
     {
       return CreateInstancePublicCtor (assembly.GetType (typeName, true, false), arguments);
     }
 
-    public static object CreateInstancePublicCtor (Type type, params object[] arguments)
+    public static object CreateInstancePublicCtor (Type type, params object?[] arguments)
     {
       return CreateInstanceInternal (type, true, arguments);
     }
 
-    public static object CreateInstanceNonPublicCtor (string assemblyString, string typeName, params object[] arguments)
+    public static object CreateInstanceNonPublicCtor (string assemblyString, string typeName, params object?[] arguments)
     {
       return CreateInstanceNonPublicCtor (Assembly.Load (assemblyString), typeName, arguments);
     }
 
-    public static object CreateInstanceNonPublicCtor (Assembly assembly, string typeName, params object[] arguments)
+    public static object CreateInstanceNonPublicCtor (Assembly assembly, string typeName, params object?[] arguments)
     {
       return CreateInstanceNonPublicCtor (assembly.GetType (typeName, true, false), arguments);
     }
 
-    public static object CreateInstanceNonPublicCtor (Type type, params object[] arguments)
+    public static object CreateInstanceNonPublicCtor (Type type, params object?[] arguments)
     {
       return CreateInstanceInternal (type, false, arguments);
     }
