@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Utilities;
@@ -23,19 +22,19 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Implements <see cref="ICollectionEndPointChangeDetectionStrategy"/> for sub-transactions. In sub-transactions, a collection end point
-  /// is regarded to have changed when either the opposite collection reference has changed or the sequence of items has changed. The order of the 
-  /// items is significant.
+  /// Implements <see cref="IDomainObjectCollectionEndPointChangeDetectionStrategy"/> for root transactions. In root transactions, a collection end point
+  /// is regarded to have changed when either the opposite collection reference has changed or the set of items has changed. The order of the items
+  /// is ignored.
   /// </summary>
   [Serializable]
-  public class SubCollectionEndPointChangeDetectionStrategy : ICollectionEndPointChangeDetectionStrategy
+  public class RootDomainObjectCollectionEndPointChangeDetectionStrategy : IDomainObjectCollectionEndPointChangeDetectionStrategy
   {
     public bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData)
     {
       ArgumentUtility.CheckNotNull ("currentData", currentData);
       ArgumentUtility.CheckNotNull ("originalData", originalData);
 
-      return !originalData.SequenceEqual (currentData);
+      return !originalData.SetEquals (currentData);
     }
   }
 }

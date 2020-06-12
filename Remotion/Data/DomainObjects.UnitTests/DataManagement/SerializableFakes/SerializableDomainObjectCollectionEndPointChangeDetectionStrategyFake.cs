@@ -16,16 +16,16 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 
-namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
+namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Provides an interface for classes determining whether a collection end point has changed. This is used by 
-  /// <see cref="DomainObjectCollectionEndPoint.HasChanged"/>,
-  /// and its concrete implementation is installed by <see cref="ClientTransaction"/>.
-  /// </summary>
-  public interface ICollectionEndPointChangeDetectionStrategy
+  [Serializable]
+  public class SerializableDomainObjectCollectionEndPointChangeDetectionStrategyFake : IDomainObjectCollectionEndPointChangeDetectionStrategy
   {
-    bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData);
+    public bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData)
+    {
+      return false;
+    }
   }
 }

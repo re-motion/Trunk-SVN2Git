@@ -15,17 +15,27 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.UnitTests.DataManagement.SerializableFakes
+namespace Remotion.Data.DomainObjects.Infrastructure
 {
+  /// <summary>
+  /// Implements <see cref="IDomainObjectCollectionEndPointChangeDetectionStrategy"/> for sub-transactions. In sub-transactions, a collection end point
+  /// is regarded to have changed when either the opposite collection reference has changed or the sequence of items has changed. The order of the 
+  /// items is significant.
+  /// </summary>
   [Serializable]
-  public class SerializableCollectionEndPointChangeDetectionStrategyFake : ICollectionEndPointChangeDetectionStrategy
+  public class SubDomainObjectCollectionEndPointChangeDetectionStrategy : IDomainObjectCollectionEndPointChangeDetectionStrategy
   {
     public bool HasDataChanged (IDomainObjectCollectionData currentData, IDomainObjectCollectionData originalData)
     {
-      return false;
+      ArgumentUtility.CheckNotNull ("currentData", currentData);
+      ArgumentUtility.CheckNotNull ("originalData", originalData);
+
+      return !originalData.SequenceEqual (currentData);
     }
   }
 }
