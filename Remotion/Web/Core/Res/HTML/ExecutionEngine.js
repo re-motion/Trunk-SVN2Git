@@ -23,6 +23,7 @@
 // statusIsAbortingMessage: The message displayed when the user attempts to submit while an abort is in progress. 
 //    null to disable the message.
 // statusIsCachedMessage: The message displayed when the user returns to a cached page. null to disable the message.
+// postBackSequenceNumber: The postback sequence number to render at the end of the onload event.
 function WxePage_Context(
       isCacheDetectionEnabled,
       refreshInterval, refreshUrl,
