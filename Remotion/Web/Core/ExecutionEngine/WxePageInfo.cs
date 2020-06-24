@@ -371,13 +371,13 @@ namespace Remotion.Web.ExecutionEngine
       StringBuilder initScript = new StringBuilder (500);
 
       initScript.AppendLine ("WxePage_Context.SetInstance (new WxePage_Context (");
-      initScript.AppendLine ("    ").Append (isCacheDetectionEnabled).AppendLine (",");
-      initScript.AppendLine ("    ").Append (refreshInterval).AppendLine (",");
-      initScript.AppendLine ("    ").Append (refreshPath).AppendLine (",");
-      initScript.AppendLine ("    ").Append (abortPath).AppendLine (",");
-      initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
-      initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine (",");
-      initScript.AppendLine ("    ").Append (wxeContext.PostBackID + 1).AppendLine ("));");
+      initScript.Append ("    ").Append (isCacheDetectionEnabled).AppendLine (",");
+      initScript.Append ("    ").Append (refreshInterval).AppendLine (",");
+      initScript.Append ("    ").Append (refreshPath).AppendLine (",");
+      initScript.Append ("    ").Append (abortPath).AppendLine (",");
+      initScript.Append ("    ").Append (statusIsAbortingMessage).AppendLine (",");
+      initScript.Append ("    ").Append (statusIsCachedMessage).AppendLine (",");
+      initScript.Append ("    ").Append (wxeContext.PostBackID + 1).AppendLine ("));");
 
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo), "wxeInitialize", initScript.ToString ());
     }
