@@ -367,6 +367,7 @@ namespace Remotion.Web.ExecutionEngine
       _page.CheckFormStateFunction = "WxePage_CheckFormState";
 
       string isCacheDetectionEnabled = _page.AreOutOfSequencePostBacksEnabled ? "false" : "true";
+      var nextPostBackID = wxeContext.PostBackID + 1;
 
       StringBuilder initScript = new StringBuilder (500);
 
@@ -377,7 +378,7 @@ namespace Remotion.Web.ExecutionEngine
       initScript.Append ("    ").Append (abortPath).AppendLine (",");
       initScript.Append ("    ").Append (statusIsAbortingMessage).AppendLine (",");
       initScript.Append ("    ").Append (statusIsCachedMessage).AppendLine (",");
-      initScript.Append ("    ").Append (wxeContext.PostBackID + 1).AppendLine ("));");
+      initScript.Append ("    ").Append (nextPostBackID).AppendLine ("));");
 
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo), "wxeInitialize", initScript.ToString ());
     }
