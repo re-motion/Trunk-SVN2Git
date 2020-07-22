@@ -37,7 +37,7 @@
     <SvnBranchFolder></SvnBranchFolder>
     <SvnTagsFolder>tags</SvnTagsFolder>
     
-    <VcsUrlTemplate>$(SvnBaseUri)/!svn/bc/$(SvnRevision)/$(SvnBranchFolder)/{0}</VcsUrlTemplate>
+    <VcsUrlTemplate>https://raw.githubusercontent.com/re-motion/Trunk-SVN2Git/$(build_vcs_number)/{0}</VcsUrlTemplate>
 
     <JiraVersionPattern></JiraVersionPattern>
 
