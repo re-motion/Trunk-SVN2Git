@@ -18,7 +18,6 @@ using System;
 using System.Linq.Expressions;
 using Moq;
 using NUnit.Framework;
-using Remotion.Utilities;
 
 // ReSharper disable once CheckNamespace
 namespace Remotion.Development.Moq.UnitTesting
@@ -27,7 +26,7 @@ namespace Remotion.Development.Moq.UnitTesting
   /// Provides functionality for testing decorator methods that do nothing else but forward to the equivalent methods on a decorated object.
   /// </summary>
   /// <typeparam name="TInterface">The type of the interface.</typeparam>
-  public partial class DecoratorTestHelper<TInterface>
+  partial class DecoratorTestHelper<TInterface>
       where TInterface : class
   {
     private readonly TInterface _decorator;
@@ -35,8 +34,11 @@ namespace Remotion.Development.Moq.UnitTesting
 
     public DecoratorTestHelper (TInterface decorator, Mock<TInterface> decoratedMock)
     {
-      ArgumentUtility.CheckNotNull ("decorator", decorator);
-      ArgumentUtility.CheckNotNull ("decoratedMock", decoratedMock);
+      if (decorator == null)
+        throw new ArgumentNullException ("decorator");
+
+      if (decorator == decoratedMock)
+        throw new ArgumentNullException ("decoratedMock");
 
       _decorator = decorator;
       _decoratedMock = decoratedMock;
