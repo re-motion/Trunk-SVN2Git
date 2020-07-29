@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
+using System.Windows.Forms;
 using Coypu;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -119,6 +120,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var home = Start();
 
       var hoverElement = home.Scope.FindId (c_hoverDivID);
+      Thread.Sleep (250);
       Helper.BrowserConfiguration.MouseHelper.Hover (hoverElement);
       Thread.Sleep (250);
 
