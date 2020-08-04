@@ -84,6 +84,7 @@
     <Content Include="AspNetRequestErrorDetectionParserStaticPages\InvalidErrorPageWithMessageMissing.html" />
     <Content Include="AspNetRequestErrorDetectionParserStaticPages\InvalidErrorPageWithStacktraceMissing.html" />
     <Content Include="DropDownMenuWebService.asmx" />
+    <Content Include="MultiWindowTest\BlankPageWithConfirmButton.html" />
     <Content Include="RequestErrorDetectionStrategyTest.aspx" />
     <Content Include="CoypuElementScopeFindExtensionsTest.aspx" />
     <Content Include="PlatformTest.aspx" />

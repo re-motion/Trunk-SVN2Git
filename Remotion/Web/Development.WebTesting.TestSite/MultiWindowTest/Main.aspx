@@ -40,6 +40,10 @@
         <div style="border: 1px solid black">
           <iframe name="frame" src="Frame.wxe?AlwaysRefreshMain=False" height="500" width="1000"></iframe>
         </div>
+        <br/>
+        <div style="border: 1px solid black">
+          <iframe name="confirmbuttonframe" src="BlankPageWithConfirmButton.html" height="300" width="300"></iframe>
+        </div>
       </div>
     </form>
   </body>

@@ -175,6 +175,20 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (defaultPage.GetTitle(), Is.EqualTo ("Web.Development.WebTesting.TestSite"));
     }
 
+    [Test]
+    public void DismissalOfConfirmDialogOpenedThroughIframe ()
+    {
+      var home = Start();
+      var frameScope = home.Scope.FindFrame ("confirmbuttonframe");
+      var frame = new WxePageObject (home.Context.CloneForFrame (frameScope));
+      var confirmButton = frame.WebButtons().GetByID ("confirmbutton");
+
+      confirmButton.Click (Opt.AcceptModalDialog());
+
+      // Force a possible UnhandledAlertException
+      Assert.That (confirmButton.GetText(), Is.EqualTo ("Confirm"));
+    }
+
     private void AssertPostBackSequenceNumber (LabelControlObject label, int expectedPostBackSequenceNumber)
     {
       Assert.That (label.GetText(), Does.Contain (string.Format ("| {0} |", expectedPostBackSequenceNumber)));
