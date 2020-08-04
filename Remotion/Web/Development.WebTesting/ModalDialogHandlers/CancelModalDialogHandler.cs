@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Utilities;
+using Remotion.Web.Development.WebTesting.BrowserSession.Firefox;
 
 namespace Remotion.Web.Development.WebTesting.ModalDialogHandlers
 {
@@ -29,7 +30,15 @@ namespace Remotion.Web.Development.WebTesting.ModalDialogHandlers
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      context.Window.CancelModalDialog ();
+      if (context.Browser is FirefoxBrowserSession)
+      {
+        var webDriver = context.Window.GetWebDriver();
+        webDriver.SwitchTo().Alert().Dismiss();
+      }
+      else
+      {
+        context.Window.CancelModalDialog();
+      }
     }
   }
 }
