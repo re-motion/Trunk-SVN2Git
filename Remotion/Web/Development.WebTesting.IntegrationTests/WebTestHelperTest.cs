@@ -31,7 +31,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   public class WebTestHelperTest
   {
     [Test]
-    [Retry (2)]
     public void WebTestHelper_OnTestFixtureTearDown_ClosesMainBrowserSessionProcesses ([Values (true, false)] bool testSuccess)
     {
       var webTestHelper = WebTestHelper.CreateFromConfiguration<CustomWebTestConfigurationFactory>();
@@ -39,8 +38,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var configuration = webTestHelper.BrowserConfiguration;
 
       // Filter used when taking process snapshots
-      var filter = (Func<Process, bool>) (p => p.ProcessName == configuration.BrowserExecutableName
-                                               || p.ProcessName == configuration.WebDriverExecutableName);
+      var filter = (Func<Process, bool>) (p => (p.ProcessName == configuration.BrowserExecutableName
+                                                || p.ProcessName == configuration.WebDriverExecutableName)
+                                               && !p.HasExited);
 
       // Start and stop the web helper while taking process snapshots
       var beforeStart = ProcessSnapshot.CreateWithFilter (filter);
@@ -82,8 +82,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var configuration = webTestHelper.BrowserConfiguration;
 
       // Filter used when taking process snapshots
-      var filter = (Func<Process, bool>) (p => p.ProcessName == configuration.BrowserExecutableName
-                                               || p.ProcessName == configuration.WebDriverExecutableName);
+      var filter = (Func<Process, bool>) (p => (p.ProcessName == configuration.BrowserExecutableName
+                                                || p.ProcessName == configuration.WebDriverExecutableName)
+                                               && !p.HasExited);
 
       // The amount of browser sessions to open
       const int browserSessions = 3;
