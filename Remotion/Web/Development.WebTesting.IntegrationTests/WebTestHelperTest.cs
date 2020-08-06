@@ -22,6 +22,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure;
 using Remotion.Web.Development.WebTesting.WebDriver;
+using Remotion.Web.Development.WebTesting.WebDriver.Configuration;
 using Remotion.Web.Development.WebTesting.WebDriver.Configuration.Chrome;
 using Remotion.Web.Development.WebTesting.WebDriver.Configuration.Edge;
 
@@ -38,9 +39,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var configuration = webTestHelper.BrowserConfiguration;
 
       // Filter used when taking process snapshots
-      var filter = (Func<Process, bool>) (p => (p.ProcessName == configuration.BrowserExecutableName
-                                                || p.ProcessName == configuration.WebDriverExecutableName)
-                                               && !p.HasExited);
+      var filter = CreateFilterForConfiguration (configuration);
 
       // Start and stop the web helper while taking process snapshots
       var beforeStart = ProcessSnapshot.CreateWithFilter (filter);
@@ -82,9 +81,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var configuration = webTestHelper.BrowserConfiguration;
 
       // Filter used when taking process snapshots
-      var filter = (Func<Process, bool>) (p => (p.ProcessName == configuration.BrowserExecutableName
-                                                || p.ProcessName == configuration.WebDriverExecutableName)
-                                               && !p.HasExited);
+      var filter = CreateFilterForConfiguration (configuration);
 
       // The amount of browser sessions to open
       const int browserSessions = 3;
@@ -146,6 +143,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
           Is.False,
           string.Format ("User directory root '{0}' is not cleaned up.", userDirectoryRoot));
     }
+
+    private Func<Process, bool> CreateFilterForConfiguration (IBrowserConfiguration configuration) =>
+        p => (string.Equals (p.ProcessName, configuration.BrowserExecutableName, StringComparison.OrdinalIgnoreCase)
+              || string.Equals (p.ProcessName, configuration.WebDriverExecutableName, StringComparison.OrdinalIgnoreCase))
+             && !p.HasExited;
 
     /// <summary>
     /// Calls <see cref="WebTestHelper.OnFixtureSetUp"/> and <see cref="WebTestHelper.OnSetUp"/> on the specified <see cref="WebTestHelper"/>.
