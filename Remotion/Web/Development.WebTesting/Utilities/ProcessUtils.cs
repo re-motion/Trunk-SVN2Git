@@ -150,6 +150,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       catch (Win32Exception)
       {
         // Thrown if the .Kill() method is called while the process is currently terminating.
+        // https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.process.kill#remarks
+        // This exception can be swallowed safely, as the process that should be killed is already terminating.
       }
 
       if (process.WaitForExit (timeoutInMilliseconds))
