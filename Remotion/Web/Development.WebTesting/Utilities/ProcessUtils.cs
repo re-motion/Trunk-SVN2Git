@@ -143,7 +143,14 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       }
 
       // Force closing the process
-      process.Kill();
+      try
+      {
+        process.Kill();
+      }
+      catch (Win32Exception)
+      {
+        // Thrown if the .Kill() method is called while the process is currently terminating.
+      }
 
       if (process.WaitForExit (timeoutInMilliseconds))
         return;
