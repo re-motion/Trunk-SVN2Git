@@ -64,8 +64,17 @@ function WxePage_Context(
 
   var _postBackSequenceNumber = postBackSequenceNumber;
 
-  // Handles the page load event.
-  this.OnLoad = function(hasSubmitted, isCached)
+  // Handles the page loading event.
+  this.OnLoading = function(hasSubmitted, isCached)
+  {
+    ArgumentUtility.CheckNotNullAndTypeIsBoolean('hasSubmitted', hasSubmitted);
+    ArgumentUtility.CheckNotNullAndTypeIsBoolean('isCached', isCached);
+
+    document.getElementById('wxePostBackSequenceNumberField').setAttribute('value', _postBackSequenceNumber);
+  };
+
+  // Handles the page loaded event.
+  this.OnLoaded = function(hasSubmitted, isCached)
   {
     ArgumentUtility.CheckNotNullAndTypeIsBoolean('hasSubmitted', hasSubmitted);
     ArgumentUtility.CheckNotNullAndTypeIsBoolean('isCached', isCached);
@@ -75,8 +84,6 @@ function WxePage_Context(
     {
       this.ShowStatusIsCachedMessage();
     }
-
-    document.getElementById('wxePostBackSequenceNumberField').setAttribute('value', _postBackSequenceNumber);
   };
 
   this.OnUnload = function()
@@ -186,9 +193,14 @@ WxePage_Context.SetInstance = function(instance)
   WxePage_Context._instance = instance;
 }
 
-function WxePage_OnLoad(hasSubmitted, isCached)
+function WxePage_OnLoading(hasSubmitted, isCached)
 {
-  WxePage_Context._instance.OnLoad(hasSubmitted, isCached);
+  WxePage_Context._instance.OnLoading(hasSubmitted, isCached);
+}
+
+function WxePage_OnLoaded(hasSubmitted, isCached)
+{
+  WxePage_Context._instance.OnLoaded(hasSubmitted, isCached);
 }
 
 function WxePage_OnUnload()
