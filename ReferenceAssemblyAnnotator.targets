@@ -40,7 +40,6 @@
     <ItemGroup>
       <AnnotatedReferenceAssembly Include="$(AnnotatedReferenceAssemblyDirectory)*.dll" />
     </ItemGroup>
-    <Warning Text="$(NuGetPackageRoot)\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\"/>
   </Target>
 
   <Target Name="ResolveAvailableReferenceAssemblies"
@@ -71,8 +70,6 @@
           DependsOnTargets="$(AnnotateReferenceAssembliesDependsOn)"
           Inputs="@(AvailableUnannotatedReferenceAssembly);@(AnnotatedReferenceAssembly)"
           Outputs="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')">
-    <Warning Text="Doing Annotations"/>
-
     <AnnotatorBuildTask
         UnannotatedReferenceAssembly="%(UnannotatedReferenceAssembly.Identity)"
         TargetFrameworkDirectories="@(AvailableUnannotatedReferenceAssemblyDirectory)"
