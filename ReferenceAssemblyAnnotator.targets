@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="Bla" AfterTargets="PrepareForBuild">
+    <PropertyGroup>
+      <AnnotateReferenceAssembliesDependsOn>
+        ResolveAnnotatedReferenceAssemblies;
+        ResolveAvailableReferenceAssemblies;
+        ResolveOutputReferenceAssemblies
+      </AnnotateReferenceAssembliesDependsOn>
+
+      <ResolveAssemblyReferencesDependsOn>
+        $(ResolveAssemblyReferencesDependsOn);
+        AnnotateReferenceAssemblies;
+        UpdateReferences
+      </ResolveAssemblyReferencesDependsOn>
+    </PropertyGroup>
+  </Target>
+
+  <PropertyGroup>
+    <!-- Folder containing TunnelVisionLabs.ReferenceAssemblyAnnotator.dll -->
+    <ReferenceAssemblyAnnotatorBuildTaskPath Condition="'$(MSBuildRuntimeType)' != 'Core'">$(SolutionDir)packages\TunnelVisionLabs.ReferenceAssemblyAnnotator.1.0.0-alpha.160\tools\net472\</ReferenceAssemblyAnnotatorBuildTaskPath>
+    <ReferenceAssemblyAnnotatorBuildTaskPath Condition="'$(MSBuildRuntimeType)' == 'Core'">$(SolutionDir)packages\TunnelVisionLabs.ReferenceAssemblyAnnotator.1.0.0-alpha.160\tools\netstandard2.0\</ReferenceAssemblyAnnotatorBuildTaskPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(AnnotatedReferenceAssemblyVersion)' == ''">
+    <AnnotatedReferenceAssemblyVersion>5.0.0-preview.7.20364.11</AnnotatedReferenceAssemblyVersion>
+  </PropertyGroup>
+
+  <UsingTask TaskName="TunnelVisionLabs.ReferenceAssemblyAnnotator.AnnotatorBuildTask" AssemblyFile="$(ReferenceAssemblyAnnotatorBuildTaskPath)TunnelVisionLabs.ReferenceAssemblyAnnotator.dll" />
+
+  <Target Name="ResolveAnnotatedReferenceAssemblies">
+    <ItemGroup Condition="'$(AnnotatedReferenceAssemblyDirectory)' == ''">
+      <_AnnotatedReferenceAssemblyDirectoryContents Include="$(SolutionDir)packages\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\*\*.dll" />
+      <_AnnotatedReferenceAssemblyDirectoryItem Include="@(_AnnotatedReferenceAssemblyDirectoryContents->'%(RelativeDir)')" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(AnnotatedReferenceAssemblyDirectory)' == ''">
+      <!-- Take last item -->
+      <AnnotatedReferenceAssemblyDirectory>%(_AnnotatedReferenceAssemblyDirectoryItem.Identity)</AnnotatedReferenceAssemblyDirectory>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <AnnotatedReferenceAssembly Include="$(AnnotatedReferenceAssemblyDirectory)*.dll" />
+    </ItemGroup>
+    <Warning Text="$(NuGetPackageRoot)\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\"/>
+  </Target>
+
+  <Target Name="ResolveAvailableReferenceAssemblies"
+          DependsOnTargets="GetReferenceAssemblyPaths">
+    <ItemGroup>
+      <AvailableUnannotatedReferenceAssemblyDirectory Include="$(TargetFrameworkDirectory)" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_AvailableUnannotatedReferenceAssemblyGlobs>@(AvailableUnannotatedReferenceAssemblyDirectory->'%(Identity)*.dll')</_AvailableUnannotatedReferenceAssemblyGlobs>
+    </PropertyGroup>
+    <ItemGroup>
+      <AvailableUnannotatedReferenceAssembly Include="$(_AvailableUnannotatedReferenceAssemblyGlobs)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ResolveOutputReferenceAssemblies">
+    <PropertyGroup>
+      <AnnotatedReferenceAssemblyOutputPath Condition="'$(AnnotatedReferenceAssemblyOutputPath)' == ''">$(IntermediateOutputPath)annotated\</AnnotatedReferenceAssemblyOutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <UnannotatedReferenceAssembly Update="@(UnannotatedReferenceAssembly)"
+                                    OutputAssembly="$(AnnotatedReferenceAssemblyOutputPath)%(Identity).dll"
+                                    OutputDocumentationFile="$(AnnotatedReferenceAssemblyOutputPath)%(Identity).xml" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AnnotateReferenceAssemblies"
+          DependsOnTargets="$(AnnotateReferenceAssembliesDependsOn)"
+          Inputs="@(AvailableUnannotatedReferenceAssembly);@(AnnotatedReferenceAssembly)"
+          Outputs="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')">
+    <Warning Text="Doing Annotations"/>
+
+    <AnnotatorBuildTask
+        UnannotatedReferenceAssembly="%(UnannotatedReferenceAssembly.Identity)"
+        TargetFrameworkDirectories="@(AvailableUnannotatedReferenceAssemblyDirectory)"
+        AnnotatedReferenceAssemblyDirectory="$(AnnotatedReferenceAssemblyDirectory)"
+        OutputPath="$(AnnotatedReferenceAssemblyOutputPath)"
+        DisabledWarnings="$(NoWarn)">
+      <Output ItemName="GeneratedReferenceAssemblies" TaskParameter="GeneratedAssemblies" />
+      <Output ItemName="GeneratedDocumentationFiles" TaskParameter="GeneratedDocumentationFiles" />
+    </AnnotatorBuildTask>
+
+    <ItemGroup>
+      <FileWrites Include="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')" />
+      <FileWrites Include="@(UnannotatedReferenceAssembly->'%(OutputDocumentationFile)')" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <!-- Add the annotated assembly directory as the first search path -->
+      <TargetFrameworkDirectory>$([MSBuild]::NormalizeDirectory('$(AnnotatedReferenceAssemblyOutputPath)'));$(TargetFrameworkDirectory)</TargetFrameworkDirectory>
+    </PropertyGroup>
+  </Target>
+
+  <Choose>
+    <When Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+      <PropertyGroup>
+        <NoStdLib>true</NoStdLib>
+      </PropertyGroup>
+
+      <ItemGroup>
+        <Reference Include="mscorlib" />
+      </ItemGroup>
+
+      <ItemGroup>
+        <UnannotatedReferenceAssembly Include="mscorlib" />
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <Target Name="AddStandardAssembliesForAnnotation"
+          DependsOnTargets="$(AddStandardAssembliesForAnnotationDependsOn)"
+          BeforeTargets="ResolveOutputReferenceAssemblies">
+    <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+      <UnannotatedReferenceAssembly Include="%(Reference.Identity)"
+                                    Condition="Exists('$(AnnotatedReferenceAssemblyDirectory)%(Reference.Identity).dll')
+                                      AND ('%(Reference.Identity)' == 'System'
+                                        OR '%(Reference.Identity)' == 'System.Core'
+                                        OR '%(Reference.Identity)' == 'System.Data'
+                                        OR '%(Reference.Identity)' == 'System.Drawing'
+                                        OR '%(Reference.Identity)' == 'System.IO.Compression.FileSystem'
+                                        OR '%(Reference.Identity)' == 'System.Numerics'
+                                        OR '%(Reference.Identity)' == 'System.Runtime.Serialization'
+                                        OR '%(Reference.Identity)' == 'System.Xml'
+                                        OR '%(Reference.Identity)' == 'System.Xml.Linq')" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(_FrameworkReferenceName)' != ''">
+      <UnannotatedReferenceAssembly Include="@(Reference->'%(FileName)')"
+                                    Condition="('%(Reference.FrameworkReferenceName)' == '$(_FrameworkReferenceName)'
+                                        OR '%(Reference.PackageName)' == '$(_FrameworkReferenceName)'
+                                        OR '%(Reference.NuGetPackageId)' == '$(_FrameworkReferenceName)')
+                                      AND Exists('$(AnnotatedReferenceAssemblyDirectory)%(Reference.FileName)%(Reference.Extension)')"
+                                    OriginalReference="%(Reference.Identity)" />
+    </ItemGroup>
+
+    <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETStandard' OR '$(TargetFrameworkIdentifier)' == '.NETCoreApp')
+                          AND '$(TargetFrameworkVersion.Substring(1))' &lt; '2.0'">
+      <UnannotatedReferenceAssembly Include="@(ResolvedCompileFileDefinitionsToAdd->'%(FileName)')"
+                                    Condition="Exists('$(AnnotatedReferenceAssemblyDirectory)%(ResolvedCompileFileDefinitionsToAdd.FileName)%(ResolvedCompileFileDefinitionsToAdd.Extension)')"
+                                    OriginalReference="%(ResolvedCompileFileDefinitionsToAdd.Identity)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="UpdateReferences"
+          DependsOnTargets="AnnotateReferenceAssemblies">
+    <ItemGroup>
+      <Reference Remove="%(UnannotatedReferenceAssembly.OriginalReference)"
+                 Condition="Exists('%(UnannotatedReferenceAssembly.OutputAssembly)')" />
+      <Reference Include="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')"
+                 Condition="Exists('%(UnannotatedReferenceAssembly.OutputAssembly)')"
+                 HintPath="" />
+    </ItemGroup>
+  </Target>
+</Project>
