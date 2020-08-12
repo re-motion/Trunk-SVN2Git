@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <Target Name="CheckFile" BeforeTargets="PrepareForBuild">
-    <Error Text="Solution: $(SolutionDirectory)" Condition="!Exists('$(SolutionDirectory)ReferenceAssemblyAnnotator.targets')"/>
+    <Error Text="Could not find 'ReferenceAssemblyAnnotator.targets' in '$(SolutionDirectory)ReferenceAssemblyAnnotator.targets'." Condition="!Exists('$(SolutionDirectory)ReferenceAssemblyAnnotator.targets')"/>
   </Target>
 
   <Import Project="$(SolutionDirectory)ReferenceAssemblyAnnotator.targets"/>
