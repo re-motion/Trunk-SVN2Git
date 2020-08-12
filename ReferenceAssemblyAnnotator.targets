@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="Bla" AfterTargets="PrepareForBuild">
-    <PropertyGroup>
-      <AnnotateReferenceAssembliesDependsOn>
-        ResolveAnnotatedReferenceAssemblies;
-        ResolveAvailableReferenceAssemblies;
-        ResolveOutputReferenceAssemblies
-      </AnnotateReferenceAssembliesDependsOn>
+  <PropertyGroup>
+    <AnnotateReferenceAssembliesDependsOn>
+      ResolveAnnotatedReferenceAssemblies;
+      ResolveAvailableReferenceAssemblies;
+      ResolveOutputReferenceAssemblies
+    </AnnotateReferenceAssembliesDependsOn>
 
-      <ResolveAssemblyReferencesDependsOn>
-        $(ResolveAssemblyReferencesDependsOn);
-        AnnotateReferenceAssemblies;
-        UpdateReferences
-      </ResolveAssemblyReferencesDependsOn>
-    </PropertyGroup>
-  </Target>
+    <ResolveAssemblyReferencesDependsOn>
+      $(ResolveAssemblyReferencesDependsOn);
+      AnnotateReferenceAssemblies;
+      UpdateReferences
+    </ResolveAssemblyReferencesDependsOn>
+  </PropertyGroup>
 
   <PropertyGroup>
     <!-- Folder containing TunnelVisionLabs.ReferenceAssemblyAnnotator.dll -->

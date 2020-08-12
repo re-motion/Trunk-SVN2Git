@@ -1,0 +1,7 @@
+<Project>
+  <Target Name="CheckFile" BeforeTargets="PrepareForBuild">
+    <Error Text="ReferenceAssemblyAnnotator.targets file not found." Condition="!Exists('$(SolutionDir)ReferenceAssemblyAnnotator.targets')"/>
+  </Target>
+
+  <Import Project="$(SolutionDir)ReferenceAssemblyAnnotator.targets"/>
+</Project>
