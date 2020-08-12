@@ -16,8 +16,8 @@
 
   <PropertyGroup>
     <!-- Folder containing TunnelVisionLabs.ReferenceAssemblyAnnotator.dll -->
-    <ReferenceAssemblyAnnotatorBuildTaskPath Condition="'$(MSBuildRuntimeType)' != 'Core'">$(SolutionDir)packages\TunnelVisionLabs.ReferenceAssemblyAnnotator.1.0.0-alpha.160\tools\net472\</ReferenceAssemblyAnnotatorBuildTaskPath>
-    <ReferenceAssemblyAnnotatorBuildTaskPath Condition="'$(MSBuildRuntimeType)' == 'Core'">$(SolutionDir)packages\TunnelVisionLabs.ReferenceAssemblyAnnotator.1.0.0-alpha.160\tools\netstandard2.0\</ReferenceAssemblyAnnotatorBuildTaskPath>
+    <ReferenceAssemblyAnnotatorBuildTaskPath Condition="'$(MSBuildRuntimeType)' != 'Core'">$(SolutionDirectory)packages\TunnelVisionLabs.ReferenceAssemblyAnnotator.1.0.0-alpha.160\tools\net472\</ReferenceAssemblyAnnotatorBuildTaskPath>
+    <ReferenceAssemblyAnnotatorBuildTaskPath Condition="'$(MSBuildRuntimeType)' == 'Core'">$(SolutionDirectory)packages\TunnelVisionLabs.ReferenceAssemblyAnnotator.1.0.0-alpha.160\tools\netstandard2.0\</ReferenceAssemblyAnnotatorBuildTaskPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(AnnotatedReferenceAssemblyVersion)' == ''">
@@ -28,7 +28,7 @@
 
   <Target Name="ResolveAnnotatedReferenceAssemblies">
     <ItemGroup Condition="'$(AnnotatedReferenceAssemblyDirectory)' == ''">
-      <_AnnotatedReferenceAssemblyDirectoryContents Include="$(SolutionDir)packages\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\*\*.dll" />
+      <_AnnotatedReferenceAssemblyDirectoryContents Include="$(SolutionDirectory)packages\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\*\*.dll" />
       <_AnnotatedReferenceAssemblyDirectoryItem Include="@(_AnnotatedReferenceAssemblyDirectoryContents->'%(RelativeDir)')" />
     </ItemGroup>
 
