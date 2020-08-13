@@ -157,7 +157,7 @@
     <ItemGroup Condition="'$(Browser)' == 'InternetExplorer'">
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>searchTimeout</Key>
-        <Value>00:01:00</Value>
+        <Value>00:00:45</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>downloadStartedTimeout</Key>
@@ -169,7 +169,7 @@
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>retryInterval</Key>
-        <Value>00:00:05</Value>
+        <Value>00:00:00.050</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>retryInterval</Key>
