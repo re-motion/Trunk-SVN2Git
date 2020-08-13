@@ -123,22 +123,6 @@
                                         OR '%(Reference.Identity)' == 'System.Xml'
                                         OR '%(Reference.Identity)' == 'System.Xml.Linq')" />
     </ItemGroup>
-
-    <ItemGroup Condition="'$(_FrameworkReferenceName)' != ''">
-      <UnannotatedReferenceAssembly Include="@(Reference->'%(FileName)')"
-                                    Condition="('%(Reference.FrameworkReferenceName)' == '$(_FrameworkReferenceName)'
-                                        OR '%(Reference.PackageName)' == '$(_FrameworkReferenceName)'
-                                        OR '%(Reference.NuGetPackageId)' == '$(_FrameworkReferenceName)')
-                                      AND Exists('$(AnnotatedReferenceAssemblyDirectory)%(Reference.FileName)%(Reference.Extension)')"
-                                    OriginalReference="%(Reference.Identity)" />
-    </ItemGroup>
-
-    <ItemGroup Condition="('$(TargetFrameworkIdentifier)' == '.NETStandard' OR '$(TargetFrameworkIdentifier)' == '.NETCoreApp')
-                          AND '$(TargetFrameworkVersion.Substring(1))' &lt; '2.0'">
-      <UnannotatedReferenceAssembly Include="@(ResolvedCompileFileDefinitionsToAdd->'%(FileName)')"
-                                    Condition="Exists('$(AnnotatedReferenceAssemblyDirectory)%(ResolvedCompileFileDefinitionsToAdd.FileName)%(ResolvedCompileFileDefinitionsToAdd.Extension)')"
-                                    OriginalReference="%(ResolvedCompileFileDefinitionsToAdd.Identity)" />
-    </ItemGroup>
   </Target>
 
   <Target Name="UpdateReferences"
