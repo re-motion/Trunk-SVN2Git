@@ -24,12 +24,12 @@
     <AnnotatedReferenceAssemblyVersion>5.0.0-preview.7.20364.11</AnnotatedReferenceAssemblyVersion>
   </PropertyGroup>
 
-  <UsingTask TaskName="TunnelVisionLabs.ReferenceAssemblyAnnotator.AnnotatorBuildTask" AssemblyFile="$(ReferenceAssemblyAnnotatorBuildTaskPath)TunnelVisionLabs.ReferenceAssemblyAnnotator.dll" />
+  <UsingTask TaskName="TunnelVisionLabs.ReferenceAssemblyAnnotator.AnnotatorBuildTask" AssemblyFile="$(ReferenceAssemblyAnnotatorBuildTaskPath)TunnelVisionLabs.ReferenceAssemblyAnnotator.dll"/>
 
   <Target Name="ResolveAnnotatedReferenceAssemblies">
     <ItemGroup Condition="'$(AnnotatedReferenceAssemblyDirectory)' == ''">
-      <_AnnotatedReferenceAssemblyDirectoryContents Include="$(SolutionDirectory)packages\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\*\*.dll" />
-      <_AnnotatedReferenceAssemblyDirectoryItem Include="@(_AnnotatedReferenceAssemblyDirectoryContents->'%(RelativeDir)')" />
+      <_AnnotatedReferenceAssemblyDirectoryContents Include="$(SolutionDirectory)packages\Microsoft.NETCore.App.Ref.$(AnnotatedReferenceAssemblyVersion)\ref\*\*.dll"/>
+      <_AnnotatedReferenceAssemblyDirectoryItem Include="@(_AnnotatedReferenceAssemblyDirectoryContents->'%(RelativeDir)')"/>
     </ItemGroup>
 
     <PropertyGroup Condition="'$(AnnotatedReferenceAssemblyDirectory)' == ''">
@@ -38,20 +38,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <AnnotatedReferenceAssembly Include="$(AnnotatedReferenceAssemblyDirectory)*.dll" />
+      <AnnotatedReferenceAssembly Include="$(AnnotatedReferenceAssemblyDirectory)*.dll"/>
     </ItemGroup>
   </Target>
 
   <Target Name="ResolveAvailableReferenceAssemblies"
           DependsOnTargets="GetReferenceAssemblyPaths">
     <ItemGroup>
-      <AvailableUnannotatedReferenceAssemblyDirectory Include="$(TargetFrameworkDirectory)" />
+      <AvailableUnannotatedReferenceAssemblyDirectory Include="$(TargetFrameworkDirectory)"/>
     </ItemGroup>
     <PropertyGroup>
       <_AvailableUnannotatedReferenceAssemblyGlobs>@(AvailableUnannotatedReferenceAssemblyDirectory->'%(Identity)*.dll')</_AvailableUnannotatedReferenceAssemblyGlobs>
     </PropertyGroup>
     <ItemGroup>
-      <AvailableUnannotatedReferenceAssembly Include="$(_AvailableUnannotatedReferenceAssemblyGlobs)" />
+      <AvailableUnannotatedReferenceAssembly Include="$(_AvailableUnannotatedReferenceAssemblyGlobs)"/>
     </ItemGroup>
   </Target>
 
@@ -62,7 +62,7 @@
     <ItemGroup>
       <UnannotatedReferenceAssembly Update="@(UnannotatedReferenceAssembly)"
                                     OutputAssembly="$(AnnotatedReferenceAssemblyOutputPath)%(Identity).dll"
-                                    OutputDocumentationFile="$(AnnotatedReferenceAssemblyOutputPath)%(Identity).xml" />
+                                    OutputDocumentationFile="$(AnnotatedReferenceAssemblyOutputPath)%(Identity).xml"/>
     </ItemGroup>
   </Target>
 
@@ -76,13 +76,13 @@
         AnnotatedReferenceAssemblyDirectory="$(AnnotatedReferenceAssemblyDirectory)"
         OutputPath="$(AnnotatedReferenceAssemblyOutputPath)"
         DisabledWarnings="$(NoWarn)">
-      <Output ItemName="GeneratedReferenceAssemblies" TaskParameter="GeneratedAssemblies" />
-      <Output ItemName="GeneratedDocumentationFiles" TaskParameter="GeneratedDocumentationFiles" />
+      <Output ItemName="GeneratedReferenceAssemblies" TaskParameter="GeneratedAssemblies"/>
+      <Output ItemName="GeneratedDocumentationFiles" TaskParameter="GeneratedDocumentationFiles"/>
     </AnnotatorBuildTask>
 
     <ItemGroup>
-      <FileWrites Include="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')" />
-      <FileWrites Include="@(UnannotatedReferenceAssembly->'%(OutputDocumentationFile)')" />
+      <FileWrites Include="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')"/>
+      <FileWrites Include="@(UnannotatedReferenceAssembly->'%(OutputDocumentationFile)')"/>
     </ItemGroup>
 
     <PropertyGroup>
@@ -98,11 +98,11 @@
       </PropertyGroup>
 
       <ItemGroup>
-        <Reference Include="mscorlib" />
+        <Reference Include="mscorlib"/>
       </ItemGroup>
 
       <ItemGroup>
-        <UnannotatedReferenceAssembly Include="mscorlib" />
+        <UnannotatedReferenceAssembly Include="mscorlib"/>
       </ItemGroup>
     </When>
   </Choose>
@@ -121,7 +121,7 @@
                                         OR '%(Reference.Identity)' == 'System.Numerics'
                                         OR '%(Reference.Identity)' == 'System.Runtime.Serialization'
                                         OR '%(Reference.Identity)' == 'System.Xml'
-                                        OR '%(Reference.Identity)' == 'System.Xml.Linq')" />
+                                        OR '%(Reference.Identity)' == 'System.Xml.Linq')"/>
     </ItemGroup>
   </Target>
 
@@ -129,10 +129,10 @@
           DependsOnTargets="AnnotateReferenceAssemblies">
     <ItemGroup>
       <Reference Remove="%(UnannotatedReferenceAssembly.OriginalReference)"
-                 Condition="Exists('%(UnannotatedReferenceAssembly.OutputAssembly)')" />
+                 Condition="Exists('%(UnannotatedReferenceAssembly.OutputAssembly)')"/>
       <Reference Include="@(UnannotatedReferenceAssembly->'%(OutputAssembly)')"
                  Condition="Exists('%(UnannotatedReferenceAssembly.OutputAssembly)')"
-                 HintPath="" />
+                 HintPath=""/>
     </ItemGroup>
   </Target>
 </Project>
