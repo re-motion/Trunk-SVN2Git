@@ -160,19 +160,11 @@
         <Value>00:00:45</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
-        <Key>downloadStartedTimeout</Key>
-        <Value>00:00:30</Value>
-      </_appConfigAttributes>
-      <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
-        <Key>downloadUpdatedTimeout</Key>
-        <Value>00:00:30</Value>
-      </_appConfigAttributes>
-      <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
         <Key>retryInterval</Key>
         <Value>00:00:00.050</Value>
       </_appConfigAttributes>
       <_appConfigAttributes Include="/configuration/rwt:remotion.webTesting">
-        <Key>retryInterval</Key>
+        <Key>asyncJavaScriptTimeout</Key>
         <Value>00:00:30</Value>
       </_appConfigAttributes>
     </ItemGroup>
