@@ -26,6 +26,18 @@ namespace Remotion.ObjectBinding.Web.IntegrationTests.BocList
   [TestFixture]
   public class AccessibilityBocListTest : IntegrationTest
   {
+    private static int counter = 0;
+
+    [Test]
+    public void FailMe ()
+    {
+      if (counter == 0)
+      {
+        counter++;
+        throw new AssertionException ("asdf");
+      }
+    }
+
     [Test]
     public void Normal ()
     {

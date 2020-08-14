@@ -100,6 +100,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
+    [Retry  (2)]
+
     public void TestIsTriState ()
     {
       var home = Start();
