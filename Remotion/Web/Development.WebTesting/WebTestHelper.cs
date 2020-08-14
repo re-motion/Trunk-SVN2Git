@@ -32,6 +32,7 @@ using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.RequestErrorDetectionStrategies;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation;
 using Remotion.Web.Development.WebTesting.Utilities;
+using Remotion.Web.Development.WebTesting.WebDriver;
 using Remotion.Web.Development.WebTesting.WebDriver.Configuration;
 using Screenshot = Remotion.Web.Development.WebTesting.ScreenshotCreation.Screenshot;
 
@@ -287,7 +288,8 @@ namespace Remotion.Web.Development.WebTesting
 
       s_log.InfoFormat ("Finished test: {0} [has succeeded: {1}].", _testName, hasSucceeded);
 
-      _browserConfiguration.DownloadHelper.DeleteFiles();
+      if (!_browserConfiguration.IsInternetExplorer())
+        _browserConfiguration.DownloadHelper.DeleteFiles();
     }
 
     public ScreenshotBuilder CreateDesktopScreenshot ()
