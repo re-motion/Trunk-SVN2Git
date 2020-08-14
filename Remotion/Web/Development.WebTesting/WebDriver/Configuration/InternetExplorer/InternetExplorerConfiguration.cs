@@ -19,7 +19,6 @@ using JetBrains.Annotations;
 using OpenQA.Selenium.IE;
 using Remotion.Web.Development.WebTesting.Configuration;
 using Remotion.Web.Development.WebTesting.DownloadInfrastructure;
-using Remotion.Web.Development.WebTesting.DownloadInfrastructure.InternetExplorer;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.Annotations;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.BrowserContentLocators;
@@ -35,15 +34,9 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.InternetEx
   {
     private readonly IBrowserContentLocator _locator = new InternetExplorerBrowserContentLocator();
 
-    private readonly IDownloadHelper _downloadHelper;
-
     public InternetExplorerConfiguration ([NotNull] WebTestConfigurationSection webTestConfigurationSection)
         : base (webTestConfigurationSection)
     {
-      _downloadHelper = new InternetExplorerDownloadHelper (
-          webTestConfigurationSection.DownloadStartedTimeout,
-          webTestConfigurationSection.DownloadUpdatedTimeout,
-          webTestConfigurationSection.CleanUpUnmatchedDownloadedFiles);
     }
 
     public override string BrowserExecutableName
@@ -63,7 +56,7 @@ namespace Remotion.Web.Development.WebTesting.WebDriver.Configuration.InternetEx
 
     public override IDownloadHelper DownloadHelper
     {
-      get { return _downloadHelper; }
+      get { throw new NotSupportedException ("RM-7457: Support for Internet Explorer in web tests has been removed."); }
     }
 
     public override IBrowserContentLocator Locator
