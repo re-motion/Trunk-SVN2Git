@@ -43,7 +43,7 @@ namespace Remotion.Web.Development.WebTesting.WebTestActions
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
-      if (scope.Browser.IsInternetExplorer())
+      if (scope.Browser.IsFirefox() || scope.Browser.IsInternetExplorer())
         scope.FocusClick();
       else
         scope.Click();
