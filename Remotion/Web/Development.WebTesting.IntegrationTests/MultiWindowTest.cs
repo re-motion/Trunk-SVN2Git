@@ -184,7 +184,11 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var confirmButton = frame.WebButtons().GetByID ("confirmbutton");
 
       // RM-7475: Firefox does not scroll to buttons contained in an iframe outside of the viewport bounds
-      confirmButton.Scope.Focus();
+      if (Helper.BrowserConfiguration.IsFirefox())
+      {
+        confirmButton.Scope.Focus();
+      }
+
       confirmButton.Click (Opt.AcceptModalDialog());
 
       // Force a possible UnhandledAlertException
