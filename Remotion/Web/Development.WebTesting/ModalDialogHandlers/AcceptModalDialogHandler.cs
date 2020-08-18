@@ -37,7 +37,7 @@ namespace Remotion.Web.Development.WebTesting.ModalDialogHandlers
       }
       else
       {
-        context.Window.AcceptModalDialog ();
+        context.Window.AcceptModalDialog();
       }
     }
   }
