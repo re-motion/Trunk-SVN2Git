@@ -11,7 +11,7 @@
       Chrome           + NET48  + Debug   + x86 + NoDB + Win_NET48  + EnforcedLocalMachine;
       Firefox          + NET472 + Release + x64 + NoDB + Win_NET472 + EnforcedLocalMachine;
       InternetExplorer + NET48  + Release + x64 + NoDB + Win_NET48  + EnforcedLocalMachine;
-      Edge             + NET48  + Release + x64 + NoDB + Win_NET48  + EnforcedLocalMachine;
+      Edge             + NET48  + Release + x64 + NoDB + Win_NET48  + EnforcedLocalMachine + IncludeCategories=RM-7477;
     </WebtestingTestConfiguration>
     <DatabaseTestConfiguration Condition="'$(DatabaseTestConfiguration)' == ''">
       Win_NET48  + NET48  + NoBrowser + SqlServer2012 + Debug   + x86;
