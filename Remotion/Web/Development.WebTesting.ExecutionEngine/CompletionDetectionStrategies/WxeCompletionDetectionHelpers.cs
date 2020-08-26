@@ -37,6 +37,15 @@ namespace Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectio
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
+      try
+      {
+        _ = context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value;
+      }
+      catch (MissingHtmlException)
+      {
+        throw new InvalidOperationException("bla");
+      }
+
       return int.Parse (context.Scope.FindId (c_wxePostBackSequenceNumberFieldId).Value);
     }
 
