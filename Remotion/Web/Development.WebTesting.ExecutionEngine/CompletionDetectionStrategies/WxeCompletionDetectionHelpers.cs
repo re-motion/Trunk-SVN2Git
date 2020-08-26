@@ -64,7 +64,7 @@ namespace Remotion.Web.Development.WebTesting.ExecutionEngine.CompletionDetectio
       ArgumentUtility.CheckNotNull ("context", context);
 
       int newWxePostBackSequenceNumber;
-      var options = timeout.HasValue ? new Options { Timeout = timeout.Value } : null;
+      var options = new Options { Timeout = TimeSpan.FromSeconds(5) };
 
       try
       {
