@@ -1152,7 +1152,7 @@ function SmartPage_Context(
     if (submitterElement != null)
     {
       var tagName = submitterElement.tagName.toLowerCase();
-      var type = submitterElement.type.toLowerCase();
+      var type = (submitterElement.type && submitterElement.type.toLowerCase()) || '';
       if (tagName === 'input')
       {
         isAutoPostback = type !== 'submit' && type !== 'button';
