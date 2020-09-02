@@ -1148,13 +1148,12 @@ function SmartPage_Context(
     $('html').addClass('SmartPageBusy');
 
     var isAutoPostback = false;
-    var isSubmitterButtonOrHyperlink = false;
     if (submitterElement != null)
     {
       var tagName = submitterElement.tagName.toLowerCase();
-      var type = (submitterElement.type && submitterElement.type.toLowerCase()) || '';
       if (tagName === 'input')
       {
+        var type = submitterElement.type.toLowerCase();
         isAutoPostback = type !== 'submit' && type !== 'button';
       }
       else if (tagName === 'textarea')
@@ -1164,11 +1163,6 @@ function SmartPage_Context(
       else if (tagName === 'select')
       {
         isAutoPostback = true;
-      }
-
-      if (tagName === 'a' || type === 'submit' || type === 'button')
-      {
-        isSubmitterButtonOrHyperlink = true;
       }
     }
 
@@ -1182,7 +1176,7 @@ function SmartPage_Context(
     };
     if (_submitState == null)
       _submitState = submitState;
-    else if (!(isSubmitterButtonOrHyperlink && submitterElement.id === _submitState.Submitter.id))
+    else if (isAutoPostback || submitterElement.id !== _submitState.Submitter.id)
       _submitState.NextSubmitState = submitState;
 
     return _submitState;
