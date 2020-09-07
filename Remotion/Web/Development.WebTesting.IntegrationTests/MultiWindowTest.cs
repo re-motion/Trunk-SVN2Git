@@ -29,6 +29,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   public class MultiWindowTest : IntegrationTest
   {
     [Test]
+    [Category ("RunOnlyThisTest")]
+    [Repeat (500)]
     public void TestMultiFrameActions ()
     {
       var home = Start();
