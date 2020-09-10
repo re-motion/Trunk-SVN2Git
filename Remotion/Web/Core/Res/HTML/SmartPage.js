@@ -683,19 +683,12 @@ function SmartPage_Context(
     if (postBackSettings != null && IsSynchronousPostBackRequired(postBackSettings))
       return true;
 
-    var eventSource = GetEventSource(evt);
-    if (IsJavaScriptAnchor(eventSource))
-    {
-      var continueRequest = this.CheckFormState();
-      if (!continueRequest)
-        return false;
-      else
-        return void (0);
-    }
-    else
-    {
-      return void (0);
-    }
+    var continueRequest = this.CheckFormState();
+
+    if (!continueRequest)
+      return false;
+
+    return void (0);
   };
 
   // returns: true to continue with request.
