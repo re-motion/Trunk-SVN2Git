@@ -132,8 +132,12 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
               && newFiles.Any())
           {
             var fileName = _downloadFileFinderStrategy.FindDownloadedFile (newFiles);
+            var filePath = Path.Combine (_downloadDirectory, fileName);
 
-            return new DownloadedFile (Path.Combine (_downloadDirectory, fileName), fileName);
+            if (HasSuspiciousFileProperties (filePath))
+              Thread.Sleep (1000);
+
+            return new DownloadedFile (filePath, fileName);
           }
         }
         //We already have found a partial file which we can use to monitor the state of the download
@@ -246,6 +250,13 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
     private string GetPartialFile (IEnumerable<string> newFiles)
     {
       return newFiles.SingleOrDefault (file => file.EndsWith (_partialFileExtension));
+    }
+
+    private bool HasSuspiciousFileProperties (string filePath)
+    {
+      var fileInfo = new FileInfo (filePath);
+
+      return FileDownloadUtilities.IsFileLocked (filePath) || fileInfo.Length == 0;
     }
   }
 }
