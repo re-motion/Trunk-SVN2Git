@@ -286,7 +286,7 @@ function DropDownMenu_BeginOpenPopUp(menuID, context, evt)
     statusPopup.setAttribute('aria-labelledby', menuButton[0].id);
   _dropDownMenu_currentStatusPopup = statusPopup;
   $(statusPopup).iFrameShim({ top: '0px', left: '0px', width: '100%', height: '100%' });
-  document.body.appendChild(statusPopup);
+  document.getElementById(menuID).parentElement.appendChild(statusPopup);
 
   DropDownMenu_ApplyPosition($(statusPopup), evt, titleDivFunc());
 
@@ -350,7 +350,7 @@ function DropDownMenu_EndOpenPopUp (menuID, context, selectionCount, evt, itemIn
   ul.setAttribute('role', 'none');
   div.appendChild(ul);
 
-  $('body')[0].appendChild(div);
+  document.getElementById(menuID).parentElement.appendChild(div);
 
   $(ul).mouseover (function (event)
   {
@@ -429,7 +429,7 @@ function DownDownMenu_CreateTitleDivGetter ($context)
   {
     return function ()
     {
-      return $(document.getElementById (contextID).firstElementChild);
+      return document.getElementById (contextID) && $(document.getElementById (contextID).firstElementChild);
     };
   }
 }
@@ -450,6 +450,7 @@ function DropDownMenu_ApplyPosition (popUpDiv, clickEvent, referenceElement)
   popUpDiv.css('bottom', 'auto');
   popUpDiv.css('right', right);
   popUpDiv.css('left', left);
+  popUpDiv.css('position', 'fixed');
 
   // move dropdown if there is not enough space to fit it on the page
   if ((popUpDiv.width() > space_left) && (space_left < space_right))
