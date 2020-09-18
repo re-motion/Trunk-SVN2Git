@@ -997,8 +997,8 @@
             .hide()
             .attr("id", options.selectListID)
             .addClass(options.resultsClass)
-            .css("position", "absolute")
-            .appendTo(document.body);
+            .css("position", "fixed")
+            .appendTo(document.getElementById(options.dropDownButtonID).parentElement);
 
             options.combobox.attr('aria-owns', options.selectListID);
             var isAria11 = options.combobox[0] !== input;
@@ -1379,8 +1379,8 @@
             .hide()
             .attr("id", options.informationPopUpID)
             .addClass(options.informationPopUpClass)
-            .css("position", "absolute")
-            .appendTo(document.body);
+            .css("position", "fixed")
+            .appendTo(document.getElementById(options.dropDownButtonID).parentElement);
             if (options.combobox.attr('aria-labelledby') !== undefined) {
               element.attr("aria-labelledby", options.combobox.attr('aria-labelledby'));
             }
