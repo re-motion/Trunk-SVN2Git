@@ -168,7 +168,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure.Default
 
         try
         {
-          WaitUntilTrueOrTimeout (() => !FileDownloadUtilities.IsFileLocked (fullFilePath), TimeSpan.FromMinutes (5), TimeSpan.FromSeconds (1));
+          WaitUntilTrueOrTimeout (() => !IsFileLocked (fullFilePath), TimeSpan.FromMinutes (5), TimeSpan.FromSeconds (1));
 
           File.Delete (fullFilePath);
         }
@@ -192,6 +192,27 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure.Default
 
         Thread.Sleep (interval);
       }
+    }
+
+    private bool IsFileLocked (string filePath)
+    {
+      try
+      {
+        using (var stream = File.Open (filePath, FileMode.Open, FileAccess.Read, FileShare.None))
+        {
+          stream.Close();
+        }
+      }
+      catch (FileNotFoundException)
+      {
+        return false;
+      }
+      catch (IOException)
+      {
+        return true;
+      }
+
+      return false;
     }
   }
 }
