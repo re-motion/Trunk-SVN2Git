@@ -107,7 +107,6 @@
     <Compile Include="Configuration\TestSiteLayoutConfigurationElement.cs" />
     <Compile Include="Configuration\TestSiteResourceConfigurationElement.cs" />
     <Compile Include="Configuration\TestSiteResourceConfigurationElementCollection.cs" />
-    <Compile Include="DownloadInfrastructure\FileDownloadUtilities.cs" />
     <Compile Include="DriverConfigurationOverride.cs" />
     <Compile Include="BrowserSession\BrowserLogEntry.cs" />
     <Compile Include="BrowserSession\Edge\EdgeBrowserSession.cs" />
