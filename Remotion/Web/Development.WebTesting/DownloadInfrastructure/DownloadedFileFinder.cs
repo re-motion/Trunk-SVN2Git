@@ -99,7 +99,6 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       if (downloadUpdatedTimeout < s_minimalDownloadTimeout)
         throw new ArgumentException (string.Format ("DownloadTimeout must not be less than '{0}'.", s_minimalDownloadTimeout));
 
-      PartialFileState partialFileState = null;
       var downloadTimeWithoutUpdate = Stopwatch.StartNew();
       var startedDownloadHandlingUtc = DateTime.UtcNow;
       var currentStateTimeout = downloadStartedTimeout;
@@ -112,12 +111,16 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
         {
           var partialFile = GetPartialFile (newFiles);
           var fileInfo = GetFileInformation (partialFile);
+          if (fileInfo == null)
+            continue;
           _partialFileStateOfCurrentDownload = new PartialFileState (partialFile, fileInfo.LastWriteTimeUtc, fileInfo.Length);
           currentStateTimeout = downloadUpdatedTimeout;
         }
         else if (PartialFileExists (newFiles) && PartialFileWasFoundBefore() && PartialFileWasUpdated())
         {
-          var fileInfo = GetFileInformation (partialFileState.GetPartialFile());
+          var fileInfo = GetFileInformation (_partialFileStateOfCurrentDownload.GetPartialFile());
+          if (fileInfo == null)
+            continue;
           _partialFileStateOfCurrentDownload.UpdatePartialFileLastWriteAccessUtc (fileInfo.LastWriteTimeUtc);
           _partialFileStateOfCurrentDownload.UpdatePartialFileLength (fileInfo.Length);
 
