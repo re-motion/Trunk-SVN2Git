@@ -107,9 +107,8 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       {
         var newFiles = GetNewFiles (filesInDownloadDirectoryBeforeDownload, startedDownloadHandlingUtc);
 
-        if (PartialFileExists (newFiles) && !PartialFileWasFoundBefore())
+        if (TryGetPartialFile (newFiles, out var partialFile) && !PartialFileWasFoundBefore())
         {
-          var partialFile = GetPartialFile (newFiles);
           var fileInfo = GetFileInformation (partialFile);
           if (fileInfo == null)
             continue;
@@ -138,6 +137,9 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
         }
         else
         {
+          Console.WriteLine ($"PartialFileExists {PartialFileExists (newFiles)}");
+          Console.WriteLine ($"TemporaryFilesExist {TemporaryFilesExist (newFiles)}");
+          Console.WriteLine ($"ZerolengthFiles {newFiles.Any (IsZeroLengthFile)}");
           Thread.Sleep (s_retryInterval);
         }
       }
@@ -224,6 +226,13 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
     private string GetPartialFile (IEnumerable<string> newFiles)
     {
       return newFiles.SingleOrDefault (file => file.EndsWith (_partialFileExtension));
+    }
+
+    private bool TryGetPartialFile (IEnumerable<string> newFiles, out string partialFile)
+    {
+      partialFile = newFiles.SingleOrDefault (file => file.EndsWith (_partialFileExtension));
+
+      return partialFile != null;
     }
 
     private bool PartialFileExists (IEnumerable<string> newFiles)
