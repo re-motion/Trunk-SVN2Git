@@ -107,21 +107,23 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       {
         var newFiles = GetNewFiles (filesInDownloadDirectoryBeforeDownload, startedDownloadHandlingUtc);
 
-        if (TryGetPartialFile (newFiles, out var partialFile) && !PartialFileWasFoundBefore())
+        if (TryGetPartialFile (newFiles, out var partialFile)
+            && !PartialFileWasFoundInPreviousIteration()
+            && TryGetFileInformation (partialFile, out var fileInfoOfFoundPartialFile))
         {
-          var fileInfo = GetFileInformation (partialFile);
-          if (fileInfo == null)
-            continue;
-          _partialFileStateOfCurrentDownload = new PartialFileState (partialFile, fileInfo.LastWriteTimeUtc, fileInfo.Length);
+          _partialFileStateOfCurrentDownload = new PartialFileState (
+              partialFile,
+              fileInfoOfFoundPartialFile.LastWriteTimeUtc,
+              fileInfoOfFoundPartialFile.Length);
           currentStateTimeout = downloadUpdatedTimeout;
         }
-        else if (PartialFileExists (newFiles) && PartialFileWasFoundBefore() && PartialFileWasUpdated())
+        else if (PartialFileExists (newFiles)
+                 && PartialFileWasFoundInPreviousIteration()
+                 && PartialFileWasUpdated()
+                 && TryGetFileInformation (_partialFileStateOfCurrentDownload.GetPartialFile(), out var fileInfoOfPartialFile))
         {
-          var fileInfo = GetFileInformation (_partialFileStateOfCurrentDownload.GetPartialFile());
-          if (fileInfo == null)
-            continue;
-          _partialFileStateOfCurrentDownload.UpdatePartialFileLastWriteAccessUtc (fileInfo.LastWriteTimeUtc);
-          _partialFileStateOfCurrentDownload.UpdatePartialFileLength (fileInfo.Length);
+          _partialFileStateOfCurrentDownload.UpdatePartialFileLastWriteAccessUtc (fileInfoOfPartialFile.LastWriteTimeUtc);
+          _partialFileStateOfCurrentDownload.UpdatePartialFileLength (fileInfoOfPartialFile.Length);
 
           downloadTimeWithoutUpdate.Restart();
         }
@@ -141,7 +143,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
         }
       }
 
-      if (!PartialFileWasFoundBefore())
+      if (!PartialFileWasFoundInPreviousIteration())
         throw new DownloadResultNotFoundException ("Did not find any new files in the download directory.", new List<string>());
 
       var unmatchedFiles = GetNewFiles (filesInDownloadDirectoryBeforeDownload, startedDownloadHandlingUtc);
@@ -167,22 +169,23 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
           .ToList();
     }
 
-    [CanBeNull]
-    private FileInformationTuple GetFileInformation (string fileName)
+    private bool TryGetFileInformation (string fileName, out FileInformationTuple fileInformation)
     {
       var fileInfo = new FileInfo (Path.Combine (_downloadDirectory, fileName));
-      
+
       try
       {
         var lastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
         var length = fileInfo.Length;
       
-        return new FileInformationTuple (lastWriteTimeUtc, length);
+        fileInformation = new FileInformationTuple (lastWriteTimeUtc, length);
+        return true;
       }
       catch (IOException)
       {
         //File got removed while checking the file information
-        return null;
+        fileInformation = null;
+        return false;
       }
     }
 
@@ -231,7 +234,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       return TryGetPartialFile (newFiles, out _);
     }
 
-    private bool PartialFileWasFoundBefore ()
+    private bool PartialFileWasFoundInPreviousIteration ()
     {
       return _partialFileStateOfCurrentDownload != null;
     }
