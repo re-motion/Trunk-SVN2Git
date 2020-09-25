@@ -42,7 +42,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadReplacesCurrentPage_WithExpectedFileName ()
     {
       var home = Start();
@@ -55,7 +55,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadReplacesCurrentPage_WithUnknownFileName ()
     {
       var home = Start();
@@ -65,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadReplacesCurrentPage_AnchorWithSelf ()
     {
       var home = Start();
@@ -76,7 +76,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadOpensInNewWindow_WithPostback_WithUnknownFileName ()
     {
       var home = Start();
@@ -92,7 +92,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadOpensInNewWindow_WithPostback_WithExpectedFileName ()
     {
       var home = Start();
@@ -107,7 +107,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadOpensInNewWindow_WithAnchorTargetBlank ()
     {
       // Note: test for Chrome "safebrowsing" (requires safebrowsing.enabled to be set to true in browser preferences - see Chrome configuration).
@@ -122,7 +122,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     [Category ("LongRunning")]
     public void TestDownloadOpensInNewWindow_DownloadTimeoutExceeded_WithUnknownFileName ()
     {
@@ -173,7 +173,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     [Category ("LongRunning")]
     public void TestDownloadOpensInNewWindow_DownloadTimeoutExceeded ()
     {
@@ -231,7 +231,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadOpensInNewWindow_WithExpectedFileName_FileWithWrongName ()
     {
       var home = Start();
@@ -254,7 +254,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadOpensInNewWindow_NoDownloadTriggered ()
     {
       Start();
@@ -270,7 +270,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadOpensInNewWindow_WithPostback_WithXmlFile ()
     {
       // Note: test for Chrome "safebrowsing" (requires safebrowsing.enabled to be set to true in browser preferences - see Chrome configuration).
@@ -285,7 +285,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadTwice_WithUnknownFileName_PreventsFileNameConflicts ()
     {
       var home = Start();
@@ -306,7 +306,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownloadTwice_WithExpectedFileName_PreventsFileNameConflicts ()
     {
       var home = Start();
@@ -327,7 +327,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownload_WithUnknownFileName_DeleteFilesRemovesDownloadedFiles ()
     {
       var home = Start();
@@ -344,7 +344,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownload_WithExpectedFileName_DeleteFilesRemovesDownloadedFiles ()
     {
       var home = Start();
@@ -361,7 +361,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownload_HandleDownloadWithoutFileExtension ()
     {
       var home = Start();
@@ -377,7 +377,7 @@ Unmatched files in the download directory (will be cleaned up by the infrastruct
     }
 
     [Test]
-    [Repeat (100)]
+    [Repeat (1000)]
     public void TestDownload_HandleZipFileDownload ()
     {
       var home = Start();
