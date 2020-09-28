@@ -55,27 +55,27 @@ namespace Remotion.Web.Development.WebTesting.Utilities
       _retryUntilTimeout.Run();
     }
 
-    public static void Run ([NotNull] Action action)
+    public static void Run ([NotNull] Action action, TimeSpan timeout = default, TimeSpan retryInterval = default)
     {
       ArgumentUtility.CheckNotNull ("action", action);
       var configuration = new WebTestConfigurationFactory ().CreateDriverConfiguration();
 
       var retryUntilTimeout = new RetryUntilTimeout (
           action,
-          configuration.SearchTimeout,
-          configuration.RetryInterval);
+          timeout == default ? configuration.SearchTimeout : timeout,
+          retryInterval == default ? configuration.RetryInterval : retryInterval);
       retryUntilTimeout.Run();
     }
 
-    public static TReturnType Run<TReturnType> ([NotNull] Func<TReturnType> func)
+    public static TReturnType Run<TReturnType> ([NotNull] Func<TReturnType> func, TimeSpan timeout = default, TimeSpan retryInterval = default)
     {
       ArgumentUtility.CheckNotNull ("func", func);
       var configuration = new WebTestConfigurationFactory ().CreateDriverConfiguration();
 
       var retryUntilTimeout = new RetryUntilTimeout<TReturnType> (
           func,
-          configuration.SearchTimeout,
-          configuration.RetryInterval);
+          timeout == default ? configuration.SearchTimeout : timeout,
+          retryInterval == default ? configuration.RetryInterval : retryInterval);
       return retryUntilTimeout.Run();
     }
   }
