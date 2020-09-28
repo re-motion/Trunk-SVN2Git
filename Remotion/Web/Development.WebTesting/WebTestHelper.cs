@@ -181,8 +181,8 @@ namespace Remotion.Web.Development.WebTesting
       EnsureAllBrowserWindowsAreClosed();
 
       _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, configurationOverride);
-      s_log.InfoFormat ("Browser: {0}, version {1}", _browserConfiguration.BrowserName, GetBrowserVersion() ?? "unknown");
-      s_log.InfoFormat ("Webdriver version: {0}", GetWebdriverVersion() ?? "unknown");
+      s_log.InfoFormat ("Browser: {0}, version {1}", _browserConfiguration.BrowserName, GetBrowserVersion());
+      s_log.InfoFormat ("Webdriver version: {0}", GetWebdriverVersion());
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
@@ -355,29 +355,33 @@ namespace Remotion.Web.Development.WebTesting
 
     private string GetBrowserVersion ()
     {
+      const string unknownVersion = "unknown";
+
       if (!(_mainBrowserSession.Driver.Native is IHasCapabilities driver))
-        return null;
+        return unknownVersion;
 
       if (_browserConfiguration.IsChromium())
-        return driver.Capabilities.GetCapability ("version") as string;
+        return driver.Capabilities.GetCapability ("version") as string ?? unknownVersion;
 
       if (_browserConfiguration.IsFirefox())
-        return driver.Capabilities.GetCapability ("browserVersion") as string;
+        return driver.Capabilities.GetCapability ("browserVersion") as string ?? unknownVersion;
 
-      return null;
+      return unknownVersion;
     }
 
     private string GetWebdriverVersion ()
     {
+      const string unknownVersion = "unknown";
+
       if (!(_mainBrowserSession.Driver.Native is IHasCapabilities driver))
-        return null;
+        return unknownVersion;
 
       if (_browserConfiguration.IsChrome())
       {
         if (driver.Capabilities.GetCapability ("chrome") is Dictionary<string, object> capabilities
             && capabilities.TryGetValue ("chromedriverVersion", out var driverVersion))
         {
-          return driverVersion as string;
+          return driverVersion as string ?? unknownVersion;
         }
       }
 
@@ -386,14 +390,14 @@ namespace Remotion.Web.Development.WebTesting
         if (driver.Capabilities.GetCapability("msedge") is Dictionary<string, object> capabilities
             && capabilities.TryGetValue("msedgedriverVersion", out var driverVersion))
         {
-          return driverVersion as string;
+          return driverVersion as string ?? unknownVersion;
         }
       }
 
       if (_browserConfiguration.IsFirefox())
-        return driver.Capabilities.GetCapability ("moz:geckodriverVersion") as string;
+        return driver.Capabilities.GetCapability ("moz:geckodriverVersion") as string ?? unknownVersion;
 
-      return null;
+      return unknownVersion;
     }
 
     private DriverConfiguration MergeDriverConfiguration (DriverConfiguration configuration, DriverConfigurationOverride configurationOverride)
