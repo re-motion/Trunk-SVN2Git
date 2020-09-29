@@ -244,7 +244,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       var filePath = Path.Combine (_downloadDirectory, fileName);
       var fileInfo = new FileInfo (filePath);
 
-      return  fileInfo.Length == 0;
+      return fileInfo.Length == 0;
     }
   }
 }
