@@ -117,7 +117,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
               fileInfoOfFoundPartialFile.Length);
           currentStateTimeout = downloadUpdatedTimeout;
         }
-        else if (PartialFileExists (newFiles)
+        else if (HasPartialFile (newFiles)
                  && PartialFileWasFoundInPreviousIteration()
                  && PartialFileWasUpdated()
                  && TryGetFileInformation (_partialFileStateOfCurrentDownload.GetPartialFile(), out var fileInfoOfPartialFile))
@@ -127,11 +127,11 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
 
           downloadTimeWithoutUpdate.Restart();
         }
-        else if (!PartialFileExists (newFiles) && !TemporaryFilesExist (newFiles) && newFiles.Count > 0 && newFiles.Any (IsZeroLengthFile))
+        else if (!HasPartialFile (newFiles) && !TemporaryFilesExist (newFiles) && newFiles.Count > 0 && newFiles.Any (IsZeroLengthFile))
         {
           Thread.Sleep (s_retryInterval);
         }
-        else if (!PartialFileExists (newFiles) && !TemporaryFilesExist (newFiles) && newFiles.Count > 0)
+        else if (!HasPartialFile (newFiles) && !TemporaryFilesExist (newFiles) && newFiles.Count > 0)
         {
           var fileName = _downloadFileFinderStrategy.FindDownloadedFile (newFiles);
 
@@ -229,7 +229,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       return partialFile != null;
     }
 
-    private bool PartialFileExists (IEnumerable<string> newFiles)
+    private bool HasPartialFile (IEnumerable<string> newFiles)
     {
       return TryGetPartialFile (newFiles, out _);
     }
