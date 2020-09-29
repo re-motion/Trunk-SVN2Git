@@ -55,7 +55,6 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
     private readonly string _partialFileExtension;
     private readonly IDownloadFileFinderStrategy _downloadFileFinderStrategy;
     private readonly TimeSpan _downloadStartedGracePeriod;
-    private PartialFileState _partialFileStateOfCurrentDownload;
 
     /// <summary>
     /// Creates a new <see cref="DownloadedFileFinder"/>.
@@ -102,36 +101,37 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       var downloadTimeWithoutUpdate = Stopwatch.StartNew();
       var startedDownloadHandlingUtc = DateTime.UtcNow;
       var currentStateTimeout = downloadStartedTimeout;
-
+      PartialFileState partialFileStateOfCurrentDownload = null;
+      var zeroLengthFileWasFoundInPreviousIteration = false;
       while (downloadTimeWithoutUpdate.ElapsedMilliseconds < currentStateTimeout.TotalMilliseconds)
       {
         var newFiles = GetNewFiles (filesInDownloadDirectoryBeforeDownload, startedDownloadHandlingUtc);
 
-        if (TryGetPartialFile (newFiles, out var partialFile)
-            && !PartialFileWasFoundInPreviousIteration()
+        if (!PartialFileWasFoundInPreviousIteration (partialFileStateOfCurrentDownload)
+            && TryGetPartialFile (newFiles, out var partialFile)
             && TryGetFileInformation (partialFile, out var fileInfoOfFoundPartialFile))
         {
-          _partialFileStateOfCurrentDownload = new PartialFileState (
+          partialFileStateOfCurrentDownload = new PartialFileState (
               partialFile,
               fileInfoOfFoundPartialFile.LastWriteTimeUtc,
               fileInfoOfFoundPartialFile.Length);
           currentStateTimeout = downloadUpdatedTimeout;
         }
-        else if (HasPartialFile (newFiles)
-                 && PartialFileWasFoundInPreviousIteration()
-                 && PartialFileWasUpdated()
-                 && TryGetFileInformation (_partialFileStateOfCurrentDownload.GetPartialFile(), out var fileInfoOfPartialFile))
+        else if (PartialFileWasFoundInPreviousIteration (partialFileStateOfCurrentDownload)
+                 && PartialFileWasUpdated (partialFileStateOfCurrentDownload)
+                 && TryGetFileInformation (partialFileStateOfCurrentDownload.GetPartialFile(), out var fileInfoOfPartialFile))
         {
-          _partialFileStateOfCurrentDownload.UpdatePartialFileLastWriteAccessUtc (fileInfoOfPartialFile.LastWriteTimeUtc);
-          _partialFileStateOfCurrentDownload.UpdatePartialFileLength (fileInfoOfPartialFile.Length);
+          partialFileStateOfCurrentDownload.UpdatePartialFileLastWriteAccessUtc (fileInfoOfPartialFile.LastWriteTimeUtc);
+          partialFileStateOfCurrentDownload.UpdatePartialFileLength (fileInfoOfPartialFile.Length);
 
           downloadTimeWithoutUpdate.Restart();
         }
-        else if (!HasPartialFile (newFiles) && !TemporaryFilesExist (newFiles) && newFiles.Count > 0 && newFiles.Any (IsZeroLengthFile))
+        else if (!HasPartialFile (newFiles) && !TemporaryFilesExist (newFiles) && !zeroLengthFileWasFoundInPreviousIteration && HasZeroLengthFile (newFiles))
         {
-          Thread.Sleep (s_retryInterval);
+          zeroLengthFileWasFoundInPreviousIteration = true;
+          currentStateTimeout = downloadUpdatedTimeout;
         }
-        else if (!HasPartialFile (newFiles) && !TemporaryFilesExist (newFiles) && newFiles.Count > 0)
+        else if (!HasPartialFile (newFiles) && !TemporaryFilesExist (newFiles) && !HasZeroLengthFile (newFiles) && newFiles.Count > 0)
         {
           var fileName = _downloadFileFinderStrategy.FindDownloadedFile (newFiles);
 
@@ -143,7 +143,7 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
         }
       }
 
-      if (!PartialFileWasFoundInPreviousIteration())
+      if (!PartialFileWasFoundInPreviousIteration (partialFileStateOfCurrentDownload) && !zeroLengthFileWasFoundInPreviousIteration)
         throw new DownloadResultNotFoundException ("Did not find any new files in the download directory.", new List<string>());
 
       var unmatchedFiles = GetNewFiles (filesInDownloadDirectoryBeforeDownload, startedDownloadHandlingUtc);
@@ -153,6 +153,8 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
               "The download result file did not get updated for longer than the downloadUpdatedTimeout of '{0}'. The download appears to have failed.",
               downloadUpdatedTimeout),
           unmatchedFiles);
+
+      static bool PartialFileWasFoundInPreviousIteration (PartialFileState partialFileState) => partialFileState != null;
     }
 
     private bool TemporaryFilesExist (List<string> newFiles)
@@ -207,9 +209,8 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       }
     }
 
-    private bool PartialFileWasUpdated ()
+    private bool PartialFileWasUpdated (PartialFileState partialFileState)
     {
-      var partialFileState = _partialFileStateOfCurrentDownload;
       var fileInfo = new FileInfo (Path.Combine (_downloadDirectory, partialFileState.GetPartialFile()));
       try
       {
@@ -234,17 +235,11 @@ namespace Remotion.Web.Development.WebTesting.DownloadInfrastructure
       return TryGetPartialFile (newFiles, out _);
     }
 
-    private bool PartialFileWasFoundInPreviousIteration ()
+    private bool HasZeroLengthFile (IEnumerable<string> newFiles)
     {
-      return _partialFileStateOfCurrentDownload != null;
-    }
+      var fileInfos = newFiles.Select (file => new FileInfo (Path.Combine (_downloadDirectory, file)));
 
-    private bool IsZeroLengthFile (string fileName)
-    {
-      var filePath = Path.Combine (_downloadDirectory, fileName);
-      var fileInfo = new FileInfo (filePath);
-
-      return fileInfo.Length == 0;
+      return fileInfos.Any (info => info.Length == 0);
     }
   }
 }
