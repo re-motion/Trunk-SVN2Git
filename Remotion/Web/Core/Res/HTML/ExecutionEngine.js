@@ -77,8 +77,8 @@ function WxePage_Context(
 
     if (_dmaWxePostBackSequenceNumberFieldID != null)
     {
-      let dmaWxePostBackSequenceNumberField = document.getElementById(_dmaWxePostBackSequenceNumberFieldID);
-      let postBackSequenceNumber = document.getElementById(_wxePostBackSequenceNumberFieldID).value;
+      var dmaWxePostBackSequenceNumberField = document.getElementById(_dmaWxePostBackSequenceNumberFieldID);
+      var postBackSequenceNumber = document.getElementById(_wxePostBackSequenceNumberFieldID).value;
       dmaWxePostBackSequenceNumberField.value = postBackSequenceNumber;
     }
   };
