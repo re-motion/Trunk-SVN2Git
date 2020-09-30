@@ -69,8 +69,8 @@ function WxePage_Context(
 
     if (dmaWxePostBackSequenceNumberField != null)
     {
-      let postBackSequenceNumber = document.getElementById('wxePostBackSequenceNumberField').getAttribute('value');
-      dmaWxePostBackSequenceNumberField.setAttribute('value', postBackSequenceNumber);
+      let postBackSequenceNumber = document.getElementById('wxePostBackSequenceNumberField').value;
+      dmaWxePostBackSequenceNumberField.value = postBackSequenceNumber;
     }
   };
 
