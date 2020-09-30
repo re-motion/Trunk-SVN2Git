@@ -54,7 +54,15 @@ namespace Remotion.Web.ExecutionEngine
 
     public static readonly string ReturningTokenID = "wxeReturningTokenField";
     public static readonly string PageTokenID = "wxePageTokenField";
+
+    /// <remarks>
+    /// Also used in Remotion/Web/Core/Res/HTML/ExecutionEngine.js
+    /// </remarks>
     public static readonly string PostBackSequenceNumberID = "wxePostBackSequenceNumberField";
+
+    /// <remarks>
+    /// Also used in Remotion/Web/Core/Res/HTML/ExecutionEngine.js
+    /// </remarks>
     public static readonly string DmaPostBackSequenceNumberID = "dmaWxePostBackSequenceNumberField";
 
     private const int HttpStatusCode_ServerError = 500;
@@ -375,18 +383,16 @@ namespace Remotion.Web.ExecutionEngine
       _page.CheckFormStateFunction = "WxePage_CheckFormState";
 
       string isCacheDetectionEnabled = _page.AreOutOfSequencePostBacksEnabled ? "false" : "true";
-      int nextPostBackID = wxeContext.PostBackID + 1;
 
       StringBuilder initScript = new StringBuilder (500);
 
       initScript.AppendLine ("WxePage_Context.SetInstance (new WxePage_Context (");
-      initScript.Append ("    ").Append (isCacheDetectionEnabled).AppendLine (",");
-      initScript.Append ("    ").Append (refreshInterval).AppendLine (",");
-      initScript.Append ("    ").Append (refreshPath).AppendLine (",");
-      initScript.Append ("    ").Append (abortPath).AppendLine (",");
-      initScript.Append ("    ").Append (statusIsAbortingMessage).AppendLine (",");
-      initScript.Append ("    ").Append (statusIsCachedMessage).AppendLine (",");
-      initScript.Append ("    ").Append (nextPostBackID).AppendLine ("));");
+      initScript.AppendLine ("    ").Append (isCacheDetectionEnabled).AppendLine (",");
+      initScript.AppendLine ("    ").Append (refreshInterval).AppendLine (",");
+      initScript.AppendLine ("    ").Append (refreshPath).AppendLine (",");
+      initScript.AppendLine ("    ").Append (abortPath).AppendLine (",");
+      initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
+      initScript.AppendLine ("    ").Append (statusIsCachedMessage).AppendLine ("));");
 
       _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxePageInfo), "wxeInitialize", initScript.ToString ());
     }

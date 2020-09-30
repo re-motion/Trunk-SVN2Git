@@ -23,13 +23,11 @@
 // statusIsAbortingMessage: The message displayed when the user attempts to submit while an abort is in progress. 
 //    null to disable the message.
 // statusIsCachedMessage: The message displayed when the user returns to a cached page. null to disable the message.
-// postBackSequenceNumber: The postback sequence number to render at the end of the onload event.
 function WxePage_Context(
       isCacheDetectionEnabled,
       refreshInterval, refreshUrl,
       abortUrl,
-      statusIsAbortingMessage, statusIsCachedMessage,
-      postBackSequenceNumber)
+      statusIsAbortingMessage, statusIsCachedMessage)
 {
   ArgumentUtility.CheckNotNullAndTypeIsBoolean('isCacheDetectionEnabled', isCacheDetectionEnabled);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('refreshInterval', refreshInterval);
@@ -37,7 +35,6 @@ function WxePage_Context(
   ArgumentUtility.CheckTypeIsString('abortUrl', abortUrl);
   ArgumentUtility.CheckTypeIsString('statusIsAbortingMessage', statusIsAbortingMessage);
   ArgumentUtility.CheckTypeIsString('statusIsCachedMessage', statusIsCachedMessage);
-  ArgumentUtility.CheckNotNullAndTypeIsNumber('postBackSequenceNumber', postBackSequenceNumber);
 
   // The URL used to post the refresh request to.
   var _refreshUrl = null;
@@ -62,8 +59,6 @@ function WxePage_Context(
 
   var _isCacheDetectionEnabled = isCacheDetectionEnabled;
 
-  var _postBackSequenceNumber = postBackSequenceNumber;
-
   // Handles the page loading event.
   this.OnLoading = function(hasSubmitted, isCached)
   {
@@ -73,7 +68,10 @@ function WxePage_Context(
     let dmaWxePostBackSequenceNumberField = document.getElementById('dmaWxePostBackSequenceNumberField');
 
     if (dmaWxePostBackSequenceNumberField != null)
-      dmaWxePostBackSequenceNumberField.setAttribute('value', _postBackSequenceNumber);
+    {
+      let postBackSequenceNumber = document.getElementById('wxePostBackSequenceNumberField').getAttribute('value');
+      dmaWxePostBackSequenceNumberField.setAttribute('value', postBackSequenceNumber);
+    }
   };
 
   // Handles the page loaded event.
