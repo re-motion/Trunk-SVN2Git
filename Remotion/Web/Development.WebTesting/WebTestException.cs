@@ -25,6 +25,11 @@ namespace Remotion.Web.Development.WebTesting
     {
     }
 
+    public WebTestException (string message, string browser, string browserVersion, string driverVersion)
+        : base ($"{message}\n(Browser: {browser}, version {browserVersion})\n(Webdriver version: {driverVersion})")
+    {
+    }
+
     public WebTestException (string message, Exception inner)
         : base (message, inner)
     {
