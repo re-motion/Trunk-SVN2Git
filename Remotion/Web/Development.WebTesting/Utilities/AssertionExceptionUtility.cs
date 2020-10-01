@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Runtime.CompilerServices;
+using Coypu;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
@@ -28,11 +29,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   {
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlDisabledException ([CallerMemberName] string operationName = "")
+    public static WebTestException CreateControlDisabledException ([CallerMemberName] string operationName = "", IDriver driver = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("operationName", operationName);
 
-      return new WebTestException (string.Format ("The control is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName));
+      return CreateException (string.Format ("The control is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName), driver);
     }
 
     [NotNull]
@@ -41,21 +42,21 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("operationName", operationName);
 
-      return new WebTestException (string.Format ("The command is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName));
+      return CreateException (string.Format ("The command is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName));
     }
 
     [NotNull]
     [MustUseReturnValue]
     public static WebTestException CreateControlReadOnlyException ()
     {
-      return new WebTestException ("The control is currently in a read-only state. Therefore, the operation is not possible.");
+      return CreateException ("The control is currently in a read-only state. Therefore, the operation is not possible.");
     }
 
     [NotNull]
     [MustUseReturnValue]
     public static WebTestException CreateControlNotReadOnlyException ()
     {
-      return new WebTestException ("The control is currently not in a read-only state. Therefore, the operation is not possible.");
+      return CreateException ("The control is currently not in a read-only state. Therefore, the operation is not possible.");
     }
 
     [NotNull]
@@ -64,7 +65,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 
-      return new WebTestException ($"The element cannot be found: {exceptionDetails}");
+      return CreateException ($"The element cannot be found: {exceptionDetails}");
     }
 
     [NotNull]
@@ -73,7 +74,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 
-      return new WebTestException ($"Multiple elements were found: {exceptionDetails}");
+      return CreateException ($"Multiple elements were found: {exceptionDetails}");
     }
 
     [NotNull]
@@ -83,7 +84,14 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);
 
-      return new WebTestException (string.Format (message, args));
+      return CreateException (string.Format (message, args));
+    }
+
+    private static WebTestException CreateException (string message, IDriver driver = null)
+    {
+      return driver == null
+          ? new WebTestException (message)
+          : new WebTestException (string.Format (message), driver.GetBrowserName(), driver.GetBrowserVersion(), driver.GetWebdriverVersion());
     }
   }
 }

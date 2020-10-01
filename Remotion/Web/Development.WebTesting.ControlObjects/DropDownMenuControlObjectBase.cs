@@ -69,7 +69,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     public IReadOnlyList<ItemDefinition> GetItemDefinitions ()
     {
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException();
+        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
 
       var dropDownMenuScope = GetDropDownMenuScope();
 
@@ -110,7 +110,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName, driver: Driver);
 
       var itemCommand = GetItemCommandByItemID (itemID);
 
@@ -128,7 +128,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName, driver: Driver);
 
       var itemCommand = GetItemCommandByItemID (itemID);
 
@@ -144,7 +144,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       const string operationName = "SelectItem.WithIndex";
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName, driver: Driver);
 
       var itemCommand = GetItemCommandByIndex (oneBasedIndex);
 
@@ -162,7 +162,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("htmlID", htmlID);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName, driver: Driver);
 
       var itemCommand = GetItemCommandByHtmlID (htmlID);
 
@@ -180,7 +180,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("displayText", displayText);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName, driver: Driver);
 
       var itemCommand = GetItemCommandByDisplayText (displayText);
 
@@ -200,7 +200,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("containsDisplayText", containsDisplayText);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: operationName, driver: Driver);
 
       var itemCommand = GetItemCommandByDisplayTextContains (containsDisplayText);
 

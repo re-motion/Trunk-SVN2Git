@@ -68,10 +68,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var control = home.TextValues().GetByLocalID ("LastNameField_Disabled");
 
       Assert.That (control.IsDisabled(), Is.True);
-      Assert.That (() => control.FillWith ("text"), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("FillWith").Message));
+      Assert.That (() => control.FillWith ("text"), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("FillWith", Driver).Message));
       Assert.That (
           () => control.FillWith ("text", FinishInput.Promptly),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("FillWith").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("FillWith", Driver).Message));
     }
 
     [Test]

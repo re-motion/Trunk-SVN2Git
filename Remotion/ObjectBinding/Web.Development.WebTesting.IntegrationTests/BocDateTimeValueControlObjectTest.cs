@@ -18,6 +18,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using Coypu;
+using Coypu.Drivers;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.Contracts.DiagnosticMetadata;
 using Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects;
@@ -162,15 +163,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (control.IsDisabled(), Is.True);
       Assert.That (
           () => control.SetDate (DateTime.MinValue),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDate").Message));
-      Assert.That (() => control.SetDate (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDate").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDate", Driver).Message));
+      Assert.That (() => control.SetDate (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDate", Driver).Message));
       Assert.That (
           () => control.SetDateTime (DateTime.MinValue),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDateTime").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDateTime", Driver).Message));
       Assert.That (
           () => control.SetTime (TimeSpan.MinValue),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetTime").Message));
-      Assert.That (() => control.SetTime (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetTime").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetTime", Driver).Message));
+      Assert.That (() => control.SetTime (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetTime", Driver).Message));
     }
 
     [Test]

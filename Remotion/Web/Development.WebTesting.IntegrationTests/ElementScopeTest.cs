@@ -36,8 +36,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (disabledButton.Disabled, Is.True);
       Assert.That (
-          () => disabledButton.Focus(),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("Focus").Message));
+          () => disabledButton.Focus (Driver),
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("Focus", Driver).Message));
     }
 
     [Test]
@@ -48,7 +48,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var normalButton = home.Scope.FindId ("NormalButton");
 
       Assert.That (normalButton.Disabled, Is.False);
-      Assert.That (() => normalButton.Focus(), Throws.Nothing);
+      Assert.That (() => normalButton.Focus (Driver), Throws.Nothing);
     }
 
     [Test]

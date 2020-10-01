@@ -108,7 +108,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNullOrEmpty ("itemID", itemID);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption(itemID)");
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption(itemID)", driver: Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException();
@@ -122,7 +122,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("itemID", itemID);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithItemID");
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithItemID", driver: Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException();
@@ -139,7 +139,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     UnspecifiedPageObject IFluentControlObjectWithSelectableOptions.WithIndex (int oneBasedIndex, IWebTestActionOptions actionOptions)
     {
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithIndex");
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithIndex", driver: Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException();
@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("displayText", displayText);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithDisplayText");
+        throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithDisplayText", driver: Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException();
@@ -191,7 +191,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public UnspecifiedPageObject ExecuteCommand (IWebTestActionOptions actionOptions = null)
     {
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException();
+        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
 
       return GetCommand().Click (actionOptions);
     }

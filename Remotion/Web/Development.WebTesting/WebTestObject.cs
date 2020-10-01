@@ -51,5 +51,10 @@ namespace Remotion.Web.Development.WebTesting
     {
       get { return Context.Scope; }
     }
+
+    protected IDriver Driver
+    {
+      get { return _context.Browser.Driver; }
+    }
   }
 }
