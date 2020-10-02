@@ -702,7 +702,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var contextMenu = node.GetContextMenu();
 
-      Assert.That (() => contextMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo ("Unable to open the menu."));
+      Assert.That (() => contextMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
+          AssertionExceptionUtility.CreateExpectationException("Unable to open the menu.", Driver).Message));
       Assert.That (contextMenu.IsOpen(), Is.False);
     }
 

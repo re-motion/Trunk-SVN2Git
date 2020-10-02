@@ -23,6 +23,7 @@ using Remotion.Web.Development.WebTesting.ExecutionEngine.PageObjects;
 using Remotion.Web.Development.WebTesting.FluentControlSelection;
 using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure;
 using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure.TestCaseFactories;
+using Remotion.Web.Development.WebTesting.Utilities;
 using Remotion.Web.Development.WebTesting.WebFormsControlObjects;
 using Remotion.Web.Development.WebTesting.WebFormsControlObjects.Selectors;
 
@@ -95,7 +96,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => rootNode.IsChecked(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The checkbox could not be found: Unable to find xpath: ./tbody/tr/td[a[contains(@onclick, 'TreeView_SelectNode')]]/input[@type='checkbox']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateExpectationException("The checkbox could not be found: Unable to find xpath: ./tbody/tr/td[a[contains(@onclick, 'TreeView_SelectNode')]]/input[@type='checkbox']", Driver).Message));
 
       rootNode.Scope.ElementFinder.Options.Timeout = backupTimeout;
 
@@ -298,17 +300,19 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (999),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("No node with the index '999' was found."));
+          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+              AssertionExceptionUtility.CreateExpectationException("No node with the index '999' was found.", Driver).Message));
 
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (1),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("Multiple nodes with the index '1' were found."));
+          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+              AssertionExceptionUtility.CreateExpectationException("Multiple nodes with the index '1' were found.", Driver).Message));
     }
 
     [Test]
     public void TestSelectNodeInHierarchyOnlyRootNodeExpanded ()
     {
-      const string expectedExceptionMessage = "The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()";
+      var expectedExceptionMessage = AssertionExceptionUtility.CreateExpectationException("The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()", Driver).Message;
       var home = Start();
 
       var treeView = home.TreeViews().GetByLocalID ("MyTreeView");
@@ -363,11 +367,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithIndex (999),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("No node with the index '999' was found."));
+          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+              AssertionExceptionUtility.CreateExpectationException("No node with the index '999' was found.", Driver).Message));
 
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithIndex (1),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("Multiple nodes with the index '1' were found."));
+          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+              AssertionExceptionUtility.CreateExpectationException("Multiple nodes with the index '1' were found.", Driver).Message));
     }
 
     [Test]
