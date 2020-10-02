@@ -38,11 +38,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateCommandDisabledException ([CallerMemberName] string operationName = "")
+    public static WebTestException CreateCommandDisabledException ([CallerMemberName] string operationName = "", IDriver driver = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("operationName", operationName);
 
-      return CreateException (string.Format ("The command is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName));
+      return CreateException (string.Format ("The command is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName), driver);
     }
 
     [NotNull]

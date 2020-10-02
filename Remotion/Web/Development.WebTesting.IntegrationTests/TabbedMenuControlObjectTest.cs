@@ -61,22 +61,22 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var control = home.TabbedMenus().GetByLocalID ("MyTabbedMenu");
       Assert.That (
           () => control.SelectItem().WithDisplayText ("DisabledCommandTabTitle"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayText").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayText", Driver).Message));
       Assert.That (
           () => control.SelectItem().WithDisplayTextContains ("DisabledCommandTabTitle"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayTextContains").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayTextContains", Driver).Message));
       Assert.That (
           () => control.SelectItem().WithIndex (6),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithIndex").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithIndex", Driver).Message));
       Assert.That (
           () => control.SelectItem().WithHtmlID ("body_MyTabbedMenu_MainMenuTabStrip_DisabledCommandTab"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithHtmlID").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithHtmlID", Driver).Message));
       Assert.That (
           () => control.SelectItem().WithItemID ("DisabledCommandTab"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithItemID").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithItemID", Driver).Message));
       Assert.That (
           () => control.SelectItem ("DisabledCommandTab"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem(itemID)").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem(itemID)", Driver).Message));
     }
 
     [Test]
@@ -219,19 +219,19 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => tabbedMenu.SubMenu.SelectItem ("SubMenuTab2"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem(itemID)").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem(itemID)", Driver).Message));
       Assert.That (
           () => tabbedMenu.SubMenu.SelectItem().WithIndex (2),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithIndex").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithIndex", Driver).Message));
       Assert.That (
           () => tabbedMenu.SubMenu.SelectItem().WithHtmlID ("body_MyTabbedMenu_SubMenuTabStrip_SubMenuTab2"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithHtmlID").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithHtmlID", Driver).Message));
       Assert.That (
           () => tabbedMenu.SubMenu.SelectItem().WithDisplayText ("SubMenuTab2Title"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayText").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayText", Driver).Message));
       Assert.That (
           () => tabbedMenu.SubMenu.SelectItem().WithDisplayTextContains ("nuTab2"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayTextContains").Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayTextContains", Driver).Message));
     }
 
     private WxePageObject Start ()

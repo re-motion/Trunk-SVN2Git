@@ -115,7 +115,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var itemCommand = GetItemCommandByItemID (itemID);
 
       if (itemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName, driver: Driver);
 
       return ClickItem (itemCommand, actionOptions);
     }
@@ -133,7 +133,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var itemCommand = GetItemCommandByItemID (itemID);
 
       if (itemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName, driver: Driver);
 
       return ClickItem (itemCommand, actionOptions);
     }
@@ -149,7 +149,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var itemCommand = GetItemCommandByIndex (oneBasedIndex);
 
       if (itemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName, driver: Driver);
 
       return ClickItem (itemCommand, actionOptions);
     }
@@ -167,7 +167,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var itemCommand = GetItemCommandByHtmlID (htmlID);
 
       if (itemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName, driver: Driver);
 
       return ClickItem (itemCommand, actionOptions);
     }
@@ -185,7 +185,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var itemCommand = GetItemCommandByDisplayText (displayText);
 
       if (itemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName, driver: Driver);
 
       return ClickItem (itemCommand, actionOptions);
     }
@@ -205,7 +205,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var itemCommand = GetItemCommandByDisplayTextContains (containsDisplayText);
 
       if (itemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: operationName, driver: Driver);
 
       return ClickItem (itemCommand, actionOptions);
     }
