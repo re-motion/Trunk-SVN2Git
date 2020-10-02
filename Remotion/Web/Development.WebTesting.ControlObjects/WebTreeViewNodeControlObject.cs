@@ -156,7 +156,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
     {
       var numberChildren = Scope[DiagnosticMetadataAttributes.WebTreeViewNumberOfChildren];
       if (numberChildren == DiagnosticMetadataAttributes.Null)
-        throw AssertionExceptionUtility.CreateExpectationException ("TreeViewNode is not evaluated.", _webTreeViewNode.Driver);
+        throw AssertionExceptionUtility.CreateExpectationException ("TreeViewNode is not evaluated.", Driver);
 
       return int.Parse (numberChildren);
     }
