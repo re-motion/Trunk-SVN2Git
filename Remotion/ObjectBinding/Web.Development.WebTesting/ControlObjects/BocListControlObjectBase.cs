@@ -168,7 +168,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
 
       var currentPageNumber = GetCurrentPage();
       if (currentPageNumber == oneBasedPageNumber)
-        throw AssertionExceptionUtility.CreateExpectationException ("List is already on page '{0}'.", currentPageNumber);
+        throw AssertionExceptionUtility.CreateExpectationException ("List is already on page '{0}'.", Driver, currentPageNumber);
 
       if (oneBasedPageNumber < 1 || oneBasedPageNumber > GetNumberOfPages())
         throw CreateWebTestExceptionForIndexOutOfRange (oneBasedPageNumber);
@@ -471,26 +471,27 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     private void EnsureNavigationPossible ()
     {
       if (IsEditModeActive())
-        throw AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.");
+        throw AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.", Driver);
 
       if (!HasNavigator())
-        throw AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.");
+        throw AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.", Driver);
     }
 
     private WebTestException CreateWebTestExceptionForUnableToNavigateToPage (string pageWhichCantBeNavigatedTo, string currentPageAsString)
     {
-      return AssertionExceptionUtility.CreateExpectationException ("Unable to change page number to the {0} page, as the list is already on the {1} page.", pageWhichCantBeNavigatedTo, currentPageAsString);
+      return AssertionExceptionUtility.CreateExpectationException ("Unable to change page number to the {0} page, as the list is already on the {1} page.", Driver, pageWhichCantBeNavigatedTo, currentPageAsString);
     }
 
     private WebTestException CreateWebTestExceptionForIndexOutOfRange (int pageNumberToBeNavigated)
     {
       if (GetNumberOfPages() == 1)
       {
-        return AssertionExceptionUtility.CreateExpectationException ("Unable to navigate to page number '{0}'. The list only has one page.", pageNumberToBeNavigated);
+        return AssertionExceptionUtility.CreateExpectationException ("Unable to navigate to page number '{0}'. The list only has one page.", Driver, pageNumberToBeNavigated);
       }
 
       return AssertionExceptionUtility.CreateExpectationException (
           "Unable to change page number to '{0}'. Page number must be between '1' and '{1}'.",
+          Driver,
           pageNumberToBeNavigated,
           GetNumberOfPages());
     }

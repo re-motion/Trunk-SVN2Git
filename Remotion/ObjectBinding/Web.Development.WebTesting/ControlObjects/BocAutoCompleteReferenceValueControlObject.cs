@@ -285,7 +285,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       var results = GetSearchServiceResults (filter, 2);
 
       if (results.Count == 0)
-        throw AssertionExceptionUtility.CreateExpectationException ("No matches were found for the specified filter: '{0}'.", filter);
+        throw AssertionExceptionUtility.CreateExpectationException ("No matches were found for the specified filter: '{0}'.", Driver, filter);
 
       return results.First();
     }

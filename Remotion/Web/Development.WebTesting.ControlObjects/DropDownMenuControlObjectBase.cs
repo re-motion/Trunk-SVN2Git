@@ -270,7 +270,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
             () =>
             {
               if (GetDropDownMenuPopupID (menuButtonScope) == null)
-                throw AssertionExceptionUtility.CreateExpectationException ("Unable to open the menu.");
+                throw AssertionExceptionUtility.CreateExpectationException ("Unable to open the menu.", Driver);
             });
       }
     }

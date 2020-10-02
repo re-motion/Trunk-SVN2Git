@@ -84,10 +84,10 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
         var foundNodes = _treeView.Scope.FindAllXPath (xpath).ToArray();
 
         if (foundNodes.Length > 1)
-          throw AssertionExceptionUtility.CreateExpectationException ($"Multiple nodes with the index '{oneBasedIndex}' were found.");
+          throw AssertionExceptionUtility.CreateExpectationException ($"Multiple nodes with the index '{oneBasedIndex}' were found.", _treeView.Driver);
 
         if (foundNodes.Length == 0)
-          throw AssertionExceptionUtility.CreateExpectationException ($"No node with the index '{oneBasedIndex}' was found.");
+          throw AssertionExceptionUtility.CreateExpectationException ($"No node with the index '{oneBasedIndex}' was found.", _treeView.Driver);
 
         var nodeScope = foundNodes.Single();
 

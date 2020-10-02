@@ -70,21 +70,21 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlAmbiguousException ([NotNull] string exceptionDetails)
+    public static WebTestException CreateControlAmbiguousException ([NotNull] string exceptionDetails, IDriver driver = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 
-      return CreateException ($"Multiple elements were found: {exceptionDetails}");
+      return CreateException ($"Multiple elements were found: {exceptionDetails}", driver);
     }
 
     [NotNull]
     [MustUseReturnValue]
     [StringFormatMethod ("message")]
-    public static WebTestException CreateExpectationException ([NotNull] string message, params object[] args)
+    public static WebTestException CreateExpectationException ([NotNull] string message, IDriver driver = null, params object[] args)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);
 
-      return CreateException (string.Format (message, args));
+      return CreateException (string.Format (message, args), driver);
     }
 
     private static WebTestException CreateException (string message, IDriver driver = null)

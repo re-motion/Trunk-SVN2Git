@@ -57,9 +57,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation.B
       var column = columns.Where (c => c.ItemID == itemID).Take (2).ToArray();
 
       if (column.Length == 0)
-        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column with the specified item ID '{0}'.", itemID);
+        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column with the specified item ID '{0}'.", _fluentList.Target.List.Driver, itemID);
       if (column.Length > 1)
-        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns with the same item ID '{0}'.", itemID);
+        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns with the same item ID '{0}'.", _fluentList.Target.List.Driver, itemID);
 
       return SelfResolvableFluentScreenshot.Create (
           new ScreenshotBocListColumn<TList, TRow, TCell> (_fluentList, column[0].Index, _includeHeader),
@@ -73,9 +73,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation.B
       var column = columns.Where (c => c.Index == oneBasedIndex).Take (2).ToArray();
 
       if (column.Length == 0)
-        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column with the specified index '{0}'.", oneBasedIndex);
+        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column with the specified index '{0}'.", _fluentList.Target.List.Driver, oneBasedIndex);
       if (column.Length > 1)
-        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns with the same index '{0}'.", oneBasedIndex);
+        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns with the same index '{0}'.", _fluentList.Target.List.Driver, oneBasedIndex);
 
       return SelfResolvableFluentScreenshot.Create (
           new ScreenshotBocListColumn<TList, TRow, TCell> (_fluentList, column[0].Index, _includeHeader),
@@ -89,9 +89,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation.B
       var column = columns.Where (c => c.Title == title).Take (2).ToArray();
 
       if (column.Length == 0)
-        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column with the specified title '{0}'.", title);
+        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column with the specified title '{0}'.", _fluentList.Target.List.Driver, title);
       if (column.Length > 1)
-        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns with the same title '{0}'.", title);
+        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns with the same title '{0}'.", _fluentList.Target.List.Driver, title);
 
       return SelfResolvableFluentScreenshot.Create (
           new ScreenshotBocListColumn<TList, TRow, TCell> (_fluentList, column[0].Index, _includeHeader),
@@ -104,9 +104,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ScreenshotCreation.B
       var columns = _fluentList.Target.List.GetColumnDefinitions();
       var column = columns.Where (c => c.Title.Contains (content)).Take (2).ToArray();
       if (column.Length == 0)
-        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column where the title contains '{0}'.", content);
+        throw AssertionExceptionUtility.CreateExpectationException ("Could not find a column where the title contains '{0}'.", _fluentList.Target.List.Driver, content);
       if (column.Length > 1)
-        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns where the title contains '{0}'.", content);
+        throw AssertionExceptionUtility.CreateExpectationException ("There are multiple columns where the title contains '{0}'.", _fluentList.Target.List.Driver, content);
 
       return SelfResolvableFluentScreenshot.Create (
           new ScreenshotBocListColumn<TList, TRow, TCell> (_fluentList, column[0].Index, _includeHeader),
