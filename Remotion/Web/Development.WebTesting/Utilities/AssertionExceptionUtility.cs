@@ -47,9 +47,9 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlReadOnlyException ()
+    public static WebTestException CreateControlReadOnlyException (IDriver driver = null)
     {
-      return CreateException ("The control is currently in a read-only state. Therefore, the operation is not possible.");
+      return CreateException ("The control is currently in a read-only state. Therefore, the operation is not possible.", driver);
     }
 
     [NotNull]

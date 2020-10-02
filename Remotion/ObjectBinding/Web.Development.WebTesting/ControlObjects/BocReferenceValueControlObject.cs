@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public IReadOnlyList<OptionDefinition> GetOptionDefinitions ()
     {
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       return RetryUntilTimeout.Run (
           () => GetValueScope().FindAllCss ("option")
@@ -111,7 +111,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption(itemID)", driver: Driver);
 
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       return SelectOption().WithItemID (itemID, actionOptions);
     }
@@ -125,7 +125,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithItemID", driver: Driver);
 
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       // Workaround for Marionette issue. (RM-7279)
       if (Scope.Browser.IsFirefox() && GetSelectedOption().ItemID == itemID)
@@ -142,7 +142,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithIndex", driver: Driver);
 
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       // Workaround for Marionette issue. (RM-7279)
       if (Scope.Browser.IsFirefox() && GetSelectedOption().Index == oneBasedIndex)
@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
         throw AssertionExceptionUtility.CreateControlDisabledException (operationName: "SelectOption.WithDisplayText", driver: Driver);
 
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       // Workaround for Marionette issue. (RM-7279)
       if (Scope.Browser.IsFirefox() && GetSelectedOption().Text == displayText)
@@ -214,7 +214,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public IReadOnlyList<string> GetValidationErrors ()
     {
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       return GetValidationErrors (GetValueScope());
     }

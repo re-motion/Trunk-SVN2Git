@@ -58,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
         throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
 
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       return FillWith (text, FinishInput.WithTab, actionOptions);
     }
@@ -76,7 +76,7 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
         throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
 
       if (IsReadOnly())
-        throw AssertionExceptionUtility.CreateControlReadOnlyException();
+        throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
 
       var actualActionOptions = MergeWithDefaultActionOptions (actionOptions, finishInputWith);
       ExecuteAction (new FillWithAction (this, Scope, text, finishInputWith), actualActionOptions);
