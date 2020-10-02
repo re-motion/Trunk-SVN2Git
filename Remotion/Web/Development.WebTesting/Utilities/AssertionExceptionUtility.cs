@@ -61,11 +61,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlMissingException ([NotNull] string exceptionDetails)
+    public static WebTestException CreateControlMissingException ([NotNull] string exceptionDetails, IDriver driver = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 
-      return CreateException ($"The element cannot be found: {exceptionDetails}");
+      return CreateException ($"The element cannot be found: {exceptionDetails}", driver);
     }
 
     [NotNull]

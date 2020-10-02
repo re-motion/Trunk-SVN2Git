@@ -124,7 +124,7 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
         }
         catch (StaleElementException ex)
         {
-          throw AssertionExceptionUtility.CreateControlMissingException (ex.Message);
+          throw AssertionExceptionUtility.CreateControlMissingException (ex.Message, _treeViewNode.Driver);
         }
       }
     }
@@ -243,7 +243,7 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
       }
       catch (ElementNotInteractableException ex)
       {
-        throw AssertionExceptionUtility.CreateControlMissingException (ex.Message);
+        throw AssertionExceptionUtility.CreateControlMissingException (ex.Message, Driver);
       }
     }
 

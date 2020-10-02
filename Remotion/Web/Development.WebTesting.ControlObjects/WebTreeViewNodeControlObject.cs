@@ -125,7 +125,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         }
         catch (StaleElementException ex)
         {
-          throw AssertionExceptionUtility.CreateControlMissingException (ex.Message);
+          throw AssertionExceptionUtility.CreateControlMissingException (ex.Message, _webTreeViewNode.Driver);
         }
       }
     }
