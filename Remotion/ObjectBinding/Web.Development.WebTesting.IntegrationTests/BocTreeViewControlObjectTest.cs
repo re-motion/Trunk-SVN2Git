@@ -31,6 +31,7 @@ using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure.Screen
 using Remotion.Web.Development.WebTesting.IntegrationTests.Infrastructure.TestCaseFactories;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation;
 using Remotion.Web.Development.WebTesting.ScreenshotCreation.Fluent;
+using Remotion.Web.Development.WebTesting.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 {
@@ -260,12 +261,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (999),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("No node with the index '999' was found."));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException("No node with the index '999' was found.", Driver).Message));
 
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (1),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("Multiple nodes with the index '1' were found."));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException("Multiple nodes with the index '1' were found.", Driver).Message));
     }
 
     [Test]
@@ -295,7 +296,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelectNodeInHierarchyOnlyRootNodeExpanded ()
     {
-      const string expectedExceptionMessage = "The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()";
+      var expectedExceptionMessage = AssertionExceptionUtility.CreateExpectationException("The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()", Driver).Message;
       var home = Start();
 
       var bocTreeView = home.TreeViews().GetByLocalID ("Normal");
@@ -361,12 +362,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocTreeView.GetNodeInHierarchy().WithIndex (999),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("No node with the index '999' was found."));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException("No node with the index '999' was found.", Driver).Message));
 
       Assert.That (
           () => bocTreeView.GetNodeInHierarchy().WithIndex (1),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("Multiple nodes with the index '1' were found."));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException("Multiple nodes with the index '1' were found.", Driver).Message));
     }
 
     [Test]
@@ -443,7 +444,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => rootNode.Expand(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("TreeViewNode is already expanded."));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException("TreeViewNode is already expanded.", Driver).Message));
     }
 
     [Test]
@@ -506,10 +507,12 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => node.Expand(),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("The WebTreeViewNode cannot be expanded as it has no children."));
+          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+              AssertionExceptionUtility.CreateExpectationException("The WebTreeViewNode cannot be expanded as it has no children.", Driver).Message));
       Assert.That (
           () => node.Collapse(),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("The WebTreeViewNode cannot be collapsed as it has no children."));
+          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+              AssertionExceptionUtility.CreateExpectationException("The WebTreeViewNode cannot be collapsed as it has no children.", Driver).Message));
     }
 
     [Test]
@@ -539,7 +542,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var rootNode = bocTreeView.GetRootNode();
 
-      Assert.That (() => rootNode.Collapse(), Throws.InstanceOf<WebTestException>().With.Message.EqualTo ("TreeViewNode is already collapsed."));
+      Assert.That (() => rootNode.Collapse(), Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
+          AssertionExceptionUtility.CreateExpectationException("TreeViewNode is already collapsed.", Driver).Message));
     }
 
     [Test]
@@ -712,7 +716,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var contextMenu = node.GetContextMenu();
 
-      Assert.That (() => contextMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo ("Unable to open the menu."));
+      Assert.That (() => contextMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
+          AssertionExceptionUtility.CreateExpectationException("Unable to open the menu.", Driver).Message));
       Assert.That (contextMenu.IsOpen(), Is.False);
     }
 
