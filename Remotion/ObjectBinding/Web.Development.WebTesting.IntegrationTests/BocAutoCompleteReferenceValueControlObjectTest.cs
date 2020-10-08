@@ -461,7 +461,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocAutoComplete.SelectFirstMatch ("Invalid"),
           Throws.Exception.InstanceOf<WebTestException>()
-              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException("No matches were found for the specified filter: 'Invalid'.", Driver).Message));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException ("No matches were found for the specified filter: 'Invalid'.", Driver).Message));
     }
 
     [Test]
