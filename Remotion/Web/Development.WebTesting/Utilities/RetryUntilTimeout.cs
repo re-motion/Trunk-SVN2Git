@@ -26,7 +26,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 {
   /// <summary>
   /// Executes a given <see cref="Action"/> repeatedly (using the given retry interval) until no exception is thrown during execution or until the
-  /// given timeout has been reached (in which case the final exception is rethrown).
+  /// given timeout has been reached (in which case the last exception is rethrown).
   /// </summary>
   /// <remarks>
   /// This utility shall be used whenever JavaScript scripts may alter the DOM during the <see cref="Action"/> is executed.
@@ -58,11 +58,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     /// <summary>
     /// Executes a given <see cref="Action"/> repeatedly (using the given retry interval) until no exception is thrown during execution or until the
-    /// given timeout has been reached (in which case the final exception is rethrown).
+    /// given timeout has been reached (in which case the last exception is rethrown).
     /// </summary>
     /// <param name="action">The <see cref="Action"/> to be executed repeatedly.</param>
     /// <param name="timeout">
-    /// The timeout after which no more retries are made and the final exception is rethrown. Defaults to the value of the <see cref="DriverConfiguration.SearchTimeout"/>
+    /// The timeout after which no more retries are made and the last exception is rethrown. Defaults to the value of the <see cref="DriverConfiguration.SearchTimeout"/>
     /// property of the <see cref="DriverConfiguration"/> retrieved by calling <see cref="WebTestConfigurationFactory.CreateDriverConfiguration"/> if no value is provided.
     /// </param>
     /// <param name="retryInterval">
@@ -83,11 +83,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     /// <summary>
     /// Executes a given <see cref="Func{TReturnType}"/> repeatedly (using the given retry interval) until no exception is thrown during execution or
-    /// until the given timeout has been reached (in which case the final exception is rethrown).
+    /// until the given timeout has been reached (in which case the last exception is rethrown).
     /// </summary>
     /// <param name="func">The <see cref="Func{TReturnType}"/> to be executed repeatedly.</param>
     /// <param name="timeout">
-    /// The timeout after which no more retries are made and the final exception is rethrown. Defaults to the value of the <see cref="DriverConfiguration.SearchTimeout"/>
+    /// The timeout after which no more retries are made and the last exception is rethrown. Defaults to the value of the <see cref="DriverConfiguration.SearchTimeout"/>
     /// property of the <see cref="DriverConfiguration"/> retrieved by calling <see cref="WebTestConfigurationFactory.CreateDriverConfiguration"/> if no value is provided.
     /// </param>
     /// <param name="retryInterval">
@@ -110,7 +110,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
   /// <summary>
   /// Executes a given <see cref="Func{TReturnType}"/> repeatedly (using the given retry interval) until no exception is thrown during execution or
-  /// until the given timeout has been reached (in which case the final exception is rethrown).
+  /// until the given timeout has been reached (in which case the last exception is rethrown).
   /// </summary>
   /// <remarks>
   /// This utility shall be used whenever JavaScript scripts may alter the DOM during the <see cref="Func{TReturnType}"/> is executed.
