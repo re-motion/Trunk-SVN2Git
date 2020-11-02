@@ -96,3 +96,8 @@ button.webButton[disabled] span.buttonBody img
   filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
+
+.mozilla button.webButton span.buttonBody
+{
+  left: 0;
+}
