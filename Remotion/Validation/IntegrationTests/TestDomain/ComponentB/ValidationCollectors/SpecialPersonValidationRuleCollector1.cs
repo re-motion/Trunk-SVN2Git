@@ -15,15 +15,25 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Validation.IntegrationTests.TestDomain.ComponentA.ValidationCollectors;
+using Remotion.Validation.IntegrationTests.TestDomain.Validators;
 using Remotion.Validation.Validators;
 
-namespace Remotion.Validation.UnitTests.Implementation.TestDomain
+namespace Remotion.Validation.IntegrationTests.TestDomain.ComponentB.ValidationCollectors
 {
-  public class TypeWithoutBaseTypeCollector2 : ValidationRuleCollectorBase<TypeWithoutBaseType>
+  public class SpecialPersonValidationRuleCollector1 : ValidationRuleCollectorBase<SpecialPerson1>
   {
-    public TypeWithoutBaseTypeCollector2 ()
+    public SpecialPersonValidationRuleCollector1 ()
     {
-      RemoveRule (t => t.Property2).Validator<NotEmptyValidator> (_ => true).Validator<MaximumLengthValidator, TypeWithoutBaseTypeCollector1>();
+      RemoveRule (p => p.LastName).Validator (
+          typeof (NotEqualValidator),
+          typeof (PersonValidationRuleCollector1),
+          validator => "Test".Equals (((NotEqualValidator) validator).ComparisonValue));
+
+      RemoveRule ().Validator (
+          typeof (RealPersonValidator),
+          typeof (PersonValidationRuleCollector1),
+          validator => validator is RealPersonValidator);
     }
   }
 }

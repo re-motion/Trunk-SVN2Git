@@ -15,18 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Validation.Implementation;
-using Remotion.Validation.RuleCollectors;
+using Remotion.Validation.IntegrationTests.TestDomain.ComponentA;
 
-namespace Remotion.Validation.Merging
+namespace Remotion.Validation.IntegrationTests.TestDomain.ComponentB
 {
-  /// <summary>
-  /// Defines an API for instantiating an implementation of the <see cref="IPropertyValidatorExtractor"/> interface during the merge operation.
-  /// </summary>
-  /// <seealso cref="PropertyValidatorExtractorFactory"/>
-  public interface IPropertyValidatorExtractorFactory
+  public class SpecialPerson1 : Person
   {
-    IPropertyValidatorExtractor Create (IEnumerable<RemovingPropertyValidatorRegistration> removingPropertyValidatorRegistrations, ILogContext logContext);
   }
 }
