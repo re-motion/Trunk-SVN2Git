@@ -1531,12 +1531,12 @@
       if (position.spaceVertical == 'T' && requiredHeight > position.bottom)
       {
         topPosition = 'auto';
-        bottomPosition = position.bottom + reference.outerHeight();
+        bottomPosition = Math.max(0, position.bottom + reference.outerHeight());
         maxHeight = Math.min(position.top, maxHeightSafe);
       }
       else
       {
-        topPosition = offset.top + reference.outerHeight();
+        topPosition = Math.max(0, (offset.top - $(document).scrollTop()) + reference.outerHeight());
         bottomPosition = 'auto';
         maxHeight = Math.min(position.bottom, maxHeightSafe);
       }
