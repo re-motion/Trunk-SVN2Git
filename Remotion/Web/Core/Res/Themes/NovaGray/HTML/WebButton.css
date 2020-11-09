@@ -100,4 +100,7 @@ button.webButton[disabled] span.buttonBody img
 .mozilla button.webButton span.buttonBody
 {
   left: 0;
+  width: unset;
+  padding-left: 3px;
+  padding-right: 3px;
 }
