@@ -86,22 +86,22 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var enabledControl = home.DropDownMenus().GetByLocalID ("MyDropDownMenu");
       Assert.That (
           () => enabledControl.SelectItem ("ItemID3"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem(itemID)", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SelectItem(itemID)").Message));
       Assert.That (
           () => enabledControl.SelectItem().WithDisplayText ("NoneItem"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayText", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SelectItem.WithDisplayText").Message));
       Assert.That (
           () => enabledControl.SelectItem().WithDisplayTextContains ("None"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayTextContains", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SelectItem.WithDisplayTextContains").Message));
       Assert.That (
           () => enabledControl.SelectItem ("ItemID6"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem(itemID)", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SelectItem(itemID)").Message));
       Assert.That (
           () => enabledControl.SelectItem().WithDisplayText ("DisabledItem"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayText", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SelectItem.WithDisplayText").Message));
       Assert.That (
           () => enabledControl.SelectItem().WithDisplayTextContains ("Disabled"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SelectItem.WithDisplayTextContains", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SelectItem.WithDisplayTextContains").Message));
     }
 
     [Test]

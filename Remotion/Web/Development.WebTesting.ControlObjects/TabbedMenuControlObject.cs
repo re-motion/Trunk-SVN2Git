@@ -68,7 +68,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var menuItemCommand = FindMenuItemCommand (menuItemScope);
 
       if (menuItemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem(itemID)", driver: Driver);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem(itemID)");
 
       return SelectMenuItem (menuItemCommand, actionOptions);
     }
@@ -90,7 +90,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var menuItemCommand = FindMenuItemCommand (menuItemScope);
 
       if (menuItemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithItemID", driver: Driver);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithItemID");
 
       return SelectMenuItem (menuItemCommand, actionOptions);
     }
@@ -102,7 +102,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var menuItemCommand = FindMenuItemCommand (menuItemScope);
 
       if (menuItemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithIndex", driver: Driver);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithIndex");
 
       return SelectMenuItem (menuItemCommand, actionOptions);
     }
@@ -116,7 +116,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var menuItemCommand = FindMenuItemCommand (menuItemScope);
 
       if (menuItemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithHtmlID", driver: Driver);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithHtmlID");
 
       return SelectMenuItem (menuItemCommand, actionOptions);
     }
@@ -130,7 +130,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var menuItemCommand = FindMenuItemCommand (menuItemScope);
 
       if (menuItemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithDisplayText", driver: Driver);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithDisplayText");
 
       return SelectMenuItem (menuItemCommand, actionOptions);
     }
@@ -148,7 +148,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
       var menuItemCommand = FindMenuItemCommand (menuItemScope);
 
       if (menuItemCommand.IsDisabled())
-        throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithDisplayTextContains", driver: Driver);
+        throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithDisplayTextContains");
 
       return SelectMenuItem (menuItemCommand, actionOptions);
     }
@@ -220,7 +220,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         var itemCommand = FindItemCommand (menuItemScope);
 
         if (itemCommand.IsDisabled())
-          throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem(itemID)", driver: Driver);
+          throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem(itemID)");
 
         return SelectMenuItem (itemCommand, actionOptions);
       }
@@ -233,7 +233,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         var itemCommand = FindItemCommand (menuItemScope);
 
         if (itemCommand.IsDisabled())
-          throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithItemID", driver: Driver);
+          throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithItemID");
 
         return SelectMenuItem (itemCommand, actionOptions);
       }
@@ -244,7 +244,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         var itemCommand = FindItemCommand (menuItemScope);
 
         if (itemCommand.IsDisabled())
-          throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithIndex", driver: Driver);
+          throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithIndex");
 
         return SelectMenuItem (itemCommand, actionOptions);
       }
@@ -257,7 +257,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         var itemCommand = FindItemCommand (menuItemScope);
 
         if (itemCommand.IsDisabled())
-          throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithHtmlID", driver: Driver);
+          throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithHtmlID");
 
         return SelectMenuItem (itemCommand, actionOptions);
       }
@@ -270,7 +270,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         var itemCommand = FindItemCommand (menuItemScope);
 
         if (itemCommand.IsDisabled())
-          throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithDisplayText", driver: Driver);
+          throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithDisplayText");
 
         return SelectMenuItem (itemCommand, actionOptions);
       }
@@ -290,7 +290,7 @@ namespace Remotion.Web.Development.WebTesting.ControlObjects
         var itemCommand = FindItemCommand (menuItemScope);
 
         if (itemCommand.IsDisabled())
-          throw AssertionExceptionUtility.CreateCommandDisabledException (operationName: "SelectItem.WithDisplayTextContains", driver: Driver);
+          throw AssertionExceptionUtility.CreateCommandDisabledException (driver: Driver, operationName: "SelectItem.WithDisplayTextContains");
 
         return SelectMenuItem (itemCommand, actionOptions);
       }

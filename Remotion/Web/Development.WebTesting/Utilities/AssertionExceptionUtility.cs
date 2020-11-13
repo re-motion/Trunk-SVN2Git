@@ -38,7 +38,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateCommandDisabledException ([CallerMemberName] string operationName = "", IDriver driver = null)
+    public static WebTestException CreateCommandDisabledException (IDriver driver, [CallerMemberName] string operationName = "")
     {
       ArgumentUtility.CheckNotNullOrEmpty ("operationName", operationName);
 

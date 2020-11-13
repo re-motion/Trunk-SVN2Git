@@ -50,22 +50,22 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => control.SwitchTo ("Tab3"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SwitchTo(itemID)", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SwitchTo(itemID)").Message));
       Assert.That (
           () => control.SwitchTo().WithHtmlID ("body_MyTabStrip1_Tab3"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SwitchTo.WithHtmlID", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SwitchTo.WithHtmlID").Message));
       Assert.That (
           () => control.SwitchTo().WithIndex (3),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SwitchTo.WithIndex", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SwitchTo.WithIndex").Message));
       Assert.That (
           () => control.SwitchTo().WithItemID ("Tab3"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SwitchTo.WithItemID", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SwitchTo.WithItemID").Message));
       Assert.That (
           () => control.SwitchTo().WithDisplayText ("Tab3 disabled"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SwitchTo.WithDisplayText", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SwitchTo.WithDisplayText").Message));
       Assert.That (
           () => control.SwitchTo().WithDisplayTextContains ("Tab3"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException ("SwitchTo.WithDisplayTextContains", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateCommandDisabledException (Driver, "SwitchTo.WithDisplayTextContains").Message));
     }
 
     [Test]
