@@ -70,7 +70,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlAmbiguousException ([NotNull] string exceptionDetails, IDriver driver = null)
+    public static WebTestException CreateControlAmbiguousException (IDriver driver, [NotNull] string exceptionDetails)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 

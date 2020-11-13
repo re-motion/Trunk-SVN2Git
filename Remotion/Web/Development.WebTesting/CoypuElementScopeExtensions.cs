@@ -59,7 +59,7 @@ namespace Remotion.Web.Development.WebTesting
       }
       catch (AmbiguousException exception)
       {
-        throw AssertionExceptionUtility.CreateControlAmbiguousException (exception.Message);
+        throw AssertionExceptionUtility.CreateControlAmbiguousException (null, exception.Message);
       }
     }
 
@@ -90,7 +90,7 @@ namespace Remotion.Web.Development.WebTesting
       }
       catch (AmbiguousException exception)
       {
-        throw AssertionExceptionUtility.CreateControlAmbiguousException (exception.Message);
+        throw AssertionExceptionUtility.CreateControlAmbiguousException (null, exception.Message);
       }
       finally
       {
@@ -155,7 +155,7 @@ namespace Remotion.Web.Development.WebTesting
       }
       catch (AmbiguousException exception)
       {
-        throw AssertionExceptionUtility.CreateControlAmbiguousException (exception.Message);
+        throw AssertionExceptionUtility.CreateControlAmbiguousException (null, exception.Message);
       }
       finally
       {
