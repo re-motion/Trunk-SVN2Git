@@ -24,11 +24,6 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   [TestFixture]
   public class DriverExtensionsTest : IntegrationTest
   {
-    private static bool ContainsVersionPattern (string text)
-    {
-      return Regex.IsMatch (text, @"(\d+\.){1,3}(\d+)");
-    }
-
     [Test]
     public void GetBrowserName_ReturnsCorrectName ()
     {
@@ -42,9 +37,14 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     }
 
     [Test]
-    public void GetBrowserName_ReturnsWebdriverVersion ()
+    public void GetBrowserName_ReturnsWebDriverVersion ()
     {
-      Assert.That (ContainsVersionPattern (Driver.GetWebdriverVersion()), Is.True);
+      Assert.That (ContainsVersionPattern (Driver.GetWebDriverVersion()), Is.True);
+    }
+
+    private static bool ContainsVersionPattern (string text)
+    {
+      return Regex.IsMatch (text, @"(\d+\.){1,3}(\d+)");
     }
   }
 }

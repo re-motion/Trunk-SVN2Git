@@ -542,8 +542,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var rootNode = bocTreeView.GetRootNode();
 
-      Assert.That (() => rootNode.Collapse(), Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException ("TreeViewNode is already collapsed.", Driver).Message));
+      Assert.That (
+          () => rootNode.Collapse(), 
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException ("TreeViewNode is already collapsed.", Driver).Message));
     }
 
     [Test]

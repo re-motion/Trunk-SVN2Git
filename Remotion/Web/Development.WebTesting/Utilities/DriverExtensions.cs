@@ -64,7 +64,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// <summary>
     /// Gets the name of the webdriver associated with <paramref name="driver"/> or a <see cref="string"/> indicating that it could not be determined.
     /// </summary>
-    public static string GetWebdriverVersion (this IDriver driver)
+    public static string GetWebDriverVersion (this IDriver driver)
     {
       if (!(driver.Native is IHasCapabilities driverWithCapabilities))
         return c_unknown;

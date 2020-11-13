@@ -181,7 +181,7 @@ namespace Remotion.Web.Development.WebTesting
 
       _mainBrowserSession = CreateNewBrowserSession (maximizeWindow, configurationOverride);
       s_log.InfoFormat ("Browser: {0}, version {1}", _mainBrowserSession.Driver.GetBrowserName(), _mainBrowserSession.Driver.GetBrowserVersion());
-      s_log.InfoFormat ("Webdriver version: {0}", _mainBrowserSession.Driver.GetWebdriverVersion());
+      s_log.InfoFormat ("Webdriver version: {0}", _mainBrowserSession.Driver.GetWebDriverVersion());
 
       // Note: otherwise cursor could interfere with element hovering.
       EnsureCursorIsOutsideBrowserWindow();
