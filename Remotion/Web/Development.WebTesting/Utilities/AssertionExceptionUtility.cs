@@ -61,7 +61,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlMissingException ([NotNull] string exceptionDetails, IDriver driver = null)
+    public static WebTestException CreateControlMissingException (IDriver driver, [NotNull] string exceptionDetails)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 

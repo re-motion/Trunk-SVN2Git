@@ -55,7 +55,7 @@ namespace Remotion.Web.Development.WebTesting
       }
       catch (MissingHtmlException exception)
       {
-        throw AssertionExceptionUtility.CreateControlMissingException (exception.Message);
+        throw AssertionExceptionUtility.CreateControlMissingException (null, exception.Message);
       }
       catch (AmbiguousException exception)
       {
@@ -86,7 +86,7 @@ namespace Remotion.Web.Development.WebTesting
       }
       catch (MissingHtmlException exception)
       {
-        throw AssertionExceptionUtility.CreateControlMissingException (exception.Message);
+        throw AssertionExceptionUtility.CreateControlMissingException (null, exception.Message);
       }
       catch (AmbiguousException exception)
       {
