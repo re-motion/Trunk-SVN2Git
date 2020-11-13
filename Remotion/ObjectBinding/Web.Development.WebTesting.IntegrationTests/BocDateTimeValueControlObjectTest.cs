@@ -163,15 +163,15 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (control.IsDisabled(), Is.True);
       Assert.That (
           () => control.SetDate (DateTime.MinValue),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDate", Driver).Message));
-      Assert.That (() => control.SetDate (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDate", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SetDate").Message));
+      Assert.That (() => control.SetDate (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SetDate").Message));
       Assert.That (
           () => control.SetDateTime (DateTime.MinValue),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetDateTime", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SetDateTime").Message));
       Assert.That (
           () => control.SetTime (TimeSpan.MinValue),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetTime", Driver).Message));
-      Assert.That (() => control.SetTime (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SetTime", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SetTime").Message));
+      Assert.That (() => control.SetTime (""), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SetTime").Message));
     }
 
     [Test]

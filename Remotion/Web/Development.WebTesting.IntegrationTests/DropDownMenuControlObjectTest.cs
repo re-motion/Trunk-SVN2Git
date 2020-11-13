@@ -59,23 +59,23 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var disabledControl = home.DropDownMenus().GetByLocalID ("MyDropDownMenu_Disabled");
       Assert.That (disabledControl.IsDisabled(), Is.True);
-      Assert.That (() => disabledControl.GetItemDefinitions(), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("GetItemDefinitions", Driver).Message));
+      Assert.That (() => disabledControl.GetItemDefinitions(), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "GetItemDefinitions").Message));
       Assert.That (
           () => disabledControl.SelectItem().WithDisplayText ("EventItem"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SelectItem.WithDisplayText", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithDisplayText").Message));
       Assert.That (
           () => disabledControl.SelectItem().WithDisplayTextContains ("Href"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SelectItem.WithDisplayTextContains", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithDisplayTextContains").Message));
       Assert.That (
           () => disabledControl.SelectItem().WithIndex (1),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SelectItem.WithIndex", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithIndex").Message));
       Assert.That (
           () => disabledControl.SelectItem().WithHtmlID ("body_MyDropDownMenu_Disabled_3"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SelectItem.WithHtmlID", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithHtmlID").Message));
       Assert.That (
           () => disabledControl.SelectItem().WithItemID ("ItemID4"),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SelectItem.WithItemID", Driver).Message));
-      Assert.That (() => disabledControl.SelectItem ("ItemID4"), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException ("SelectItem(itemID)", Driver).Message));
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithItemID").Message));
+      Assert.That (() => disabledControl.SelectItem ("ItemID4"), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem(itemID)").Message));
     }
 
     [Test]
