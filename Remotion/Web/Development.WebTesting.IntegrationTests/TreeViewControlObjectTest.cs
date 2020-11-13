@@ -97,7 +97,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
           () => rootNode.IsChecked(),
           Throws.InstanceOf<WebTestException>()
               .With.Message.EqualTo (
-                  AssertionExceptionUtility.CreateExpectationException ("The checkbox could not be found: Unable to find xpath: ./tbody/tr/td[a[contains(@onclick, 'TreeView_SelectNode')]]/input[@type='checkbox']", Driver).Message));
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "The checkbox could not be found: Unable to find xpath: ./tbody/tr/td[a[contains(@onclick, 'TreeView_SelectNode')]]/input[@type='checkbox']").Message));
 
       rootNode.Scope.ElementFinder.Options.Timeout = backupTimeout;
 
@@ -301,18 +301,18 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (999),
           Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("No node with the index '999' was found.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "No node with the index '999' was found.").Message));
 
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (1),
           Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Multiple nodes with the index '1' were found.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Multiple nodes with the index '1' were found.").Message));
     }
 
     [Test]
     public void TestSelectNodeInHierarchyOnlyRootNodeExpanded ()
     {
-      var expectedExceptionMessage = AssertionExceptionUtility.CreateExpectationException ("The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()", Driver).Message;
+      var expectedExceptionMessage = AssertionExceptionUtility.CreateExpectationException (Driver, "The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()").Message;
       var home = Start();
 
       var treeView = home.TreeViews().GetByLocalID ("MyTreeView");
@@ -368,12 +368,12 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithIndex (999),
           Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("No node with the index '999' was found.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "No node with the index '999' was found.").Message));
 
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithIndex (1),
           Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Multiple nodes with the index '1' were found.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Multiple nodes with the index '1' were found.").Message));
     }
 
     [Test]

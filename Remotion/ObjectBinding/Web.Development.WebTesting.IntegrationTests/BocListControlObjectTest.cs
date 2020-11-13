@@ -1168,8 +1168,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => row.Edit(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (
-                  "The control is currently in a read-only state. Therefore, the operation is not possible.", Driver).Message));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "The control is currently in a read-only state. Therefore, the operation is not possible.").Message));
     }
 
     [Test]
@@ -1435,7 +1434,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToSpecificPage (1),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
     }
 
     [Test]
@@ -1451,7 +1450,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToSpecificPage (3),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List is currently in edit mode.").Message));
     }
 
     [Test]
@@ -1464,7 +1463,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToSpecificPage (1),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("List is already on page '1'.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "List is already on page '1'.").Message));
     }
 
     [Test]
@@ -1479,8 +1478,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToSpecificPage (pageNumberGreaterThanNumberOfPages),
           Throws.Exception.TypeOf<WebTestException>()
-              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (
-                  $"Unable to change page number to '{pageNumberGreaterThanNumberOfPages}'. Page number must be between '1' and '4'.", Driver).Message));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, $"Unable to change page number to '{pageNumberGreaterThanNumberOfPages}'. Page number must be between '1' and '4'.").Message));
     }
 
     [Test]
@@ -1495,8 +1493,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToSpecificPage (pageNumberLesserThanNumberOfPages),
           Throws.Exception.TypeOf<WebTestException>()
-              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (
-                  $"Unable to change page number to '{pageNumberLesserThanNumberOfPages}'. Page number must be between '1' and '4'.", Driver).Message));
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, $"Unable to change page number to '{pageNumberLesserThanNumberOfPages}'. Page number must be between '1' and '4'.").Message));
     }
 
     [Test]
@@ -1521,7 +1518,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToFirstPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
     }
 
     [Test]
@@ -1537,7 +1534,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToFirstPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List is currently in edit mode.").Message));
     }
 
     [Test]
@@ -1551,7 +1548,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
           () => bocList.GoToFirstPage(),
           Throws.Exception.TypeOf<WebTestException>()
               .With.Message.EqualTo (
-                  AssertionExceptionUtility.CreateExpectationException ("Unable to change page number to the first page, as the list is already on the first page.", Driver).Message));
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change page number to the first page, as the list is already on the first page.").Message));
     }
 
     [Test]
@@ -1576,7 +1573,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToPreviousPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
     }
 
     [Test]
@@ -1592,7 +1589,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToPreviousPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List is currently in edit mode.").Message));
     }
 
     [Test]
@@ -1606,7 +1603,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
           () => bocList.GoToPreviousPage(),
           Throws.Exception.TypeOf<WebTestException>()
               .With.Message.EqualTo (
-                  AssertionExceptionUtility.CreateExpectationException ("Unable to change page number to the previous page, as the list is already on the first page.", Driver).Message));
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change page number to the previous page, as the list is already on the first page.").Message));
     }
 
     [Test]
@@ -1629,7 +1626,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToNextPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
     }
 
     [Test]
@@ -1645,7 +1642,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToNextPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List is currently in edit mode.").Message));
     }
 
     [Test]
@@ -1660,7 +1657,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
           () => bocList.GoToNextPage(),
           Throws.Exception.TypeOf<WebTestException>()
               .With.Message.EqualTo (
-                  AssertionExceptionUtility.CreateExpectationException ("Unable to change page number to the next page, as the list is already on the last page.", Driver).Message));
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change page number to the next page, as the list is already on the last page.").Message));
     }
 
     [Test]
@@ -1684,7 +1681,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToLastPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List only has one page.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
     }
 
     [Test]
@@ -1700,7 +1697,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GoToLastPage(),
           Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException ("Unable to change current page of the list. List is currently in edit mode.", Driver).Message));
+              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List is currently in edit mode.").Message));
     }
 
     [Test]
@@ -1715,7 +1712,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
           () => bocList.GoToLastPage(),
           Throws.Exception.TypeOf<WebTestException>()
               .With.Message.EqualTo (
-                  AssertionExceptionUtility.CreateExpectationException ("Unable to change page number to the last page, as the list is already on the last page.", Driver).Message));
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change page number to the last page, as the list is already on the last page.").Message));
     }
 
     [Test]

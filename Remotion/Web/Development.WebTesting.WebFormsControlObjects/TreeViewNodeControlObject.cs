@@ -88,10 +88,10 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
         var foundNodes = GetChildrenScope (_treeViewNode.Scope).FindAllXPath (xpath).ToArray();
 
         if (foundNodes.Length > 1)
-          throw AssertionExceptionUtility.CreateExpectationException ($"Multiple nodes with the index '{oneBasedIndex}' were found.", _treeViewNode.Driver);
+          throw AssertionExceptionUtility.CreateExpectationException (_treeViewNode.Driver, $"Multiple nodes with the index '{oneBasedIndex}' were found.");
 
         if (foundNodes.Length == 0)
-          throw AssertionExceptionUtility.CreateExpectationException ($"No node with the index '{oneBasedIndex}' was found.", _treeViewNode.Driver);
+          throw AssertionExceptionUtility.CreateExpectationException (_treeViewNode.Driver, $"No node with the index '{oneBasedIndex}' was found.");
 
         var nodeScope = foundNodes.Single();
 
@@ -153,7 +153,7 @@ namespace Remotion.Web.Development.WebTesting.WebFormsControlObjects
       }
       catch (MissingHtmlException exception)
       {
-        throw AssertionExceptionUtility.CreateExpectationException ($"The checkbox could not be found: {exception.Message}", Driver);
+        throw AssertionExceptionUtility.CreateExpectationException (Driver, $"The checkbox could not be found: {exception.Message}");
       }
     }
 

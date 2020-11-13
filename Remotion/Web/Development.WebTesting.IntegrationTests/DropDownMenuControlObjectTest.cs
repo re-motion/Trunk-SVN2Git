@@ -211,7 +211,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var dropDownMenu = home.DropDownMenus().GetByLocalID ("MyDropDownMenu_DelayedLongerThanTimeout");
 
       Assert.That (() => dropDownMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException ("Unable to open the menu.", Driver).Message));
+          AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
       Assert.That (dropDownMenu.IsOpen(), Is.False);
     }
 
@@ -223,7 +223,7 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var dropDownMenu = home.DropDownMenus().GetByLocalID ("MyDropDownMenu_Error");
 
       Assert.That (() => dropDownMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException ("Unable to open the menu.", Driver).Message));
+          AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
       Assert.That (dropDownMenu.IsOpen(), Is.False);
     }
 

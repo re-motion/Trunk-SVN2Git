@@ -80,7 +80,7 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     [NotNull]
     [MustUseReturnValue]
     [StringFormatMethod ("message")]
-    public static WebTestException CreateExpectationException ([NotNull] string message, IDriver driver = null, params object[] args)
+    public static WebTestException CreateExpectationException (IDriver driver, [NotNull] string message, params object[] args)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);
 
