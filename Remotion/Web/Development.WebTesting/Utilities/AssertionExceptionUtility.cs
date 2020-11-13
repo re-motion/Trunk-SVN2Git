@@ -91,7 +91,8 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     {
       return driver == null
           ? new WebTestException (message)
-          : new WebTestException (message, driver.GetBrowserName(), driver.GetBrowserVersion(), driver.GetWebDriverVersion());
+          : new WebTestException (
+              $"{message}\r\n(Browser: {driver.GetBrowserName()}, version {driver.GetBrowserVersion()})\r\n(Webdriver version: {driver.GetWebDriverVersion()})");
     }
   }
 }
