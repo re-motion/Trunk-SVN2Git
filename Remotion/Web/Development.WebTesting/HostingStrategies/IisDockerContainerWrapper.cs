@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using JetBrains.Annotations;
+using log4net;
 using Remotion.Utilities;
 using Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting;
 
@@ -29,6 +30,8 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
   /// </summary>
   public class IisDockerContainerWrapper : IDisposable
   {
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (IisDockerContainerWrapper));
+
     private readonly IDockerClient _docker;
     private readonly IisDockerContainerConfigurationParameters _configurationParameters;
     private string _containerName;
@@ -49,7 +52,14 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
     /// </summary>
     public void Run ()
     {
-      _docker.Pull (_configurationParameters.DockerImageName);
+      try
+      {
+        _docker.Pull (_configurationParameters.DockerImageName);
+      }
+      catch (InvalidOperationException ex)
+      {
+        s_log.Error ("Pulling docker image failed", ex);
+      }
 
       var mounts = GetMountsWithWebApplicationPath (_configurationParameters.Mounts);
       var portMappings = new Dictionary<int, int> { { _configurationParameters.WebApplicationPort, _configurationParameters.WebApplicationPort } };
