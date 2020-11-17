@@ -19,11 +19,11 @@ using System;
 namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
 {
   /// <summary>
-  /// The exception that is thrown when a docker command fails.
+  /// The exception that is thrown when a docker operation fails.
   /// </summary>
-  public class DockerClientException : Exception
+  public class DockerOperationException : Exception
   {
-    public DockerClientException (string message)
+    public DockerOperationException (string message)
         : base (message)
     {
     }

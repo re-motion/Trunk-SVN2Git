@@ -29,7 +29,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     /// <summary>
     /// Pulls the given docker image.
     /// </summary>
-    /// <exception cref="DockerClientException">The issued docker command failed.</exception>
+    /// <exception cref="DockerOperationException">The issued docker operation failed.</exception>
     /// <exception cref="TimeoutException">The issued docker command took longer than the set timeout.</exception>
     /// <exception cref="FileNotFoundException">The docker executable was not found.</exception>
     void Pull ([NotNull] string imageName);
@@ -45,7 +45,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     /// <param name="entryPoint">Overrides the default entry point of the image. Can be <see langword="null" />.</param>
     /// <param name="args">Overrides the default arguments (CMD) of the image. Can be <see langword="null" />.</param>
     /// <returns>The container ID of the started container.</returns>
-    /// <exception cref="DockerClientException">The issued docker command failed.</exception>
+    /// <exception cref="DockerOperationException">The issued docker operation failed.</exception>
     /// <exception cref="TimeoutException">The issued docker command took longer than the set timeout.</exception>
     /// <exception cref="FileNotFoundException">The docker executable was not found.</exception>
     [NotNull]
@@ -67,7 +67,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     /// <summary>
     /// Removes a container with the given ID.
     /// </summary>
-    /// <exception cref="DockerClientException">The issued docker command failed.</exception>
+    /// <exception cref="DockerOperationException">The issued docker operation failed.</exception>
     /// <exception cref="TimeoutException">The issued docker command took longer than the set timeout.</exception>
     /// <exception cref="FileNotFoundException">The docker executable was not found.</exception>
     void Remove ([NotNull] string containerName, bool force = false);
@@ -75,7 +75,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
     /// <summary>
     /// Stops a container with the given ID.
     /// </summary>
-    /// <exception cref="DockerClientException">The issued docker command failed.</exception>
+    /// <exception cref="DockerOperationException">The issued docker operation failed.</exception>
     /// <exception cref="TimeoutException">The issued docker command took longer than the set timeout.</exception>
     /// <exception cref="FileNotFoundException">The docker executable was not found.</exception>
     void Stop ([NotNull] string containerName);
