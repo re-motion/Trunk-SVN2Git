@@ -23,9 +23,15 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
   /// </summary>
   public class DockerOperationException : Exception
   {
-    public DockerOperationException (string message)
+    /// <summary>
+    /// Gets the exit code of the docker process.
+    /// </summary>
+    public int ExitCode { get; }
+
+    public DockerOperationException (string message, int exitCode)
         : base (message)
     {
+      ExitCode = exitCode;
     }
   }
 }

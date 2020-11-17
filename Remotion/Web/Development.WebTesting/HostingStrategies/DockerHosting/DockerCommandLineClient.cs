@@ -188,7 +188,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies.DockerHosting
           var errorMessage = $"Docker command '{dockerCommand}' failed: {error}";
 
           s_log.Error (errorMessage);
-          throw new DockerOperationException (errorMessage);
+          throw new DockerOperationException (errorMessage, dockerProcess.ExitCode);
         }
 
         return output;
