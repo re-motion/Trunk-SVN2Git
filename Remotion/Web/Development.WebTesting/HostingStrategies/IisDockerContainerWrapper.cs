@@ -58,7 +58,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
       }
       catch (DockerOperationException ex)
       {
-        s_log.Error ("Pulling docker image failed", ex);
+        s_log.Error ($"Pulling the docker image '{_configurationParameters.DockerImageName}' failed. Trying to proceed with a locally cached image.", ex);
       }
 
       var mounts = GetMountsWithWebApplicationPath (_configurationParameters.Mounts);
