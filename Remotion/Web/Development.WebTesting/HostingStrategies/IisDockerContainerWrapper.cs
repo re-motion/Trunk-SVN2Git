@@ -56,7 +56,7 @@ namespace Remotion.Web.Development.WebTesting.HostingStrategies
       {
         _docker.Pull (_configurationParameters.DockerImageName);
       }
-      catch (InvalidOperationException ex)
+      catch (DockerClientException ex)
       {
         s_log.Error ("Pulling docker image failed", ex);
       }
