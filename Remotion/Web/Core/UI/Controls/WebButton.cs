@@ -178,7 +178,7 @@ namespace Remotion.Web.UI.Controls
           if (string.IsNullOrEmpty (postBackEventReference))
             postBackEventReference = Page.ClientScript.GetPostBackEventReference (this, null);
           var postBackScript = EnsureEndWithSemiColon (postBackEventReference);
-
+          onClick += "console.log('click - button');";
           onClick += postBackScript;
           onClick += "return false;";
         }

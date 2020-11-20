@@ -338,10 +338,12 @@
                 }, options.selectionUpdateDelay);
             }
         }).focus(function() {
+            console.log('focus - autocomplete');
             // track whether the field has focus, we shouldn't process any
             // results if the field no longer has focus
             hasFocus = true;
         }).blur(function() {
+            console.log('blur - autocomplete');
             hasFocus = false;
             if (!select.visible()) {
                 clearTimeout(timeout);
@@ -360,10 +362,8 @@
                 } else {
                     clearTimeout(timeout);
                     var lastKeyPressCode = state.lastKeyPressCode;
-                    timeout = setTimeout(function () {
-                        invalidateResult();
-                        acceptInput(lastKeyPressCode);
-                    }, 200);
+                    invalidateResult();
+                    acceptInput(lastKeyPressCode);
                 }
             }
         }).click(function() {

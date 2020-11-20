@@ -225,6 +225,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
           {
             UpdateCommand (actualItem.UniqueIdentifier);
             _commandBackUp = _command;
+
+            console.log('change - autocomplete');
             hiddenField.trigger ('change');
           }
           else

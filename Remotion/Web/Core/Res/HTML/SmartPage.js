@@ -571,9 +571,11 @@ function SmartPage_Context(
   // Override for the ASP.NET __doPostBack method.
   this.DoPostBack = function (eventTarget, eventArgument)
   {
+    console.log('DoPostBack');
     // Debugger space
     var dummy = 0;
     var continueRequest = this.CheckFormState();
+    console.log(`DoPostBack - continueRequest: ${continueRequest}`);
     if (continueRequest)
     {
       try
@@ -608,6 +610,7 @@ function SmartPage_Context(
   // Event handler for Form.Submit.
   this.OnFormSubmit = function ()
   {
+    console.log('OnFormSubmit');
     if (_isExecutingDoPostBack)
     {
       if (_aspnetFormOnSubmit != null)
@@ -701,6 +704,7 @@ function SmartPage_Context(
   // returns: true to continue with request.
   this.CheckFormState = function ()
   {
+    console.log('CheckFormState');
     if (_aspnetFormOnSubmit != null && !_aspnetFormOnSubmit())
       return false;
 
@@ -722,12 +726,17 @@ function SmartPage_Context(
     if (!continueRequest)
       return false;
 
+    console.log(`CheckFormState - .IsSubmitting(): ${this.IsSubmitting()}`);
     if (!this.IsSubmitting())
       return true;
 
     var isAsyncAutoPostback = _submitState.IsAsynchronous && _submitState.IsAutoPostback;
     var isTriggeredByCurrentSubmitter = _submitState.Submitter === GetActiveElement();
     var hasQueuedSubmit = _submitState.NextSubmitState != null;
+    console.log(`CheckFormState - _submitState.Submitter: ${_submitState.Submitter.id}`);
+    console.log(`CheckFormState - GetActiveElement(): ${GetActiveElement().id}`);
+    console.log(`CheckFormState - hasQueuedSubmit: ${hasQueuedSubmit}, isAsyncAutoPostBack: ${isAsyncAutoPostback}, isTriggeredByCurrentSubmitter: ${isTriggeredByCurrentSubmitter}`)
+    console.log(GetActiveElement());
     if (!hasQueuedSubmit && isAsyncAutoPostback && !isTriggeredByCurrentSubmitter)
       return true;
 
@@ -1140,6 +1149,7 @@ function SmartPage_Context(
   this.SetIsSubmitting = function (isAsynchronous, eventTarget, eventArgument)
   {
     var submitterElement = GetSubmitterOrActiveElement();
+    console.log(submitterElement);
     if (submitterElement != null)
     {
       $(submitterElement).addClass('SmartPageSubmitter');
@@ -1175,12 +1185,18 @@ function SmartPage_Context(
       EventArgument: eventArgument,
       NextSubmitState : null
     };
-    if (_submitState == null)
+    if (_submitState == null){
+      console.log('_submitState null');
       _submitState = submitState;
-    else if (_submitState.IsAutoPostback && !isAutoPostback)
+    }
+    else if (_submitState.IsAutoPostback && !isAutoPostback) {
+      console.log('_submitState autopostback & current non-autopostback');
       _submitState.NextSubmitState = submitState;
-    else
+    }
+    else{
+      console.log(`_submitState.IsAutoPostback: ${_submitState.IsAutoPostback}; isAutoPostBack: ${isAutoPostback}`);
       _submitState.NextSubmitState = { CancelSubmit: true, Submitter: null };
+    }
 
     return _submitState;
   };
