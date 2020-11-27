@@ -120,7 +120,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("text", text);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
@@ -135,7 +135,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
@@ -156,7 +156,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
     public UnspecifiedPageObject ExecuteCommand (IWebTestActionOptions actionOptions = null)
     {
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       return GetCommand().Click (actionOptions);
     }
@@ -215,7 +215,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("filter", filter);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
@@ -238,7 +238,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);

@@ -75,7 +75,7 @@ namespace Remotion.Web.Development.WebTesting
       }
 
       if (scope.Disabled)
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (driver);
 
       scope.SendKeys ("");
     }

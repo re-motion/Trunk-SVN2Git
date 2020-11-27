@@ -59,7 +59,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("text", text);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
@@ -74,7 +74,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.ControlObjects
       ArgumentUtility.CheckNotNull ("finishInputWith", finishInputWith);
 
       if (IsDisabled())
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver: Driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (Driver);
 
       if (IsReadOnly())
         throw AssertionExceptionUtility.CreateControlReadOnlyException (Driver);
