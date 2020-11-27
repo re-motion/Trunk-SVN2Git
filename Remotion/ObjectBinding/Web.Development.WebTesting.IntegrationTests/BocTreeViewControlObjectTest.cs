@@ -101,7 +101,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     private class DerivedBocTreeViewControlObject : BocTreeViewControlObject
     {
       public DerivedBocTreeViewControlObject (ControlObjectContext context)
-          : base(context)
+          : base (context)
       {
       }
     }
@@ -296,7 +296,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void TestSelectNodeInHierarchyOnlyRootNodeExpanded ()
     {
-      var expectedExceptionMessage = AssertionExceptionUtility.CreateExpectationException (Driver, "The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()").Message;
+      var expectedExceptionMessage = AssertionExceptionUtility.CreateExpectationException (
+              Driver,
+              "The element cannot be found: This element has been removed from the DOM. Coypu will normally re-find elements using the original locators in this situation, except if you have captured a snapshot list of all matching elements using FindAllCss() or FindAllXPath()")
+          .Message;
       var home = Start();
 
       var bocTreeView = home.TreeViews().GetByLocalID ("Normal");
@@ -543,7 +546,7 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var rootNode = bocTreeView.GetRootNode();
 
       Assert.That (
-          () => rootNode.Collapse(), 
+          () => rootNode.Collapse(),
           Throws.InstanceOf<WebTestException>()
               .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "TreeViewNode is already collapsed.").Message));
     }
@@ -704,8 +707,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var contextMenu = node.GetContextMenu();
 
-      Assert.That (() => contextMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
+      Assert.That (
+          () => contextMenu.Open(),
+          Throws.TypeOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
       Assert.That (contextMenu.IsOpen(), Is.False);
     }
 
@@ -719,8 +724,10 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       var contextMenu = node.GetContextMenu();
 
-      Assert.That (() => contextMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
+      Assert.That (
+          () => contextMenu.Open(),
+          Throws.TypeOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
       Assert.That (contextMenu.IsOpen(), Is.False);
     }
 

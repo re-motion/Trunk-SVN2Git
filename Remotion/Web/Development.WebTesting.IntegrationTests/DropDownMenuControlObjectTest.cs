@@ -59,7 +59,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var disabledControl = home.DropDownMenus().GetByLocalID ("MyDropDownMenu_Disabled");
       Assert.That (disabledControl.IsDisabled(), Is.True);
-      Assert.That (() => disabledControl.GetItemDefinitions(), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "GetItemDefinitions").Message));
+      Assert.That (
+          () => disabledControl.GetItemDefinitions(),
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "GetItemDefinitions").Message));
       Assert.That (
           () => disabledControl.SelectItem().WithDisplayText ("EventItem"),
           Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithDisplayText").Message));
@@ -75,7 +77,9 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => disabledControl.SelectItem().WithItemID ("ItemID4"),
           Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem.WithItemID").Message));
-      Assert.That (() => disabledControl.SelectItem ("ItemID4"), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem(itemID)").Message));
+      Assert.That (
+          () => disabledControl.SelectItem ("ItemID4"),
+          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlDisabledException (Driver, "SelectItem(itemID)").Message));
     }
 
     [Test]
@@ -210,8 +214,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var dropDownMenu = home.DropDownMenus().GetByLocalID ("MyDropDownMenu_DelayedLongerThanTimeout");
 
-      Assert.That (() => dropDownMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
+      Assert.That (
+          () => dropDownMenu.Open(),
+          Throws.TypeOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
       Assert.That (dropDownMenu.IsOpen(), Is.False);
     }
 
@@ -222,8 +228,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       var dropDownMenu = home.DropDownMenus().GetByLocalID ("MyDropDownMenu_Error");
 
-      Assert.That (() => dropDownMenu.Open(), Throws.TypeOf<WebTestException>().With.Message.EqualTo (
-          AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
+      Assert.That (
+          () => dropDownMenu.Open(),
+          Throws.TypeOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to open the menu.").Message));
       Assert.That (dropDownMenu.IsOpen(), Is.False);
     }
 

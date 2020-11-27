@@ -1572,8 +1572,9 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       var bocList = home.Lists().GetByLocalID ("JobList_NoFakeTableHeader");
       Assert.That (
           () => bocList.GoToPreviousPage(),
-          Throws.Exception.TypeOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
+          Throws.Exception.TypeOf<WebTestException>()
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "Unable to change current page of the list. List only has one page.").Message));
     }
 
     [Test]
