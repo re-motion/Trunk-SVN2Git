@@ -16,10 +16,12 @@
 // 
 using System.Collections.Generic;
 using Coypu;
+using JetBrains.Annotations;
 using Microsoft.Edge.SeleniumTools;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using Remotion.Utilities;
 
 namespace Remotion.Web.Development.WebTesting.Utilities
 {
@@ -36,8 +38,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// <returns>
     /// A <see cref="string"/> representing the browser version or <c>unknown</c> if the <paramref name="driver"/>'s type is not supported.
     /// </returns>
-    public static string GetBrowserName (this IDriver driver)
+    public static string GetBrowserName ([NotNull] this IDriver driver)
     {
+      ArgumentUtility.CheckNotNull("driver", driver);
+
       return driver.Native switch
       {
           ChromeDriver _ => "Chrome",
@@ -53,8 +57,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// <returns>
     /// A <see cref="string"/> representing the browser version or <c>unknown</c> if the version cannot be resolved.
     /// </returns>
-    public static string GetBrowserVersion (this IDriver driver)
+    public static string GetBrowserVersion ([NotNull] this IDriver driver)
     {
+      ArgumentUtility.CheckNotNull("driver", driver);
+
       if (!(driver.Native is IHasCapabilities driverWithCapabilities))
         return c_unknown;
 
@@ -73,8 +79,10 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     /// <returns>
     /// A <see cref="string"/> representing the webdriver version or <c>unknown</c> if the version cannot be resolved.
     /// </returns>
-    public static string GetWebDriverVersion (this IDriver driver)
+    public static string GetWebDriverVersion ([NotNull] this IDriver driver)
     {
+      ArgumentUtility.CheckNotNull("driver", driver);
+
       if (!(driver.Native is IHasCapabilities driverWithCapabilities))
         return c_unknown;
 
