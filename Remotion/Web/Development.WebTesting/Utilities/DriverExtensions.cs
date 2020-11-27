@@ -31,8 +31,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     private const string c_unknown = "unknown";
 
     /// <summary>
-    /// Gets the name of the browser associated with <paramref name="driver"/> or a <see cref="string"/> indicating that it could not be determined.
+    /// Gets the name of the browser associated with <paramref name="driver"/>.
     /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> representing the browser version or <c>unknown</c> if the <paramref name="driver"/>'s type is not supported.
+    /// </returns>
     public static string GetBrowserName (this IDriver driver)
     {
       return driver.Native switch
@@ -45,8 +48,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     }
 
     /// <summary>
-    /// Gets the version of the browser associated with <paramref name="driver"/> or a <see cref="string"/> indicating that it could not be determined.
+    /// Gets the version of the browser associated with <paramref name="driver"/>.
     /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> representing the browser version or <c>unknown</c> if the version cannot be resolved.
+    /// </returns>
     public static string GetBrowserVersion (this IDriver driver)
     {
       if (!(driver.Native is IHasCapabilities driverWithCapabilities))
@@ -62,8 +68,11 @@ namespace Remotion.Web.Development.WebTesting.Utilities
     }
 
     /// <summary>
-    /// Gets the name of the webdriver associated with <paramref name="driver"/> or a <see cref="string"/> indicating that it could not be determined.
+    /// Gets the version of the webdriver associated with <paramref name="driver"/>.
     /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> representing the webdriver version or <c>unknown</c> if the version cannot be resolved.
+    /// </returns>
     public static string GetWebDriverVersion (this IDriver driver)
     {
       if (!(driver.Native is IHasCapabilities driverWithCapabilities))
