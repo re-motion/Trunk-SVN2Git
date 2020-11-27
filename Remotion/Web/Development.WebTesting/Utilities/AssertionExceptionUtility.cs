@@ -29,65 +29,65 @@ namespace Remotion.Web.Development.WebTesting.Utilities
   {
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlDisabledException (IDriver driver, [CallerMemberName] string operationName = "")
+    public static WebTestException CreateControlDisabledException ([CanBeNull] IDriver driver, [CallerMemberName] string operationName = "")
     {
       ArgumentUtility.CheckNotNullOrEmpty ("operationName", operationName);
 
-      return CreateException (string.Format ("The control is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName), driver);
+      return CreateException (driver, string.Format ("The control is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName));
     }
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateCommandDisabledException (IDriver driver, [CallerMemberName] string operationName = "")
+    public static WebTestException CreateCommandDisabledException ([CanBeNull] IDriver driver, [CallerMemberName] string operationName = "")
     {
       ArgumentUtility.CheckNotNullOrEmpty ("operationName", operationName);
 
-      return CreateException (string.Format ("The command is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName), driver);
+      return CreateException (driver, string.Format ("The command is currently in a disabled state. Therefore, the '{0}' operation is not possible.", operationName));
     }
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlReadOnlyException (IDriver driver)
+    public static WebTestException CreateControlReadOnlyException ([CanBeNull] IDriver driver)
     {
-      return CreateException ("The control is currently in a read-only state. Therefore, the operation is not possible.", driver);
+      return CreateException (driver, "The control is currently in a read-only state. Therefore, the operation is not possible.");
     }
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlNotReadOnlyException (IDriver driver)
+    public static WebTestException CreateControlNotReadOnlyException ([CanBeNull] IDriver driver)
     {
-      return CreateException ("The control is currently not in a read-only state. Therefore, the operation is not possible.", driver);
+      return CreateException (driver, "The control is currently not in a read-only state. Therefore, the operation is not possible.");
     }
 
     [NotNull]
     [MustUseReturnValue]
-    public static WebTestException CreateControlMissingException (IDriver driver, [NotNull] string exceptionDetails)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
-
-      return CreateException ($"The element cannot be found: {exceptionDetails}", driver);
-    }
-
-    [NotNull]
-    [MustUseReturnValue]
-    public static WebTestException CreateControlAmbiguousException (IDriver driver, [NotNull] string exceptionDetails)
+    public static WebTestException CreateControlMissingException ([CanBeNull] IDriver driver, [NotNull] string exceptionDetails)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
 
-      return CreateException ($"Multiple elements were found: {exceptionDetails}", driver);
+      return CreateException (driver, $"The element cannot be found: {exceptionDetails}");
+    }
+
+    [NotNull]
+    [MustUseReturnValue]
+    public static WebTestException CreateControlAmbiguousException ([CanBeNull] IDriver driver, [NotNull] string exceptionDetails)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("exceptionDetails", exceptionDetails);
+
+      return CreateException (driver, $"Multiple elements were found: {exceptionDetails}");
     }
 
     [NotNull]
     [MustUseReturnValue]
     [StringFormatMethod ("message")]
-    public static WebTestException CreateExpectationException (IDriver driver, [NotNull] string message, params object[] args)
+    public static WebTestException CreateExpectationException ([CanBeNull] IDriver driver, [NotNull] string message, params object[] args)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);
 
-      return CreateException (string.Format (message, args), driver);
+      return CreateException (driver, string.Format (message, args));
     }
 
-    private static WebTestException CreateException (string message, IDriver driver = null)
+    private static WebTestException CreateException ([CanBeNull] IDriver driver, string message)
     {
       return driver == null
           ? new WebTestException (message)
