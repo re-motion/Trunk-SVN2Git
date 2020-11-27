@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Remotion.Web.Development.WebTesting.Utilities;
 
@@ -24,6 +23,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
   [TestFixture]
   public class DriverExtensionsTest : IntegrationTest
   {
+    private const string c_versionPattern = @"(\d+\.){1,3}(\d+)";
+
     [Test]
     public void GetBrowserName_ReturnsCorrectName ()
     {
@@ -33,18 +34,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
     [Test]
     public void GetBrowserName_ReturnsBrowserVersion ()
     {
-      Assert.That (ContainsVersionPattern (Driver.GetBrowserVersion()), Is.True);
+      Assert.That (Driver.GetBrowserVersion(), Does.Match (c_versionPattern));
     }
 
     [Test]
     public void GetBrowserName_ReturnsWebDriverVersion ()
     {
-      Assert.That (ContainsVersionPattern (Driver.GetWebDriverVersion()), Is.True);
-    }
-
-    private static bool ContainsVersionPattern (string text)
-    {
-      return Regex.IsMatch (text, @"(\d+\.){1,3}(\d+)");
+      Assert.That (Driver.GetWebDriverVersion(), Does.Match (c_versionPattern));
     }
   }
 }
