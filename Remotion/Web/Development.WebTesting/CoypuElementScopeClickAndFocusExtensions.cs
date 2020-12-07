@@ -56,11 +56,8 @@ namespace Remotion.Web.Development.WebTesting
     /// Focuses an element.
     /// </summary>
     /// <param name="scope">The <see cref="ElementScope"/> on which the action is performed.</param>
-    /// <param name="driver">
-    /// The <see cref="IDriver"/> that might be used to retrieve browser and webdriver version information for a potential <see cref="WebTestException"/>. Can be <see langword="null"/>.
-    /// </param>
     /// <exception cref="WebTestException">The element is currently disabled.</exception>
-    public static void Focus ([NotNull] this ElementScope scope, IDriver driver = null)
+    public static void Focus ([NotNull] this ElementScope scope)
     {
       ArgumentUtility.CheckNotNull ("scope", scope);
 
@@ -69,13 +66,13 @@ namespace Remotion.Web.Development.WebTesting
       for (var i = 0; i < 10; i++)
       {
         var disabled = scope.Disabled;
-        
+
         if (!disabled)
           break;
       }
 
       if (scope.Disabled)
-        throw AssertionExceptionUtility.CreateControlDisabledException (driver);
+        throw AssertionExceptionUtility.CreateControlDisabledException (scope.GetDriver());
 
       scope.SendKeys ("");
     }
