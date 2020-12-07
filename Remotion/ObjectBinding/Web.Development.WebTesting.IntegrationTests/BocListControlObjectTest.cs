@@ -636,7 +636,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GetRowWhere ("Title", "EO"),
           Throws.Exception.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find css: .bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[data-boclist-cell-index='6'] span[data-boclist-cell-contents='EO']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find css: .bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[data-boclist-cell-index='6'] span[data-boclist-cell-contents='EO']").Message));
     }
 
     [Test]
@@ -875,7 +876,8 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocList.GetCellWhere ("Title", "EO"),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find css: .bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[data-boclist-cell-index='6'] span[data-boclist-cell-contents='EO']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver,"Unable to find css: .bocListTable .bocListTableBody .bocListDataRow .bocListDataCell[data-boclist-cell-index='6'] span[data-boclist-cell-contents='EO']").Message));
     }
 
     [Test]

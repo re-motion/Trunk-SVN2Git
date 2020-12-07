@@ -229,11 +229,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => treeView.GetNode().WithDisplayTextContains ("1").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ./table[contains(tbody/tr/td[last()], '1')]"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ./table[contains(tbody/tr/td[last()], '1')]").Message));
       Assert.That (
           () => treeView.GetNode().WithDisplayText ("ChildNode 1").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ./table[normalize-space(tbody/tr/td[last()])='ChildNode 1']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ./table[normalize-space(tbody/tr/td[last()])='ChildNode 1']").Message));
       Assert.That (
           () => treeView.GetNode().WithItemID ("1").Select(),
           Throws.InstanceOf<NotSupportedException>()
@@ -247,11 +249,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => rootNode.GetNode().WithDisplayTextContains ("11").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ./table[contains(tbody/tr/td[last()]//*, '11')]"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException(Driver, "Unable to find xpath: ./table[contains(tbody/tr/td[last()]//*, '11')]").Message));
       Assert.That (
           () => rootNode.GetNode().WithDisplayText ("ChildNode 11").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ./table[normalize-space(tbody/tr/td[last()]//*)='ChildNode 11']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException(Driver, "Unable to find xpath: ./table[normalize-space(tbody/tr/td[last()]//*)='ChildNode 11']").Message));
       Assert.That (
           () => rootNode.GetNode().WithItemID ("11").Select(),
           Throws.InstanceOf<NotSupportedException>()

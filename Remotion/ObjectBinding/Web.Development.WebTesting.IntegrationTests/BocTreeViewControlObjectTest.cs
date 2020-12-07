@@ -212,37 +212,45 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocTreeView.GetNode().WithDisplayTextContains ("B, A").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[contains(@data-content, 'B, A')]"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[contains(@data-content, 'B, A')]").Message));
       Assert.That (
           () => bocTreeView.GetNode().WithDisplayText ("B, A").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[@data-content='B, A']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[@data-content='B, A']").Message));
       Assert.That (
           () => bocTreeView.GetNode().WithItemID ("c8ace752-55f6-4074-8890-130276ea6cd1").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[@data-item-id='c8ace752-55f6-4074-8890-130276ea6cd1']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[@data-item-id='c8ace752-55f6-4074-8890-130276ea6cd1']").Message));
       Assert.That (
           () => bocTreeView.GetNode ("c8ace752-55f6-4074-8890-130276ea6cd1").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[@data-item-id='c8ace752-55f6-4074-8890-130276ea6cd1']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[@data-item-id='c8ace752-55f6-4074-8890-130276ea6cd1']").Message));
 
       rootNode.Scope.ElementFinder.Options.Timeout = TimeSpan.Zero;
       Assert.That (
           () => rootNode.GetNode().WithDisplayTextContains ("A, B").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[contains(@data-content, 'A, B')]"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[contains(@data-content, 'A, B')]").Message));
       Assert.That (
           () => rootNode.GetNode().WithDisplayText ("A, B").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[@data-content='A, B']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[@data-content='A, B']").Message));
       Assert.That (
           () => rootNode.GetNode().WithItemID ("eb94bfdb-1140-46f8-971f-e4b41dae13b8").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[@data-item-id='eb94bfdb-1140-46f8-971f-e4b41dae13b8']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[@data-item-id='eb94bfdb-1140-46f8-971f-e4b41dae13b8']").Message));
       Assert.That (
           () => rootNode.GetNode ("eb94bfdb-1140-46f8-971f-e4b41dae13b8").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find xpath: ((.//ul)[1])/li[@data-item-id='eb94bfdb-1140-46f8-971f-e4b41dae13b8']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException (Driver, "Unable to find xpath: ((.//ul)[1])/li[@data-item-id='eb94bfdb-1140-46f8-971f-e4b41dae13b8']").Message));
     }
 
     [Test]
@@ -386,19 +394,23 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
       Assert.That (
           () => bocTreeView.GetNodeInHierarchy().WithDisplayTextContains ("A, B").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find css: ul li[data-content*='A, B']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException(Driver, "Unable to find css: ul li[data-content*='A, B']").Message));
       Assert.That (
           () => bocTreeView.GetNodeInHierarchy().WithDisplayText ("E, ").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find css: ul li[data-content='E, ']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException(Driver, "Unable to find css: ul li[data-content='E, ']").Message));
       Assert.That (
           () => bocTreeView.GetNodeInHierarchy().WithItemID ("eb94bfdb-1140-46f8-971f-e4b41dae13b8").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find css: ul li[data-item-id='eb94bfdb-1140-46f8-971f-e4b41dae13b8']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException(Driver, "Unable to find css: ul li[data-item-id='eb94bfdb-1140-46f8-971f-e4b41dae13b8']").Message));
       Assert.That (
           () => bocTreeView.GetNodeInHierarchy ("6866ca48-8957-4f26-ae5f-78a3f6dcc4de").Select(),
           Throws.InstanceOf<WebTestException>()
-              .With.Message.EqualTo ("The element cannot be found: Unable to find css: ul li[data-item-id='6866ca48-8957-4f26-ae5f-78a3f6dcc4de']"));
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateControlMissingException(Driver, "Unable to find css: ul li[data-item-id='6866ca48-8957-4f26-ae5f-78a3f6dcc4de']").Message));
     }
 
     [Test]
