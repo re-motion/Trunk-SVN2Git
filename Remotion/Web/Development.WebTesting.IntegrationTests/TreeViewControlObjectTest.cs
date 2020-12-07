@@ -305,8 +305,8 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => rootNode.GetNodeInHierarchy().WithIndex (1),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException (Driver, "Multiple nodes with the index '1' were found.").Message));
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "Multiple nodes with the index '1' were found.").Message));
     }
 
     [Test]
@@ -367,13 +367,13 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithIndex (999),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException (Driver, "No node with the index '999' was found.").Message));
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "No node with the index '999' was found.").Message));
 
       Assert.That (
           () => treeView.GetNodeInHierarchy().WithIndex (1),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException (Driver, "Multiple nodes with the index '1' were found.").Message));
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo (AssertionExceptionUtility.CreateExpectationException (Driver, "Multiple nodes with the index '1' were found.").Message));
     }
 
     [Test]

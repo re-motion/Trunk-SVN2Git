@@ -510,12 +510,14 @@ namespace Remotion.ObjectBinding.Web.Development.WebTesting.IntegrationTests
 
       Assert.That (
           () => node.Expand(),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException (Driver, "The WebTreeViewNode cannot be expanded as it has no children.").Message));
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "The WebTreeViewNode cannot be expanded as it has no children.").Message));
       Assert.That (
           () => node.Collapse(),
-          Throws.InstanceOf<WebTestException>().With.Message.EqualTo (
-              AssertionExceptionUtility.CreateExpectationException (Driver, "The WebTreeViewNode cannot be collapsed as it has no children.").Message));
+          Throws.InstanceOf<WebTestException>()
+              .With.Message.EqualTo (
+                  AssertionExceptionUtility.CreateExpectationException (Driver, "The WebTreeViewNode cannot be collapsed as it has no children.").Message));
     }
 
     [Test]
