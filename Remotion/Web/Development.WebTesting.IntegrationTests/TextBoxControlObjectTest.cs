@@ -89,10 +89,10 @@ namespace Remotion.Web.Development.WebTesting.IntegrationTests
       var control = home.TextBoxes().GetByLocalID ("TextBoxReadOnly");
 
       Assert.That (control.IsReadOnly(), Is.True);
-      Assert.That (() => control.FillWith ("text"), Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlReadOnlyException (Driver).Message));
+      Assert.That (() => control.FillWith ("text"), Throws.Exception.With.Message.EqualTo (AssertionExceptionUtility.CreateControlReadOnlyException (Driver).Message));
       Assert.That (
           () => control.FillWith ("text", FinishInput.Promptly),
-          Throws.Exception.Message.EqualTo (AssertionExceptionUtility.CreateControlReadOnlyException (Driver).Message));
+          Throws.Exception.With.Message.EqualTo (AssertionExceptionUtility.CreateControlReadOnlyException (Driver).Message));
     }
 
     [Test]

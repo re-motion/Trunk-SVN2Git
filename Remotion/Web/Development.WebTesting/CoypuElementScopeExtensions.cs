@@ -36,7 +36,7 @@ namespace Remotion.Web.Development.WebTesting
     private static readonly Lazy<FieldInfo> s_driverFieldInfo = new Lazy<FieldInfo> (
         () => Assertion.IsNotNull (
             typeof (ElementScope).GetField ("_driver", BindingFlags.NonPublic | BindingFlags.Instance),
-            "Coypu has changed, please update CoypuElementScopeExtensions.GetDriver() method."),
+            "Coypu has changed, update CoypuElementScopeExtensions.GetDriver() method."),
         LazyThreadSafetyMode.ExecutionAndPublication);
 
     /// <summary>
