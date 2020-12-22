@@ -1,4 +1,4 @@
-
+﻿
    
 
 <!DOCTYPE html >
@@ -27,7 +27,16 @@
     
 
 
-
+  <style type="text/css">
+    select option[value="==null=="]
+    {
+      color: red;
+    }
+    select [disabled]
+    {
+      color: green;
+    }
+  </style>
 
 </head>
   
@@ -35,8 +44,23 @@
   <span id="lbl1">Alice</span>
   <label id="lbl2" for="txtbox">Bob</label>
   <input id="txtbox" type="text" aria-labelledby="lbl1 lbl2" />
-  <br/>
+  <br />
   <label for="other">Charlie</label>
-  <input id="other"/>
+  <input id="other" />
+<br/>
+  <label for="items1">Items 1</label>
+    <select id="items1" required="required">
+    <option value="" label="none" disabled="" selected=""></option>
+    <option value="A">Item A</option>
+    <option value="B">Item B</option>
+  </select>
+
+  <label for="items2">Items 2</label>
+  <select id="items2" aria-required="true">
+    <option value="==null==" aria-label="none" label=" "></option>
+    <option value="A">Item A</option>
+    <option value="B">Item B</option>
+  </select>
+
 </body>
 </html>

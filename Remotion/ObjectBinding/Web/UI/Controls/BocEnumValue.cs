@@ -693,7 +693,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string GetNullItemText ()
     {
       string nullDisplayName = _undefinedItemText;
-      if (string.IsNullOrEmpty (nullDisplayName) && (ListControlStyle.ControlType != ListControlType.DropDownList))
+      if (string.IsNullOrEmpty (nullDisplayName))
       {
         if (IsDesignMode)
           nullDisplayName = "undefined";
