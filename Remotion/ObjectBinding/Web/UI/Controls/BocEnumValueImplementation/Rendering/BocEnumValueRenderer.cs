@@ -160,6 +160,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       renderingContext.Control.ListControlStyle.ApplyStyle (listControl);
 
       var isRadioButtonList = renderingContext.Control.ListControlStyle.ControlType == ListControlType.RadioButtonList;
+      var isDropDownList = renderingContext.Control.ListControlStyle.ControlType == ListControlType.DropDownList;
+
       if (isRadioButtonList)
         listControl.Attributes.Add (HtmlTextWriterAttribute2.Role, HtmlRoleAttributeValue.RadioGroup);
 
@@ -173,6 +175,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rend
       if (isNullItemVisible)
       {
         var nullItem = CreateNullItem (renderingContext);
+        if (isDropDownList)
+        {
+          nullItem.Attributes[HtmlTextWriterAttribute2.AriaLabel] = nullItem.Text;
+          nullItem.Attributes[HtmlTextWriterAttribute.Label] = nullItem.Text;
+        }
 
         if (IsDiagnosticMetadataRenderingEnabled)
         {
